@@ -1,0 +1,954 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:element name="HelloWorld">
+        <s:complexType />
+      </s:element>
+      <s:element name="HelloWorldResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="HelloWorldResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ServiceIsWorker">
+        <s:complexType />
+      </s:element>
+      <s:element name="ServiceIsWorkerResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="ServiceIsWorkerResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetTypesCard">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetTypesCardResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetTypesCardResult" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfString">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetUsers">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="nick_shop" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="data" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetUsersResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetUsersResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetBonusCardsV8DateTime">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="nick_shop" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="data" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetBonusCardsV8DateTimeResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetBonusCardsV8DateTimeResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetDateTimeServer">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetDateTimeServerResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="GetDateTimeServerResult" type="s:dateTime" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SetStatusSertificat">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="nick_shop" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="data" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SetStatusSertificatResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SetStatusSertificatResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetDiscountClientsV8DateTime_NEW">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="nick_shop" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="data" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetDiscountClientsV8DateTime_NEWResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetDiscountClientsV8DateTime_NEWResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ExistsUpdateProrgam">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="nick_shop" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="data" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ExistsUpdateProrgamResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ExistsUpdateProrgamResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetUpdateProgram">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="nick_shop" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="data" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetUpdateProgramResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetUpdateProgramResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetNpgsqlNew">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="nick_shop" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="data" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetNpgsqlNewResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetNpgsqlNewResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetStatusSertificat">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="nick_shop" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="data" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetStatusSertificatResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetStatusSertificatResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ChangeStatusWorkerOnline">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="nick_shop" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="data" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ChangeStatusWorkerOnlineResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ChangeStatusWorkerOnlineResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ChangeStatusWorkerOffline">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="nick_shop" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="data" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ChangeStatusWorkerOfflineResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="ChangeStatusWorkerOfflineResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UploadPhoneClients">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="nick_shop" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="data" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UploadPhoneClientsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UploadPhoneClientsResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UploadCodeClients">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="nick_shop" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="data" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UploadCodeClientsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UploadCodeClientsResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetDataForCasheV8Jason">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="nick_shop" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="data" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetDataForCasheV8JasonResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetDataForCasheV8JasonResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetDataForCasheV8Successfully">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="nick_shop" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="data" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetDataForCasheV8SuccessfullyResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetDataForCasheV8SuccessfullyResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="OnlineCasheV8Successfully">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="nick_shop" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="data" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="OnlineCasheV8SuccessfullyResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="OnlineCasheV8SuccessfullyResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetDataForCasheV8JasonUpdateOnly">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="nick_shop" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="data" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetDataForCasheV8JasonUpdateOnlyResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetDataForCasheV8JasonUpdateOnlyResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UploadDataOnSalesPortionJason">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="nick_shop" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="data" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UploadDataOnSalesPortionJasonResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="UploadDataOnSalesPortionJasonResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetParametersOnBonusProgram">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="nick_shop" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="data" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetParametersOnBonusProgramResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetParametersOnBonusProgramResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="HelloWorldSoapIn">
+    <wsdl:part name="parameters" element="tns:HelloWorld" />
+  </wsdl:message>
+  <wsdl:message name="HelloWorldSoapOut">
+    <wsdl:part name="parameters" element="tns:HelloWorldResponse" />
+  </wsdl:message>
+  <wsdl:message name="ServiceIsWorkerSoapIn">
+    <wsdl:part name="parameters" element="tns:ServiceIsWorker" />
+  </wsdl:message>
+  <wsdl:message name="ServiceIsWorkerSoapOut">
+    <wsdl:part name="parameters" element="tns:ServiceIsWorkerResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetTypesCardSoapIn">
+    <wsdl:part name="parameters" element="tns:GetTypesCard" />
+  </wsdl:message>
+  <wsdl:message name="GetTypesCardSoapOut">
+    <wsdl:part name="parameters" element="tns:GetTypesCardResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetUsersSoapIn">
+    <wsdl:part name="parameters" element="tns:GetUsers" />
+  </wsdl:message>
+  <wsdl:message name="GetUsersSoapOut">
+    <wsdl:part name="parameters" element="tns:GetUsersResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetBonusCardsV8DateTimeSoapIn">
+    <wsdl:part name="parameters" element="tns:GetBonusCardsV8DateTime" />
+  </wsdl:message>
+  <wsdl:message name="GetBonusCardsV8DateTimeSoapOut">
+    <wsdl:part name="parameters" element="tns:GetBonusCardsV8DateTimeResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetDateTimeServerSoapIn">
+    <wsdl:part name="parameters" element="tns:GetDateTimeServer" />
+  </wsdl:message>
+  <wsdl:message name="GetDateTimeServerSoapOut">
+    <wsdl:part name="parameters" element="tns:GetDateTimeServerResponse" />
+  </wsdl:message>
+  <wsdl:message name="SetStatusSertificatSoapIn">
+    <wsdl:part name="parameters" element="tns:SetStatusSertificat" />
+  </wsdl:message>
+  <wsdl:message name="SetStatusSertificatSoapOut">
+    <wsdl:part name="parameters" element="tns:SetStatusSertificatResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetDiscountClientsV8DateTime_NEWSoapIn">
+    <wsdl:part name="parameters" element="tns:GetDiscountClientsV8DateTime_NEW" />
+  </wsdl:message>
+  <wsdl:message name="GetDiscountClientsV8DateTime_NEWSoapOut">
+    <wsdl:part name="parameters" element="tns:GetDiscountClientsV8DateTime_NEWResponse" />
+  </wsdl:message>
+  <wsdl:message name="ExistsUpdateProrgamSoapIn">
+    <wsdl:part name="parameters" element="tns:ExistsUpdateProrgam" />
+  </wsdl:message>
+  <wsdl:message name="ExistsUpdateProrgamSoapOut">
+    <wsdl:part name="parameters" element="tns:ExistsUpdateProrgamResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetUpdateProgramSoapIn">
+    <wsdl:part name="parameters" element="tns:GetUpdateProgram" />
+  </wsdl:message>
+  <wsdl:message name="GetUpdateProgramSoapOut">
+    <wsdl:part name="parameters" element="tns:GetUpdateProgramResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetNpgsqlNewSoapIn">
+    <wsdl:part name="parameters" element="tns:GetNpgsqlNew" />
+  </wsdl:message>
+  <wsdl:message name="GetNpgsqlNewSoapOut">
+    <wsdl:part name="parameters" element="tns:GetNpgsqlNewResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetStatusSertificatSoapIn">
+    <wsdl:part name="parameters" element="tns:GetStatusSertificat" />
+  </wsdl:message>
+  <wsdl:message name="GetStatusSertificatSoapOut">
+    <wsdl:part name="parameters" element="tns:GetStatusSertificatResponse" />
+  </wsdl:message>
+  <wsdl:message name="ChangeStatusWorkerOnlineSoapIn">
+    <wsdl:part name="parameters" element="tns:ChangeStatusWorkerOnline" />
+  </wsdl:message>
+  <wsdl:message name="ChangeStatusWorkerOnlineSoapOut">
+    <wsdl:part name="parameters" element="tns:ChangeStatusWorkerOnlineResponse" />
+  </wsdl:message>
+  <wsdl:message name="ChangeStatusWorkerOfflineSoapIn">
+    <wsdl:part name="parameters" element="tns:ChangeStatusWorkerOffline" />
+  </wsdl:message>
+  <wsdl:message name="ChangeStatusWorkerOfflineSoapOut">
+    <wsdl:part name="parameters" element="tns:ChangeStatusWorkerOfflineResponse" />
+  </wsdl:message>
+  <wsdl:message name="UploadPhoneClientsSoapIn">
+    <wsdl:part name="parameters" element="tns:UploadPhoneClients" />
+  </wsdl:message>
+  <wsdl:message name="UploadPhoneClientsSoapOut">
+    <wsdl:part name="parameters" element="tns:UploadPhoneClientsResponse" />
+  </wsdl:message>
+  <wsdl:message name="UploadCodeClientsSoapIn">
+    <wsdl:part name="parameters" element="tns:UploadCodeClients" />
+  </wsdl:message>
+  <wsdl:message name="UploadCodeClientsSoapOut">
+    <wsdl:part name="parameters" element="tns:UploadCodeClientsResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetDataForCasheV8JasonSoapIn">
+    <wsdl:part name="parameters" element="tns:GetDataForCasheV8Jason" />
+  </wsdl:message>
+  <wsdl:message name="GetDataForCasheV8JasonSoapOut">
+    <wsdl:part name="parameters" element="tns:GetDataForCasheV8JasonResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetDataForCasheV8SuccessfullySoapIn">
+    <wsdl:part name="parameters" element="tns:GetDataForCasheV8Successfully" />
+  </wsdl:message>
+  <wsdl:message name="GetDataForCasheV8SuccessfullySoapOut">
+    <wsdl:part name="parameters" element="tns:GetDataForCasheV8SuccessfullyResponse" />
+  </wsdl:message>
+  <wsdl:message name="OnlineCasheV8SuccessfullySoapIn">
+    <wsdl:part name="parameters" element="tns:OnlineCasheV8Successfully" />
+  </wsdl:message>
+  <wsdl:message name="OnlineCasheV8SuccessfullySoapOut">
+    <wsdl:part name="parameters" element="tns:OnlineCasheV8SuccessfullyResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetDataForCasheV8JasonUpdateOnlySoapIn">
+    <wsdl:part name="parameters" element="tns:GetDataForCasheV8JasonUpdateOnly" />
+  </wsdl:message>
+  <wsdl:message name="GetDataForCasheV8JasonUpdateOnlySoapOut">
+    <wsdl:part name="parameters" element="tns:GetDataForCasheV8JasonUpdateOnlyResponse" />
+  </wsdl:message>
+  <wsdl:message name="UploadDataOnSalesPortionJasonSoapIn">
+    <wsdl:part name="parameters" element="tns:UploadDataOnSalesPortionJason" />
+  </wsdl:message>
+  <wsdl:message name="UploadDataOnSalesPortionJasonSoapOut">
+    <wsdl:part name="parameters" element="tns:UploadDataOnSalesPortionJasonResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetParametersOnBonusProgramSoapIn">
+    <wsdl:part name="parameters" element="tns:GetParametersOnBonusProgram" />
+  </wsdl:message>
+  <wsdl:message name="GetParametersOnBonusProgramSoapOut">
+    <wsdl:part name="parameters" element="tns:GetParametersOnBonusProgramResponse" />
+  </wsdl:message>
+  <wsdl:portType name="DSSoap">
+    <wsdl:operation name="HelloWorld">
+      <wsdl:input message="tns:HelloWorldSoapIn" />
+      <wsdl:output message="tns:HelloWorldSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ServiceIsWorker">
+      <wsdl:input message="tns:ServiceIsWorkerSoapIn" />
+      <wsdl:output message="tns:ServiceIsWorkerSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetTypesCard">
+      <wsdl:input message="tns:GetTypesCardSoapIn" />
+      <wsdl:output message="tns:GetTypesCardSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetUsers">
+      <wsdl:input message="tns:GetUsersSoapIn" />
+      <wsdl:output message="tns:GetUsersSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetBonusCardsV8DateTime">
+      <wsdl:input message="tns:GetBonusCardsV8DateTimeSoapIn" />
+      <wsdl:output message="tns:GetBonusCardsV8DateTimeSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDateTimeServer">
+      <wsdl:input message="tns:GetDateTimeServerSoapIn" />
+      <wsdl:output message="tns:GetDateTimeServerSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SetStatusSertificat">
+      <wsdl:input message="tns:SetStatusSertificatSoapIn" />
+      <wsdl:output message="tns:SetStatusSertificatSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDiscountClientsV8DateTime_NEW">
+      <wsdl:input message="tns:GetDiscountClientsV8DateTime_NEWSoapIn" />
+      <wsdl:output message="tns:GetDiscountClientsV8DateTime_NEWSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ExistsUpdateProrgam">
+      <wsdl:input message="tns:ExistsUpdateProrgamSoapIn" />
+      <wsdl:output message="tns:ExistsUpdateProrgamSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetUpdateProgram">
+      <wsdl:input message="tns:GetUpdateProgramSoapIn" />
+      <wsdl:output message="tns:GetUpdateProgramSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetNpgsqlNew">
+      <wsdl:input message="tns:GetNpgsqlNewSoapIn" />
+      <wsdl:output message="tns:GetNpgsqlNewSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetStatusSertificat">
+      <wsdl:input message="tns:GetStatusSertificatSoapIn" />
+      <wsdl:output message="tns:GetStatusSertificatSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ChangeStatusWorkerOnline">
+      <wsdl:input message="tns:ChangeStatusWorkerOnlineSoapIn" />
+      <wsdl:output message="tns:ChangeStatusWorkerOnlineSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ChangeStatusWorkerOffline">
+      <wsdl:input message="tns:ChangeStatusWorkerOfflineSoapIn" />
+      <wsdl:output message="tns:ChangeStatusWorkerOfflineSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="UploadPhoneClients">
+      <wsdl:input message="tns:UploadPhoneClientsSoapIn" />
+      <wsdl:output message="tns:UploadPhoneClientsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="UploadCodeClients">
+      <wsdl:input message="tns:UploadCodeClientsSoapIn" />
+      <wsdl:output message="tns:UploadCodeClientsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDataForCasheV8Jason">
+      <wsdl:input message="tns:GetDataForCasheV8JasonSoapIn" />
+      <wsdl:output message="tns:GetDataForCasheV8JasonSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDataForCasheV8Successfully">
+      <wsdl:input message="tns:GetDataForCasheV8SuccessfullySoapIn" />
+      <wsdl:output message="tns:GetDataForCasheV8SuccessfullySoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="OnlineCasheV8Successfully">
+      <wsdl:input message="tns:OnlineCasheV8SuccessfullySoapIn" />
+      <wsdl:output message="tns:OnlineCasheV8SuccessfullySoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDataForCasheV8JasonUpdateOnly">
+      <wsdl:input message="tns:GetDataForCasheV8JasonUpdateOnlySoapIn" />
+      <wsdl:output message="tns:GetDataForCasheV8JasonUpdateOnlySoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="UploadDataOnSalesPortionJason">
+      <wsdl:input message="tns:UploadDataOnSalesPortionJasonSoapIn" />
+      <wsdl:output message="tns:UploadDataOnSalesPortionJasonSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetParametersOnBonusProgram">
+      <wsdl:input message="tns:GetParametersOnBonusProgramSoapIn" />
+      <wsdl:output message="tns:GetParametersOnBonusProgramSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="DSSoap" type="tns:DSSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="HelloWorld">
+      <soap:operation soapAction="http://tempuri.org/HelloWorld" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ServiceIsWorker">
+      <soap:operation soapAction="http://tempuri.org/ServiceIsWorker" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetTypesCard">
+      <soap:operation soapAction="http://tempuri.org/GetTypesCard" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetUsers">
+      <soap:operation soapAction="http://tempuri.org/GetUsers" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetBonusCardsV8DateTime">
+      <soap:operation soapAction="http://tempuri.org/GetBonusCardsV8DateTime" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDateTimeServer">
+      <soap:operation soapAction="http://tempuri.org/GetDateTimeServer" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SetStatusSertificat">
+      <soap:operation soapAction="http://tempuri.org/SetStatusSertificat" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDiscountClientsV8DateTime_NEW">
+      <soap:operation soapAction="http://tempuri.org/GetDiscountClientsV8DateTime_NEW" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExistsUpdateProrgam">
+      <soap:operation soapAction="http://tempuri.org/ExistsUpdateProrgam" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetUpdateProgram">
+      <soap:operation soapAction="http://tempuri.org/GetUpdateProgram" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetNpgsqlNew">
+      <soap:operation soapAction="http://tempuri.org/GetNpgsqlNew" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetStatusSertificat">
+      <soap:operation soapAction="http://tempuri.org/GetStatusSertificat" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ChangeStatusWorkerOnline">
+      <soap:operation soapAction="http://tempuri.org/ChangeStatusWorkerOnline" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ChangeStatusWorkerOffline">
+      <soap:operation soapAction="http://tempuri.org/ChangeStatusWorkerOffline" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UploadPhoneClients">
+      <soap:operation soapAction="http://tempuri.org/UploadPhoneClients" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UploadCodeClients">
+      <soap:operation soapAction="http://tempuri.org/UploadCodeClients" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDataForCasheV8Jason">
+      <soap:operation soapAction="http://tempuri.org/GetDataForCasheV8Jason" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDataForCasheV8Successfully">
+      <soap:operation soapAction="http://tempuri.org/GetDataForCasheV8Successfully" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="OnlineCasheV8Successfully">
+      <soap:operation soapAction="http://tempuri.org/OnlineCasheV8Successfully" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDataForCasheV8JasonUpdateOnly">
+      <soap:operation soapAction="http://tempuri.org/GetDataForCasheV8JasonUpdateOnly" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UploadDataOnSalesPortionJason">
+      <soap:operation soapAction="http://tempuri.org/UploadDataOnSalesPortionJason" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetParametersOnBonusProgram">
+      <soap:operation soapAction="http://tempuri.org/GetParametersOnBonusProgram" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="DSSoap12" type="tns:DSSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="HelloWorld">
+      <soap12:operation soapAction="http://tempuri.org/HelloWorld" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ServiceIsWorker">
+      <soap12:operation soapAction="http://tempuri.org/ServiceIsWorker" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetTypesCard">
+      <soap12:operation soapAction="http://tempuri.org/GetTypesCard" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetUsers">
+      <soap12:operation soapAction="http://tempuri.org/GetUsers" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetBonusCardsV8DateTime">
+      <soap12:operation soapAction="http://tempuri.org/GetBonusCardsV8DateTime" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDateTimeServer">
+      <soap12:operation soapAction="http://tempuri.org/GetDateTimeServer" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SetStatusSertificat">
+      <soap12:operation soapAction="http://tempuri.org/SetStatusSertificat" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDiscountClientsV8DateTime_NEW">
+      <soap12:operation soapAction="http://tempuri.org/GetDiscountClientsV8DateTime_NEW" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExistsUpdateProrgam">
+      <soap12:operation soapAction="http://tempuri.org/ExistsUpdateProrgam" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetUpdateProgram">
+      <soap12:operation soapAction="http://tempuri.org/GetUpdateProgram" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetNpgsqlNew">
+      <soap12:operation soapAction="http://tempuri.org/GetNpgsqlNew" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetStatusSertificat">
+      <soap12:operation soapAction="http://tempuri.org/GetStatusSertificat" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ChangeStatusWorkerOnline">
+      <soap12:operation soapAction="http://tempuri.org/ChangeStatusWorkerOnline" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ChangeStatusWorkerOffline">
+      <soap12:operation soapAction="http://tempuri.org/ChangeStatusWorkerOffline" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UploadPhoneClients">
+      <soap12:operation soapAction="http://tempuri.org/UploadPhoneClients" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UploadCodeClients">
+      <soap12:operation soapAction="http://tempuri.org/UploadCodeClients" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDataForCasheV8Jason">
+      <soap12:operation soapAction="http://tempuri.org/GetDataForCasheV8Jason" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDataForCasheV8Successfully">
+      <soap12:operation soapAction="http://tempuri.org/GetDataForCasheV8Successfully" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="OnlineCasheV8Successfully">
+      <soap12:operation soapAction="http://tempuri.org/OnlineCasheV8Successfully" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDataForCasheV8JasonUpdateOnly">
+      <soap12:operation soapAction="http://tempuri.org/GetDataForCasheV8JasonUpdateOnly" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UploadDataOnSalesPortionJason">
+      <soap12:operation soapAction="http://tempuri.org/UploadDataOnSalesPortionJason" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetParametersOnBonusProgram">
+      <soap12:operation soapAction="http://tempuri.org/GetParametersOnBonusProgram" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="DS">
+    <wsdl:port name="DSSoap" binding="tns:DSSoap">
+      <soap:address location="http://localhost:50520/DS.asmx" />
+    </wsdl:port>
+    <wsdl:port name="DSSoap12" binding="tns:DSSoap12">
+      <soap12:address location="http://localhost:50520/DS.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

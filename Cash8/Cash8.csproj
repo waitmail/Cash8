@@ -1,0 +1,355 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{E9DE097F-3C75-431D-BB05-78B8832127B2}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Cash8</RootNamespace>
+    <AssemblyName>Cash8</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Npgsql, Version=2.2.7.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\Npgsql.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Action.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Action.Designer.cs">
+      <DependentUpon>Action.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Actions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Actions.Designer.cs">
+      <DependentUpon>Actions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Cash_check.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Cash_check.Designer.cs">
+      <DependentUpon>Cash_check.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Cash_checks.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Cash_checks.Designer.cs">
+      <DependentUpon>Cash_checks.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Constants.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Constants.Designer.cs">
+      <DependentUpon>Constants.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CryptorEngine.cs" />
+    <Compile Include="Discount_types.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Discount_types.Designer.cs">
+      <DependentUpon>Discount_types.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FiscallPrintJason.cs" />
+    <Compile Include="FPTK22.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FPTK22.Designer.cs">
+      <DependentUpon>FPTK22.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InputeCodeClient.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InputeCodeClient.Designer.cs">
+      <DependentUpon>InputeCodeClient.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InputePhoneClient.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InputePhoneClient.Designer.cs">
+      <DependentUpon>InputePhoneClient.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InputCodeNumberPhone.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InputCodeNumberPhone.Designer.cs">
+      <DependentUpon>InputCodeNumberPhone.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InputSertificates.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InputSertificates.Designer.cs">
+      <DependentUpon>InputSertificates.cs</DependentUpon>
+    </Compile>
+    <Compile Include="input_action_barcode.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="input_action_barcode.Designer.cs">
+      <DependentUpon>input_action_barcode.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Interface_switching.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Interface_switching.Designer.cs">
+      <DependentUpon>Interface_switching.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LoadDataWebService.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LoadDataWebService.Designer.cs">
+      <DependentUpon>LoadDataWebService.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LoadProgramFromInternet.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LoadProgramFromInternet.Designer.cs">
+      <DependentUpon>LoadProgramFromInternet.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MainStaticClass.cs" />
+    <Compile Include="MyMessageBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MyMessageBox.Designer.cs">
+      <DependentUpon>MyMessageBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Pay.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Pay.Designer.cs">
+      <DependentUpon>Pay.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProcessingOfActions.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Cash_check.resx">
+      <DependentUpon>Cash_check.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Cash_checks.resx">
+      <DependentUpon>Cash_checks.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Constants.resx">
+      <DependentUpon>Constants.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FPTK22.resx">
+      <DependentUpon>FPTK22.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InputeCodeClient.resx">
+      <DependentUpon>InputeCodeClient.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InputePhoneClient.resx">
+      <DependentUpon>InputePhoneClient.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InputCodeNumberPhone.resx">
+      <DependentUpon>InputCodeNumberPhone.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InputSertificates.resx">
+      <DependentUpon>InputSertificates.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="input_action_barcode.resx">
+      <DependentUpon>input_action_barcode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Interface_switching.resx">
+      <DependentUpon>Interface_switching.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LoadDataWebService.resx">
+      <DependentUpon>LoadDataWebService.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LoadProgramFromInternet.resx">
+      <DependentUpon>LoadProgramFromInternet.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pay.resx">
+      <DependentUpon>Pay.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SendDataOnSalesPortions.resx">
+      <DependentUpon>SendDataOnSalesPortions.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SentDataOnBonus.resx">
+      <DependentUpon>SentDataOnBonus.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SettingConnect.resx">
+      <DependentUpon>SettingConnect.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Read_Data_From_Com_Port.cs" />
+    <Compile Include="SelectedPrinters.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SelectedPrinters.Designer.cs">
+      <DependentUpon>SelectedPrinters.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SendDataOnSalesPortions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SendDataOnSalesPortions.Designer.cs">
+      <DependentUpon>SendDataOnSalesPortions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SentDataOnBonus.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SentDataOnBonus.Designer.cs">
+      <DependentUpon>SentDataOnBonus.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SettingConnect.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SettingConnect.Designer.cs">
+      <DependentUpon>SettingConnect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tovar_Not_Found.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tovar_Not_Found.Designer.cs">
+      <DependentUpon>Tovar_Not_Found.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\DS\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Work_FPTK22.cs" />
+    <Compile Include="Work_Mini_FP_6.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferences Include="Web References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferenceUrl Include="http://localhost:50520/DS.asmx">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\DS\</RelPath>
+      <UpdateFromURL>http://localhost:50520/DS.asmx</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>Cash8_DS_DS</CachedSettingsPropName>
+    </WebReferenceUrl>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Web References\DS\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Web References\DS\DS.disco" />
+    <None Include="Web References\DS\DS.wsdl" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
