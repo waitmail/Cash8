@@ -1507,7 +1507,9 @@ namespace Cash8
         }
 
 
-
+        /// <summary>
+        /// Если пароль заполнен, значит бонусная программа для этой кассы включена
+        /// </summary>
         public static string PassPromo
         {
             get
@@ -1525,7 +1527,7 @@ namespace Cash8
                         conn.Open();
                         string query = "SELECT pass_promo  FROM constants;";
                         NpgsqlCommand command = new NpgsqlCommand(query, conn);
-                        pass_promo = command.ExecuteScalar().ToString();
+                        pass_promo = command.ExecuteScalar().ToString().Trim();
                         conn.Close();
                     }
                     catch (NpgsqlException ex)

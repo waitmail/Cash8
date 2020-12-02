@@ -93,6 +93,12 @@
     <Compile Include="Cash_checks.Designer.cs">
       <DependentUpon>Cash_checks.cs</DependentUpon>
     </Compile>
+    <Compile Include="ChangeBonusStatusClient.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ChangeBonusStatusClient.Designer.cs">
+      <DependentUpon>ChangeBonusStatusClient.cs</DependentUpon>
+    </Compile>
     <Compile Include="Constants.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -190,6 +196,9 @@
     <EmbeddedResource Include="Cash_checks.resx">
       <DependentUpon>Cash_checks.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ChangeBonusStatusClient.resx">
+      <DependentUpon>ChangeBonusStatusClient.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Constants.resx">
       <DependentUpon>Constants.cs</DependentUpon>

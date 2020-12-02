@@ -780,7 +780,7 @@ namespace Cash8
                     this.Close();
                 }
             }
-            if (e.KeyCode == Keys.F9)//Ввод штрихкода продаца консультанта
+            if (e.KeyCode == Keys.F9)//Перевод клиента на бонусную программу
             {
                 //if ((itsnew) && (check_type.SelectedIndex == 0))
                 //{
@@ -789,9 +789,9 @@ namespace Cash8
                 //        show_query_window_barcode(4, 0, 0);
                 //    }            
                 //}
-                if (client.Tag == null)
+                if (client.Tag != null)
                 {
-                    btn_change_code_client_Click(null, null);
+                    btn_change_status_client_Click(null, null);
                 }
             }
         }
@@ -2102,7 +2102,7 @@ namespace Cash8
                         client.BackColor = System.Drawing.ColorTranslator.FromHtml("#22FF99");
                     }
 
-                    if ((reader["clients_phone"].ToString().Trim().Length < 12) && (reader["temp_phone_clients_phone"].ToString().Trim().Length < 12))//будем считать, что номера телефона нет
+                    if ((reader["clients_phone"].ToString().Trim().Length < 10) && (reader["temp_phone_clients_phone"].ToString().Trim().Length < 10))//будем считать, что номера телефона нет
                     {
                         InputePhoneClient ipc = new InputePhoneClient();
                         ipc.barcode = barcode;
@@ -2376,7 +2376,7 @@ namespace Cash8
             }
                         
             txtB_client_phone.Text = "";            
-            btn_change_code_client.Visible = false;
+            btn_change_status_client.Visible = false;
                        
 
             this.check_type.Items.Add("Продажа");
@@ -8943,18 +8943,175 @@ namespace Cash8
             inputbarcode.Focus();
         }
 
-        private void btn_change_code_client_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Возвращает true если клиент бонусный
+        /// иначе false
+        /// </summary>
+        /// <returns></returns>
+        private bool check_bonus_is_on()
         {
-            //if (this.client.Tag == null)
-            //{
-            //    return;
-            //}
+            bool result = false;
 
-            InputeCodeClient icc = new InputeCodeClient();
-            //icc.barcode = this.client.Tag.ToString();
-            icc.cc = this;
-            icc.ShowDialog();
-            //btn_change_code_client.Enabled = false;
+            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+            try
+            {
+                conn.Open();
+                string query = "SELECT bonus_is_on  FROM clients where code = '" + client.Tag.ToString() + "' and bonus_is_on=1";
+                NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                NpgsqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    result = true;
+                }
+                reader.Close();
+                command.Dispose();
+                conn.Close();
+            }
+            catch (NpgsqlException ex)
+            {
+                MessageBox.Show("Ошибка при получении статуса бонусный"+ex.Message);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ошибка при получении статуса бонусный" + ex.Message);
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return result;
+        }
+
+
+
+        /// <summary>
+        /// Проверка наличия номера телефона в карточке клиента
+        /// </summary>
+        /// <returns></returns>
+        private bool check_client_have_telephone()
+        {
+            bool result = true;
+
+            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+            try
+            {
+                conn.Open();
+                string query = "SELECT clients.phone AS phone,temp_phone_clients.phone AS phone1 FROM clients " +                    
+                    " left join temp_phone_clients ON clients.code = temp_phone_clients.barcode " +
+                    " WHERE clients.code" + client.Tag.ToString();
+                NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                NpgsqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    if ((reader["pnone"].ToString().Trim().Length < 10)&&(reader["pnone1"].ToString().Trim().Length < 10))
+                    {
+                        result = false;
+                    }
+                }
+                reader.Close();
+                conn.Close();
+            }
+            catch (NpgsqlException ex)
+            {
+                MessageBox.Show("Ошибка при проверка наличия телефона " + ex.Message);
+                result = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ошибка при проверка наличия телефона " + ex.Message);
+                result = false;
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+
+            return result;
+        }
+
+        /// <summary>
+        /// Возвращает true если клиент уже есть в таблице
+        /// иначе false
+        /// при ошибках возвращает true
+        /// т.е. блокирует дальнейшее выполнение 
+        /// </summary>
+        /// <returns></returns>
+        private bool check_in_change_status_client()
+        {
+            bool result = true;
+
+            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+            try
+            {
+                conn.Open();
+                string query = "SELECT COUNT(*) FROM client_with_changed_status_to_send where client="+client.Tag.ToString();
+                NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                if (Convert.ToInt16(command.ExecuteScalar()) == 0)
+                {
+                    result = false;
+                }
+                command.Dispose();
+                conn.Close();
+            }
+            catch (NpgsqlException ex)
+            {
+                MessageBox.Show("Ошибка при проверке в промежуточной таблице статусов клиентов "+ex.Message);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ошибка при проверке в промежуточной таблице статусов клиентов " + ex.Message);
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return result;
+        }
+        
+        private void btn_change_status_client_Click(object sender, EventArgs e)
+        {
+
+            if (MainStaticClass.PassPromo == "")
+            {
+                MessageBox.Show(" Эта касса не участвует в бонусной программе  ");
+                return;
+            }
+
+            //Прежде чем вызвать окно изменения статуча надо проверить номер телефона
+            if (!check_client_have_telephone())
+            {
+                MessageBox.Show(" У покупателя не заполнен номер телефона ");                
+                return;
+            }
+
+            //Проверить нет ли клиента в уже измененных
+            if (check_in_change_status_client())
+            {
+                MessageBox.Show(" У этого покупателя уже возможно изменен статус ");
+                return;
+            }
+
+            if (check_bonus_is_on())
+            {
+                MessageBox.Show(" У этого покупателя уже установлен статус бонусный ");
+                return;
+            }
+            
+            ChangeBonusStatusClient changeBonusStatusClient = new ChangeBonusStatusClient();
+            changeBonusStatusClient.client_code = this.client.Tag.ToString();
+            changeBonusStatusClient.ShowDialog();
         }
 
         public class Suggestion

@@ -199,7 +199,7 @@ namespace Cash8
                     this.Close();
                 }
             }
-            //else if (call_type == 4)//Проверка на удаление документа
+            //else if (call_type == 4)//Штрихкод продавца в данный момент не используется
             //{
             //    if (!(Char.IsDigit(e.KeyChar)) && (e.KeyChar != (char)Keys.Back))
             //    {
@@ -234,7 +234,7 @@ namespace Cash8
             //        this.Close();
             //    }
             //}
-            else if (call_type == 5)//Проверка на удаление документа
+            else if (call_type == 5)//Проверка на 4 последние цифры телефона 
             {
                 if (e.KeyChar != 13)
                 {
@@ -291,7 +291,7 @@ namespace Cash8
                 }
 
             }
-            else if (call_type == 6)//Проверка на удаление документа
+            else if (call_type == 6)//Проверка на длину кода маркировки
             {
                 if (e.KeyChar != 13)
                 {

@@ -34,7 +34,6 @@
             this.client = new System.Windows.Forms.TextBox();
             this.client_barcode = new System.Windows.Forms.TextBox();
             this.inputbarcode = new System.Windows.Forms.TextBox();
-            this.cash = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.enter_quantity = new System.Windows.Forms.TextBox();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -74,7 +73,7 @@
             this.label_client_barcode = new System.Windows.Forms.Label();
             this.label_client_phone = new System.Windows.Forms.Label();
             this.btn_inpute_phone_client = new System.Windows.Forms.Button();
-            this.btn_change_code_client = new System.Windows.Forms.Button();
+            this.btn_change_status_client = new System.Windows.Forms.Button();
             this.label13 = new System.Windows.Forms.Label();
             this.txtB_bonus_money = new System.Windows.Forms.TextBox();
             this.checkBox_to_print_repeatedly = new System.Windows.Forms.CheckBox();
@@ -84,6 +83,7 @@
             this.txtB_name = new System.Windows.Forms.TextBox();
             this.txtB_num_sales = new System.Windows.Forms.TextBox();
             this.btn_fill_on_sales = new System.Windows.Forms.Button();
+            this.cash = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel_return.SuspendLayout();
@@ -133,7 +133,7 @@
             // client_barcode
             // 
             this.client_barcode.BackColor = System.Drawing.Color.White;
-            this.client_barcode.Location = new System.Drawing.Point(658, 40);
+            this.client_barcode.Location = new System.Drawing.Point(692, 41);
             this.client_barcode.MaxLength = 36;
             this.client_barcode.Name = "client_barcode";
             this.client_barcode.Size = new System.Drawing.Size(96, 20);
@@ -153,23 +153,6 @@
             this.inputbarcode.TabIndex = 2;
             this.inputbarcode.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.inputbarcode.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.inputbarcode_KeyPress);
-            // 
-            // cash
-            // 
-            this.cash.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.cash.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.cash.ForeColor = System.Drawing.Color.Black;
-            this.cash.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.cash.Location = new System.Drawing.Point(630, 5);
-            this.cash.MaxLength = 10;
-            this.cash.Name = "cash";
-            this.cash.Size = new System.Drawing.Size(122, 23);
-            this.cash.TabIndex = 8;
-            this.cash.Text = "0.00";
-            this.cash.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.cash.Visible = false;
-            this.cash.TextChanged += new System.EventHandler(this.cash_TextChanged);
-            this.cash.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.cash_KeyPress);
             // 
             // panel1
             // 
@@ -204,7 +187,7 @@
             this.panel2.Controls.Add(this.select_tovar);
             this.panel2.Location = new System.Drawing.Point(21, 32);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(1003, 204);
+            this.panel2.Size = new System.Drawing.Size(1003, 210);
             this.panel2.TabIndex = 23;
             this.panel2.Visible = false;
             // 
@@ -439,7 +422,7 @@
             this.listView1.Location = new System.Drawing.Point(3, 3);
             this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(1051, 372);
+            this.listView1.Size = new System.Drawing.Size(1051, 378);
             this.listView1.TabIndex = 4;
             this.listView1.UseCompatibleStateImageBehavior = false;
             // 
@@ -548,7 +531,7 @@
             // label_client_barcode
             // 
             this.label_client_barcode.AutoSize = true;
-            this.label_client_barcode.Location = new System.Drawing.Point(584, 45);
+            this.label_client_barcode.Location = new System.Drawing.Point(619, 48);
             this.label_client_barcode.Name = "label_client_barcode";
             this.label_client_barcode.Size = new System.Drawing.Size(70, 13);
             this.label_client_barcode.TabIndex = 58;
@@ -575,15 +558,15 @@
             this.btn_inpute_phone_client.UseVisualStyleBackColor = true;
             this.btn_inpute_phone_client.Click += new System.EventHandler(this.btn_inpute_phone_client_Click);
             // 
-            // btn_change_code_client
+            // btn_change_status_client
             // 
-            this.btn_change_code_client.Location = new System.Drawing.Point(758, 38);
-            this.btn_change_code_client.Name = "btn_change_code_client";
-            this.btn_change_code_client.Size = new System.Drawing.Size(32, 23);
-            this.btn_change_code_client.TabIndex = 61;
-            this.btn_change_code_client.Text = "...";
-            this.btn_change_code_client.UseVisualStyleBackColor = true;
-            this.btn_change_code_client.Click += new System.EventHandler(this.btn_change_code_client_Click);
+            this.btn_change_status_client.Location = new System.Drawing.Point(586, 41);
+            this.btn_change_status_client.Name = "btn_change_status_client";
+            this.btn_change_status_client.Size = new System.Drawing.Size(32, 23);
+            this.btn_change_status_client.TabIndex = 61;
+            this.btn_change_status_client.Text = "...";
+            this.btn_change_status_client.UseVisualStyleBackColor = true;
+            this.btn_change_status_client.Click += new System.EventHandler(this.btn_change_status_client_Click);
             // 
             // label13
             // 
@@ -671,6 +654,23 @@
             this.btn_fill_on_sales.Visible = false;
             this.btn_fill_on_sales.Click += new System.EventHandler(this.btn_fill_on_sales_Click);
             // 
+            // cash
+            // 
+            this.cash.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.cash.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.cash.ForeColor = System.Drawing.Color.Black;
+            this.cash.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.cash.Location = new System.Drawing.Point(630, 5);
+            this.cash.MaxLength = 10;
+            this.cash.Name = "cash";
+            this.cash.Size = new System.Drawing.Size(122, 23);
+            this.cash.TabIndex = 8;
+            this.cash.Text = "0.00";
+            this.cash.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.cash.Visible = false;
+            this.cash.TextChanged += new System.EventHandler(this.cash_TextChanged);
+            this.cash.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.cash_KeyPress);
+            // 
             // Cash_check
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -685,7 +685,7 @@
             this.Controls.Add(this.checkBox_to_print_repeatedly);
             this.Controls.Add(this.txtB_bonus_money);
             this.Controls.Add(this.label13);
-            this.Controls.Add(this.btn_change_code_client);
+            this.Controls.Add(this.btn_change_status_client);
             this.Controls.Add(this.btn_inpute_phone_client);
             this.Controls.Add(this.label_client_phone);
             this.Controls.Add(this.label_client_barcode);
@@ -741,8 +741,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox client_barcode;
-
-        private System.Windows.Forms.TextBox cash;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.TextBox enter_quantity;
         private System.Windows.Forms.Panel panel2;
@@ -784,7 +782,7 @@
         private System.Windows.Forms.Label label_client_barcode;
         private System.Windows.Forms.Label label_client_phone;
         private System.Windows.Forms.Button btn_inpute_phone_client;
-        private System.Windows.Forms.Button btn_change_code_client;
+        private System.Windows.Forms.Button btn_change_status_client;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.TextBox txtB_bonus_money;
         private System.Windows.Forms.CheckBox checkBox_to_print_repeatedly;
@@ -794,5 +792,6 @@
         private System.Windows.Forms.TextBox txtB_name;
         private System.Windows.Forms.TextBox txtB_num_sales;
         private System.Windows.Forms.Button btn_fill_on_sales;
+        private System.Windows.Forms.TextBox cash;
     }
 }
