@@ -943,6 +943,7 @@ namespace Cash8
             queries.Add("ALTER TABLE public.checks_table    ADD COLUMN item_marker character varying(100)");
             queries.Add("ALTER TABLE public.checks_header   ADD COLUMN id_sale bigint");
             queries.Add("ALTER TABLE public.constants    ADD COLUMN print_m boolean;UPDATE public.constants	SET print_m=true;");
+            queries.Add("CREATE TABLE public.client_with_changed_status_to_send(client character varying(10) COLLATE pg_catalog.default NOT NULL,date_change timestamp without time zone NOT NULL,   CONSTRAINT client_with_changed_status_to_send_pkey PRIMARY KEY (client) )WITH(    OIDS = FALSE)TABLESPACE pg_default;        ALTER TABLE public.client_with_changed_status_to_send OWNER to postgres");
             
 
             foreach (string str in queries)

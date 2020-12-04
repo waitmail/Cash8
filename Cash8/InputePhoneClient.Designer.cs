@@ -78,9 +78,8 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.TextBox txtB_phone_number;
         public System.Windows.Forms.Label label_zagolovok;
         private System.Windows.Forms.Label label1;
+        public System.Windows.Forms.TextBox txtB_phone_number;
     }
 }

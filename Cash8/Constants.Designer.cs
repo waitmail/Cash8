@@ -104,6 +104,7 @@
             // use_debug
             // 
             this.use_debug.AutoSize = true;
+            this.use_debug.Enabled = false;
             this.use_debug.Location = new System.Drawing.Point(11, 78);
             this.use_debug.Name = "use_debug";
             this.use_debug.Size = new System.Drawing.Size(191, 17);

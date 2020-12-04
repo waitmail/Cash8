@@ -337,6 +337,107 @@ namespace Cash8
         }
 
 
+
+        public class ChangeStatusClients : IDisposable
+        {
+            public string NickShop { get; set; }
+            public string NumCash { get; set; }
+            public List<ChangeStatusClient> ListChangeStatusClient { get; set; }
+
+            void IDisposable.Dispose()
+            {
+
+            }
+        }
+
+        public class ChangeStatusClient
+        {
+            public string Client { get; set; }
+            public string DateTimeChangeStatus { get; set; }
+        }
+                
+        private void UploadChangeStatusClients()
+        {
+            ChangeStatusClients changeStatusClients = new ChangeStatusClients();
+            changeStatusClients.NickShop = MainStaticClass.Nick_Shop;
+            changeStatusClients.NumCash = MainStaticClass.CashDeskNumber.ToString();            
+            changeStatusClients.ListChangeStatusClient = new List<ChangeStatusClient>();
+            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+
+            try
+            {
+                conn.Open();
+                string query = "SELECT client, date_change FROM public.client_with_changed_status_to_send";
+                NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                NpgsqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    ChangeStatusClient changeStatusClient = new ChangeStatusClient();
+                    changeStatusClient.Client = reader["client"].ToString();
+                    changeStatusClient.DateTimeChangeStatus = Convert.ToDateTime(reader["date_change"]).ToString("dd-MM-yyyy HH:mm:ss");
+                    changeStatusClients.ListChangeStatusClient.Add(changeStatusClient);
+                }
+                reader.Close();                
+
+                if (!MainStaticClass.service_is_worker())
+                {
+                    MessageBox.Show("Веб сервис недоступен");
+                    return;
+                }
+                Cash8.DS.DS ds = MainStaticClass.get_ds();
+                ds.Timeout = 20000;
+
+                //Получить параметра для запроса на сервер 
+                string nick_shop = MainStaticClass.Nick_Shop.Trim();
+                if (nick_shop.Trim().Length == 0)
+                {
+                    MessageBox.Show(" Не удалось получить название магазина ");
+                    return;
+                }
+
+                string code_shop = MainStaticClass.Code_Shop.Trim();
+                if (code_shop.Trim().Length == 0)
+                {
+                    MessageBox.Show(" Не удалось получить код магазина ");
+                    return;
+                }
+
+                string count_day = CryptorEngine.get_count_day();
+                string key = nick_shop.Trim() + count_day.Trim() + code_shop.Trim();
+                string data = JsonConvert.SerializeObject(changeStatusClients , Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                string encrypt_string = CryptorEngine.Encrypt(data, true, key);
+
+                string answer = ds.UploadChangeStatusClients(nick_shop,encrypt_string);
+                if (answer == "1")
+                {
+                    query = "DELETE FROM client_with_changed_status_to_send";
+                    command = new NpgsqlCommand(query, conn);
+                    command.ExecuteNonQuery();                   
+                }                
+                else
+                {
+                    MessageBox.Show("Произошли ошибки на сервере при передаче статусов клиентов");
+                }
+                command.Dispose();
+                conn.Close();
+            }
+            catch (NpgsqlException ex)
+            {
+                MessageBox.Show("Ошибка при отправке покупателей с измененным статусом "+ex.Message);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ошибка при отправке покупателей с измененным статусом " + ex.Message);
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+        }
+
         public class PhoneClient
         {
             public string NumPhone { get; set; }
@@ -344,7 +445,7 @@ namespace Cash8
         }
 
 
-            public class PhonesClients : IDisposable
+        public class PhonesClients : IDisposable
         {
             public string Version { get; set; }
             public string NickShop { get; set; }
@@ -643,6 +744,7 @@ namespace Cash8
             }
 
             UploadPhoneClients();
+            UploadChangeStatusClients();
 
             MainStaticClass.delete_old_checks(MainStaticClass.GetMinDateWork);
             get_users();
@@ -651,7 +753,6 @@ namespace Cash8
             if (MainStaticClass.Use_Fiscall_Print)
             {
                 getShiftStatus();
-
             }
             check_failed_input_phone();
             //if (MainStaticClass.PassPromo == "")//Пароля нет надо его запросить

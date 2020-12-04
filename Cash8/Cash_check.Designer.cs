@@ -134,7 +134,7 @@
             // 
             this.client_barcode.BackColor = System.Drawing.Color.White;
             this.client_barcode.Location = new System.Drawing.Point(692, 41);
-            this.client_barcode.MaxLength = 36;
+            this.client_barcode.MaxLength = 10;
             this.client_barcode.Name = "client_barcode";
             this.client_barcode.Size = new System.Drawing.Size(96, 20);
             this.client_barcode.TabIndex = 0;
@@ -566,6 +566,7 @@
             this.btn_change_status_client.TabIndex = 61;
             this.btn_change_status_client.Text = "...";
             this.btn_change_status_client.UseVisualStyleBackColor = true;
+            this.btn_change_status_client.Visible = false;
             this.btn_change_status_client.Click += new System.EventHandler(this.btn_change_status_client_Click);
             // 
             // label13

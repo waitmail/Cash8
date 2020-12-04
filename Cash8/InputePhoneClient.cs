@@ -124,12 +124,13 @@ namespace Cash8
                         cash_Check.client.Text = this.txtB_phone_number.Text.Trim();
                         cash_Check.Discount = Convert.ToDecimal(0.05);
                     }
+                    this.DialogResult = DialogResult.OK;
                 }
                 else
                 {
                     MessageBox.Show("У этого клиента уже есть дисконтная карта с привязанным номером телефона !!!");
-                    MessageBox.Show("Введите номер телефона в соответсвующее поле !!!");
-
+                    //MessageBox.Show("Введите номер телефона в соответсвующее поле !!!");
+                    this.DialogResult = DialogResult.Yes;
                     conn.Close();
                     this.Close();
                 }
@@ -158,6 +159,7 @@ namespace Cash8
         {
             if (e.KeyChar  == (char)Keys.Escape)
             {
+                this.DialogResult = DialogResult.Cancel;
                 this.Close();
             }
         }        

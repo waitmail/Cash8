@@ -39,10 +39,10 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtB_phone.Enabled = false;
-            this.txtB_phone.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.txtB_phone.Location = new System.Drawing.Point(154, 41);
+            this.txtB_phone.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.txtB_phone.Location = new System.Drawing.Point(154, 32);
             this.txtB_phone.Name = "txtB_phone";
-            this.txtB_phone.Size = new System.Drawing.Size(326, 31);
+            this.txtB_phone.Size = new System.Drawing.Size(376, 47);
             this.txtB_phone.TabIndex = 0;
             // 
             // label1
@@ -57,12 +57,12 @@
             // 
             // btn_execute
             // 
-            this.btn_execute.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btn_execute.Location = new System.Drawing.Point(154, 101);
+            this.btn_execute.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btn_execute.Location = new System.Drawing.Point(154, 86);
             this.btn_execute.Name = "btn_execute";
-            this.btn_execute.Size = new System.Drawing.Size(326, 33);
+            this.btn_execute.Size = new System.Drawing.Size(376, 63);
             this.btn_execute.TabIndex = 2;
-            this.btn_execute.Text = "Перейти";
+            this.btn_execute.Text = "Перейти на бонусы";
             this.btn_execute.UseVisualStyleBackColor = true;
             this.btn_execute.Click += new System.EventHandler(this.btn_execute_Click);
             // 
@@ -77,6 +77,7 @@
             this.Controls.Add(this.txtB_phone);
             this.KeyPreview = true;
             this.Name = "ChangeBonusStatusClient";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Перевести на КЕШ БЭК(потом надо поменять)";
             this.ResumeLayout(false);
             this.PerformLayout();
