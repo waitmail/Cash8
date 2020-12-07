@@ -44,7 +44,15 @@ namespace Cash8
                 }
                 reader.Close();
                 conn.Close();
-                
+
+                if (txtB_phone.Text.Trim().Length > 10)
+                {
+                    txtB_phone.Text = txtB_phone.Text.Substring(0, 2) + " " + txtB_phone.Text.Substring(2, 3) + " " + txtB_phone.Text.Substring(5, 3) + " " + txtB_phone.Text.Substring(8, 2) + " " + txtB_phone.Text.Substring(10, 2);
+                }
+                else if (txtB_phone.Text.Trim().Length == 10)
+                {
+                    txtB_phone.Text = txtB_phone.Text.Substring(0, 3) + " " + txtB_phone.Text.Substring(3, 3) + " " + txtB_phone.Text.Substring(6, 2) + " " + txtB_phone.Text.Substring(8, 2);
+                }
             }
             catch (NpgsqlException ex)
             {

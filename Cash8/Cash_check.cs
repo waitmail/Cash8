@@ -169,7 +169,7 @@ namespace Cash8
                     }
                     else
                     {
-                        if (its_work == 1)
+                        if (its_work != 1)
                         {
                             MessageBox.Show("Эта карточка заблокирована");
                             return;
@@ -2061,15 +2061,10 @@ namespace Cash8
         /// <param name="barcode"></param>
         private void process_client_discount(string barcode)
         {
-            //теперь надо проверить на длину штрихкода 
-            //если 10 символов, то это старая дисконтная система,а
-            //если 9 то новая бонусная 
+            Discount = 0;
+            int bonus_is_on = 0;
 
-            //if (check_type.SelectedIndex == 1)
-            //{
-            //    MessageBox.Show(" При возврате дисконтная карта не работает ");
-            //    return;
-            //}
+
 
             if (listView1.Items.Count > 0)
             {
@@ -2081,14 +2076,14 @@ namespace Cash8
 
             if (barcode.Trim().Length == 10)
             {
+                //if (MainStaticClass.PassPromo == "")
+                //{
                 NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
                 conn.Open();
                 NpgsqlCommand command = new NpgsqlCommand();
                 command.Connection = conn;
-                Discount = 0;
-                //command.CommandText = "SELECT discount_types.discount_percent,clients.code,clients.name,clients.phone  FROM clients left join discount_types ON clients.discount_types_code= discount_types.code WHERE clients.code='" + barcode + "'";
                 command.CommandText = " SELECT discount_types.discount_percent,clients.code,clients.name,clients.phone AS clients_phone," +
-                    " temp_phone_clients.phone AS temp_phone_clients_phone,attribute,clients.its_work,clients.bonus_is_on  FROM clients " +
+                    " temp_phone_clients.phone AS temp_phone_clients_phone,attribute,clients.its_work,COALESCE(clients.bonus_is_on,0) AS bonus_is_on  FROM clients " +
                     " left join discount_types ON clients.discount_types_code= discount_types.code " +
                     " left join temp_phone_clients ON clients.code = temp_phone_clients.barcode " +
                     " WHERE clients.code='" + barcode + "'";
@@ -2109,31 +2104,6 @@ namespace Cash8
                     Discount = reader.GetDecimal(0);
 
                     this.client.Tag = reader.GetString(1);
-                    //////////////////////////////////////////////////////////////////////////////////////////////
-                    if (MainStaticClass.PassPromo != "")
-                    {
-                        if (!check_bonus_is_on())//нет флажка о то что этот клиент бонусный
-                        {
-
-                            if (check_client_have_telephone())//Проверка о том, что клиент имеет телефон
-                            {
-                                if (!check_in_change_status_client())//Проверка на то что у этого покупателя уже возможно изменен статус
-                                {
-                                    btn_change_status_client.Visible = true;
-                                    btn_change_status_client.Enabled = true;
-                                }
-                            }
-                        }
-                    }
-
-                    
-                    
-                    
-
-                    
-
-                    //////////////////////////////////////////////////////////////////////////////////////////////
-
                     this.client.Text = reader.GetString(2);
 
                     client_barcode.Enabled = false;//дисконтная карта определена, сделаем недоступным окно ввода кода  
@@ -2160,141 +2130,119 @@ namespace Cash8
                         btn_inpute_phone_client.Enabled = true;
                     }
 
-                    if (reader["bonus_is_on"].ToString() != "")
-                    {
-                        bonus_is_on_earlier = Convert.ToInt32(reader["bonus_is_on"]);
-                    }
-                    if (bonus_is_on_earlier == 1)
-                    {
-                        client.BackColor = Color.LemonChiffon;
-                        Discount = 0;
-                    }
+                    //if (reader["bonus_is_on"].ToString() != "")
+                    //{
+                    //    bonus_is_on_earlier = Convert.ToInt32(reader["bonus_is_on"]);
+                    //}
+                    //if (bonus_is_on_earlier == 1)
+                    //{
+                    //    client.BackColor = Color.LemonChiffon;
+                    //    Discount = 0;
+                    //}
+
+                    bonus_is_on = Convert.ToInt16(reader["bonus_is_on"]);
 
                 }
                 reader.Close();
                 conn.Close();
 
-                if (check_type.SelectedIndex == 1)//При возврате теперь можно использовать карту клиента 
-                {
-                    Discount = 0;
-                }
 
-                //Проверить на день рождения и вывести предупреждение
-                if (actions_birthday())
+                if (MainStaticClass.PassPromo != "")
                 {
-                    MessageBox.Show(" ДР " + get_date_birthday());
-                }
-                this.inputbarcode.Focus();
-                Discount = Discount / 100;
-                this.client_barcode.Text = "";
-                this.btn_inpute_phone_client.Enabled = false;
-            }
-            else if (barcode.Trim().Length == 36)
-            {
-                if (MainStaticClass.PassPromo == "")
-                {
-                    MessageBox.Show("Этот магазин по бонусной программе не работает");
-                    return;
-                }
-
-                cardTrack2 = barcode;
-
-                //Проверяем что за карточка 
-                BuyerInfoResponce buyerInfoResponce = get_buyerInfo_client_code_or_phone(0,barcode);
-
-                if (buyerInfoResponce != null)
-                {
-                    if (buyerInfoResponce.res == "1")
+                    if (!check_bonus_is_on())//нет флажка о то что этот клиент бонусный
                     {
-                        if (buyerInfoResponce.balance.activeBalance != "0")
+
+                        if (check_client_have_telephone())//Проверка о том, что клиент имеет телефон
                         {
-                            pay_form.bonus_total_in_centr.Text = ((int)Convert.ToDecimal(buyerInfoResponce.balance.activeBalance) / 100).ToString();
-                            if (buyerInfoResponce.cards.card.state == "3")
+                            if (!check_in_change_status_client())//Проверка на то что у этого покупателя уже возможно изменен статус
                             {
-                                pay_form.pay_bonus.Enabled = true;
-                                this.client.BackColor = Color.Green;
+                                btn_change_status_client.Visible = true;
+                                btn_change_status_client.Enabled = true;
                             }
-                            else
-                            {
-                                this.client.BackColor = Color.Yellow;
-                            }
-                            bonus_total_centr = Convert.ToInt32(pay_form.bonus_total_in_centr.Text);
                         }
-                        client.Tag = barcode;
-                        client.Text = buyerInfoResponce.cards.card.cardNum;
-                        client_barcode.Text = "";
-                        this.btn_inpute_phone_client.Enabled = false;
                     }
-                    else //if (buyerInfoResponce.res == "5")
-                    {
-
-                        get_description_errors_on_code(buyerInfoResponce.res);
-                        client_barcode.Text = "";
-                        bonus_total_centr = -1;
-                        return;
-                    }
-                    //else
-                    //{
-                    //    bonus_total_centr = -1;
-                    //}
                 }
 
 
-                //NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
-                //try
-                //{
+                if (bonus_is_on == 0)
+                {
+                    if (check_type.SelectedIndex == 1)//При возврате теперь можно использовать карту клиента 
+                    {
+                        Discount = 0;
+                    }
 
-                //    conn.Open();
-                //    NpgsqlCommand command = new NpgsqlCommand();
-                //    command.Connection = conn;
-                //    Discount = 0;
-                //    command.CommandText = " SELECT code  FROM bonus_cards WHERE pin ='" + barcode + "'";
-                //    NpgsqlDataReader reader = command.ExecuteReader();
-                //    string code = "";
-                //    while (reader.Read())
-                //    {
-                //        code = reader["code"].ToString();
-                //    }
+                    Discount = Discount / 100;
 
+                    //Проверить на день рождения и вывести предупреждение
+                    if (actions_birthday())
+                    {
+                        MessageBox.Show(" ДР " + get_date_birthday());
+                    }
+                    this.inputbarcode.Focus();
+                    this.client_barcode.Text = "";
+                    this.btn_inpute_phone_client.Enabled = false;
+                }
+                else
+                {
+                    //if (MainStaticClass.PassPromo != "")
+                    //{
+                    //    if (!check_bonus_is_on())//нет флажка о то что этот клиент бонусный
+                    //    {
 
+                    //        if (check_client_have_telephone())//Проверка о том, что клиент имеет телефон
+                    //        {
+                    //            if (!check_in_change_status_client())//Проверка на то что у этого покупателя уже возможно изменен статус
+                    //            {
+                    //                btn_change_status_client.Visible = true;
+                    //                btn_change_status_client.Enabled = true;
+                    //            }
+                    //        }
+                    //    }
+                    //}
 
-                client_barcode_scanned = 1;
-                client_barcode.Enabled = false;   //дисконтная карта определена, сделаем недоступным окно ввода кода  
-                txtB_client_phone.Enabled = false;//дисконтная карта определена, сделаем недоступным окно ввода телефона  
-                //    conn.Close();
-                //    if (code != "")
-                //    {
-                //        client.Text = code;
-                //        client.Tag = code;
-                //    }
-                //    else
-                //    {
-                //        MessageBox.Show("Бонусная карта не найдена");
-                //    }
+                    cardTrack2 = barcode;
 
-                //    //Проверить на день рождения и вывести предупреждение
-                //    if (actions_birthday())
-                //    {
-                //        MessageBox.Show(" ДР " + get_date_birthday());
-                //    }
-                //    this.inputbarcode.Focus();
-                //    this.client_barcode.Text = "";
-                //}
-                //catch
-                //{
+                    //Проверяем что за карточка 
+                    BuyerInfoResponce buyerInfoResponce = get_buyerInfo_client_code_or_phone(0, barcode);
 
-                //}
-                //finally
-                //{
-                //    if (conn.State == ConnectionState.Open)
-                //    {
-                //        conn.Close();
-                //    }
-                //}
-            }
-            else
-            {
-                Discount = 0;
+                    if (buyerInfoResponce != null)
+                    {
+                        if (buyerInfoResponce.res == "1")
+                        {
+                            if (buyerInfoResponce.balance.activeBalance != "0")
+                            {
+                                pay_form.bonus_total_in_centr.Text = ((int)Convert.ToDecimal(buyerInfoResponce.balance.activeBalance) / 100).ToString();
+                                if (buyerInfoResponce.cards.card.state == "3")
+                                {
+                                    pay_form.pay_bonus.Enabled = true;
+                                    this.client.BackColor = Color.Green;
+                                }
+                                else
+                                {
+                                    this.client.BackColor = Color.Yellow;
+                                }
+                                bonus_total_centr = Convert.ToInt32(pay_form.bonus_total_in_centr.Text);
+                            }
+                            client.Tag = barcode;
+                            client.Text = buyerInfoResponce.cards.card.cardNum;
+                            client_barcode.Text = "";
+                            this.btn_inpute_phone_client.Enabled = false;
+                        }
+                        else //if (buyerInfoResponce.res == "5")
+                        {
+
+                            get_description_errors_on_code(buyerInfoResponce.res);
+                            client_barcode.Text = "";
+                            bonus_total_centr = -1;
+                            return;
+                        }
+                    }
+
+                    client_barcode_scanned = 1;
+                    client_barcode.Enabled = false;   //дисконтная карта определена, сделаем недоступным окно ввода кода  
+                    txtB_client_phone.Enabled = false;//дисконтная карта определена, сделаем недоступным окно ввода телефона                    
+
+                }
             }
         }
 

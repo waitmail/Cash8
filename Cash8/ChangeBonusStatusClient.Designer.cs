@@ -44,6 +44,7 @@
             this.txtB_phone.Name = "txtB_phone";
             this.txtB_phone.Size = new System.Drawing.Size(376, 47);
             this.txtB_phone.TabIndex = 0;
+            this.txtB_phone.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // label1
             // 
