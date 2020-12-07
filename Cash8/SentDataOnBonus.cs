@@ -587,11 +587,11 @@ namespace Cash8
                         buyNewRequest.cashierName = MainStaticClass.Cash_Operator;
                         buyNewRequest.commit = "1";
                         buyNewRequest.date = Convert.ToDateTime(reader["date_time_start"]).ToString("yyyy-MM-dd HH:mm:ss");
-                        if (reader["client"].ToString().Trim().Length == 36)
-                        {
-                            buyNewRequest.cardTrack2 = reader["client"].ToString();
-                        }
-                        else if (reader["client"].ToString().Trim().Length == 11)
+                        //if (reader["client"].ToString().Trim().Length == 36)
+                        //{
+                        //    buyNewRequest.cardTrack2 = reader["client"].ToString();
+                        //}
+                        if (reader["client"].ToString().Trim().Length >= 10)
                         {
                             buyNewRequest.phone = reader["client"].ToString();
                         }

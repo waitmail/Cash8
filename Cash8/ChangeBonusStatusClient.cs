@@ -86,10 +86,18 @@ namespace Cash8
             try
             {
                 conn.Open();
-                string query = "INSERT INTO public.client_with_changed_status_to_send(client,date_change)VALUES(@client,@date_change);";
+                string query = "INSERT INTO public.client_with_changed_status_to_send(client,date_change,new_phone_number)VALUES(@client,@date_change,@new_phone_number);";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 command.Parameters.AddWithValue("@client",client_code);
                 command.Parameters.AddWithValue("@date_change",(DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss")));
+                string new_phone = maskedTxtB_new_phone_number.Text.Trim().Replace(" ", "").Replace("+7", "");
+                if ((new_phone.Length != 10)&&(new_phone.Length != 0))
+                {
+                    MessageBox.Show("Yеверная длина номера телефона");
+                    return;
+                }
+                command.Parameters.AddWithValue("@new_phone_number", maskedTxtB_new_phone_number.Text.Trim().Replace(" ","").Replace("+7",""));
+
                 command.ExecuteNonQuery();
                 command.Dispose();
                 conn.Close();

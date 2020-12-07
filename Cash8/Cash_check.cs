@@ -18,7 +18,7 @@ namespace Cash8
     public partial class Cash_check : Form
     {
 
-        public int bonus_is_on_earlier = 0;
+        //public int bonus_is_on_earlier = 0;
         private int bonus_is_on_now = 0;
         public bool enable_delete = false;
         private string[] print_data;
@@ -149,7 +149,7 @@ namespace Cash8
                 {
                     conn.Open();
                     //string query = "SELECT code FROM clients where phone LIKE'%" + txtB_client_phone.Text.Trim() + "%'";
-                    string query = "SELECT code,its_work,bonus_is_on FROM clients where right(phone,10)='" + txtB_client_phone.Text.Trim() + "'";
+                    string query = "SELECT code,its_work,COALESCE(bonus_is_on,0) as bonus_is_on FROM clients where right(phone,10)='" + txtB_client_phone.Text.Trim() + "'";
                     NpgsqlCommand command = new NpgsqlCommand(query, conn);
                     NpgsqlDataReader reader = command.ExecuteReader();
                     string code_client = ""; int its_work = 0; int bonus_is_on = 0;
@@ -2086,7 +2086,7 @@ namespace Cash8
                     " temp_phone_clients.phone AS temp_phone_clients_phone,attribute,clients.its_work,COALESCE(clients.bonus_is_on,0) AS bonus_is_on  FROM clients " +
                     " left join discount_types ON clients.discount_types_code= discount_types.code " +
                     " left join temp_phone_clients ON clients.code = temp_phone_clients.barcode " +
-                    " WHERE clients.code='" + barcode + "'";
+                    " WHERE clients.code='" + barcode + "' OR right(clients.phone,10)='" + barcode+"'";
 
                 NpgsqlDataReader reader = command.ExecuteReader();
 
@@ -8952,7 +8952,7 @@ namespace Cash8
             try
             {
                 conn.Open();
-                string query = "SELECT bonus_is_on  FROM clients where code = '" + client.Tag.ToString() + "' and bonus_is_on=1";
+                string query = "SELECT COALESCE(bonus_is_on,0)  FROM clients where code = '" + client.Tag.ToString() + "' and bonus_is_on=1";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())

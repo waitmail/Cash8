@@ -354,6 +354,8 @@ namespace Cash8
         {
             public string Client { get; set; }
             public string DateTimeChangeStatus { get; set; }
+            public string new_phone_number { get; set; }
+
         }
                 
         private void UploadChangeStatusClients()
@@ -367,7 +369,7 @@ namespace Cash8
             try
             {
                 conn.Open();
-                string query = "SELECT client, date_change FROM public.client_with_changed_status_to_send";
+                string query = "SELECT client, date_change,new_phone_number FROM public.client_with_changed_status_to_send";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
@@ -375,6 +377,7 @@ namespace Cash8
                     ChangeStatusClient changeStatusClient = new ChangeStatusClient();
                     changeStatusClient.Client = reader["client"].ToString();
                     changeStatusClient.DateTimeChangeStatus = Convert.ToDateTime(reader["date_change"]).ToString("dd-MM-yyyy HH:mm:ss");
+                    changeStatusClient.new_phone_number = reader["new_phone_number"].ToString();
                     changeStatusClients.ListChangeStatusClient.Add(changeStatusClient);
                 }
                 reader.Close();                

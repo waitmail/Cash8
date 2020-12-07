@@ -31,6 +31,7 @@
             this.txtB_phone = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.btn_execute = new System.Windows.Forms.Button();
+            this.maskedTxtB_new_phone_number = new System.Windows.Forms.MaskedTextBox();
             this.SuspendLayout();
             // 
             // txtB_phone
@@ -59,7 +60,7 @@
             // btn_execute
             // 
             this.btn_execute.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btn_execute.Location = new System.Drawing.Point(154, 86);
+            this.btn_execute.Location = new System.Drawing.Point(154, 154);
             this.btn_execute.Name = "btn_execute";
             this.btn_execute.Size = new System.Drawing.Size(376, 63);
             this.btn_execute.TabIndex = 2;
@@ -67,12 +68,23 @@
             this.btn_execute.UseVisualStyleBackColor = true;
             this.btn_execute.Click += new System.EventHandler(this.btn_execute_Click);
             // 
+            // maskedTxtB_new_phone_number
+            // 
+            this.maskedTxtB_new_phone_number.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.maskedTxtB_new_phone_number.Location = new System.Drawing.Point(252, 92);
+            this.maskedTxtB_new_phone_number.Mask = "+7 ### ### ## ##";
+            this.maskedTxtB_new_phone_number.Name = "maskedTxtB_new_phone_number";
+            this.maskedTxtB_new_phone_number.Size = new System.Drawing.Size(278, 47);
+            this.maskedTxtB_new_phone_number.TabIndex = 3;
+            this.maskedTxtB_new_phone_number.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
             // ChangeBonusStatusClient
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(638, 152);
+            this.ClientSize = new System.Drawing.Size(638, 263);
             this.ControlBox = false;
+            this.Controls.Add(this.maskedTxtB_new_phone_number);
             this.Controls.Add(this.btn_execute);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtB_phone);
@@ -90,5 +102,6 @@
         private System.Windows.Forms.TextBox txtB_phone;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btn_execute;
+        private System.Windows.Forms.MaskedTextBox maskedTxtB_new_phone_number;
     }
 }
