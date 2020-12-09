@@ -2099,12 +2099,13 @@ namespace Cash8
                         break;
                     }
 
+                    bonus_is_on = Convert.ToInt16(reader["bonus_is_on"]);
+
                     client_barcode_scanned = 1;
 
                     Discount = reader.GetDecimal(0);
 
-                    this.client.Tag = reader.GetString(1);
-                    this.client.Text = reader.GetString(2);
+                    
 
                     client_barcode.Enabled = false;//дисконтная карта определена, сделаем недоступным окно ввода кода  
                     txtB_client_phone.Enabled = false;//дисконтная карта определена, сделаем недоступным окно ввода телефона  
@@ -2121,7 +2122,15 @@ namespace Cash8
                     {
                         InputePhoneClient ipc = new InputePhoneClient();
                         ipc.barcode = barcode;
-                        ipc.ShowDialog();
+                        DialogResult dialogResult = ipc.ShowDialog();
+                        if (bonus_is_on == 1)//Проверка для новой бонусной карты, при сканировании если нет привязанного номера телефона, то он обязательно должен быть введен 
+                        {
+                            if (dialogResult != DialogResult.Yes)
+                            {
+                                MessageBox.Show(" Для бонусной карты недопустимо отсутствие номера телефона ");
+                                MessageBox.Show(" БОНУСНУЮ КАРТУ НЕ ВЫДАВАТЬ НИ В КОЕМ СЛУЧАЕ !!! ");
+                            }
+                        }
                         this.inputbarcode.Focus();
                         btn_inpute_phone_client.Enabled = true;
                     }
@@ -2129,6 +2138,9 @@ namespace Cash8
                     {
                         btn_inpute_phone_client.Enabled = true;
                     }
+
+                    this.client.Tag = reader.GetString(1);
+                    this.client.Text = reader.GetString(2);
 
                     //if (reader["bonus_is_on"].ToString() != "")
                     //{
@@ -2140,7 +2152,7 @@ namespace Cash8
                     //    Discount = 0;
                     //}
 
-                    bonus_is_on = Convert.ToInt16(reader["bonus_is_on"]);
+
 
                 }
                 reader.Close();
@@ -3192,7 +3204,8 @@ namespace Cash8
                                         "id_transaction_sale," +
                                         "clientInfo_vatin," +
                                         "clientInfo_name," +
-                                        "id_sale) VALUES(" +
+                                        "id_sale,"+
+                                        "sent_to_processing_center) VALUES(" +
 
                                         "@document_number," +
                                         "@date_time_start," +
@@ -3219,7 +3232,8 @@ namespace Cash8
                                         "@id_transaction_sale," +
                                         "@clientInfo_vatin," +
                                         "@clientInfo_name," +
-                                        "@id_sale)",conn);
+                                        "@id_sale,"+
+                                        "@sent_to_processing_center)", conn);
 
                 command.Parameters.AddWithValue("document_number", numdoc.ToString());
                 command.Parameters.AddWithValue("date_time_start", date_time_start.Text.Replace("Чек", ""));
@@ -3254,6 +3268,18 @@ namespace Cash8
                 command.Parameters.AddWithValue("clientInfo_vatin", txtB_inn.Text.Trim());
                 command.Parameters.AddWithValue("clientInfo_name", txtB_name.Text.Trim());
                 command.Parameters.AddWithValue("id_sale", id_sale.ToString());
+
+                string sent_to_processing_center = "1";
+                //Необходимо отделить бонусные документы от дисконтных и те которые дисконтные записакть с sent_to_processing_center = 1
+                if (MainStaticClass.PassPromo != "")
+                {
+                    if (check_bonus_is_on())
+                    {
+                        sent_to_processing_center = "0";
+                    }
+                }
+
+                command.Parameters.AddWithValue("sent_to_processing_center", sent_to_processing_center);
 
                 command.Transaction = tran;
                 command.ExecuteNonQuery();
@@ -4739,13 +4765,13 @@ namespace Cash8
             buyNewRequest.commit = "0";
             buyNewRequest.date = date_time_start.Text.Replace("Чек", "").Trim();
             buyNewRequest.type = "4";//Ставми 4 всегда , а не либо 2 либо 4
-            if (client.Tag.ToString().Trim().Length == 36)
+            //if (client.Tag.ToString().Trim().Length == 36)
+            //{
+            //    buyNewRequest.cardTrack2 = client.Tag.ToString().Trim();// client.Tag.ToString();
+            //}
+            if (client.Tag.ToString().Trim().Length == 10)
             {
-                buyNewRequest.cardTrack2 = client.Tag.ToString().Trim();// client.Tag.ToString();
-            }
-            else if (client.Tag.ToString().Trim().Length == 11)
-            {
-                buyNewRequest.phone = client.Tag.ToString().Trim();// client.Tag.ToString();
+                buyNewRequest.cardNum = client.Tag.ToString().Trim();// client.Tag.ToString();
             }
 
             if (Convert.ToInt32(charge) > 0)
@@ -8633,21 +8659,21 @@ namespace Cash8
             {
                 if (check_type.SelectedIndex == 0) // Это продажа
                 {
-                    if (client.Tag == null)// Если нет карты клиента, то предложить выдать карточку 
-                    {
-                        if (MainStaticClass.check_amount_exceeds_threshold(calculation_of_the_sum_of_the_document()))
-                        {
-                            DialogResult dialog = MessageBox.Show(" Сработало условие выдачи бонусной карты клиенту, карту будем выдавать ? ", null, MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
-                            if (dialog == DialogResult.Yes)//Кассир выбрал вариант выдать карту 
-                            {
-                                cancel_action();                                
-                                InputeCodeClient inputeCodeClient = new InputeCodeClient();
-                                inputeCodeClient.cc = this;
-                                inputeCodeClient.ShowDialog();
-                                return;
-                            }
-                        }
-                    }
+                    //if (client.Tag == null)// Если нет карты клиента, то предложить выдать карточку 
+                    //{
+                    //    if (MainStaticClass.check_amount_exceeds_threshold(calculation_of_the_sum_of_the_document()))
+                    //    {
+                    //        DialogResult dialog = MessageBox.Show(" Сработало условие выдачи бонусной карты клиенту, карту будем выдавать ? ", null, MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
+                    //        if (dialog == DialogResult.Yes)//Кассир выбрал вариант выдать карту 
+                    //        {
+                    //            cancel_action();                                
+                    //            InputeCodeClient inputeCodeClient = new InputeCodeClient();
+                    //            inputeCodeClient.cc = this;
+                    //            inputeCodeClient.ShowDialog();
+                    //            return;
+                    //        }
+                    //    }
+                    //}
                     //else
                     //{
                     //    if ((client.Tag.ToString().Trim().Length == 36)||(client.Tag.ToString().Trim().Length == 11))//Это бонусная карта 
@@ -8689,6 +8715,7 @@ namespace Cash8
                     //        //}
                     //    }
                     //}
+
                 }
             }            
             
