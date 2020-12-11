@@ -2103,7 +2103,10 @@ namespace Cash8
 
                     client_barcode_scanned = 1;
 
-                    Discount = reader.GetDecimal(0);
+                    if (bonus_is_on == 0)
+                    {
+                        Discount = reader.GetDecimal(0);
+                    }
 
                     
 
@@ -2118,6 +2121,9 @@ namespace Cash8
                         client.BackColor = System.Drawing.ColorTranslator.FromHtml("#22FF99");
                     }
 
+                    this.client.Tag = reader.GetString(1);
+                    this.client.Text = reader.GetString(2);
+
                     if ((reader["clients_phone"].ToString().Trim().Length < 10) && (reader["temp_phone_clients_phone"].ToString().Trim().Length < 10))//будем считать, что номера телефона нет
                     {
                         InputePhoneClient ipc = new InputePhoneClient();
@@ -2125,10 +2131,13 @@ namespace Cash8
                         DialogResult dialogResult = ipc.ShowDialog();
                         if (bonus_is_on == 1)//Проверка для новой бонусной карты, при сканировании если нет привязанного номера телефона, то он обязательно должен быть введен 
                         {
-                            if (dialogResult != DialogResult.Yes)
+                            if (dialogResult != DialogResult.OK)
                             {
                                 MessageBox.Show(" Для бонусной карты недопустимо отсутствие номера телефона ");
                                 MessageBox.Show(" БОНУСНУЮ КАРТУ НЕ ВЫДАВАТЬ НИ В КОЕМ СЛУЧАЕ !!! ");
+                                this.client.Tag = null;
+                                this.client.Text = "";
+                                this.client_barcode.Text = "";
                             }
                         }
                         this.inputbarcode.Focus();
@@ -2139,8 +2148,7 @@ namespace Cash8
                         btn_inpute_phone_client.Enabled = true;
                     }
 
-                    this.client.Tag = reader.GetString(1);
-                    this.client.Text = reader.GetString(2);
+                    
 
                     //if (reader["bonus_is_on"].ToString() != "")
                     //{
@@ -2158,6 +2166,10 @@ namespace Cash8
                 reader.Close();
                 conn.Close();
 
+                if (this.client.Tag == null)//По каким то причинам клиент или не найден или не прошел проверки 
+                {
+                    return;
+                }
 
                 if (MainStaticClass.PassPromo != "")
                 {
@@ -2170,6 +2182,7 @@ namespace Cash8
                             {
                                 btn_change_status_client.Visible = true;
                                 btn_change_status_client.Enabled = true;
+                                return;
                             }
                         }
                     }
@@ -2229,9 +2242,17 @@ namespace Cash8
                                     pay_form.pay_bonus.Enabled = true;
                                     this.client.BackColor = Color.Green;
                                 }
-                                else
+                                else if (buyerInfoResponce.cards.card.state == "2")
                                 {
                                     this.client.BackColor = Color.Yellow;
+                                }
+                                else if (buyerInfoResponce.cards.card.state == "4")
+                                {
+                                    this.client.BackColor = Color.Red;
+                                }
+                                else
+                                {
+                                    MessageBox.Show(" Получен непредвиденный статус карты, могут быть проблемы с начислением и списанием ");
                                 }
                                 bonus_total_centr = Convert.ToInt32(pay_form.bonus_total_in_centr.Text);
                             }
@@ -3271,12 +3292,19 @@ namespace Cash8
 
                 string sent_to_processing_center = "1";
                 //Необходимо отделить бонусные документы от дисконтных и те которые дисконтные записакть с sent_to_processing_center = 1
-                if (MainStaticClass.PassPromo != "")
+                if (client.Tag != null)//Клиент обязательно должен быть выбран при этом 
                 {
-                    if (check_bonus_is_on())
+                    if (MainStaticClass.PassPromo != "")
                     {
-                        sent_to_processing_center = "0";
+                        if (check_bonus_is_on())
+                        {
+                            sent_to_processing_center = "0";
+                        }
                     }
+                }
+                else
+                {
+                    sent_to_processing_center = "1";
                 }
 
                 command.Parameters.AddWithValue("sent_to_processing_center", sent_to_processing_center);
@@ -8971,7 +8999,7 @@ namespace Cash8
         /// иначе false
         /// </summary>
         /// <returns></returns>
-        private bool check_bonus_is_on()
+        public bool check_bonus_is_on()
         {
             bool result = false;
 

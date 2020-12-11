@@ -842,6 +842,10 @@ namespace Cash8
             }
             if (e.KeyCode == Keys.F6)//попытка сделать доступным полее вода списания бонусов
             {
+                if (!cc.check_bonus_is_on())
+                {
+                    return;
+                }
                 if (Convert.ToInt32(pay_bonus_many.Text) == 0)
                 {
                     return;
@@ -995,7 +999,10 @@ namespace Cash8
                 {
                     if (cc.client.Tag != null)
                     {
-                        if ((cc.client.Tag.ToString().Trim().Length == 36) || (cc.client.Tag.ToString().Trim().Length == 11))//Это бонусная карта 
+                        //if ((cc.client.Tag.ToString().Trim().Length == 36) || (cc.client.Tag.ToString().Trim().Length == 11))//Это бонусная карта 
+                        //if (cc.client.Tag.ToString().Trim().Length == 10) //Это бонусная карта 
+                        //{
+                        if (cc.check_bonus_is_on())
                         {
                             SentDataOnBonus.BuynewResponse buynewResponse = cc.get_bonus_on_document(pay_bonus_many.Text);
                             if (buynewResponse != null)
@@ -1021,6 +1028,7 @@ namespace Cash8
                                 }
                             }
                         }
+                        //}
                     }
                 }
             }
@@ -1162,11 +1170,17 @@ namespace Cash8
                 MessageBox.Show(" Повторно внесите суммы оплаты, обнаружено несхождение в окне оплаты ");
                 return;
             }
-            
+
             //здесь перед записью еще проверка процессингового центра 
-            if (!continue_sales())
+            if (cc.client.Tag != null)
             {
-                return;
+                if (cc.check_bonus_is_on())
+                {
+                    if (!continue_sales())
+                    {
+                        return;
+                    }
+                }
             }
 
             //Если это возврат то необходимо проверить сумму по каждой форме оплаты 
