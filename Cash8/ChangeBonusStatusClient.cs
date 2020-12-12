@@ -93,7 +93,7 @@ namespace Cash8
                 string new_phone = maskedTxtB_new_phone_number.Text.Trim().Replace(" ", "").Replace("+7", "");
                 if ((new_phone.Length != 10)&&(new_phone.Length != 0))
                 {
-                    MessageBox.Show("Yеверная длина номера телефона");
+                    MessageBox.Show("Неверная длина номера телефона");
                     return;
                 }
                 command.Parameters.AddWithValue("@new_phone_number", maskedTxtB_new_phone_number.Text.Trim().Replace(" ","").Replace("+7",""));

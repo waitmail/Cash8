@@ -593,22 +593,22 @@ namespace Cash8
                         //}
                         if (reader["client"].ToString().Trim().Length >= 10)
                         {
-                            buyNewRequest.phone = reader["client"].ToString();
-                        }
-                        
-                        if ((Convert.ToInt32(reader["bonuses_it_is_written_off"]) != 0) && ((reader["client"].ToString().Trim().Length == 36)||(reader["client"].ToString().Trim().Length == 11)))
-                        {                            
-                            buyNewRequest.charge = (Convert.ToInt32(reader["bonuses_it_is_written_off"]) * 100).ToString();                         
+                            buyNewRequest.cardNum = reader["client"].ToString();
                         }
 
-                        if (reader["client"].ToString().Trim().Length == 0)
+                        if ((Convert.ToInt32(reader["bonuses_it_is_written_off"]) != 0) && (reader["client"].ToString().Trim().Length == 10))
                         {
-                            buyNewRequest.type = "6";
+                            buyNewRequest.charge = (Convert.ToInt32(reader["bonuses_it_is_written_off"]) * 100).ToString();
                         }
-                        else
-                        {
-                            buyNewRequest.type = "4";
-                        }
+
+                        //if (reader["client"].ToString().Trim().Length == 0)
+                        //{
+                        //    buyNewRequest.type = "6";
+                        //}
+                        //else
+                        //{
+                        buyNewRequest.type = "4";
+                        //}
                         if (fill_items(buyNewRequest, reader["document_number"].ToString(), reader["client"].ToString()))
                         {
                             sent_document(buyNewRequest, reader["document_number"].ToString());
@@ -838,7 +838,7 @@ namespace Cash8
         public class BuyNewRequest
         {
             //cardNum – номер карты(с ведущими нулями)
-            //public string cardNum { get; set; }
+            public string cardNum { get; set; }
             // SHA256 хэш PIN-кода карты
             public string cardTrack2 { get; set; }
             public string phone { get; set; }

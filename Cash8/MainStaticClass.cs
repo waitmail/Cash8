@@ -82,7 +82,7 @@ namespace Cash8
         private static bool use_envd = false;
         private static DateTime last_send_last_successful_sending;
         private static DateTime last_write_check;
-        private static DateTime min_date_work = new DateTime(2020, 08, 01);
+        private static DateTime min_date_work = new DateTime(2020, 11, 01);
 
         //private static bool use_text_print;
         //private static int width_of_symbols;
