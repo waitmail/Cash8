@@ -6032,7 +6032,8 @@ namespace Cash8
                 {
                     if (reader.GetDecimal(5) <= action_10(reader.GetInt32(1)))
                     {
-                        MessageBox.Show(reader[3].ToString());
+                        int multiplicity = (int)(calculation_of_the_sum_of_the_document() / action_10(reader.GetInt32(1)));
+                        MessageBox.Show("Крастность "+ multiplicity.ToString()+" "+ reader[3].ToString());
                         action_num_doc = Convert.ToInt32(reader[1].ToString());
                     }
                 }
@@ -6137,7 +6138,8 @@ namespace Cash8
 
                     if (reader.GetDecimal(5) <= calculation_of_the_sum_of_the_document())// action_10(Convert.ToInt32(reader["num_doc"]))
                     {
-                        MessageBox.Show(reader[3].ToString());
+                        int multiplicity = (int)(calculation_of_the_sum_of_the_document()/reader.GetDecimal(5));
+                        MessageBox.Show("Кратность "+ multiplicity.ToString()+" "+ reader[3].ToString());                        
                         action_num_doc = Convert.ToInt32(reader[1].ToString());
                     }
                 }
