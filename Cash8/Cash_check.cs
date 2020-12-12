@@ -1319,6 +1319,61 @@ namespace Cash8
         }
 
 
+
+        //Это старая схема 
+        ///// <summary>
+        ///// Возвращает цену подарка
+        ///// </summary>
+        ///// <param name="num_doc"></param>
+        ///// <returns></returns>
+        //private string get_price_action(int num_doc)
+        //{
+        //    string result = "";
+
+        //    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+
+        //    try
+        //    {
+
+        //        conn.Open();
+        //        string query = "SELECT action_header.tip, action_header.code_tovar, action_header.marker,tovar.retail_price  FROM action_header LEFT JOIN tovar ON action_header.code_tovar = tovar.code where num_doc=" + num_doc.ToString()+ " AND tovar.its_deleted=0 ";
+        //        NpgsqlCommand command = new NpgsqlCommand(query, conn);                
+        //        NpgsqlDataReader reader = command.ExecuteReader();                
+        //        while (reader.Read())
+        //        {
+        //            if ((Convert.ToInt16(reader["tip"]) == 8)||(Convert.ToInt16(reader["tip"]) == 1) || (Convert.ToInt16(reader["tip"]) == 2) || (Convert.ToInt16(reader["tip"]) == 3))
+        //            {
+        //                if (Convert.ToInt16(reader["marker"]) == 1)//запрашивать подарок
+        //                {                            
+        //                    result = reader["retail_price"].ToString();//получить розничную цену подарка
+        //                }
+        //            }
+        //        }              
+        //        reader.Close();
+        //        conn.Close();
+        //    }
+        //    catch (NpgsqlException ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //    finally
+        //    {
+        //        if (conn.State == ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //        }
+
+        //    }
+
+        //    return result;
+        //}
+
+
+
         /// <summary>
         /// Возвращает цену подарка
         /// </summary>
@@ -1334,19 +1389,19 @@ namespace Cash8
             {
 
                 conn.Open();
-                string query = "SELECT action_header.tip, action_header.code_tovar, action_header.marker,tovar.retail_price  FROM action_header LEFT JOIN tovar ON action_header.code_tovar = tovar.code where num_doc=" + num_doc.ToString()+ " AND tovar.its_deleted=0 ";
-                NpgsqlCommand command = new NpgsqlCommand(query, conn);                
-                NpgsqlDataReader reader = command.ExecuteReader();                
+                string query = "SELECT action_header.tip, action_header.gift_price, action_header.marker  FROM action_header where action_header.num_doc=" + num_doc.ToString() ;
+                NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                NpgsqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    if ((Convert.ToInt16(reader["tip"]) == 8)||(Convert.ToInt16(reader["tip"]) == 1) || (Convert.ToInt16(reader["tip"]) == 2) || (Convert.ToInt16(reader["tip"]) == 3))
+                    if ((Convert.ToInt16(reader["tip"]) == 1) || (Convert.ToInt16(reader["tip"]) == 2) || (Convert.ToInt16(reader["tip"]) == 3) || (Convert.ToInt16(reader["tip"]) == 4) || (Convert.ToInt16(reader["tip"]) == 5))
                     {
                         if (Convert.ToInt16(reader["marker"]) == 1)//запрашивать подарок
-                        {                            
+                        {
                             result = reader["retail_price"].ToString();//получить розничную цену подарка
                         }
                     }
-                }              
+                }
                 reader.Close();
                 conn.Close();
             }
@@ -1369,7 +1424,8 @@ namespace Cash8
 
             return result;
         }
-        
+
+
         /// <summary>
         /// Добавить подарок в чек
         /// </summary>
@@ -7363,7 +7419,7 @@ namespace Cash8
                     command = new NpgsqlCommand(query_string, conn);
                     NpgsqlDataReader reader = command.ExecuteReader();
 
-                    DateTime new_date = new DateTime(2019, 01, 01);//Дата с которой работа с подарками идет по новому 
+                    //DateTime new_date = new DateTime(2019, 01, 01);//Дата с которой работа с подарками идет по новому 
 
                     int num_records = 1;
                     while (reader.Read())
@@ -7379,21 +7435,22 @@ namespace Cash8
                                 lvi.SubItems.Add(reader[5].ToString());    //Характеристика
                                 lvi.SubItems[2].Tag = reader[6].ToString();
                                 lvi.SubItems.Add("1");    //Количество
-                                if (DateTime.Now < new_date)
-                                {
-                                    lvi.SubItems.Add(reader.GetDecimal(2).ToString());//Цена
-                                    lvi.SubItems.Add(reader.GetDecimal(3).ToString());//Цена со скидкой reader.GetDecimal(3).ToString()
-                                    lvi.SubItems.Add("0");//Сумма без скидки
-                                    lvi.SubItems.Add("0");//Сумма со скидкой
-                                    lvi.SubItems.Add("0"); //Номер акционного документа скидка
-                                    lvi.SubItems.Add(num_doc.ToString()); //Номер акционного документа подарок
-                                    lvi.SubItems.Add("0"); //Номер акционного документа дополнительное поле пометка что участвовало в акции, но скидка может быть                                
-                                    lvi.SubItems[10].Text = num_doc.ToString();
-                                }
-                                else
-                                {
+                                //if (DateTime.Now < new_date)
+                                //{
+                                //    lvi.SubItems.Add(reader.GetDecimal(2).ToString());//Цена
+                                //    lvi.SubItems.Add(reader.GetDecimal(3).ToString());//Цена со скидкой reader.GetDecimal(3).ToString()
+                                //    lvi.SubItems.Add("0");//Сумма без скидки
+                                //    lvi.SubItems.Add("0");//Сумма со скидкой
+                                //    lvi.SubItems.Add("0"); //Номер акционного документа скидка
+                                //    lvi.SubItems.Add(num_doc.ToString()); //Номер акционного документа подарок
+                                //    lvi.SubItems.Add("0"); //Номер акционного документа дополнительное поле пометка что участвовало в акции, но скидка может быть                                
+                                //    lvi.SubItems[10].Text = num_doc.ToString();
+                                //}
+                                //else
+                                //{
                                     lvi.SubItems.Add(reader.GetDecimal(2).ToString());//Цена без скидки
-                                    decimal price = get_reatil_price(code_tovar.ToString());
+                                    //decimal price = get_reatil_price(code_tovar.ToString());
+                                    string price = get_price_action(num_doc);
                                     lvi.SubItems.Add(price.ToString());//Цена со скидкой должна быть получена из подарка
                                     lvi.SubItems.Add(reader.GetDecimal(2).ToString());//Сумма без скидки
                                     lvi.SubItems.Add(price.ToString());//Сумма со скидкой должна быть получена из подарка
@@ -7401,7 +7458,7 @@ namespace Cash8
                                     lvi.SubItems.Add(num_doc.ToString()); //Номер акционного документа подарок
                                     lvi.SubItems.Add("0"); //Номер акционного документа дополнительное поле пометка что участвовало в акции, но скидка может быть                                
                                     lvi.SubItems[10].Text = num_doc.ToString(); 
-                                }
+                                //}
                                 //*****************************************************************************
                                 lvi.SubItems.Add("0");
                                 lvi.SubItems.Add("0");
@@ -7463,43 +7520,43 @@ namespace Cash8
                         num_records++;
                     }
 
-                    if (DateTime.Now < new_date)
-                    {
-                        multiplication_factor = (int)(quantity_on_doc / sum);
-                        //Сначала поищем в документе возможно подарок уже есть в документе
-                        int index = 0;
-                        for (int i = 0; i < listView1.Items.Count; i++)
-                        {
-                            if (listView1.Items[i].SubItems[0].Text.Trim() == code_tovar.ToString())
-                            {
-                                index = i;
-                                break;
-                            }
-                        }
+                    //if (DateTime.Now < new_date)
+                    //{
+                    //    multiplication_factor = (int)(quantity_on_doc / sum);
+                    //    //Сначала поищем в документе возможно подарок уже есть в документе
+                    //    int index = 0;
+                    //    for (int i = 0; i < listView1.Items.Count; i++)
+                    //    {
+                    //        if (listView1.Items[i].SubItems[0].Text.Trim() == code_tovar.ToString())
+                    //        {
+                    //            index = i;
+                    //            break;
+                    //        }
+                    //    }
 
-                        if (index == 0) //подарок не найден значит добавим его в документ
-                        {
-                            for (int i = 0; i < multiplication_factor; i++)
-                            {
-                                find_barcode_or_code_in_tovar(code_tovar.ToString());
-                            }
-                            index = listView1.Items.Count - 1;
-                        }
+                    //    if (index == 0) //подарок не найден значит добавим его в документ
+                    //    {
+                    //        for (int i = 0; i < multiplication_factor; i++)
+                    //        {
+                    //            find_barcode_or_code_in_tovar(code_tovar.ToString());
+                    //        }
+                    //        index = listView1.Items.Count - 1;
+                    //    }
 
-                        //listView1.Items[index].SubItems[2].Text = (Convert.ToInt32(listView1.Items[index].SubItems[2].Text) + (int)(quantity_on_doc / sum)).ToString(); //Количество
-                        listView1.Items[index].SubItems[4].Text = "0,01"; //Цена
-                        listView1.Items[index].SubItems[5].Text = "0,01"; //Цена со скидкой
-                        //listView1.Items[index].SubItems[4].Text = "0.10";   //Цена
-                        //listView1.Items[index].SubItems[5].Text = "0.10";   //Цена со скидкой
-                        listView1.Items[index].SubItems[6].Text = (Convert.ToDecimal(listView1.Items[index].SubItems[3].Text) * Convert.ToDecimal(listView1.Items[index].SubItems[4].Text.Replace(".", ","))).ToString();//Сумма без скидки
-                        listView1.Items[index].SubItems[7].Text = (Convert.ToDecimal(listView1.Items[index].SubItems[3].Text) * Convert.ToDecimal(listView1.Items[index].SubItems[5].Text.Replace(".", ","))).ToString();//Сумма без скидки                    
-                        listView1.Items[index].SubItems[8].Text = num_doc.ToString(); //Номер акционного документа 
-                        listView1.Items[index].SubItems[10].Text = num_doc.ToString(); //Номер акционного документа 
-                    }
-                    else
-                    {
+                    //    //listView1.Items[index].SubItems[2].Text = (Convert.ToInt32(listView1.Items[index].SubItems[2].Text) + (int)(quantity_on_doc / sum)).ToString(); //Количество
+                    //    listView1.Items[index].SubItems[4].Text = "0,01"; //Цена
+                    //    listView1.Items[index].SubItems[5].Text = "0,01"; //Цена со скидкой
+                    //    //listView1.Items[index].SubItems[4].Text = "0.10";   //Цена
+                    //    //listView1.Items[index].SubItems[5].Text = "0.10";   //Цена со скидкой
+                    //    listView1.Items[index].SubItems[6].Text = (Convert.ToDecimal(listView1.Items[index].SubItems[3].Text) * Convert.ToDecimal(listView1.Items[index].SubItems[4].Text.Replace(".", ","))).ToString();//Сумма без скидки
+                    //    listView1.Items[index].SubItems[7].Text = (Convert.ToDecimal(listView1.Items[index].SubItems[3].Text) * Convert.ToDecimal(listView1.Items[index].SubItems[5].Text.Replace(".", ","))).ToString();//Сумма без скидки                    
+                    //    listView1.Items[index].SubItems[8].Text = num_doc.ToString(); //Номер акционного документа 
+                    //    listView1.Items[index].SubItems[10].Text = num_doc.ToString(); //Номер акционного документа 
+                    //}
+                    //else
+                    //{
  
-                    }
+                    //}
 
 
 
