@@ -149,7 +149,9 @@ namespace Cash8
                 {
                     conn.Open();
                     //string query = "SELECT code FROM clients where phone LIKE'%" + txtB_client_phone.Text.Trim() + "%'";
-                    string query = "SELECT code,its_work,COALESCE(bonus_is_on,0) as bonus_is_on FROM clients where right(phone,10)='" + txtB_client_phone.Text.Trim() + "'";
+                    //string query = "SELECT MIN(to_number(code)),code,its_work,COALESCE(bonus_is_on,0) as bonus_is_on FROM clients where right(phone,10)='" + txtB_client_phone.Text.Trim() + "'";
+                    string query = "SELECT MIN(CAST(code as numeric)),code,its_work,COALESCE(bonus_is_on, 0) as bonus_is_on FROM clients where right(phone,10)= ='" + txtB_client_phone.Text.Trim() + "' " +
+                        " group by code,its_work,COALESCE(bonus_is_on, 0) order by MIN(CAST(code as numeric)) limit 1";
                     NpgsqlCommand command = new NpgsqlCommand(query, conn);
                     NpgsqlDataReader reader = command.ExecuteReader();
                     string code_client = ""; int its_work = 0; int bonus_is_on = 0;
@@ -6964,10 +6966,6 @@ namespace Cash8
 
             return result;
         }
-
-
-
-
 
 
         private void copy_list_view(ListView listview_source, ListView listview_destination)
