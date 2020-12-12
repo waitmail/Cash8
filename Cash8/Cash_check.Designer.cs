@@ -668,8 +668,7 @@
             this.cash.TabIndex = 8;
             this.cash.Text = "0.00";
             this.cash.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.cash.Visible = false;
-            this.cash.TextChanged += new System.EventHandler(this.cash_TextChanged);
+            this.cash.Visible = false;            
             this.cash.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.cash_KeyPress);
             // 
             // Cash_check
