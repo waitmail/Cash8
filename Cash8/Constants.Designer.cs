@@ -45,6 +45,7 @@
             this.label14 = new System.Windows.Forms.Label();
             this.checkBox_envd = new System.Windows.Forms.CheckBox();
             this.checkBox_print_m = new System.Windows.Forms.CheckBox();
+            this.checkBox_osn_usnIncomeOutcome = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // cash_desk_number
@@ -115,7 +116,7 @@
             // path_for_web_service
             // 
             this.path_for_web_service.Enabled = false;
-            this.path_for_web_service.Location = new System.Drawing.Point(174, 152);
+            this.path_for_web_service.Location = new System.Drawing.Point(174, 179);
             this.path_for_web_service.MaxLength = 100;
             this.path_for_web_service.Name = "path_for_web_service";
             this.path_for_web_service.Size = new System.Drawing.Size(303, 20);
@@ -124,7 +125,7 @@
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(16, 155);
+            this.label15.Location = new System.Drawing.Point(16, 182);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(152, 13);
             this.label15.TabIndex = 41;
@@ -200,11 +201,22 @@
             this.checkBox_print_m.Text = "Печатать [M] перед товаром";
             this.checkBox_print_m.UseVisualStyleBackColor = true;
             // 
+            // checkBox_osn_usnIncomeOutcome
+            // 
+            this.checkBox_osn_usnIncomeOutcome.AutoSize = true;
+            this.checkBox_osn_usnIncomeOutcome.Location = new System.Drawing.Point(11, 147);
+            this.checkBox_osn_usnIncomeOutcome.Name = "checkBox_osn_usnIncomeOutcome";
+            this.checkBox_osn_usnIncomeOutcome.Size = new System.Drawing.Size(160, 17);
+            this.checkBox_osn_usnIncomeOutcome.TabIndex = 62;
+            this.checkBox_osn_usnIncomeOutcome.Text = "Магазин работает по ОСН";
+            this.checkBox_osn_usnIncomeOutcome.UseVisualStyleBackColor = true;
+            // 
             // Constants
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(724, 257);
+            this.ClientSize = new System.Drawing.Size(724, 286);
+            this.Controls.Add(this.checkBox_osn_usnIncomeOutcome);
             this.Controls.Add(this.checkBox_print_m);
             this.Controls.Add(this.checkBox_envd);
             this.Controls.Add(this.label14);
@@ -250,5 +262,6 @@
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.CheckBox checkBox_envd;
         private System.Windows.Forms.CheckBox checkBox_print_m;
+        private System.Windows.Forms.CheckBox checkBox_osn_usnIncomeOutcome;
     }
 }

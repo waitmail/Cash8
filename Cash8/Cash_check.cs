@@ -150,7 +150,7 @@ namespace Cash8
                     conn.Open();
                     //string query = "SELECT code FROM clients where phone LIKE'%" + txtB_client_phone.Text.Trim() + "%'";
                     //string query = "SELECT MIN(to_number(code)),code,its_work,COALESCE(bonus_is_on,0) as bonus_is_on FROM clients where right(phone,10)='" + txtB_client_phone.Text.Trim() + "'";
-                    string query = "SELECT MIN(CAST(code as numeric)),code,its_work,COALESCE(bonus_is_on, 0) as bonus_is_on FROM clients where right(phone,10)= ='" + txtB_client_phone.Text.Trim() + "' " +
+                    string query = "SELECT MIN(CAST(code as numeric)),code,its_work,COALESCE(bonus_is_on, 0) as bonus_is_on FROM clients where right(phone,10)= '" + txtB_client_phone.Text.Trim() + "' " +
                         " group by code,its_work,COALESCE(bonus_is_on, 0) order by MIN(CAST(code as numeric)) limit 1";
                     NpgsqlCommand command = new NpgsqlCommand(query, conn);
                     NpgsqlDataReader reader = command.ExecuteReader();
@@ -1398,10 +1398,10 @@ namespace Cash8
                 {
                     if ((Convert.ToInt16(reader["tip"]) == 1) || (Convert.ToInt16(reader["tip"]) == 2) || (Convert.ToInt16(reader["tip"]) == 3) || (Convert.ToInt16(reader["tip"]) == 4) || (Convert.ToInt16(reader["tip"]) == 5))
                     {
-                        if (Convert.ToInt16(reader["marker"]) == 1)//запрашивать подарок
-                        {
-                            result = reader["retail_price"].ToString();//получить розничную цену подарка
-                        }
+                        //if (Convert.ToInt16(reader["marker"]) == 1)//запрашивать подарок
+                        //{
+                            result = reader["gift_price"].ToString();//получить розничную цену подарка
+                        //}
                     }
                 }
                 reader.Close();
@@ -3749,7 +3749,17 @@ namespace Cash8
             
             FiscallPrintJason.Check check = new FiscallPrintJason.Check();
             check.type = "sell";
-            check.taxationType = (MainStaticClass.Use_Envd ? "envd" : "osn");
+            
+            if (DateTime.Now > new DateTime(2020, 12, 31))
+            {
+                check.taxationType = (MainStaticClass.UsnIncomeOutcome ? "usnIncomeOutcome" : "osn");
+            }
+            else
+            {
+                check.taxationType = (MainStaticClass.Use_Envd ? "envd" : "osn");
+            }            
+
+            //usnIncomeOutcome
             check.ignoreNonFiscalPrintErrors = false;
             check.@operator = new FiscallPrintJason.Operator();
             check.@operator.name = MainStaticClass.Cash_Operator; 

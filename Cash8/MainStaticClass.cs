@@ -35,7 +35,7 @@ namespace Cash8
         public static string shablon = "{uuid,\"request\": [body]}\"";
 
         private static bool fiscal_print;
-        private static int bonus_treshold = 0;
+        //private static int bonus_treshold = 0;
         //public static ListView listview_print;
         //public static double sum_print;
 
@@ -80,6 +80,7 @@ namespace Cash8
         //private static int show_before_payment_window = -1;
         //private static int start_sum_opt_price = -1;
         private static bool use_envd = false;
+        private static bool usnIncomeOutcome = false;
         private static DateTime last_send_last_successful_sending;
         private static DateTime last_write_check;
         private static DateTime min_date_work = new DateTime(2020, 11, 01);
@@ -99,40 +100,40 @@ namespace Cash8
         public static bool continue_to_read_the_data_from_a_port = false;
 
 
-        private static int BonusTreshold
-        {
-            get
-            {
-                if (bonus_treshold == 0)
-                {
-                    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
-                    try
-                    {
-                        conn.Open();
-                        string query = "SELECT threshold  FROM constants";
-                        NpgsqlCommand command = new NpgsqlCommand(query, conn);
-                        bonus_treshold = Convert.ToInt32(command.ExecuteScalar());
-                        conn.Close();
-                    }
-                    catch (NpgsqlException ex)
-                    {
-                        MessageBox.Show(ex.Message);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message);
-                    }
-                    finally
-                    {
-                        if (conn.State == ConnectionState.Open)
-                        {
-                            conn.Close();
-                        }
-                    }
-                }
-                return bonus_treshold;
-            }
-        }
+        //private static int BonusTreshold
+        //{
+        //    get
+        //    {
+        //        if (bonus_treshold == 0)
+        //        {
+        //            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+        //            try
+        //            {
+        //                conn.Open();
+        //                string query = "SELECT threshold  FROM constants";
+        //                NpgsqlCommand command = new NpgsqlCommand(query, conn);
+        //                bonus_treshold = Convert.ToInt32(command.ExecuteScalar());
+        //                conn.Close();
+        //            }
+        //            catch (NpgsqlException ex)
+        //            {
+        //                MessageBox.Show(ex.Message);
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                MessageBox.Show(ex.Message);
+        //            }
+        //            finally
+        //            {
+        //                if (conn.State == ConnectionState.Open)
+        //                {
+        //                    conn.Close();
+        //                }
+        //            }
+        //        }
+        //        return bonus_treshold;
+        //    }
+        //}
 
 
         public static bool validate_cash_sum_non_cash_sum_on_return(int id_sale, decimal cash_summ,decimal non_cash_sum)
@@ -200,20 +201,20 @@ namespace Cash8
             }
         }
 
-        public static bool check_amount_exceeds_threshold(Decimal check_amount)
-        {
-            bool result = false;
+        //public static bool check_amount_exceeds_threshold(Decimal check_amount)
+        //{
+        //    bool result = false;
 
-            if (MainStaticClass.BonusTreshold > 0)
-            {
-                if (check_amount >= MainStaticClass.BonusTreshold)
-                {
-                    result = true;
-                }
-            }
+        //    if (MainStaticClass.BonusTreshold > 0)
+        //    {
+        //        if (check_amount >= MainStaticClass.BonusTreshold)
+        //        {
+        //            result = true;
+        //        }
+        //    }
 
-            return result;
-        }
+        //    return result;
+        //}
 
         public static int ckeck_failed_input_phone_on_client(string client_code)
         {
@@ -537,6 +538,19 @@ namespace Cash8
                 use_envd = value;
             }
         }
+
+        public static bool UsnIncomeOutcome
+        {
+            get
+            {
+                return usnIncomeOutcome;
+            }
+            set
+            {
+                usnIncomeOutcome = value;
+            }
+        }
+        //
 
         //public static int Start_sum_opt_price
         //{

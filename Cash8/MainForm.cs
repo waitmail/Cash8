@@ -752,6 +752,12 @@ namespace Cash8
             MainStaticClass.delete_old_checks(MainStaticClass.GetMinDateWork);
             get_users();
             MainStaticClass.Use_Envd = check_envd();
+            if (DateTime.Now > new DateTime(2020, 12, 31) && (MainStaticClass.Use_Envd))
+            {
+                MessageBox.Show("Схема ЕНВД в 1 января 2021 года не работает, необходимо это исправить");
+                this.Close();
+            }
+            MainStaticClass.UsnIncomeOutcome = check_UsnIncomeOutcome();
             MainStaticClass.delete_all_events_in_log(MainStaticClass.GetMinDateWork);
             if (MainStaticClass.Use_Fiscall_Print)
             {
@@ -1006,7 +1012,44 @@ namespace Cash8
             return result;
         }
 
-       
+
+        private bool check_UsnIncomeOutcome()
+        {
+            bool result = false;
+
+            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+            try
+            {
+                conn.Open();
+                string query = "SELECT usn_income_out_come FROM constants";
+                NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                result = Convert.ToBoolean(command.ExecuteScalar());
+            }
+            catch (NpgsqlException ex)
+            {
+                MessageBox.Show("Ошибка sql " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Общая ошибка " + ex.Message);
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    if (conn.State == ConnectionState.Open)
+                    {
+                        conn.Close();
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        
+
+
 
 
         private void check_add_field()
