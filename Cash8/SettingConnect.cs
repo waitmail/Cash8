@@ -947,6 +947,7 @@ namespace Cash8
             queries.Add("ALTER TABLE action_header ADD COLUMN gift_price numeric(10, 2); ALTER TABLE action_header ALTER COLUMN gift_price SET NOT NULL;");
             queries.Add("ALTER TABLE action_header ADD COLUMN gift_price numeric(10, 2);UPDATE public.action_header SET gift_price=0; ALTER TABLE action_header ALTER COLUMN gift_price SET NOT NULL;");
             queries.Add("ALTER TABLE constants ADD COLUMN usn_income_out_come boolean; UPDATE public.constants SET usn_income_out_come=false;");
+            queries.Add("ALTER TABLE checks_table ALTER COLUMN item_marker TYPE character varying(200)");
 
 
             foreach (string str in queries)

@@ -755,6 +755,8 @@ namespace Cash8
             if (DateTime.Now > new DateTime(2020, 12, 31) && (MainStaticClass.Use_Envd))
             {
                 MessageBox.Show("Схема ЕНВД в 1 января 2021 года не работает, необходимо это исправить");
+                Constants constants = new Constants();
+                constants.ShowDialog();
                 this.Close();
             }
             MainStaticClass.UsnIncomeOutcome = check_UsnIncomeOutcome();

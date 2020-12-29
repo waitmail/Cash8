@@ -404,7 +404,7 @@ namespace Cash8
                         lvi.SubItems.Add(((int)(Convert.ToDecimal(reader["bonus_standard"]))).ToString());//bonus_standard                        
                         lvi.SubItems.Add(((int)(Convert.ToDecimal(reader["bonus_promotion"]))).ToString());//bonus_standard
                         lvi.SubItems.Add(reader["promotion_b_mover"].ToString());//promotion_b_mover
-                        lvi.SubItems.Add(reader["item_marker"].ToString());//item_marker
+                        lvi.SubItems.Add(reader["item_marker"].ToString().Replace("vasya2021","'"));//item_marker
 
                         listView1.Items.Add(lvi);
                     }
@@ -2256,7 +2256,7 @@ namespace Cash8
                     //cardTrack2 = barcode;
 
                     //Проверяем что за карточка 
-                    BuyerInfoResponce buyerInfoResponce = get_buyerInfo_client_code_or_phone(0, barcode);
+                    BuyerInfoResponce buyerInfoResponce = get_buyerInfo_client_code_or_phone(0, client.Tag.ToString());
 
                     if (buyerInfoResponce != null)
                     {
@@ -3246,7 +3246,7 @@ namespace Cash8
                     command.Parameters.AddWithValue("bonus_standard", lvi.SubItems[11].Text);
                     command.Parameters.AddWithValue("bonus_promotion", lvi.SubItems[12].Text);
                     command.Parameters.AddWithValue("promotion_b_mover", lvi.SubItems[13].Text);                    
-                    command.Parameters.AddWithValue("item_marker", lvi.SubItems[14].Text.Trim());
+                    command.Parameters.AddWithValue("item_marker", lvi.SubItems[14].Text.Trim().Replace("'","vasya2021"));
 
                     command.Transaction = tran;
                     command.ExecuteNonQuery();
@@ -3758,8 +3758,7 @@ namespace Cash8
             {
                 check.taxationType = (MainStaticClass.Use_Envd ? "envd" : "osn");
             }            
-
-            //usnIncomeOutcome
+                        
             check.ignoreNonFiscalPrintErrors = false;
             check.@operator = new FiscallPrintJason.Operator();
             check.@operator.name = MainStaticClass.Cash_Operator; 
@@ -8356,6 +8355,10 @@ namespace Cash8
             public string cardTrack2 { get; set; }
             public string phone { get; set; }
 
+            public string cardNum { get; set; }
+
+            
+
         }
 
 
@@ -8373,7 +8376,7 @@ namespace Cash8
             BuyerInfoRequest buyerInfoRequest = new BuyerInfoRequest();
             if (variant == 0)
             {
-                buyerInfoRequest.cardTrack2 = client_code_or_phone;// client.Tag.ToString();
+                buyerInfoRequest.cardNum = client_code_or_phone;// client.Tag.ToString();
             }
             else
             {
