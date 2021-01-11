@@ -730,6 +730,8 @@ namespace Cash8
                         queries.Add("INSERT INTO barcode(tovar_code,barcode) VALUES(" + barcode.TovarCode + ",'" + barcode.BarCode + "')");
                     }
                     loadPacketData.ListBarcode.Clear();
+                    loadPacketData.ListBarcode = null;
+
                 }
                 if (loadPacketData.ListCharacteristic != null)
                 {

@@ -536,12 +536,18 @@ namespace Cash8
                         {
                             if (!reader.GetBoolean(6))
                             {
-                                lvi.BackColor = Color.Pink;
+                                if (reader.GetDecimal(0) == 0)
+                                {
+                                    lvi.BackColor = Color.Pink;
+                                }
                             }
                         }
                         else
                         {
-                            lvi.BackColor = Color.Pink;
+                            if (reader.GetDecimal(0) == 0)
+                            {
+                                lvi.BackColor = Color.Pink;
+                            }
                         }
                     }
                     

@@ -208,7 +208,7 @@
             this.checkBox_osn_usnIncomeOutcome.Name = "checkBox_osn_usnIncomeOutcome";
             this.checkBox_osn_usnIncomeOutcome.Size = new System.Drawing.Size(160, 17);
             this.checkBox_osn_usnIncomeOutcome.TabIndex = 62;
-            this.checkBox_osn_usnIncomeOutcome.Text = "Магазин работает по ОСН";
+            this.checkBox_osn_usnIncomeOutcome.Text = "Магазин работает по УСН";
             this.checkBox_osn_usnIncomeOutcome.UseVisualStyleBackColor = true;
             // 
             // Constants

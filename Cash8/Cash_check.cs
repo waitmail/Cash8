@@ -95,6 +95,15 @@ namespace Cash8
             }
             this.checkBox_to_print_repeatedly.CheckStateChanged += new EventHandler(checkBox_to_print_repeatedly_CheckStateChanged);
             txtB_inn.KeyPress += new KeyPressEventHandler(TxtB_inn_KeyPress);
+            comment.KeyPress += new KeyPressEventHandler(Comment_KeyPress);
+        }
+
+        private void Comment_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == 39)
+            {
+                e.Handled = true;
+            }
         }
 
         private void TxtB_inn_KeyPress(object sender, KeyPressEventArgs e)
@@ -656,9 +665,9 @@ namespace Cash8
                         isw.Dispose();
 
                         if (enable_delete)
-                        {
-                            //write_new_delete_document();
-                            write_new_document("0","0","0","0",false,"0","0","0","1"); //Это удаляемый документ
+                        {                            
+                            calculation_of_the_sum_of_the_document();
+                            write_new_document("0", calculation_of_the_sum_of_the_document().ToString().Replace(",", "."), "0","0",false,"0","0","0","1"); //Это удаляемый документ
                             closing = false;
                             this.Close();
                             return;
@@ -670,9 +679,8 @@ namespace Cash8
                         {
                             MessageBox.Show("Нет строк");
                             return;
-                        }
-                        //write_new_delete_document();
-                        write_new_document("0", "0", "0", "0", false, "0", "0", "0", "1"); //Это удаляемый документ
+                        }                        
+                        write_new_document("0", calculation_of_the_sum_of_the_document().ToString().Replace(",","."), "0", "0", false, "0", "0", "0", "1"); //Это удаляемый документ
                         closing = false;
                         this.Close();
                         return;
@@ -3750,7 +3758,7 @@ namespace Cash8
             FiscallPrintJason.Check check = new FiscallPrintJason.Check();
             check.type = "sell";
             
-            if (DateTime.Now > new DateTime(2020, 12, 31))
+            if (DateTime.Now > new DateTime(2021, 1, 1))
             {
                 check.taxationType = (MainStaticClass.UsnIncomeOutcome ? "usnIncomeOutcome" : "osn");
             }
@@ -4223,7 +4231,9 @@ namespace Cash8
 
                 FiscallPrintJason.Check check = new FiscallPrintJason.Check();
                 check.type = "sellReturn";
-                check.taxationType = (MainStaticClass.Use_Envd ? "envd" : "osn");
+                //check.taxationType = (MainStaticClass.Use_Envd ? "envd" : "osn");
+                check.taxationType = (MainStaticClass.UsnIncomeOutcome ? "usnIncomeOutcome" : "osn");
+                
                 check.ignoreNonFiscalPrintErrors = false;
                 check.@operator = new FiscallPrintJason.Operator();
                 check.@operator.name = MainStaticClass.Cash_Operator;

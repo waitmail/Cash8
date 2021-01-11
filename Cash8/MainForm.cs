@@ -726,7 +726,7 @@ namespace Cash8
                 //MessageBox.Show(timer_send_data.Interval.ToString());
                 timer_send_data.Start();
                 timer_send_data.Elapsed += new System.Timers.ElapsedEventHandler(timer_send_data_Elapsed);
-                timer_send_data_Elapsed(null, null);//при старте сделать выгрузку               
+                //timer_send_data_Elapsed(null, null);//при старте сделать выгрузку               
 
                 Thread t = new Thread(load_bonus_clients);
                 t.IsBackground = true;
@@ -752,12 +752,13 @@ namespace Cash8
             MainStaticClass.delete_old_checks(MainStaticClass.GetMinDateWork);
             get_users();
             MainStaticClass.Use_Envd = check_envd();
-            if (DateTime.Now > new DateTime(2020, 12, 31) && (MainStaticClass.Use_Envd))
+            if (DateTime.Now > new DateTime(2021, 1, 1) && (MainStaticClass.Use_Envd))
             {
                 MessageBox.Show("Схема ЕНВД в 1 января 2021 года не работает, необходимо это исправить");
                 Constants constants = new Constants();
-                constants.ShowDialog();
+                constants.ShowDialog();                
                 this.Close();
+                return;
             }
             MainStaticClass.UsnIncomeOutcome = check_UsnIncomeOutcome();
             MainStaticClass.delete_all_events_in_log(MainStaticClass.GetMinDateWork);
