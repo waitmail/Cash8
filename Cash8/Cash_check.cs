@@ -3787,7 +3787,7 @@ namespace Cash8
                         {
                             int stavka_nds = get_tovar_nds(lvi.SubItems[0].Text.Trim());
                             //nomer_naloga = 0;
-
+                            //MainStaticClass.use
                             if (stavka_nds == 0)
                             {
                                 nomer_naloga = 1;
@@ -3812,6 +3812,7 @@ namespace Cash8
                             {
                                 MessageBox.Show("Неизвестная ставка ндс");
                             }
+
                             if (its_certificate(lvi.SubItems[0].Text.Trim()) == "1")
                             {
                                 tax_type = "vat120";
@@ -4256,11 +4257,12 @@ namespace Cash8
                             //fiscal.Return(false, 2, 1, lvi.SubItems[0].Text.Trim() + " " + lvi.SubItems[1].Text.Trim(), Convert.ToDouble(lvi.SubItems[3].Text), Convert.ToDouble(lvi.SubItems[5].Text), 0, true);
                             //int stavka_nds = get_tovar_nds(lvi.SubItems[0].Text.Trim());
                             //int nomer_naloga = 0;
-                            if (!MainStaticClass.Use_Envd)
-                            {
+                            //if (!MainStaticClass.Use_Envd)
+                            //{
                                 int stavka_nds = get_tovar_nds(lvi.SubItems[0].Text.Trim());
-                                //int nomer_naloga = 0;
-
+                            //int nomer_naloga = 0;
+                            if (!MainStaticClass.UsnIncomeOutcome)
+                            {
                                 if (stavka_nds == 0)
                                 {
                                     nomer_naloga = 1;
@@ -4280,7 +4282,7 @@ namespace Cash8
                                 {
                                     nomer_naloga = 3;
                                     tax_type = "vat20";
-                                }                  
+                                }
                                 else
                                 {
                                     MessageBox.Show("Неизвестная ставка ндс");
@@ -4290,7 +4292,13 @@ namespace Cash8
                             {
                                 nomer_naloga = 4;
                                 tax_type = "none";
-                            }
+                            }                                
+                            //}
+                            //else
+                            //{
+                            //    nomer_naloga = 4;
+                            //    tax_type = "none";
+                            //}
 
                             FiscallPrintJason.Item item = new FiscallPrintJason.Item();
                             item.name = lvi.SubItems[0].Text.Trim() + " " + lvi.SubItems[1].Text.Trim();// "Первая Позиция";

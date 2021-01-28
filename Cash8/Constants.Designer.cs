@@ -184,6 +184,7 @@
             // checkBox_envd
             // 
             this.checkBox_envd.AutoSize = true;
+            this.checkBox_envd.Enabled = false;
             this.checkBox_envd.Location = new System.Drawing.Point(11, 100);
             this.checkBox_envd.Name = "checkBox_envd";
             this.checkBox_envd.Size = new System.Drawing.Size(168, 17);
