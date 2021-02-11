@@ -923,7 +923,7 @@ namespace Cash8
             queries.Add("CREATE TABLE failed_input_phone(client_code character varying(10),  datetime_input timestamp without time zone)WITH (OIDS=FALSE);ALTER TABLE failed_input_phone  OWNER TO postgres");            
             queries.Add("ALTER TABLE tovar DROP COLUMN purchase_price");
             queries.Add("ALTER TABLE tovar DROP COLUMN opt_price");
-            queries.Add("CREATE TABLE date_sync(tovar date,client date)WITH(OIDS = FALSE); ALTER TABLE date_sync OWNER TO postgres");
+            queries.Add("DROP TABLE public.date_sync; CREATE TABLE public.date_sync (tovar timestamp without time zone,    client date)WITH(    OIDS = FALSE)");            
             queries.Add("ALTER TABLE action_header ADD COLUMN execution_order smallint");
             queries.Add("ALTER TABLE action_table ADD COLUMN price numeric(10, 2)");
             queries.Add("UPDATE constants SET use_debug = false");

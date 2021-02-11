@@ -837,7 +837,7 @@ namespace Cash8
             }
 
             //queries.Add("UPDATE date_sync SET tovar='" + DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd")+"'");
-            queries.Add("INSERT INTO date_sync(tovar) VALUES('" + DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd") + "')");
+            queries.Add("INSERT INTO date_sync(tovar) VALUES('" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss") + "')");
             
             NpgsqlConnection conn = null;
             NpgsqlTransaction tran = null;

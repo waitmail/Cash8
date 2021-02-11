@@ -3783,7 +3783,7 @@ namespace Cash8
                 {
                     if (Convert.ToDouble(lvi.SubItems[7].Text) != 0)
                     {
-                        if (!MainStaticClass.Use_Envd)
+                        if (!MainStaticClass.UsnIncomeOutcome)
                         {
                             int stavka_nds = get_tovar_nds(lvi.SubItems[0].Text.Trim());
                             //nomer_naloga = 0;
