@@ -3848,7 +3848,7 @@ namespace Cash8
                             //item.markingCode = markingCode;
                                                         
                             FiscallPrintJason.NomenclatureCode nomenclatureCode = new FiscallPrintJason.NomenclatureCode();
-                            nomenclatureCode.gtin = lvi.SubItems[14].Text.Trim().Substring(3, 14);
+                            nomenclatureCode.gtin = lvi.SubItems[14].Text.Trim().Substring(2, 14);
                             nomenclatureCode.serial = lvi.SubItems[14].Text.Trim().Substring(18, 13);
                             nomenclatureCode.type = "shoes";
                             item.nomenclatureCode = nomenclatureCode;

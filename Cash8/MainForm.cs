@@ -684,7 +684,7 @@ namespace Cash8
         }
 
         void Main_Load(object sender, System.EventArgs e)
-        {
+        {           
 
             if (File.Exists(Application.StartupPath + "/UpdateNpgsql/Npgsql.dll"))
             {
@@ -698,7 +698,7 @@ namespace Cash8
                     }
                 }
             }
-
+            
             MainStaticClass.Main = this;
             this.IsMdiContainer = true;
             MainStaticClass.Last_Send_Last_Successful_Sending = DateTime.Now;
@@ -717,7 +717,7 @@ namespace Cash8
                 Text += " | " + Cash8.MainStaticClass.Nick_Shop;
                 Text += " | " + Cash8.MainStaticClass.version();
                 check_add_field();//gaa
-            }
+            }            
             update_unloading_period();
             int result = MainStaticClass.get_unloading_interval();
             if (result != 0)
@@ -736,16 +736,17 @@ namespace Cash8
                 //t2.IsBackground = true;
                 //t2.Start();               
             }
-
-            LoadProgramFromInternet lpfi = new LoadProgramFromInternet();
-            lpfi.check_new_version_programm();
+            
+            LoadProgramFromInternet lpfi = new LoadProgramFromInternet();            
+            lpfi.check_new_version_programm();            
             bool new_version_of_the_program_exist = lpfi.new_version_of_the_program;
             lpfi.Dispose();
+            
             if (new_version_of_the_program_exist)
             {
                 обновлениеПрограммыToolStripMenuItem_Click(null, null);
             }
-
+            
             UploadPhoneClients();
             UploadChangeStatusClients();
 
@@ -760,6 +761,7 @@ namespace Cash8
                 this.Close();
                 return;
             }
+            
             MainStaticClass.UsnIncomeOutcome = check_UsnIncomeOutcome();
             MainStaticClass.delete_all_events_in_log(MainStaticClass.GetMinDateWork);
             if (MainStaticClass.Use_Fiscall_Print)

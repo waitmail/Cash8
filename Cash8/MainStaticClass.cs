@@ -1195,7 +1195,17 @@ namespace Cash8
             Cash8.DS.DS ds = null;
             ds = new Cash8.DS.DS();
             //ds.Proxy = MainStaticClass.CreateWebProxyWithCredentials("http://proxy.sd2.com.ua:3128", "softupdate", "271828", "Basic", "sd2.com.ua");
-            ds.Url = MainStaticClass.PathForWebService;//.get_path_for_web_service();
+            try
+            {
+                ds.Url = MainStaticClass.PathForWebService;//.get_path_for_web_service();
+            }
+            catch
+            {
+                ds.Url = "http://ch.sd2.com.ua/DiscountSystem/Ds.asmx";//.get_path_for_web_service();
+            }
+
+            
+
             return ds;
         }
         
