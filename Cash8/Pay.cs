@@ -1103,9 +1103,15 @@ namespace Cash8
             
             this.button_pay.Enabled = false;
 
-            if (Convert.ToDecimal(cash_sum.Text.Replace(".", ",")) + Convert.ToDecimal(get_non_cash_sum(0)) + Convert.ToDecimal(sertificates_sum.Text) + Convert.ToDecimal(pay_bonus_many.Text.Replace(".", ",")) - Convert.ToDecimal(pay_sum.Text.Replace(".", ",")) < 0)
+            if (Math.Round(Convert.ToDecimal(cash_sum.Text.Replace(".", ",")),2) + Math.Round(Convert.ToDecimal(get_non_cash_sum(0)),2) + Math.Round(Convert.ToDecimal(sertificates_sum.Text),2) + Math.Round(Convert.ToDecimal(pay_bonus_many.Text.Replace(".", ",")),2) - Math.Round(Convert.ToDecimal(pay_sum.Text.Replace(".", ",")),2) < 0)
             {
                 MessageBox.Show("Проверьте сумму внесенной оплаты");
+                MessageBox.Show("Наличные" + Math.Round(Convert.ToDecimal(cash_sum.Text.Replace(".", ",")), 2).ToString());
+                MessageBox.Show("Карта " + Math.Round(Convert.ToDecimal(get_non_cash_sum(0)), 2).ToString());
+                MessageBox.Show("Сертификаты " + Math.Round(Convert.ToDecimal(sertificates_sum.Text), 2).ToString());
+                MessageBox.Show("Бонусы " + Math.Round(Convert.ToDecimal(pay_bonus_many.Text.Replace(".", ",")), 2).ToString());
+                MessageBox.Show("Общая сумма  " + Math.Round(Convert.ToDecimal(pay_sum.Text.Replace(".", ",")), 2));
+
                 return;
             }
           
@@ -1165,9 +1171,16 @@ namespace Cash8
                 sum_of_the_document = (int)sum_of_the_document;
             }
 
-            if (sum_of_the_document != (_cash_summ_ + _non_cash_summ_ + _sertificates_sum_+ _pay_bonus_many_))
+            if (Math.Round(sum_of_the_document,2) != Math.Round((_cash_summ_ + _non_cash_summ_ + _sertificates_sum_+ _pay_bonus_many_),2))
             {
+
                 MessageBox.Show(" Повторно внесите суммы оплаты, обнаружено несхождение в окне оплаты ");
+                MessageBox.Show("Сумма документа = " + sum_of_the_document.ToString() + " а сумма оплат = " + (_cash_summ_ + _non_cash_summ_ + _sertificates_sum_ + _pay_bonus_many_).ToString());
+                MessageBox.Show("Сумма наличные = " + _cash_summ_.ToString());
+                MessageBox.Show("Сумма карта оплаты = " + _non_cash_summ_.ToString());
+                MessageBox.Show("Сумма сертификатов = " + _sertificates_sum_.ToString());
+                MessageBox.Show("Сумма бонусов = " +_pay_bonus_many_.ToString());
+
                 return;
             }
 

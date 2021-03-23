@@ -20,12 +20,16 @@ namespace Cash8
         {
             btn_ofd_exchange_status_Click(null, null);
             btn_have_internet_Click(null, null);
-            get_summ_in_cashe_Click(null, null);
+            
             btn_send_fiscal_Click(null, null);
-            if (MainStaticClass.Code_right_of_user != 1)
+            if (MainStaticClass.Code_right_of_user == 1)
+            {
+                get_summ_in_cashe_Click(null, null);
+            }
+            else
             {
                 get_summ_in_cashe.Enabled = false;
-                x_report.Enabled = false;                
+                x_report.Enabled = false;
             }
         }
 

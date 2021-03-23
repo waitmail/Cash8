@@ -83,7 +83,7 @@ namespace Cash8
         private static bool usnIncomeOutcome = false;
         private static DateTime last_send_last_successful_sending;
         private static DateTime last_write_check;
-        private static DateTime min_date_work = new DateTime(2020, 11, 01);
+        private static DateTime min_date_work = new DateTime(2021, 1, 1);
 
         //private static bool use_text_print;
         //private static int width_of_symbols;
@@ -282,7 +282,7 @@ namespace Cash8
             Ping pinger = new Ping();
             try
             {
-                PingReply reply = pinger.Send("8.8.8.8");
+                PingReply reply = pinger.Send("8.8.8.8");                
                 pingable = reply.Status == IPStatus.Success;
             }
             catch (PingException)
@@ -356,7 +356,8 @@ namespace Cash8
                     command = new NpgsqlCommand(query, conn);
                     command.ExecuteNonQuery();
                     //query = "DELETE FROM checks_table LEFT JOIN checks_header ON checks_table.document_number = checks_header.document_number  where document_number<=" + Convert.ToInt64(result_query).ToString()+ " AND is_sent = 1";
-                    query = "DELETE FROM checks_table ct  USING checks_header ch Where ct.document_number = ch.document_number  AND ct.document_number <=" + Convert.ToInt64(result_query).ToString() + " AND ch.is_sent = 1";
+                    //query = "DELETE FROM checks_table ct  USING checks_header ch Where ct.document_number = ch.document_number  AND ct.document_number <=" + Convert.ToInt64(result_query).ToString() + " AND ch.is_sent = 1";
+                    query = "DELETE FROM checks_table Where document_number <=" + Convert.ToInt64(result_query).ToString();
                     command = new NpgsqlCommand(query, conn);
                     command.ExecuteNonQuery();
                 }
