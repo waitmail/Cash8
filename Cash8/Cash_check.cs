@@ -12,6 +12,7 @@ using System.Threading;
 using System.Collections;
 using Newtonsoft.Json;
 using System.Net;
+using System.Net.Sockets;
 
 namespace Cash8
 {
@@ -73,7 +74,58 @@ namespace Cash8
         public Int32 id_sale = 0;
 
         System.Windows.Forms.Timer timer = null;
+
+        public class CustomerScreen
+        {           
+            public List<CheckPosition> ListCheckPositions { get; set; }
+        }
+
+        public class CheckPosition
+        {
+            public string NamePosition { get; set; }
+            public string Quantity { get; set; }
+            public string Price { get; set; }
+        }
         
+        private void SendDataToCustomerScreen(int mode)
+        {
+            CustomerScreen customerScreen = new CustomerScreen();
+            customerScreen.ListCheckPositions = new List<CheckPosition>();
+            if (mode == 1)
+            {
+                foreach (ListViewItem listViewItem in listView1.Items)
+                {
+                    CheckPosition checkPosition = new CheckPosition();
+                    checkPosition.NamePosition = listViewItem.SubItems[1].Text;
+                    checkPosition.Quantity = listViewItem.SubItems[3].Text;
+                    checkPosition.Price = listViewItem.SubItems[5].Text;
+                    customerScreen.ListCheckPositions.Add(checkPosition);
+                }
+            }
+
+            string message = JsonConvert.SerializeObject(customerScreen, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            SendUDPMessage(message);
+        }
+
+        private static void SendUDPMessage(string message)
+        {
+            UdpClient sender = new UdpClient(); // создаем UdpClient для отправки сообщений
+            try
+            {
+                byte[] data = Encoding.UTF8.GetBytes(message);
+                sender.Send(data, data.Length, "127.0.0.1", 12345); // отправка
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                sender.Close();
+            }
+        }
+
+
         //БОНУСЫ 
         //public Decimal bonus_on_document = 0;
         //
@@ -1528,6 +1580,7 @@ namespace Cash8
                     lvi.SubItems.Add("0");
                     lvi.SubItems.Add("0");
                     listView1.Items.Add(lvi);
+                    SendDataToCustomerScreen(1);
                     there_are_goods = true;
                     this.listView1.Select();
                     this.listView1.Items[this.listView1.Items.Count - 1].Selected = true;
@@ -1868,6 +1921,7 @@ namespace Cash8
                             }
                         }
                         listView1.Items.Add(lvi);
+                        SendDataToCustomerScreen(1);
                         listView1.Select();
                         listView1.Items[this.listView1.Items.Count - 1].Selected = true;
                         update_record_last_tovar(listView1.Items[this.listView1.Items.Count - 1].SubItems[1].Text, listView1.Items[this.listView1.Items.Count - 1].SubItems[3].Text);
@@ -2011,6 +2065,7 @@ namespace Cash8
                     lvi.SubItems.Add("0");//Номер акционного документа подарок
                     lvi.SubItems.Add("0"); //Номер акционного документа дополнительное поле пометка что участвовало в акции, но скидка может быть
                     listView1.Items.Add(lvi);
+                    SendDataToCustomerScreen(1);
                     this.listView1.Select();
                     this.listView1.Items[this.listView1.Items.Count - 1].Selected = true;
                     update_record_last_tovar(listView1.Items[this.listView1.Items.Count - 1].SubItems[1].Text, listView1.Items[this.listView1.Items.Count - 1].SubItems[4].Text);
@@ -3000,6 +3055,8 @@ namespace Cash8
             //        e.Handled = true;
             //    }
             //}
+
+            SendDataToCustomerScreen(1);
         }
 
 
@@ -3327,12 +3384,19 @@ namespace Cash8
                 if (last_rewrite)
                 {
                     itsnew = false;
+                    SendDataToCustomerScreen(0);
                 }
                 else
                 {
                     itsnew = true;
+                    SendDataToCustomerScreen(1);
+                }
+                if (its_deleted=="1")
+                {
+                    SendDataToCustomerScreen(0);
                 }
                 result = true;
+                
             }
             catch (NpgsqlException ex)
             {
@@ -6585,6 +6649,7 @@ namespace Cash8
                                 lvi_new.SubItems[14].Text = "0";
                                 //*****************************************************************************
                                 listView1.Items.Add(lvi_new);
+                                SendDataToCustomerScreen(1);
                                 min_quantity = 0;
                             }
                         }
@@ -7214,6 +7279,7 @@ namespace Cash8
                         lvi.SubItems.Add("0");//lvi.SubItems[14].Text = "0";
                         //*****************************************************************************
                         listView1.Items.Add(lvi);
+                        SendDataToCustomerScreen(1);
                     }
 
                     /*акция сработала
@@ -7370,6 +7436,7 @@ namespace Cash8
                                 lvi.SubItems.Add("0");
                                 //*****************************************************************************
                                 listView1.Items.Add(lvi);
+                                SendDataToCustomerScreen(1);
                                 multiplication_factor--;                                
                             }
                             else
@@ -7394,7 +7461,8 @@ namespace Cash8
                                 lvi.SubItems.Add("0");
                                 lvi.SubItems.Add("0");
                                 //*****************************************************************************
-                                listView1.Items.Add(lvi);                             
+                                listView1.Items.Add(lvi);
+                                SendDataToCustomerScreen(1);
                             }                           
                         }
                         else
@@ -7420,6 +7488,7 @@ namespace Cash8
                             lvi.SubItems.Add("0");
                             //*****************************************************************************
                             listView1.Items.Add(lvi);
+                            SendDataToCustomerScreen(1);
                         }                        
                         num_records++;
                     }
@@ -7618,6 +7687,7 @@ namespace Cash8
                         lvi.SubItems[14].Text = "0";
                         //*****************************************************************************
                         listView1.Items.Add(lvi_new);
+                        SendDataToCustomerScreen(1);
                     }
 
                     //Добавляем подарок
@@ -8005,6 +8075,7 @@ namespace Cash8
                             lvi.SubItems[14].Text = "0";
                             //*****************************************************************************
                             listView1.Items.Add(lvi);
+                            SendDataToCustomerScreen(1);
 
                         }
                         else
@@ -8030,6 +8101,7 @@ namespace Cash8
                             lvi.SubItems[14].Text = "0";
                             //*****************************************************************************
                             listView1.Items.Add(lvi);
+                            SendDataToCustomerScreen(1);
                         }
 
                     }
@@ -8308,6 +8380,7 @@ namespace Cash8
                 listView1.Items.Add(lvi);
             }
             write_new_document("0", "0", "0", "0", false,"0","0","0","0");
+            SendDataToCustomerScreen(1);
         }
 
         /*
@@ -8656,8 +8729,8 @@ namespace Cash8
                     //}
 
                 }
-            }            
-            
+            }
+            SendDataToCustomerScreen(1);
             dr = pay_form.ShowDialog();
             //pay_form.Dispose();
           
