@@ -2187,13 +2187,13 @@ namespace Cash8
 
 
 
-            if (listView1.Items.Count > 0)
-            {
-                MyMessageBox mmb = new MyMessageBox(" Дисконтную карту можно сканировать только до ввода товаров ", " Проверка ввода ");
-                mmb.ShowDialog();
-                mmb.Dispose();
-                return;
-            }
+            //if (listView1.Items.Count > 0)
+            //{
+            //    MyMessageBox mmb = new MyMessageBox(" Дисконтную карту можно сканировать только до ввода товаров ", " Проверка ввода ");
+            //    mmb.ShowDialog();
+            //    mmb.Dispose();
+            //    return;
+            //}
 
             if (barcode.Trim().Length == 10)
             {
@@ -2303,6 +2303,14 @@ namespace Cash8
                     }
 
                     Discount = Discount / 100;
+
+                    if (Discount != 0)//Пересчитать цены 
+                    {
+                        foreach (ListViewItem lvi in listView1.Items)
+                        {
+                            calculate_on_string(lvi);
+                        }
+                    }
 
                     //Проверить на день рождения и вывести предупреждение
                     if (actions_birthday())
