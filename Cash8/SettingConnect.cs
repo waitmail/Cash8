@@ -948,7 +948,7 @@ namespace Cash8
             queries.Add("ALTER TABLE action_header ADD COLUMN gift_price numeric(10, 2);UPDATE public.action_header SET gift_price=0; ALTER TABLE action_header ALTER COLUMN gift_price SET NOT NULL;");
             queries.Add("ALTER TABLE constants ADD COLUMN usn_income_out_come boolean; UPDATE public.constants SET usn_income_out_come=false;");
             queries.Add("ALTER TABLE checks_table ALTER COLUMN item_marker TYPE character varying(200)");
-
+            queries.Add("CREATE TABLE deleted_items(num_doc bigint NOT NULL,num_cash smallint NOT NULL,date_time_start timestamp without time zone NOT NULL,date_time_action timestamp without time zone NOT NULL,tovar integer NOT NULL,quantity integer NOT NULL,type_of_operation smallint NOT NULL)WITH(    OIDS = FALSE)TABLESPACE pg_default;        ALTER TABLE public.deleted_items            OWNER to postgres");
 
             foreach (string str in queries)
             {

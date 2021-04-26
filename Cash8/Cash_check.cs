@@ -140,6 +140,7 @@ namespace Cash8
             this.return_rouble.KeyPress += new KeyPressEventHandler(return_rouble_KeyPress);
             this.return_kop.KeyPress += new KeyPressEventHandler(return_kop_KeyPress);
             this.listView1.KeyPress +=new KeyPressEventHandler(listView1_KeyPress);
+            this.listView1.KeyDown += ListView1_KeyDown;
             this.txtB_client_phone.KeyPress += new KeyPressEventHandler(txtB_client_phone_KeyPress);
             if (MainStaticClass.Code_right_of_user == 1)
             {
@@ -148,6 +149,95 @@ namespace Cash8
             this.checkBox_to_print_repeatedly.CheckStateChanged += new EventHandler(checkBox_to_print_repeatedly_CheckStateChanged);
             txtB_inn.KeyPress += new KeyPressEventHandler(TxtB_inn_KeyPress);
             comment.KeyPress += new KeyPressEventHandler(Comment_KeyPress);
+        }
+
+        private void insert_incident_record(int tovar,int quantity, int type_of_operation)
+        {
+            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+            try
+            {
+                conn.Open();
+                string query = "INSERT INTO deleted_items(" +
+                    "num_doc," +
+                    "num_cash," +
+                    "date_time_start," +
+                    "date_time_action," +
+                    "tovar,"+
+                    "quantity," +
+                    "type_of_operation)	VALUES(" +
+                    numdoc.ToString() + "," +
+                    num_cash.Tag.ToString() + ",'" +
+                     date_time_start.Text.Replace("Чек", "").Trim() + "','" +
+                    DateTime.Now.ToString("yyy-MM-dd HH:mm:ss") + "'," +
+                    tovar+","+
+                    quantity.ToString() + "," +
+                    type_of_operation + ");";
+                NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                command.ExecuteNonQuery();
+                command.Dispose();
+                conn.Close();
+            }
+            catch (NpgsqlException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Удаляет строку из чека
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ListView1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyData == Keys.Delete)
+            {
+                if (listView1.Items.Count > 0)
+                {
+                    ///////////////////////////////////////////////////////////////
+                    if (MainStaticClass.Code_right_of_user != 1)
+                    {
+                        Interface_switching isw = new Interface_switching();
+                        isw.caller_type = 3;
+                        isw.cc = this;
+                        isw.not_change_Cash_Operator = true;
+                        isw.ShowDialog();
+                        isw.Dispose();
+
+                        if (!enable_delete)
+                        {
+                            MessageBox.Show("Вам запрещено удалять строки");
+                            return;
+                        }
+                        else
+                        {
+                            insert_incident_record(Convert.ToInt16(listView1.SelectedItems[0].SubItems[0].Text), Convert.ToInt16(listView1.SelectedItems[0].SubItems[3].Text), 0);
+                            listView1.Items.Remove(listView1.SelectedItems[0]);
+                            calculation_of_the_sum_of_the_document();
+                            write_new_document("0", calculation_of_the_sum_of_the_document().ToString().Replace(",", "."), "0", "0", false, "0", "0", "0", "1"); //Это удаляемый документ                            
+                        }
+                    }
+                    else
+                    {                        
+                        insert_incident_record(Convert.ToInt16(listView1.SelectedItems[0].SubItems[0].Text), Convert.ToInt16(listView1.SelectedItems[0].SubItems[3].Text), 0);
+                        listView1.Items.Remove(listView1.SelectedItems[0]);
+                        calculation_of_the_sum_of_the_document();
+                        write_new_document("0", calculation_of_the_sum_of_the_document().ToString().Replace(",", "."), "0", "0", false, "0", "0", "0", "1"); //Это удаляемый документ                            
+                    }
+                }
+            }
         }
 
         private void Comment_KeyPress(object sender, KeyPressEventArgs e)
@@ -2207,7 +2297,7 @@ namespace Cash8
                     " temp_phone_clients.phone AS temp_phone_clients_phone,attribute,clients.its_work,COALESCE(clients.bonus_is_on,0) AS bonus_is_on  FROM clients " +
                     " left join discount_types ON clients.discount_types_code= discount_types.code " +
                     " left join temp_phone_clients ON clients.code = temp_phone_clients.barcode " +
-                    " WHERE clients.code='" + barcode + "' OR right(clients.phone,10)='" + barcode+"'";
+                    " WHERE clients.code='" + barcode + "' OR right(clients.phone,10)='" + barcode+ "' AND clients.its_work = 1 ";
 
                 NpgsqlDataReader reader = command.ExecuteReader();
 
@@ -2975,9 +3065,28 @@ namespace Cash8
 
                 if (Convert.ToInt32(this.listView1.SelectedItems[0].SubItems[3].Text) > Convert.ToInt32(this.enter_quantity.Text))
                 {
+                    //MessageBox.Show("Не администраторам запрещено менять количество на меньшее");
+                    ///////////////////////////////////////////////////////////////
+                    if (MainStaticClass.Code_right_of_user != 1)
+                    {
+                        Interface_switching isw = new Interface_switching();
+                        isw.caller_type = 3;
+                        isw.cc = this;
+                        isw.not_change_Cash_Operator = true;
+                        isw.ShowDialog();
+                        isw.Dispose();
+
+                        if (!enable_delete)
+                        {
+                            MessageBox.Show("Вам запрещено менять количество на меньшее");
+                            //this.enter_quantity.Text = "0";
+                            return;
+                        }
+                    }
+                    ////////////////////////////////////////////////////////////////
                     //if (!this.inventory.Checked)
                     //{
-                        this.enter_quantity.Text = "0";
+                    
                         //if (MainStaticClass.Use_Trassir >0)
                         //{
                         //    string s = MainStaticClass.get_string_message_for_trassir("POSNG_POSITION_AMOUNT_DECREASE_BEGIN", numdoc.ToString(), MainStaticClass.Cash_Operator, DateTime.Now.Date.ToString("MM'/'dd'/'yyyy"), DateTime.Now.ToString("HH:mm:ss"), this.listView1.SelectedItems[0].Index.ToString(), this.enter_quantity.Text, "", "", "", MainStaticClass.CashDeskNumber.ToString(), "");
@@ -2985,13 +3094,13 @@ namespace Cash8
                         //    s = MainStaticClass.get_string_message_for_trassir("POSNG_POSITION_AMOUNT_DECREASE_FAIL", numdoc.ToString(), MainStaticClass.Cash_Operator, DateTime.Now.Date.ToString("MM'/'dd'/'yyyy"), DateTime.Now.ToString("HH:mm:ss"), this.listView1.SelectedItems[0].Index.ToString(), this.enter_quantity.Text, "", "", "", MainStaticClass.CashDeskNumber.ToString(), "");
                         //    MainStaticClass.send_data_trassir(s);
                         //}
-                        MessageBox.Show("Запрещено менять количество на меньшее");
+                        //MessageBox.Show("Запрещено менять количество на меньшее");
                         //this.enter_quantity.Visible = false;
-                        this.enter_quantity.Visible = false;
-                        this.panel1.Visible = false;
-                        this.listView1.Select();
+                        //this.enter_quantity.Visible = false;
+                        //this.panel1.Visible = false;
+                        //this.listView1.Select();
                         //this.Refresh();
-                        return;
+                        //return;
                     //}
                     // MainStaticClass.write_event_in_log("Изм кол-ва на меньшее,код "+this.listView1.SelectedItems[0].SubItems[0].Text+" было " + this.listView1.SelectedItems[0].SubItems[2].Text + " стало " + this.enter_quantity.Text, "Документ чек",numdoc.ToString()); 
                 }
@@ -3016,7 +3125,7 @@ namespace Cash8
  
                 }
 
-                this.listView1.SelectedItems[0].SubItems[3].Text = this.enter_quantity.Text;
+                this.listView1.SelectedItems[0].SubItems[3].Text = Convert.ToInt16(this.enter_quantity.Text).ToString();
                 //**********************
                 recalculate_all();
                 calculation_of_the_sum_of_the_document();
