@@ -3083,24 +3083,27 @@ namespace Cash8
                             return;
                         }
                     }
+
+                    insert_incident_record(Convert.ToInt16(listView1.SelectedItems[0].SubItems[0].Text), Convert.ToInt16(listView1.SelectedItems[0].SubItems[3].Text)- Convert.ToInt32(this.enter_quantity.Text), 1);
+
                     ////////////////////////////////////////////////////////////////
                     //if (!this.inventory.Checked)
                     //{
-                    
-                        //if (MainStaticClass.Use_Trassir >0)
-                        //{
-                        //    string s = MainStaticClass.get_string_message_for_trassir("POSNG_POSITION_AMOUNT_DECREASE_BEGIN", numdoc.ToString(), MainStaticClass.Cash_Operator, DateTime.Now.Date.ToString("MM'/'dd'/'yyyy"), DateTime.Now.ToString("HH:mm:ss"), this.listView1.SelectedItems[0].Index.ToString(), this.enter_quantity.Text, "", "", "", MainStaticClass.CashDeskNumber.ToString(), "");
-                        //    MainStaticClass.send_data_trassir(s);
-                        //    s = MainStaticClass.get_string_message_for_trassir("POSNG_POSITION_AMOUNT_DECREASE_FAIL", numdoc.ToString(), MainStaticClass.Cash_Operator, DateTime.Now.Date.ToString("MM'/'dd'/'yyyy"), DateTime.Now.ToString("HH:mm:ss"), this.listView1.SelectedItems[0].Index.ToString(), this.enter_quantity.Text, "", "", "", MainStaticClass.CashDeskNumber.ToString(), "");
-                        //    MainStaticClass.send_data_trassir(s);
-                        //}
-                        //MessageBox.Show("Запрещено менять количество на меньшее");
-                        //this.enter_quantity.Visible = false;
-                        //this.enter_quantity.Visible = false;
-                        //this.panel1.Visible = false;
-                        //this.listView1.Select();
-                        //this.Refresh();
-                        //return;
+
+                    //if (MainStaticClass.Use_Trassir >0)
+                    //{
+                    //    string s = MainStaticClass.get_string_message_for_trassir("POSNG_POSITION_AMOUNT_DECREASE_BEGIN", numdoc.ToString(), MainStaticClass.Cash_Operator, DateTime.Now.Date.ToString("MM'/'dd'/'yyyy"), DateTime.Now.ToString("HH:mm:ss"), this.listView1.SelectedItems[0].Index.ToString(), this.enter_quantity.Text, "", "", "", MainStaticClass.CashDeskNumber.ToString(), "");
+                    //    MainStaticClass.send_data_trassir(s);
+                    //    s = MainStaticClass.get_string_message_for_trassir("POSNG_POSITION_AMOUNT_DECREASE_FAIL", numdoc.ToString(), MainStaticClass.Cash_Operator, DateTime.Now.Date.ToString("MM'/'dd'/'yyyy"), DateTime.Now.ToString("HH:mm:ss"), this.listView1.SelectedItems[0].Index.ToString(), this.enter_quantity.Text, "", "", "", MainStaticClass.CashDeskNumber.ToString(), "");
+                    //    MainStaticClass.send_data_trassir(s);
+                    //}
+                    //MessageBox.Show("Запрещено менять количество на меньшее");
+                    //this.enter_quantity.Visible = false;
+                    //this.enter_quantity.Visible = false;
+                    //this.panel1.Visible = false;
+                    //this.listView1.Select();
+                    //this.Refresh();
+                    //return;
                     //}
                     // MainStaticClass.write_event_in_log("Изм кол-ва на меньшее,код "+this.listView1.SelectedItems[0].SubItems[0].Text+" было " + this.listView1.SelectedItems[0].SubItems[2].Text + " стало " + this.enter_quantity.Text, "Документ чек",numdoc.ToString()); 
                 }

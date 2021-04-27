@@ -516,7 +516,11 @@ namespace Cash8
                 }
                 reader.Close();
                 reader.Dispose();
-                conn.Close();
+
+                if (deletedItems.ListDeletedItem.Count == 0)
+                {
+                    return;
+                }
 
                 if (!MainStaticClass.service_is_worker())
                 {
@@ -554,7 +558,7 @@ namespace Cash8
                 }
                 else
                 {
-                    MessageBox.Show("Произошли ошибки на сервере при передаче статусов клиентов");
+                    MessageBox.Show("Произошли ошибки при передаче удаленных строк");
                 }
                 command.Dispose();
                 conn.Close();
@@ -600,6 +604,11 @@ namespace Cash8
                 }
                 reader.Close();
                 reader.Dispose();
+
+                if (phonesClients.ListPhoneClient.Count == 0)
+                {
+                    return;
+                }
 
                 if (!MainStaticClass.service_is_worker())
                 {

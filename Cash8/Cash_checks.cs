@@ -384,9 +384,11 @@ namespace Cash8
                 checkBox_show_3_last_checks.Enabled = false;
             }
 
-
-            this.WindowState = FormWindowState.Normal;
-            this.BringToFront();
+            if (MainStaticClass.Code_right_of_user != 1)
+            {
+                this.WindowState = FormWindowState.Normal;
+                this.BringToFront();
+            }
         }
 
         protected override void OnClosed(EventArgs e)
