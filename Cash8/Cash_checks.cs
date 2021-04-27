@@ -354,9 +354,9 @@ namespace Cash8
             if (MainStaticClass.Code_right_of_user == 2)
             {
 
-                label2.Visible = false;
-                dateTimePicker1.Visible = false;
-                fill.Visible = false;
+                label2.Enabled = false;
+                dateTimePicker1.Enabled = false;
+                fill.Enabled = false;
 
                 //data_start.Visible = false;
                 //data_finish.Visible = false;
@@ -383,6 +383,10 @@ namespace Cash8
             {
                 checkBox_show_3_last_checks.Enabled = false;
             }
+
+
+            this.WindowState = FormWindowState.Normal;
+            this.BringToFront();
         }
 
         protected override void OnClosed(EventArgs e)
