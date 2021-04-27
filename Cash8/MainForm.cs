@@ -446,8 +446,7 @@ namespace Cash8
             public string NumPhone { get; set; }
             public string ClientCode { get; set; }
         }
-
-
+        
         public class PhonesClients : IDisposable
         {
             public string Version { get; set; }
@@ -460,6 +459,121 @@ namespace Cash8
 
             }
         }
+
+        /// <summary>
+        /// Уменьшенное количестов в чеке
+        /// или удаленная строка
+        /// </summary>
+        public class DeletedItem
+        {
+            public string num_doc { get; set; }
+            public string num_cash { get; set; }
+            public string date_time_start { get; set; }
+            public string date_time_action { get; set; }
+            public string tovar { get; set; }
+            public string quantity { get; set; }
+            public string type_of_operation { get; set; }
+        }
+
+        public class DeletedItems : IDisposable
+        {
+            public string Version { get; set; }
+            public string NickShop { get; set; }
+            public string CodeShop { get; set; }
+            public List<DeletedItem> ListDeletedItem { get; set; }
+
+            void IDisposable.Dispose()
+            {
+
+            }
+        }
+
+        private void UploadDeletedItems()
+        {
+            DeletedItems deletedItems = new DeletedItems();
+            deletedItems.CodeShop     = MainStaticClass.Code_Shop;
+            deletedItems.NickShop     = MainStaticClass.Nick_Shop;
+            deletedItems.ListDeletedItem = new List<DeletedItem>();
+            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+
+            try
+            {
+                conn.Open();
+                string query = "SELECT num_doc, num_cash, date_time_start, date_time_action, tovar, quantity, type_of_operation FROM deleted_items;";
+                NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                NpgsqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    DeletedItem deletedItem = new DeletedItem();
+                    deletedItem.num_doc = reader["num_doc"].ToString();
+                    deletedItem.num_cash = reader["num_cash"].ToString();
+                    deletedItem.date_time_start = reader["date_time_start"].ToString();
+                    deletedItem.date_time_action = reader["date_time_action"].ToString();
+                    deletedItem.tovar = reader["tovar"].ToString();
+                    deletedItem.quantity = reader["quantity"].ToString();
+                    deletedItem.type_of_operation = reader["type_of_operation"].ToString();
+                    deletedItems.ListDeletedItem.Add(deletedItem);
+                }
+                reader.Close();
+                reader.Dispose();
+                conn.Close();
+
+                if (!MainStaticClass.service_is_worker())
+                {
+                    MessageBox.Show("Веб сервис недоступен");
+                    return;
+                }
+                Cash8.DS.DS ds = MainStaticClass.get_ds();
+                ds.Timeout = 20000;
+
+                //Получить параметра для запроса на сервер 
+                string nick_shop = MainStaticClass.Nick_Shop.Trim();
+                if (nick_shop.Trim().Length == 0)
+                {
+                    MessageBox.Show(" Не удалось получить название магазина ");
+                    return;
+                }
+
+                string code_shop = MainStaticClass.Code_Shop.Trim();
+                if (code_shop.Trim().Length == 0)
+                {
+                    MessageBox.Show(" Не удалось получить код магазина ");
+                    return;
+                }
+
+                string count_day = CryptorEngine.get_count_day();
+                string key = nick_shop.Trim() + count_day.Trim() + code_shop.Trim();
+                string data = JsonConvert.SerializeObject(deletedItems, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                string encrypt_string = CryptorEngine.Encrypt(data, true, key);
+                string answer = ds.UploadDeletedItems(nick_shop, encrypt_string);
+                if (answer == "1")
+                {
+                    query = "DELETE FROM deleted_items";
+                    command = new NpgsqlCommand(query, conn);
+                    command.ExecuteNonQuery();
+                }
+                else
+                {
+                    MessageBox.Show("Произошли ошибки на сервере при передаче статусов клиентов");
+                }
+                command.Dispose();
+                conn.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Произошли ошибки при передаче удаленных строк " + ex.Message);
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+
+        }
+
 
         private void UploadPhoneClients()
         {
@@ -486,7 +600,7 @@ namespace Cash8
                 }
                 reader.Close();
                 reader.Dispose();
-                
+
                 if (!MainStaticClass.service_is_worker())
                 {
                     MessageBox.Show("Веб сервис недоступен");
@@ -499,7 +613,7 @@ namespace Cash8
                 string nick_shop = MainStaticClass.Nick_Shop.Trim();
                 if (nick_shop.Trim().Length == 0)
                 {
-                    MessageBox.Show(" Не удалось получить название магазина ");                 
+                    MessageBox.Show(" Не удалось получить название магазина ");
                     return;
                 }
 
@@ -511,8 +625,8 @@ namespace Cash8
                 }
 
                 string count_day = CryptorEngine.get_count_day();
-                string key = nick_shop.Trim() + count_day.Trim() + code_shop.Trim();                
-                string data = JsonConvert.SerializeObject(phonesClients, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });                
+                string key = nick_shop.Trim() + count_day.Trim() + code_shop.Trim();
+                string data = JsonConvert.SerializeObject(phonesClients, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
                 string encrypt_string = CryptorEngine.Encrypt(data, true, key);
                 string answer = ds.UploadPhoneClients(nick_shop, encrypt_string);
                 if (answer == "1")
@@ -528,9 +642,9 @@ namespace Cash8
                 }
                 conn.Close();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                MessageBox.Show("Произошли ошибки при передаче телефонов клиентов "+ex.Message);
+                MessageBox.Show("Произошли ошибки при передаче телефонов клиентов " + ex.Message);
             }
             finally
             {
@@ -774,8 +888,7 @@ namespace Cash8
             get_pass_on_bonus_programm();
             //}            
             //check_and_update_npgsql();
-           
-
+            UploadDeletedItems();
         }
 
 
@@ -1155,7 +1268,7 @@ namespace Cash8
             sdsp.send_sales_data_Click(null, null);
             sdsp.Dispose();
             UploadPhoneClients();
-
+            UploadDeletedItems();
         }
 
 

@@ -61,6 +61,8 @@ namespace Cash8.DS {
         
         private System.Threading.SendOrPostCallback UploadPhoneClientsOperationCompleted;
         
+        private System.Threading.SendOrPostCallback UploadDeletedItemsOperationCompleted;
+        
         private System.Threading.SendOrPostCallback UploadCodeClientsOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetDataForCasheV8JasonOperationCompleted;
@@ -160,6 +162,9 @@ namespace Cash8.DS {
         
         /// <remarks/>
         public event UploadPhoneClientsCompletedEventHandler UploadPhoneClientsCompleted;
+        
+        /// <remarks/>
+        public event UploadDeletedItemsCompletedEventHandler UploadDeletedItemsCompleted;
         
         /// <remarks/>
         public event UploadCodeClientsCompletedEventHandler UploadCodeClientsCompleted;
@@ -662,6 +667,37 @@ namespace Cash8.DS {
             if ((this.UploadPhoneClientsCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.UploadPhoneClientsCompleted(this, new UploadPhoneClientsCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/UploadDeletedItems", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public string UploadDeletedItems(string nick_shop, string data) {
+            object[] results = this.Invoke("UploadDeletedItems", new object[] {
+                        nick_shop,
+                        data});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void UploadDeletedItemsAsync(string nick_shop, string data) {
+            this.UploadDeletedItemsAsync(nick_shop, data, null);
+        }
+        
+        /// <remarks/>
+        public void UploadDeletedItemsAsync(string nick_shop, string data, object userState) {
+            if ((this.UploadDeletedItemsOperationCompleted == null)) {
+                this.UploadDeletedItemsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnUploadDeletedItemsOperationCompleted);
+            }
+            this.InvokeAsync("UploadDeletedItems", new object[] {
+                        nick_shop,
+                        data}, this.UploadDeletedItemsOperationCompleted, userState);
+        }
+        
+        private void OnUploadDeletedItemsOperationCompleted(object arg) {
+            if ((this.UploadDeletedItemsCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.UploadDeletedItemsCompleted(this, new UploadDeletedItemsCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -1306,6 +1342,32 @@ namespace Cash8.DS {
         private object[] results;
         
         internal UploadPhoneClientsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1590.0")]
+    public delegate void UploadDeletedItemsCompletedEventHandler(object sender, UploadDeletedItemsCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1590.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class UploadDeletedItemsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal UploadDeletedItemsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }

@@ -227,6 +227,21 @@
           </s:sequence>
         </s:complexType>
       </s:element>
+      <s:element name="UploadDeletedItems">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="nick_shop" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="data" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UploadDeletedItemsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UploadDeletedItemsResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
       <s:element name="UploadCodeClients">
         <s:complexType>
           <s:sequence>
@@ -430,6 +445,12 @@
   <wsdl:message name="UploadPhoneClientsSoapOut">
     <wsdl:part name="parameters" element="tns:UploadPhoneClientsResponse" />
   </wsdl:message>
+  <wsdl:message name="UploadDeletedItemsSoapIn">
+    <wsdl:part name="parameters" element="tns:UploadDeletedItems" />
+  </wsdl:message>
+  <wsdl:message name="UploadDeletedItemsSoapOut">
+    <wsdl:part name="parameters" element="tns:UploadDeletedItemsResponse" />
+  </wsdl:message>
   <wsdl:message name="UploadCodeClientsSoapIn">
     <wsdl:part name="parameters" element="tns:UploadCodeClients" />
   </wsdl:message>
@@ -536,6 +557,10 @@
     <wsdl:operation name="UploadPhoneClients">
       <wsdl:input message="tns:UploadPhoneClientsSoapIn" />
       <wsdl:output message="tns:UploadPhoneClientsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="UploadDeletedItems">
+      <wsdl:input message="tns:UploadDeletedItemsSoapIn" />
+      <wsdl:output message="tns:UploadDeletedItemsSoapOut" />
     </wsdl:operation>
     <wsdl:operation name="UploadCodeClients">
       <wsdl:input message="tns:UploadCodeClientsSoapIn" />
@@ -705,6 +730,15 @@
     </wsdl:operation>
     <wsdl:operation name="UploadPhoneClients">
       <soap:operation soapAction="http://tempuri.org/UploadPhoneClients" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UploadDeletedItems">
+      <soap:operation soapAction="http://tempuri.org/UploadDeletedItems" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -915,6 +949,15 @@
     </wsdl:operation>
     <wsdl:operation name="UploadPhoneClients">
       <soap12:operation soapAction="http://tempuri.org/UploadPhoneClients" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UploadDeletedItems">
+      <soap12:operation soapAction="http://tempuri.org/UploadDeletedItems" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
