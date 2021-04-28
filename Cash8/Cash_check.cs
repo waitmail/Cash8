@@ -2006,7 +2006,11 @@ namespace Cash8
                             input_Action_Barcode.ShowDialog();
                             if (this.qr_code != "")//Был введен qr код необходимо его внести в чек
                             {
-                                lvi.SubItems[14].Text = this.qr_code;//добавим в чек qr код
+                                //Проверим введенный код маркировки на правильность
+                                if ((this.qr_code.Substring(0, 2) == "01") && (this.qr_code.Substring(16, 2) == "21"))
+                                {
+                                    lvi.SubItems[14].Text = this.qr_code;//добавим в чек qr код
+                                }                                
                                 this.qr_code = "";//обнулим переменную 
                             }
                         }
