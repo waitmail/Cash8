@@ -2010,7 +2010,11 @@ namespace Cash8
                                 if ((this.qr_code.Substring(0, 2) == "01") && (this.qr_code.Substring(16, 2) == "21"))
                                 {
                                     lvi.SubItems[14].Text = this.qr_code;//добавим в чек qr код
-                                }                                
+                                }
+                                else
+                                {
+                                    MessageBox.Show("Введен невернй код маркировки, попробуйте еще раз.");
+                                }
                                 this.qr_code = "";//обнулим переменную 
                             }
                         }
