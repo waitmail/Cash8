@@ -837,7 +837,7 @@ namespace Cash8
             }
 
             //queries.Add("UPDATE date_sync SET tovar='" + DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd")+"'");
-            queries.Add("INSERT INTO date_sync(tovar) VALUES('" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss") + "')");
+            //queries.Add("INSERT INTO date_sync(tovar) VALUES('" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss") + "')");
             
             NpgsqlConnection conn = null;
             NpgsqlTransaction tran = null;
@@ -855,6 +855,18 @@ namespace Cash8
                     command.Transaction = tran;
                     command.ExecuteNonQuery();
                 }
+                //Обновление даты последнего обновления 
+                string query = "UPDATE date_sync SET tovar = '" + DateTime.Now.ToString("yyyy-MM-dd")+"'";
+                command = new NpgsqlCommand(query, conn);
+                command.Transaction = tran;
+                if (command.ExecuteNonQuery() == 0)
+                {
+                    query = "INSERT INTO date_sync(tovar) VALUES('" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss") + "')";
+                    command = new NpgsqlCommand(query, conn);
+                    command.Transaction = tran;
+                    command.ExecuteNonQuery();
+                }
+
                 queries.Clear();
                 queries = null;
                 tran.Commit();                

@@ -1248,6 +1248,10 @@ namespace Cash8
                 if (Convert.ToDecimal(lvi.SubItems[4].Text.Replace(".", ",")) > 1)
                 //if (decimal.Parse(lvi.SubItems[3].Text.Replace(".",",")) > 1)
                 {
+                    if (its_certificate(lvi.SubItems[0].Text) == "1")//Сертификаты с копейками не работают
+                    {
+                        continue;
+                    }
                     part_on_string = Math.Round(Convert.ToDecimal(lvi.SubItems[7].Text) * part, 2);
 
 
@@ -1993,31 +1997,40 @@ namespace Cash8
                         lvi.SubItems.Add("0");//Бонус1
                         lvi.SubItems.Add("0");//Бонус2
                         lvi.SubItems.Add("0");//Маркер
-                        //listView1.Items.Add(lvi);
-                        //listView1.Select();
-                        //listView1.Items[this.listView1.Items.Count - 1].Selected = true;
-                        //update_record_last_tovar(listView1.Items[this.listView1.Items.Count - 1].SubItems[1].Text, listView1.Items[this.listView1.Items.Count - 1].SubItems[3].Text);
+                                              //listView1.Items.Add(lvi);
+                                              //listView1.Select();
+                                              //listView1.Items[this.listView1.Items.Count - 1].Selected = true;
+                                              //update_record_last_tovar(listView1.Items[this.listView1.Items.Count - 1].SubItems[1].Text, listView1.Items[this.listView1.Items.Count - 1].SubItems[3].Text);
+
                         if (check_marker_code(select_tovar.Tag.ToString()) > 0)
                         {
-                            this.qr_code = "";
-                            Input_action_barcode input_Action_Barcode = new Input_action_barcode();
-                            input_Action_Barcode.call_type = 6;
-                            input_Action_Barcode.caller = this;
-                            input_Action_Barcode.ShowDialog();
-                            if (this.qr_code != "")//Был введен qr код необходимо его внести в чек
+                            if (!Console.CapsLock)
                             {
-                                //Проверим введенный код маркировки на правильность
-                                if ((this.qr_code.Substring(0, 2) == "01") && (this.qr_code.Substring(16, 2) == "21"))
+                                this.qr_code = "";
+                                Input_action_barcode input_Action_Barcode = new Input_action_barcode();
+                                input_Action_Barcode.call_type = 6;
+                                input_Action_Barcode.caller = this;
+                                input_Action_Barcode.ShowDialog();
+                                if (this.qr_code != "")//Был введен qr код необходимо его внести в чек
                                 {
-                                    lvi.SubItems[14].Text = this.qr_code;//добавим в чек qr код
+                                    //Проверим введенный код маркировки на правильность
+                                    if ((this.qr_code.Substring(0, 2) == "01") && (this.qr_code.Substring(16, 2) == "21"))
+                                    {
+                                        lvi.SubItems[14].Text = this.qr_code;//добавим в чек qr код
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show("Введен невернй код маркировки, попробуйте еще раз.");
+                                    }
+                                    this.qr_code = "";//обнулим переменную 
                                 }
-                                else
-                                {
-                                    MessageBox.Show("Введен невернй код маркировки, попробуйте еще раз.");
-                                }
-                                this.qr_code = "";//обнулим переменную 
+                            }
+                            else
+                            {
+                                MessageBox.Show("У вас нажата клавиша CapsLock, ввод кода маркировки невозможен");
                             }
                         }
+                                                
                         listView1.Items.Add(lvi);
                         SendDataToCustomerScreen(1);
                         listView1.Select();

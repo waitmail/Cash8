@@ -1211,7 +1211,8 @@ namespace Cash8
 
 
         private void button1_Click(object sender, EventArgs e)
-        {           
+        {
+            MessageBox.Show("Список введённых подарков будет очищен.При следующем переходе в окно оплаты необходимо повторить их ввод, если программа предложит это сделать.");
             cc.cancel_action();
             //записать в лог что кассир вернулся в документ 
             MainStaticClass.write_event_in_log("Возврат в документ из окна оплата", "Документ чек",cc.numdoc.ToString());            
