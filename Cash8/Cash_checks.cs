@@ -343,6 +343,7 @@ namespace Cash8
             listView1.Columns.Add("Сдача", 100, HorizontalAlignment.Right);
             listView1.Columns.Add("Тип чека ", 100, HorizontalAlignment.Right);
             listView1.Columns.Add("Коментарий", 300, HorizontalAlignment.Right);
+            listView1.Columns.Add("Номер", 300, HorizontalAlignment.Right);
 
             //listView1.Columns.Add("Инвентаризация", 100, HorizontalAlignment.Right);
 
@@ -516,7 +517,7 @@ namespace Cash8
                     "checks_header.comment,"+
                     //"checks_header.inventory,"+
                     "checks_header.its_print,"+
-                    "checks_header.check_type  FROM checks_header left join clients ON checks_header.client=clients.code WHERE checks_header.date_time_write BETWEEN '" + dateTimePicker1.Value.ToString("yyy-MM-dd") + " 00:00:00" + "' and '" + dateTimePicker1.Value.AddDays(1).ToString("yyy-MM-dd") + " 00:00:00" + "' AND its_deleted<2 order by checks_header.date_time_write  ";
+                    "checks_header.check_type,checks_header.document_number  FROM checks_header left join clients ON checks_header.client=clients.code WHERE checks_header.date_time_write BETWEEN '" + dateTimePicker1.Value.ToString("yyy-MM-dd") + " 00:00:00" + "' and '" + dateTimePicker1.Value.AddDays(1).ToString("yyy-MM-dd") + " 00:00:00" + "' AND its_deleted<2 order by checks_header.date_time_write  ";
                 if (checkBox_show_3_last_checks.CheckState == CheckState.Checked)
                 {
                     myQuery += " desc limit 3 ";
@@ -556,7 +557,8 @@ namespace Cash8
                             }
                         }
                     }
-                    
+                    lvi.SubItems.Add(reader["document_number"].ToString()); 
+
                     listView1.Items.Add(lvi);
                 }
                 reader.Close();

@@ -204,7 +204,7 @@ namespace Cash8
         {
             if (e.KeyData == Keys.Delete)
             {
-                if (listView1.Items.Count > 0)
+                if (listView1.Items.Count > 1)
                 {
                     ///////////////////////////////////////////////////////////////
                     if (MainStaticClass.Code_right_of_user != 1)
@@ -230,12 +230,16 @@ namespace Cash8
                         }
                     }
                     else
-                    {                        
+                    {
                         insert_incident_record(Convert.ToInt16(listView1.SelectedItems[0].SubItems[0].Text), Convert.ToInt16(listView1.SelectedItems[0].SubItems[3].Text), 0);
                         listView1.Items.Remove(listView1.SelectedItems[0]);
                         calculation_of_the_sum_of_the_document();
                         write_new_document("0", calculation_of_the_sum_of_the_document().ToString().Replace(",", "."), "0", "0", false, "0", "0", "0", "1"); //Это удаляемый документ                            
                     }
+                }
+                else if (listView1.Items.Count == 1)
+                {                           
+                    MessageBox.Show("Единственную строку удалить нельзя, можно только удалить документ целиком");
                 }
             }
         }
@@ -3944,6 +3948,12 @@ namespace Cash8
         private void fiscall_print_pay(string pay)
         {
 
+            if (MainStaticClass.SystemTaxation == 0)
+            {
+                MessageBox.Show("В константах не опрелена система налогобложения, печать чеков невозможна");
+                return;
+            }
+
             bool error = false;
 
 
@@ -3963,15 +3973,17 @@ namespace Cash8
             FiscallPrintJason.Check check = new FiscallPrintJason.Check();
             check.type = "sell";
             
-            if (DateTime.Now > new DateTime(2021, 1, 1))
-            {
-                check.taxationType = (MainStaticClass.UsnIncomeOutcome ? "usnIncomeOutcome" : "osn");
-            }
-            else
-            {
-                check.taxationType = (MainStaticClass.Use_Envd ? "envd" : "osn");
-            }            
-                        
+            //if (DateTime.Now > new DateTime(2021, 1, 1))
+            //{
+            //    check.taxationType = (MainStaticClass.UsnIncomeOutcome ? "usnIncomeOutcome" : "osn");
+            //}
+            //else
+            //{
+            //    check.taxationType = (MainStaticClass.Use_Envd ? "envd" : "osn");
+            //}
+
+            check.taxationType = (MainStaticClass.SystemTaxation==1 ?  "osn" : "usnIncomeOutcome");
+
             check.ignoreNonFiscalPrintErrors = false;
             check.@operator = new FiscallPrintJason.Operator();
             check.@operator.name = MainStaticClass.Cash_Operator; 
@@ -3988,7 +4000,7 @@ namespace Cash8
                 {
                     if (Convert.ToDouble(lvi.SubItems[7].Text) != 0)
                     {
-                        if (!MainStaticClass.UsnIncomeOutcome)
+                        if (MainStaticClass.SystemTaxation == 1)
                         {
                             int stavka_nds = get_tovar_nds(lvi.SubItems[0].Text.Trim());
                             //nomer_naloga = 0;
@@ -4408,6 +4420,12 @@ namespace Cash8
         private void fiscall_print_disburse(string cash_money, string non_cash_money)
         {
 
+            if (MainStaticClass.SystemTaxation == 0)
+            {
+                MessageBox.Show("В константах не опрелена система налогобложения, печать чеков невозможна");
+                return;
+            }
+
             string output = calculation_of_the_sum_of_the_document().ToString();
             if (itsnew)
             {
@@ -4436,9 +4454,8 @@ namespace Cash8
                 closing = false;
 
                 FiscallPrintJason.Check check = new FiscallPrintJason.Check();
-                check.type = "sellReturn";
-                //check.taxationType = (MainStaticClass.Use_Envd ? "envd" : "osn");
-                check.taxationType = (MainStaticClass.UsnIncomeOutcome ? "usnIncomeOutcome" : "osn");
+                check.type = "sellReturn";                
+                check.taxationType = (MainStaticClass.SystemTaxation==1 ? "osn" : "usnIncomeOutcome");
                 
                 check.ignoreNonFiscalPrintErrors = false;
                 check.@operator = new FiscallPrintJason.Operator();
@@ -4466,7 +4483,7 @@ namespace Cash8
                             //{
                                 int stavka_nds = get_tovar_nds(lvi.SubItems[0].Text.Trim());
                             //int nomer_naloga = 0;
-                            if (!MainStaticClass.UsnIncomeOutcome)
+                            if (MainStaticClass.SystemTaxation==1)
                             {
                                 if (stavka_nds == 0)
                                 {

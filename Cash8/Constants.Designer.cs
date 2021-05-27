@@ -43,9 +43,8 @@
             this.label11 = new System.Windows.Forms.Label();
             this.txtB_last_date_download_bonus_clients = new System.Windows.Forms.TextBox();
             this.label14 = new System.Windows.Forms.Label();
-            this.checkBox_envd = new System.Windows.Forms.CheckBox();
             this.checkBox_print_m = new System.Windows.Forms.CheckBox();
-            this.checkBox_osn_usnIncomeOutcome = new System.Windows.Forms.CheckBox();
+            this.comboBox_system_taxation = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // cash_desk_number
@@ -181,45 +180,35 @@
             this.label14.TabIndex = 54;
             this.label14.Text = "Дата последней загрузки карточек покупателей";
             // 
-            // checkBox_envd
-            // 
-            this.checkBox_envd.AutoSize = true;
-            this.checkBox_envd.Enabled = false;
-            this.checkBox_envd.Location = new System.Drawing.Point(11, 100);
-            this.checkBox_envd.Name = "checkBox_envd";
-            this.checkBox_envd.Size = new System.Drawing.Size(168, 17);
-            this.checkBox_envd.TabIndex = 60;
-            this.checkBox_envd.Text = "Магазин работает по ЕНВД";
-            this.checkBox_envd.UseVisualStyleBackColor = true;
-            // 
             // checkBox_print_m
             // 
             this.checkBox_print_m.AutoSize = true;
-            this.checkBox_print_m.Location = new System.Drawing.Point(11, 123);
+            this.checkBox_print_m.Location = new System.Drawing.Point(11, 103);
             this.checkBox_print_m.Name = "checkBox_print_m";
             this.checkBox_print_m.Size = new System.Drawing.Size(170, 17);
             this.checkBox_print_m.TabIndex = 61;
             this.checkBox_print_m.Text = "Печатать [M] перед товаром";
             this.checkBox_print_m.UseVisualStyleBackColor = true;
             // 
-            // checkBox_osn_usnIncomeOutcome
+            // comboBox_system_taxation
             // 
-            this.checkBox_osn_usnIncomeOutcome.AutoSize = true;
-            this.checkBox_osn_usnIncomeOutcome.Location = new System.Drawing.Point(11, 147);
-            this.checkBox_osn_usnIncomeOutcome.Name = "checkBox_osn_usnIncomeOutcome";
-            this.checkBox_osn_usnIncomeOutcome.Size = new System.Drawing.Size(160, 17);
-            this.checkBox_osn_usnIncomeOutcome.TabIndex = 62;
-            this.checkBox_osn_usnIncomeOutcome.Text = "Магазин работает по УСН";
-            this.checkBox_osn_usnIncomeOutcome.UseVisualStyleBackColor = true;
+            this.comboBox_system_taxation.FormattingEnabled = true;
+            this.comboBox_system_taxation.Items.AddRange(new object[] {
+            "Не выбрано",
+            "ОСН",
+            "УСН"});
+            this.comboBox_system_taxation.Location = new System.Drawing.Point(11, 124);
+            this.comboBox_system_taxation.Name = "comboBox_system_taxation";
+            this.comboBox_system_taxation.Size = new System.Drawing.Size(191, 21);
+            this.comboBox_system_taxation.TabIndex = 63;
             // 
             // Constants
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(724, 286);
-            this.Controls.Add(this.checkBox_osn_usnIncomeOutcome);
+            this.Controls.Add(this.comboBox_system_taxation);
             this.Controls.Add(this.checkBox_print_m);
-            this.Controls.Add(this.checkBox_envd);
             this.Controls.Add(this.label14);
             this.Controls.Add(this.txtB_last_date_download_bonus_clients);
             this.Controls.Add(this.label11);
@@ -261,8 +250,7 @@
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.TextBox txtB_last_date_download_bonus_clients;
         private System.Windows.Forms.Label label14;
-        private System.Windows.Forms.CheckBox checkBox_envd;
         private System.Windows.Forms.CheckBox checkBox_print_m;
-        private System.Windows.Forms.CheckBox checkBox_osn_usnIncomeOutcome;
+        private System.Windows.Forms.ComboBox comboBox_system_taxation;
     }
 }

@@ -916,7 +916,19 @@ namespace Cash8
                 }
             }
         }
-        
+
+
+        /// <summary>
+        /// Если не заполнена новая система 
+        /// налогообложения то попытаться заполнить 
+        /// его значением из старой схемы
+        /// </summary>
+        private void check_system_taxation()
+        {
+                        
+        }
+
+
         public void add_field_Click(object sender, EventArgs e)
         {
             List<string> queries = new List<string>();            
@@ -935,7 +947,7 @@ namespace Cash8
             queries.Add("ALTER TABLE public.checks_header ADD COLUMN id_transaction character varying(10) COLLATE pg_catalog.default; COMMENT ON COLUMN public.checks_header.id_transaction IS 'Номер транзакции в процессинговом центре бонусной программы';");
             queries.Add("ALTER TABLE public.checks_header ADD COLUMN id_transaction_sale character varying(10) COLLATE pg_catalog.default;COMMENT ON COLUMN public.checks_header.id_transaction_sale IS 'Колонка ид транзакции документа продажи на основании которого вводится возврат'; ");
             queries.Add("ALTER TABLE checks_header ADD COLUMN clientInfo_vatin character varying(12);COMMENT ON COLUMN checks_header.clientInfo_vatin IS 'Инн покупателя при возврате';");
-            queries.Add("ALTER TABLE checks_header ADD COLUMN clientInfo_name character varying(200);COMMENT ON COLUMN checks_header.clientInfo_name IS 'Намиенования покупателя при возврате';");
+            queries.Add("ALTER TABLE checks_header ADD COLUMN clientInfo_name character varying(200);COMMENT ON COLUMN checks_header.clientInfo_name IS 'Наименования покупателя при возврате';");
             //queries.Add("ALTER TABLE public.checks_header ADD COLUMN cardTrack2 character varying(36) COLLATE pg_catalog.default; COMMENT ON COLUMN public.checks_header.cardTrack2    IS 'Номер бонусной карты'");
             //queries.Add("ALTER TABLE public.checks_header ADD COLUMN phone character varying(12) COLLATE pg_catalog.default; COMMENT ON COLUMN public.checks_header.phone IS 'Номер телефона бонусной карты'");
             queries.Add("ALTER TABLE checks_header ALTER COLUMN client TYPE character varying(36)");
@@ -946,9 +958,10 @@ namespace Cash8
             queries.Add("CREATE TABLE public.client_with_changed_status_to_send(client character varying(10) COLLATE pg_catalog.default NOT NULL,date_change timestamp without time zone NOT NULL,new_phone_number character varying(10) COLLATE pg_catalog.default,   CONSTRAINT client_with_changed_status_to_send_pkey PRIMARY KEY (client) )WITH(    OIDS = FALSE)TABLESPACE pg_default;        ALTER TABLE public.client_with_changed_status_to_send OWNER to postgres");
             queries.Add("ALTER TABLE action_header ADD COLUMN gift_price numeric(10, 2); ALTER TABLE action_header ALTER COLUMN gift_price SET NOT NULL;");
             queries.Add("ALTER TABLE action_header ADD COLUMN gift_price numeric(10, 2);UPDATE public.action_header SET gift_price=0; ALTER TABLE action_header ALTER COLUMN gift_price SET NOT NULL;");
-            queries.Add("ALTER TABLE constants ADD COLUMN usn_income_out_come boolean; UPDATE public.constants SET usn_income_out_come=false;");
+            //queries.Add("ALTER TABLE constants ADD COLUMN usn_income_out_come boolean; UPDATE public.constants SET usn_income_out_come=false;");
             queries.Add("ALTER TABLE checks_table ALTER COLUMN item_marker TYPE character varying(200)");
             queries.Add("CREATE TABLE deleted_items(num_doc bigint NOT NULL,num_cash smallint NOT NULL,date_time_start timestamp without time zone NOT NULL,date_time_action timestamp without time zone NOT NULL,tovar integer NOT NULL,quantity integer NOT NULL,type_of_operation smallint NOT NULL)WITH(    OIDS = FALSE)TABLESPACE pg_default;        ALTER TABLE public.deleted_items            OWNER to postgres");
+            queries.Add("ALTER TABLE public.constants ADD COLUMN system_taxation smallint NOT NULL DEFAULT 0;");
 
             foreach (string str in queries)
             {

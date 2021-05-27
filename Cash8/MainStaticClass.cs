@@ -80,7 +80,7 @@ namespace Cash8
         //private static int show_before_payment_window = -1;
         //private static int start_sum_opt_price = -1;
         private static bool use_envd = false;
-        private static bool usnIncomeOutcome = false;
+        private static int system_taxation = 0;
         private static DateTime last_send_last_successful_sending;
         private static DateTime last_write_check;
         private static DateTime min_date_work = new DateTime(2021, 1, 1);
@@ -540,15 +540,15 @@ namespace Cash8
             }
         }
 
-        public static bool UsnIncomeOutcome
+        public static int SystemTaxation
         {
             get
             {
-                return usnIncomeOutcome;
+                return system_taxation;
             }
             set
             {
-                usnIncomeOutcome = value;
+                system_taxation = value;
             }
         }
         //

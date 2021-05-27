@@ -884,8 +884,8 @@ namespace Cash8
                 this.Close();
                 return;
             }
-            
-            MainStaticClass.UsnIncomeOutcome = check_UsnIncomeOutcome();
+
+            MainStaticClass.SystemTaxation = check_system_taxation();
             MainStaticClass.delete_all_events_in_log(MainStaticClass.GetMinDateWork);
             if (MainStaticClass.Use_Fiscall_Print)
             {
@@ -1138,19 +1138,18 @@ namespace Cash8
             
             return result;
         }
-
-
-        private bool check_UsnIncomeOutcome()
+        
+        private int check_system_taxation()
         {
-            bool result = false;
+            int result = 0;
 
             NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
             try
             {
                 conn.Open();
-                string query = "SELECT usn_income_out_come FROM constants";
+                string query = "SELECT system_taxation FROM constants";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
-                result = Convert.ToBoolean(command.ExecuteScalar());
+                result = Convert.ToInt16(command.ExecuteScalar());
             }
             catch (NpgsqlException ex)
             {
@@ -1173,11 +1172,6 @@ namespace Cash8
 
             return result;
         }
-
-        
-
-
-
 
         private void check_add_field()
         {            

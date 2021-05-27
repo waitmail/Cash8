@@ -102,7 +102,7 @@ namespace Cash8
                 conn.Open();
                 string query = "SELECT nick_shop,cash_desk_number,use_debug,code_shop,"+
                     " path_for_web_service,currency,unloading_period,last_date_download_bonus_clients,"+
-                    " envd,pass_promo,print_m,usn_income_out_come FROM constants";
+                    " envd,pass_promo,print_m,system_taxation FROM constants";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
@@ -119,10 +119,12 @@ namespace Cash8
                     this.currency.Text = reader["currency"].ToString();                    
                     this.unloading_period.Text = reader["unloading_period"].ToString();                    
                     this.txtB_last_date_download_bonus_clients.Text = (reader["last_date_download_bonus_clients"].ToString() == "" ? new DateTime(2000, 1, 1).ToString("dd-MM-yyyy") : Convert.ToDateTime(reader["last_date_download_bonus_clients"]).ToString("dd-MM-yyyy"));
-                    this.checkBox_envd.CheckState = (reader["envd"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
+                    //this.checkBox_envd.CheckState = (reader["envd"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
                     this.checkBox_print_m.CheckState = (reader["print_m"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
-                    this.checkBox_osn_usnIncomeOutcome.CheckState = (reader["usn_income_out_come"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
-                    
+                    //this.checkBox_osn_usnIncomeOutcome.CheckState = (reader["usn_income_out_come"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
+                    this.comboBox_system_taxation.SelectedIndex = Convert.ToInt16(reader["system_taxation"]);
+
+
                 }
                 reader.Close();                
             }
@@ -248,9 +250,8 @@ namespace Cash8
                 }
             }
                         
-            string envd = ( checkBox_envd.CheckState ==CheckState.Unchecked ? "false" : "true");
             string print_m = (checkBox_print_m.CheckState == CheckState.Unchecked ? "false" : "true");
-            string usn_income_out_come = (checkBox_osn_usnIncomeOutcome.CheckState == CheckState.Unchecked ? "false" : "true");
+            //string usn_income_out_come = (checkBox_osn_usnIncomeOutcome.CheckState == CheckState.Unchecked ? "false" : "true");
 
             try
             {
@@ -263,11 +264,10 @@ namespace Cash8
                     "use_debug =" + get_use_debug() + "," +
                     "path_for_web_service ='" + path_for_web_service.Text + "'," +
                     "currency ='" + currency.Text + "'," +
-                    "unloading_period =" + unloading_period.Text + "," +
-                    "envd ='" + envd + "'," +
+                    "unloading_period =" + unloading_period.Text + "," +                   
                     "print_m ='" + print_m + "'," +
                     "last_date_download_bonus_clients ='" + txtB_last_date_download_bonus_clients.Text+"',"+
-                    "usn_income_out_come = '"+ usn_income_out_come+"'";                    
+                    "system_taxation = '" + comboBox_system_taxation .SelectedIndex.ToString()+ "'";                    
        
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 int resul_update = command.ExecuteNonQuery();
@@ -280,19 +280,18 @@ namespace Cash8
                         "currency," +
                         "unloading_period," +
                         "last_date_download_bonus_clients," +
-                        "envd,"+
+                        //"envd,"+
                         "print_m,"+
-                        "usn_income_out_come) VALUES(" +
+                        "system_taxation) VALUES(" +
                         cash_desk_number.Text + ",'" +
                         nick_shop.Text + "'," +
                         get_use_debug() + ",'" +                        
                         path_for_web_service.Text + "','" +
                         currency.Text + "','" +
                         unloading_period.Text + "','" +
-                        txtB_last_date_download_bonus_clients.Text + "','" +
-                        envd + "','"+
+                        txtB_last_date_download_bonus_clients.Text + "','" +                       
                         print_m+"','"+
-                        usn_income_out_come+"')";
+                        comboBox_system_taxation.SelectedIndex.ToString()+ "')";
 
                     command = new NpgsqlCommand(query, conn);
                     command.ExecuteNonQuery();
