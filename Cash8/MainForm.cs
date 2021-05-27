@@ -875,15 +875,15 @@ namespace Cash8
 
             MainStaticClass.delete_old_checks(MainStaticClass.GetMinDateWork);
             get_users();
-            MainStaticClass.Use_Envd = check_envd();
-            if (DateTime.Now > new DateTime(2021, 1, 1) && (MainStaticClass.Use_Envd))
-            {
-                MessageBox.Show("Схема ЕНВД в 1 января 2021 года не работает, необходимо это исправить");
-                Constants constants = new Constants();
-                constants.ShowDialog();                
-                this.Close();
-                return;
-            }
+            //MainStaticClass.Use_Envd = check_envd();
+            //if (DateTime.Now > new DateTime(2021, 1, 1) && (MainStaticClass.Use_Envd))
+            //{
+            //    MessageBox.Show("Схема ЕНВД в 1 января 2021 года не работает, необходимо это исправить");
+            //    Constants constants = new Constants();
+            //    constants.ShowDialog();                
+            //    this.Close();
+            //    return;
+            //}
 
             MainStaticClass.SystemTaxation = check_system_taxation();
             MainStaticClass.delete_all_events_in_log(MainStaticClass.GetMinDateWork);

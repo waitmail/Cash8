@@ -79,7 +79,7 @@ namespace Cash8
         private static string path_for_web_service = "";
         //private static int show_before_payment_window = -1;
         //private static int start_sum_opt_price = -1;
-        private static bool use_envd = false;
+        //private static bool use_envd = false;
         private static int system_taxation = 0;
         private static DateTime last_send_last_successful_sending;
         private static DateTime last_write_check;
@@ -528,17 +528,17 @@ namespace Cash8
 
 
 
-        public static bool Use_Envd
-        {
-            get
-            {
-                return use_envd;
-            }
-            set
-            {
-                use_envd = value;
-            }
-        }
+        //public static bool Use_Envd
+        //{
+        //    get
+        //    {
+        //        return use_envd;
+        //    }
+        //    set
+        //    {
+        //        use_envd = value;
+        //    }
+        //}
 
         public static int SystemTaxation
         {

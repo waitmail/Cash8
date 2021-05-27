@@ -922,10 +922,44 @@ namespace Cash8
         /// Если не заполнена новая система 
         /// налогообложения то попытаться заполнить 
         /// его значением из старой схемы
+        /// если считывается истина то оогда магазин работает по усн
         /// </summary>
         private void check_system_taxation()
         {
-                        
+            if (MainStaticClass.SystemTaxation == 0)//Система налообложения не определена
+            {
+                NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+                try
+                {
+                    conn.Open();
+                    string query = "SELECT usn_income_out_come FROM constants";
+                    NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                    bool result = Convert.ToBoolean(command.ExecuteScalar());
+                    if (!result)
+                    {
+                        query = "UPDATE constants SET system_taxation = 1";
+                    }
+                    else
+                    {
+                        query = "UPDATE constants SET system_taxation = 2";
+                    }
+
+                    command = new NpgsqlCommand(query, conn);
+                    command.ExecuteNonQuery();
+                    command.Dispose();
+                }
+                catch (NpgsqlException ex)
+                {
+                    MessageBox.Show("Ошибка при считывании системы налогообложения по старой схеме, проверьте константы "+ex.Message );
+                }
+                finally
+                {
+                    if (conn.State == ConnectionState.Open)
+                    {
+                        conn.Close();
+                    }
+                }
+            }                        
         }
 
 
@@ -970,6 +1004,7 @@ namespace Cash8
 
             check_and_correct();
             check_and_correct_date_sync();
+            check_system_taxation();
 
             MessageBox.Show(" Дополнительные колонки добавлены ");
         }
