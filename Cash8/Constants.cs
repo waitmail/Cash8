@@ -318,6 +318,6 @@ namespace Cash8
             {
                 return false.ToString();
             }
-        }      
+        }
     }
 }

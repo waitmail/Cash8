@@ -950,7 +950,7 @@ namespace Cash8
                 }
                 catch (NpgsqlException ex)
                 {
-                    MessageBox.Show("Ошибка при считывании системы налогообложения по старой схеме, проверьте константы "+ex.Message );
+                    MessageBox.Show("Ошибка при считывании системы налогообложения по старой схеме, проверьте константы, в частности ситстему налогообложения  "+ex.Message );
                 }
                 finally
                 {
@@ -1004,7 +1004,10 @@ namespace Cash8
 
             check_and_correct();
             check_and_correct_date_sync();
-            check_system_taxation();
+            //if (MainStaticClass.CashDeskNumber != 9)
+            //{
+                check_system_taxation();
+            //}
 
             MessageBox.Show(" Дополнительные колонки добавлены ");
         }

@@ -45,6 +45,7 @@
             this.label14 = new System.Windows.Forms.Label();
             this.checkBox_print_m = new System.Windows.Forms.CheckBox();
             this.comboBox_system_taxation = new System.Windows.Forms.ComboBox();
+            this.lbl_system_taxation = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // cash_desk_number
@@ -197,16 +198,25 @@
             "Не выбрано",
             "ОСН",
             "УСН"});
-            this.comboBox_system_taxation.Location = new System.Drawing.Point(11, 124);
+            this.comboBox_system_taxation.Location = new System.Drawing.Point(177, 141);
             this.comboBox_system_taxation.Name = "comboBox_system_taxation";
-            this.comboBox_system_taxation.Size = new System.Drawing.Size(191, 21);
+            this.comboBox_system_taxation.Size = new System.Drawing.Size(300, 21);
             this.comboBox_system_taxation.TabIndex = 63;
+            // 
+            // lbl_system_taxation
+            // 
+            this.lbl_system_taxation.Location = new System.Drawing.Point(12, 131);
+            this.lbl_system_taxation.Name = "lbl_system_taxation";
+            this.lbl_system_taxation.Size = new System.Drawing.Size(100, 31);
+            this.lbl_system_taxation.TabIndex = 64;
+            this.lbl_system_taxation.Text = "Система налогообложения";
             // 
             // Constants
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(724, 286);
+            this.Controls.Add(this.lbl_system_taxation);
             this.Controls.Add(this.comboBox_system_taxation);
             this.Controls.Add(this.checkBox_print_m);
             this.Controls.Add(this.label14);
@@ -252,5 +262,6 @@
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.CheckBox checkBox_print_m;
         private System.Windows.Forms.ComboBox comboBox_system_taxation;
+        private System.Windows.Forms.Label lbl_system_taxation;
     }
 }
