@@ -78,6 +78,7 @@ namespace Cash8
         public class CustomerScreen
         {           
             public List<CheckPosition> ListCheckPositions { get; set; }
+            public int show_price { get; set; }
         }
 
         public class CheckPosition
@@ -86,10 +87,19 @@ namespace Cash8
             public string Quantity { get; set; }
             public string Price { get; set; }
         }
-        
-        private void SendDataToCustomerScreen(int mode)
+        /// <summary>
+        /// Если mode == 0 то тогда товары не передаются чек закрыт
+        /// mode == 1 Это отрисовка товаров 
+        /// Если show_price == 0 тогда цены не отображаются
+        /// отображаются номенклатура и количество
+        /// Если show_price == 1 тогда цены отображаются, пока 
+        /// этот режим будет доступен после перехода в окно оплаты
+        /// </summary>
+        /// <param name="mode"></param>
+        private void SendDataToCustomerScreen(int mode, int show_price)
         {
             CustomerScreen customerScreen = new CustomerScreen();
+            customerScreen.show_price = show_price;
             customerScreen.ListCheckPositions = new List<CheckPosition>();
             if (mode == 1)
             {
@@ -1678,7 +1688,7 @@ namespace Cash8
                     lvi.SubItems.Add("0");
                     lvi.SubItems.Add("0");
                     listView1.Items.Add(lvi);
-                    SendDataToCustomerScreen(1);
+                    SendDataToCustomerScreen(1,0);
                     there_are_goods = true;
                     this.listView1.Select();
                     this.listView1.Items[this.listView1.Items.Count - 1].Selected = true;
@@ -2036,7 +2046,7 @@ namespace Cash8
                         }
                                                 
                         listView1.Items.Add(lvi);
-                        SendDataToCustomerScreen(1);
+                        SendDataToCustomerScreen(1,0);
                         listView1.Select();
                         listView1.Items[this.listView1.Items.Count - 1].Selected = true;
                         update_record_last_tovar(listView1.Items[this.listView1.Items.Count - 1].SubItems[1].Text, listView1.Items[this.listView1.Items.Count - 1].SubItems[3].Text);
@@ -2180,7 +2190,7 @@ namespace Cash8
                     lvi.SubItems.Add("0");//Номер акционного документа подарок
                     lvi.SubItems.Add("0"); //Номер акционного документа дополнительное поле пометка что участвовало в акции, но скидка может быть
                     listView1.Items.Add(lvi);
-                    SendDataToCustomerScreen(1);
+                    SendDataToCustomerScreen(1,0);
                     this.listView1.Select();
                     this.listView1.Items[this.listView1.Items.Count - 1].Selected = true;
                     update_record_last_tovar(listView1.Items[this.listView1.Items.Count - 1].SubItems[1].Text, listView1.Items[this.listView1.Items.Count - 1].SubItems[4].Text);
@@ -3201,7 +3211,7 @@ namespace Cash8
             //    }
             //}
 
-            SendDataToCustomerScreen(1);
+            SendDataToCustomerScreen(1,0);
         }
 
 
@@ -3529,16 +3539,16 @@ namespace Cash8
                 if (last_rewrite)
                 {
                     itsnew = false;
-                    SendDataToCustomerScreen(0);
+                    SendDataToCustomerScreen(0,0);
                 }
                 else
                 {
                     itsnew = true;
-                    SendDataToCustomerScreen(1);
+                    SendDataToCustomerScreen(1,0);
                 }
                 if (its_deleted=="1")
                 {
-                    SendDataToCustomerScreen(0);
+                    SendDataToCustomerScreen(0,0);
                 }
                 result = true;
                 
@@ -6807,7 +6817,7 @@ namespace Cash8
                                 lvi_new.SubItems[14].Text = "0";
                                 //*****************************************************************************
                                 listView1.Items.Add(lvi_new);
-                                SendDataToCustomerScreen(1);
+                                SendDataToCustomerScreen(1,0);
                                 min_quantity = 0;
                             }
                         }
@@ -7437,7 +7447,7 @@ namespace Cash8
                         lvi.SubItems.Add("0");//lvi.SubItems[14].Text = "0";
                         //*****************************************************************************
                         listView1.Items.Add(lvi);
-                        SendDataToCustomerScreen(1);
+                        SendDataToCustomerScreen(1,0);
                     }
 
                     /*акция сработала
@@ -7594,7 +7604,7 @@ namespace Cash8
                                 lvi.SubItems.Add("0");
                                 //*****************************************************************************
                                 listView1.Items.Add(lvi);
-                                SendDataToCustomerScreen(1);
+                                SendDataToCustomerScreen(1,0);
                                 multiplication_factor--;                                
                             }
                             else
@@ -7620,7 +7630,7 @@ namespace Cash8
                                 lvi.SubItems.Add("0");
                                 //*****************************************************************************
                                 listView1.Items.Add(lvi);
-                                SendDataToCustomerScreen(1);
+                                SendDataToCustomerScreen(1,0);
                             }                           
                         }
                         else
@@ -7646,7 +7656,7 @@ namespace Cash8
                             lvi.SubItems.Add("0");
                             //*****************************************************************************
                             listView1.Items.Add(lvi);
-                            SendDataToCustomerScreen(1);
+                            SendDataToCustomerScreen(1,0);
                         }                        
                         num_records++;
                     }
@@ -7845,7 +7855,7 @@ namespace Cash8
                         lvi.SubItems[14].Text = "0";
                         //*****************************************************************************
                         listView1.Items.Add(lvi_new);
-                        SendDataToCustomerScreen(1);
+                        SendDataToCustomerScreen(1,0);
                     }
 
                     //Добавляем подарок
@@ -8233,7 +8243,7 @@ namespace Cash8
                             lvi.SubItems[14].Text = "0";
                             //*****************************************************************************
                             listView1.Items.Add(lvi);
-                            SendDataToCustomerScreen(1);
+                            SendDataToCustomerScreen(1,0);
 
                         }
                         else
@@ -8259,7 +8269,7 @@ namespace Cash8
                             lvi.SubItems[14].Text = "0";
                             //*****************************************************************************
                             listView1.Items.Add(lvi);
-                            SendDataToCustomerScreen(1);
+                            SendDataToCustomerScreen(1,0);
                         }
 
                     }
@@ -8538,7 +8548,7 @@ namespace Cash8
                 listView1.Items.Add(lvi);
             }
             write_new_document("0", "0", "0", "0", false,"0","0","0","0");
-            SendDataToCustomerScreen(1);
+            SendDataToCustomerScreen(1,0);
         }
 
         /*
@@ -8888,7 +8898,8 @@ namespace Cash8
 
                 }
             }
-            SendDataToCustomerScreen(1);
+            //При переходе в окно оплаты цены должны быть отрисованы
+            SendDataToCustomerScreen(1,1);
             dr = pay_form.ShowDialog();
             //pay_form.Dispose();
           
