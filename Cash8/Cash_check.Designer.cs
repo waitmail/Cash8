@@ -556,6 +556,7 @@
             this.btn_inpute_phone_client.TabIndex = 60;
             this.btn_inpute_phone_client.Text = "Создать";
             this.btn_inpute_phone_client.UseVisualStyleBackColor = true;
+            this.btn_inpute_phone_client.Visible = false;
             this.btn_inpute_phone_client.Click += new System.EventHandler(this.btn_inpute_phone_client_Click);
             // 
             // btn_change_status_client
@@ -668,7 +669,7 @@
             this.cash.TabIndex = 8;
             this.cash.Text = "0.00";
             this.cash.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.cash.Visible = false;            
+            this.cash.Visible = false;
             this.cash.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.cash_KeyPress);
             // 
             // Cash_check

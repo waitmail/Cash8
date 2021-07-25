@@ -284,6 +284,181 @@ namespace Cash8
         }
 
 
+        private void find_client_on_num_phone(string phone_number)
+        {        
+
+            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+            try
+            {
+                conn.Open();
+                //string query = "SELECT code FROM clients where phone LIKE'%" + txtB_client_phone.Text.Trim() + "%'";
+                //string query = "SELECT MIN(to_number(code)),code,its_work,COALESCE(bonus_is_on,0) as bonus_is_on FROM clients where right(phone,10)='" + txtB_client_phone.Text.Trim() + "'";
+                string query = "SELECT MIN(CAST(code as numeric)),code,its_work,COALESCE(bonus_is_on, 0) as bonus_is_on FROM clients where right(phone,10)= '" + phone_number + "' " +
+                    " group by code,its_work,COALESCE(bonus_is_on, 0) order by MIN(CAST(code as numeric)) limit 1";
+                NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                NpgsqlDataReader reader = command.ExecuteReader();
+                string code_client = ""; int its_work = 0; int bonus_is_on = 0;
+
+                while (reader.Read())
+                {
+                    code_client = reader["code"].ToString();
+                    its_work = Convert.ToInt16(reader["its_work"]);
+                    bonus_is_on = Convert.ToInt16(reader["bonus_is_on"]);
+                }
+                reader.Close();
+                command.Dispose();
+
+                if (code_client == "")
+                {
+                    MessageBox.Show(" По данному телефонному номеру клиент не найден ");
+                }
+                else
+                {
+                    if (its_work != 1)
+                    {
+                        MessageBox.Show("Эта карточка заблокирована");
+                        return;
+                    }
+                    else
+                    {
+                        if (bonus_is_on == 1)
+                        {
+                            if (MainStaticClass.PassPromo == "")//Бонусная программа выключена
+                            {
+                                process_client_discount(code_client);
+                            }
+                            else //бонусная программа включена и надо поискать клиента
+                            {
+                                phone = txtB_client_phone.Text.Trim();
+                                //Проверяем что за карточка 
+                                BuyerInfoResponce buyerInfoResponce = get_buyerInfo_client_code_or_phone(1, phone);
+
+                                if (buyerInfoResponce != null)
+                                {
+                                    if (buyerInfoResponce.res == "1")
+                                    {
+                                        if (buyerInfoResponce.balance.activeBalance != "0")
+                                        {
+                                            pay_form.bonus_total_in_centr.Text = ((int)Convert.ToDecimal(buyerInfoResponce.balance.activeBalance) / 100).ToString();
+                                            if (buyerInfoResponce.cards.card.state == "3")
+                                            {
+                                                pay_form.pay_bonus.Enabled = true;
+                                                this.client.BackColor = Color.Green;
+                                            }
+                                            else
+                                            {
+                                                this.client.BackColor = Color.Yellow;
+                                            }
+                                            bonus_total_centr = Convert.ToInt32(pay_form.bonus_total_in_centr.Text);
+                                        }
+
+                                        client.Text = buyerInfoResponce.buyer.firstName;
+                                        client.Tag = phone;
+                                        txtB_client_phone.Text = "";
+                                        client_barcode.Enabled = false;
+                                        txtB_client_phone.Enabled = false;
+                                    }
+                                    else
+                                    {
+                                        get_description_errors_on_code(buyerInfoResponce.res);
+                                        txtB_client_phone.Text = "";
+                                        bonus_total_centr = -1;
+                                        return;
+                                    }
+                                    this.btn_inpute_phone_client.Enabled = false;
+                                }
+
+                            }
+                        }
+                        else
+                        {
+                            process_client_discount(code_client);
+                        }
+                    }
+                }
+
+                conn.Close();
+            }
+            catch (NpgsqlException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// При вводе номера телефона
+        /// сначала происходит проверка 
+        /// наличия клиента с таким номером телефона
+        /// если клиент не найден он создается и работа 
+        /// происходит с новой виртуальной картой 
+        /// равной номеру телефона, если клиент 
+        /// найден тогда действия с ним
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void check_and_verify_phone_number(string phone_number)
+        {
+            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+            try
+            {
+                conn.Open();
+                //string query = "SELECT COUNT(*) FROM clients WHERE phone LIKE'%"+ txtB_phone_number.Text.Trim() + "%'";
+                string query = "SELECT COUNT(*) FROM clients where right(phone,10)='" + phone_number + "'";
+                NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                if (Convert.ToInt32(command.ExecuteScalar()) == 0)//Если такого телефона нет то тогда введем его для передачи и присвоения
+                {
+                    query = "DELETE FROM temp_phone_clients WHERE phone='" + phone_number + "'";
+                    command = new NpgsqlCommand(query, conn);
+                    command.ExecuteNonQuery();
+                    query = "INSERT INTO temp_phone_clients(barcode, phone)VALUES ('" + phone_number + "','" + phone_number + "')";
+                    command = new NpgsqlCommand(query, conn);
+                    command.ExecuteNonQuery();
+                    conn.Close();
+                    if (client.Tag == null)
+                    {
+                        client.Tag = phone_number;
+                        client.Text = phone_number;
+                        Discount = Convert.ToDecimal(0.05);
+                        txtB_client_phone.Enabled = false;
+                    }                    
+                }
+                else //Клиент уже существует
+                {
+                    find_client_on_num_phone(phone_number);                    
+                }
+            }
+            catch (NpgsqlException ex)
+            {
+                MessageBox.Show(" Ошибки при записи номера телефона " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(" Ошибки при записи номера телефона " + ex.Message);
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+        }
+
+
+
         /// <summary>
         /// Поиск клиента по телефону
         /// </summary>
@@ -291,7 +466,6 @@ namespace Cash8
         /// <param name="e"></param>
         void txtB_client_phone_KeyPress(object sender, KeyPressEventArgs e)
         {
-
             if (MainStaticClass.PassPromo != "")//Бонусная программа выключена
             {
                 if (!char.IsDigit(e.KeyChar) && (e.KeyChar != (char)Keys.Back))
@@ -302,122 +476,15 @@ namespace Cash8
 
             if (e.KeyChar == (char)Keys.Enter)
             {
-                if (txtB_client_phone.Text.Trim().Length != 10)
+                if (txtB_client_phone.Text.ToString().Trim().Length != 10)
                 {
                     MessageBox.Show("Номер телефона должен содержать 10 цифр");
                     return;
                 }
-
-
-                NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
-                try
-                {
-                    conn.Open();
-                    //string query = "SELECT code FROM clients where phone LIKE'%" + txtB_client_phone.Text.Trim() + "%'";
-                    //string query = "SELECT MIN(to_number(code)),code,its_work,COALESCE(bonus_is_on,0) as bonus_is_on FROM clients where right(phone,10)='" + txtB_client_phone.Text.Trim() + "'";
-                    string query = "SELECT MIN(CAST(code as numeric)),code,its_work,COALESCE(bonus_is_on, 0) as bonus_is_on FROM clients where right(phone,10)= '" + txtB_client_phone.Text.Trim() + "' " +
-                        " group by code,its_work,COALESCE(bonus_is_on, 0) order by MIN(CAST(code as numeric)) limit 1";
-                    NpgsqlCommand command = new NpgsqlCommand(query, conn);
-                    NpgsqlDataReader reader = command.ExecuteReader();
-                    string code_client = ""; int its_work = 0; int bonus_is_on = 0;
-
-                    while (reader.Read())
-                    {
-                        code_client = reader["code"].ToString();
-                        its_work = Convert.ToInt16(reader["its_work"]);
-                        bonus_is_on = Convert.ToInt16(reader["bonus_is_on"]);
-                    }
-                    reader.Close();
-                    command.Dispose();
-
-                    if (code_client == "")
-                    {
-                        MessageBox.Show(" По данному телефонному номеру клиент не найден ");
-                    }
-                    else
-                    {
-                        if (its_work != 1)
-                        {
-                            MessageBox.Show("Эта карточка заблокирована");
-                            return;
-                        }
-                        else
-                        {
-                            if (bonus_is_on == 1)
-                            {
-                                if (MainStaticClass.PassPromo == "")//Бонусная программа выключена
-                                {
-                                    process_client_discount(code_client);
-                                }
-                                else //бонусная программа включена и надо поискать клиента
-                                {
-                                    phone = txtB_client_phone.Text.Trim();
-                                    //Проверяем что за карточка 
-                                    BuyerInfoResponce buyerInfoResponce = get_buyerInfo_client_code_or_phone(1, phone);
-
-                                    if (buyerInfoResponce != null)
-                                    {
-                                        if (buyerInfoResponce.res == "1")
-                                        {
-                                            if (buyerInfoResponce.balance.activeBalance != "0")
-                                            {
-                                                pay_form.bonus_total_in_centr.Text = ((int)Convert.ToDecimal(buyerInfoResponce.balance.activeBalance) / 100).ToString();
-                                                if (buyerInfoResponce.cards.card.state == "3")
-                                                {
-                                                    pay_form.pay_bonus.Enabled = true;
-                                                    this.client.BackColor = Color.Green;
-                                                }
-                                                else
-                                                {
-                                                    this.client.BackColor = Color.Yellow;
-                                                }
-                                                bonus_total_centr = Convert.ToInt32(pay_form.bonus_total_in_centr.Text);
-                                            }
-
-                                            client.Text = buyerInfoResponce.buyer.firstName;
-                                            client.Tag = phone;
-                                            txtB_client_phone.Text = "";
-                                            client_barcode.Enabled = false;
-                                            txtB_client_phone.Enabled = false;
-                                        }
-                                        else
-                                        {
-                                            get_description_errors_on_code(buyerInfoResponce.res);
-                                            txtB_client_phone.Text = "";
-                                            bonus_total_centr = -1;
-                                            return;
-                                        }
-                                        this.btn_inpute_phone_client.Enabled = false;
-                                    }
-
-                                }
-                            }
-                            else
-                            {
-                                process_client_discount(code_client);
-                            }
-                        }
-                    }
-
-                    conn.Close();
-                }
-                catch (NpgsqlException ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-                finally
-                {
-                    if (conn.State == ConnectionState.Open)
-                    {
-                        conn.Close();
-                    }
-                }           
+                check_and_verify_phone_number(txtB_client_phone.Text.ToString().Trim());                    
             }
         }
+
         
         void return_kop_KeyPress(object sender, KeyPressEventArgs e)
         {
@@ -9129,22 +9196,23 @@ namespace Cash8
  
         }
 
+       
         private void btn_inpute_phone_client_Click(object sender, EventArgs e)
         {           
 
-            InputePhoneClient ipc = new InputePhoneClient();
-            if (client.Tag != null)
-            {
-                ipc.barcode = this.client.Tag.ToString();
-            }
-            ipc.cash_Check = this;
-            DialogResult dr = ipc.ShowDialog();
-            btn_inpute_phone_client.Enabled = false;
-            inputbarcode.Focus();
-            if (dr == DialogResult.Yes)
-            {
-                process_client_discount(ipc.txtB_phone_number.Text);
-            }
+            //InputePhoneClient ipc = new InputePhoneClient();
+            //if (client.Tag != null)
+            //{
+            //    ipc.barcode = this.client.Tag.ToString();
+            //}
+            //ipc.cash_Check = this;
+            //DialogResult dr = ipc.ShowDialog();
+            //btn_inpute_phone_client.Enabled = false;
+            //inputbarcode.Focus();
+            //if (dr == DialogResult.Yes)
+            //{
+            //    process_client_discount(ipc.txtB_phone_number.Text);
+            //}
         }
 
         /// <summary>

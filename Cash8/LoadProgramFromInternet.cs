@@ -246,7 +246,7 @@ namespace Cash8
                     }
 
                     File.Copy(Application.StartupPath + "/Cash.exe", Application.StartupPath + "/Previous/Cash.exe", true);
-                    File.Copy(Application.StartupPath + "/Update/Cash.exe", Application.StartupPath + "/Cash.exe", true);
+                    //File.Copy(Application.StartupPath + "/Update/Cash.exe", Application.StartupPath + "/Cash.exe", true); При переходе на wine это не будет работать.
                     //update_execute_addcolumn();
                     //*********************************************************************** update_execute_addcolumn()
                     NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
