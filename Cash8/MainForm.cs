@@ -898,6 +898,11 @@ namespace Cash8
             //}            
             //check_and_update_npgsql();
             UploadDeletedItems();
+
+            if (MainStaticClass.Nick_Shop == "A01")//Для отладки нового механизма пока что сделаю такую заплатку
+            {
+                MainStaticClass.UseOldProcessiingActions = false;
+            }
         }
 
 

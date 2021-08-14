@@ -1159,7 +1159,7 @@ namespace Cash8
             //Необходимо проверка на сумму документа где сумма всех форм оплаты равно сумме документа
             //Получаем общу сумму по оплате 
             decimal _cash_summ_ = Convert.ToDecimal(cash_sum.Text) - Convert.ToDecimal(remainder.Text);
-            decimal _non_cash_summ_ = Convert.ToDecimal(get_non_cash_sum(1));
+            decimal _non_cash_summ_ = Math.Round(Convert.ToDecimal(get_non_cash_sum(1)),2);
             decimal _sertificates_sum_ = Convert.ToDecimal(sertificates_sum.Text);
             //decimal _pay_bonus_many_ = Convert.ToDecimal((int)(Convert.ToInt32(pay_bonus_many.Text)/100));
             decimal _pay_bonus_many_ = Convert.ToDecimal(pay_bonus_many.Text);

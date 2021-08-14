@@ -125,7 +125,7 @@
             // client
             // 
             this.client.Enabled = false;
-            this.client.Location = new System.Drawing.Point(477, 41);
+            this.client.Location = new System.Drawing.Point(481, 41);
             this.client.Name = "client";
             this.client.Size = new System.Drawing.Size(106, 20);
             this.client.TabIndex = 17;
@@ -133,7 +133,7 @@
             // client_barcode
             // 
             this.client_barcode.BackColor = System.Drawing.Color.White;
-            this.client_barcode.Location = new System.Drawing.Point(692, 41);
+            this.client_barcode.Location = new System.Drawing.Point(709, 41);
             this.client_barcode.MaxLength = 10;
             this.client_barcode.Name = "client_barcode";
             this.client_barcode.Size = new System.Drawing.Size(96, 20);
@@ -243,11 +243,10 @@
             // 
             // date_time_start
             // 
-            this.date_time_start.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.date_time_start.Location = new System.Drawing.Point(374, 8);
             this.date_time_start.Name = "date_time_start";
             this.date_time_start.ReadOnly = true;
-            this.date_time_start.Size = new System.Drawing.Size(141, 13);
+            this.date_time_start.Size = new System.Drawing.Size(141, 20);
             this.date_time_start.TabIndex = 32;
             // 
             // num_cash
@@ -263,10 +262,9 @@
             // user
             // 
             this.user.BackColor = System.Drawing.SystemColors.Control;
-            this.user.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.user.Location = new System.Drawing.Point(521, 5);
+            this.user.Location = new System.Drawing.Point(521, 8);
             this.user.Name = "user";
-            this.user.Size = new System.Drawing.Size(106, 13);
+            this.user.Size = new System.Drawing.Size(106, 20);
             this.user.TabIndex = 35;
             // 
             // status_com_scaner
@@ -384,6 +382,7 @@
             this.load_document.TabIndex = 45;
             this.load_document.Text = "Загрузить";
             this.load_document.UseVisualStyleBackColor = true;
+            this.load_document.Visible = false;
             this.load_document.Click += new System.EventHandler(this.load_document_Click);
             // 
             // tabControl1
@@ -522,7 +521,7 @@
             // txtB_client_phone
             // 
             this.txtB_client_phone.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtB_client_phone.Location = new System.Drawing.Point(861, 43);
+            this.txtB_client_phone.Location = new System.Drawing.Point(926, 40);
             this.txtB_client_phone.MaxLength = 10;
             this.txtB_client_phone.Name = "txtB_client_phone";
             this.txtB_client_phone.Size = new System.Drawing.Size(120, 20);
@@ -531,7 +530,7 @@
             // label_client_barcode
             // 
             this.label_client_barcode.AutoSize = true;
-            this.label_client_barcode.Location = new System.Drawing.Point(619, 48);
+            this.label_client_barcode.Location = new System.Drawing.Point(627, 48);
             this.label_client_barcode.Name = "label_client_barcode";
             this.label_client_barcode.Size = new System.Drawing.Size(70, 13);
             this.label_client_barcode.TabIndex = 58;
@@ -541,16 +540,19 @@
             // 
             this.label_client_phone.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label_client_phone.AutoSize = true;
-            this.label_client_phone.Location = new System.Drawing.Point(791, 45);
+            this.label_client_phone.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_client_phone.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.label_client_phone.Location = new System.Drawing.Point(842, 45);
             this.label_client_phone.Name = "label_client_phone";
-            this.label_client_phone.Size = new System.Drawing.Size(67, 13);
+            this.label_client_phone.Size = new System.Drawing.Size(69, 15);
             this.label_client_phone.TabIndex = 59;
             this.label_client_phone.Text = "Телефон +7";
+            this.label_client_phone.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // btn_inpute_phone_client
             // 
             this.btn_inpute_phone_client.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btn_inpute_phone_client.Location = new System.Drawing.Point(984, 42);
+            this.btn_inpute_phone_client.Location = new System.Drawing.Point(692, 613);
             this.btn_inpute_phone_client.Name = "btn_inpute_phone_client";
             this.btn_inpute_phone_client.Size = new System.Drawing.Size(82, 22);
             this.btn_inpute_phone_client.TabIndex = 60;
@@ -561,7 +563,7 @@
             // 
             // btn_change_status_client
             // 
-            this.btn_change_status_client.Location = new System.Drawing.Point(586, 41);
+            this.btn_change_status_client.Location = new System.Drawing.Point(591, 41);
             this.btn_change_status_client.Name = "btn_change_status_client";
             this.btn_change_status_client.Size = new System.Drawing.Size(32, 23);
             this.btn_change_status_client.TabIndex = 61;

@@ -84,6 +84,7 @@ namespace Cash8
         private static DateTime last_send_last_successful_sending;
         private static DateTime last_write_check;
         private static DateTime min_date_work = new DateTime(2021, 1, 1);
+        private static bool use_old_processiing_actions = true;
 
         //private static bool use_text_print;
         //private static int width_of_symbols;
@@ -99,6 +100,24 @@ namespace Cash8
 
         public static bool continue_to_read_the_data_from_a_port = false;
 
+
+        /// <summary>
+        /// Флаг возвращает истина если 
+        /// действует старый алгоритм по обработке акций 
+        /// и ложь если уже включен новый 
+        /// алгоритм с использованием DataTable
+        /// </summary>
+        public static bool UseOldProcessiingActions
+        {
+            get
+            {
+                return use_old_processiing_actions;
+            }
+            set
+            {
+                use_old_processiing_actions = value;
+            }
+        }
 
         //private static int BonusTreshold
         //{
@@ -167,6 +186,8 @@ namespace Cash8
                     {
                         result = false;
                         MessageBox.Show("Вы можете вернуть по безналу не более " + Convert.ToDecimal(reader["non_cash_money"]).ToString());
+                        MessageBox.Show("Преобразованное левая часть " + Convert.ToDecimal(reader["non_cash_money"]).ToString());
+                        MessageBox.Show("Правая часть  " + non_cash_sum.ToString());
                     }
                 }
 
