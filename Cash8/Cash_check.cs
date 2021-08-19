@@ -161,7 +161,7 @@ namespace Cash8
             comment.KeyPress += new KeyPressEventHandler(Comment_KeyPress);
         }
 
-        private void insert_incident_record(int tovar,int quantity, int type_of_operation)
+        private void insert_incident_record(string tovar,string quantity, string type_of_operation)
         {
             NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
             try
@@ -179,7 +179,7 @@ namespace Cash8
                     num_cash.Tag.ToString() + ",'" +
                      date_time_start.Text.Replace("Чек", "").Trim() + "','" +
                     DateTime.Now.ToString("yyy-MM-dd HH:mm:ss") + "'," +
-                    tovar+","+
+                    tovar.ToString()+","+
                     quantity.ToString() + "," +
                     type_of_operation + ");";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
@@ -212,10 +212,18 @@ namespace Cash8
         /// <param name="e"></param>
         private void ListView1_KeyDown(object sender, KeyEventArgs e)
         {
+            
+
             if (e.KeyData == Keys.Delete)
-            {
-                if (listView1.Items.Count > 1)
+            {                
+                if((listView1.Items.Count > 1)&&(listView1.SelectedItems.Count>0))
                 {
+                    //MessageBox.Show("0 - " + Convert.ToInt16(listView1.SelectedItems[0].SubItems[0].Text.Trim()).ToString());
+                    //MessageBox.Show("3 - " + Convert.ToInt16(listView1.SelectedItems[0].SubItems[3].Text.Trim()).ToString());
+                    //MessageBox.Show("1-" + listView1.SelectedItems[0].SubItems[1].Text);
+                    //MessageBox.Show("2-" + listView1.SelectedItems[0].SubItems[2].Text);
+                    //MessageBox.Show("3-" + listView1.SelectedItems[0].SubItems[3].Text);
+
                     ///////////////////////////////////////////////////////////////
                     if (MainStaticClass.Code_right_of_user != 1)
                     {
@@ -233,7 +241,7 @@ namespace Cash8
                         }
                         else
                         {
-                            insert_incident_record(Convert.ToInt16(listView1.SelectedItems[0].SubItems[0].Text), Convert.ToInt16(listView1.SelectedItems[0].SubItems[3].Text), 0);
+                            insert_incident_record(listView1.SelectedItems[0].SubItems[0].Text, listView1.SelectedItems[0].SubItems[3].Text, "0");
                             listView1.Items.Remove(listView1.SelectedItems[0]);
                             calculation_of_the_sum_of_the_document();
                             write_new_document("0", calculation_of_the_sum_of_the_document().ToString().Replace(",", "."), "0", "0", false, "0", "0", "0", "1"); //Это удаляемый документ                            
@@ -241,7 +249,7 @@ namespace Cash8
                     }
                     else
                     {
-                        insert_incident_record(Convert.ToInt16(listView1.SelectedItems[0].SubItems[0].Text), Convert.ToInt16(listView1.SelectedItems[0].SubItems[3].Text), 0);
+                        insert_incident_record(listView1.SelectedItems[0].SubItems[0].Text, listView1.SelectedItems[0].SubItems[3].Text, "0");
                         listView1.Items.Remove(listView1.SelectedItems[0]);
                         calculation_of_the_sum_of_the_document();
                         write_new_document("0", calculation_of_the_sum_of_the_document().ToString().Replace(",", "."), "0", "0", false, "0", "0", "0", "1"); //Это удаляемый документ                            
@@ -3186,7 +3194,7 @@ namespace Cash8
                         }
                     }
 
-                    insert_incident_record(Convert.ToInt16(listView1.SelectedItems[0].SubItems[0].Text), Convert.ToInt16(listView1.SelectedItems[0].SubItems[3].Text)- Convert.ToInt32(this.enter_quantity.Text), 1);
+                    insert_incident_record(listView1.SelectedItems[0].SubItems[0].Text, (Convert.ToInt32(listView1.SelectedItems[0].SubItems[3].Text)- Convert.ToInt32(this.enter_quantity.Text)).ToString(), "1");
 
                     ////////////////////////////////////////////////////////////////
                     //if (!this.inventory.Checked)

@@ -1158,11 +1158,11 @@ namespace Cash8
             }
             catch (NpgsqlException ex)
             {
-                MessageBox.Show("Ошибка sql " + ex.Message);
+                MessageBox.Show("Ошибка sql check_system_taxation " + ex.Message);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Общая ошибка " + ex.Message);
+                MessageBox.Show("Общая ошибка check_system_taxation " + ex.Message);
             }
             finally
             {
@@ -1653,7 +1653,9 @@ namespace Cash8
             sdb.ShowDialog();
             
             //MessageBox.Show("В этой версии не работает");
-        }        
+        } 
+        
+
 
         private void загрузкаДанныхЧерезИнтернетToolStripMenuItem_Click(object sender, EventArgs e)
         {
