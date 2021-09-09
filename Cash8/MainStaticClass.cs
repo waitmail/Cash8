@@ -299,20 +299,34 @@ namespace Cash8
 
         public static bool get_exists_internet()
         {
-            bool pingable = false;
-            Ping pinger = new Ping();
+            //bool pingable = false;
+            //Ping pinger = new Ping();//под wine не работает
+            //try
+            //{
+            //    PingReply reply = pinger.Send("8.8.8.8");                
+            //    pingable = reply.Status == IPStatus.Success;
+            //}
+            //catch (PingException)
+            //{
+
+            //}
+
+            //return pingable;
+
             try
             {
-                PingReply reply = pinger.Send("8.8.8.8");                
-                pingable = reply.Status == IPStatus.Success;
+                using (var client = new WebClient())
+                using (var stream = client.OpenRead("https://ya.ru/"))
+                {
+                    return true;
+                }
             }
-            catch (PingException)
+            catch
             {
-
+                return false;
             }
-
-            return pingable;
         }
+        
 
 
         public static Cash8.FiscallPrintJason.RootObject get_ofd_exchange_status()
