@@ -996,6 +996,7 @@ namespace Cash8
             queries.Add("ALTER TABLE checks_table ALTER COLUMN item_marker TYPE character varying(200)");
             queries.Add("CREATE TABLE deleted_items(num_doc bigint NOT NULL,num_cash smallint NOT NULL,date_time_start timestamp without time zone NOT NULL,date_time_action timestamp without time zone NOT NULL,tovar integer NOT NULL,quantity integer NOT NULL,type_of_operation smallint NOT NULL)WITH(    OIDS = FALSE)TABLESPACE pg_default;        ALTER TABLE public.deleted_items            OWNER to postgres");
             queries.Add("ALTER TABLE public.constants ADD COLUMN system_taxation smallint NOT NULL DEFAULT 0;");
+            queries.Add("ALTER TABLE public.constants ADD COLUMN work_schema smallint NOT NULL DEFAULT 1; COMMENT ON COLUMN public.constants.work_schema IS 'Варианты работы программы 1-ЧД 2-ЕВА';");
 
             foreach (string str in queries)
             {

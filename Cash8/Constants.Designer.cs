@@ -46,6 +46,8 @@
             this.checkBox_print_m = new System.Windows.Forms.CheckBox();
             this.comboBox_system_taxation = new System.Windows.Forms.ComboBox();
             this.lbl_system_taxation = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.txtB_work_schema = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // cash_desk_number
@@ -133,7 +135,7 @@
             // 
             // currency
             // 
-            this.currency.Location = new System.Drawing.Point(269, 12);
+            this.currency.Location = new System.Drawing.Point(253, 12);
             this.currency.MaxLength = 4;
             this.currency.Name = "currency";
             this.currency.Size = new System.Drawing.Size(43, 20);
@@ -211,11 +213,32 @@
             this.lbl_system_taxation.TabIndex = 64;
             this.lbl_system_taxation.Text = "Система налогообложения";
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(319, 16);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(39, 13);
+            this.label3.TabIndex = 65;
+            this.label3.Text = "Схема";
+            // 
+            // txtB_work_schema
+            // 
+            this.txtB_work_schema.Enabled = false;
+            this.txtB_work_schema.Location = new System.Drawing.Point(360, 12);
+            this.txtB_work_schema.MaxLength = 1;
+            this.txtB_work_schema.Name = "txtB_work_schema";
+            this.txtB_work_schema.Size = new System.Drawing.Size(34, 20);
+            this.txtB_work_schema.TabIndex = 66;
+            this.txtB_work_schema.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
             // Constants
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(724, 286);
+            this.Controls.Add(this.txtB_work_schema);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.lbl_system_taxation);
             this.Controls.Add(this.comboBox_system_taxation);
             this.Controls.Add(this.checkBox_print_m);
@@ -263,5 +286,7 @@
         private System.Windows.Forms.CheckBox checkBox_print_m;
         private System.Windows.Forms.ComboBox comboBox_system_taxation;
         private System.Windows.Forms.Label lbl_system_taxation;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox txtB_work_schema;
     }
 }

@@ -271,7 +271,7 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBox2);
             this.Name = "FPTK22";
-            this.Text = "FPTK22";
+            this.Text = "Фискальный регистратор";
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.groupBox3.ResumeLayout(false);

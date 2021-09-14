@@ -30,7 +30,7 @@ namespace Cash8
             {
                 get_summ_in_cashe.Enabled = false;
                 x_report.Enabled = false;
-            }
+            }            
         }
 
         void incass_KeyPress(object sender, KeyPressEventArgs e)

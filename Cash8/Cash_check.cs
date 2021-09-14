@@ -474,13 +474,13 @@ namespace Cash8
         /// <param name="e"></param>
         void txtB_client_phone_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (MainStaticClass.PassPromo != "")//Бонусная программа выключена
+            //if (MainStaticClass.PassPromo != "")//Бонусная программа выключена
+            //{
+            if (!char.IsDigit(e.KeyChar) && (e.KeyChar != (char)Keys.Back))
             {
-                if (!char.IsDigit(e.KeyChar) && (e.KeyChar != (char)Keys.Back))
-                {
-                    e.Handled = true;
-                }
+                e.Handled = true;
             }
+            //}
 
             if (e.KeyChar == (char)Keys.Enter)
             {
@@ -489,7 +489,7 @@ namespace Cash8
                     MessageBox.Show("Номер телефона должен содержать 10 цифр");
                     return;
                 }
-                check_and_verify_phone_number(txtB_client_phone.Text.ToString().Trim());                    
+                check_and_verify_phone_number(txtB_client_phone.Text.ToString().Trim());
             }
         }
 
@@ -8981,6 +8981,11 @@ namespace Cash8
             }
             //При переходе в окно оплаты цены должны быть отрисованы
             SendDataToCustomerScreen(1,1);
+            pay_form.Top = this.Top;
+            pay_form.Left = this.Left;
+            //pay_form.Right = this.Right;
+
+            //pay_form.Top = this.Parent.Top
             dr = pay_form.ShowDialog();
             //pay_form.Dispose();
           

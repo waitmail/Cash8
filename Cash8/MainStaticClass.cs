@@ -85,6 +85,7 @@ namespace Cash8
         private static DateTime last_write_check;
         private static DateTime min_date_work = new DateTime(2021, 1, 1);
         private static bool use_old_processiing_actions = true;
+        private static int work_schema = 0;
 
         //private static bool use_text_print;
         //private static int width_of_symbols;
@@ -118,6 +119,52 @@ namespace Cash8
                 use_old_processiing_actions = value;
             }
         }
+
+        public static int GetWorkSchema
+        {
+            get
+            {
+                if (work_schema == 0)
+                {
+                    work_schema = get_work_schema();
+                }
+                return work_schema;
+            }
+        }
+
+
+        private static int get_work_schema()
+        {
+            int result = 0;
+            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+            try
+            {
+                conn.Open();
+                string query = "SELECT  work_schema	FROM public.constants";
+                NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                result = Convert.ToInt16(command.ExecuteScalar().ToString());
+                conn.Close();
+                command.Dispose();
+            }
+            catch (NpgsqlException ex)
+            {
+                MessageBox.Show("Ошибка при получении схемы работы программы " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ошибка при получении схемы работы программы" + ex.Message);
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return result;
+        }
+
 
         //private static int BonusTreshold
         //{
@@ -1237,14 +1284,15 @@ namespace Cash8
             }
             catch
             {
-                ds.Url = "http://ch.sd2.com.ua/DiscountSystem/Ds.asmx";//.get_path_for_web_service();
+                ds.Url = "http://127.000.000.001/DiscountSystem/Ds.asmx";//.get_path_for_web_service();
             }
 
             
 
             return ds;
         }
-        
+
+       
         
         private static DateTime  get_datetime_on_server()
         {

@@ -14,6 +14,8 @@ namespace Cash8
     {
         public bool run_in_the_background = false;
 
+        private string test_url = "http://5.188.118.39/test";
+
         public SentDataOnBonus()
         {
             InitializeComponent();

@@ -851,9 +851,7 @@ namespace Cash8
                 timer_send_data.Elapsed += new System.Timers.ElapsedEventHandler(timer_send_data_Elapsed);
                 //timer_send_data_Elapsed(null, null);//при старте сделать выгрузку               
 
-                Thread t = new Thread(load_bonus_clients);
-                t.IsBackground = true;
-                t.Start();
+                
 
                 //Thread t2 = new Thread(load_bonus_cards);
                 //t2.IsBackground = true;
@@ -869,9 +867,17 @@ namespace Cash8
             {
                 обновлениеПрограммыToolStripMenuItem_Click(null, null);
             }
-            
-            UploadPhoneClients();
-            UploadChangeStatusClients();
+
+            if (MainStaticClass.GetWorkSchema == 1)//Это условие будет работать только для ЧД
+            {
+                Thread t = new Thread(load_bonus_clients);
+                t.IsBackground = true;
+                t.Start();
+
+                UploadPhoneClients();
+                UploadChangeStatusClients();
+                check_failed_input_phone();
+            }
 
             MainStaticClass.delete_old_checks(MainStaticClass.GetMinDateWork);
             get_users();
@@ -891,13 +897,13 @@ namespace Cash8
             {
                 getShiftStatus();
             }
-            check_failed_input_phone();
+            
             //if (MainStaticClass.PassPromo == "")//Пароля нет надо его запросить
             //{
             get_pass_on_bonus_programm();
             //}            
             //check_and_update_npgsql();
-            UploadDeletedItems();
+            UploadDeletedItems();//передача удаленных строк и строк с изменением количества вниз
 
             if (MainStaticClass.Nick_Shop == "A01")//Для отладки нового механизма пока что сделаю такую заплатку
             {
