@@ -62,8 +62,7 @@ namespace Cash8
             string Out = String.Empty;
             try
             {
-                System.Net.WebRequest req = System.Net.WebRequest.Create(Url);
-                //req.Proxy = CreateWebProxyWithCredentials("http://proxy.sd2.com.ua:3128", "softupdate", "271828", "Basic", "sd2.com.ua");
+                System.Net.WebRequest req = System.Net.WebRequest.Create(Url);                
                 req.Method = "POST";
                 req.Timeout = 10000;
                 req.ContentType = "application/json";
@@ -100,8 +99,7 @@ namespace Cash8
         private static RootObject GET(string Url, string Data)
         {
             System.Net.WebRequest req = System.Net.WebRequest.Create(Url + "/" + Data);
-            req.Timeout = 10000;
-            //req.Proxy = CreateWebProxyWithCredentials("http://proxy.sd2.com.ua:3128", "softupdate", "271828", "Basic", "sd2.com.ua");
+            req.Timeout = 10000;            
             req.Timeout = 100000;
             System.Net.WebResponse resp = req.GetResponse();
             //HttpWebResponse myHttpWebResponse = (HttpWebResponse)req.GetResponse();
@@ -129,8 +127,7 @@ namespace Cash8
 
         //private static RootObject GET(string Url, string Data)
         //{
-        //    System.Net.WebRequest req = System.Net.WebRequest.Create(Url + "/" + Data);
-        //    req.Proxy = CreateWebProxyWithCredentials("http://proxy.sd2.com.ua:3128", "softupdate", "271828", "Basic", "sd2.com.ua");
+        //    System.Net.WebRequest req = System.Net.WebRequest.Create(Url + "/" + Data);        
         //    System.Net.WebResponse resp = req.GetResponse();
         //    //HttpWebResponse myHttpWebResponse = (HttpWebResponse)req.GetResponse();
 
@@ -290,8 +287,7 @@ namespace Cash8
         {
             string Out = String.Empty;
 
-            System.Net.WebRequest req = System.Net.WebRequest.Create(MainStaticClass.url + "/" + guid);
-            //req.Proxy = CreateWebProxyWithCredentials("http://proxy.sd2.com.ua:3128", "softupdate", "271828", "Basic", "sd2.com.ua");
+            System.Net.WebRequest req = System.Net.WebRequest.Create(MainStaticClass.url + "/" + guid);            
             req.Method = "DELETE";
             req.Timeout = 100000;
             req.ContentType = "application/json";

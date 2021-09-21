@@ -842,20 +842,26 @@ namespace Cash8
             }
             if (e.KeyCode == Keys.F6)//попытка сделать доступным полее вода списания бонусов
             {
-                if (!cc.check_bonus_is_on())
+                if (MainStaticClass.GetWorkSchema == 1)
                 {
-                    return;
+                    if (!cc.check_bonus_is_on())
+                    {
+                        return;
+                    }
                 }
-                if (Convert.ToInt32(pay_bonus_many.Text) == 0)
+                if (Convert.ToInt32(bonus_total_in_centr.Text) == 0)
                 {
+                    MessageBox.Show("Нет доступных для списания бонусов");
                     return;
                 }
                 InputCodeNumberPhone inputCodeNumberPhone = new InputCodeNumberPhone();
                 inputCodeNumberPhone.code_client = cc.client.Tag.ToString();
+                inputCodeNumberPhone.phone_client = cc.phone_client;
                 DialogResult dialogResult = inputCodeNumberPhone.ShowDialog();
                 if (dialogResult == DialogResult.Yes)
                 {
-                    code_it_is_confirmed = true;                    
+                    code_it_is_confirmed = true;
+                    pay_bonus.Enabled = true;
                 }
                 calculate();
                 if (button_pay.Enabled)
@@ -999,12 +1005,42 @@ namespace Cash8
                 {
                     if (cc.client.Tag != null)
                     {
-                        //if ((cc.client.Tag.ToString().Trim().Length == 36) || (cc.client.Tag.ToString().Trim().Length == 11))//Это бонусная карта 
-                        //if (cc.client.Tag.ToString().Trim().Length == 10) //Это бонусная карта 
-                        //{
-                        if (cc.check_bonus_is_on())
+                        if (MainStaticClass.GetWorkSchema == 1)
                         {
-                            SentDataOnBonus.BuynewResponse buynewResponse = cc.get_bonus_on_document(pay_bonus_many.Text);
+                            if (cc.check_bonus_is_on())
+                            {
+                                SentDataOnBonus.BuynewResponse buynewResponse = null;
+                                buynewResponse = cc.get_bonus_on_document(pay_bonus_many.Text);
+
+                                if (buynewResponse != null)
+                                {
+                                    if (buynewResponse.res == "1")
+                                    {
+                                        this.bonus_on_document.Text = ((int)(Convert.ToInt64(buynewResponse.bonusSum) / 100)).ToString();
+                                        cc.id_transaction = buynewResponse.transactionId;
+                                        cc.bonus_on_document = Convert.ToInt32(this.bonus_on_document.Text);
+                                    }
+                                    else
+                                    {
+                                        get_description_errors_on_code(buynewResponse.res);
+                                        result = false;
+                                    }
+                                }
+                                else // Если оплата бонусами и нет связи с процессинговым цетром, тогда отлуп 
+                                {
+                                    if (Convert.ToInt32(pay_bonus_many.Text) > 0)
+                                    {
+                                        MessageBox.Show(" Нет связи с процессинговым центром ");
+                                        result = false;
+                                    }
+                                }
+                            }
+                        }
+                        else if (MainStaticClass.GetWorkSchema == 2)
+                        {
+                            SentDataOnBonusEva.BuynewResponse buynewResponse = null;
+                            buynewResponse = cc.get_bonus_on_document_eva(pay_bonus_many.Text);
+
                             if (buynewResponse != null)
                             {
                                 if (buynewResponse.res == "1")
@@ -1026,9 +1062,8 @@ namespace Cash8
                                     MessageBox.Show(" Нет связи с процессинговым центром ");
                                     result = false;
                                 }
-                            }
+                            }                           
                         }
-                        //}
                     }
                 }
             }
@@ -1187,7 +1222,7 @@ namespace Cash8
             //здесь перед записью еще проверка процессингового центра 
             if (cc.client.Tag != null)
             {
-                if (cc.check_bonus_is_on())
+                if ((cc.check_bonus_is_on()||MainStaticClass.GetWorkSchema==2))
                 {
                     if (!continue_sales())
                     {

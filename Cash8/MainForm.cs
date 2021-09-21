@@ -675,10 +675,20 @@ namespace Cash8
 
                 if (MainStaticClass.PassPromo != "")
                 {
-                    SentDataOnBonus sentDataOnBonus = new SentDataOnBonus();
-                    sentDataOnBonus.run_in_the_background = true;
-                    sentDataOnBonus.sent_Click(null, null);
-                    sentDataOnBonus.Dispose();
+                    if (MainStaticClass.GetWorkSchema == 1)
+                    {
+                        SentDataOnBonus sentDataOnBonus = new SentDataOnBonus();
+                        sentDataOnBonus.run_in_the_background = true;
+                        sentDataOnBonus.sent_Click(null, null);
+                        sentDataOnBonus.Dispose();
+                    }
+                    else if (MainStaticClass.GetWorkSchema == 2)
+                    {
+                        SentDataOnBonusEva sentDataOnBonusEva = new SentDataOnBonusEva();
+                        sentDataOnBonusEva.run_in_the_background = true;
+                        sentDataOnBonusEva.sent_Click(null, null);
+                        sentDataOnBonusEva.Dispose();
+                    }
                 }
             }
         }
@@ -900,7 +910,7 @@ namespace Cash8
             
             //if (MainStaticClass.PassPromo == "")//Пароля нет надо его запросить
             //{
-            get_pass_on_bonus_programm();
+            get_login_and_pass_on_bonus_programm();
             //}            
             //check_and_update_npgsql();
             UploadDeletedItems();//передача удаленных строк и строк с изменением количества вниз
@@ -912,7 +922,7 @@ namespace Cash8
         }
 
 
-        private void get_pass_on_bonus_programm()
+        private void get_login_and_pass_on_bonus_programm()
         {
             if (!MainStaticClass.service_is_worker())
             {
@@ -936,7 +946,7 @@ namespace Cash8
             }
             string count_day = CryptorEngine.get_count_day();
             string key = nick_shop.Trim() + count_day.Trim() + nick_shop.Trim();
-            PassPromo passPromo = new PassPromo();
+            LoginPassPromo passPromo = new LoginPassPromo();
             passPromo.CashDeskNumber = MainStaticClass.CashDeskNumber.ToString();
             passPromo.PassPromoForCashDeskNumber = "";
 
@@ -951,10 +961,10 @@ namespace Cash8
                     string decrypt_data = CryptorEngine.Decrypt(result_web_query, true, key);
                     if (decrypt_data != "-1")
                     {
-                        passPromo = JsonConvert.DeserializeObject<PassPromo>(decrypt_data);
+                        passPromo = JsonConvert.DeserializeObject<LoginPassPromo>(decrypt_data);
                         if (passPromo.PassPromoForCashDeskNumber != "")
                         {
-                            update_pass_promo(passPromo.PassPromoForCashDeskNumber);
+                            update_login_and_pass_promo(passPromo.LoginPromoForCashDeskNumber,passPromo.PassPromoForCashDeskNumber);
                         }
                     }
                 }
@@ -966,13 +976,13 @@ namespace Cash8
         }
 
 
-        private void update_pass_promo(string pass_promo)
+        private void update_login_and_pass_promo(string login_promo,string pass_promo)
         {
             NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
             try
             {
                 conn.Open();
-                string query = "UPDATE constants SET pass_promo='" + pass_promo+"'";
+                string query = "UPDATE constants SET pass_promo='" + pass_promo+"', login_promo = '"+login_promo+"'";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 command.ExecuteNonQuery();
                 command.Dispose();
@@ -994,12 +1004,12 @@ namespace Cash8
                 }
             }
         }
-
-
-        public class PassPromo
+        
+        public class LoginPassPromo
         {
             public string PassPromoForCashDeskNumber { get; set; }
             public string CashDeskNumber { get; set; }
+            public string LoginPromoForCashDeskNumber { get; set; }
         }
 
         /// <summary>
@@ -1655,8 +1665,16 @@ namespace Cash8
 
         private void выгрузкаДанныхПоБонусамToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SentDataOnBonus sdb = new SentDataOnBonus();
-            sdb.ShowDialog();
+            if (MainStaticClass.GetWorkSchema == 1)
+            {
+                SentDataOnBonus sdb = new SentDataOnBonus();
+                sdb.ShowDialog();
+            }
+            else if (MainStaticClass.GetWorkSchema == 2)
+            {
+                SentDataOnBonusEva sentDataOnBonusEva = new SentDataOnBonusEva();
+                sentDataOnBonusEva.ShowDialog();
+            }
             
             //MessageBox.Show("В этой версии не работает");
         } 

@@ -66,6 +66,7 @@ namespace Cash8
         private static ArrayList forms = new ArrayList();
 
         private static string pass_promo = "";
+        private static string login_promo = "";
 
         private static bool first_fogin_admin = false;
 
@@ -97,9 +98,63 @@ namespace Cash8
         //enum Types_of_actions { }
         //}
 
+        //private static string start_url = "http://92.242.41.218/processing/v3";
+
         private static string barcode = "";
 
         public static bool continue_to_read_the_data_from_a_port = false;
+
+
+        public static string GetAuthStringProcessing
+        {
+            get
+            {
+                string result = "";
+                if (MainStaticClass.GetWorkSchema == 1)
+                {
+                    string shop_request = "";
+                    if (MainStaticClass.Nick_Shop.Substring(0, 1).ToUpper() == "A")
+                    {
+                        shop_request = MainStaticClass.Nick_Shop + MainStaticClass.CashDeskNumber;
+                    }
+                    else
+                    {
+                        shop_request = "1" + Convert.ToInt16(MainStaticClass.Nick_Shop.Substring(1, 2)).ToString() + MainStaticClass.CashDeskNumber;
+                    }
+
+                    result = Convert.ToBase64String(Encoding.Default.GetBytes(shop_request + ":" + MainStaticClass.PassPromo));
+                }
+                else if (MainStaticClass.GetWorkSchema == 2)
+                {
+                    result = Convert.ToBase64String(Encoding.Default.GetBytes(MainStaticClass.LoginPromo + ":" + MainStaticClass.PassPromo));
+                }
+                return result;
+            }
+        }
+
+
+        /// <summary>
+        /// Возвращает начальный адрес 
+        /// процессингового центра
+        /// </summary>
+        public static string GetStartUrl
+        {
+            get
+            {
+                string result = "";
+                if (MainStaticClass.GetWorkSchema == 1)
+                {
+                    result = "http://92.242.41.218/processing/v3";
+                }
+                else if (MainStaticClass.GetWorkSchema == 2)
+                {
+                    result = "http://5.188.118.39/test";// https://evaviza1.cardnonstop.com/test/";
+                }
+
+                return result;
+            }
+        }
+
 
 
         /// <summary>
@@ -1276,15 +1331,14 @@ namespace Cash8
         public static Cash8.DS.DS get_ds()
         {
             Cash8.DS.DS ds = null;
-            ds = new Cash8.DS.DS();
-            //ds.Proxy = MainStaticClass.CreateWebProxyWithCredentials("http://proxy.sd2.com.ua:3128", "softupdate", "271828", "Basic", "sd2.com.ua");
+            ds = new Cash8.DS.DS();            
             try
             {
                 ds.Url = MainStaticClass.PathForWebService;//.get_path_for_web_service();
             }
             catch
             {
-                ds.Url = "http://127.000.000.001/DiscountSystem/Ds.asmx";//.get_path_for_web_service();
+                ds.Url = "http://8.8.8.8/DiscountSystem/Ds.asmx";//.get_path_for_web_service();
             }
 
             
@@ -1615,6 +1669,54 @@ namespace Cash8
         }
 
 
+
+        public static string LoginPromo
+        {
+            get
+            {
+
+                if (login_promo == "")
+                {
+
+
+                    NpgsqlConnection conn = null;
+
+                    try
+                    {
+                        conn = MainStaticClass.NpgsqlConn();
+                        conn.Open();
+                        string query = "SELECT login_promo  FROM constants;";
+                        NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                        login_promo = command.ExecuteScalar().ToString().Trim();
+                        conn.Close();
+                    }
+                    catch (NpgsqlException ex)
+                    {
+                        MessageBox.Show(ex.Message, " Ошибка при определении включения бонусов  получение пароля");
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, " Ошибка при определении включения бонусов получение пароля");
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+
+                    return login_promo;
+
+                }
+                else
+                {
+                    return login_promo;
+                }
+            }
+        }
+
+
         /// <summary>
         /// Если пароль заполнен, значит бонусная программа для этой кассы включена
         /// </summary>
@@ -1640,11 +1742,11 @@ namespace Cash8
                     }
                     catch (NpgsqlException ex)
                     {
-                        MessageBox.Show(ex.Message, " Ошибка при определении включения бонусов  ");
+                        MessageBox.Show(ex.Message, " Ошибка при определении включения бонусов  получение пароля");
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show(ex.Message, " Ошибка при определении включения бонусов ");
+                        MessageBox.Show(ex.Message, " Ошибка при определении включения бонусов получение пароля");
                     }
                     finally
                     {

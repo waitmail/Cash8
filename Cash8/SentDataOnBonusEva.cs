@@ -10,13 +10,11 @@ using System.Net;
 
 namespace Cash8
 {
-    public partial class SentDataOnBonus : Form
+    public partial class SentDataOnBonusEva : Form
     {
-        public bool run_in_the_background = false;
+        public bool run_in_the_background = false;       
 
-        private string test_url = "http://5.188.118.39/test";
-
-        public SentDataOnBonus()
+        public SentDataOnBonusEva()
         {
             InitializeComponent();
         }
@@ -35,22 +33,24 @@ namespace Cash8
 
             string json = JsonConvert.SerializeObject(buyCommit, Newtonsoft.Json.Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             txtB_jason.Text = json;
-            string url = "http://92.242.41.218/processing/v3/buyCommit/";
+            //string url = "http://92.242.41.218/processing/v3/buyCommit/";
+            string url = MainStaticClass.GetStartUrl + "/v3/buyCommit/";
 
             byte[] body = Encoding.UTF8.GetBytes(json);
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            string shop_request = "";
-            if (MainStaticClass.Nick_Shop.Substring(0, 1).ToUpper() == "A")
-            {
-                shop_request = MainStaticClass.Nick_Shop + MainStaticClass.CashDeskNumber;
-            }
-            else
-            {
-                shop_request = "1" + Convert.ToInt16(MainStaticClass.Nick_Shop.Substring(1, 2)).ToString() + MainStaticClass.CashDeskNumber;
-            }
+            //string shop_request = "";
+            //if (MainStaticClass.Nick_Shop.Substring(0, 1).ToUpper() == "A")
+            //{
+            //    shop_request = MainStaticClass.Nick_Shop + MainStaticClass.CashDeskNumber;
+            //}
+            //else
+            //{
+            //    shop_request = "1" + Convert.ToInt16(MainStaticClass.Nick_Shop.Substring(1, 2)).ToString() + MainStaticClass.CashDeskNumber;
+            //}
 
-            //var authString = Convert.ToBase64String(Encoding.Default.GetBytes("A011" + ":" + "JpDkHs~AE%zS8Y7HDpVM"));
-            var authString = Convert.ToBase64String(Encoding.Default.GetBytes(shop_request + ":" + MainStaticClass.PassPromo));
+            ////var authString = Convert.ToBase64String(Encoding.Default.GetBytes("A011" + ":" + "JpDkHs~AE%zS8Y7HDpVM"));
+            //var authString = Convert.ToBase64String(Encoding.Default.GetBytes(shop_request + ":" + MainStaticClass.PassPromo));
+            var authString = MainStaticClass.GetAuthStringProcessing;
 
             request.Headers.Add("Authorization", "Basic " + authString);
 
@@ -137,22 +137,24 @@ namespace Cash8
 
             string json = JsonConvert.SerializeObject(buyNewRequest, Newtonsoft.Json.Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             txtB_jason.Text = json;
-            string url = "http://92.242.41.218/processing/v3/buyNew/";
+            //string url = "http://92.242.41.218/processing/v3/buyNew/";
+            string url = MainStaticClass.GetStartUrl + "/v3/buyNew/";
 
             byte[] body = Encoding.UTF8.GetBytes(json);
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            string shop_request = "";
-            if (MainStaticClass.Nick_Shop.Substring(0, 1).ToUpper() == "A")
-            {
-                shop_request = MainStaticClass.Nick_Shop + MainStaticClass.CashDeskNumber;
-            }
-            else
-            {
-                shop_request = "1" + Convert.ToInt16(MainStaticClass.Nick_Shop.Substring(1, 2)).ToString() + MainStaticClass.CashDeskNumber;
-            }
+            //string shop_request = "";
+            //if (MainStaticClass.Nick_Shop.Substring(0, 1).ToUpper() == "A")
+            //{
+            //    shop_request = MainStaticClass.Nick_Shop + MainStaticClass.CashDeskNumber;
+            //}
+            //else
+            //{
+            //    shop_request = "1" + Convert.ToInt16(MainStaticClass.Nick_Shop.Substring(1, 2)).ToString() + MainStaticClass.CashDeskNumber;
+            //}
 
-            //var authString = Convert.ToBase64String(Encoding.Default.GetBytes("A011" + ":" + "JpDkHs~AE%zS8Y7HDpVM"));
-            var authString = Convert.ToBase64String(Encoding.Default.GetBytes(shop_request + ":" + MainStaticClass.PassPromo));
+            ////var authString = Convert.ToBase64String(Encoding.Default.GetBytes("A011" + ":" + "JpDkHs~AE%zS8Y7HDpVM"));
+            //var authString = Convert.ToBase64String(Encoding.Default.GetBytes(shop_request + ":" + MainStaticClass.PassPromo));
+            var authString = MainStaticClass.GetAuthStringProcessing;
 
             request.Headers.Add("Authorization", "Basic " + authString);
 
@@ -185,12 +187,15 @@ namespace Cash8
                     buynewResponse = JsonConvert.DeserializeObject<BuynewResponse>(read.Replace("{}", @""""""), new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
                     if (buynewResponse.res == "1")
                     {
-                        conn.Open();
-                        string query = "UPDATE checks_header SET sent_to_processing_center=1 WHERE document_number =" + document_number;
-                        NpgsqlCommand command = new NpgsqlCommand(query, conn);
-                        int rowsaffected = command.ExecuteNonQuery();
-                        conn.Close();
-                        command.Dispose();
+                        if (buyNewRequest.commit == "1")
+                        {
+                            conn.Open();
+                            string query = "UPDATE checks_header SET sent_to_processing_center=1 WHERE document_number =" + document_number;
+                            NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                            int rowsaffected = command.ExecuteNonQuery();
+                            conn.Close();
+                            command.Dispose();
+                        }
                     }
                     else //Куда то записать информацию о трудностях
                     {
@@ -239,24 +244,24 @@ namespace Cash8
 
             string json = JsonConvert.SerializeObject(buyNewRequest, Newtonsoft.Json.Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             txtB_jason.Text = json;
-            string url = "http://92.242.41.218/processing/v3/buyNew/";
-            
-
+            //string url = "http://92.242.41.218/processing/v3/buyNew/";
+            string url = MainStaticClass.GetStartUrl+ "/v3/buyNew/";
 
             byte[] body = Encoding.UTF8.GetBytes(json);
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            string shop_request = "";
-            if (MainStaticClass.Nick_Shop.Substring(0, 1).ToUpper() == "A")
-            {
-                shop_request = MainStaticClass.Nick_Shop + MainStaticClass.CashDeskNumber;
-            }
-            else
-            {
-                shop_request = "1" + Convert.ToInt16(MainStaticClass.Nick_Shop.Substring(1, 2)).ToString() + MainStaticClass.CashDeskNumber;
-            }
+            //string shop_request = "";
+            //if (MainStaticClass.Nick_Shop.Substring(0, 1).ToUpper() == "A")
+            //{
+            //    shop_request = MainStaticClass.Nick_Shop + MainStaticClass.CashDeskNumber;
+            //}
+            //else
+            //{
+            //    shop_request = "1" + Convert.ToInt16(MainStaticClass.Nick_Shop.Substring(1, 2)).ToString() + MainStaticClass.CashDeskNumber;
+            //}
 
             //var authString = Convert.ToBase64String(Encoding.Default.GetBytes("A011" + ":" + "JpDkHs~AE%zS8Y7HDpVM"));
-            var authString = Convert.ToBase64String(Encoding.Default.GetBytes(shop_request + ":" + MainStaticClass.PassPromo));
+            //var authString = Convert.ToBase64String(Encoding.Default.GetBytes(shop_request + ":" + MainStaticClass.PassPromo));
+            var authString = MainStaticClass.GetAuthStringProcessing;
 
             request.Headers.Add("Authorization", "Basic " + authString);
 
@@ -289,19 +294,23 @@ namespace Cash8
                     BuynewResponse buynewResponse = JsonConvert.DeserializeObject<BuynewResponse>(read.Replace("{}", @""""""), new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
                     if (buynewResponse.res == "1")
                     {
-                        conn.Open();
-                        string query = "UPDATE checks_header SET sent_to_processing_center=1 WHERE document_number =" + document_number;
-                        NpgsqlCommand command = new NpgsqlCommand(query, conn);
-                        int rowsaffected = command.ExecuteNonQuery();
-                        
-                        if (buyNewRequest.type == "6")//это продажа без карты значит надо записать в документ buynewResponse.transactionId
+                        if (buyNewRequest.commit == "1")
                         {
-                            query = "UPDATE checks_header SET id_transaction=" + buynewResponse.transactionId;
-                            command = new NpgsqlCommand(query, conn);
-                            command.ExecuteNonQuery();
+                            conn.Open();
+                            //string query = "UPDATE checks_header SET sent_to_processing_center=1, id_transaction_sale = "+ buynewResponse.transactionId +" WHERE document_number =" + document_number ;
+                            string query = "UPDATE checks_header SET sent_to_processing_center=1  WHERE document_number =" + document_number;
+                            NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                            //int rowsaffected = command.ExecuteNonQuery();
+
+                            //if (buyNewRequest.type == "2")//понадобится для возвратов 
+                            //{
+                            //    query = "UPDATE checks_header SET id_transaction=" + buynewResponse.transactionId + " WHERE document_number = " + document_number;
+                            //    command = new NpgsqlCommand(query, conn);
+                            //    command.ExecuteNonQuery();
+                            //}
+                            conn.Close();
+                            command.Dispose();
                         }
-                        conn.Close();
-                        command.Dispose();
                     }
                     else //Куда то записать информацию о трудностях
                     {
@@ -348,22 +357,24 @@ namespace Cash8
 
             string json = JsonConvert.SerializeObject(buyReturnRequest, Newtonsoft.Json.Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             txtB_jason.Text = json;
-            string url = "http://92.242.41.218/processing/v3/buyReturn/";
+            //string url = "http://92.242.41.218/processing/v3/buyReturn/";
+            string url = MainStaticClass.GetStartUrl + "/v3/buyReturn/";
 
             byte[] body = Encoding.UTF8.GetBytes(json);
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            string shop_request = "";
-            if (MainStaticClass.Nick_Shop.Substring(0, 1).ToUpper() == "A")
-            {
-                shop_request = MainStaticClass.Nick_Shop + MainStaticClass.CashDeskNumber;
-            }
-            else
-            {
-                shop_request = "1" + Convert.ToInt16(MainStaticClass.Nick_Shop.Substring(1, 2)).ToString() + MainStaticClass.CashDeskNumber;
-            }
+            //string shop_request = "";
+            //if (MainStaticClass.Nick_Shop.Substring(0, 1).ToUpper() == "A")
+            //{
+            //    shop_request = MainStaticClass.Nick_Shop + MainStaticClass.CashDeskNumber;
+            //}
+            //else
+            //{
+            //    shop_request = "1" + Convert.ToInt16(MainStaticClass.Nick_Shop.Substring(1, 2)).ToString() + MainStaticClass.CashDeskNumber;
+            //}
 
-            //var authString = Convert.ToBase64String(Encoding.Default.GetBytes("A011" + ":" + "JpDkHs~AE%zS8Y7HDpVM"));
-            var authString = Convert.ToBase64String(Encoding.Default.GetBytes(shop_request + ":" + MainStaticClass.PassPromo));
+            ////var authString = Convert.ToBase64String(Encoding.Default.GetBytes("A011" + ":" + "JpDkHs~AE%zS8Y7HDpVM"));
+            //var authString = Convert.ToBase64String(Encoding.Default.GetBytes(shop_request + ":" + MainStaticClass.PassPromo));
+            var authString = MainStaticClass.GetAuthStringProcessing;
 
             request.Headers.Add("Authorization", "Basic " + authString);
 
@@ -611,8 +622,23 @@ namespace Cash8
                         //}
                         //else
                         //{
-                        buyNewRequest.type = "4";
+                        //    buyNewRequest.type = "2";
                         //}
+                        if (reader["client"].ToString().Trim().Length == 0)
+                        {
+                            buyNewRequest.type = "6";
+                        }
+                        else
+                        {
+                            if (buyNewRequest.charge != null)
+                            {
+                                buyNewRequest.type = "3";
+                            }
+                            else
+                            {
+                                buyNewRequest.type = "2";
+                            }
+                        }
                         if (fill_items(buyNewRequest, reader["document_number"].ToString(), reader["client"].ToString()))
                         {
                             sent_document(buyNewRequest, reader["document_number"].ToString());
@@ -623,7 +649,7 @@ namespace Cash8
                         BuyReturnRequest buyReturnRequest = new BuyReturnRequest();
                         buyReturnRequest.cashierName = MainStaticClass.Cash_Operator;
                         buyReturnRequest.commit = "1";
-                        //buyReturnRequest.date = Convert.ToDateTime(reader["date_time_start"]).ToString("yyyy-MM-dd HH:mm:ss");
+                        buyReturnRequest.date = Convert.ToDateTime(reader["date_time_start"]).ToString("yyyy-MM-dd HH:mm:ss");
                         buyReturnRequest.transactionId = reader["id_transaction_sale"].ToString();
                         if (fill_items(buyReturnRequest, reader["document_number"].ToString(), reader["client"].ToString()))
                         {
@@ -826,7 +852,7 @@ namespace Cash8
         {
             public string transactionId { get; set; }
             //date – дата транзакции(необязательный параметр);
-            //public string date { get; set; }
+            public string date { get; set; }
             //cashierName – данные кассира(имя, фамилия);
             public string cashierName { get; set; }
             //items  –  блок с  перечнем товаров  к возврату, аналогичен  перечислению товаров в запросе buyNew;

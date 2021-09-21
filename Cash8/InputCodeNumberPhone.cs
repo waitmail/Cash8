@@ -15,6 +15,7 @@ namespace Cash8
     public partial class InputCodeNumberPhone : Form
     {
         public string code_client = "";
+        public string phone_client = "";
         private string code_answer = "";       
 
         public InputCodeNumberPhone()
@@ -136,27 +137,39 @@ namespace Cash8
         private void btn_send_sms_Click(object sender, EventArgs e)
         {
             RequestSMSCode requestSMSCode = new RequestSMSCode();
-            requestSMSCode.phone = code_client;
-            requestSMSCode.notRegistered = "0";
+            if (MainStaticClass.GetWorkSchema == 1)
+            {
+                requestSMSCode.phone = code_client;
+            }
+            else if (MainStaticClass.GetWorkSchema == 2)
+            {
+                requestSMSCode.phone = phone_client;
+            }
+            if (MainStaticClass.GetWorkSchema == 1)
+            {
+                requestSMSCode.notRegistered = "0";
+            }
 
             string json = JsonConvert.SerializeObject(requestSMSCode, Newtonsoft.Json.Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             //txtB_jason.Text = json;
-            string url = "http://92.242.41.218/processing/v3/requestSMSCode/";
+            //string url = "http://92.242.41.218/processing/v3/requestSMSCode/";
+            string url = MainStaticClass.GetStartUrl+ "/v3/requestSMSCode/";
 
             byte[] body = Encoding.UTF8.GetBytes(json);
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            string shop_request = "";
-            if (MainStaticClass.Nick_Shop.Substring(0, 1).ToUpper() == "A")
-            {
-                shop_request = MainStaticClass.Nick_Shop + MainStaticClass.CashDeskNumber;
-            }
-            else
-            {
-                shop_request = "1" + Convert.ToInt16(MainStaticClass.Nick_Shop.Substring(1, 2)).ToString() + MainStaticClass.CashDeskNumber;
-            }
+            //string shop_request = "";
+            //if (MainStaticClass.Nick_Shop.Substring(0, 1).ToUpper() == "A")
+            //{
+            //    shop_request = MainStaticClass.Nick_Shop + MainStaticClass.CashDeskNumber;
+            //}
+            //else
+            //{
+            //    shop_request = "1" + Convert.ToInt16(MainStaticClass.Nick_Shop.Substring(1, 2)).ToString() + MainStaticClass.CashDeskNumber;
+            //}
 
-            //var authString = Convert.ToBase64String(Encoding.Default.GetBytes("A011" + ":" + "JpDkHs~AE%zS8Y7HDpVM"));
-            var authString = Convert.ToBase64String(Encoding.Default.GetBytes(shop_request + ":" + MainStaticClass.PassPromo));
+            ////var authString = Convert.ToBase64String(Encoding.Default.GetBytes("A011" + ":" + "JpDkHs~AE%zS8Y7HDpVM"));
+            //var authString = Convert.ToBase64String(Encoding.Default.GetBytes(shop_request + ":" + MainStaticClass.PassPromo));
+            var authString = MainStaticClass.GetAuthStringProcessing;
 
             request.Headers.Add("Authorization", "Basic " + authString);
 

@@ -68,10 +68,11 @@ namespace Cash8
         private string id_transaction_sale = "";
         public int bonus_on_document = 0;
         private Pay pay_form = new Pay();
-        private string cardTrack2 = "";
+        //private string cardTrack2 = "";
         private string phone = "";
         public string qr_code = "";
         public Int32 id_sale = 0;
+        public string phone_client = "";
 
         System.Windows.Forms.Timer timer = null;
 
@@ -291,6 +292,60 @@ namespace Cash8
 
         }
 
+        /// <summary>
+        /// Запрос информации в процеччинговом центре 
+        /// о клиенте по номеру телефона
+        /// </summary>
+        private void get_client_in_processing()
+        {
+            phone = "7"+txtB_client_phone.Text.Trim();
+            //Проверяем что за карточка 
+            BuyerInfoResponce buyerInfoResponce = get_buyerInfo_client_code_or_phone(1, phone);
+
+            if (buyerInfoResponce != null)
+            {
+                if (buyerInfoResponce.res == 1)
+                {
+                    if (buyerInfoResponce.balance.activeBalance != "0")
+                    {
+                        pay_form.bonus_total_in_centr.Text = ((int)Convert.ToDecimal(buyerInfoResponce.balance.activeBalance) / 100).ToString();
+                        if (buyerInfoResponce.cards.card[0].state == "3")
+                        {
+                            if (MainStaticClass.GetWorkSchema == 1)
+                            {
+                                pay_form.pay_bonus.Enabled = true;
+                            }
+                            this.client.BackColor = Color.Green;
+                        }
+                        else
+                        {
+                            this.client.BackColor = Color.Yellow;
+                        }
+                        bonus_total_centr = Convert.ToInt32(pay_form.bonus_total_in_centr.Text);
+                    }
+
+                    client.Text = buyerInfoResponce.buyer.firstName;
+                    phone_client = buyerInfoResponce.buyer.phone;
+                    //client.Tag = phone;
+                    client.Tag = buyerInfoResponce.cards.card[0].cardNum;
+
+                    txtB_client_phone.Text = "";
+                    client_barcode.Enabled = false;
+                    txtB_client_phone.Enabled = false;
+                }
+                else
+                {
+                    get_description_errors_on_code(buyerInfoResponce.res);
+                    txtB_client_phone.Text = "";
+                    bonus_total_centr = -1;
+                    return;
+                }
+                this.btn_inpute_phone_client.Enabled = false;
+            }
+
+        }
+    
+
 
         private void find_client_on_num_phone(string phone_number)
         {        
@@ -343,12 +398,12 @@ namespace Cash8
 
                                 if (buyerInfoResponce != null)
                                 {
-                                    if (buyerInfoResponce.res == "1")
+                                    if (buyerInfoResponce.res == 1)
                                     {
                                         if (buyerInfoResponce.balance.activeBalance != "0")
                                         {
                                             pay_form.bonus_total_in_centr.Text = ((int)Convert.ToDecimal(buyerInfoResponce.balance.activeBalance) / 100).ToString();
-                                            if (buyerInfoResponce.cards.card.state == "3")
+                                            if (buyerInfoResponce.cards.card[0].state == "3")
                                             {
                                                 pay_form.pay_bonus.Enabled = true;
                                                 this.client.BackColor = Color.Green;
@@ -489,8 +544,16 @@ namespace Cash8
                     MessageBox.Show("Номер телефона должен содержать 10 цифр");
                     return;
                 }
-                check_and_verify_phone_number(txtB_client_phone.Text.ToString().Trim());
-            }
+
+                if (MainStaticClass.GetWorkSchema == 1)//Это ЧД
+                {
+                    check_and_verify_phone_number(txtB_client_phone.Text.ToString().Trim());
+                }
+                else if (MainStaticClass.GetWorkSchema == 2) //Это Ева
+                {
+                    get_client_in_processing();
+                }
+            }            
         }
 
         
@@ -2531,21 +2594,21 @@ namespace Cash8
 
                     if (buyerInfoResponce != null)
                     {
-                        if (buyerInfoResponce.res == "1")
+                        if (buyerInfoResponce.res == 1)
                         {
                             if (buyerInfoResponce.balance.activeBalance != "0")
                             {
                                 pay_form.bonus_total_in_centr.Text = ((int)Convert.ToDecimal(buyerInfoResponce.balance.activeBalance) / 100).ToString();
-                                if (buyerInfoResponce.cards.card.state == "3")
+                                if (buyerInfoResponce.cards.card[0].state == "3")
                                 {
                                     pay_form.pay_bonus.Enabled = true;
                                     this.client.BackColor = Color.Green;
                                 }
-                                else if (buyerInfoResponce.cards.card.state == "2")
+                                else if (buyerInfoResponce.cards.card[0].state == "2")
                                 {
                                     this.client.BackColor = Color.Yellow;
                                 }
-                                else if (buyerInfoResponce.cards.card.state == "4")
+                                else if (buyerInfoResponce.cards.card[0].state == "4")
                                 {
                                     this.client.BackColor = Color.Red;
                                 }
@@ -2556,7 +2619,7 @@ namespace Cash8
                                 bonus_total_centr = Convert.ToInt32(pay_form.bonus_total_in_centr.Text);
                             }
                             client.Tag = barcode;
-                            client.Text = buyerInfoResponce.cards.card.cardNum;
+                            client.Text = buyerInfoResponce.cards.card[0].cardNum;
                             client_barcode.Text = "";
                             this.btn_inpute_phone_client.Enabled = false;
                         }
@@ -2583,53 +2646,53 @@ namespace Cash8
         /// получить текстовое описание по коду 
         /// </summary>
         /// <param name="code_error"></param>
-        private void get_description_errors_on_code(string code_answer)
+        private void get_description_errors_on_code(int code_answer)
         {
             switch (code_answer)
             {
-                case "2":
+                case 2:
                     MessageBox.Show("2. Неверный запрос ");
                     break;
-                case "3":
+                case 3:
                     MessageBox.Show("3. Клиент не найден ");
                     break;
-                case "4":
+                case 4:
                     MessageBox.Show("4. Недостаточно прав для операции ");
                     break;
-                case "5":
+                case 5:
                     MessageBox.Show("5. Карта не найдена ");
                     break;
-                case "6":
+                case 6:
                     MessageBox.Show("6. Операции с картой запрещены ");
                     break;
-                case "7":
+                case 7:
                     MessageBox.Show("7. Ошибочная операция с картой ");
                     break;
-                case "8":
+                case 8:
                     MessageBox.Show("8. Недостаточно средств ");
                     break;
-                case "9":
+                case 9:
                     MessageBox.Show("9. Транзакция не найдена(неверный transactionId) ");
                     break;
-                case "10":
+                case 10:
                     MessageBox.Show("10. Значение параметра выходит за границы ");
                     break;
-                case "11":
+                case 11:
                     MessageBox.Show("11. Id чека, сгенерированный кассой, не уникален ");
                     break;
-                case "12":
+                case 12:
                     MessageBox.Show("12. Артикул товара(SKU) не найден ");
                     break;
-                case "13":
+                case 13:
                     MessageBox.Show("13. Ошибка запроса ");
                     break;
-                case "14":
+                case 14:
                     MessageBox.Show("14. Ошибка базы данных ");
                     break;
-                case "15":
+                case 15:
                     MessageBox.Show("15. Транзакция отклонена ");
                     break;
-                case "16":
+                case 16:
                     MessageBox.Show("16. Транзакция уже существует ");
                     break;
 
@@ -3466,21 +3529,28 @@ namespace Cash8
                 command.Parameters.AddWithValue("clientInfo_name", txtB_name.Text.Trim());
                 command.Parameters.AddWithValue("id_sale", id_sale.ToString());
 
-                string sent_to_processing_center = "1";
-                //Необходимо отделить бонусные документы от дисконтных и те которые дисконтные записакть с sent_to_processing_center = 1
-                if (client.Tag != null)//Клиент обязательно должен быть выбран при этом 
+                string sent_to_processing_center = "0";
+                if (MainStaticClass.GetWorkSchema == 1)
                 {
-                    if (MainStaticClass.PassPromo != "")
+                    //Необходимо отделить бонусные документы от дисконтных и те которые дисконтные записакть с sent_to_processing_center = 1
+                    if (client.Tag != null)//Клиент обязательно должен быть выбран при этом 
                     {
-                        if (check_bonus_is_on())
+                        if (MainStaticClass.PassPromo != "")
                         {
-                            sent_to_processing_center = "0";
+                            if (check_bonus_is_on())
+                            {
+                                sent_to_processing_center = "0";
+                            }
                         }
                     }
+                    else
+                    {
+                        sent_to_processing_center = "1";
+                    }
                 }
-                else
+                else if (MainStaticClass.GetWorkSchema == 2)//здесь пока ничего не делаем 
                 {
-                    sent_to_processing_center = "1";
+
                 }
 
                 command.Parameters.AddWithValue("sent_to_processing_center", sent_to_processing_center);
@@ -5027,6 +5097,43 @@ namespace Cash8
             sentDataOnBonus.sent_document_buyNew(buyNewRequest, numdoc.ToString(), ref buynewResponse);
             return buynewResponse;
         }
+
+
+        public SentDataOnBonusEva.BuynewResponse get_bonus_on_document_eva(string charge)
+        {
+            SentDataOnBonusEva sentDataOnBonusEva = new SentDataOnBonusEva();
+            SentDataOnBonusEva.BuyNewRequest buyNewRequest = new SentDataOnBonusEva.BuyNewRequest();
+            buyNewRequest.cashierName = MainStaticClass.Cash_Operator;
+            buyNewRequest.commit = "0";
+            buyNewRequest.date = date_time_start.Text.Replace("Чек", "").Trim();
+            if (charge == "0")
+            {
+                buyNewRequest.type = "2";
+            }
+            else
+            {
+                buyNewRequest.type = "3";
+            }
+            //if (client.Tag.ToString().Trim().Length == 36)
+            //{
+            //    buyNewRequest.cardTrack2 = client.Tag.ToString().Trim();// client.Tag.ToString();
+            //}
+            //if (client.Tag.ToString().Trim().Length == 10)
+            //{
+                buyNewRequest.cardNum = client.Tag.ToString().Trim();// client.Tag.ToString();
+            //}
+
+            if (Convert.ToInt32(charge) > 0)
+            {
+                buyNewRequest.charge = (Convert.ToInt32(charge) * 100).ToString();
+            }
+
+            sentDataOnBonusEva.fill_items(buyNewRequest, numdoc.ToString(), client.Tag.ToString());
+            SentDataOnBonusEva.BuynewResponse buynewResponse = new SentDataOnBonusEva.BuynewResponse();
+            sentDataOnBonusEva.sent_document_buyNew(buyNewRequest, numdoc.ToString(), ref buynewResponse);
+            return buynewResponse;
+        }
+
 
 
         private void pay_Click(object sender, EventArgs e)
@@ -8717,22 +8824,26 @@ namespace Cash8
             }
             string json = JsonConvert.SerializeObject(buyerInfoRequest, Newtonsoft.Json.Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             //txtB_jason.Text = json;
-            string url = "http://92.242.41.218/processing/v3/buyerInfo/";
+            //string url = "http://92.242.41.218/processing/v3/buyerInfo/";
+            string url = MainStaticClass.GetStartUrl+ "/v3/buyerInfo/";
 
             byte[] body = Encoding.UTF8.GetBytes(json);
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            string shop_request = "";
-            if (MainStaticClass.Nick_Shop.Substring(0, 1).ToUpper() == "A")
-            {
-                shop_request = MainStaticClass.Nick_Shop + MainStaticClass.CashDeskNumber;
-            }
-            else
-            {
-                shop_request = "1" + Convert.ToInt16(MainStaticClass.Nick_Shop.Substring(1, 2)).ToString() + MainStaticClass.CashDeskNumber;
-            }
+            //string shop_request = "";
+            //if (MainStaticClass.Nick_Shop.Substring(0, 1).ToUpper() == "A")
+            //{
+            //    shop_request = MainStaticClass.Nick_Shop + MainStaticClass.CashDeskNumber;
+            //}
+            //else
+            //{
+            //    shop_request = "1" + Convert.ToInt16(MainStaticClass.Nick_Shop.Substring(1, 2)).ToString() + MainStaticClass.CashDeskNumber;
+            //}
 
-            //var authString = Convert.ToBase64String(Encoding.Default.GetBytes("A011" + ":" + "JpDkHs~AE%zS8Y7HDpVM"));
-            var authString = Convert.ToBase64String(Encoding.Default.GetBytes(shop_request + ":" + MainStaticClass.PassPromo));
+            ////var authString = Convert.ToBase64String(Encoding.Default.GetBytes("A011" + ":" + "JpDkHs~AE%zS8Y7HDpVM"));
+            //var authString = Convert.ToBase64String(Encoding.Default.GetBytes(shop_request + ":" + MainStaticClass.PassPromo));
+
+            var authString = MainStaticClass.GetAuthStringProcessing;
+
 
             request.Headers.Add("Authorization", "Basic " + authString);
 
@@ -8758,7 +8869,7 @@ namespace Cash8
                         count = response.GetResponseStream().Read(buf, 0, buf.Length);
                         read += Encoding.UTF8.GetString(buf, 0, count);
                     } while (response.GetResponseStream().CanRead && count != 0);                    
-                    string answer = JsonConvert.DeserializeObject(read.Replace("{}", @"""""")).ToString();//read.Replace("{}","\"\"")
+                    //string answer = JsonConvert.DeserializeObject(read.Replace("{}", @"""""")).ToString();//read.Replace("{}","\"\"")
                     buyerInfoResponce = JsonConvert.DeserializeObject<BuyerInfoResponce>(read.Replace("{}", @""""""), new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });                   
                 }
             }
@@ -8774,6 +8885,69 @@ namespace Cash8
             return buyerInfoResponce;
         }
 
+        //public class Card
+        //{
+        //    public string cardNum { get; set; }
+        //    public string state { get; set; }
+        //    public string mode { get; set; }
+        //    public string dateIssued { get; set; }
+        //    public string dateExpired { get; set; }
+        //    public string dateActivated { get; set; }
+        //    public string dateRegistered { get; set; }
+        //    public string discount { get; set; }
+        //    public string value { get; set; }
+        //    public string cardStatus { get; set; }
+        //}
+
+        //public class Cards
+        //{
+        //    public Card card { get; set; }
+        //}
+
+        //public class Buyer
+        //{
+        //    //public string buyerId { get; set; }
+        //    //public string title { get; set; }
+        //    public string firstName { get; set; }
+        //    public string middleName { get; set; }
+        //    public string lastName { get; set; }
+        //    public string phone { get; set; }
+        //    //public string email { get; set; }
+        //    //public string sex { get; set; }
+        //    //public string birthDate { get; set; }
+        //    public string spendAllowed { get; set; }
+        //    public string phoneConfirmed { get; set; }
+        //}
+
+        //public class Balance
+        //{
+        //    public string balance { get; set; }
+        //    public string activeBalance { get; set; }
+        //    public string inactiveBalance { get; set; }
+        //   // public string purchaseAmount { get; set; }
+        //   // public string purchaseNum { get; set; }
+        //   // public string creditAmount { get; set; }
+        //   // public string debitAmount { get; set; }
+        //   // public string burnAmount { get; set; }
+        //   // public string discountAmount { get; set; }
+        //    public string oddMoneyBalance { get; set; }
+        //    public string oddMoneyFlags { get; set; }
+        //}
+
+        //public class BuyerInfoResponce
+        //{
+        //    public Cards cards { get; set; }
+        //    public Buyer buyer { get; set; }
+        //    public Balance balance { get; set; }            
+        //    //public string resultComment { get; set; }
+        //    public string res { get; set; }
+        //}
+
+        // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse); 
+        public class CardStatus
+        {
+        }
+
         public class Card
         {
             public string cardNum { get; set; }
@@ -8785,38 +8959,30 @@ namespace Cash8
             public string dateRegistered { get; set; }
             public string discount { get; set; }
             public string value { get; set; }
-            public string cardStatus { get; set; }
+            public CardStatus cardStatus { get; set; }
         }
 
         public class Cards
         {
-            public Card card { get; set; }
+            public List<Card> card { get; set; }
         }
 
         public class Buyer
         {
-            public string buyerId { get; set; }
-            public string title { get; set; }
+            public string uid { get; set; }
             public string firstName { get; set; }
             public string middleName { get; set; }
             public string lastName { get; set; }
             public string phone { get; set; }
-            public string email { get; set; }
-            public string sex { get; set; }
-            public string birthDate { get; set; }
             public string spendAllowed { get; set; }
+            public string phoneConfirmed { get; set; }
         }
 
         public class Balance
         {
+            public string balance { get; set; }
             public string activeBalance { get; set; }
             public string inactiveBalance { get; set; }
-            public string purchaseAmount { get; set; }
-            public string purchaseNum { get; set; }
-            public string creditAmount { get; set; }
-            public string debitAmount { get; set; }
-            public string burnAmount { get; set; }
-            public string discountAmount { get; set; }
             public string oddMoneyBalance { get; set; }
             public string oddMoneyFlags { get; set; }
         }
@@ -8825,10 +8991,12 @@ namespace Cash8
         {
             public Cards cards { get; set; }
             public Buyer buyer { get; set; }
-            public Balance balance { get; set; }            
-            public string resultComment { get; set; }
-            public string res { get; set; }
+            public Balance balance { get; set; }
+            public string requestId { get; set; }
+            public int res { get; set; }
         }
+
+
         #endregion
 
         private void show_pay_form()
@@ -8981,8 +9149,8 @@ namespace Cash8
             }
             //При переходе в окно оплаты цены должны быть отрисованы
             SendDataToCustomerScreen(1,1);
-            pay_form.Top = this.Top;
-            pay_form.Left = this.Left;
+            //pay_form.Top = this.Top;
+            //pay_form.Left = this.Left;
             //pay_form.Right = this.Right;
 
             //pay_form.Top = this.Parent.Top
