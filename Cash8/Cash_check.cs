@@ -294,13 +294,26 @@ namespace Cash8
 
         /// <summary>
         /// Запрос информации в процеччинговом центре 
-        /// о клиенте по номеру телефона
+        /// о клиенте по номеру телефона или кода карточки клиента
         /// </summary>
         private void get_client_in_processing()
         {
-            phone = "7"+txtB_client_phone.Text.Trim();
-            //Проверяем что за карточка 
-            BuyerInfoResponce buyerInfoResponce = get_buyerInfo_client_code_or_phone(1, phone);
+            BuyerInfoResponce buyerInfoResponce = null;
+            if (txtB_client_phone.Text.Trim().Length > 0)
+            {
+                phone = "7" + txtB_client_phone.Text.Trim();
+                //Проверяем что за карточка 
+                buyerInfoResponce = get_buyerInfo_client_code_or_phone(1, phone);
+            }
+            else if (client_barcode.Text.Trim().Length > 0)
+            {
+                buyerInfoResponce = get_buyerInfo_client_code_or_phone(0, client_barcode.Text.Trim());
+            }
+            else
+            {
+                return;
+            }
+
 
             if (buyerInfoResponce != null)
             {
@@ -2108,7 +2121,7 @@ namespace Cash8
                 if (listView2.Items.Count == 1)//1 товар найден
                 {
                     ListViewItem lvi = null;
-                    if (its_marked == 0)
+                    if ((its_marked == 0)&&(MainStaticClass.GetWorkSchema==1))
                     {
                            lvi = exist_tovar_in_listView(listView1, Convert.ToInt32(select_tovar.Tag), listView2.Items[0].Tag);
                     }
@@ -2706,7 +2719,14 @@ namespace Cash8
         {
             if (e.KeyChar == (char)Keys.Enter)
             {
-                process_client_discount(this.client_barcode.Text);
+                if (MainStaticClass.GetWorkSchema == 1)
+                {
+                    process_client_discount(this.client_barcode.Text);
+                }
+                else if (MainStaticClass.GetWorkSchema == 2)
+                {
+                    get_client_in_processing();
+                }
             }
         }
 
@@ -3373,11 +3393,11 @@ namespace Cash8
             }
             catch (NpgsqlException ex)
             {
-                MessageBox.Show("Ошибка при проверки на сертификат "+ex.Message);
+                MessageBox.Show("Ошибка при проверке на сертификат "+ex.Message);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Ошибка при проверки на сертификат " + ex.Message);
+                MessageBox.Show("Ошибка при проверке на сертификат " + ex.Message);
             }
             finally
             {

@@ -134,7 +134,7 @@
             // 
             this.client_barcode.BackColor = System.Drawing.Color.White;
             this.client_barcode.Location = new System.Drawing.Point(709, 41);
-            this.client_barcode.MaxLength = 10;
+            this.client_barcode.MaxLength = 13;
             this.client_barcode.Name = "client_barcode";
             this.client_barcode.Size = new System.Drawing.Size(96, 20);
             this.client_barcode.TabIndex = 0;

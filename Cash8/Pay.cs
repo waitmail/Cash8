@@ -880,10 +880,10 @@ namespace Cash8
             if (cc.check_type.SelectedIndex == 0)
             {
                 //здесь перед записью еще проверка процессингового центра 
-                if (!continue_sales())
-                {
-                    return;
-                }
+                //if (!continue_sales())Пока убрал есть вызов выше 
+                //{
+                //    return;
+                //}
 
                 if ((Convert.ToDecimal(cash_sum.Text) - Convert.ToDecimal(remainder.Text)) < 0)
                 {
@@ -937,7 +937,7 @@ namespace Cash8
                     //}
                 }
                 else
-                {                 
+                {
 
                     if (Convert.ToDecimal(non_cash_sum.Text) == 0)
                     {
@@ -959,7 +959,7 @@ namespace Cash8
                 string non_sum_cash_pay = (get_non_cash_sum(1)).ToString().Replace(",", ".");
 
 
-              
+
 
 
                 if (cc.it_is_paid(cash_sum.Text, cc.calculation_of_the_sum_of_the_document().ToString().Replace(",", "."), remainder.Text.Replace(",", "."),
