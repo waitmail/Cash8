@@ -153,7 +153,7 @@ namespace Cash8
             string json = JsonConvert.SerializeObject(requestSMSCode, Newtonsoft.Json.Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             //txtB_jason.Text = json;
             //string url = "http://92.242.41.218/processing/v3/requestSMSCode/";
-            string url = MainStaticClass.GetStartUrl+ "/v3/requestSMSCode/";
+            string url = MainStaticClass.GetStartUrl + "/v3/requestSMSCode/";
 
             byte[] body = Encoding.UTF8.GetBytes(json);
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
@@ -177,16 +177,20 @@ namespace Cash8
             request.ContentType = "application/json; charset=utf-8";
             request.ContentLength = body.Length;
 
-            using (Stream stream = request.GetRequestStream())
-            {
-                stream.Write(body, 0, body.Length);
-                stream.Close();
-            }
-
             NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
 
             try
             {
+
+                using (Stream stream = request.GetRequestStream())
+                {
+                    stream.Write(body, 0, body.Length);
+                    stream.Close();
+                }
+
+
+
+
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
                     byte[] buf = new byte[10000];
@@ -207,7 +211,7 @@ namespace Cash8
                         btn_check_code.Enabled = true;
                         MessageBox.Show(code_answer);
                     }
-                    else if(responceRequestSMSCode.res == "20") //Куда то записать информацию о трудностях
+                    else if (responceRequestSMSCode.res == "20") //Куда то записать информацию о трудностях
                     {
                         MessageBox.Show(" Номер телефона не найден ");
                     }
@@ -217,7 +221,7 @@ namespace Cash8
             catch (WebException ex)
             {
                 MessageBox.Show(ex.Message);
-            }            
+            }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);

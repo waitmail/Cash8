@@ -37,16 +37,16 @@
             // input_sertificate
             // 
             this.input_sertificate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.input_sertificate.Location = new System.Drawing.Point(569, 23);
-            this.input_sertificate.MaxLength = 8;
+            this.input_sertificate.Location = new System.Drawing.Point(524, 23);
+            this.input_sertificate.MaxLength = 13;
             this.input_sertificate.Name = "input_sertificate";
-            this.input_sertificate.Size = new System.Drawing.Size(183, 20);
+            this.input_sertificate.Size = new System.Drawing.Size(228, 20);
             this.input_sertificate.TabIndex = 0;
             // 
             // listView_sertificates
             // 
-            this.listView_sertificates.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.listView_sertificates.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.listView_sertificates.Location = new System.Drawing.Point(13, 71);
             this.listView_sertificates.Name = "listView_sertificates";
             this.listView_sertificates.Size = new System.Drawing.Size(739, 305);

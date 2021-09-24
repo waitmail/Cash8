@@ -58,16 +58,17 @@ namespace Cash8
             request.ContentType = "application/json; charset=utf-8";
             request.ContentLength = body.Length;
 
-            using (Stream stream = request.GetRequestStream())
-            {
-                stream.Write(body, 0, body.Length);
-                stream.Close();
-            }
-
             NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
 
             try
             {
+                using (Stream stream = request.GetRequestStream())
+                {
+                    stream.Write(body, 0, body.Length);
+                    stream.Close();
+                }
+
+
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
                     byte[] buf = new byte[10000];
@@ -161,17 +162,19 @@ namespace Cash8
             request.Method = "POST";
             request.ContentType = "application/json; charset=utf-8";
             request.ContentLength = body.Length;
-
-            using (Stream stream = request.GetRequestStream())
-            {
-                stream.Write(body, 0, body.Length);
-                stream.Close();
-            }
-
             NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
 
             try
             {
+                using (Stream stream = request.GetRequestStream())
+                {
+                    stream.Write(body, 0, body.Length);
+                    stream.Close();
+                }
+
+
+
+
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
                     byte[] buf = new byte[10000];
@@ -245,7 +248,7 @@ namespace Cash8
             string json = JsonConvert.SerializeObject(buyNewRequest, Newtonsoft.Json.Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             txtB_jason.Text = json;
             //string url = "http://92.242.41.218/processing/v3/buyNew/";
-            string url = MainStaticClass.GetStartUrl+ "/v3/buyNew/";
+            string url = MainStaticClass.GetStartUrl + "/v3/buyNew/";
 
             byte[] body = Encoding.UTF8.GetBytes(json);
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
@@ -269,16 +272,18 @@ namespace Cash8
             request.ContentType = "application/json; charset=utf-8";
             request.ContentLength = body.Length;
 
-            using (Stream stream = request.GetRequestStream())
-            {
-                stream.Write(body, 0, body.Length);
-                stream.Close();
-            }
-
             NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
 
             try
             {
+                using (Stream stream = request.GetRequestStream())
+                {
+                    stream.Write(body, 0, body.Length);
+                    stream.Close();
+                }
+
+
+
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
                     byte[] buf = new byte[10000];
@@ -382,16 +387,18 @@ namespace Cash8
             request.ContentType = "application/json; charset=utf-8";
             request.ContentLength = body.Length;
 
-            using (Stream stream = request.GetRequestStream())
-            {
-                stream.Write(body, 0, body.Length);
-                stream.Close();
-            }
 
             NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
 
             try
             {
+                using (Stream stream = request.GetRequestStream())
+                {
+                    stream.Write(body, 0, body.Length);
+                    stream.Close();
+                }             
+
+
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
                     byte[] buf = new byte[10000];
@@ -408,9 +415,9 @@ namespace Cash8
                     if (buynewResponse.res == "1")
                     {
                         conn.Open();
-                        string query = "UPDATE checks_header SET sent_to_processing_center=1,id_transaction=" + buynewResponse.transactionId +" WHERE document_number =" + document_number;
+                        string query = "UPDATE checks_header SET sent_to_processing_center=1,id_transaction=" + buynewResponse.transactionId + " WHERE document_number =" + document_number;
                         NpgsqlCommand command = new NpgsqlCommand(query, conn);
-                        int rowsaffected = command.ExecuteNonQuery();                       
+                        int rowsaffected = command.ExecuteNonQuery();
                         conn.Close();
                         command.Dispose();
                     }

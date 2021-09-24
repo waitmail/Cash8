@@ -50,12 +50,18 @@ namespace Cash8
 
         void non_cash_sum_kop_KeyPress(object sender, KeyPressEventArgs e)
         {
-            e.Handled = true;
+            if (MainStaticClass.GetWorkSchema == 1)
+            {
+                e.Handled = true;
+            }
         }
 
         public void set_kop_on_non_cash_sum_kop(string kop)
         {
-            non_cash_sum_kop.Text = kop;
+            if (MainStaticClass.GetWorkSchema == 1)
+            {
+                non_cash_sum_kop.Text = kop;
+            }
         }
 
         private void non_cash_KeyUp(object sender, KeyEventArgs e)
@@ -316,10 +322,18 @@ namespace Cash8
             if (pay_bonus.Text.Trim().Length > 0)
             {
                 //Decimal input_bonus = Convert.ToDecimal(pay_bonus.Text);
-                Int64 input_bonus = Convert.ToInt64(pay_bonus.Text);
+                Decimal input_bonus = Convert.ToDecimal(pay_bonus.Text);
                 //Посчитать сумму документа - 10 рублей
                 //Decimal bonus_total = Convert.ToDecimal(bonus_total_in_centr.Text);
-                Int64 bonus_total = Convert.ToInt64(bonus_total_in_centr.Text);
+                Int64 bonus_total = 0;
+                if (MainStaticClass.GetWorkSchema == 1)
+                {
+                    bonus_total = Convert.ToInt64(bonus_total_in_centr.Text);
+                }
+                else if (MainStaticClass.GetWorkSchema == 2)
+                {
+                    bonus_total = Convert.ToInt64(bonus_total_in_centr.Text)*100;
+                }
 
                 if (input_bonus > bonus_total)
                 {
@@ -333,13 +347,27 @@ namespace Cash8
                 //}
 
                 //if (Convert.ToDecimal(pay_bonus.Text) > (Convert.ToDecimal(pay_sum.Text)-1))
-                int const_remaind = (int)(cc.calculation_quantity_on_document() / 100) + 1;
-                if (Convert.ToInt64(pay_bonus.Text) > (int)(Convert.ToDecimal(pay_sum.Text) - const_remaind))
+                if (MainStaticClass.GetWorkSchema == 1)
                 {
-                    pay_bonus.Text = ((int)(Convert.ToDecimal(pay_sum.Text) - const_remaind)).ToString();
+                    int const_remaind = (int)(cc.calculation_quantity_on_document() / 100) + 1;
+                    if (Convert.ToInt64(pay_bonus.Text) > (int)(Convert.ToDecimal(pay_sum.Text) - const_remaind))
+                    {
+                        pay_bonus.Text = ((int)(Convert.ToDecimal(pay_sum.Text) - const_remaind)).ToString();
+                    }
+                    pay_bonus_many.Text = pay_bonus.Text;
+                }
+                else if (MainStaticClass.GetWorkSchema == 2)
+                {
+                    int const_remaind = cc.calculation_quantity_on_document();
+                    if (Convert.ToInt64(pay_bonus.Text)/100 > (Convert.ToDecimal(pay_sum.Text) - const_remaind))
+                    {
+                        pay_bonus.Text = ((int)(Convert.ToDecimal(pay_sum.Text) - const_remaind)*100).ToString();
+                    }
+                    pay_bonus_many.Text = (Convert.ToDecimal(pay_bonus.Text)/100).ToString();
                 }
 
-                pay_bonus_many.Text = pay_bonus.Text;
+                
+
 
                 //if ((Convert.ToInt32(pay_bonus.Text)) >= Convert.ToDecimal(pay_sum.Text)+ ((int)(cc.calculation_quantity_on_document() / 100)+1))
                 //{
@@ -551,11 +579,22 @@ namespace Cash8
                     set_kop_on_non_cash_sum_kop(kop);
                 }
 
-                this.remainder.Text = Math.Round(
-                    (double.Parse(cash_sum.Text) +
-                    double.Parse(pay_bonus_many.Text) +
-                    get_non_cash_sum(0) +
-                    double.Parse(sertificates_sum.Text) - double.Parse(pay_sum.Text)), 2).ToString("F", System.Globalization.CultureInfo.CurrentCulture);
+                if (MainStaticClass.GetWorkSchema == 1)
+                {
+
+                    this.remainder.Text = Math.Round(
+                        (double.Parse(cash_sum.Text) +
+                        double.Parse(pay_bonus_many.Text) +
+                        get_non_cash_sum(0) +
+                        double.Parse(sertificates_sum.Text) - double.Parse(pay_sum.Text)), 2).ToString("F", System.Globalization.CultureInfo.CurrentCulture);
+                }
+                else if (MainStaticClass.GetWorkSchema == 2)
+                {
+                    this.remainder.Text = (double.Parse(cash_sum.Text) +
+                        double.Parse(pay_bonus_many.Text) +
+                        get_non_cash_sum(0) +
+                        double.Parse(sertificates_sum.Text) - double.Parse(pay_sum.Text)).ToString("F", System.Globalization.CultureInfo.CurrentCulture);
+                }
 
                 if (double.Parse(cash_sum.Text.Replace(".", ",")) + double.Parse(non_cash_sum.Text) +
                     double.Parse(sertificates_sum.Text) + double.Parse(pay_bonus_many.Text) + double.Parse(non_cash_sum_kop.Text) / 100 - double.Parse(pay_sum.Text.Replace(".", ",")) < 0)
@@ -899,51 +938,47 @@ namespace Cash8
 
                 if (cc.client.Tag != null)
                 {
-                    //***********************************************                            
-                    if (Convert.ToDecimal(pay_bonus_many.Text) > 0)
+                    //***********************************************   
+                    if (MainStaticClass.GetWorkSchema == 1)
                     {
-                        if (Convert.ToDecimal(non_cash_sum.Text) == 0)
+                        if (Convert.ToDecimal(pay_bonus_many.Text) > 0)
                         {
-                            cc.distribute(Convert.ToDecimal(pay_bonus_many.Text) + (total - (int)total), total);//теперь бонусы 
+                            if (Convert.ToDecimal(non_cash_sum.Text) == 0)
+                            {
+                                cc.distribute(Convert.ToDecimal(pay_bonus_many.Text) + (total - (int)total), total);//теперь бонусы 
+                            }
+                            else
+                            {
+                                cc.distribute(Convert.ToDecimal(pay_bonus_many.Text), total);//теперь бонусы 
+                            }
                         }
                         else
                         {
-                            cc.distribute(Convert.ToDecimal(pay_bonus_many.Text), total);//теперь бонусы 
+
+                            if (Convert.ToDecimal(non_cash_sum.Text) == 0)
+                            {
+                                cc.distribute(total - (int)total, total);//теперь бонусы 
+                            }
+
                         }
                     }
-                    else
+                    else if (MainStaticClass.GetWorkSchema == 2)
                     {
-
-                        if (Convert.ToDecimal(non_cash_sum.Text) == 0)
+                        if (Convert.ToDecimal(pay_bonus_many.Text) > 0)
                         {
-                            cc.distribute(total - (int)total, total);//теперь бонусы 
-                        }
+                            cc.distribute(Convert.ToDecimal(pay_bonus_many.Text), total);//теперь бонусы 
+                        }                       
                     }
-
-                    //if (Convert.ToDecimal(pay_bonus_many.Text) > 0)
-                    //{
-                    //    if (Convert.ToDecimal(non_cash_sum.Text) == 0)
-                    //    {                            
-                    //        cc.distribute(total - (int)total, total);
-                    //    }
-                    //}
-                    //else
-                    //{
-
-                    //    if (Convert.ToDecimal(non_cash_sum.Text) == 0)
-                    //    {
-                    //        cc.distribute(total - (int)total, total);
-                    //    }
-                    //}
                 }
                 else
                 {
-
-                    if (Convert.ToDecimal(non_cash_sum.Text) == 0)
+                    if (MainStaticClass.GetWorkSchema == 1)
                     {
-                        cc.distribute(total - (int)total, total);//распределение без бонусов , здесь нет клиента нет бонусов
+                        if (Convert.ToDecimal(non_cash_sum.Text) == 0)
+                        {
+                            cc.distribute(total - (int)total, total);//распределение без бонусов , здесь нет клиента нет бонусов
+                        }
                     }
-
                 }
 
                 if (Convert.ToDecimal(pay_sum.Text) - (Convert.ToDecimal(cash_sum.Text) - Convert.ToDecimal(remainder.Text) + Convert.ToDecimal(sertificates_sum.Text) + Convert.ToDecimal(pay_bonus_many.Text) + Convert.ToDecimal(non_cash_sum.Text)) > 1)
@@ -1203,20 +1238,42 @@ namespace Cash8
 
             if (_non_cash_summ_ == 0)
             {
-                sum_of_the_document = (int)sum_of_the_document;
+                if (MainStaticClass.GetWorkSchema == 1)
+                {
+                    sum_of_the_document = (int)sum_of_the_document;
+                }
             }
 
-            if (Math.Round(sum_of_the_document,2) != Math.Round((_cash_summ_ + _non_cash_summ_ + _sertificates_sum_+ _pay_bonus_many_),2))
+            if (MainStaticClass.GetWorkSchema == 1)
             {
+                if (Math.Round(sum_of_the_document, 2) != Math.Round((_cash_summ_ + _non_cash_summ_ + _sertificates_sum_ + _pay_bonus_many_), 2))
+                {
 
-                MessageBox.Show(" Повторно внесите суммы оплаты, обнаружено несхождение в окне оплаты ");
-                MessageBox.Show("Сумма документа = " + sum_of_the_document.ToString() + " а сумма оплат = " + (_cash_summ_ + _non_cash_summ_ + _sertificates_sum_ + _pay_bonus_many_).ToString());
-                MessageBox.Show("Сумма наличные = " + _cash_summ_.ToString());
-                MessageBox.Show("Сумма карта оплаты = " + _non_cash_summ_.ToString());
-                MessageBox.Show("Сумма сертификатов = " + _sertificates_sum_.ToString());
-                MessageBox.Show("Сумма бонусов = " +_pay_bonus_many_.ToString());
+                    MessageBox.Show(" Повторно внесите суммы оплаты, обнаружено несхождение в окне оплаты ");
+                    MessageBox.Show("Сумма документа = " + sum_of_the_document.ToString() + " а сумма оплат = " + (_cash_summ_ + _non_cash_summ_ + _sertificates_sum_ + _pay_bonus_many_).ToString());
+                    MessageBox.Show("Сумма наличные = " + _cash_summ_.ToString());
+                    MessageBox.Show("Сумма карта оплаты = " + _non_cash_summ_.ToString());
+                    MessageBox.Show("Сумма сертификатов = " + _sertificates_sum_.ToString());
+                    MessageBox.Show("Сумма бонусов = " + _pay_bonus_many_.ToString());
 
-                return;
+                    return;
+                }
+            }
+            else if (MainStaticClass.GetWorkSchema == 2)
+            {
+                if (sum_of_the_document != _cash_summ_ + _non_cash_summ_ + _sertificates_sum_ + _pay_bonus_many_)
+                {
+
+                    MessageBox.Show(" Повторно внесите суммы оплаты, обнаружено несхождение в окне оплаты ");
+                    MessageBox.Show("Сумма документа = " + sum_of_the_document.ToString() + " а сумма оплат = " + (_cash_summ_ + _non_cash_summ_ + _sertificates_sum_ + _pay_bonus_many_).ToString());
+                    MessageBox.Show("Сумма наличные = " + _cash_summ_.ToString());
+                    MessageBox.Show("Сумма карта оплаты = " + _non_cash_summ_.ToString());
+                    MessageBox.Show("Сумма сертификатов = " + _sertificates_sum_.ToString());
+                    MessageBox.Show("Сумма бонусов = " + _pay_bonus_many_.ToString());
+
+                    return;
+                }
+
             }
 
             //здесь перед записью еще проверка процессингового центра 

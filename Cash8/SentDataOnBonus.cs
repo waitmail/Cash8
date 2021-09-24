@@ -58,16 +58,17 @@ namespace Cash8
             request.ContentType = "application/json; charset=utf-8";
             request.ContentLength = body.Length;
 
-            using (Stream stream = request.GetRequestStream())
-            {
-                stream.Write(body, 0, body.Length);
-                stream.Close();
-            }
-
             NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
 
             try
             {
+
+                using (Stream stream = request.GetRequestStream())
+                {
+                    stream.Write(body, 0, body.Length);
+                    stream.Close();
+                }
+
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
                     byte[] buf = new byte[10000];

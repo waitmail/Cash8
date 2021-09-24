@@ -321,7 +321,7 @@ namespace Cash8
                 {
                     if (buyerInfoResponce.balance.activeBalance != "0")
                     {
-                        pay_form.bonus_total_in_centr.Text = ((int)Convert.ToDecimal(buyerInfoResponce.balance.activeBalance) / 100).ToString();
+                        pay_form.bonus_total_in_centr.Text = (((int)Convert.ToDecimal(buyerInfoResponce.balance.activeBalance) / 100)*100).ToString();
                         if (buyerInfoResponce.cards.card[0].state == "3")
                         {
                             if (MainStaticClass.GetWorkSchema == 1)
@@ -1397,7 +1397,7 @@ namespace Cash8
         /// </summary>
         /// <param name="sum"></param>
         public void distribute(decimal sum, decimal total)
-        {
+        {            
 
             if (sum == 0)
             {
@@ -2198,10 +2198,16 @@ namespace Cash8
                                                 
                         listView1.Items.Add(lvi);
                         SendDataToCustomerScreen(1,0);
-                        listView1.Select();
-                        listView1.Items[this.listView1.Items.Count - 1].Selected = true;
+                        if (MainStaticClass.GetWorkSchema == 1)
+                        {
+                            listView1.Select();
+                            listView1.Items[this.listView1.Items.Count - 1].Selected = true;
+                        }
+                        else if (MainStaticClass.GetWorkSchema == 2)
+                        {
+                            inputbarcode.Focus();
+                        }
                         update_record_last_tovar(listView1.Items[this.listView1.Items.Count - 1].SubItems[1].Text, listView1.Items[this.listView1.Items.Count - 1].SubItems[3].Text);
-
 
                         //if (MainStaticClass.Use_Trassir > 0)
                         //{
@@ -4403,7 +4409,7 @@ namespace Cash8
                     {
                         pi = new FiscallPrintJason.PostItem();
                         pi.type = "text";
-                        pi.text = "Списано бонусов : " + ((int)bonuses_it_is_written_off).ToString();
+                        pi.text = "Списано бонусов : " + (((int)bonuses_it_is_written_off)*100).ToString();
                         pi.alignment = "left";
                         check.postItems.Add(pi);
                     }                    
@@ -8828,7 +8834,7 @@ namespace Cash8
         #region buyerInfoResponce
 
 
-        private BuyerInfoResponce get_buyerInfo_client_code_or_phone(int variant,string client_code_or_phone)
+        private BuyerInfoResponce get_buyerInfo_client_code_or_phone(int variant, string client_code_or_phone)
         {
             //bool result = true;
             BuyerInfoResponce buyerInfoResponce = null;
@@ -8845,7 +8851,7 @@ namespace Cash8
             string json = JsonConvert.SerializeObject(buyerInfoRequest, Newtonsoft.Json.Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             //txtB_jason.Text = json;
             //string url = "http://92.242.41.218/processing/v3/buyerInfo/";
-            string url = MainStaticClass.GetStartUrl+ "/v3/buyerInfo/";
+            string url = MainStaticClass.GetStartUrl + "/v3/buyerInfo/";
 
             byte[] body = Encoding.UTF8.GetBytes(json);
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
@@ -8871,14 +8877,15 @@ namespace Cash8
             request.ContentType = "application/json; charset=utf-8";
             request.ContentLength = body.Length;
 
-            using (Stream stream = request.GetRequestStream())
-            {
-                stream.Write(body, 0, body.Length);
-                stream.Close();
-            }            
-
             try
             {
+                using (Stream stream = request.GetRequestStream())
+                {
+                    stream.Write(body, 0, body.Length);
+                    stream.Close();
+                }
+
+
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
                     byte[] buf = new byte[10000];
@@ -8888,20 +8895,20 @@ namespace Cash8
                     {
                         count = response.GetResponseStream().Read(buf, 0, buf.Length);
                         read += Encoding.UTF8.GetString(buf, 0, count);
-                    } while (response.GetResponseStream().CanRead && count != 0);                    
+                    } while (response.GetResponseStream().CanRead && count != 0);
                     //string answer = JsonConvert.DeserializeObject(read.Replace("{}", @"""""")).ToString();//read.Replace("{}","\"\"")
-                    buyerInfoResponce = JsonConvert.DeserializeObject<BuyerInfoResponce>(read.Replace("{}", @""""""), new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });                   
+                    buyerInfoResponce = JsonConvert.DeserializeObject<BuyerInfoResponce>(read.Replace("{}", @""""""), new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
                 }
             }
             catch (WebException ex)
             {
                 MessageBox.Show(ex.Message);
-            }            
+            }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
-            
+
             return buyerInfoResponce;
         }
 
@@ -9731,7 +9738,7 @@ namespace Cash8
             {
 
                 string query = " SELECT dt.tovar_code, dt.name,SUM(dt.quantity)AS quantity, dt.price, dt.price_at_a_discount, SUM(dt.sum) AS sum," +
-                               "  SUM(dt.sum_at_a_discount) AS sum_at_a_discount, dt.id_transaction,dt.client,dt.item_marker " +
+                               "  SUM(dt.sum_at_a_discount) AS sum_at_a_discount, dt.id_transaction,dt.client,dt.item_marker,dt.numstr " +
                                " FROM " +
                                " (SELECT numstr, tovar_code, tovar.name, quantity AS quantity, price, price_at_a_discount, sum, sum_at_a_discount," +
                                " checks_header.id_transaction, checks_header.client, item_marker " +
@@ -9746,8 +9753,8 @@ namespace Cash8
                                " LEFT JOIN checks_header ON checks_table.document_number = checks_header.document_number " +
                                " WHERE checks_header.id_sale = '" + txtB_num_sales.Text.Trim() + "'  AND checks_header.check_type = 1 AND checks_header.its_deleted = 0 " +
                                " AND checks_header.date_time_write BETWEEN '" + DateTime.Now.AddDays(-14).Date.ToString("dd-MM-yyyy") + "' AND  '" + DateTime.Now.AddDays(1).ToString("dd-MM-yyyy") + "' )AS dt " +
-                               " GROUP BY dt.tovar_code, dt.name, dt.price, dt.price_at_a_discount, dt.id_transaction,dt.client,dt.item_marker " +
-                               " HAVING SUM(dt.quantity) > 0 ";
+                               " GROUP BY dt.numstr,dt.tovar_code, dt.name, dt.price, dt.price_at_a_discount, dt.id_transaction,dt.client,dt.item_marker " +
+                               " HAVING SUM(dt.quantity) > 0 order by numstr";
 
                 conn.Open();
                 //string query = " SELECT tovar_code, tovar.name,quantity, price, price_at_a_discount, sum, sum_at_a_discount,checks_header.id_transaction,checks_header.client,item_marker FROM checks_table " +
