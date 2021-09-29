@@ -73,6 +73,8 @@ namespace Cash8
         public string qr_code = "";
         public Int32 id_sale = 0;
         public string phone_client = "";
+        private int card_state = 0; // state – состояние карты, одно из значений: 1 – карта неактивна 2 – карта активирована(выдана на кассе) 3 – карта зарегистрирована(привязана к анкете клиента) 4 – карта заблокирована
+
 
         System.Windows.Forms.Timer timer = null;
 
@@ -291,7 +293,33 @@ namespace Cash8
             }
 
         }
+        
+        /// <summary>
+        /// По штрихкоду карты возвращает ее статус
+        /// </summary>
+        /// <param name="card_barcode"></param>
+        /// <returns></returns>
+        private int get_status_promo_card(string card_barcode)
+        {
+            int result = 0;
 
+            BuyerInfoResponce buyerInfoResponce = null;
+            buyerInfoResponce = get_buyerInfo_client_code_or_phone(0, card_barcode);
+
+            if (buyerInfoResponce != null)
+            {
+                if (buyerInfoResponce.res == 1)
+                {
+                    if (buyerInfoResponce.cards.card.Count > 0)
+                    {
+                        result = Convert.ToInt16(buyerInfoResponce.cards.card[0].state);
+                    }
+                }
+            }
+
+            return result;
+        }
+        
         /// <summary>
         /// Запрос информации в процеччинговом центре 
         /// о клиенте по номеру телефона или кода карточки клиента
@@ -328,20 +356,43 @@ namespace Cash8
                             {
                                 pay_form.pay_bonus.Enabled = true;
                             }
+                            else if(MainStaticClass.GetWorkSchema==2)
+                            {
+                                //надо проверить нет ли другой карты в товарной части чека
+                                if (check_availability_card_sale())
+                                {
+                                    MessageBox.Show("В чеке(в товарах) обнаружена неактивная бонусная карта");
+                                    client_barcode.Text = "";
+                                    txtB_client_phone.Text = "";
+                                    return;
+                                }
+                            }
                             this.client.BackColor = Color.Green;
                         }
-                        else
+                        else if (buyerInfoResponce.cards.card[0].state == "4")
                         {
+                            MessageBox.Show("Эта бонусная карта заблокирована");
+                            return;
+                        }
+                        else
+                        {                           
+
                             this.client.BackColor = Color.Yellow;
                         }
                         bonus_total_centr = Convert.ToInt32(pay_form.bonus_total_in_centr.Text);
                     }
-
-                    client.Text = buyerInfoResponce.buyer.firstName;
-                    phone_client = buyerInfoResponce.buyer.phone;
+                    if (buyerInfoResponce.buyer != null)
+                    {
+                        client.Text = buyerInfoResponce.buyer.firstName;
+                        phone_client = buyerInfoResponce.buyer.phone;
+                    }
+                    else
+                    {
+                        client.Text = buyerInfoResponce.cards.card[0].cardNum;
+                    }
                     //client.Tag = phone;
                     client.Tag = buyerInfoResponce.cards.card[0].cardNum;
-
+                    card_state = Convert.ToInt16(buyerInfoResponce.cards.card[0].state);
                     txtB_client_phone.Text = "";
                     client_barcode.Enabled = false;
                     txtB_client_phone.Enabled = false;
@@ -2105,6 +2156,22 @@ namespace Cash8
                         if (decrypt_data == "1")
                         {
                             MessageBox.Show("Сертификат уже активирован");
+                            return;
+                        }
+                    }
+                }
+                else if (its_certificate == 2)//Это продажа бонусной карты проверяем, что в шапке нет другой карты
+                {
+                    if (client.Tag != null)
+                    {
+                        if (client.Tag.ToString() != barcode)
+                        {
+                            MessageBox.Show("В чеке уже выбрана другая бонусная карта, поэтому продажа другой бонусной карты невозможна");
+                            return;
+                        }
+                        if (card_state != 1)//Проверяем статус карты он должен быть 1 т.е. не активирована
+                        {
+                            MessageBox.Show("Эта карта имеет неверный статус в процессиноговом центре и продана быть не может ");
                             return;
                         }
                     }
@@ -9173,6 +9240,30 @@ namespace Cash8
                     //}
 
                 }
+                //card_state
+                if (MainStaticClass.GetWorkSchema == 2)
+                {
+                    ////Проверяем есть ли в чеке бонусная карта на продажу.
+                    //bool first = (card_state == 1);
+                    //bool error = false;
+                    //bool second = check_availability_card_sale(ref error);
+                    //if (error)
+                    //{
+                    //    //тут как то откатываемся назад
+                    //    //наверное cancel action и возврат
+
+                    //}
+                    //else
+                    //{
+                    //    if (first != second)//что то не так при продаже бонусной карты
+                    //    {
+                    //        if (!first)
+                    //        {
+
+                    //        }
+                    //    }
+                    //}
+                }
             }
             //При переходе в окно оплаты цены должны быть отрисованы
             SendDataToCustomerScreen(1,1);
@@ -9191,6 +9282,50 @@ namespace Cash8
             
         }
 
+        /// <summary>
+        /// Проверить наличие в товарной части чека 
+        /// наличие бонусной карты
+        /// </summary>
+        /// <returns></returns>
+        private bool check_availability_card_sale()
+        {
+            bool result = false;
+
+            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+            try
+            {
+                conn.Open();
+                string query = "";
+                int query_result = 0;
+                foreach (ListViewItem lvi in listView1.Items)
+                {
+                    query = "SELECT its_certificate FROM tovar WHERE code="+lvi.SubItems[0].Text;
+                    NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                    query_result = Convert.ToInt16(command.ExecuteScalar());
+                    if (query_result == 2)
+                    {
+                        result = true;
+                        break;
+                    }
+                }
+            }
+            catch (NpgsqlException ex)
+            {
+                MessageBox.Show("Ошибка при проверке товарной части на наличие бонусной карты " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ошибка при проверке товарной части на наличие бонусной карты " + ex.Message);
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+            return result;
+        }
 
         /// <summary>
         /// Подсчет общего количества в документе 
