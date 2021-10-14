@@ -144,6 +144,7 @@ namespace Cash8
             else if (MainStaticClass.GetWorkSchema == 2)
             {
                 requestSMSCode.phone = phone_client;
+                //requestSMSCode.notRegistered = "1";
             }
             if (MainStaticClass.GetWorkSchema == 1)
             {
@@ -209,7 +210,7 @@ namespace Cash8
                         code_answer = responceRequestSMSCode.code;
                         label1.Text = "Проверочный код успешно получен";
                         btn_check_code.Enabled = true;
-                        MessageBox.Show(code_answer);
+                        //MessageBox.Show(code_answer);
                     }
                     else if (responceRequestSMSCode.res == "20") //Куда то записать информацию о трудностях
                     {

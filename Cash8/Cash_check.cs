@@ -367,7 +367,7 @@ namespace Cash8
                                     return;
                                 }
                             }
-                            this.client.BackColor = Color.Green;
+                            //this.client.BackColor = Color.Green;
                         }
                         else if (buyerInfoResponce.cards.card[0].state == "4")
                         {
@@ -377,13 +377,13 @@ namespace Cash8
                         else
                         {                           
 
-                            this.client.BackColor = Color.Yellow;
+                            //this.client.BackColor = Color.Yellow;
                         }
                         bonus_total_centr = Convert.ToInt32(pay_form.bonus_total_in_centr.Text);
                     }
                     if (buyerInfoResponce.buyer != null)
                     {
-                        client.Text = buyerInfoResponce.buyer.firstName;
+                        client.Text = buyerInfoResponce.buyer.lastName+" "+ buyerInfoResponce.buyer.firstName;
                         phone_client = buyerInfoResponce.buyer.phone;
                     }
                     else
@@ -399,12 +399,16 @@ namespace Cash8
                 }
                 else
                 {
+                    if ((buyerInfoResponce.res == 3) && (txtB_client_phone.Text.Trim().Length > 0)) //Необходимо еще понять, что это был введен номер телефона
+                    {
+                        btn_inpute_phone_client_Click(null, null);
+                    }
                     get_description_errors_on_code(buyerInfoResponce.res);
                     txtB_client_phone.Text = "";
                     bonus_total_centr = -1;
                     return;
                 }
-                this.btn_inpute_phone_client.Enabled = false;
+                //this.btn_inpute_phone_client.Enabled = false;
             }
 
         }
@@ -1849,8 +1853,8 @@ namespace Cash8
 
                 while (reader.Read())
                 {
-                    ListViewItem lvi = new ListViewItem(reader.GetInt32(0).ToString());
-                    lvi.Tag = reader.GetInt32(0);
+                    ListViewItem lvi = new ListViewItem(reader.GetInt64(0).ToString());
+                    lvi.Tag = reader.GetInt64(0);
                     lvi.SubItems.Add(reader.GetString(1));//Наименование
                     lvi.SubItems.Add("");//Характеристика
                     lvi.SubItems.Add(count.ToString());//Количество
@@ -2070,7 +2074,7 @@ namespace Cash8
                     //lvi.Tag = reader.GetInt32(0);//Внутренний код товара
                     //lvi.SubItems.Add(reader[1].ToString().Trim());//Наименование
                     select_tovar.Text = reader[1].ToString().Trim();
-                    select_tovar.Tag = reader.GetInt32(0).ToString();
+                    select_tovar.Tag = reader.GetInt64(0).ToString();
 
                     //lvi.SubItems.Add(reader[3].ToString().Trim());//Характеристика
                     lvi.Tag = reader[4].ToString().Trim();//GUID характеристики
@@ -2089,7 +2093,7 @@ namespace Cash8
                     {
                         foreach (ListViewItem _lvi_ in listView1.Items)
                         {
-                            if (_lvi_.SubItems[0].Text == reader.GetInt32(0).ToString())
+                            if (_lvi_.SubItems[0].Text == reader.GetInt64(0).ToString())
                             {
                                 find_sertificate = true;
                                 break;
@@ -2162,11 +2166,21 @@ namespace Cash8
                 }
                 else if (its_certificate == 2)//Это продажа бонусной карты проверяем, что в шапке нет другой карты
                 {
+                    if (check_availability_card_sale())
+                    {
+                        MessageBox.Show("В строках чека уже есть бонусная карта на продажу");
+                        return;
+                    }
+                    if (get_status_promo_card(barcode) != 1)
+                    {
+                        MessageBox.Show("Данная бонусная карта уже активирована и повторно продана быть не может");
+                        return;
+                    }
                     if (client.Tag != null)
                     {
                         if (client.Tag.ToString() != barcode)
                         {
-                            MessageBox.Show("В чеке уже выбрана другая бонусная карта, поэтому продажа другой бонусной карты невозможна");
+                            MessageBox.Show("В чеке уже выбран клиент с другой бонусной2 картой, продажа бонусной карты в этом чеке невозможна");
                             return;
                         }
                         if (card_state != 1)//Проверяем статус карты он должен быть 1 т.е. не активирована
@@ -2174,7 +2188,7 @@ namespace Cash8
                             MessageBox.Show("Эта карта имеет неверный статус в процессиноговом центре и продана быть не может ");
                             return;
                         }
-                    }
+                    }                    
                 }
                 
 
@@ -5456,12 +5470,12 @@ namespace Cash8
                 
                 if (Convert.ToInt16(command.ExecuteScalar()) == 0)
                 {
-                    query = "CREATE TABLE checks_table_temp( tovar integer)WITH (  OIDS=FALSE);ALTER TABLE checks_table_temp  OWNER TO postgres;";
+                    query = "CREATE TABLE checks_table_temp( tovar bigint)WITH (  OIDS=FALSE);ALTER TABLE checks_table_temp  OWNER TO postgres;";
 
                 }
                 else
                 {
-                    query = "DROP TABLE checks_table_temp;CREATE TABLE checks_table_temp( tovar integer)WITH (  OIDS=FALSE);ALTER TABLE checks_table_temp  OWNER TO postgres;";
+                    query = "DROP TABLE checks_table_temp;CREATE TABLE checks_table_temp( tovar bigint)WITH (  OIDS=FALSE);ALTER TABLE checks_table_temp  OWNER TO postgres;";
                 }
 
                 command = new NpgsqlCommand(query, conn);
@@ -7697,7 +7711,7 @@ namespace Cash8
                     while (reader.Read())
                     {
                         ListViewItem lvi = new ListViewItem(reader[0].ToString());
-                        lvi.Tag = reader.GetInt32(0).ToString();          //Внутренний код товара
+                        lvi.Tag = reader.GetInt64(0).ToString();          //Внутренний код товара
                         lvi.SubItems.Add(reader[1].ToString().Trim());    //Наименование
                         lvi.SubItems.Add(reader[5].ToString());           //Характеристика
                         lvi.SubItems[2].Tag = reader[6].ToString();       //guid Характеристики
@@ -7841,7 +7855,7 @@ namespace Cash8
                             if ((decimal)num_records / sum == Math.Round(num_records / sum, 0, MidpointRounding.AwayFromZero))
                             {
                                 ListViewItem lvi = new ListViewItem(reader[0].ToString());
-                                lvi.Tag = reader.GetInt32(0).ToString();          //Внутренний код товара
+                                lvi.Tag = reader.GetInt64(0).ToString();          //Внутренний код товара
                                 lvi.SubItems.Add(reader[1].ToString().Trim());    //Наименование
 
                                 lvi.SubItems.Add(reader[5].ToString());    //Характеристика
@@ -7884,7 +7898,7 @@ namespace Cash8
                             else
                             {
                                 ListViewItem lvi = new ListViewItem(reader[0].ToString());
-                                lvi.Tag = reader.GetInt32(0).ToString();          //Внутренний код товара
+                                lvi.Tag = reader.GetInt64(0).ToString();          //Внутренний код товара
                                 lvi.SubItems.Add(reader[1].ToString().Trim());    //Наименование
                                 lvi.SubItems.Add(reader[5].ToString());           //Характеристика
                                 lvi.SubItems[2].Tag = reader[6].ToString();       //guid Характеристики
@@ -7910,7 +7924,7 @@ namespace Cash8
                         else
                         {
                             ListViewItem lvi = new ListViewItem(reader[0].ToString());
-                            lvi.Tag = reader.GetInt32(0).ToString();          //Внутренний код товара
+                            lvi.Tag = reader.GetInt64(0).ToString();          //Внутренний код товара
                             lvi.SubItems.Add(reader[1].ToString().Trim());    //Наименование
                             lvi.SubItems.Add(reader[5].ToString());           //Характеристика
                             lvi.SubItems[2].Tag = reader[6].ToString();       //guid Характеристики
@@ -8496,7 +8510,7 @@ namespace Cash8
                             _sum_ -= 1;
 
                             ListViewItem lvi = new ListViewItem(reader[0].ToString());
-                            lvi.Tag = reader.GetInt32(0).ToString();          //Внутренний код товара
+                            lvi.Tag = reader.GetInt64(0).ToString();          //Внутренний код товара
                             lvi.SubItems.Add(reader[1].ToString().Trim());    //Наименование
                             lvi.SubItems.Add("");                             //Характеристика
                             lvi.SubItems.Add(reader[4].ToString().Trim());    //Количество
@@ -8523,7 +8537,7 @@ namespace Cash8
                         else
                         {
                             ListViewItem lvi = new ListViewItem(reader[0].ToString());
-                            lvi.Tag = reader.GetInt32(0).ToString();          //Внутренний код товара
+                            lvi.Tag = reader.GetInt64(0).ToString();          //Внутренний код товара
                             lvi.SubItems.Add(reader[1].ToString().Trim());    //Наименование
                             lvi.SubItems.Add("");    //Наименование
                             lvi.SubItems.Add(reader[4].ToString().Trim());    //Количество
@@ -9182,6 +9196,27 @@ namespace Cash8
             {
                 if (check_type.SelectedIndex == 0) // Это продажа
                 {
+                    if (MainStaticClass.GetWorkSchema == 2)
+                    {
+                        //Проверяем есть ли в чеке бонусная карта на продажу.
+                        bool first = (card_state == 1);//В чек считана бонусная карта клиента со статусом 1 т.е. не активирована                       
+                        bool second = check_availability_card_sale();
+                        if (first != second)
+                        {
+                            if (first)
+                            {
+                                MessageBox.Show("В шапке чека существует бонусная карта клиента со статусом 1 т.е. не активирована, а в строках нет данной бонусной карты,необходимо ее добавить в строки");
+                                cancel_action();
+                                return;
+                            }
+                            else
+                            {
+                                MessageBox.Show("В шапке чека отсуствует бонусная карта клиента со статусом 1 т.е. не активирована, а в строках она есть,необходимо ее добавить в шапку чека");
+                                cancel_action();
+                                return;
+                            }
+                        }                       
+                    }
                     //if (client.Tag == null)// Если нет карты клиента, то предложить выдать карточку 
                     //{
                     //    if (MainStaticClass.check_amount_exceeds_threshold(calculation_of_the_sum_of_the_document()))
@@ -9239,31 +9274,7 @@ namespace Cash8
                     //    }
                     //}
 
-                }
-                //card_state
-                if (MainStaticClass.GetWorkSchema == 2)
-                {
-                    ////Проверяем есть ли в чеке бонусная карта на продажу.
-                    //bool first = (card_state == 1);
-                    //bool error = false;
-                    //bool second = check_availability_card_sale(ref error);
-                    //if (error)
-                    //{
-                    //    //тут как то откатываемся назад
-                    //    //наверное cancel action и возврат
-
-                    //}
-                    //else
-                    //{
-                    //    if (first != second)//что то не так при продаже бонусной карты
-                    //    {
-                    //        if (!first)
-                    //        {
-
-                    //        }
-                    //    }
-                    //}
-                }
+                }               
             }
             //При переходе в окно оплаты цены должны быть отрисованы
             SendDataToCustomerScreen(1,1);
@@ -9547,13 +9558,19 @@ namespace Cash8
 
        
         private void btn_inpute_phone_client_Click(object sender, EventArgs e)
-        {           
+        {
+            InputCodeNumberPhone inputCodeNumberPhone = new InputCodeNumberPhone();
+            inputCodeNumberPhone.code_client = "";
+            inputCodeNumberPhone.phone_client = "7"+txtB_client_phone.Text.Trim();
+            DialogResult dialogResult = inputCodeNumberPhone.ShowDialog();
+            if (dialogResult == DialogResult.Yes)
+            {
+                this.client.Tag = "7" + txtB_client_phone.Text.Trim();
+                this.client.Text = "7" + txtB_client_phone.Text.Trim();
+            }
 
             //InputePhoneClient ipc = new InputePhoneClient();
-            //if (client.Tag != null)
-            //{
-            //    ipc.barcode = this.client.Tag.ToString();
-            //}
+            //ipc.barcode = txtB_client_phone.Text;            
             //ipc.cash_Check = this;
             //DialogResult dr = ipc.ShowDialog();
             //btn_inpute_phone_client.Enabled = false;

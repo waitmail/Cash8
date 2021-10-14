@@ -116,7 +116,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(430, 45);
+            this.label3.Location = new System.Drawing.Point(12, 45);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(43, 13);
             this.label3.TabIndex = 7;
@@ -125,18 +125,19 @@
             // client
             // 
             this.client.Enabled = false;
-            this.client.Location = new System.Drawing.Point(481, 41);
+            this.client.Location = new System.Drawing.Point(61, 42);
+            this.client.MaxLength = 200;
             this.client.Name = "client";
-            this.client.Size = new System.Drawing.Size(106, 20);
+            this.client.Size = new System.Drawing.Size(236, 20);
             this.client.TabIndex = 17;
             // 
             // client_barcode
             // 
             this.client_barcode.BackColor = System.Drawing.Color.White;
-            this.client_barcode.Location = new System.Drawing.Point(709, 41);
+            this.client_barcode.Location = new System.Drawing.Point(426, 41);
             this.client_barcode.MaxLength = 13;
             this.client_barcode.Name = "client_barcode";
-            this.client_barcode.Size = new System.Drawing.Size(96, 20);
+            this.client_barcode.Size = new System.Drawing.Size(192, 20);
             this.client_barcode.TabIndex = 0;
             this.client_barcode.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.client_barcode_KeyPress);
             // 
@@ -243,7 +244,7 @@
             // 
             // date_time_start
             // 
-            this.date_time_start.Location = new System.Drawing.Point(374, 8);
+            this.date_time_start.Location = new System.Drawing.Point(543, 8);
             this.date_time_start.Name = "date_time_start";
             this.date_time_start.ReadOnly = true;
             this.date_time_start.Size = new System.Drawing.Size(141, 20);
@@ -251,18 +252,17 @@
             // 
             // num_cash
             // 
-            this.num_cash.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.num_cash.Location = new System.Drawing.Point(8, 8);
+            this.num_cash.Location = new System.Drawing.Point(437, 7);
             this.num_cash.Name = "num_cash";
             this.num_cash.ReadOnly = true;
-            this.num_cash.Size = new System.Drawing.Size(100, 13);
+            this.num_cash.Size = new System.Drawing.Size(100, 20);
             this.num_cash.TabIndex = 31;
             this.num_cash.Text = "КАССА №";
             // 
             // user
             // 
             this.user.BackColor = System.Drawing.SystemColors.Control;
-            this.user.Location = new System.Drawing.Point(521, 8);
+            this.user.Location = new System.Drawing.Point(690, 8);
             this.user.Name = "user";
             this.user.Size = new System.Drawing.Size(106, 20);
             this.user.TabIndex = 35;
@@ -271,7 +271,7 @@
             // 
             this.status_com_scaner.AutoSize = true;
             this.status_com_scaner.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.status_com_scaner.Location = new System.Drawing.Point(706, 8);
+            this.status_com_scaner.Location = new System.Drawing.Point(875, 8);
             this.status_com_scaner.Name = "status_com_scaner";
             this.status_com_scaner.Size = new System.Drawing.Size(0, 20);
             this.status_com_scaner.TabIndex = 36;
@@ -280,7 +280,7 @@
             // 
             this.check_type.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.check_type.FormattingEnabled = true;
-            this.check_type.Location = new System.Drawing.Point(67, 41);
+            this.check_type.Location = new System.Drawing.Point(67, 5);
             this.check_type.Name = "check_type";
             this.check_type.Size = new System.Drawing.Size(103, 21);
             this.check_type.TabIndex = 39;
@@ -289,7 +289,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(12, 46);
+            this.label4.Location = new System.Drawing.Point(12, 10);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(52, 13);
             this.label4.TabIndex = 40;
@@ -521,7 +521,7 @@
             // txtB_client_phone
             // 
             this.txtB_client_phone.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtB_client_phone.Location = new System.Drawing.Point(926, 40);
+            this.txtB_client_phone.Location = new System.Drawing.Point(797, 40);
             this.txtB_client_phone.MaxLength = 10;
             this.txtB_client_phone.Name = "txtB_client_phone";
             this.txtB_client_phone.Size = new System.Drawing.Size(120, 20);
@@ -530,7 +530,7 @@
             // label_client_barcode
             // 
             this.label_client_barcode.AutoSize = true;
-            this.label_client_barcode.Location = new System.Drawing.Point(627, 48);
+            this.label_client_barcode.Location = new System.Drawing.Point(344, 48);
             this.label_client_barcode.Name = "label_client_barcode";
             this.label_client_barcode.Size = new System.Drawing.Size(70, 13);
             this.label_client_barcode.TabIndex = 58;
@@ -542,7 +542,7 @@
             this.label_client_phone.AutoSize = true;
             this.label_client_phone.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.label_client_phone.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.label_client_phone.Location = new System.Drawing.Point(842, 45);
+            this.label_client_phone.Location = new System.Drawing.Point(713, 45);
             this.label_client_phone.Name = "label_client_phone";
             this.label_client_phone.Size = new System.Drawing.Size(69, 15);
             this.label_client_phone.TabIndex = 59;
@@ -563,7 +563,7 @@
             // 
             // btn_change_status_client
             // 
-            this.btn_change_status_client.Location = new System.Drawing.Point(591, 41);
+            this.btn_change_status_client.Location = new System.Drawing.Point(308, 41);
             this.btn_change_status_client.Name = "btn_change_status_client";
             this.btn_change_status_client.Size = new System.Drawing.Size(32, 23);
             this.btn_change_status_client.TabIndex = 61;
@@ -635,12 +635,12 @@
             this.txtB_name.Location = new System.Drawing.Point(205, 179);
             this.txtB_name.MaxLength = 250;
             this.txtB_name.Name = "txtB_name";
-            this.txtB_name.Size = new System.Drawing.Size(589, 20);
+            this.txtB_name.Size = new System.Drawing.Size(427, 20);
             this.txtB_name.TabIndex = 68;
             // 
             // txtB_num_sales
             // 
-            this.txtB_num_sales.Location = new System.Drawing.Point(175, 42);
+            this.txtB_num_sales.Location = new System.Drawing.Point(175, 6);
             this.txtB_num_sales.MaxLength = 10;
             this.txtB_num_sales.Name = "txtB_num_sales";
             this.txtB_num_sales.Size = new System.Drawing.Size(122, 20);
@@ -649,7 +649,7 @@
             // 
             // btn_fill_on_sales
             // 
-            this.btn_fill_on_sales.Location = new System.Drawing.Point(299, 40);
+            this.btn_fill_on_sales.Location = new System.Drawing.Point(299, 4);
             this.btn_fill_on_sales.Name = "btn_fill_on_sales";
             this.btn_fill_on_sales.Size = new System.Drawing.Size(131, 23);
             this.btn_fill_on_sales.TabIndex = 70;
@@ -664,7 +664,7 @@
             this.cash.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.cash.ForeColor = System.Drawing.Color.Black;
             this.cash.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.cash.Location = new System.Drawing.Point(630, 5);
+            this.cash.Location = new System.Drawing.Point(799, 5);
             this.cash.MaxLength = 10;
             this.cash.Name = "cash";
             this.cash.Size = new System.Drawing.Size(122, 23);

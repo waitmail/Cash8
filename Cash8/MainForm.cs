@@ -859,7 +859,7 @@ namespace Cash8
                 //MessageBox.Show(timer_send_data.Interval.ToString());
                 timer_send_data.Start();
                 timer_send_data.Elapsed += new System.Timers.ElapsedEventHandler(timer_send_data_Elapsed);
-                //timer_send_data_Elapsed(null, null);//при старте сделать выгрузку               
+                //timer_send_data_Elapsed(null, null);//при старте сделать выгрузку               при отсутствмм связи программа вешается
 
                 
 
@@ -878,11 +878,15 @@ namespace Cash8
                 обновлениеПрограммыToolStripMenuItem_Click(null, null);
             }
 
+            Thread t = new Thread(load_bonus_clients);
+            t.IsBackground = true;
+            t.Start();
+
             if (MainStaticClass.GetWorkSchema == 1)//Это условие будет работать только для ЧД
             {
-                Thread t = new Thread(load_bonus_clients);
-                t.IsBackground = true;
-                t.Start();
+                //Thread t = new Thread(load_bonus_clients);
+                //t.IsBackground = true;
+                //t.Start();
 
                 UploadPhoneClients();
                 UploadChangeStatusClients();

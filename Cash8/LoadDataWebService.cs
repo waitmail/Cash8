@@ -35,11 +35,11 @@ namespace Cash8
             command.CommandText = "select COUNT(*) from information_schema.tables 		where table_schema='public' 	and table_name='tovar2'	";
             if (Convert.ToInt16(command.ExecuteScalar()) == 0)
             {
-                command.CommandText = "CREATE TABLE tovar2(code integer NOT NULL,name character(100) NOT NULL,  retail_price numeric(10,2) ,purchase_price numeric(10,2) ,its_deleted numeric(1) ,nds integer,its_certificate smallint,percent_bonus numeric(8,2), tnved character varying(10),its_marked smallint) WITH (OIDS=FALSE);ALTER TABLE tovar2 OWNER TO postgres;CREATE UNIQUE INDEX _tovar2_code_  ON tovar2  USING btree  (code);";
+                command.CommandText = "CREATE TABLE tovar2(code bigint NOT NULL,name character(100) NOT NULL,  retail_price numeric(10,2) ,purchase_price numeric(10,2) ,its_deleted numeric(1) ,nds integer,its_certificate smallint,percent_bonus numeric(8,2), tnved character varying(10),its_marked smallint) WITH (OIDS=FALSE);ALTER TABLE tovar2 OWNER TO postgres;CREATE UNIQUE INDEX _tovar2_code_  ON tovar2  USING btree  (code);";
             }
             else
             {
-                command.CommandText = "DROP TABLE tovar2;CREATE TABLE tovar2(code integer NOT NULL,name character(100) NOT NULL,  retail_price numeric(10,2) ,purchase_price numeric(10,2) ,its_deleted numeric(1),nds integer,its_certificate smallint,percent_bonus numeric(8,2), tnved character varying(10),its_marked smallint) WITH (OIDS=FALSE);ALTER TABLE tovar2 OWNER TO postgres;CREATE UNIQUE INDEX _tovar2_code_  ON tovar2  USING btree  (code);";
+                command.CommandText = "DROP TABLE tovar2;CREATE TABLE tovar2(code bigint NOT NULL,name character(100) NOT NULL,  retail_price numeric(10,2) ,purchase_price numeric(10,2) ,its_deleted numeric(1),nds integer,its_certificate smallint,percent_bonus numeric(8,2), tnved character varying(10),its_marked smallint) WITH (OIDS=FALSE);ALTER TABLE tovar2 OWNER TO postgres;CREATE UNIQUE INDEX _tovar2_code_  ON tovar2  USING btree  (code);";
             }
             try
             {
