@@ -119,7 +119,7 @@
             this.txtB_cashier.Location = new System.Drawing.Point(432, 31);
             this.txtB_cashier.MaxLength = 20;
             this.txtB_cashier.Name = "txtB_cashier";
-            this.txtB_cashier.Size = new System.Drawing.Size(246, 21);
+            this.txtB_cashier.Size = new System.Drawing.Size(205, 21);
             this.txtB_cashier.TabIndex = 18;
             // 
             // label1

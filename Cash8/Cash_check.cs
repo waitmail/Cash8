@@ -400,17 +400,35 @@ namespace Cash8
                 else
                 {
                     if ((buyerInfoResponce.res == 3) && (txtB_client_phone.Text.Trim().Length > 0)) //Необходимо еще понять, что это был введен номер телефона
-                    {
-                        btn_inpute_phone_client_Click(null, null);
+                    {//res==3 Это клиент не найден, значит необходимо выдать запрос на заведение виртуальной карты
+                        //btn_inpute_phone_client_Click(null, null);
+                        DialogResult dr = MessageBox.Show("Клиент не найден, создаем виртуальную карту в процессинге ?", "Создаем виртуальную карту ?", MessageBoxButtons.YesNo);
+                        if (dr == DialogResult.Yes)
+                        {
+                            create_virtual_card();
+                        }
                     }
-                    get_description_errors_on_code(buyerInfoResponce.res);
-                    txtB_client_phone.Text = "";
-                    bonus_total_centr = -1;
-                    return;
+                    else
+                    {
+                        get_description_errors_on_code(buyerInfoResponce.res);
+                        txtB_client_phone.Text = "";
+                        bonus_total_centr = -1;
+                    }
+                    //return;
                 }
                 //this.btn_inpute_phone_client.Enabled = false;
             }
 
+        }
+
+
+
+        private void create_virtual_card()
+        {
+            CreateVirtualCard createVirtualCard = new CreateVirtualCard();
+            createVirtualCard.txtBox_phone.Text = "7" + txtB_client_phone.Text.Trim();
+            createVirtualCard.cash_Check = this;
+            createVirtualCard.ShowDialog();
         }
     
 
@@ -945,40 +963,8 @@ namespace Cash8
                         }
                         MainStaticClass.write_event_in_log("Закрытие пустого документа", "Документ чек", numdoc.ToString());
                         this.Close();
-                    }
-                    //if (!itsnew)
-                    //{
-                    //    closing = false;
-                    //    this.Close();
-                    //}
-                }
-
-                //else if (e.KeyCode == Keys.Insert)
-                //{
-                //    //DialogResult result = MessageBox.Show("Открыть справочник быстрые товары ?", "Выберите нет будет открыт полный справочник", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
-                //    //if (result == DialogResult.Yes)
-                //    //{
-                //    if (itsnew)
-                //    {
-                //        Fast_tovar ft = new Fast_tovar();
-                //        ft.caller = this;
-                //        ft.TopMost = true;
-                //        ft.ShowDialog();
-                //        ft.Dispose();
-                //        if (closing == false)
-                //        {
-                //            this.Close();
-                //        }                        
-                //    }
-
-                //    //}
-                //    //else if (result == DialogResult.No)
-                //    //{
-                //    //    tovar.caller = this;
-                //    //    tovar.Visible = true;
-                //    //    tovar.TopMost = true;
-                //    //}
-                //}
+                    }                    
+                }                
                 else if (e.KeyCode == Keys.Delete)
                 {
                     //

@@ -105,6 +105,12 @@
     <Compile Include="Constants.Designer.cs">
       <DependentUpon>Constants.cs</DependentUpon>
     </Compile>
+    <Compile Include="CreateVirtualCard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CreateVirtualCard.Designer.cs">
+      <DependentUpon>CreateVirtualCard.cs</DependentUpon>
+    </Compile>
     <Compile Include="CryptorEngine.cs" />
     <Compile Include="Discount_types.cs">
       <SubType>Form</SubType>
@@ -203,6 +209,9 @@
     <EmbeddedResource Include="Constants.resx">
       <DependentUpon>Constants.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CreateVirtualCard.resx">
+      <DependentUpon>CreateVirtualCard.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FPTK22.resx">
       <DependentUpon>FPTK22.cs</DependentUpon>
