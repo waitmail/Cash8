@@ -47,6 +47,7 @@
             this.txtBox_phone.Size = new System.Drawing.Size(197, 40);
             this.txtBox_phone.TabIndex = 0;
             this.txtBox_phone.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtBox_phone.TextChanged += new System.EventHandler(this.txtBox_phone_TextChanged);
             // 
             // label1
             // 
@@ -58,21 +59,21 @@
             this.label1.TabIndex = 1;
             this.label1.Text = "Номер телефона";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // btn_create_virtual_card
             // 
-            this.btn_create_virtual_card.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btn_create_virtual_card.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btn_create_virtual_card.Location = new System.Drawing.Point(6, 56);
             this.btn_create_virtual_card.Name = "btn_create_virtual_card";
             this.btn_create_virtual_card.Size = new System.Drawing.Size(375, 53);
             this.btn_create_virtual_card.TabIndex = 2;
-            this.btn_create_virtual_card.Text = "Создать виртуальную карту и прислать код подтверждения";
+            this.btn_create_virtual_card.Text = "Запросить проверочный код";
             this.btn_create_virtual_card.UseVisualStyleBackColor = true;
             this.btn_create_virtual_card.Click += new System.EventHandler(this.btn_create_virtual_card_Click);
             // 
             // btn_check_number_phone
             // 
-            this.btn_check_number_phone.Enabled = false;
             this.btn_check_number_phone.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btn_check_number_phone.Location = new System.Drawing.Point(6, 205);
             this.btn_check_number_phone.Name = "btn_check_number_phone";
@@ -95,7 +96,6 @@
             // 
             // txtB_check_code
             // 
-            this.txtB_check_code.Enabled = false;
             this.txtB_check_code.Font = new System.Drawing.Font("Microsoft Sans Serif", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.txtB_check_code.Location = new System.Drawing.Point(248, 161);
             this.txtB_check_code.MaxLength = 10;
@@ -128,6 +128,7 @@
             this.Controls.Add(this.txtBox_phone);
             this.KeyPreview = true;
             this.Name = "CreateVirtualCard";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Создание винртуальной карты";
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -881,6 +881,11 @@ namespace Cash8
             }
             if (e.KeyCode == Keys.F6)//попытка сделать доступным полее вода списания бонусов
             {
+                if (cc.client.Tag == null)
+                {
+                    MessageBox.Show("В чеке нет карты лояльности.Оплата бонусами невозможна.");
+                    return;
+                }
                 if (MainStaticClass.GetWorkSchema == 1)
                 {
                     if (!cc.check_bonus_is_on())

@@ -67,12 +67,12 @@
             // num_cash
             // 
             this.num_cash.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.num_cash.AutoSize = true;
+            this.num_cash.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.num_cash.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.num_cash.ForeColor = System.Drawing.Color.Maroon;
-            this.num_cash.Location = new System.Drawing.Point(630, 30);
+            this.num_cash.Location = new System.Drawing.Point(643, 3);
             this.num_cash.Name = "num_cash";
-            this.num_cash.Size = new System.Drawing.Size(0, 24);
+            this.num_cash.Size = new System.Drawing.Size(198, 24);
             this.num_cash.TabIndex = 11;
             // 
             // label2
@@ -80,9 +80,9 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(17, 32);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(54, 13);
+            this.label2.Size = new System.Drawing.Size(46, 13);
             this.label2.TabIndex = 15;
-            this.label2.Text = "Период с";
+            this.label2.Text = "На дату";
             // 
             // fill
             // 
@@ -119,7 +119,7 @@
             this.txtB_cashier.Location = new System.Drawing.Point(432, 31);
             this.txtB_cashier.MaxLength = 20;
             this.txtB_cashier.Name = "txtB_cashier";
-            this.txtB_cashier.Size = new System.Drawing.Size(205, 21);
+            this.txtB_cashier.Size = new System.Drawing.Size(334, 21);
             this.txtB_cashier.TabIndex = 18;
             // 
             // label1

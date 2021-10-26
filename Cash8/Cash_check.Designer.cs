@@ -84,6 +84,7 @@
             this.txtB_num_sales = new System.Windows.Forms.TextBox();
             this.btn_fill_on_sales = new System.Windows.Forms.Button();
             this.cash = new System.Windows.Forms.TextBox();
+            this.checkBox_club = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel_return.SuspendLayout();
@@ -674,11 +675,24 @@
             this.cash.Visible = false;
             this.cash.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.cash_KeyPress);
             // 
+            // checkBox_club
+            // 
+            this.checkBox_club.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.checkBox_club.AutoSize = true;
+            this.checkBox_club.CheckAlign = System.Drawing.ContentAlignment.TopRight;
+            this.checkBox_club.Location = new System.Drawing.Point(992, 41);
+            this.checkBox_club.Name = "checkBox_club";
+            this.checkBox_club.Size = new System.Drawing.Size(50, 17);
+            this.checkBox_club.TabIndex = 71;
+            this.checkBox_club.Text = "Клуб";
+            this.checkBox_club.UseVisualStyleBackColor = true;
+            // 
             // Cash_check
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1075, 643);
+            this.Controls.Add(this.checkBox_club);
             this.Controls.Add(this.btn_fill_on_sales);
             this.Controls.Add(this.txtB_num_sales);
             this.Controls.Add(this.txtB_name);
@@ -796,5 +810,6 @@
         private System.Windows.Forms.TextBox txtB_num_sales;
         private System.Windows.Forms.Button btn_fill_on_sales;
         private System.Windows.Forms.TextBox cash;
+        private System.Windows.Forms.CheckBox checkBox_club;
     }
 }

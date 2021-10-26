@@ -428,7 +428,12 @@ namespace Cash8
             CreateVirtualCard createVirtualCard = new CreateVirtualCard();
             createVirtualCard.txtBox_phone.Text = "7" + txtB_client_phone.Text.Trim();
             createVirtualCard.cash_Check = this;
-            createVirtualCard.ShowDialog();
+            DialogResult dr = createVirtualCard.ShowDialog();
+            if (dr == DialogResult.OK)
+            {
+                txtB_client_phone.Enabled = false;
+                client_barcode.Enabled = false;
+            }
         }
     
 
@@ -925,7 +930,14 @@ namespace Cash8
                 }
                 else if (e.KeyCode == Keys.F6)
                 {
-                    inpun_client_barcode = true;
+                    if (MainStaticClass.GetWorkSchema == 1)
+                    {
+                        inpun_client_barcode = true;
+                    }
+                    else
+                    {
+
+                    }
                 }
                 else if (e.KeyCode == Keys.F5)
                 {
@@ -2849,6 +2861,16 @@ namespace Cash8
 
         private void Cash_check_Load(object sender, System.EventArgs e)
         {
+
+            if (MainStaticClass.GetWorkSchema == 2)
+            {
+                this.checkBox_club.Visible = true;
+                btn_change_status_client.Visible = true;
+            }
+            else
+            {
+                this.checkBox_club.Visible = false;
+            }
 
             if (!MainStaticClass.Use_Fiscall_Print)
             {
@@ -9706,45 +9728,78 @@ namespace Cash8
         
         private void btn_change_status_client_Click(object sender, EventArgs e)
         {
+            if (MainStaticClass.GetWorkSchema == 1)
+            {
+                if (listView1.Items.Count > 0)
+                {
+                    MessageBox.Show(" В чеке уже есть товар, операция по переходу невозможна  ");
+                    return;
+                }
 
-            if (listView1.Items.Count > 0)
-            {
-                MessageBox.Show(" В чеке уже есть товар, операция по переходу невозможна  ");
-                return;
-            }
+                if (MainStaticClass.PassPromo == "")
+                {
+                    MessageBox.Show(" Эта касса не участвует в бонусной программе  ");
+                    return;
+                }
 
-            if (MainStaticClass.PassPromo == "")
-            {
-                MessageBox.Show(" Эта касса не участвует в бонусной программе  ");
-                return;
-            }
+                //Прежде чем вызвать окно изменения статуча надо проверить номер телефона
+                if (!check_client_have_telephone())
+                {
+                    MessageBox.Show(" У покупателя не заполнен номер телефона ");
+                    return;
+                }
 
-            //Прежде чем вызвать окно изменения статуча надо проверить номер телефона
-            if (!check_client_have_telephone())
-            {
-                MessageBox.Show(" У покупателя не заполнен номер телефона ");                
-                return;
-            }
+                //Проверить нет ли клиента в уже измененных
+                if (check_in_change_status_client())
+                {
+                    MessageBox.Show(" У этого покупателя уже возможно изменен статус ");
+                    return;
+                }
 
-            //Проверить нет ли клиента в уже измененных
-            if (check_in_change_status_client())
-            {
-                MessageBox.Show(" У этого покупателя уже возможно изменен статус ");
-                return;
-            }
+                if (check_bonus_is_on())
+                {
+                    MessageBox.Show(" У этого покупателя уже установлен статус бонусный ");
+                    return;
+                }
 
-            if (check_bonus_is_on())
-            {
-                MessageBox.Show(" У этого покупателя уже установлен статус бонусный ");
-                return;
+                ChangeBonusStatusClient changeBonusStatusClient = new ChangeBonusStatusClient();
+                changeBonusStatusClient.client_code = this.client.Tag.ToString();
+                DialogResult dr = changeBonusStatusClient.ShowDialog();
+                if (dr == DialogResult.OK)
+                {
+                    btn_change_status_client.Visible = false;
+                }
             }
-            
-            ChangeBonusStatusClient changeBonusStatusClient = new ChangeBonusStatusClient();
-            changeBonusStatusClient.client_code = this.client.Tag.ToString();
-            DialogResult dr = changeBonusStatusClient.ShowDialog();
-            if (dr == DialogResult.OK)
+            else if (MainStaticClass.GetWorkSchema == 2)
             {
-                btn_change_status_client.Visible = false;
+                if (client.Tag == null)
+                {
+                    MessageBox.Show("Необходимо считать карту клиента в поле код клиента");
+                    return;
+                }
+                if (client.Tag.ToString().Substring(0, 2) != "29")
+                {
+                    MessageBox.Show("Введенная карта не соответсвтует критериям, продолжение невозможно");
+                }
+
+                CreateBonusCardOrAddPhone createBonusCardOrAddPhone = new CreateBonusCardOrAddPhone();
+                createBonusCardOrAddPhone.txtB_num_card.Text = client.Tag.ToString();
+                bool find = false;
+                foreach (ListViewItem lvi in listView1.Items)
+                {
+                    if (lvi.SubItems[0].Text == client.Tag.ToString())
+                    {
+                        find = true;
+                        break;
+                    }
+                }
+
+                if (find)
+                {
+                    createBonusCardOrAddPhone.its_new = true;
+                }
+
+                createBonusCardOrAddPhone.ShowDialog();
             }
         }
 

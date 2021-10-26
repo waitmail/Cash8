@@ -265,7 +265,7 @@ namespace Cash8
                 FPTK22 fptk22 = new FPTK22();
                 fptk22.ShowDialog();
             }
-            if (e.KeyCode == Keys.F12)
+            if ((e.KeyCode == Keys.F12)||(e.KeyCode==Keys.D))
             {                
                 if (new_document)
                 {
@@ -274,7 +274,6 @@ namespace Cash8
                 this.Close();
                 MainStaticClass.Main.menuStrip.Items.Clear();
                 MainStaticClass.Main.start_interface_switching();
-
             }
             if (listView1.Focused)
             {
@@ -336,14 +335,14 @@ namespace Cash8
             // Display grid lines.
             listView1.GridLines = true;
             listView1.Columns.Clear();
-            listView1.Columns.Add("Статус", 100, HorizontalAlignment.Left);
-            listView1.Columns.Add("Дата", 200, HorizontalAlignment.Left);
-            listView1.Columns.Add("Клиент", 200, HorizontalAlignment.Left);
+            listView1.Columns.Add("Статус", 50, HorizontalAlignment.Left);
+            listView1.Columns.Add("Дата", 180, HorizontalAlignment.Left);
+            listView1.Columns.Add("Клиент", 180, HorizontalAlignment.Left);
             listView1.Columns.Add("Сумма", 100, HorizontalAlignment.Right);
             listView1.Columns.Add("Сдача", 100, HorizontalAlignment.Right);
             listView1.Columns.Add("Тип чека ", 100, HorizontalAlignment.Right);
-            listView1.Columns.Add("Коментарий", 300, HorizontalAlignment.Right);
-            listView1.Columns.Add("Номер", 300, HorizontalAlignment.Right);
+            listView1.Columns.Add("Коментарий", 50, HorizontalAlignment.Right);
+            listView1.Columns.Add("Номер", 100, HorizontalAlignment.Right);
 
             //listView1.Columns.Add("Инвентаризация", 100, HorizontalAlignment.Right);
 

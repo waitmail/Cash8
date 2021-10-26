@@ -760,15 +760,25 @@ namespace Cash8
 
         //}
 
-
         protected override void OnKeyDown(KeyEventArgs e)
         {
             base.OnKeyDown(e);
-            if (e.KeyCode == Keys.F12)
-            {                
-                this.menuStrip.Items.Clear();
-                MainStaticClass.Main.start_interface_switching();
+            if (MainStaticClass.GetWorkSchema == 1)
+            {
+                if (e.KeyCode == Keys.F12)
+                {
+                    this.menuStrip.Items.Clear();
+                    MainStaticClass.Main.start_interface_switching();
+                }
             }
+            else
+            {
+                if (e.KeyCode == Keys.D)
+                {
+                    this.menuStrip.Items.Clear();
+                    MainStaticClass.Main.start_interface_switching();
+                }
+            }             
         }
         
         private void параметрыБазыДанныхToolStripMenuItem_Click(object sender, EventArgs e)
@@ -923,6 +933,9 @@ namespace Cash8
             {
                 MainStaticClass.UseOldProcessiingActions = false;
             }
+
+            this.menuStrip.Items.Clear();
+            MainStaticClass.Main.start_interface_switching();
         }
 
 
