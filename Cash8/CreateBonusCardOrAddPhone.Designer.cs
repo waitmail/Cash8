@@ -37,6 +37,8 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.txtB_check_code = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.txtB_pin_code = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // btn_request_sms_code
@@ -44,7 +46,7 @@
             this.btn_request_sms_code.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btn_request_sms_code.Location = new System.Drawing.Point(6, 104);
             this.btn_request_sms_code.Name = "btn_request_sms_code";
-            this.btn_request_sms_code.Size = new System.Drawing.Size(375, 53);
+            this.btn_request_sms_code.Size = new System.Drawing.Size(413, 53);
             this.btn_request_sms_code.TabIndex = 5;
             this.btn_request_sms_code.Text = "Запросить проверочный код";
             this.btn_request_sms_code.UseVisualStyleBackColor = true;
@@ -65,9 +67,9 @@
             // 
             this.txtBox_phone.Font = new System.Drawing.Font("Microsoft Sans Serif", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.txtBox_phone.Location = new System.Drawing.Point(184, 60);
-            this.txtBox_phone.MaxLength = 10;
+            this.txtBox_phone.MaxLength = 11;
             this.txtBox_phone.Name = "txtBox_phone";
-            this.txtBox_phone.Size = new System.Drawing.Size(197, 40);
+            this.txtBox_phone.Size = new System.Drawing.Size(235, 40);
             this.txtBox_phone.TabIndex = 3;
             this.txtBox_phone.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -89,7 +91,7 @@
             this.txtB_num_card.Location = new System.Drawing.Point(184, 6);
             this.txtB_num_card.MaxLength = 13;
             this.txtB_num_card.Name = "txtB_num_card";
-            this.txtB_num_card.Size = new System.Drawing.Size(197, 40);
+            this.txtB_num_card.Size = new System.Drawing.Size(235, 40);
             this.txtB_num_card.TabIndex = 7;
             this.txtB_num_card.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -97,11 +99,11 @@
             // 
             this.btn_create_bonus_card_or_add_phone.Enabled = false;
             this.btn_create_bonus_card_or_add_phone.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btn_create_bonus_card_or_add_phone.Location = new System.Drawing.Point(6, 251);
+            this.btn_create_bonus_card_or_add_phone.Location = new System.Drawing.Point(7, 298);
             this.btn_create_bonus_card_or_add_phone.Name = "btn_create_bonus_card_or_add_phone";
-            this.btn_create_bonus_card_or_add_phone.Size = new System.Drawing.Size(374, 85);
+            this.btn_create_bonus_card_or_add_phone.Size = new System.Drawing.Size(413, 57);
             this.btn_create_bonus_card_or_add_phone.TabIndex = 8;
-            this.btn_create_bonus_card_or_add_phone.Text = "Зарегистрировать бонусную карту или привязать телефон";
+            this.btn_create_bonus_card_or_add_phone.Text = "Зарегистрировать бонусную карту";
             this.btn_create_bonus_card_or_add_phone.UseVisualStyleBackColor = true;
             this.btn_create_bonus_card_or_add_phone.Click += new System.EventHandler(this.btn_create_bonus_card_or_add_phone_Click);
             // 
@@ -110,7 +112,7 @@
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label3.Location = new System.Drawing.Point(6, 160);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(374, 39);
+            this.label3.Size = new System.Drawing.Size(413, 39);
             this.label3.TabIndex = 11;
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
@@ -131,16 +133,39 @@
             this.txtB_check_code.Location = new System.Drawing.Point(219, 205);
             this.txtB_check_code.MaxLength = 10;
             this.txtB_check_code.Name = "txtB_check_code";
-            this.txtB_check_code.Size = new System.Drawing.Size(163, 40);
+            this.txtB_check_code.Size = new System.Drawing.Size(200, 40);
             this.txtB_check_code.TabIndex = 9;
             this.txtB_check_code.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // label5
+            // 
+            this.label5.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label5.Location = new System.Drawing.Point(7, 251);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(206, 40);
+            this.label5.TabIndex = 13;
+            this.label5.Text = "Пин код карты";
+            this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // txtB_pin_code
+            // 
+            this.txtB_pin_code.Font = new System.Drawing.Font("Microsoft Sans Serif", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.txtB_pin_code.Location = new System.Drawing.Point(219, 251);
+            this.txtB_pin_code.MaxLength = 10;
+            this.txtB_pin_code.Name = "txtB_pin_code";
+            this.txtB_pin_code.Size = new System.Drawing.Size(200, 40);
+            this.txtB_pin_code.TabIndex = 12;
+            this.txtB_pin_code.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // CreateBonusCardOrAddPhone
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(393, 347);
+            this.ClientSize = new System.Drawing.Size(431, 360);
             this.ControlBox = false;
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.txtB_pin_code);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.txtB_check_code);
@@ -150,6 +175,7 @@
             this.Controls.Add(this.btn_request_sms_code);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtBox_phone);
+            this.KeyPreview = true;
             this.Name = "CreateBonusCardOrAddPhone";
             this.Text = "Регистрация бонусной карты или привязка телефона";
             this.ResumeLayout(false);
@@ -168,5 +194,7 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         public System.Windows.Forms.TextBox txtB_check_code;
+        private System.Windows.Forms.Label label5;
+        public System.Windows.Forms.TextBox txtB_pin_code;
     }
 }

@@ -383,7 +383,7 @@ namespace Cash8
                     }
                     if (buyerInfoResponce.buyer != null)
                     {
-                        client.Text = buyerInfoResponce.buyer.lastName+" "+ buyerInfoResponce.buyer.firstName;
+                        client.Text = buyerInfoResponce.buyer.lastName+" "+ buyerInfoResponce.buyer.firstName;                        
                         phone_client = buyerInfoResponce.buyer.phone;
                     }
                     else
@@ -392,6 +392,10 @@ namespace Cash8
                     }
                     //client.Tag = phone;
                     client.Tag = buyerInfoResponce.cards.card[0].cardNum;
+                    if (client.Text.Trim() == "")
+                    {
+                        client.Text = client.Tag.ToString();
+                    }
                     card_state = Convert.ToInt16(buyerInfoResponce.cards.card[0].state);
                     txtB_client_phone.Text = "";
                     client_barcode.Enabled = false;
@@ -9725,7 +9729,7 @@ namespace Cash8
 
             return result;
         }
-        
+
         private void btn_change_status_client_Click(object sender, EventArgs e)
         {
             if (MainStaticClass.GetWorkSchema == 1)
@@ -9780,10 +9784,9 @@ namespace Cash8
                 if (client.Tag.ToString().Substring(0, 2) != "29")
                 {
                     MessageBox.Show("Введенная карта не соответсвтует критериям, продолжение невозможно");
+                    return;
                 }
-
-                CreateBonusCardOrAddPhone createBonusCardOrAddPhone = new CreateBonusCardOrAddPhone();
-                createBonusCardOrAddPhone.txtB_num_card.Text = client.Tag.ToString();
+                
                 bool find = false;
                 foreach (ListViewItem lvi in listView1.Items)
                 {
@@ -9796,10 +9799,16 @@ namespace Cash8
 
                 if (find)
                 {
+                    CreateBonusCardOrAddPhone createBonusCardOrAddPhone = new CreateBonusCardOrAddPhone();
+                    createBonusCardOrAddPhone.txtB_num_card.Text = client.Tag.ToString();
                     createBonusCardOrAddPhone.its_new = true;
+                    createBonusCardOrAddPhone.cash_Check = this;                    
+                    createBonusCardOrAddPhone.ShowDialog();
                 }
+                else //Это замена карты
+                {
 
-                createBonusCardOrAddPhone.ShowDialog();
+                }
             }
         }
 
