@@ -246,128 +246,7 @@ namespace Cash8
         {
             public string uid { get; set; }
             public string res { get; set; }
-        }
-
-        ///// <summary>
-        ///// Ищет на процессинге покупателя
-        ///// по номеру карты
-        ///// и возвращает его uid
-        ///// </summary>
-        //private ResponceOperatorSearch operator_search()
-        //{
-        //    ResponceOperatorSearch responceOperatorSearch = null;
-        //    string url = MainStaticClass.GetStartUrl + "/";
-        //    Buyer buyer = new Buyer();
-        //    buyer.cardNum = txtB_num_card.Text;
-        //    string json = JsonConvert.SerializeObject(buyer, Newtonsoft.Json.Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-        //    byte[] body = Encoding.UTF8.GetBytes(json);
-        //    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-        //    var authString = MainStaticClass.GetAuthStringProcessing;
-        //    request.Headers.Add("Authorization", "Basic " + authString);
-        //    request.Headers.Add("X-FXAPI-RQ-METHOD", "crm.operator.Search");
-        //    request.Method = "POST";
-        //    request.ContentType = "application/json; charset=utf-8";
-        //    request.ContentLength = body.Length;
-
-        //    try
-        //    {
-        //        using (Stream stream = request.GetRequestStream())
-        //        {
-        //            stream.Write(body, 0, body.Length);
-        //            stream.Close();
-        //        }
-
-        //        using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-        //        {
-        //            byte[] buf = new byte[10000];
-        //            int count = -1;
-        //            String read = "";
-        //            do
-        //            {
-        //                count = response.GetResponseStream().Read(buf, 0, buf.Length);
-        //                read += Encoding.UTF8.GetString(buf, 0, count);
-        //            } while (response.GetResponseStream().CanRead && count != 0);
-        //            responceOperatorSearch = JsonConvert.DeserializeObject<ResponceOperatorSearch>(read.Replace("{}", @""""""), new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-        //        }
-        //    }
-        //    catch (WebException ex)
-        //    {
-        //        MessageBox.Show(ex.Message);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show(ex.Message);
-        //    }
-
-        //    return responceOperatorSearch;
-        //}
-
-
-
-        //private void create_bonus_card()
-        //{
-        //    if (code_answer == txtB_check_code.Text.Trim())
-        //    {
-
-        //        Register register = new Register();
-        //        register.cardNum = txtB_num_card.Text;
-        //        SHA256 sHA256 = SHA256.Create();
-        //        register.cardPinHash = ComputeSHA256Hash(txtB_pin_code.Text);
-        //        Buyer buyer = new Buyer();
-        //        buyer.phone = txtBox_phone.Text;
-        //        register.buyer = buyer;
-
-        //        int result = create_bonus_card(register);
-
-        //        if (result != 1)
-        //        {
-        //            if (result == 4)
-        //            {
-        //                MessageBox.Show("e - mail уже существует");
-        //            }
-        //            else if (result == 5)
-        //            {
-        //                MessageBox.Show("карта не найдена");
-        //            }
-        //            else if (result == 6)
-        //            {
-        //                MessageBox.Show("карта не активирована");
-        //            }
-        //            else if (result == 7)
-        //            {
-        //                MessageBox.Show("карта заблокирована");
-        //            }
-        //            else if (result == 8)
-        //            {
-        //                MessageBox.Show("карта уже зарегистрирована");
-        //            }
-        //            else if (result == 14)
-        //            {
-        //                MessageBox.Show("телефон уже существует");
-        //            }
-        //            else if (result == 21)
-        //            {
-        //                MessageBox.Show("неправильный код авторизации");
-        //            }
-
-        //            MessageBox.Show("Неудачная попытка при регистрации карты");
-        //            return;
-        //        }
-        //        else
-        //        {
-        //            MessageBox.Show("Введенный код принят, бонусная карта успешно создана и будет добавлена в чек");
-        //            cash_Check.client.Tag = register.cardNum;
-        //            cash_Check.client.Text = txtBox_phone.Text;
-        //            this.DialogResult = DialogResult.OK;
-        //            this.Close();
-        //        }
-        //    }
-        //    else
-        //    {
-        //        MessageBox.Show("Произошло необрабатываемое исключение");
-        //        this.Close();
-        //    }
-        //}
+        }       
 
         protected override void OnKeyDown(KeyEventArgs e)
         {
@@ -378,7 +257,6 @@ namespace Cash8
                 this.Close();
             }
         }
-
 
         private void btn_create_bonus_card_or_add_phone_Click(object sender, EventArgs e)
         {
