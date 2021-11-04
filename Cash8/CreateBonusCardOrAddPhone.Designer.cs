@@ -177,7 +177,7 @@
             this.Controls.Add(this.txtBox_phone);
             this.KeyPreview = true;
             this.Name = "CreateBonusCardOrAddPhone";
-            this.Text = "Регистрация бонусной карты или привязка телефона";
+            this.Text = "Регистрация бонусной карты";
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -55,16 +55,15 @@ namespace Cash8
             public string res { get; set; }
         }
 
-        public class ResponceOperatorSearch
-        {
-            public string uid { get; set; }
-            public string res { get; set; }
-        }
+        //public class ResponceOperatorSearch
+        //{
+        //    public string uid { get; set; }
+        //    public string res { get; set; }
+        //}
 
         public class Buyer
         {
             public string phone { get; set; }
-            
         }
 
         public class Register

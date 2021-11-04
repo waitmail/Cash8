@@ -148,7 +148,7 @@ namespace Cash8
                 }
                 else if (MainStaticClass.GetWorkSchema == 2)
                 {
-                    result = "http://5.188.118.39/test";// https://evaviza1.cardnonstop.com/test/";
+                    result = "https://evaviza1.cardnonstop.com/test";//"http://5.188.118.39/test";// https://evaviza1.cardnonstop.com/test/";
                 }
 
                 return result;

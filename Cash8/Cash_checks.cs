@@ -264,7 +264,7 @@ namespace Cash8
             {                
                 FPTK22 fptk22 = new FPTK22();
                 fptk22.ShowDialog();
-            }
+            }          
             if ((e.KeyCode == Keys.F12)||(e.KeyCode==Keys.D))
             {                
                 if (new_document)

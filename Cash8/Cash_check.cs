@@ -319,7 +319,7 @@ namespace Cash8
 
             return result;
         }
-        
+
         /// <summary>
         /// Запрос информации в процеччинговом центре 
         /// о клиенте по номеру телефона или кода карточки клиента
@@ -347,59 +347,63 @@ namespace Cash8
             {
                 if (buyerInfoResponce.res == 1)
                 {
-                    if (buyerInfoResponce.balance.activeBalance != "0")
+                    if (buyerInfoResponce.cards.card.Count > 0)
                     {
-                        pay_form.bonus_total_in_centr.Text = (((int)Convert.ToDecimal(buyerInfoResponce.balance.activeBalance) / 100)*100).ToString();
-                        if (buyerInfoResponce.cards.card[0].state == "3")
+                        if (buyerInfoResponce.balance.activeBalance != "0")
                         {
-                            if (MainStaticClass.GetWorkSchema == 1)
+                            pay_form.bonus_total_in_centr.Text = (((int)Convert.ToDecimal(buyerInfoResponce.balance.activeBalance) / 100) * 100).ToString();
+
+                            if (buyerInfoResponce.cards.card[0].state == "3")
                             {
-                                pay_form.pay_bonus.Enabled = true;
-                            }
-                            else if(MainStaticClass.GetWorkSchema==2)
-                            {
-                                //надо проверить нет ли другой карты в товарной части чека
-                                if (check_availability_card_sale())
+                                if (MainStaticClass.GetWorkSchema == 1)
                                 {
-                                    MessageBox.Show("В чеке(в товарах) обнаружена неактивная бонусная карта");
-                                    client_barcode.Text = "";
-                                    txtB_client_phone.Text = "";
-                                    return;
+                                    pay_form.pay_bonus.Enabled = true;
                                 }
+                                else if (MainStaticClass.GetWorkSchema == 2)
+                                {
+                                    //надо проверить нет ли другой карты в товарной части чека
+                                    if (check_availability_card_sale())
+                                    {
+                                        MessageBox.Show("В чеке(в товарах) обнаружена неактивная бонусная карта");
+                                        client_barcode.Text = "";
+                                        txtB_client_phone.Text = "";
+                                        return;
+                                    }
+                                }
+                                //this.client.BackColor = Color.Green;
                             }
-                            //this.client.BackColor = Color.Green;
+                            else if (buyerInfoResponce.cards.card[0].state == "4")
+                            {
+                                MessageBox.Show("Эта бонусная карта заблокирована");
+                                return;
+                            }
+                            else
+                            {
+
+                                //this.client.BackColor = Color.Yellow;
+                            }
+                            bonus_total_centr = Convert.ToInt32(pay_form.bonus_total_in_centr.Text);
                         }
-                        else if (buyerInfoResponce.cards.card[0].state == "4")
+                        if (buyerInfoResponce.buyer != null)
                         {
-                            MessageBox.Show("Эта бонусная карта заблокирована");
-                            return;
+                            client.Text = buyerInfoResponce.buyer.lastName + " " + buyerInfoResponce.buyer.firstName;
+                            phone_client = buyerInfoResponce.buyer.phone;
                         }
                         else
-                        {                           
-
-                            //this.client.BackColor = Color.Yellow;
+                        {
+                            client.Text = buyerInfoResponce.cards.card[0].cardNum;
                         }
-                        bonus_total_centr = Convert.ToInt32(pay_form.bonus_total_in_centr.Text);
-                    }
-                    if (buyerInfoResponce.buyer != null)
-                    {
-                        client.Text = buyerInfoResponce.buyer.lastName+" "+ buyerInfoResponce.buyer.firstName;                        
-                        phone_client = buyerInfoResponce.buyer.phone;
-                    }
-                    else
-                    {
-                        client.Text = buyerInfoResponce.cards.card[0].cardNum;
-                    }
-                    //client.Tag = phone;
-                    client.Tag = buyerInfoResponce.cards.card[0].cardNum;
-                    if (client.Text.Trim() == "")
-                    {
-                        client.Text = client.Tag.ToString();
-                    }
-                    card_state = Convert.ToInt16(buyerInfoResponce.cards.card[0].state);
-                    txtB_client_phone.Text = "";
-                    client_barcode.Enabled = false;
-                    txtB_client_phone.Enabled = false;
+                        //client.Tag = phone;
+                        client.Tag = buyerInfoResponce.cards.card[0].cardNum;
+                        if (client.Text.Trim() == "")
+                        {
+                            client.Text = client.Tag.ToString();
+                        }
+                        card_state = Convert.ToInt16(buyerInfoResponce.cards.card[0].state);
+                        txtB_client_phone.Text = "";
+                        client_barcode.Enabled = false;
+                        txtB_client_phone.Enabled = false;
+                    }                    
                 }
                 else
                 {
@@ -941,6 +945,15 @@ namespace Cash8
                     else
                     {
 
+                    }
+                }
+                if (e.KeyCode == Keys.F1)
+                {
+                    if (client.Tag != null)
+                    {
+                        ChangeBonusCard changeBonusCard = new ChangeBonusCard();
+                        changeBonusCard.cash_Check = this;
+                        changeBonusCard.ShowDialog();
                     }
                 }
                 else if (e.KeyCode == Keys.F5)

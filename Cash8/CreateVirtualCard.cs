@@ -104,7 +104,7 @@ namespace Cash8
                         label3.Text = "Проверочный код в программе успешно получен,введите ниже код полученный на телефон ";
                         btn_check_number_phone.Enabled = true;
                         txtB_check_code.Enabled = true;
-                        MessageBox.Show(code_answer);
+                        //MessageBox.Show(code_answer);
                     }
                     else if (responceRequestSMSCode.res == "13") //Куда то записать информацию о трудностях
                     {
