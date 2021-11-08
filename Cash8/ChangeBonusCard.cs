@@ -187,60 +187,7 @@ namespace Cash8
             }
 
             return result;
-        }
-
-        //private int create_bonus_card(Register register)
-        //{
-        //    int result = 0;
-        //    string url = MainStaticClass.GetStartUrl + "/";
-        //    string json = JsonConvert.SerializeObject(register, Newtonsoft.Json.Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-
-        //    byte[] body = Encoding.UTF8.GetBytes(json);
-        //    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-        //    var authString = MainStaticClass.GetAuthStringProcessing;
-
-        //    request.Headers.Add("Authorization", "Basic " + authString);
-        //    request.Headers.Add("X-FXAPI-RQ-METHOD", "crm.cabinet.Register");
-
-        //    request.Method = "POST";
-        //    request.ContentType = "application/json; charset=utf-8";
-        //    request.ContentLength = body.Length;
-
-        //    try
-        //    {
-        //        using (Stream stream = request.GetRequestStream())
-        //        {
-        //            stream.Write(body, 0, body.Length);
-        //            stream.Close();
-        //        }
-
-
-        //        using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-        //        {
-        //            byte[] buf = new byte[10000];
-        //            int count = -1;
-        //            String read = "";
-        //            do
-        //            {
-        //                count = response.GetResponseStream().Read(buf, 0, buf.Length);
-        //                read += Encoding.UTF8.GetString(buf, 0, count);
-        //            } while (response.GetResponseStream().CanRead && count != 0);
-        //            //string answer = JsonConvert.DeserializeObject(read.Replace("{}", @"""""")).ToString();//read.Replace("{}","\"\"")
-        //            Res res = JsonConvert.DeserializeObject<Res>(read.Replace("{}", @""""""), new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-        //            result = res.res;
-        //        }
-        //    }
-        //    catch (WebException ex)
-        //    {
-        //        MessageBox.Show(ex.Message);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show(ex.Message);
-        //    }
-
-        //    return result;
-        //}
+        }       
 
         public class ResponceOperatorSearch
         {
@@ -320,6 +267,7 @@ namespace Cash8
             public string cardNum { get; set; }
             public string cardPinHash { get; set; }            
         }
+
 
 
         private int assign_card()
