@@ -74,7 +74,7 @@ namespace Cash8
         public Int32 id_sale = 0;
         public string phone_client = "";
         private int card_state = 0; // state – состояние карты, одно из значений: 1 – карта неактивна 2 – карта активирована(выдана на кассе) 3 – карта зарегистрирована(привязана к анкете клиента) 4 – карта заблокирована
-
+        private string code_bonus_card = "";
 
         System.Windows.Forms.Timer timer = null;
 
@@ -147,7 +147,7 @@ namespace Cash8
         {
             InitializeComponent();
             
-            this.listView1.Font = new System.Drawing.Font("Microsoft Sans Serif", MainStaticClass.Font_list_view(), System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            //this.listView1.Font = new System.Drawing.Font("Microsoft Sans Serif", MainStaticClass.Font_list_view(), System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.KeyPreview = true;
             this.return_quantity.KeyPress += new KeyPressEventHandler(return_quantity_KeyPress);
             this.return_rouble.KeyPress += new KeyPressEventHandler(return_rouble_KeyPress);
@@ -215,7 +215,11 @@ namespace Cash8
         /// <param name="e"></param>
         private void ListView1_KeyDown(object sender, KeyEventArgs e)
         {
-            
+
+            if (!itsnew)
+            {
+                return;
+            }
 
             if (e.KeyData == Keys.Delete)
             {                
@@ -951,9 +955,18 @@ namespace Cash8
                 {
                     if (client.Tag != null)
                     {
-                        ChangeBonusCard changeBonusCard = new ChangeBonusCard();
-                        changeBonusCard.cash_Check = this;
-                        changeBonusCard.ShowDialog();
+                        check_availability_card_sale();
+                        if (code_bonus_card != "")
+                        {
+                            ChangeBonusCard changeBonusCard = new ChangeBonusCard();
+                            changeBonusCard.cash_Check = this;
+                            changeBonusCard.txtB_num_card.Text = code_bonus_card;
+                            changeBonusCard.ShowDialog();
+                        }
+                        else
+                        {
+                            MessageBox.Show("В строках чека нет бонусной карты на продажу");
+                        }
                     }
                 }
                 else if (e.KeyCode == Keys.F5)
@@ -1011,7 +1024,10 @@ namespace Cash8
                 }
                 else if (e.KeyCode == Keys.F12)
                 {
-
+                    if (!itsnew)
+                    {
+                        return;
+                    }
                     if (MainStaticClass.Use_Usb_to_Com_Barcode_Scaner)
                     {
                         if (workerThread != null)//При нажатии клавиши ESC уже могло все завершится
@@ -1785,7 +1801,7 @@ namespace Cash8
                 NpgsqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    if ((Convert.ToInt16(reader["tip"]) == 1) || (Convert.ToInt16(reader["tip"]) == 2) || (Convert.ToInt16(reader["tip"]) == 3) || (Convert.ToInt16(reader["tip"]) == 4) || (Convert.ToInt16(reader["tip"]) == 5))
+                    if ((Convert.ToInt16(reader["tip"]) == 1) || (Convert.ToInt16(reader["tip"]) == 2) || (Convert.ToInt16(reader["tip"]) == 3) || (Convert.ToInt16(reader["tip"]) == 4) || (Convert.ToInt16(reader["tip"]) == 5) || (Convert.ToInt16(reader["tip"]) == 8))
                     {
                         //if (Convert.ToInt16(reader["marker"]) == 1)//запрашивать подарок
                         //{
@@ -6479,7 +6495,7 @@ namespace Cash8
                         }
                         else
                         {
-                            action_1(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7), reader.GetInt32(4)); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
+                            action_1(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7), reader.GetInt64(4)); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
                     }
@@ -6493,7 +6509,7 @@ namespace Cash8
                         }
                         else
                         {
-                            action_2(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7), reader.GetInt32(4)); //Сообщить о подарке                           
+                            action_2(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7), reader.GetInt64(4)); //Сообщить о подарке                           
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
 
@@ -6524,7 +6540,7 @@ namespace Cash8
                         }
                         else
                         {
-                            action_4(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt32(4));
+                            action_4(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt64(4));
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
                     }
@@ -6543,7 +6559,7 @@ namespace Cash8
                         }
                         else
                         {
-                            action_8(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt32(4), reader.GetInt16(7));
+                            action_8(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt64(4), reader.GetInt16(7));
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
                     }
@@ -6562,7 +6578,7 @@ namespace Cash8
                         }
                         else
                         {
-                            action_1(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7), reader.GetInt32(4)); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
+                            action_1(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7), reader.GetInt64(4)); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
                     }
@@ -6805,7 +6821,7 @@ namespace Cash8
          * 
          * здесь сообщение о подарке
          */
-        private void action_1(int num_doc, string comment, int marker, int code_tovar)
+        private void action_1(int num_doc, string comment, int marker, long code_tovar)
         {
             NpgsqlConnection conn = null;
             NpgsqlCommand command = null;
@@ -7177,7 +7193,7 @@ namespace Cash8
        * Списки товаров могут быть абсолютно одинаковыми, а могут и отличатся
        * 
        */
-        private void action_2(int num_doc, string comment, int marker, int code_tovar)
+        private void action_2(int num_doc, string comment, int marker, long code_tovar)
         {
             NpgsqlConnection conn = null;
             NpgsqlCommand command = null;
@@ -7459,11 +7475,11 @@ namespace Cash8
 
                 if (Convert.ToInt16(command.ExecuteScalar()) == 0)
                 {
-                    query = "CREATE TABLE tovar_action(  code integer NOT NULL,  retail_price numeric(10,2) NOT NULL,  quantity integer,characteristic_name character varying(100),characteristic_guid character varying(36))WITH (  OIDS=FALSE);ALTER TABLE tovar_action  OWNER TO postgres;";
+                    query = "CREATE TABLE tovar_action(  code bigint NOT NULL,  retail_price numeric(10,2) NOT NULL,  quantity integer,characteristic_name character varying(100),characteristic_guid character varying(36))WITH (  OIDS=FALSE);ALTER TABLE tovar_action  OWNER TO postgres;";
                 }
                 else
                 {
-                    query = "DROP TABLE tovar_action;CREATE TABLE tovar_action(  code integer NOT NULL,  retail_price numeric(10,2) NOT NULL,  quantity integer ,characteristic_name character varying(100),characteristic_guid character varying(36))WITH (  OIDS=FALSE);ALTER TABLE tovar_action  OWNER TO postgres;";
+                    query = "DROP TABLE tovar_action;CREATE TABLE tovar_action(  code bigint NOT NULL,  retail_price numeric(10,2) NOT NULL,  quantity integer ,characteristic_name character varying(100),characteristic_guid character varying(36))WITH (  OIDS=FALSE);ALTER TABLE tovar_action  OWNER TO postgres;";
                 }
                 command = new NpgsqlCommand(query, conn);
                 command.ExecuteNonQuery();
@@ -7509,11 +7525,11 @@ namespace Cash8
 
                 if (Convert.ToInt16(command.ExecuteScalar()) == 0)
                 {
-                    query = "CREATE TABLE tovar_action(  code integer NOT NULL,  retail_price numeric(10,2) NOT NULL,  quantity integer, retail_price_discount numeric(10,2) ,characteristic_name character varying(100),characteristic_guid character varying(36) )WITH (  OIDS=FALSE);ALTER TABLE tovar_action  OWNER TO postgres;";
+                    query = "CREATE TABLE tovar_action(  code bigint NOT NULL,  retail_price numeric(10,2) NOT NULL,  quantity integer, retail_price_discount numeric(10,2) ,characteristic_name character varying(100),characteristic_guid character varying(36) )WITH (  OIDS=FALSE);ALTER TABLE tovar_action  OWNER TO postgres;";
                 }
                 else
                 {
-                    query = "DROP TABLE tovar_action;CREATE TABLE tovar_action(  code integer NOT NULL,  retail_price numeric(10,2) NOT NULL,  quantity integer, retail_price_discount numeric(10,2) ,characteristic_name character varying(100),characteristic_guid character varying(36) )WITH (  OIDS=FALSE);ALTER TABLE tovar_action  OWNER TO postgres;";
+                    query = "DROP TABLE tovar_action;CREATE TABLE tovar_action(  code bigint NOT NULL,  retail_price numeric(10,2) NOT NULL,  quantity integer, retail_price_discount numeric(10,2) ,characteristic_name character varying(100),characteristic_guid character varying(36) )WITH (  OIDS=FALSE);ALTER TABLE tovar_action  OWNER TO postgres;";
                 }
                 command = new NpgsqlCommand(query, conn);
                 command.ExecuteNonQuery();
@@ -7799,7 +7815,7 @@ namespace Cash8
         * и еще добавляется некий товар из акционного документа 
         * 
         */
-        private void action_4(int num_doc, string comment, decimal sum, int code_tovar)
+        private void action_4(int num_doc, string comment, decimal sum, long code_tovar)
         {
             if (!create_temp_tovar_table()) //Создать временную таблицу для акционного товара
             {
@@ -8081,7 +8097,7 @@ namespace Cash8
          * и еще добавляется некий товар из акционного документа 
          * 
          */
-        private void action_4_1(int num_doc, string comment, decimal sum, int code_tovar)
+        private void action_4_1(int num_doc, string comment, decimal sum, long code_tovar)
         {
             NpgsqlConnection conn = null;
             NpgsqlCommand command = null;
@@ -8373,7 +8389,7 @@ namespace Cash8
          * подарков было такое, которое позволяет купон со стикерами, если вдруг в чеке будут обычные товары, то их цена не должна меняться 
          * или можно выдать предупреждение, что для этого типа акции наличие в чеке не акционных товаров недопустимо.
          */
-        private void action_7(int num_doc, int code_tovar)
+        private void action_7(int num_doc, long code_tovar)
         {
             NpgsqlConnection conn = null;
             NpgsqlCommand command = null;
@@ -8630,7 +8646,7 @@ namespace Cash8
         /// <param name="num_doc"></param>
         /// <param name="persent"></param>
         /// <param name="sum"></param>
-        private void action_8(int num_doc, string comment, decimal sum, int code_tovar, Int32 marker)
+        private void action_8(int num_doc, string comment, decimal sum, long code_tovar, Int32 marker)
         {
 
 
@@ -9228,17 +9244,20 @@ namespace Cash8
                         bool second = check_availability_card_sale();
                         if (first != second)
                         {
-                            if (first)
+                            if (client.Tag.ToString() != code_bonus_card)
                             {
-                                MessageBox.Show("В шапке чека существует бонусная карта клиента со статусом 1 т.е. не активирована, а в строках нет данной бонусной карты,необходимо ее добавить в строки");
-                                cancel_action();
-                                return;
-                            }
-                            else
-                            {
-                                MessageBox.Show("В шапке чека отсуствует бонусная карта клиента со статусом 1 т.е. не активирована, а в строках она есть,необходимо ее добавить в шапку чека");
-                                cancel_action();
-                                return;
+                                if (first)
+                                {
+                                    MessageBox.Show("В шапке чека существует бонусная карта клиента со статусом 1 т.е. не активирована, а в строках нет данной бонусной карты,необходимо ее добавить в строки");
+                                    cancel_action();
+                                    return;
+                                }
+                                else
+                                {
+                                    MessageBox.Show("В шапке чека отсуствует бонусная карта клиента со статусом 1 т.е. не активирована, а в строках она есть,необходимо ее добавить в шапку чека");
+                                    cancel_action();
+                                    return;
+                                }
                             }
                         }                       
                     }
@@ -9320,12 +9339,13 @@ namespace Cash8
 
         /// <summary>
         /// Проверить наличие в товарной части чека 
-        /// наличие бонусной карты
+        /// наличие бонусной карты и записать ее код в переменную
         /// </summary>
         /// <returns></returns>
         private bool check_availability_card_sale()
         {
             bool result = false;
+            code_bonus_card = "";
 
             NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
             try
@@ -9336,6 +9356,7 @@ namespace Cash8
                 foreach (ListViewItem lvi in listView1.Items)
                 {
                     query = "SELECT its_certificate FROM tovar WHERE code="+lvi.SubItems[0].Text;
+                    code_bonus_card = lvi.SubItems[0].Text;
                     NpgsqlCommand command = new NpgsqlCommand(query, conn);
                     query_result = Convert.ToInt16(command.ExecuteScalar());
                     if (query_result == 2)

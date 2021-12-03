@@ -50,10 +50,13 @@ namespace Cash8
 
         protected override void OnKeyDown(KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Escape)
+            if (call_type != 6)
             {
-                this.DialogResult = DialogResult.Cancel;
-                this.Close();
+                if (e.KeyCode == Keys.Escape)
+                {
+                    this.DialogResult = DialogResult.Cancel;
+                    this.Close();
+                }
             }
         }
 

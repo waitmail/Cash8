@@ -96,6 +96,7 @@
             // 
             // txtB_num_card
             // 
+            this.txtB_num_card.Enabled = false;
             this.txtB_num_card.Font = new System.Drawing.Font("Microsoft Sans Serif", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.txtB_num_card.Location = new System.Drawing.Point(184, 245);
             this.txtB_num_card.MaxLength = 13;

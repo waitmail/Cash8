@@ -205,7 +205,7 @@ namespace Cash8
 
             RequestSMSCode requestSMSCode = new RequestSMSCode();
 
-            requestSMSCode.phone = txtBox_phone.Text;
+            requestSMSCode.phone = "7" + txtBox_phone.Text;
             requestSMSCode.notRegistered = "1";
 
             string json = JsonConvert.SerializeObject(requestSMSCode, Newtonsoft.Json.Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
@@ -223,7 +223,7 @@ namespace Cash8
             request.ContentType = "application/json; charset=utf-8";
             request.ContentLength = body.Length;
 
-            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+            //NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
 
             try
             {
@@ -280,13 +280,13 @@ namespace Cash8
             {
                 MessageBox.Show(ex.Message);
             }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                }
-            }
+            //finally
+            //{
+            //    if (conn.State == ConnectionState.Open)
+            //    {
+            //        conn.Close();
+            //    }
+            //}
 
             return result;
         }
@@ -310,7 +310,7 @@ namespace Cash8
                     SHA256 sHA256 = SHA256.Create();
                     register.cardPinHash = ComputeSHA256Hash(txtB_pin_code.Text);
                     Buyer buyer = new Buyer();
-                    buyer.phone = txtBox_phone.Text;
+                    buyer.phone = "7"+txtBox_phone.Text;
                     //buyer.cardNum = txtB_num_card.Text;
                     register.buyer = buyer;
 
@@ -527,7 +527,7 @@ namespace Cash8
                     request_sms_code();
                 }
             }
-            else if (status_card == 3)
+            else if (status_card == 2)
             {
                 request_sms_code();
             }

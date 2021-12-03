@@ -1846,40 +1846,37 @@ namespace Cash8
 
             return result;
         }
+                     
+        //public static float Font_list_view()
+        //{
+        //    float result = 0;
+        //    NpgsqlConnection conn = null;
+        //    try
+        //    {
+        //        conn = MainStaticClass.NpgsqlConn();
+        //        conn.Open();
+        //        string select_query = "SELECT size_font_listview FROM constants";
+        //        NpgsqlCommand command = new NpgsqlCommand(select_query, conn);
+        //        result = Convert.ToSingle(command.ExecuteScalar());
+        //        conn.Close();
+        //    }
+        //    catch
+        //    {
 
-
-
-
-        public static float Font_list_view()
-        {
-            float result = 0;
-            NpgsqlConnection conn = null;
-            try
-            {
-                conn = MainStaticClass.NpgsqlConn();
-                conn.Open();
-                string select_query = "SELECT size_font_listview FROM constants";
-                NpgsqlCommand command = new NpgsqlCommand(select_query, conn);
-                result = Convert.ToSingle(command.ExecuteScalar());
-                conn.Close();
-            }
-            catch
-            {
-
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                }
-            }
-            if (result == 0)
-            {
-                result = 12;
-            }
-            return result;
-        }
+        //    }
+        //    finally
+        //    {
+        //        if (conn.State == ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //        }
+        //    }
+        //    if (result == 0)
+        //    {
+        //        result = 12;
+        //    }
+        //    return result;
+        //}
 
         public static void add_window(object form)
         {

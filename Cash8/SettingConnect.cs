@@ -1006,6 +1006,8 @@ namespace Cash8
             queries.Add("ALTER TABLE sertificates ALTER COLUMN code_tovar TYPE bigint");
             queries.Add("ALTER TABLE checks_table ALTER COLUMN tovar_code TYPE bigint");
             queries.Add("ALTER TABLE barcode ALTER COLUMN tovar_code TYPE bigint");
+            queries.Add("ALTER TABLE action_table ALTER COLUMN code_tovar TYPE bigint");
+            queries.Add("ALTER TABLE action_header ALTER COLUMN code_tovar TYPE bigint");            
 
             foreach (string str in queries)
             {
