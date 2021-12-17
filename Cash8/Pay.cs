@@ -1085,9 +1085,10 @@ namespace Cash8
                             {
                                 if (buynewResponse.res == "1")
                                 {
-                                    this.bonus_on_document.Text = ((int)(Convert.ToInt64(buynewResponse.bonusSum) / 100)).ToString();
+                                    this.bonus_on_document.Text = ((int)(Convert.ToInt64(buynewResponse.bonusSum) / 100)).ToString();                                    
                                     cc.id_transaction = buynewResponse.transactionId;
                                     cc.bonus_on_document = Convert.ToInt32(this.bonus_on_document.Text);
+                                    cc.message_processing = buynewResponse.message;
                                 }
                                 else
                                 {
@@ -1102,7 +1103,34 @@ namespace Cash8
                                     MessageBox.Show(" Нет связи с процессинговым центром ");
                                     result = false;
                                 }
-                            }                           
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    if (MainStaticClass.GetWorkSchema == 2)
+                    {
+
+                        SentDataOnBonusEva.TransactionResponse transactionResponse = cc.get_bonus_on_document_eva_by_return();
+                        if (transactionResponse != null)
+                        {
+                            if (transactionResponse.res == "1")
+                            {
+                                cc.id_transaction = transactionResponse.returnTransactionId;
+                                cc.message_processing = transactionResponse.message;
+                                cc.bonuses_it_is_written_off = ((int)(Convert.ToInt64(transactionResponse.bonusSum) / 100));
+                            }
+                            else
+                            {
+                                get_description_errors_on_code(transactionResponse.res);//Сообщим об ошибках пользователю
+                                result = false;
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show(" Нет связи с процессинговым центром ");
+                            result = false;
                         }
                     }
                 }

@@ -241,6 +241,123 @@ namespace Cash8
             return result;
         }
 
+
+        //public bool sent_document_buyReturn(BuyNewRequest buyNewRequest, string document_number, ref BuynewResponse buynewResponse)
+        //{
+        //    bool result = true;
+
+        //    string json = JsonConvert.SerializeObject(buyNewRequest, Newtonsoft.Json.Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+        //    txtB_jason.Text = json;
+        //    //string url = "http://92.242.41.218/processing/v3/buyNew/";
+        //    string url = MainStaticClass.GetStartUrl + "/v3/buyNew/";
+
+        //    byte[] body = Encoding.UTF8.GetBytes(json);
+        //    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+        //    //string shop_request = "";
+        //    //if (MainStaticClass.Nick_Shop.Substring(0, 1).ToUpper() == "A")
+        //    //{
+        //    //    shop_request = MainStaticClass.Nick_Shop + MainStaticClass.CashDeskNumber;
+        //    //}
+        //    //else
+        //    //{
+        //    //    shop_request = "1" + Convert.ToInt16(MainStaticClass.Nick_Shop.Substring(1, 2)).ToString() + MainStaticClass.CashDeskNumber;
+        //    //}
+
+        //    ////var authString = Convert.ToBase64String(Encoding.Default.GetBytes("A011" + ":" + "JpDkHs~AE%zS8Y7HDpVM"));
+        //    //var authString = Convert.ToBase64String(Encoding.Default.GetBytes(shop_request + ":" + MainStaticClass.PassPromo));
+        //    var authString = MainStaticClass.GetAuthStringProcessing;
+
+        //    request.Headers.Add("Authorization", "Basic " + authString);
+
+        //    request.Method = "POST";
+        //    request.ContentType = "application/json; charset=utf-8";
+        //    request.ContentLength = body.Length;
+        //    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+
+        //    try
+        //    {
+        //        using (Stream stream = request.GetRequestStream())
+        //        {
+        //            stream.Write(body, 0, body.Length);
+        //            stream.Close();
+        //        }
+
+
+
+
+        //        using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+        //        {
+        //            byte[] buf = new byte[10000];
+        //            int count = -1;
+        //            String read = "";
+        //            do
+        //            {
+        //                count = response.GetResponseStream().Read(buf, 0, buf.Length);
+        //                read += Encoding.UTF8.GetString(buf, 0, count);
+        //            } while (response.GetResponseStream().CanRead && count != 0);
+        //            //txtB_json_response.Text = JsonConvert.DeserializeObject(read).ToString();
+        //            //string answer = JsonConvert.DeserializeObject(read.Replace("{}", @"""""")).ToString();//read.Replace("{}","\"\"")
+        //            buynewResponse = JsonConvert.DeserializeObject<BuynewResponse>(read.Replace("{}", @""""""), new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+        //            if (buynewResponse.res == "1")
+        //            {
+        //                if (buyNewRequest.commit == "1")
+        //                {
+        //                    conn.Open();
+        //                    string query = "UPDATE checks_header SET sent_to_processing_center=1 WHERE document_number =" + document_number;
+        //                    NpgsqlCommand command = new NpgsqlCommand(query, conn);
+        //                    int rowsaffected = command.ExecuteNonQuery();
+        //                    conn.Close();
+        //                    command.Dispose();
+        //                }
+        //            }
+        //            else //Куда то записать информацию о трудностях
+        //            {
+
+        //            }
+        //            response.Close();
+        //        }
+        //    }
+        //    catch (WebException ex)
+        //    {
+        //        if (!run_in_the_background)
+        //        {
+        //            MessageBox.Show(ex.Message);
+        //        }
+        //        buynewResponse = null;
+        //    }
+        //    catch (NpgsqlException ex)
+        //    {
+        //        if (!run_in_the_background)
+        //        {
+        //            MessageBox.Show(ex.Message);
+        //        }
+        //        buynewResponse = null;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        if (!run_in_the_background)
+        //        {
+        //            MessageBox.Show(ex.Message);
+        //        }
+        //        buynewResponse = null;
+        //    }
+        //    finally
+        //    {
+        //        if (conn.State == ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //        }
+        //    }
+        //    return result;
+        //}
+
+            
+        /// <summary>
+        /// Отправка чеков прожади в режиме commit=1
+        /// </summary>
+        /// <param name="buyNewRequest"></param>
+        /// <param name="document_number"></param>
+        /// <returns></returns>
         public bool sent_document(BuyNewRequest buyNewRequest, string document_number)
         {
             bool result = true;
@@ -251,21 +368,8 @@ namespace Cash8
             string url = MainStaticClass.GetStartUrl + "/v3/buyNew/";
 
             byte[] body = Encoding.UTF8.GetBytes(json);
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            //string shop_request = "";
-            //if (MainStaticClass.Nick_Shop.Substring(0, 1).ToUpper() == "A")
-            //{
-            //    shop_request = MainStaticClass.Nick_Shop + MainStaticClass.CashDeskNumber;
-            //}
-            //else
-            //{
-            //    shop_request = "1" + Convert.ToInt16(MainStaticClass.Nick_Shop.Substring(1, 2)).ToString() + MainStaticClass.CashDeskNumber;
-            //}
-
-            //var authString = Convert.ToBase64String(Encoding.Default.GetBytes("A011" + ":" + "JpDkHs~AE%zS8Y7HDpVM"));
-            //var authString = Convert.ToBase64String(Encoding.Default.GetBytes(shop_request + ":" + MainStaticClass.PassPromo));
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);            
             var authString = MainStaticClass.GetAuthStringProcessing;
-
             request.Headers.Add("Authorization", "Basic " + authString);
 
             request.Method = "POST";
@@ -293,9 +397,7 @@ namespace Cash8
                     {
                         count = response.GetResponseStream().Read(buf, 0, buf.Length);
                         read += Encoding.UTF8.GetString(buf, 0, count);
-                    } while (response.GetResponseStream().CanRead && count != 0);
-                    //txtB_json_response.Text = JsonConvert.DeserializeObject(read).ToString();
-                    //string answer = JsonConvert.DeserializeObject(read.Replace("{}", @"""""")).ToString();//read.Replace("{}","\"\"")
+                    } while (response.GetResponseStream().CanRead && count != 0);                    
                     BuynewResponse buynewResponse = JsonConvert.DeserializeObject<BuynewResponse>(read.Replace("{}", @""""""), new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
                     if (buynewResponse.res == "1")
                     {
@@ -356,29 +458,106 @@ namespace Cash8
             return result;
         }
 
-        public bool sent_documentbuyReturn(BuyReturnRequest buyReturnRequest, string document_number)
+
+        /// <summary>
+        /// Отправка чеков возврата в режиме commit=1
+        /// </summary>
+        /// <param name="buyNewRequest"></param>
+        /// <param name="document_number"></param>
+        /// <returns></returns>
+        public bool sent_document(BuyReturnRequest buyReturnRequest, string document_number)
         {
             bool result = true;
 
-            string json = JsonConvert.SerializeObject(buyReturnRequest, Newtonsoft.Json.Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-            txtB_jason.Text = json;
-            //string url = "http://92.242.41.218/processing/v3/buyReturn/";
-            string url = MainStaticClass.GetStartUrl + "/v3/buyReturn/";
+            string json = JsonConvert.SerializeObject(buyReturnRequest, Newtonsoft.Json.Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });            
+            string url = MainStaticClass.GetStartUrl + "/v3/buyNew/";
 
             byte[] body = Encoding.UTF8.GetBytes(json);
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            //string shop_request = "";
-            //if (MainStaticClass.Nick_Shop.Substring(0, 1).ToUpper() == "A")
-            //{
-            //    shop_request = MainStaticClass.Nick_Shop + MainStaticClass.CashDeskNumber;
-            //}
-            //else
-            //{
-            //    shop_request = "1" + Convert.ToInt16(MainStaticClass.Nick_Shop.Substring(1, 2)).ToString() + MainStaticClass.CashDeskNumber;
-            //}
+            var authString = MainStaticClass.GetAuthStringProcessing;
+            request.Headers.Add("Authorization", "Basic " + authString);
 
-            ////var authString = Convert.ToBase64String(Encoding.Default.GetBytes("A011" + ":" + "JpDkHs~AE%zS8Y7HDpVM"));
-            //var authString = Convert.ToBase64String(Encoding.Default.GetBytes(shop_request + ":" + MainStaticClass.PassPromo));
+            request.Method = "POST";
+            request.ContentType = "application/json; charset=utf-8";
+            request.ContentLength = body.Length;
+
+            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+
+            try
+            {
+                using (Stream stream = request.GetRequestStream())
+                {
+                    stream.Write(body, 0, body.Length);
+                    stream.Close();
+                }
+
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+                    byte[] buf = new byte[10000];
+                    int count = -1;
+                    String read = "";
+                    do
+                    {
+                        count = response.GetResponseStream().Read(buf, 0, buf.Length);
+                        read += Encoding.UTF8.GetString(buf, 0, count);
+                    } while (response.GetResponseStream().CanRead && count != 0);
+                    TransactionResponse transactionResponse = JsonConvert.DeserializeObject<TransactionResponse>(read.Replace("{}", @""""""), new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                    if (transactionResponse.res == "1")
+                    {                       
+                            conn.Open();                            
+                            string query = "UPDATE checks_header SET sent_to_processing_center=1  WHERE document_number =" + document_number;
+                            NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                            conn.Close();
+                            command.Dispose();                        
+                    }
+                    else //Куда то записать информацию о трудностях
+                    {
+                        //MessageBox.Show(buynewResponse.res);
+                    }
+                    response.Close();
+                }
+            }
+            catch (WebException ex)
+            {
+                if (!run_in_the_background)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+            catch (NpgsqlException ex)
+            {
+                if (!run_in_the_background)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                if (!run_in_the_background)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return result;
+        }
+
+        public bool sent_documentbuyReturn(BuyReturnRequest buyReturnRequest, string document_number, ref TransactionResponse transactionResponse)
+        {
+            bool result = true;
+
+            string json = JsonConvert.SerializeObject(buyReturnRequest, Newtonsoft.Json.Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });            
+            string url = MainStaticClass.GetStartUrl + "/v3/buyReturn/";
+
+            byte[] body = Encoding.UTF8.GetBytes(json);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);            
             var authString = MainStaticClass.GetAuthStringProcessing;
 
             request.Headers.Add("Authorization", "Basic " + authString);
@@ -411,20 +590,21 @@ namespace Cash8
                     } while (response.GetResponseStream().CanRead && count != 0);
                     //txtB_json_response.Text = JsonConvert.DeserializeObject(read).ToString();
                     //string answer = JsonConvert.DeserializeObject(read.Replace("{}", @"""""")).ToString();//read.Replace("{}","\"\"")
-                    BuynewResponse buynewResponse = JsonConvert.DeserializeObject<BuynewResponse>(read.Replace("{}", @""""""), new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                    if (buynewResponse.res == "1")
-                    {
-                        conn.Open();
-                        string query = "UPDATE checks_header SET sent_to_processing_center=1,id_transaction=" + buynewResponse.transactionId + " WHERE document_number =" + document_number;
-                        NpgsqlCommand command = new NpgsqlCommand(query, conn);
-                        int rowsaffected = command.ExecuteNonQuery();
-                        conn.Close();
-                        command.Dispose();
-                    }
-                    else //Куда то записать информацию о трудностях
-                    {
-                        get_description_errors_on_code(buynewResponse.res);
-                    }
+                    //BuynewResponse buynewResponse = JsonConvert.DeserializeObject<BuynewResponse>(read.Replace("{}", @""""""), new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                    //if (buynewResponse.res == "1")
+                    //{
+                    //    conn.Open();
+                    //    string query = "UPDATE checks_header SET sent_to_processing_center=1,id_transaction=" + buynewResponse.transactionId + " WHERE document_number =" + document_number;
+                    //    NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                    //    int rowsaffected = command.ExecuteNonQuery();
+                    //    conn.Close();
+                    //    command.Dispose();
+                    //}
+                    //else //Куда то записать информацию о трудностях
+                    //{
+                    //    get_description_errors_on_code(buynewResponse.res);
+                    //}
+                    transactionResponse = JsonConvert.DeserializeObject<TransactionResponse>(read.Replace("{}", @""""""), new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
                     response.Close();
                 }
             }
@@ -434,6 +614,7 @@ namespace Cash8
                 {
                     MessageBox.Show(ex.Message);
                 }
+                result = false;
             }
             catch (NpgsqlException ex)
             {
@@ -448,6 +629,7 @@ namespace Cash8
                 {
                     MessageBox.Show(ex.Message);
                 }
+                result = false;
             }
             finally
             {
@@ -660,21 +842,9 @@ namespace Cash8
                         buyReturnRequest.transactionId = reader["id_transaction_sale"].ToString();
                         if (fill_items(buyReturnRequest, reader["document_number"].ToString(), reader["client"].ToString()))
                         {
-                            sent_documentbuyReturn(buyReturnRequest, reader["document_number"].ToString());
+                            sent_document(buyReturnRequest, reader["document_number"].ToString());
                         }
-                    }
-                    
-                    //if (fill_items(buyNewRequest, reader["document_number"].ToString(),reader["client"].ToString()))
-                    //{
-                    //    if (reader["check_type"].ToString() == "0")
-                    //    {
-                     
-                    //    }
-                    //    else if (reader["check_type"].ToString() == "1")
-                    //    {
-                    //        sent_documentbuyReturn(buyNewRequest, reader["document_number"].ToString());
-                    //    }
-                    //}
+                    }                    
                 }
                 reader.Close();
                 conn.Close();
@@ -703,6 +873,21 @@ namespace Cash8
                     conn.Close();
                 }
             }
+        }
+
+
+        public class TransactionResponse
+        {
+            public string transactionId { get; set; }
+            public string returnTransactionId { get; set; }
+            public string amountSum { get; set; }
+            public string discountSum { get; set; }
+            public string bonusSum { get; set; }
+            public string chargeSum { get; set; }
+            public string totalSum { get; set; }
+            public string message { get; set; }
+            public string requestId { get; set; }
+            public string res { get; set; }
         }
 
         public bool fill_items(BuyNewRequest buyNewRequest,string document_number,string client)
@@ -847,6 +1032,7 @@ namespace Cash8
             public Balance balance { get; set; }
             public string result { get; set; }
             public string description { get; set; }
+            public string message { get; set; }
             public string resultComment { get; set; }
             public string res { get; set; }
         }

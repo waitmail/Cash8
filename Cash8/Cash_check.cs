@@ -75,6 +75,8 @@ namespace Cash8
         public string phone_client = "";
         private int card_state = 0; // state – состояние карты, одно из значений: 1 – карта неактивна 2 – карта активирована(выдана на кассе) 3 – карта зарегистрирована(привязана к анкете клиента) 4 – карта заблокирована
         private string code_bonus_card = "";
+        public string spendAllowed = "";
+        public string message_processing = "";
 
         System.Windows.Forms.Timer timer = null;
 
@@ -221,7 +223,7 @@ namespace Cash8
                 return;
             }
 
-            if (e.KeyData == Keys.Delete)
+            if ((e.KeyData == Keys.Delete)&&(check_type.SelectedIndex==0))
             {                
                 if((listView1.Items.Count > 1)&&(listView1.SelectedItems.Count>0))
                 {
@@ -325,7 +327,7 @@ namespace Cash8
         }
 
         /// <summary>
-        /// Запрос информации в процеччинговом центре 
+        /// Запрос информации в процеccинговом центре 
         /// о клиенте по номеру телефона или кода карточки клиента
         /// </summary>
         private void get_client_in_processing()
@@ -353,6 +355,7 @@ namespace Cash8
                 {
                     if (buyerInfoResponce.cards.card.Count > 0)
                     {
+                        spendAllowed = buyerInfoResponce.buyer.spendAllowed;
                         if (buyerInfoResponce.balance.activeBalance != "0")
                         {
                             pay_form.bonus_total_in_centr.Text = (((int)Convert.ToDecimal(buyerInfoResponce.balance.activeBalance) / 100) * 100).ToString();
@@ -1018,6 +1021,7 @@ namespace Cash8
                             {
                                 //MainStaticClass.write_event_in_log("Удаление строки документа | " + listView1.Items[listView1.SelectedIndices[0]].SubItems[0].Text, "Документ чек");
                                 listView1.Items.Remove(listView1.Items[listView1.SelectedIndices[0]]);
+                                write_new_document("0", calculation_of_the_sum_of_the_document().ToString(), "0", "0", false, "0", "0", "0", "0");
                             }
                         }
                     }
@@ -4492,49 +4496,138 @@ namespace Cash8
                 //length = MainStaticClass.Nick_Shop.Length;
                 //length = (MainStaticClass.Nick_Shop + " кассир " + this.cashier).Length;
                 //Бонусы если такие есть 
-                if (MainStaticClass.PassPromo!="")
+                if (MainStaticClass.GetWorkSchema == 1)
                 {
-                    //bonus_total_centr
-                    if (bonus_total_centr != 0)
+                    if (MainStaticClass.PassPromo != "")
                     {
-                        if (bonus_total_centr > 0)
+                        //bonus_total_centr
+                        if (bonus_total_centr != 0)
+                        {
+                            if (bonus_total_centr > 0)
+                            {
+                                pi = new FiscallPrintJason.PostItem();
+                                pi.type = "text";
+                                pi.text = "На вашем счету бонусов : " + bonus_total_centr.ToString();
+                                pi.alignment = "left";
+                                check.postItems.Add(pi);
+                            }
+                            else if (bonus_total_centr < 0)
+                            {
+                                pi = new FiscallPrintJason.PostItem();
+                                pi.type = "text";
+                                pi.text = "Нет доступа к текущему балансу. Общее кол-во      бонусов будет обновлено в течении 7 дней";
+                                pi.alignment = "left";
+                                check.postItems.Add(pi);
+                            }
+                        }
+
+                        if (bonuses_it_is_written_off == 0)
+                        {
+                            if (bonus_on_document != 0)
+                            {
+                                pi = new FiscallPrintJason.PostItem();
+                                pi.type = "text";
+                                pi.text = "Начислено бонусов : " + bonus_on_document.ToString();
+                                pi.alignment = "left";
+                                check.postItems.Add(pi);
+                            }
+                        }
+
+                        if (bonuses_it_is_written_off != 0)
                         {
                             pi = new FiscallPrintJason.PostItem();
                             pi.type = "text";
-                            pi.text = "На вашем счету бонусов : " + bonus_total_centr.ToString();
+                            pi.text = "Списано бонусов : " + (((int)bonuses_it_is_written_off) * 100).ToString();
                             pi.alignment = "left";
                             check.postItems.Add(pi);
                         }
-                        else if (bonus_total_centr < 0)
-                        {
-                            pi = new FiscallPrintJason.PostItem();
-                            pi.type = "text";
-                            pi.text = "Нет доступа к текущему балансу. Общее кол-во      бонусов будет обновлено в течении 7 дней";
-                            pi.alignment = "left";
-                            check.postItems.Add(pi); 
-                        }
                     }
-
-                    if (bonuses_it_is_written_off == 0)
+                }
+                else if (MainStaticClass.GetWorkSchema == 2)//Это Ева
+                {
+                    if (client.Tag != null)//В чеке есть карта клиента
                     {
-                        if (bonus_on_document != 0)
-                        {
-                            pi = new FiscallPrintJason.PostItem();
-                            pi.type = "text";
-                            pi.text = "Начислено бонусов : " + bonus_on_document.ToString();
-                            pi.alignment = "left";
-                            check.postItems.Add(pi);
-                        }
-                    }
-
-                    if (bonuses_it_is_written_off != 0)
-                    {
+                        
                         pi = new FiscallPrintJason.PostItem();
                         pi.type = "text";
-                        pi.text = "Списано бонусов : " + (((int)bonuses_it_is_written_off)*100).ToString();
+                        pi.text = "СОСТОЯНИЕ СЧЕТА БОНУСОВ";
                         pi.alignment = "left";
                         check.postItems.Add(pi);
-                    }                    
+                        
+                        pi = new FiscallPrintJason.PostItem();
+                        pi.type = "text";
+                        pi.text = "ORANGE CARD";
+                        pi.alignment = "left";
+                        check.postItems.Add(pi);
+
+                        pi = new FiscallPrintJason.PostItem();
+                        pi.type = "text";
+                        pi.text = "КАРТА: # " +client.Tag.ToString();//Пока думаем что всегда номер карты это типа код клиента
+                        pi.alignment = "left";
+                        check.postItems.Add(pi);
+
+                        pi = new FiscallPrintJason.PostItem();
+                        pi.type = "text";
+                        pi.text = "PRN " + id_transaction;//id транзакции прир продаже
+                        pi.alignment = "left";
+                        check.postItems.Add(pi);
+
+                        pi = new FiscallPrintJason.PostItem();
+                        pi.type = "text";
+                        pi.text = "БАЛАНС: "  +bonus_total_centr.ToString();
+                        pi.alignment = "left";
+                        check.postItems.Add(pi);
+
+                        if (bonuses_it_is_written_off == 0)
+                        {
+                            pi = new FiscallPrintJason.PostItem();
+                            pi.type = "text";
+                            pi.text = "НАЧИСЛЕНО: " + bonus_on_document.ToString();
+                            pi.alignment = "left";
+                            check.postItems.Add(pi);
+                        }
+                        else
+                        {
+                            pi = new FiscallPrintJason.PostItem();
+                            pi.type = "text";
+                            pi.text = "	СПИСАНО: " + bonuses_it_is_written_off.ToString();
+                            pi.alignment = "left";
+                            check.postItems.Add(pi);
+                        }
+                        
+                        pi = new FiscallPrintJason.PostItem();
+                        pi.type = "text";
+                        if (spendAllowed == "1")
+                        {
+                            if (bonuses_it_is_written_off == 0)
+                            {
+                                pi.text = "ДОСТУПНО: " + (bonus_total_centr + bonus_on_document).ToString();
+                            }
+                            else
+                            {
+                                pi.text = "ДОСТУПНО: " + (bonus_total_centr - bonuses_it_is_written_off).ToString()+"\r\n"+
+                                    "накапливайте с\r\n|+" +
+                                    "ORANGE CARD, тратьте\r\n"+
+                                    "с удовольствием.\r\n"+
+                                    "ПОДРОБНОСТИ НА\r\n"+
+                                    "www.evacosmetics.ru\r\n";
+                            }
+                        }
+                        else
+                        {
+                            pi.text = "ДОСТУПНО: " + (bonus_total_centr + bonus_on_document).ToString()+"\r\n"+
+                                "ВНИМАНИЕ!\r\n"+
+                                "Использование\r\n"+
+                                "бонусов невозможно.\r\n"+
+                                "Анкета не полная!\r\n"+
+                                "Информация:88002500880\r\n"+
+                                "или в Личном Кабинете\r\n"+
+                                "www.evacosmetics.ru";
+                        }                      
+                            
+                        pi.alignment = "left";
+                        check.postItems.Add(pi);
+                    }
                 }
 
                 pi = new FiscallPrintJason.PostItem();
@@ -4888,6 +4981,81 @@ namespace Cash8
                         check.payments.Add(payment);
                         //fiscal.Payment(Convert.ToDouble(result[1]), 3, out remainder, out change);
                     }
+
+
+                    if (MainStaticClass.GetWorkSchema == 2)
+                    {
+                        //здесь блок по бонусам
+                        pi = new FiscallPrintJason.PostItem();
+                        pi.type = "text";
+                        pi.text = "Перерасчет БОНУСОВ";
+                        pi.alignment = "left";
+                        check.postItems.Add(pi);
+
+                        pi = new FiscallPrintJason.PostItem();
+                        pi.type = "text";
+                        pi.text = "ПОСЛЕ ВОЗВРАТА  ТОВАРА";
+                        pi.alignment = "left";
+                        check.postItems.Add(pi);
+
+                        pi = new FiscallPrintJason.PostItem();
+                        pi.type = "text";
+                        pi.text = "СПИСАНО "+bonuses_it_is_written_off.ToString();
+                        pi.alignment = "left";
+                        check.postItems.Add(pi);
+
+                        pi = new FiscallPrintJason.PostItem();
+                        pi.type = "text";
+                        pi.text = "СОСТОЯНИЕ СЧЕТА БОНУСОВ";
+                        pi.alignment = "left";
+                        check.postItems.Add(pi);
+
+                        pi = new FiscallPrintJason.PostItem();
+                        pi.type = "text";
+                        pi.text = "ORANGE CARD";
+                        pi.alignment = "left";
+                        check.postItems.Add(pi);
+                        
+                        pi = new FiscallPrintJason.PostItem();
+                        pi.type = "text";
+                        pi.text = "КАРТА #: "+client.Tag.ToString();
+                        pi.alignment = "left";
+                        check.postItems.Add(pi);
+
+                        pi = new FiscallPrintJason.PostItem();
+                        pi.type = "text";
+                        pi.text = "PRN: " + id_transaction;
+                        pi.alignment = "left";
+                        check.postItems.Add(pi);
+                        
+                        pi = new FiscallPrintJason.PostItem();
+                        pi.type = "text";
+                        pi.text = "БАЛАНС: "+ bonus_total_centr.ToString(); 
+                        pi.alignment = "left";
+                        check.postItems.Add(pi);
+
+                        pi = new FiscallPrintJason.PostItem();
+                        pi.type = "text";
+                        pi.text = "СПИСАНО -" + bonuses_it_is_written_off.ToString();
+                        pi.alignment = "left";
+                        check.postItems.Add(pi);
+
+                        pi = new FiscallPrintJason.PostItem();
+                        pi.type = "text";
+                        pi.text = "ДОСТУПНО " + (bonus_total_centr - bonuses_it_is_written_off).ToString();
+                        pi.alignment = "left";
+                        check.postItems.Add(pi);
+
+                    }
+
+
+
+
+
+
+
+
+
                     //if (result[2] != 0)
                     //{
                     //    fiscal.Payment(Convert.ToDouble(result[2]), 4, out remainder, out change);
@@ -5060,7 +5228,7 @@ namespace Cash8
                         return_rouble.Enabled = false;
                         return_kop.Enabled = false;
                     }
-
+                    write_new_document("0", calculation_of_the_sum_of_the_document().ToString(), "0", "0", false, "0", "0", "0", "0");
                     return;
                 }
                 //}
@@ -5262,14 +5430,7 @@ namespace Cash8
             {
                 buyNewRequest.type = "3";
             }
-            //if (client.Tag.ToString().Trim().Length == 36)
-            //{
-            //    buyNewRequest.cardTrack2 = client.Tag.ToString().Trim();// client.Tag.ToString();
-            //}
-            //if (client.Tag.ToString().Trim().Length == 10)
-            //{
-                buyNewRequest.cardNum = client.Tag.ToString().Trim();// client.Tag.ToString();
-            //}
+            buyNewRequest.cardNum = client.Tag.ToString().Trim();// client.Tag.ToString();            
 
             if (Convert.ToInt32(charge) > 0)
             {
@@ -5281,8 +5442,21 @@ namespace Cash8
             sentDataOnBonusEva.sent_document_buyNew(buyNewRequest, numdoc.ToString(), ref buynewResponse);
             return buynewResponse;
         }
+        
+        public SentDataOnBonusEva.TransactionResponse get_bonus_on_document_eva_by_return()
+        {
+            SentDataOnBonusEva sentDataOnBonusEva = new SentDataOnBonusEva();
+            SentDataOnBonusEva.BuyReturnRequest buyReturnRequest = new SentDataOnBonusEva.BuyReturnRequest();
+            buyReturnRequest.cashierName = MainStaticClass.Cash_Operator;
+            buyReturnRequest.commit = "0";
+            buyReturnRequest.date = date_time_start.Text.Replace("Чек", "").Trim();
+            buyReturnRequest.transactionId = id_transaction_sale;
+            sentDataOnBonusEva.fill_items(buyReturnRequest, numdoc.ToString(), client.Tag.ToString());
+            SentDataOnBonusEva.TransactionResponse transactionResponse = new SentDataOnBonusEva.TransactionResponse();
+            sentDataOnBonusEva.sent_documentbuyReturn(buyReturnRequest, numdoc.ToString(), ref transactionResponse);
+            return transactionResponse;
 
-
+        }
 
         private void pay_Click(object sender, EventArgs e)
         {
@@ -8937,21 +9111,18 @@ namespace Cash8
         //}
         
 
-        #region buyerInfoRequest
-        public class BuyerInfoRequest
-        {
-            public string cardTrack2 { get; set; }
-            public string phone { get; set; }
+        //#region buyerInfoRequest
+        //public class BuyerInfoRequest
+        //{
+        //    public string cardTrack2 { get; set; }
+        //    public string phone { get; set; }
 
-            public string cardNum { get; set; }
-
-            
-
-        }
+        //    public string cardNum { get; set; }
+        //}
 
 
 
-        #endregion
+        //#endregion
 
         #region buyerInfoResponce
 
@@ -8976,25 +9147,9 @@ namespace Cash8
             string url = MainStaticClass.GetStartUrl + "/v3/buyerInfo/";
 
             byte[] body = Encoding.UTF8.GetBytes(json);
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            //string shop_request = "";
-            //if (MainStaticClass.Nick_Shop.Substring(0, 1).ToUpper() == "A")
-            //{
-            //    shop_request = MainStaticClass.Nick_Shop + MainStaticClass.CashDeskNumber;
-            //}
-            //else
-            //{
-            //    shop_request = "1" + Convert.ToInt16(MainStaticClass.Nick_Shop.Substring(1, 2)).ToString() + MainStaticClass.CashDeskNumber;
-            //}
-
-            ////var authString = Convert.ToBase64String(Encoding.Default.GetBytes("A011" + ":" + "JpDkHs~AE%zS8Y7HDpVM"));
-            //var authString = Convert.ToBase64String(Encoding.Default.GetBytes(shop_request + ":" + MainStaticClass.PassPromo));
-
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);           
             var authString = MainStaticClass.GetAuthStringProcessing;
-
-
             request.Headers.Add("Authorization", "Basic " + authString);
-
             request.Method = "POST";
             request.ContentType = "application/json; charset=utf-8";
             request.ContentLength = body.Length;
@@ -9093,57 +9248,57 @@ namespace Cash8
         //}
 
         // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse); 
-        public class CardStatus
-        {
-        }
+        //public class CardStatus
+        //{
+        //}
 
-        public class Card
-        {
-            public string cardNum { get; set; }
-            public string state { get; set; }
-            public string mode { get; set; }
-            public string dateIssued { get; set; }
-            public string dateExpired { get; set; }
-            public string dateActivated { get; set; }
-            public string dateRegistered { get; set; }
-            public string discount { get; set; }
-            public string value { get; set; }
-            public CardStatus cardStatus { get; set; }
-        }
+        //public class Card
+        //{
+        //    public string cardNum { get; set; }
+        //    public string state { get; set; }
+        //    public string mode { get; set; }
+        //    public string dateIssued { get; set; }
+        //    public string dateExpired { get; set; }
+        //    public string dateActivated { get; set; }
+        //    public string dateRegistered { get; set; }
+        //    public string discount { get; set; }
+        //    public string value { get; set; }
+        //    public CardStatus cardStatus { get; set; }
+        //}
 
-        public class Cards
-        {
-            public List<Card> card { get; set; }
-        }
+        //public class Cards
+        //{
+        //    public List<Card> card { get; set; }
+        //}
 
-        public class Buyer
-        {
-            public string uid { get; set; }
-            public string firstName { get; set; }
-            public string middleName { get; set; }
-            public string lastName { get; set; }
-            public string phone { get; set; }
-            public string spendAllowed { get; set; }
-            public string phoneConfirmed { get; set; }
-        }
+        //public class Buyer
+        //{
+        //    public string uid { get; set; }
+        //    public string firstName { get; set; }
+        //    public string middleName { get; set; }
+        //    public string lastName { get; set; }
+        //    public string phone { get; set; }
+        //    public string spendAllowed { get; set; }
+        //    public string phoneConfirmed { get; set; }
+        //}
 
-        public class Balance
-        {
-            public string balance { get; set; }
-            public string activeBalance { get; set; }
-            public string inactiveBalance { get; set; }
-            public string oddMoneyBalance { get; set; }
-            public string oddMoneyFlags { get; set; }
-        }
+        //public class Balance
+        //{
+        //    public string balance { get; set; }
+        //    public string activeBalance { get; set; }
+        //    public string inactiveBalance { get; set; }
+        //    public string oddMoneyBalance { get; set; }
+        //    public string oddMoneyFlags { get; set; }
+        //}
 
-        public class BuyerInfoResponce
-        {
-            public Cards cards { get; set; }
-            public Buyer buyer { get; set; }
-            public Balance balance { get; set; }
-            public string requestId { get; set; }
-            public int res { get; set; }
-        }
+        //public class BuyerInfoResponce
+        //{
+        //    public Cards cards { get; set; }
+        //    public Buyer buyer { get; set; }
+        //    public Balance balance { get; set; }
+        //    public string requestId { get; set; }
+        //    public int res { get; set; }
+        //}
 
 
         #endregion
@@ -9504,6 +9659,7 @@ namespace Cash8
             this.return_rouble.Text = "";
             this.return_quantity.Text = "";
             this.return_kop.Text = "";
+            write_new_document("0", calculation_of_the_sum_of_the_document().ToString(), "0", "0", false, "0", "0", "0", "0");
 
         }
         
@@ -10043,6 +10199,7 @@ namespace Cash8
                     comment.Text = txtB_num_sales.Text;
                     btn_fill_on_sales.Enabled = false;
                 }
+                write_new_document("0", calculation_of_the_sum_of_the_document().ToString(), "0", "0", false, "0", "0", "0", "0");
             }
             catch (NpgsqlException ex)
             {

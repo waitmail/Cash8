@@ -81,6 +81,9 @@
     <Compile Include="Actions.Designer.cs">
       <DependentUpon>Actions.cs</DependentUpon>
     </Compile>
+    <Compile Include="BuyerInfo.cs" />
+    <Compile Include="BuyerInfoRequest.cs" />
+    <Compile Include="BuyerInfoResponce.cs" />
     <Compile Include="Cash_check.cs">
       <SubType>Form</SubType>
     </Compile>
