@@ -87,6 +87,7 @@ namespace Cash8
         private static DateTime min_date_work = new DateTime(2021, 1, 1);
         private static bool use_old_processiing_actions = true;
         private static int work_schema = 0;
+        private static int version_fn = 0;
 
         //private static bool use_text_print;
         //private static int width_of_symbols;
@@ -103,6 +104,42 @@ namespace Cash8
         private static string barcode = "";
 
         public static bool continue_to_read_the_data_from_a_port = false;
+
+
+        public static int GetVersionFn
+        {
+            get
+            {
+                if (version_fn == 0)
+                {
+                    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+                    try
+                    {
+                        conn.Open();
+                        string query = "SELECT version_fn	FROM public.constants";
+                        NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                        version_fn = Convert.ToInt16(command.ExecuteScalar());
+                    }
+                    catch (NpgsqlException ex)
+                    {
+                        MessageBox.Show("Ошибка при чтении версии протокола" + ex.Message);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Ошибка при чтении версии протокола" + ex.Message);
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                }
+
+                return version_fn;
+            }
+        }
 
 
         public static string GetAuthStringProcessing

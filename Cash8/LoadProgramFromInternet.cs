@@ -30,7 +30,7 @@ namespace Cash8
             }
 
             Cash8.DS.DS ds = MainStaticClass.get_ds();
-            ds.Timeout = 50000;
+            ds.Timeout = 1000;
 
             //Получить параметра для запроса на сервер 
             string nick_shop = MainStaticClass.Nick_Shop.Trim();

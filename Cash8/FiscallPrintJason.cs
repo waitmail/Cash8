@@ -64,7 +64,7 @@ namespace Cash8
             {
                 System.Net.WebRequest req = System.Net.WebRequest.Create(Url);                
                 req.Method = "POST";
-                req.Timeout = 10000;
+                req.Timeout = 5000;
                 req.ContentType = "application/json";
                 byte[] sentData = Encoding.UTF8.GetBytes(Data);
                 req.ContentLength = sentData.Length;
@@ -99,8 +99,7 @@ namespace Cash8
         private static RootObject GET(string Url, string Data)
         {
             System.Net.WebRequest req = System.Net.WebRequest.Create(Url + "/" + Data);
-            req.Timeout = 10000;            
-            req.Timeout = 100000;
+            req.Timeout = 10000;                        
             System.Net.WebResponse resp = req.GetResponse();
             //HttpWebResponse myHttpWebResponse = (HttpWebResponse)req.GetResponse();
 
@@ -276,11 +275,9 @@ namespace Cash8
                         break;
                     }
                 }
-            }
-            
+            }           
             
             return result;
-
         }
         
         public static string delete_last_job()
@@ -566,9 +563,7 @@ namespace Cash8
         //    }
         //    return result;
         //}
-
         
-
         public static RootObject check_print(string type, Check check,string num_doc)
         {
             string status = "";
@@ -613,7 +608,78 @@ namespace Cash8
 
         }
 
+
+        //private AnswerAddingKmArrayToTableTested GET(string Url, string Data)
+        //{
+        //    System.Net.WebRequest req = System.Net.WebRequest.Create(Url + "/" + Data);
+        //    req.Timeout = 10000;
+        //    System.Net.WebResponse resp = req.GetResponse();
+        //    //HttpWebResponse myHttpWebResponse = (HttpWebResponse)req.GetResponse();
+
+        //    System.IO.Stream stream = resp.GetResponseStream();
+
+        //    System.IO.StreamReader sr = new System.IO.StreamReader(stream);
+        //    string Out = sr.ReadToEnd();
+        //    sr.Close();
+
+        //    //Newtonsoft.Json.Linq.JObject obj = Newtonsoft.Json.Linq.JObject.Parse(Out);
+        //    //var obj = JsonConvert.DeserializeObject(Out) as System.Collections.Generic.ICollection<Results>; 
+
+        //    var results = JsonConvert.DeserializeObject<AnswerAddingKmArrayToTableTested>(Out);
+        //    //Thread.Sleep(1000);
+        //    req = null;
+        //    resp.Close();
+        //    stream.Close();
+        //    sr = null;
+
+        //    return results;
+        //    //return Out;
+        //}
+
+        //private static AnswerAddingKmArrayToTableTested Tested_Km(AddingKmArrayToTableTested addingKmArrayToTableTestedKm)
+        //{
+        //    string status = "";            
+        //    AnswerAddingKmArrayToTableTested result = null;
+        //    //CachInOut cash_in_out = new CachInOut();
+        //    //cash_in_out.@operator = new Cash8.FiscallPrintJason.Operator();
+        //    //cash_in_out.@operator.name = MainStaticClass.Cash_Operator;// "name";//необходимо переопределить
+        //    //cash_in_out.@operator.vatin = MainStaticClass.cash_operator_inn;// "123654789507";//необходимо переопределить
+        //    //cash_in_out.type = type;
+        //    //cash_in_out.cashSum = cashSum;
+        //    string km_array_to_table_tested = JsonConvert.SerializeObject(addingKmArrayToTableTestedKm, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+        //    string json = MainStaticClass.shablon.Replace("body", km_array_to_table_tested);
+        //    guid = Guid.NewGuid().ToString();
+        //    string replace = "\"uuid\": \"" + guid + "\"";
+        //    json = json.Replace("uuid", replace);
+        //    if (POST(MainStaticClass.url, json) == "Created")
+        //    {
+        //        int count = 0;
+        //        while (1 == 1)
+        //        {
+        //            count++;
+        //            Thread.Sleep(1000);
+        //            result = GET(MainStaticClass.url, guid);
+        //            status = result.results[0].status;
+        //            if (status != "ready")
+        //            {
+        //                if (count > 14)
+        //                {
+        //                    break;
+        //                }
+        //            }
+        //            else if ((status == "ready") || (status == "error"))
+        //            {
+        //                break;
+        //            }
+        //        }
+        //    }
+
+        //    return result;
+        //}
+
+
+
         #endregion
-                        
+
     }
 }

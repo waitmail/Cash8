@@ -322,9 +322,19 @@ namespace Cash8
             if (pay_bonus.Text.Trim().Length > 0)
             {
                 //Decimal input_bonus = Convert.ToDecimal(pay_bonus.Text);
-                Decimal input_bonus = Convert.ToDecimal(pay_bonus.Text);
+                Decimal input_bonus = 0;
+                if (MainStaticClass.GetWorkSchema == 1)
+                {
+                    input_bonus = Convert.ToDecimal(pay_bonus.Text);
+                }
+                else if (MainStaticClass.GetWorkSchema == 2)
+                {
+                    input_bonus = Convert.ToDecimal(pay_bonus.Text)*100;
+                }
+
                 //Посчитать сумму документа - 10 рублей
                 //Decimal bonus_total = Convert.ToDecimal(bonus_total_in_centr.Text);
+
                 Int64 bonus_total = 0;
                 if (MainStaticClass.GetWorkSchema == 1)
                 {

@@ -70,42 +70,7 @@ namespace Cash8
             {
                 MessageBox.Show(ex.Message);
             }
-            //conn = MainStaticClass.NpgsqlConn();
-            //conn.Open();
-            //string query = "SELECT COUNT(*) FROM constants";
-            //NpgsqlCommand command = new NpgsqlCommand(query, conn);
-            ////if (Convert.ToInt32(command.ExecuteScalar()) == 0)
-            ////{
-            ////    MessageBox.Show("Не заполнен код магазина и номер кассы");
-            ////    result = false;
-            ////}
-            //NpgsqlDataReader reader = command.ExecuteReader();
-            //while (reader.Read())
-            //{
-            //    if (reader.GetInt16(0) == 0)
-            //    {
-            //        MessageBox.Show("Номер кассы не может быть ноль");
-            //        result = false;
-            //    }
-            //    if (reader.GetString(1).Trim().Length == 0)
-            //    {
-            //        MessageBox.Show("Не заполнен код магазина");
-            //        result = false;
-            //    }
-            //}
-            //}
-            //catch (NpgsqlException ex)
-            //{
-            //    MessageBox.Show(ex.Message + " | " + ex.Detail);
-            //}
-            //finally
-            //{
-            //    if (conn.State == ConnectionState.Open)
-            //    {
-            //        conn.Close();
-            //    }
-
-            //}
+            
             return result;
         }
 
@@ -172,18 +137,12 @@ namespace Cash8
                     conn.Close();
                 }
             }
-
             return result;
-
         }
-
-
-
+        
         private bool this_check_the_last(string datetime)
         {
             bool result = false;
-
-
             NpgsqlConnection conn = null;
             try
             {
@@ -310,12 +269,11 @@ namespace Cash8
 
             int result = MainStaticClass.get_unloading_interval();
             if (result != 0)
-            {
-                //timer.Interval = 60000;
+            {                
                 timer.Start();
                 timer.Elapsed += new System.Timers.ElapsedEventHandler(timer_Elapsed);
                 //timer_Elapsed(null, null);
-                get_status_send_document();
+                //get_status_send_document();
             }
 
             this.num_cash.Text = "КАССА № " + MainStaticClass.CashDeskNumber.ToString();
@@ -343,35 +301,19 @@ namespace Cash8
             listView1.Columns.Add("Тип чека ", 100, HorizontalAlignment.Right);
             listView1.Columns.Add("Коментарий", 50, HorizontalAlignment.Right);
             listView1.Columns.Add("Номер", 100, HorizontalAlignment.Right);
-
-            //listView1.Columns.Add("Инвентаризация", 100, HorizontalAlignment.Right);
-
-
-
+            
             //this.WindowState = FormWindowState.Normal;
             this.WindowState = FormWindowState.Maximized;
 
             if (MainStaticClass.Code_right_of_user == 2)
             {
-
                 label2.Enabled = false;
                 dateTimePicker1.Enabled = false;
-                fill.Enabled = false;
-
-                //data_start.Visible = false;
-                //data_finish.Visible = false;
-                //button2.Visible = false;
-                //button3.Visible = false;
-                //button4.Visible = false;
-
+                fill.Enabled = false;            
                 label2.Visible = false;
                 this.FormBorderStyle = FormBorderStyle.None;
-
             }
-
-            //tovar = new Nomenklatura();
-            //tovar.caller = this;
-            //tovar.Visible = false;  
+            
             this.Top = 0;
             this.Left = 0;
             this.Size = new System.Drawing.Size(SystemInformation.PrimaryMonitorSize.Width, SystemInformation.PrimaryMonitorSize.Height);

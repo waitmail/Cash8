@@ -102,7 +102,7 @@ namespace Cash8
                 conn.Open();
                 string query = "SELECT nick_shop,cash_desk_number,use_debug,code_shop,"+
                     " path_for_web_service,currency,unloading_period,last_date_download_bonus_clients,"+
-                    " envd,pass_promo,print_m,system_taxation,work_schema FROM constants";
+                    " envd,pass_promo,print_m,system_taxation,work_schema,version_fn FROM constants";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
@@ -124,6 +124,7 @@ namespace Cash8
                     //this.checkBox_osn_usnIncomeOutcome.CheckState = (reader["usn_income_out_come"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
                     this.comboBox_system_taxation.SelectedIndex = Convert.ToInt16(reader["system_taxation"]);
                     this.txtB_work_schema.Text = reader["work_schema"].ToString();
+                    this.txtB_version_fn.Text = reader["version_fn"].ToString();
                 }
                 reader.Close();                
             }
@@ -267,7 +268,8 @@ namespace Cash8
                     "print_m ='" + print_m + "'," +
                     "last_date_download_bonus_clients ='" + txtB_last_date_download_bonus_clients.Text + "'," +
                     "system_taxation = '" + comboBox_system_taxation.SelectedIndex.ToString() + "'," +
-                    "work_schema = '" + txtB_work_schema.Text+"'";                    
+                    "work_schema = '" + txtB_work_schema.Text+"',"+
+                    "version_fn = "+txtB_version_fn.Text;                    
        
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 int resul_update = command.ExecuteNonQuery();
@@ -283,7 +285,8 @@ namespace Cash8
                         //"envd,"+
                         "print_m,"+
                         "system_taxation,"+
-                        "work_schema ) VALUES(" +
+                        "work_schema,"+
+                        "version_fn) VALUES(" +
                         cash_desk_number.Text + ",'" +
                         nick_shop.Text + "'," +
                         get_use_debug() + ",'" +                        
@@ -293,7 +296,8 @@ namespace Cash8
                         txtB_last_date_download_bonus_clients.Text + "','" +                       
                         print_m+"','"+
                         comboBox_system_taxation.SelectedIndex.ToString()+ "','"+
-                        txtB_work_schema.Text+"')";
+                        txtB_work_schema.Text+"','"+
+                        txtB_version_fn.Text+"')";
 
                     command = new NpgsqlCommand(query, conn);
                     command.ExecuteNonQuery();

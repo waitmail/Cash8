@@ -48,6 +48,8 @@
             this.lbl_system_taxation = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.txtB_work_schema = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.txtB_version_fn = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // cash_desk_number
@@ -69,7 +71,7 @@
             // 
             // write
             // 
-            this.write.Location = new System.Drawing.Point(237, 215);
+            this.write.Location = new System.Drawing.Point(237, 257);
             this.write.Name = "write";
             this.write.Size = new System.Drawing.Size(87, 23);
             this.write.TabIndex = 2;
@@ -79,7 +81,7 @@
             // 
             // _close_
             // 
-            this._close_.Location = new System.Drawing.Point(360, 215);
+            this._close_.Location = new System.Drawing.Point(360, 257);
             this._close_.Name = "_close_";
             this._close_.Size = new System.Drawing.Size(75, 23);
             this._close_.TabIndex = 3;
@@ -118,7 +120,7 @@
             // path_for_web_service
             // 
             this.path_for_web_service.Enabled = false;
-            this.path_for_web_service.Location = new System.Drawing.Point(174, 179);
+            this.path_for_web_service.Location = new System.Drawing.Point(174, 221);
             this.path_for_web_service.MaxLength = 100;
             this.path_for_web_service.Name = "path_for_web_service";
             this.path_for_web_service.Size = new System.Drawing.Size(303, 20);
@@ -127,7 +129,7 @@
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(16, 182);
+            this.label15.Location = new System.Drawing.Point(16, 224);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(152, 13);
             this.label15.TabIndex = 41;
@@ -200,14 +202,14 @@
             "Не выбрано",
             "ОСН",
             "УСН"});
-            this.comboBox_system_taxation.Location = new System.Drawing.Point(177, 141);
+            this.comboBox_system_taxation.Location = new System.Drawing.Point(177, 183);
             this.comboBox_system_taxation.Name = "comboBox_system_taxation";
             this.comboBox_system_taxation.Size = new System.Drawing.Size(300, 21);
             this.comboBox_system_taxation.TabIndex = 63;
             // 
             // lbl_system_taxation
             // 
-            this.lbl_system_taxation.Location = new System.Drawing.Point(12, 131);
+            this.lbl_system_taxation.Location = new System.Drawing.Point(12, 173);
             this.lbl_system_taxation.Name = "lbl_system_taxation";
             this.lbl_system_taxation.Size = new System.Drawing.Size(100, 31);
             this.lbl_system_taxation.TabIndex = 64;
@@ -232,11 +234,29 @@
             this.txtB_work_schema.TabIndex = 66;
             this.txtB_work_schema.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
+            // label4
+            // 
+            this.label4.Location = new System.Drawing.Point(16, 139);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(78, 25);
+            this.label4.TabIndex = 68;
+            this.label4.Text = "Версия ФН";
+            // 
+            // txtB_version_fn
+            // 
+            this.txtB_version_fn.Location = new System.Drawing.Point(177, 143);
+            this.txtB_version_fn.MaxLength = 1;
+            this.txtB_version_fn.Name = "txtB_version_fn";
+            this.txtB_version_fn.Size = new System.Drawing.Size(100, 20);
+            this.txtB_version_fn.TabIndex = 69;
+            // 
             // Constants
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(724, 286);
+            this.ClientSize = new System.Drawing.Size(724, 359);
+            this.Controls.Add(this.txtB_version_fn);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.txtB_work_schema);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.lbl_system_taxation);
@@ -288,5 +308,7 @@
         private System.Windows.Forms.Label lbl_system_taxation;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox txtB_work_schema;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox txtB_version_fn;
     }
 }

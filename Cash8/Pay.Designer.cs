@@ -203,7 +203,7 @@
             this.non_cash_sum_kop.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.non_cash_sum_kop.Font = new System.Drawing.Font("Microsoft Sans Serif", 32.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.non_cash_sum_kop.Location = new System.Drawing.Point(760, 360);
-            this.non_cash_sum_kop.MaxLength = 10;
+            this.non_cash_sum_kop.MaxLength = 2;
             this.non_cash_sum_kop.Name = "non_cash_sum_kop";
             this.non_cash_sum_kop.Size = new System.Drawing.Size(54, 49);
             this.non_cash_sum_kop.TabIndex = 18;
@@ -217,7 +217,7 @@
             this.non_cash_sum.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.non_cash_sum.Font = new System.Drawing.Font("Microsoft Sans Serif", 32.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.non_cash_sum.Location = new System.Drawing.Point(493, 360);
-            this.non_cash_sum.MaxLength = 10;
+            this.non_cash_sum.MaxLength = 5;
             this.non_cash_sum.Name = "non_cash_sum";
             this.non_cash_sum.Size = new System.Drawing.Size(243, 49);
             this.non_cash_sum.TabIndex = 17;

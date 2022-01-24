@@ -28,7 +28,7 @@ namespace Cash8
         {
             //MessageBox.Show("1");
             Cash8.DS.DS ds = MainStaticClass.get_ds();
-            ds.Timeout = 20000;
+            ds.Timeout = 10000;
             //Получить параметра для запроса на сервер 
             string nick_shop = MainStaticClass.Nick_Shop.Trim();
             if (nick_shop.Trim().Length == 0)
@@ -763,22 +763,22 @@ namespace Cash8
         protected override void OnKeyDown(KeyEventArgs e)
         {
             base.OnKeyDown(e);
-            if (MainStaticClass.GetWorkSchema == 1)
+            //if (MainStaticClass.GetWorkSchema == 1)
+            //{
+            if (e.KeyCode == Keys.F12)
             {
-                if (e.KeyCode == Keys.F12)
-                {
-                    this.menuStrip.Items.Clear();
-                    MainStaticClass.Main.start_interface_switching();
-                }
+                this.menuStrip.Items.Clear();
+                MainStaticClass.Main.start_interface_switching();
             }
-            else
-            {
-                if (e.KeyCode == Keys.D)
-                {
-                    this.menuStrip.Items.Clear();
-                    MainStaticClass.Main.start_interface_switching();
-                }
-            }             
+            //}
+            //else
+            //{
+            //    if (e.KeyCode == Keys.D)
+            //    {
+            //        this.menuStrip.Items.Clear();
+            //        MainStaticClass.Main.start_interface_switching();
+            //    }
+            //}             
         }
         
         private void параметрыБазыДанныхToolStripMenuItem_Click(object sender, EventArgs e)
@@ -973,7 +973,7 @@ namespace Cash8
             {
                 using (Cash8.DS.DS ds = MainStaticClass.get_ds())
                 {
-                    ds.Timeout = 20000;
+                    ds.Timeout = 10000;
                     string result_web_query = ds.GetParametersOnBonusProgram(nick_shop, data_encrypt);                    
                     string decrypt_data = CryptorEngine.Decrypt(result_web_query, true, key);
                     if (decrypt_data != "-1")
