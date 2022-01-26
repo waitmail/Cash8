@@ -11,7 +11,8 @@ namespace Cash8
         public class DriverError
         {
             public int code { get; set; }
-            public string error { get; set; }
+            //public string error { get; set; }
+            public string description { get; set; }
         }
 
         public class OfflineValidation

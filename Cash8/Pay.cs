@@ -329,7 +329,8 @@ namespace Cash8
                 }
                 else if (MainStaticClass.GetWorkSchema == 2)
                 {
-                    input_bonus = Convert.ToDecimal(pay_bonus.Text)*100;
+                    //input_bonus = Convert.ToDecimal(pay_bonus.Text)*100;
+                    input_bonus = Convert.ToDecimal(pay_bonus.Text);
                 }
 
                 //Посчитать сумму документа - 10 рублей
@@ -342,7 +343,8 @@ namespace Cash8
                 }
                 else if (MainStaticClass.GetWorkSchema == 2)
                 {
-                    bonus_total = Convert.ToInt64(bonus_total_in_centr.Text)*100;
+                    //bonus_total = Convert.ToInt64(bonus_total_in_centr.Text)*100;
+                    bonus_total = Convert.ToInt64(bonus_total_in_centr.Text);
                 }
 
                 if (input_bonus > bonus_total)
@@ -1060,7 +1062,7 @@ namespace Cash8
                             if (cc.check_bonus_is_on())
                             {
                                 SentDataOnBonus.BuynewResponse buynewResponse = null;
-                                buynewResponse = cc.get_bonus_on_document(pay_bonus_many.Text);
+                                buynewResponse = cc.get_bonus_on_document((Convert.ToDecimal(pay_bonus_many.Text)*100).ToString());
 
                                 if (buynewResponse != null)
                                 {
@@ -1095,7 +1097,8 @@ namespace Cash8
                             {
                                 if (buynewResponse.res == "1")
                                 {
-                                    this.bonus_on_document.Text = ((int)(Convert.ToInt64(buynewResponse.bonusSum) / 100)).ToString();                                    
+                                    //this.bonus_on_document.Text = ((int)(Convert.ToInt64(buynewResponse.bonusSum) / 100)).ToString();
+                                    this.bonus_on_document.Text = buynewResponse.bonusSum;
                                     cc.id_transaction = buynewResponse.transactionId;
                                     cc.bonus_on_document = Convert.ToInt32(this.bonus_on_document.Text);
                                     cc.message_processing = buynewResponse.message;

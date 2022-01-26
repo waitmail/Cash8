@@ -84,7 +84,7 @@ namespace Cash8
         private static int system_taxation = 0;
         private static DateTime last_send_last_successful_sending;
         private static DateTime last_write_check;
-        private static DateTime min_date_work = new DateTime(2021, 1, 1);
+        private static DateTime min_date_work = new DateTime(2021, 11, 30);
         private static bool use_old_processiing_actions = true;
         private static int work_schema = 0;
         private static int version_fn = 0;
@@ -2607,7 +2607,8 @@ namespace Cash8
 
         public static NpgsqlConnection NpgsqlConn()
         {
-            return new NpgsqlConnection("Server=" + Cash8.MainStaticClass.ipAdrServer + ";Port=" + Cash8.MainStaticClass.portServer + ";User Id=" + Cash8.MainStaticClass.postgresUser + ";Password=" + Cash8.MainStaticClass.PasswordPostgres + ";Database=" + Cash8.MainStaticClass.DataBaseName + ";CommandTimeout=300;Pooling=false");
+            //return new NpgsqlConnection("Server=" + Cash8.MainStaticClass.ipAdrServer + ";Port=" + Cash8.MainStaticClass.portServer + ";User Id=" + Cash8.MainStaticClass.postgresUser + ";Password=" + Cash8.MainStaticClass.PasswordPostgres + ";Database=" + Cash8.MainStaticClass.DataBaseName + ";CommandTimeout=300;Pooling=false");
+            return new NpgsqlConnection("Server=" + Cash8.MainStaticClass.ipAdrServer + ";Port=" + Cash8.MainStaticClass.portServer + ";User Id=postgres" + ";Password=" + Cash8.MainStaticClass.PasswordPostgres + ";Database=" + Cash8.MainStaticClass.DataBaseName + ";CommandTimeout=300;Pooling=false");
             //return new NpgsqlConnection("Server=127.0.0.1;Port=5432;User Id=postgres;Password=a123456789;Database=Cash_Place;CommandTimeout=60;");
             //return new NpgsqlConnection("Server=127.0.0.1;Port=5432;User Id=postgres;Password=1;Database=Cash_Place;CommandTimeout=60;");
 
@@ -2830,7 +2831,6 @@ namespace Cash8
             //string roundtrip = "";
             //Encoding ascii = Encoding.Default;
             Encoding ascii = Encoding.UTF8;
-
             byte[] bin = ascii.GetBytes(data);//This is intermediate storage for the encryption.
             int totlen = bin.Length;    //This is the total length of the input file.
             SymmetricAlgorithm rijn = SymmetricAlgorithm.Create(); //Creates the default implementation, which is RijndaelManaged.         

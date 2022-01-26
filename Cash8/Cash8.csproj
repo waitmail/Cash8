@@ -83,6 +83,7 @@
     </Compile>
     <Compile Include="AddingKmArrayToTableTested.cs" />
     <Compile Include="AnswerAddingKmArrayToTableTested.cs" />
+    <Compile Include="AnswerCheckImcWorkState.cs" />
     <Compile Include="BuyerInfo.cs" />
     <Compile Include="BuyerInfoRequest.cs" />
     <Compile Include="BuyerInfoResponce.cs" />
@@ -136,6 +137,7 @@
       <DependentUpon>Discount_types.cs</DependentUpon>
     </Compile>
     <Compile Include="FiscallPrintJason.cs" />
+    <Compile Include="FiscallPrintJason2.cs" />
     <Compile Include="FPTK22.cs">
       <SubType>Form</SubType>
     </Compile>

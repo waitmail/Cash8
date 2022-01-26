@@ -200,12 +200,11 @@
             // 
             this.non_cash_sum_kop.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.non_cash_sum_kop.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.non_cash_sum_kop.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.non_cash_sum_kop.Font = new System.Drawing.Font("Microsoft Sans Serif", 32.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.non_cash_sum_kop.Location = new System.Drawing.Point(760, 360);
             this.non_cash_sum_kop.MaxLength = 2;
             this.non_cash_sum_kop.Name = "non_cash_sum_kop";
-            this.non_cash_sum_kop.Size = new System.Drawing.Size(54, 49);
+            this.non_cash_sum_kop.Size = new System.Drawing.Size(54, 56);
             this.non_cash_sum_kop.TabIndex = 18;
             this.non_cash_sum_kop.Text = "0";
             this.non_cash_sum_kop.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -214,12 +213,11 @@
             // 
             this.non_cash_sum.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.non_cash_sum.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.non_cash_sum.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.non_cash_sum.Font = new System.Drawing.Font("Microsoft Sans Serif", 32.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.non_cash_sum.Location = new System.Drawing.Point(493, 360);
             this.non_cash_sum.MaxLength = 5;
             this.non_cash_sum.Name = "non_cash_sum";
-            this.non_cash_sum.Size = new System.Drawing.Size(243, 49);
+            this.non_cash_sum.Size = new System.Drawing.Size(243, 56);
             this.non_cash_sum.TabIndex = 17;
             this.non_cash_sum.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -315,12 +313,11 @@
             // 
             this.cash_sum.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.cash_sum.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.cash_sum.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.cash_sum.Font = new System.Drawing.Font("Microsoft Sans Serif", 32.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.cash_sum.Location = new System.Drawing.Point(495, 418);
             this.cash_sum.MaxLength = 10;
             this.cash_sum.Name = "cash_sum";
-            this.cash_sum.Size = new System.Drawing.Size(319, 49);
+            this.cash_sum.Size = new System.Drawing.Size(319, 56);
             this.cash_sum.TabIndex = 16;
             this.cash_sum.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -357,13 +354,12 @@
             // 
             this.pay_bonus.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.pay_bonus.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.pay_bonus.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.pay_bonus.Enabled = false;
             this.pay_bonus.Font = new System.Drawing.Font("Microsoft Sans Serif", 32.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.pay_bonus.Location = new System.Drawing.Point(495, 243);
             this.pay_bonus.MaxLength = 10;
             this.pay_bonus.Name = "pay_bonus";
-            this.pay_bonus.Size = new System.Drawing.Size(178, 49);
+            this.pay_bonus.Size = new System.Drawing.Size(178, 56);
             this.pay_bonus.TabIndex = 12;
             this.pay_bonus.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 

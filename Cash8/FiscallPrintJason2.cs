@@ -8,61 +8,24 @@ using System.Threading;
 using System.Windows.Forms;
 namespace Cash8
 {
-  
-
-    public class FiscallPrintJason
+    public class FiscallPrintJason2
     {
 
-        public class Operator
-        {
-            public string name { get; set; }
-            public string vatin { get; set; }
-        }
+        //public class Operator
+        //{
+        //    public string name { get; set; }
+        //    public string vatin { get; set; }
+        //}
 
         public static string guid = "";
-       
-
-
-        public static IWebProxy CreateWebProxyWithCredentials(String sUrl, string ProxyUserName, string ProxyUserPassword, string sAuthType, string ProxyUserDomain)
-        {
-            if (String.IsNullOrEmpty(ProxyUserName) || String.IsNullOrEmpty(ProxyUserPassword))
-            {
-                return null;
-            }
-            // get default proxy and assign it to the WebService. Alternatively, you can replace this with manual WebProxy creation.
-            IWebProxy iDefaultWebProxy = WebRequest.DefaultWebProxy;
-            Uri uriProxy = iDefaultWebProxy.GetProxy(new Uri(sUrl));
-            string sProxyUrl = uriProxy.AbsoluteUri;
-            if (sProxyUrl == sUrl)
-            {//no proxy specified
-                return null;
-            }
-            IWebProxy proxyObject = new WebProxy(sProxyUrl, true);
-            // assign the credentials to the Proxy
-            //todo do we need to add credentials to  WebService too??
-            if ((!String.IsNullOrEmpty(sAuthType)) && (sAuthType.ToLower() != "basic"))
-            {
-                //from http://www.mcse.ms/archive105-2004-10-1165271.html
-                // create credentials cache - it will hold both, the WebProxy credentials (??and the WebService credentials too??)
-                System.Net.CredentialCache cache = new System.Net.CredentialCache();
-                // add default credentials for Proxy (notice the authType = 'Kerberos' !) Other types are 'Basic', 'Digest', 'Negotiate', 'NTLM'
-                cache.Add(new Uri(sProxyUrl), sAuthType, new System.Net.NetworkCredential(ProxyUserName, ProxyUserPassword, ProxyUserDomain));
-                proxyObject.Credentials = cache;
-            }
-            else//special case for Basic (from http://www.xmlwebservices.cc/index_FAQ.htm )
-            {
-                proxyObject.Credentials = new System.Net.NetworkCredential(ProxyUserName, ProxyUserPassword);
-            }
-            return proxyObject;
-        }
-
+                     
         //Внесение средств
         public static string POST(string Url, string Data)
         {
             string Out = String.Empty;
             try
             {
-                System.Net.WebRequest req = System.Net.WebRequest.Create(Url);                
+                System.Net.WebRequest req = System.Net.WebRequest.Create(Url);
                 req.Method = "POST";
                 req.Timeout = 5000;
                 req.ContentType = "application/json";
@@ -84,7 +47,7 @@ namespace Cash8
                     MessageBox.Show("Ошибка Post запрос, статус " + myHttpWebResponse.StatusCode);
                 }
                 req = null;
-                sendStream = null;                
+                sendStream = null;
                 myHttpWebResponse.Close();// = null;
             }
             catch (WebException ex)
@@ -99,7 +62,7 @@ namespace Cash8
         private static RootObject GET(string Url, string Data)
         {
             System.Net.WebRequest req = System.Net.WebRequest.Create(Url + "/" + Data);
-            req.Timeout = 10000;                        
+            req.Timeout = 10000;
             System.Net.WebResponse resp = req.GetResponse();
             //HttpWebResponse myHttpWebResponse = (HttpWebResponse)req.GetResponse();
 
@@ -108,15 +71,15 @@ namespace Cash8
             System.IO.StreamReader sr = new System.IO.StreamReader(stream);
             string Out = sr.ReadToEnd();
             sr.Close();
-            
+
             //Newtonsoft.Json.Linq.JObject obj = Newtonsoft.Json.Linq.JObject.Parse(Out);
             //var obj = JsonConvert.DeserializeObject(Out) as System.Collections.Generic.ICollection<Results>; 
-                        
+
             var results = JsonConvert.DeserializeObject<RootObject>(Out);
             //Thread.Sleep(1000);
             req = null;
             resp.Close();
-            stream.Close();            
+            stream.Close();
             sr = null;
 
             return results;
@@ -217,7 +180,7 @@ namespace Cash8
             public string errorDescription { get; set; }
             public int errorCode { get; set; }
             public string status { get; set; }
-//            public ShiftStatus shiftStatus { get; set; }            
+            //            public ShiftStatus shiftStatus { get; set; }            
         }
 
         public class ShiftStatus
@@ -239,7 +202,7 @@ namespace Cash8
         /// Служебное внесение, выдача(Инкассация)
         /// </summary>
         /// <returns></returns>
-        public static RootObject cashe_in_out(string type,double cashSum)
+        public static RootObject cashe_in_out(string type, double cashSum)
         {
             string status = "";
             RootObject result = null;
@@ -275,16 +238,16 @@ namespace Cash8
                         break;
                     }
                 }
-            }           
-            
+            }
+
             return result;
         }
-        
+
         public static string delete_last_job()
         {
             string Out = String.Empty;
 
-            System.Net.WebRequest req = System.Net.WebRequest.Create(MainStaticClass.url + "/" + guid);            
+            System.Net.WebRequest req = System.Net.WebRequest.Create(MainStaticClass.url + "/" + guid);
             req.Method = "DELETE";
             req.Timeout = 100000;
             req.ContentType = "application/json";
@@ -360,8 +323,8 @@ namespace Cash8
         {
             string status = "";
             RootObject result = null;
-            Operator_type cds = new Operator_type();
-            cds.@operator = new Operator();
+            Operator_type cds = new Cash8.FiscallPrintJason2.Operator_type();
+            cds.@operator = new Cash8.FiscallPrintJason.Operator();
             cds.@operator.name = MainStaticClass.Cash_Operator;//"name";//необходимо переопределить
             cds.@operator.vatin = MainStaticClass.cash_operator_inn;// "123654789507";//необходимо переопределить
             cds.type = type;
@@ -397,9 +360,9 @@ namespace Cash8
 
             return result;
         }
-       
+
         public class CachInOut
-        {            
+        {
             public string type { get; set; }
             public double cashSum { get; set; }
             public FiscallPrintJason.Operator @operator { get; set; }
@@ -421,7 +384,7 @@ namespace Cash8
             public string barcode { get; set; }
             public string barcodeType { get; set; }
         }
-       
+
         public class Tax
         {
             public string type { get; set; }
@@ -461,6 +424,14 @@ namespace Cash8
             public string vatin { get; set; }
         }
 
+        public class ImcParams
+        {
+            public string imcType { get; set; }
+            public string imc { get; set; }
+            public string itemEstimatedStatus { get; set; }
+            public int imcModeProcessing { get; set; }
+        }
+
         public class Item
         {
             public string type { get; set; }
@@ -468,13 +439,14 @@ namespace Cash8
             public double price { get; set; }
             public double quantity { get; set; }
             public double amount { get; set; }
-            public NomenclatureCode nomenclatureCode { get; set; }
+            //public NomenclatureCode nomenclatureCode { get; set; }
             //public string nomenclatureCode { get; set; }
             //public double infoDiscountAmount { get; set; }
-            public int department { get; set; }
+            public ImcParams imcParams { get; set; }
+            //public int department { get; set; }
             public string measurementUnit { get; set; }
             public string paymentMethod { get; set; }
-            public string paymentObject { get; set; }            
+            public string paymentObject { get; set; }
             public Tax tax { get; set; }
             public AgentInfo agentInfo { get; set; }
             public SupplierInfo supplierInfo { get; set; }
@@ -487,16 +459,16 @@ namespace Cash8
             public string barcode { get; set; }
             public string barcodeType { get; set; }
             public int? scale { get; set; }
-            public MarkingCode markingCode { get; set; }
+            //public MarkingCode markingCode { get; set; }
         }
         /// <summary>
         /// Код маркировки 
         /// </summary>
-        public class MarkingCode
-        {
-            //public string type { get; set; }
-            public string mark { get; set; }
-        }
+        //public class MarkingCode
+        //{
+        //    //public string type { get; set; }
+        //    public string mark { get; set; }
+        //}
 
 
         public class Payment
@@ -512,25 +484,27 @@ namespace Cash8
             public string name { get; set; }
         }
 
-        public class NomenclatureCode
-        {
-            public string type { get; set; }
-            public string gtin { get; set; }
-            public string serial { get; set; }
-        }
+        //public class NomenclatureCode
+        //{
+        //    public string type { get; set; }
+        //    public string gtin { get; set; }
+        //    public string serial { get; set; }
+        //}
 
         public class Check
         {
+           
             public string type { get; set; }
             public string taxationType { get; set; }
             public bool ignoreNonFiscalPrintErrors { get; set; }
-            public Operator @operator { get; set; }
+            public FiscallPrintJason.Operator @operator { get; set; }
             public List<Item> items { get; set; }
             public List<Payment> payments { get; set; }
             public double total { get; set; }
             //public string clientInfo { get; set; }
             public List<PostItem> postItems { get; set; }
-            public ClientInfo clientInfo { get; set; }            
+            public ClientInfo clientInfo { get; set; }
+            public bool validateMarkingCodes { get; set; }
         }
 
 
@@ -563,13 +537,13 @@ namespace Cash8
         //    }
         //    return result;
         //}
-        
-        public static RootObject check_print(string type, Check check,string num_doc)
+
+        public static RootObject check_print(string type, Check check, string num_doc)
         {
             string status = "";
             RootObject result = null;
             //Check check = new Check();
-            check.@operator = new Cash8.FiscallPrintJason.Operator();
+            check.@operator = new FiscallPrintJason.Operator();
             check.@operator.name = MainStaticClass.Cash_Operator;// "name";//необходимо переопределить
             check.@operator.vatin = MainStaticClass.cash_operator_inn;// "123654789507";//необходимо переопределить
             check.type = type;

@@ -363,8 +363,7 @@ namespace Cash8
             bool result = true;
 
             string json = JsonConvert.SerializeObject(buyNewRequest, Newtonsoft.Json.Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-            txtB_jason.Text = json;
-            //string url = "http://92.242.41.218/processing/v3/buyNew/";
+            txtB_jason.Text = json;            
             string url = MainStaticClass.GetStartUrl + "/v3/buyNew/";
 
             byte[] body = Encoding.UTF8.GetBytes(json);
