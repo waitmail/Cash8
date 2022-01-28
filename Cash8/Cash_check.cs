@@ -77,6 +77,8 @@ namespace Cash8
         private string code_bonus_card = "";
         public string spendAllowed = "";
         public string message_processing = "";
+        public bool change_bonus_card = false;
+        private bool client_plastic_scaned = false;//клиент определен по платиковой карте или по номеру платиковой карты
 
         System.Windows.Forms.Timer timer = null;
 
@@ -338,9 +340,11 @@ namespace Cash8
                 phone = "7" + txtB_client_phone.Text.Trim();
                 //Проверяем что за карточка 
                 buyerInfoResponce = get_buyerInfo_client_code_or_phone(1, phone);
+                client_plastic_scaned = false;
             }
             else if (client_barcode.Text.Trim().Length > 0)
             {
+                client_plastic_scaned = true;//Если покупатель будет найден по номеру карты то сохраним информацию об этом для того чтобы сделать активным поле для оплаты бонусами
                 buyerInfoResponce = get_buyerInfo_client_code_or_phone(0, client_barcode.Text.Trim());
             }
             else
@@ -363,33 +367,30 @@ namespace Cash8
                                 if (MainStaticClass.GetWorkSchema == 1)
                                 {
                                     pay_form.bonus_total_in_centr.Text = (((int)Convert.ToDecimal(buyerInfoResponce.balance.activeBalance) / 100) * 100).ToString();                                    
-                                    pay_form.pay_bonus.Enabled = true;
+                                    pay_form.pay_bonus.Enabled = true;                                    
                                 }
                                 else if (MainStaticClass.GetWorkSchema == 2)
-                                {
+                                {                                    
                                     pay_form.bonus_total_in_centr.Text = buyerInfoResponce.balance.activeBalance;
-                                    //надо проверить нет ли другой карты в товарной части чека
-                                    if (check_availability_card_sale())
+                                    //надо проверить нет ли другой карты в товарной части чека если карта виртуальная
+                                    if (buyerInfoResponce.cards.card[0].cardNum.Substring(0, 1) == "5")
                                     {
-                                        MessageBox.Show("В чеке(в товарах) обнаружена неактивная бонусная карта");
-                                        client_barcode.Text = "";
-                                        txtB_client_phone.Text = "";
-                                        return;
+                                        if (check_availability_card_sale())
+                                        {
+                                            MessageBox.Show("В чеке(в товарах) обнаружена неактивная бонусная карта");
+                                            client_barcode.Text = "";
+                                            txtB_client_phone.Text = "";
+                                            return;
+                                        }
                                     }
-                                }
-                                //this.client.BackColor = Color.Green;
+                                }                                
+                                bonus_total_centr = Convert.ToInt32(pay_form.bonus_total_in_centr.Text);
                             }
                             else if (buyerInfoResponce.cards.card[0].state == "4")
                             {
                                 MessageBox.Show("Эта бонусная карта заблокирована");
                                 return;
-                            }
-                            else
-                            {
-
-                                //this.client.BackColor = Color.Yellow;
-                            }
-                            bonus_total_centr = Convert.ToInt32(pay_form.bonus_total_in_centr.Text);
+                            }                            
                         }
                         if (buyerInfoResponce.buyer != null)
                         {
@@ -964,7 +965,11 @@ namespace Cash8
                             ChangeBonusCard changeBonusCard = new ChangeBonusCard();
                             changeBonusCard.cash_Check = this;
                             changeBonusCard.txtB_num_card.Text = code_bonus_card;
-                            changeBonusCard.ShowDialog();
+                            DialogResult dialogResult = changeBonusCard.ShowDialog();
+                            if (dialogResult == DialogResult.OK)
+                            {
+                                change_bonus_card = true;
+                            }
                         }
                         else
                         {
@@ -2292,7 +2297,10 @@ namespace Cash8
                                 Input_action_barcode input_Action_Barcode = new Input_action_barcode();
                                 input_Action_Barcode.call_type = 6;
                                 input_Action_Barcode.caller = this;
-                                input_Action_Barcode.ShowDialog();
+                                if (DialogResult.Cancel == input_Action_Barcode.ShowDialog())
+                                {
+                                    error = true;
+                                }
                                 if (this.qr_code != "")//Был введен qr код необходимо его внести в чек
                                 {
                                     //Проверим введенный код маркировки на правильность
@@ -3670,7 +3678,7 @@ namespace Cash8
                 command.Parameters.AddWithValue("date_time_start", date_time_start.Text.Replace("Чек", ""));
                 command.Parameters.AddWithValue("client", client.Tag);
                 command.Parameters.AddWithValue("cash_desk_number", num_cash.Tag.ToString());
-                command.Parameters.AddWithValue("comment", comment.Text.Trim());
+                command.Parameters.AddWithValue("comment", comment.Text.Trim().Replace("'",""));
                 command.Parameters.AddWithValue("cash", sum_doc.Replace(",", "."));
                 command.Parameters.AddWithValue("remainder", remainder.Replace(",", "."));
                 command.Parameters.AddWithValue("date_time_write", date_time_write);
@@ -7358,9 +7366,9 @@ namespace Cash8
             }
             buyNewRequest.cardNum = client.Tag.ToString().Trim();// client.Tag.ToString();            
 
-            if (Convert.ToInt32(charge) > 0)
+            if (Convert.ToDecimal(charge) > 0)
             {
-                buyNewRequest.charge = (Convert.ToInt32(charge) * 100).ToString();
+                buyNewRequest.charge = (Convert.ToDecimal(charge) * 100).ToString();
             }
 
             sentDataOnBonusEva.fill_items(buyNewRequest, numdoc.ToString(), client.Tag.ToString());
@@ -11396,16 +11404,27 @@ namespace Cash8
             if (MainStaticClass.PassPromo != "")//Пароль не пустой бонусная магазин включен в бнусную систему
             {
                 if (check_type.SelectedIndex == 0) // Это продажа
-                {
+                {                    
                     if (MainStaticClass.GetWorkSchema == 2)
                     {
-                        //Проверяем есть ли в чеке бонусная карта на продажу.
-                        bool first = (card_state == 1);//В чек считана бонусная карта клиента со статусом 1 т.е. не активирована                       
-                        bool second = check_availability_card_sale();
+                        if (client_plastic_scaned)
+                        {
+                            pay_form.pay_bonus.Enabled = true;
+                        }
+                        //if (!change_bonus_card)//Если это не замена карты то проверить 
+                        //{
+                            //Проверяем есть ли в чеке бонусная карта на продажу.
+                            bool first = (card_state == 1);//В чек считана бонусная карта клиента со статусом 1 т.е. не активирована                       
+                            bool second = check_availability_card_sale();
                         if (first != second)
                         {
                             if (client.Tag.ToString() != code_bonus_card)
                             {
+                                if (change_bonus_card)//Это замена карты дальше не проверяем
+                                {
+                                    return;
+                                }
+
                                 if (first)
                                 {
                                     MessageBox.Show("В шапке чека существует бонусная карта клиента со статусом 1 т.е. не активирована, а в строках нет данной бонусной карты,необходимо ее добавить в строки");
@@ -11419,7 +11438,8 @@ namespace Cash8
                                     return;
                                 }
                             }
-                        }                       
+                        }
+                        //}
                     }
                     //if (client.Tag == null)// Если нет карты клиента, то предложить выдать карточку 
                     //{

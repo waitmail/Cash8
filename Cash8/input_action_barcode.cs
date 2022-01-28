@@ -50,14 +50,14 @@ namespace Cash8
 
         protected override void OnKeyDown(KeyEventArgs e)
         {
-            if (call_type != 6)
+            //if (call_type != 6)
+            //{
+            if (e.KeyCode == Keys.Escape)
             {
-                if (e.KeyCode == Keys.Escape)
-                {
-                    this.DialogResult = DialogResult.Cancel;
-                    this.Close();
-                }
+                this.DialogResult = DialogResult.Cancel;
+                this.Close();
             }
+            //}
         }
 
         //private void input_barcode_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)

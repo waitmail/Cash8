@@ -207,12 +207,16 @@ namespace Cash8
 
         private void btn_create_bonus_card_or_add_phone_Click(object sender, EventArgs e)
         {
+            if (txtB_pin_code.Text.Trim() == "")
+            {
+                MessageBox.Show("В поле >>Пин код карты<<  необходимо ввести пин код выдаваемой карты");
+            }
             if (code_answer == txtB_check_code.Text.Trim())
             {
                 //блокировка старой найденной карты 
                 if (card_block() == 1)
                 {
-                    //присвение новой карты покупателю
+                    //присвоение новой карты покупателю
                     BuyerInfoResponce buyerInfoResponce = get_buyerInfo_client_code_or_phone(0, txtB_num_card.Text);
                     if (buyerInfoResponce.cards.card[0].state == "1")
                     {

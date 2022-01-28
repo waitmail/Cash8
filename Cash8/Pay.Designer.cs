@@ -278,6 +278,7 @@
             this.bonus_total_in_centr.Size = new System.Drawing.Size(320, 55);
             this.bonus_total_in_centr.TabIndex = 8;
             this.bonus_total_in_centr.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.bonus_total_in_centr.Visible = false;
             // 
             // label5
             // 
@@ -291,6 +292,7 @@
             this.label5.TabIndex = 7;
             this.label5.Text = "Бонусов всего";
             this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.label5.Visible = false;
             // 
             // bonus_on_document
             // 
@@ -349,6 +351,7 @@
             this.pay_bonus_many.Size = new System.Drawing.Size(135, 49);
             this.pay_bonus_many.TabIndex = 13;
             this.pay_bonus_many.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.pay_bonus_many.Visible = false;
             // 
             // pay_bonus
             // 
@@ -362,6 +365,7 @@
             this.pay_bonus.Size = new System.Drawing.Size(178, 56);
             this.pay_bonus.TabIndex = 12;
             this.pay_bonus.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.pay_bonus.Visible = false;
             // 
             // label6
             // 
@@ -375,6 +379,7 @@
             this.label6.TabIndex = 11;
             this.label6.Text = "БОНУСЫ";
             this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.label6.Visible = false;
             // 
             // Pay
             // 

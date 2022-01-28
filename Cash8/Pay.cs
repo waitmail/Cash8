@@ -616,7 +616,7 @@ namespace Cash8
                 else
                 {
                     //Здесь еще должна быть проверка на оплату бонусами если клиент обозначен по номеру телефона
-                    if (Convert.ToInt32(pay_bonus_many.Text) > 0)
+                    if (Convert.ToDecimal(pay_bonus_many.Text) > 0)
                     {
                         if (cc.client.Tag.ToString().Length == 11)
                         {
@@ -801,7 +801,17 @@ namespace Cash8
             this.Size = new System.Drawing.Size(SystemInformation.PrimaryMonitorSize.Width, SystemInformation.PrimaryMonitorSize.Height);           
             this.pay_bonus_many.Text = "0";
             this.pay_bonus.Text = "0";
-            calculate();           
+            calculate();
+            if (MainStaticClass.GetWorkSchema == 2)
+            {
+                label4.Visible = true;
+                bonus_on_document.Visible = true;
+                label5.Visible = true;
+                bonus_total_in_centr.Visible = true;
+                label6.Visible = true;
+                pay_bonus.Visible = true;
+                pay_bonus_many.Visible = true;
+            }
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -1240,7 +1250,7 @@ namespace Cash8
                 }
             }
 
-            if (Convert.ToInt32(pay_bonus_many.Text) != 0)//При оплате бонусами бонусы не начисляются
+            if (Convert.ToDecimal(pay_bonus_many.Text) != 0)//При оплате бонусами бонусы не начисляются
             {
                 bonus_on_document.Text = "0";
             }
