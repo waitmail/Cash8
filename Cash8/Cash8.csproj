@@ -129,6 +129,7 @@
     <Compile Include="CreateVirtualCard.Designer.cs">
       <DependentUpon>CreateVirtualCard.cs</DependentUpon>
     </Compile>
+    <Compile Include="CrmCabinetInfo.cs" />
     <Compile Include="CryptorEngine.cs" />
     <Compile Include="Discount_types.cs">
       <SubType>Form</SubType>

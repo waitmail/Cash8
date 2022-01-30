@@ -89,7 +89,7 @@
             this.label2.AutoSize = true;
             this.label2.BackColor = System.Drawing.SystemColors.Control;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label2.Location = new System.Drawing.Point(72, 418);
+            this.label2.Location = new System.Drawing.Point(72, 431);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(302, 55);
             this.label2.TabIndex = 3;
@@ -101,7 +101,7 @@
             this.label3.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label3.BackColor = System.Drawing.SystemColors.Control;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label3.Location = new System.Drawing.Point(72, 473);
+            this.label3.Location = new System.Drawing.Point(72, 501);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(343, 55);
             this.label3.TabIndex = 5;
@@ -114,7 +114,7 @@
             this.remainder.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.remainder.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.remainder.Font = new System.Drawing.Font("Microsoft Sans Serif", 39.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.remainder.Location = new System.Drawing.Point(496, 473);
+            this.remainder.Location = new System.Drawing.Point(496, 501);
             this.remainder.MaxLength = 10;
             this.remainder.Multiline = true;
             this.remainder.Name = "remainder";
@@ -316,7 +316,7 @@
             this.cash_sum.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.cash_sum.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.cash_sum.Font = new System.Drawing.Font("Microsoft Sans Serif", 32.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.cash_sum.Location = new System.Drawing.Point(495, 418);
+            this.cash_sum.Location = new System.Drawing.Point(495, 431);
             this.cash_sum.MaxLength = 10;
             this.cash_sum.Name = "cash_sum";
             this.cash_sum.Size = new System.Drawing.Size(319, 56);
@@ -359,10 +359,10 @@
             this.pay_bonus.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.pay_bonus.Enabled = false;
             this.pay_bonus.Font = new System.Drawing.Font("Microsoft Sans Serif", 32.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.pay_bonus.Location = new System.Drawing.Point(495, 243);
+            this.pay_bonus.Location = new System.Drawing.Point(493, 241);
             this.pay_bonus.MaxLength = 10;
             this.pay_bonus.Name = "pay_bonus";
-            this.pay_bonus.Size = new System.Drawing.Size(178, 56);
+            this.pay_bonus.Size = new System.Drawing.Size(180, 56);
             this.pay_bonus.TabIndex = 12;
             this.pay_bonus.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.pay_bonus.Visible = false;

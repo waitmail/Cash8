@@ -134,7 +134,7 @@
             // 
             // client_barcode
             // 
-            this.client_barcode.BackColor = System.Drawing.Color.White;
+            this.client_barcode.BackColor = System.Drawing.SystemColors.Window;
             this.client_barcode.Location = new System.Drawing.Point(426, 41);
             this.client_barcode.MaxLength = 13;
             this.client_barcode.Name = "client_barcode";
@@ -145,7 +145,7 @@
             // inputbarcode
             // 
             this.inputbarcode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.inputbarcode.BackColor = System.Drawing.Color.White;
+            this.inputbarcode.BackColor = System.Drawing.SystemColors.Window;
             this.inputbarcode.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.inputbarcode.ForeColor = System.Drawing.Color.Green;
             this.inputbarcode.Location = new System.Drawing.Point(886, 144);
@@ -232,7 +232,7 @@
             // 
             this.last_tovar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.last_tovar.BackColor = System.Drawing.Color.White;
+            this.last_tovar.BackColor = System.Drawing.SystemColors.Window;
             this.last_tovar.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.last_tovar.ForeColor = System.Drawing.SystemColors.HotTrack;
             this.last_tovar.Location = new System.Drawing.Point(9, 68);

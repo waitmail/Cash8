@@ -1009,6 +1009,7 @@ namespace Cash8
             queries.Add("ALTER TABLE action_table ALTER COLUMN code_tovar TYPE bigint");
             queries.Add("ALTER TABLE action_header ALTER COLUMN code_tovar TYPE bigint");
             queries.Add("ALTER TABLE public.constants ADD COLUMN version_fn smallint; UPDATE public.constants SET version_fn=1");
+            queries.Add("ALTER TABLE public.checks_header ADD COLUMN requisite smallint;");
 
             foreach (string str in queries)
             {

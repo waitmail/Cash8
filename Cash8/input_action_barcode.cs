@@ -320,7 +320,7 @@ namespace Cash8
                 }
 
                 caller.qr_code = this.input_barcode.Text;
-                //this.DialogResult = DialogResult.OK;
+                this.DialogResult = DialogResult.OK;
                 this.Close();
             }
 

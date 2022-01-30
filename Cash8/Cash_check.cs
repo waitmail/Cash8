@@ -59,7 +59,7 @@ namespace Cash8
         private int action_num_doc = 0;
         public string cashier = "";
         public int added_bonus_when_replacing_card = 0;
-        public decimal  bonuses_it_is_written_off = 0;
+        public decimal bonuses_it_is_written_off = 0;
         public int bonus_total_centr = 0;
         public int return_bonus = 0;
         public int client_barcode_scanned = 0;
@@ -83,7 +83,7 @@ namespace Cash8
         System.Windows.Forms.Timer timer = null;
 
         public class CustomerScreen
-        {           
+        {
             public List<CheckPosition> ListCheckPositions { get; set; }
             public int show_price { get; set; }
         }
@@ -150,25 +150,25 @@ namespace Cash8
         public Cash_check()
         {
             InitializeComponent();
-            
+
             //this.listView1.Font = new System.Drawing.Font("Microsoft Sans Serif", MainStaticClass.Font_list_view(), System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.KeyPreview = true;
             this.return_quantity.KeyPress += new KeyPressEventHandler(return_quantity_KeyPress);
             this.return_rouble.KeyPress += new KeyPressEventHandler(return_rouble_KeyPress);
             this.return_kop.KeyPress += new KeyPressEventHandler(return_kop_KeyPress);
-            this.listView1.KeyPress +=new KeyPressEventHandler(listView1_KeyPress);
+            this.listView1.KeyPress += new KeyPressEventHandler(listView1_KeyPress);
             this.listView1.KeyDown += ListView1_KeyDown;
             this.txtB_client_phone.KeyPress += new KeyPressEventHandler(txtB_client_phone_KeyPress);
             if (MainStaticClass.Code_right_of_user == 1)
             {
-                this.checkBox_to_print_repeatedly.Visible = true; 
+                this.checkBox_to_print_repeatedly.Visible = true;
             }
             this.checkBox_to_print_repeatedly.CheckStateChanged += new EventHandler(checkBox_to_print_repeatedly_CheckStateChanged);
             txtB_inn.KeyPress += new KeyPressEventHandler(TxtB_inn_KeyPress);
             comment.KeyPress += new KeyPressEventHandler(Comment_KeyPress);
         }
 
-        private void insert_incident_record(string tovar,string quantity, string type_of_operation)
+        private void insert_incident_record(string tovar, string quantity, string type_of_operation)
         {
             NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
             try
@@ -179,14 +179,14 @@ namespace Cash8
                     "num_cash," +
                     "date_time_start," +
                     "date_time_action," +
-                    "tovar,"+
+                    "tovar," +
                     "quantity," +
                     "type_of_operation)	VALUES(" +
                     numdoc.ToString() + "," +
                     num_cash.Tag.ToString() + ",'" +
                      date_time_start.Text.Replace("Чек", "").Trim() + "','" +
                     DateTime.Now.ToString("yyy-MM-dd HH:mm:ss") + "'," +
-                    tovar.ToString()+","+
+                    tovar.ToString() + "," +
                     quantity.ToString() + "," +
                     type_of_operation + ");";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
@@ -225,9 +225,9 @@ namespace Cash8
                 return;
             }
 
-            if ((e.KeyData == Keys.Delete)&&(check_type.SelectedIndex==0))
-            {                
-                if((listView1.Items.Count > 1)&&(listView1.SelectedItems.Count>0))
+            if ((e.KeyData == Keys.Delete) && (check_type.SelectedIndex == 0))
+            {
+                if ((listView1.Items.Count > 1) && (listView1.SelectedItems.Count > 0))
                 {
                     //MessageBox.Show("0 - " + Convert.ToInt16(listView1.SelectedItems[0].SubItems[0].Text.Trim()).ToString());
                     //MessageBox.Show("3 - " + Convert.ToInt16(listView1.SelectedItems[0].SubItems[3].Text.Trim()).ToString());
@@ -267,7 +267,7 @@ namespace Cash8
                     }
                 }
                 else if (listView1.Items.Count == 1)
-                {                           
+                {
                     MessageBox.Show("Единственную строку удалить нельзя, можно только удалить документ целиком");
                 }
             }
@@ -301,7 +301,7 @@ namespace Cash8
             }
 
         }
-        
+
         /// <summary>
         /// По штрихкоду карты возвращает ее статус
         /// </summary>
@@ -359,6 +359,13 @@ namespace Cash8
                 {
                     if (buyerInfoResponce.cards.card.Count > 0)
                     {
+                        //здесь можно проверить на супермаму
+                        CrmCabinetInfo crmCabinetInfo = get_crm_cabinet_info(buyerInfoResponce.buyer.uid);
+                        if (crmCabinetInfo.buyer.subscriptions.Count > 0)
+                        {
+                            checkBox_club.Checked = true;
+                        }
+
                         spendAllowed = buyerInfoResponce.buyer.spendAllowed;
                         if (buyerInfoResponce.balance.activeBalance != "0")
                         {
@@ -366,11 +373,11 @@ namespace Cash8
                             {
                                 if (MainStaticClass.GetWorkSchema == 1)
                                 {
-                                    pay_form.bonus_total_in_centr.Text = (((int)Convert.ToDecimal(buyerInfoResponce.balance.activeBalance) / 100) * 100).ToString();                                    
-                                    pay_form.pay_bonus.Enabled = true;                                    
+                                    pay_form.bonus_total_in_centr.Text = (((int)Convert.ToDecimal(buyerInfoResponce.balance.activeBalance) / 100) * 100).ToString();
+                                    pay_form.pay_bonus.Enabled = true;
                                 }
                                 else if (MainStaticClass.GetWorkSchema == 2)
-                                {                                    
+                                {
                                     pay_form.bonus_total_in_centr.Text = buyerInfoResponce.balance.activeBalance;
                                     //надо проверить нет ли другой карты в товарной части чека если карта виртуальная
                                     if (buyerInfoResponce.cards.card[0].cardNum.Substring(0, 1) == "5")
@@ -383,14 +390,14 @@ namespace Cash8
                                             return;
                                         }
                                     }
-                                }                                
+                                }
                                 bonus_total_centr = Convert.ToInt32(pay_form.bonus_total_in_centr.Text);
                             }
                             else if (buyerInfoResponce.cards.card[0].state == "4")
                             {
                                 MessageBox.Show("Эта бонусная карта заблокирована");
                                 return;
-                            }                            
+                            }
                         }
                         if (buyerInfoResponce.buyer != null)
                         {
@@ -411,7 +418,7 @@ namespace Cash8
                         txtB_client_phone.Text = "";
                         client_barcode.Enabled = false;
                         txtB_client_phone.Enabled = false;
-                    }                    
+                    }
                 }
                 else
                 {
@@ -437,7 +444,71 @@ namespace Cash8
 
         }
 
+        public class Buyer_UID
+        {
+            public string uid { get; set; }
+        }
 
+
+
+        /// <summary>
+        /// Проверить по UID принадленость к
+        /// клубу супермама
+        /// </summary>
+        /// <param name="uid"></param>
+        /// <returns></returns>
+        private CrmCabinetInfo get_crm_cabinet_info(string uid)
+        {
+            //bool result = false;
+            CrmCabinetInfo crmCabinetInfo = new CrmCabinetInfo();
+            Buyer_UID buyer_UID = new Buyer_UID();
+            buyer_UID.uid = uid;
+            string url = MainStaticClass.GetStartUrl + "/";
+            string json = JsonConvert.SerializeObject(buyer_UID, Newtonsoft.Json.Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            byte[] body = Encoding.UTF8.GetBytes(json);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            var authString = MainStaticClass.GetAuthStringProcessing;
+            request.Headers.Add("Authorization", "Basic " + authString);
+            request.Headers.Add("X-FXAPI-RQ-METHOD", "crm.cabinet.info");
+            request.Method = "POST";
+            request.ContentType = "application/json; charset=utf-8";
+            request.ContentLength = body.Length;
+
+            try
+            {
+                using (Stream stream = request.GetRequestStream())
+                {
+                    stream.Write(body, 0, body.Length);
+                    stream.Close();
+                }
+
+
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+                    byte[] buf = new byte[10000];
+                    int count = -1;
+                    String read = "";
+                    do
+                    {
+                        count = response.GetResponseStream().Read(buf, 0, buf.Length);
+                        read += Encoding.UTF8.GetString(buf, 0, count);
+                    } while (response.GetResponseStream().CanRead && count != 0);
+                    //string answer = read.Replace("{}", @"""""").ToString();
+                    //string answer = JsonConvert.DeserializeObject(read.Replace("{}", @"""""")).ToString();//read.Replace("{}","\"\"")
+                    crmCabinetInfo = JsonConvert.DeserializeObject<CrmCabinetInfo>(read.Replace("{}", @""""""), new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                }
+            }
+            catch (WebException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+            return crmCabinetInfo;
+        }
 
         private void create_virtual_card()
         {
@@ -451,11 +522,11 @@ namespace Cash8
                 client_barcode.Enabled = false;
             }
         }
-    
+
 
 
         private void find_client_on_num_phone(string phone_number)
-        {        
+        {
 
             NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
             try
@@ -603,11 +674,11 @@ namespace Cash8
                         client.Text = phone_number;
                         Discount = Convert.ToDecimal(0.05);
                         txtB_client_phone.Enabled = false;
-                    }                    
+                    }
                 }
                 else //Клиент уже существует
                 {
-                    find_client_on_num_phone(phone_number);                    
+                    find_client_on_num_phone(phone_number);
                 }
             }
             catch (NpgsqlException ex)
@@ -660,10 +731,10 @@ namespace Cash8
                 {
                     get_client_in_processing();
                 }
-            }            
+            }
         }
 
-        
+
         void return_kop_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsDigit(e.KeyChar) && (e.KeyChar != (char)Keys.Back))
@@ -688,7 +759,7 @@ namespace Cash8
             }
 
         }
-        
+
         private int get_its_deleted_document()
         {
             int result = 0;
@@ -734,16 +805,16 @@ namespace Cash8
             {
                 conn = MainStaticClass.NpgsqlConn();
                 conn.Open();
-                string query = "SELECT checks_header.client, checks_header.cash_desk_number, checks_header.comment, checks_header.cash, "+
+                string query = "SELECT checks_header.client, checks_header.cash_desk_number, checks_header.comment, checks_header.cash, " +
                                " checks_header.remainder,checks_header.date_time_start,checks_header.discount,clients.name AS clients_name ,users.name AS users_name  " +
                                ",tovar.name AS tovar_name ,checks_table.tovar_code, checks_table.quantity,checks_table.price, checks_table.price_at_a_discount,checks_table.sum, " +
-                               " checks_table.sum_at_a_discount,checks_table.action_num_doc,checks_table.action_num_doc1,checks_table.action_num_doc2,"+
+                               " checks_table.sum_at_a_discount,checks_table.action_num_doc,checks_table.action_num_doc1,checks_table.action_num_doc2," +
                                " checks_header.check_type " +
                                " ,characteristic.name AS characteristic_name,checks_header.document_number,checks_header.autor,characteristic.guid,clients.code AS clients_code ," +
                                //" checks_header.sertificate_money,checks_header.non_cash_money,checks_header.cash_money,checks_header.sales_assistant,checks_header.bonuses_it_is_counted, " +
                                " checks_header.sertificate_money,checks_header.non_cash_money,checks_header.cash_money,checks_header.bonuses_it_is_counted, " +
                                " checks_header.bonuses_it_is_written_off, " +
-                               " checks_table.bonus_standard,checks_table.bonus_promotion,checks_table.promotion_b_mover,checks_table.item_marker " +
+                               " checks_table.bonus_standard,checks_table.bonus_promotion,checks_table.promotion_b_mover,checks_table.item_marker,checks_header.requisite " +
                                " FROM checks_header left join checks_table ON checks_header.document_number=checks_table.document_number " +
                                " left join clients ON checks_header.client  = clients.code " +
                                " left join tovar ON checks_table.tovar_code = tovar.code " +
@@ -760,15 +831,15 @@ namespace Cash8
                         this.client.Tag = reader["client"].ToString();//Комментарий
                         this.comment.Text = reader["comment"].ToString();//Комментарий
                         this.p_sum_doc = Convert.ToDecimal(reader["cash"]).ToString();//Сумма документа                    
-                        this.p_remainder =Convert.ToDecimal(reader["remainder"]).ToString();//Сдача                        
+                        this.p_remainder = Convert.ToDecimal(reader["remainder"]).ToString();//Сдача                        
                         this.date_time_start.Text = Convert.ToDateTime(reader["date_time_start"]).ToString("yyy-MM-dd HH:mm:ss");//Время создания документа
                         this.p_sum_pay = reader["cash_money"].ToString();// (reader.GetDecimal(3) + reader.GetDecimal(4)).ToString();//Сумма наличных
                         this.p_discount = reader["discount"].ToString();// reader.GetDecimal(6).ToString();//Скидка по документу
-                        //if (!reader.IsDBNull(7))
-                        //{
-                            this.client.Text = reader["clients_name"].ToString();//.GetString(7);//Наименование клиента если была скидка
-                        //}
-                            this.user.Text = reader["users_name"].ToString();//.GetString(8);
+                                                                        //if (!reader.IsDBNull(7))
+                                                                        //{
+                        this.client.Text = reader["clients_name"].ToString();//.GetString(7);//Наименование клиента если была скидка
+                                                                             //}
+                        this.user.Text = reader["users_name"].ToString();//.GetString(8);
                         this.pay.Text = "Напечатать F8";
                         header_fill = true;
                         //if (reader.GetBoolean(19))
@@ -787,7 +858,11 @@ namespace Cash8
                         //this.bonus_on_document = Convert.ToDecimal(reader["bonuses_it_is_counted"]);                       
                         this.bonuses_it_is_written_off = Convert.ToDecimal(reader["bonuses_it_is_written_off"]);
                         this.txtB_bonus_money.Text = this.bonuses_it_is_written_off.ToString();
-                        
+                        if (reader["requisite"].ToString() == "1")
+                        {
+                            this.checkBox_club.Checked = true;
+                        }
+
                         //if (reader.GetBoolean(21))
                         //{
                         //    this.choice_of_currencies.CheckState = CheckState.Checked;
@@ -814,7 +889,7 @@ namespace Cash8
                         lvi.SubItems.Add(((int)(Convert.ToDecimal(reader["bonus_standard"]))).ToString());//bonus_standard                        
                         lvi.SubItems.Add(((int)(Convert.ToDecimal(reader["bonus_promotion"]))).ToString());//bonus_standard
                         lvi.SubItems.Add(reader["promotion_b_mover"].ToString());//promotion_b_mover
-                        lvi.SubItems.Add(reader["item_marker"].ToString().Replace("vasya2021","'"));//item_marker
+                        lvi.SubItems.Add(reader["item_marker"].ToString().Replace("vasya2021", "'"));//item_marker
 
                         listView1.Items.Add(lvi);
                     }
@@ -1013,8 +1088,8 @@ namespace Cash8
                         }
                         MainStaticClass.write_event_in_log("Закрытие пустого документа", "Документ чек", numdoc.ToString());
                         this.Close();
-                    }                    
-                }                
+                    }
+                }
                 else if (e.KeyCode == Keys.Delete)
                 {
                     //
@@ -1067,9 +1142,9 @@ namespace Cash8
                         isw.Dispose();
 
                         if (enable_delete)
-                        {                            
+                        {
                             calculation_of_the_sum_of_the_document();
-                            write_new_document("0", calculation_of_the_sum_of_the_document().ToString().Replace(",", "."), "0","0",false,"0","0","0","1"); //Это удаляемый документ
+                            write_new_document("0", calculation_of_the_sum_of_the_document().ToString().Replace(",", "."), "0", "0", false, "0", "0", "0", "1"); //Это удаляемый документ
                             closing = false;
                             this.Close();
                             return;
@@ -1081,8 +1156,8 @@ namespace Cash8
                         {
                             MessageBox.Show("Нет строк");
                             return;
-                        }                        
-                        write_new_document("0", calculation_of_the_sum_of_the_document().ToString().Replace(",","."), "0", "0", false, "0", "0", "0", "1"); //Это удаляемый документ
+                        }
+                        write_new_document("0", calculation_of_the_sum_of_the_document().ToString().Replace(",", "."), "0", "0", false, "0", "0", "0", "1"); //Это удаляемый документ
                         closing = false;
                         this.Close();
                         return;
@@ -1109,7 +1184,7 @@ namespace Cash8
                     //    client.BackColor = Color.White;
                     //}
                 }
-            }           
+            }
             else
             {
                 if (e.KeyCode == Keys.Escape)
@@ -1120,7 +1195,7 @@ namespace Cash8
                 }
 
             }
-            
+
             if (e.KeyCode == Keys.F8)
             {
 
@@ -1164,7 +1239,7 @@ namespace Cash8
                     }
                     //if (check_type.SelectedIndex == 0)
                     //{
-                        show_pay_form();
+                    show_pay_form();
                     //}
                     //else
                     //{
@@ -1254,7 +1329,7 @@ namespace Cash8
                 {
                     result = true;
                 }
-                conn.Close();                
+                conn.Close();
             }
             catch (NpgsqlException ex)
             {
@@ -1274,7 +1349,7 @@ namespace Cash8
 
             return result;
         }
-               
+
 
         private Int64 get_new_number_document()
         {
@@ -1287,7 +1362,7 @@ namespace Cash8
             command.CommandText = "SELECT nextval('checks_header_document_number_seq'::regclass);";
             Int64 result = Convert.ToInt64(command.ExecuteScalar());
             conn.Close();
-            MainStaticClass.write_event_in_log(" Получение номера для нового документа ", "Документ чек", (result+1).ToString());          
+            MainStaticClass.write_event_in_log(" Получение номера для нового документа ", "Документ чек", (result + 1).ToString());
             return result++;
 
         }
@@ -1335,7 +1410,7 @@ namespace Cash8
 
             return result;
         }
-             
+
 
         public void calculate_on_string(ListViewItem lvi)
         {
@@ -1358,7 +1433,7 @@ namespace Cash8
                 else
                 {
                     lvi.SubItems[5].Text = (Math.Round(Convert.ToDecimal(lvi.SubItems[4].Text), 2)).ToString();//Цена со скидкой для сертификата будет равна его цене, т.е. номиналу            
-                }            
+                }
 
                 lvi.SubItems[6].Text = ((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString());
                 lvi.SubItems[7].Text = ((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)).ToString());
@@ -1370,7 +1445,7 @@ namespace Cash8
                     lvi.SubItems[6].Text = ((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString());
                     lvi.SubItems[7].Text = ((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)).ToString());
                 }
-            }            
+            }
         }
 
         public void calculate_on_string_row(DataRow row)
@@ -1381,28 +1456,28 @@ namespace Cash8
             {
                 //Проверка на сертификат               
                 if (its_certificate(row["code"].ToString()) != "1")
-                {                    
+                {
                     row["price_at_discount"] = Math.Round(Convert.ToDecimal(row["price"]) - Convert.ToDecimal(row["price"]) * Discount, 2);//Цена со скидкой            
                 }
                 else
-                {                
+                {
                     row["price_at_discount"] = Math.Round(Convert.ToDecimal(row["price"]), 2);
-                }                
-                row["sum_full"] = Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price"]);                
+                }
+                row["sum_full"] = Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price"]);
                 row["sum_at_discount"] = Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price_at_discount"]);
             }
             if (row["action"].ToString().Trim() != "0")//Это подарок и необходимо проверить цена 0.01 или нет
             {
                 if (Convert.ToDouble(row["price"]) == 0.01)
-                {                    
-                    row["sum_full"] = Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price"]);                    
+                {
+                    row["sum_full"] = Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price"]);
                     row["sum_at_discount"] = Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price_at_discount"]);
                 }
-            }           
+            }
         }
 
         private void inputbarcode_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
-        {           
+        {
             this.inputbarcode.Text = this.inputbarcode.Text.Replace("\r\n", "");
             if (e.KeyChar == 13)
             {
@@ -1414,7 +1489,7 @@ namespace Cash8
                     t_n_f.Dispose();
                     return;
                 }
-                find_barcode_or_code_in_tovar(this.inputbarcode.Text);                
+                find_barcode_or_code_in_tovar(this.inputbarcode.Text);
                 if (listView1.Items.Count > 0)
                 {
                     btn_inpute_phone_client.Enabled = false;
@@ -1476,11 +1551,11 @@ namespace Cash8
         //}
 
         public decimal calculation_of_the_sum_of_the_document()
-        {          
+        {
             decimal total = 0;
             foreach (ListViewItem lvi in listView1.Items)
-            {         
-                total += Convert.ToDecimal(lvi.SubItems[7].Text);           
+            {
+                total += Convert.ToDecimal(lvi.SubItems[7].Text);
             }
 
             return total;
@@ -1493,7 +1568,7 @@ namespace Cash8
         /// </summary>
         /// <param name="sum"></param>
         public void distribute(decimal sum, decimal total)
-        {            
+        {
 
             if (sum == 0)
             {
@@ -1608,8 +1683,8 @@ namespace Cash8
                             lvi2.SubItems.Add(lvi.SubItems[10].Text);
                             //*****************************************************************************
                             lvi2.SubItems.Add("0");
-                            lvi2.SubItems.Add("0"); 
-                            lvi2.SubItems.Add("0"); 
+                            lvi2.SubItems.Add("0");
+                            lvi2.SubItems.Add("0");
                             lvi2.SubItems.Add("0");
                             //*****************************************************************************
                             listView1.Items.Add(lvi2);
@@ -1806,7 +1881,7 @@ namespace Cash8
             {
 
                 conn.Open();
-                string query = "SELECT action_header.tip, action_header.gift_price, action_header.marker  FROM action_header where action_header.num_doc=" + num_doc.ToString() ;
+                string query = "SELECT action_header.tip, action_header.gift_price, action_header.marker  FROM action_header where action_header.num_doc=" + num_doc.ToString();
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
@@ -1815,7 +1890,7 @@ namespace Cash8
                     {
                         //if (Convert.ToInt16(reader["marker"]) == 1)//запрашивать подарок
                         //{
-                            result = reader["gift_price"].ToString();//получить розничную цену подарка
+                        result = reader["gift_price"].ToString();//получить розничную цену подарка
                         //}
                     }
                 }
@@ -1905,7 +1980,7 @@ namespace Cash8
                         //lvi.SubItems.Add(retail_price);//Цена
                         if (reader.GetDecimal(2) == 0)
                         {
-                            MessageBox.Show(" У товара с кодом "+ barcode+" не заполнена цена, ОБРАТИТЕСЬ К АНАЛИТИКАМ !!! ");
+                            MessageBox.Show(" У товара с кодом " + barcode + " не заполнена цена, ОБРАТИТЕСЬ К АНАЛИТИКАМ !!! ");
                             //MainStaticClass.write_event_in_log(" У товара с кодом " + barcode + " не заполнена цена,номер документа " + numdoc.ToString(), " Документ чек ", numdoc.ToString());
                             return;
                         }
@@ -1924,8 +1999,8 @@ namespace Cash8
                     //}
                     //else
                     //{
-                        lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString());//Сумма
-                        lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)).ToString()); //Сумма со скидкой                        
+                    lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString());//Сумма
+                    lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)).ToString()); //Сумма со скидкой                        
                     //}
                     lvi.SubItems.Add("0");
                     lvi.SubItems.Add(num_doc.ToString());
@@ -1935,7 +2010,7 @@ namespace Cash8
                     lvi.SubItems.Add("0");
                     lvi.SubItems.Add("0");
                     listView1.Items.Add(lvi);
-                    SendDataToCustomerScreen(1,0);
+                    SendDataToCustomerScreen(1, 0);
                     there_are_goods = true;
                     this.listView1.Select();
                     this.listView1.Items[this.listView1.Items.Count - 1].Selected = true;
@@ -1985,7 +2060,7 @@ namespace Cash8
                 try
                 {
                     conn.Open();
-                    string query = "SELECT tovar_code FROM barcode where barcode='"+barcode+"'";
+                    string query = "SELECT tovar_code FROM barcode where barcode='" + barcode + "'";
                     NpgsqlCommand command = new NpgsqlCommand(query, conn);
                     object result_query = command.ExecuteScalar();
                     if (result_query != null)
@@ -2002,12 +2077,12 @@ namespace Cash8
                 {
                     if (conn.State == ConnectionState.Open)
                     {
-                        conn.Close(); 
+                        conn.Close();
                     }
                 }
             }
 
-            return result; 
+            return result;
         }
 
 
@@ -2049,7 +2124,7 @@ namespace Cash8
                 return;
             }
 
-            MainStaticClass.write_event_in_log("Попытка добавить новый товар в чек", "Документ чек", numdoc.ToString());            
+            MainStaticClass.write_event_in_log("Попытка добавить новый товар в чек", "Документ чек", numdoc.ToString());
 
             NpgsqlConnection conn = null;
 
@@ -2096,7 +2171,7 @@ namespace Cash8
 
                 int its_certificate = 0;
                 int its_marked = 0;
-                 NpgsqlDataReader reader = command.ExecuteReader();
+                NpgsqlDataReader reader = command.ExecuteReader();
                 listView2.Items.Clear();
                 bool find_sertificate = false;
                 bool its_bonus_card = false;
@@ -2143,7 +2218,7 @@ namespace Cash8
                     }
                     //КОНЕЦ Надо проверить может уже сертификат есть в чеке
                 }
-                
+
                 if (find_sertificate)
                 {
                     MessageBox.Show("Этот сертификат уже добавлен в чек");
@@ -2229,9 +2304,9 @@ namespace Cash8
                             MessageBox.Show("Эта карта имеет неверный статус в процессиноговом центре и продана быть не может ");
                             return;
                         }
-                    }                    
+                    }
                 }
-                
+
 
                 //this.panel2.Visible = true;
                 //this.listView2.Visible = true;
@@ -2243,9 +2318,9 @@ namespace Cash8
                 if (listView2.Items.Count == 1)//1 товар найден
                 {
                     ListViewItem lvi = null;
-                    if ((its_marked == 0)&&(MainStaticClass.GetWorkSchema==1))
+                    if ((its_marked == 0) && (MainStaticClass.GetWorkSchema == 1))
                     {
-                           lvi = exist_tovar_in_listView(listView1, Convert.ToInt32(select_tovar.Tag), listView2.Items[0].Tag);
+                        lvi = exist_tovar_in_listView(listView1, Convert.ToInt32(select_tovar.Tag), listView2.Items[0].Tag);
                     }
                     if (lvi == null)
                     {
@@ -2266,7 +2341,7 @@ namespace Cash8
 
                         lvi.SubItems.Add("1");
                         lvi.SubItems.Add(listView2.Items[0].SubItems[1].Text);//Цена 
-                         //Проверка на сертификат               
+                                                                              //Проверка на сертификат               
                         if (this.its_certificate(select_tovar.Tag.ToString()) != "1")
                         {
                             lvi.SubItems.Add(Math.Round(Convert.ToDecimal(lvi.SubItems[4].Text) - Convert.ToDecimal(lvi.SubItems[4].Text) * Discount, 2).ToString());//Цена со скидкой
@@ -2310,10 +2385,10 @@ namespace Cash8
                                         foreach (ListViewItem item in listView1.Items)
                                         {
                                             if (item.SubItems[14].Text == this.qr_code)
-                                            {                                                
+                                            {
                                                 MessageBox.Show("Номенклатура с введенным кодом маркировки который вы пытались добавить уже существует в чеке. \r\n Номенклатура не будет добавлена.");
                                                 //Не добавляем позицию в чек
-                                                error = true;                                                
+                                                error = true;
                                                 break;
                                             }
                                         }
@@ -2322,7 +2397,7 @@ namespace Cash8
                                     else
                                     {
                                         MessageBox.Show("Введен невернй код маркировки, попробуйте еще раз.Номенклатура не будет добавлена.");
-                                        error = true;                                        
+                                        error = true;
                                         //Не добавляем позицию в чек
                                     }
                                     this.qr_code = "";//обнулим переменную
@@ -2340,7 +2415,11 @@ namespace Cash8
                         {
                             listView1.Items.Add(lvi);
                         }
-                        SendDataToCustomerScreen(1,0);
+                        else
+                        {
+                            return;
+                        }
+                        SendDataToCustomerScreen(1, 0);
                         if (MainStaticClass.GetWorkSchema == 1)
                         {
                             listView1.Select();
@@ -2376,13 +2455,13 @@ namespace Cash8
                     //this.last_cena.Text = listView1.Items[this.listView1.Items.Count - 1].SubItems[3].Text;
                 }
                 else if (listView2.Items.Count > 1)//Найденных товаров больше одного необходимо показать список выбра пользователю
-                {                    
+                {
                     this.panel2.Visible = true;
                     this.panel2.BringToFront();
                     this.listView2.Visible = true;
                     listView2.Select();
                     listView2.Items[0].Selected = true;
-                    listView2.Items[0].Focused = true;                    
+                    listView2.Items[0].Focused = true;
                 }
                 else if (listView2.Items.Count == 0)
                 {
@@ -2411,7 +2490,7 @@ namespace Cash8
                 }
             }
 
-            write_new_document("0", "0", "0", "0", false,"0","0","0","0");
+            write_new_document("0", "0", "0", "0", false, "0", "0", "0", "0");
 
         }
         //5010182990247
@@ -2425,7 +2504,7 @@ namespace Cash8
             try
             {
                 conn.Open();
-                string query = "SELECT its_marked FROM tovar where code="+code_tovar;
+                string query = "SELECT its_marked FROM tovar where code=" + code_tovar;
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 result = Convert.ToInt32(command.ExecuteScalar());
                 conn.Close();
@@ -2490,7 +2569,7 @@ namespace Cash8
                     lvi.SubItems.Add("0");//Номер акционного документа подарок
                     lvi.SubItems.Add("0"); //Номер акционного документа дополнительное поле пометка что участвовало в акции, но скидка может быть
                     listView1.Items.Add(lvi);
-                    SendDataToCustomerScreen(1,0);
+                    SendDataToCustomerScreen(1, 0);
                     this.listView1.Select();
                     this.listView1.Items[this.listView1.Items.Count - 1].Selected = true;
                     update_record_last_tovar(listView1.Items[this.listView1.Items.Count - 1].SubItems[1].Text, listView1.Items[this.listView1.Items.Count - 1].SubItems[4].Text);
@@ -2575,10 +2654,10 @@ namespace Cash8
             try
             {
                 conn.Open();
-                string query = "SELECT COUNT(*) FROM checks_header WHERE client='" + code_client + "' AND date_time_start BETWEEN '"+DateTime.Now.ToString("yyyy-MM-dd 00:00:00")+
+                string query = "SELECT COUNT(*) FROM checks_header WHERE client='" + code_client + "' AND date_time_start BETWEEN '" + DateTime.Now.ToString("yyyy-MM-dd 00:00:00") +
                     "' AND '" + DateTime.Now.AddDays(1).ToString("yyyy-MM-dd 00:00:00") + "' AND its_deleted=0";
-                NpgsqlCommand command = new NpgsqlCommand(query, conn);                
-                result = (Convert.ToInt32(command.ExecuteScalar())>=3 ? false : true);
+                NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                result = (Convert.ToInt32(command.ExecuteScalar()) >= 3 ? false : true);
                 conn.Close();
 
             }
@@ -2632,7 +2711,7 @@ namespace Cash8
                     " temp_phone_clients.phone AS temp_phone_clients_phone,attribute,clients.its_work,COALESCE(clients.bonus_is_on,0) AS bonus_is_on  FROM clients " +
                     " left join discount_types ON clients.discount_types_code= discount_types.code " +
                     " left join temp_phone_clients ON clients.code = temp_phone_clients.barcode " +
-                    " WHERE clients.code='" + barcode + "' OR right(clients.phone,10)='" + barcode+ "' AND clients.its_work = 1 ";
+                    " WHERE clients.code='" + barcode + "' OR right(clients.phone,10)='" + barcode + "' AND clients.its_work = 1 ";
 
                 NpgsqlDataReader reader = command.ExecuteReader();
 
@@ -2654,7 +2733,7 @@ namespace Cash8
                         Discount = reader.GetDecimal(0);
                     }
 
-                    
+
 
                     client_barcode.Enabled = false;//дисконтная карта определена, сделаем недоступным окно ввода кода  
                     txtB_client_phone.Enabled = false;//дисконтная карта определена, сделаем недоступным окно ввода телефона  
@@ -2747,7 +2826,7 @@ namespace Cash8
                     this.btn_inpute_phone_client.Enabled = false;
                 }
                 else
-                {                   
+                {
 
                     //cardTrack2 = barcode;
 
@@ -2896,7 +2975,7 @@ namespace Cash8
                 NpgsqlDataReader reader = command.ExecuteReader();
 
                 while (reader.Read())
-                {                    
+                {
                     Discount = reader.GetDecimal(0);
                     Discount = Discount / 100;
                 }
@@ -2920,7 +2999,7 @@ namespace Cash8
             }
 
 
- 
+
         }
 
         private void Cash_check_Load(object sender, System.EventArgs e)
@@ -2941,7 +3020,7 @@ namespace Cash8
                 this.label12.Visible = false;
                 this.txtB_email_telephone.Visible = false;
             }
-                        
+
             txtB_client_phone.Text = "";
             //btn_change_status_client.Visible = false;            
 
@@ -3068,7 +3147,7 @@ namespace Cash8
                 txtB_bonus_money.Visible = false;
 
                 inputbarcode.Focus();
-                
+
 
                 this.date_time_start.Text = "Чек   " + DateTime.Now.ToString("yyy-MM-dd HH:mm:ss");
                 this.Discount = 0;
@@ -3079,12 +3158,18 @@ namespace Cash8
                 this.check_type.SelectedIndex = 0;
                 this.check_type.Enabled = true;
                 set_sale_disburse_button();
-                
-
             }
             else
             {
-
+                //Документ не новый поэтоу запретим в нем ввод и изменение
+                last_tovar.Enabled = false;
+                txtB_email_telephone.Enabled = false;
+                txtB_inn.Enabled = false;
+                btn_get_name.Enabled = false;
+                txtB_client_phone.Enabled = false;
+                txtB_name.Enabled = false;
+                comment.Enabled = false;
+                checkBox_club.Enabled = false;
                 //Определяем это аварийный документ или нет
                 int status = get_its_deleted_document();
                 if ((status == 0) || (status == 1))
@@ -3101,32 +3186,32 @@ namespace Cash8
                     if (MainStaticClass.Code_right_of_user != 1)
                     {
                         this.pay.Enabled = false;
-                    }                   
+                    }
                 }
                 else if (status == 2)
                 {
                     itsnew = true;
-                    Discount = 0;                    
+                    Discount = 0;
                     this.label4.Enabled = true;
                     this.check_type.Enabled = true;
                     this.inputbarcode.Enabled = true;
-                    this.client_barcode.Enabled = false;                    
+                    this.client_barcode.Enabled = false;
                     to_open_the_written_down_document();
                     get_old_document_Discount();
-                    
-                    check_type.Enabled = false;
-                    
 
-                    
+                    check_type.Enabled = false;
+
+
+
                     itsnew = true;
                 }
             }
-            
+
             this.Top = 0;
             this.Left = 0;
             this.Size = new System.Drawing.Size(SystemInformation.PrimaryMonitorSize.Width, SystemInformation.PrimaryMonitorSize.Height);
             this.panel2.Left = 0;
-            this.listView2.Left = 20;            
+            this.listView2.Left = 20;
 
             this.panel2.Size = new System.Drawing.Size(SystemInformation.PrimaryMonitorSize.Width, SystemInformation.PrimaryMonitorSize.Height / 2);
             this.listView2.Size = new System.Drawing.Size(SystemInformation.PrimaryMonitorSize.Width - 50, SystemInformation.PrimaryMonitorSize.Height / 2 - 50);
@@ -3145,13 +3230,13 @@ namespace Cash8
                     if (this.itc_printed())
                     {
                         this.pay.Enabled = false;
-                        this.checkBox_to_print_repeatedly.Enabled = false;                       
+                        this.checkBox_to_print_repeatedly.Enabled = false;
                     }
                 }
             }
-                                           
+
         }
-        
+
         #region com_barcode_scaner
 
         private void first_start_com_barcode_scaner()
@@ -3245,7 +3330,7 @@ namespace Cash8
             try
             {
                 conn = MainStaticClass.NpgsqlConn();
-                conn.Open();                
+                conn.Open();
                 string query = "";
                 if (barcode.Trim().Length > 4)
                 {
@@ -3326,7 +3411,7 @@ namespace Cash8
                 {
                     MainStaticClass.Barcode = "";
                 }
-            }           
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -3393,9 +3478,9 @@ namespace Cash8
                     }
 
                 }
-            }          
+            }
         }
-       
+
 
         private void enter_quantity_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
         {
@@ -3436,7 +3521,7 @@ namespace Cash8
                         }
                     }
 
-                    insert_incident_record(listView1.SelectedItems[0].SubItems[0].Text, (Convert.ToInt32(listView1.SelectedItems[0].SubItems[3].Text)- Convert.ToInt32(this.enter_quantity.Text)).ToString(), "1");
+                    insert_incident_record(listView1.SelectedItems[0].SubItems[0].Text, (Convert.ToInt32(listView1.SelectedItems[0].SubItems[3].Text) - Convert.ToInt32(this.enter_quantity.Text)).ToString(), "1");
 
                     ////////////////////////////////////////////////////////////////
                     //if (!this.inventory.Checked)
@@ -3475,9 +3560,9 @@ namespace Cash8
                     //    MainStaticClass.send_data_trassir(s);
                     //    s = MainStaticClass.get_string_message_for_trassir("POSNG_POSITION_AMOUNT_INCREASE", numdoc.ToString(), MainStaticClass.Cash_Operator, DateTime.Now.Date.ToString("MM'/'dd'/'yyyy"), DateTime.Now.ToString("HH:mm:ss"), this.listView1.SelectedItems[0].Index.ToString(), this.enter_quantity.Text, "", "", "", MainStaticClass.CashDeskNumber.ToString(), "");
                     //    MainStaticClass.send_data_trassir(s);               
-                        
+
                     //}
- 
+
                 }
 
                 this.listView1.SelectedItems[0].SubItems[3].Text = Convert.ToInt16(this.enter_quantity.Text).ToString();
@@ -3491,7 +3576,7 @@ namespace Cash8
                 this.listView1.Select();
                 //this.listView1.SelectedIndices[0]
                 this.listView1.Items[this.listView1.SelectedIndices[0]].Selected = true;
-                write_new_document("0", "0", "0", "0", false,"0","0","0","0");
+                write_new_document("0", "0", "0", "0", false, "0", "0", "0", "0");
 
             }
 
@@ -3528,7 +3613,7 @@ namespace Cash8
             //    }
             //}
 
-            SendDataToCustomerScreen(1,0);
+            SendDataToCustomerScreen(1, 0);
         }
 
 
@@ -3540,7 +3625,7 @@ namespace Cash8
             try
             {
                 conn.Open();
-                string query = "SELECT COUNT(*) AS qty FROM sertificates where code_tovar = "+code;
+                string query = "SELECT COUNT(*) AS qty FROM sertificates where code_tovar = " + code;
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 if (Convert.ToInt32(command.ExecuteScalar()) > 0)
                 {
@@ -3552,7 +3637,7 @@ namespace Cash8
             }
             catch (NpgsqlException ex)
             {
-                MessageBox.Show("Ошибка при проверке на сертификат "+ex.Message);
+                MessageBox.Show("Ошибка при проверке на сертификат " + ex.Message);
             }
             catch (Exception ex)
             {
@@ -3568,7 +3653,7 @@ namespace Cash8
 
 
             return result;
-        }               
+        }
 
         /// <summary>
         /// процедура для записи обычного документа
@@ -3582,7 +3667,7 @@ namespace Cash8
         /// <param name="non_cash_money"></param>
         /// <param name="sertificate_money"></param>
         /// <returns></returns>
-        public bool write_new_document(string pay, string sum_doc, string remainder, string pay_bonus_many, bool last_rewrite, string cash_money, string non_cash_money, string sertificate_money,string its_deleted)
+        public bool write_new_document(string pay, string sum_doc, string remainder, string pay_bonus_many, bool last_rewrite, string cash_money, string non_cash_money, string sertificate_money, string its_deleted)
         {
             bonuses_it_is_written_off = Convert.ToDecimal(pay_bonus_many);
             bool result = false;
@@ -3600,7 +3685,7 @@ namespace Cash8
             {
                 conn = MainStaticClass.NpgsqlConn();
                 conn.Open();
-                tran = conn.BeginTransaction();                
+                tran = conn.BeginTransaction();
                 NpgsqlCommand command = new NpgsqlCommand("DELETE FROM checks_header WHERE document_number=@num_doc;", conn);
                 NpgsqlParameter npgsqlParameter = new NpgsqlParameter("num_doc", numdoc.ToString());
                 command.Parameters.Add(npgsqlParameter);
@@ -3629,10 +3714,10 @@ namespace Cash8
                                         "discount," +
                                         "autor," +
                                         "its_deleted," +
-                                        "action_num_doc," +                                        
+                                        "action_num_doc," +
                                         "check_type," +
-                                        "have_action," +                                        
-                                        "bonuses_it_is_written_off," +                                        
+                                        "have_action," +
+                                        "bonuses_it_is_written_off," +
                                         "is_sent," +
                                         "cash_money," +
                                         "non_cash_money," +
@@ -3643,8 +3728,9 @@ namespace Cash8
                                         "id_transaction_sale," +
                                         "clientInfo_vatin," +
                                         "clientInfo_name," +
-                                        "id_sale,"+
-                                        "sent_to_processing_center) VALUES(" +
+                                        "id_sale," +
+                                        "sent_to_processing_center,"+
+                                        "requisite) VALUES(" +
 
                                         "@document_number," +
                                         "@date_time_start," +
@@ -3657,10 +3743,10 @@ namespace Cash8
                                         "@discount," +
                                         "@autor," +
                                         "@its_deleted," +
-                                        "@action_num_doc," +                                        
+                                        "@action_num_doc," +
                                         "@check_type," +
-                                        "@have_action," +                                        
-                                        "@bonuses_it_is_written_off," +                                        
+                                        "@have_action," +
+                                        "@bonuses_it_is_written_off," +
                                         "@is_sent," +
                                         "@cash_money," +
                                         "@non_cash_money," +
@@ -3671,14 +3757,15 @@ namespace Cash8
                                         "@id_transaction_sale," +
                                         "@clientInfo_vatin," +
                                         "@clientInfo_name," +
-                                        "@id_sale,"+
-                                        "@sent_to_processing_center)", conn);
+                                        "@id_sale," +
+                                        "@sent_to_processing_center,"+
+                                        "@requisite)", conn);
 
                 command.Parameters.AddWithValue("document_number", numdoc.ToString());
                 command.Parameters.AddWithValue("date_time_start", date_time_start.Text.Replace("Чек", ""));
                 command.Parameters.AddWithValue("client", client.Tag);
                 command.Parameters.AddWithValue("cash_desk_number", num_cash.Tag.ToString());
-                command.Parameters.AddWithValue("comment", comment.Text.Trim().Replace("'",""));
+                command.Parameters.AddWithValue("comment", comment.Text.Trim().Replace("'", ""));
                 command.Parameters.AddWithValue("cash", sum_doc.Replace(",", "."));
                 command.Parameters.AddWithValue("remainder", remainder.Replace(",", "."));
                 command.Parameters.AddWithValue("date_time_write", date_time_write);
@@ -3707,6 +3794,15 @@ namespace Cash8
                 command.Parameters.AddWithValue("clientInfo_vatin", txtB_inn.Text.Trim());
                 command.Parameters.AddWithValue("clientInfo_name", txtB_name.Text.Trim());
                 command.Parameters.AddWithValue("id_sale", id_sale.ToString());
+                if (checkBox_club.CheckState == CheckState.Checked)
+                {
+                    command.Parameters.AddWithValue("requisite", 1);
+                }
+                else
+                {
+                    command.Parameters.AddWithValue("requisite", 0);
+                }
+                
 
                 string sent_to_processing_center = "0";
                 if (MainStaticClass.GetWorkSchema == 1)
@@ -3737,7 +3833,7 @@ namespace Cash8
                 command.Transaction = tran;
                 command.ExecuteNonQuery();
                 command.Parameters.Clear();
-                
+
                 foreach (ListViewItem lvi in listView1.Items)
                 {
                     command = new NpgsqlCommand("INSERT INTO checks_table(" +
@@ -3777,8 +3873,8 @@ namespace Cash8
 
                     command.Parameters.AddWithValue("document_number", numdoc.ToString());
                     command.Parameters.AddWithValue("tovar_code", lvi.Tag);
-                    command.Parameters.AddWithValue("characteristic", (lvi.SubItems[2].Tag == null ? "" : lvi.SubItems[2].Tag.ToString()));                    
-                    command.Parameters.AddWithValue("quantity", lvi.SubItems[3].Text);                    
+                    command.Parameters.AddWithValue("characteristic", (lvi.SubItems[2].Tag == null ? "" : lvi.SubItems[2].Tag.ToString()));
+                    command.Parameters.AddWithValue("quantity", lvi.SubItems[3].Text);
                     command.Parameters.AddWithValue("price", lvi.SubItems[4].Text.Replace(",", "."));
                     command.Parameters.AddWithValue("price_at_a_discount", lvi.SubItems[5].Text.Replace(",", "."));
                     command.Parameters.AddWithValue("sum", lvi.SubItems[6].Text.Replace(",", "."));
@@ -3786,17 +3882,17 @@ namespace Cash8
                     command.Parameters.AddWithValue("numstr", lvi.Index.ToString());
                     command.Parameters.AddWithValue("action_num_doc", lvi.SubItems[8].Text);
                     command.Parameters.AddWithValue("action_num_doc1", lvi.SubItems[9].Text);
-                    command.Parameters.AddWithValue("action_num_doc2", lvi.SubItems[10].Text);                     
+                    command.Parameters.AddWithValue("action_num_doc2", lvi.SubItems[10].Text);
                     command.Parameters.AddWithValue("bonus_standard", lvi.SubItems[11].Text);
                     command.Parameters.AddWithValue("bonus_promotion", lvi.SubItems[12].Text);
-                    command.Parameters.AddWithValue("promotion_b_mover", lvi.SubItems[13].Text);                    
-                    command.Parameters.AddWithValue("item_marker", lvi.SubItems[14].Text.Trim().Replace("'","vasya2021"));
+                    command.Parameters.AddWithValue("promotion_b_mover", lvi.SubItems[13].Text);
+                    command.Parameters.AddWithValue("item_marker", lvi.SubItems[14].Text.Trim().Replace("'", "vasya2021"));
 
                     command.Transaction = tran;
                     command.ExecuteNonQuery();
                     command.Parameters.Clear();
                 }
-                               
+
 
                 int num_str_t = listView1.Items.Count - 1;
 
@@ -3835,19 +3931,19 @@ namespace Cash8
                     command.Parameters.AddWithValue("tovar_code", lvi.Tag);
                     command.Parameters.AddWithValue("characteristic", "");
                     command.Parameters.AddWithValue("quantity", "1");
-                    command.Parameters.AddWithValue("price","-"+ lvi.SubItems[2].Text.Replace(",", "."));
+                    command.Parameters.AddWithValue("price", "-" + lvi.SubItems[2].Text.Replace(",", "."));
                     command.Parameters.AddWithValue("price_at_a_discount", "-" + lvi.SubItems[2].Text.Replace(",", "."));
                     command.Parameters.AddWithValue("sum", "-" + lvi.SubItems[2].Text.Replace(",", "."));
                     command.Parameters.AddWithValue("sum_at_a_discount", "-" + lvi.SubItems[2].Text.Replace(",", "."));
                     command.Parameters.AddWithValue("numstr", num_str_t.ToString());
-                    command.Parameters.AddWithValue("action_num_doc",  "0");
+                    command.Parameters.AddWithValue("action_num_doc", "0");
                     command.Parameters.AddWithValue("action_num_doc1", "0");
                     command.Parameters.AddWithValue("action_num_doc2", "0");
 
                     command.Transaction = tran;
                     command.ExecuteNonQuery();
                     command.Parameters.Clear();
-                   
+
                     //Добавим строки обновим статус сертификата в локальной базе                    
 
                     command = new NpgsqlCommand("UPDATE sertificates   SET  is_active = 0 WHERE code_tovar = @tovar_code", conn);
@@ -3856,26 +3952,26 @@ namespace Cash8
                     command.ExecuteNonQuery();
                     command.Parameters.Clear();
                 }
-                
+
                 tran.Commit();
                 conn.Close();
 
                 if (last_rewrite)
                 {
                     itsnew = false;
-                    SendDataToCustomerScreen(0,0);
+                    SendDataToCustomerScreen(0, 0);
                 }
                 else
                 {
                     itsnew = true;
-                    SendDataToCustomerScreen(1,0);
+                    SendDataToCustomerScreen(1, 0);
                 }
-                if (its_deleted=="1")
+                if (its_deleted == "1")
                 {
-                    SendDataToCustomerScreen(0,0);
+                    SendDataToCustomerScreen(0, 0);
                 }
                 result = true;
-                
+
             }
             catch (NpgsqlException ex)
             {
@@ -3912,7 +4008,7 @@ namespace Cash8
 
 
 
-        public bool it_is_paid(string pay, string sum_doc, string remainder, string pay_bonus_many,bool last_rewrite,string cash_money, string non_cash_money, string sertificate_money)
+        public bool it_is_paid(string pay, string sum_doc, string remainder, string pay_bonus_many, bool last_rewrite, string cash_money, string non_cash_money, string sertificate_money)
         {
             //Здесь необходимо добавить проверку на то что документ уже не новый
             bool result = true;
@@ -3920,7 +4016,7 @@ namespace Cash8
             if (itsnew)
             {
                 MainStaticClass.write_event_in_log(" Финальная запись документа ", "Документ чек", numdoc.ToString());
-                result = write_new_document(pay, sum_doc, remainder, pay_bonus_many, last_rewrite,cash_money, non_cash_money,sertificate_money,"0");
+                result = write_new_document(pay, sum_doc, remainder, pay_bonus_many, last_rewrite, cash_money, non_cash_money, sertificate_money, "0");
                 if (result)
                 {
                     if (MainStaticClass.Use_Usb_to_Com_Barcode_Scaner)
@@ -4172,7 +4268,7 @@ namespace Cash8
 
         private void print_fiscal_advertisement(FiscallPrintJason.Check check, FiscallPrintJason.PostItem pi)
         {
-           
+
 
             NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
             //string s2 = ""; int length = 0;
@@ -4187,26 +4283,26 @@ namespace Cash8
                 {
                     if (first_string)
                     {
-                        first_string = false;                        
+                        first_string = false;
                         pi = new FiscallPrintJason.PostItem();
                         pi.type = "text";
                         pi.text = "*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*";
                         pi.alignment = "left";
-                        check.postItems.Add(pi);                                                
+                        check.postItems.Add(pi);
                     }
                     pi = new FiscallPrintJason.PostItem();
                     pi.type = "text";
                     pi.text = reader["advertisement_text"].ToString();
                     pi.alignment = "left";
-                    check.postItems.Add(pi);                                 
+                    check.postItems.Add(pi);
                 }
                 if (!first_string)
-                {                    
+                {
                     pi = new FiscallPrintJason.PostItem();
                     pi.type = "text";
                     pi.text = "*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*";
                     pi.alignment = "left";
-                    check.postItems.Add(pi);                     
+                    check.postItems.Add(pi);
                 }
                 reader.Close();
                 conn.Close();
@@ -4292,7 +4388,7 @@ namespace Cash8
         //{
         //    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
         //    bool first_string = true;
-           
+
         //    try
         //    {
         //        conn.Open();
@@ -4346,26 +4442,26 @@ namespace Cash8
             var num_strt_km = new Dictionary<int, int>();
             //int num = 0;
             foreach (ListViewItem lvi in listView1.Items)
-            {                
+            {
                 if (lvi.SubItems[14].Text.Trim().Length > 1)
                 {
-                    num_strt_km.Add(num_strt_km.Count, lvi.Index+1);
+                    num_strt_km.Add(num_strt_km.Count, lvi.Index + 1);
                     AddingKmArrayToTableTested.Param param = new AddingKmArrayToTableTested.Param();
-                    param.imcType = "auto";                    
+                    param.imcType = "auto";
                     string GS1 = Char.ConvertFromUtf32(29);
                     if (lvi.SubItems[14].Text.IndexOf(GS1) == -1)
                     {
                         lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
                         lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(38, GS1);
-                    }                    
+                    }
                     byte[] textAsBytes = Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim());
                     string mark_str = Convert.ToBase64String(textAsBytes);
                     param.imc = mark_str;
-                    param.itemEstimatedStatus = "itemPieceSold";                    
-                    param.imcModeProcessing = 0;                    
+                    param.itemEstimatedStatus = "itemPieceSold";
+                    param.imcModeProcessing = 0;
                     addingKmArrayToTableTestedKm.@params.Add(param);
                 }
-            }            
+            }
 
             AnswerAddingKmArrayToTableTested answerAddingKmArrayToTableTested = Tested_Km(addingKmArrayToTableTestedKm);
             if (answerAddingKmArrayToTableTested.results[0].errorCode == 0)
@@ -4392,7 +4488,7 @@ namespace Cash8
                                         //MessageBox.Show("КМ имеет некорретный формат markOperatorResponseResult = " + answerAddingKmArrayToTableTested.results[0].result[0].onlineValidation.markOperatorResponseResult.ToString());
                                         MessageBox.Show("КМ имеет некорретный формат в строке = " + num_strt_km[i].ToString());
                                         result = false;
-                                    }                                    
+                                    }
                                 }
                             }
                             i++;
@@ -4400,20 +4496,20 @@ namespace Cash8
                     }
                     else
                     {
-                        MessageBox.Show("Ошибка при проверке кодов маркировки код ошибки "+ answerAddingKmArrayToTableTested.results[0].result[0].driverError.code+" "+ answerAddingKmArrayToTableTested.results[0].result[0].driverError.description);
+                        MessageBox.Show("Ошибка при проверке кодов маркировки код ошибки " + answerAddingKmArrayToTableTested.results[0].result[0].driverError.code + " " + answerAddingKmArrayToTableTested.results[0].result[0].driverError.description);
                         result = false;
                     }
                 }
                 else
                 {
-                    MessageBox.Show(" Ошибка при проверке кодов маркировки код ошибки " + answerAddingKmArrayToTableTested.results[0].errorCode.ToString()+ " "+ answerAddingKmArrayToTableTested.results[0].errorDescription.ToString());
+                    MessageBox.Show(" Ошибка при проверке кодов маркировки код ошибки " + answerAddingKmArrayToTableTested.results[0].errorCode.ToString() + " " + answerAddingKmArrayToTableTested.results[0].errorDescription.ToString());
                     result = false;
-                }                
+                }
             }
             else
             {
                 MessageBox.Show(" Ошибка при проверке кодов маркировки код ошибки " + answerAddingKmArrayToTableTested.results[0].errorCode.ToString() + " " + answerAddingKmArrayToTableTested.results[0].errorDescription.ToString());
-                result = false;               
+                result = false;
             }
             return result;
         }
@@ -4463,7 +4559,7 @@ namespace Cash8
         private static AnswerAddingKmArrayToTableTested Tested_Km(AddingKmArrayToTableTested addingKmArrayToTableTestedKm)
         {
             string status = "";
-            AnswerAddingKmArrayToTableTested result = null;            
+            AnswerAddingKmArrayToTableTested result = null;
             string km_array_to_table_tested = JsonConvert.SerializeObject(addingKmArrayToTableTestedKm, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             string json = MainStaticClass.shablon.Replace("body", km_array_to_table_tested);
             string guid = Guid.NewGuid().ToString();
@@ -4591,7 +4687,7 @@ namespace Cash8
                 }
                 else
                 {
-                    MessageBox.Show("Неопознанная ошибка, код ошибки "+ answerCheckImcWorkState.results[0].errorCode.ToString());
+                    MessageBox.Show("Неопознанная ошибка, код ошибки " + answerCheckImcWorkState.results[0].errorCode.ToString());
                 }
             }
 
@@ -4600,7 +4696,7 @@ namespace Cash8
         }
 
 
-        
+
         private void fiscall_print_pay_1(string pay)
         {
             {
@@ -4939,7 +5035,7 @@ namespace Cash8
                             {
                                 pi = new FiscallPrintJason.PostItem();
                                 pi.type = "text";
-                                pi.text = "	СПИСАНО: " + (bonuses_it_is_written_off*100).ToString();
+                                pi.text = "	СПИСАНО: " + (bonuses_it_is_written_off * 100).ToString();
                                 pi.alignment = "left";
                                 check.postItems.Add(pi);
                             }
@@ -4954,7 +5050,7 @@ namespace Cash8
                                 }
                                 else
                                 {
-                                    pi.text = "ДОСТУПНО: " + (bonus_total_centr - bonuses_it_is_written_off*100).ToString() + "\r\n" +
+                                    pi.text = "ДОСТУПНО: " + (bonus_total_centr - bonuses_it_is_written_off * 100).ToString() + "\r\n" +
                                         "накапливайте с\r\n|+" +
                                         "ORANGE CARD, тратьте\r\n" +
                                         "с удовольствием.\r\n" +
@@ -5115,7 +5211,7 @@ namespace Cash8
         /// </summary>
         /// <param name="pay"></param>
         private void fiscall_print_pay_2(string pay)
-        {         
+        {
 
             if (MainStaticClass.SystemTaxation == 0)
             {
@@ -5141,11 +5237,11 @@ namespace Cash8
 
             FiscallPrintJason2.Check check = new FiscallPrintJason2.Check();
             check.type = "sell";
-            
+
             check.taxationType = (MainStaticClass.SystemTaxation == 1 ? "osn" : "usnIncomeOutcome");
 
             check.ignoreNonFiscalPrintErrors = false;
-            check.validateMarkingCodes = false;            
+            check.validateMarkingCodes = false;
             check.@operator = new FiscallPrintJason.Operator();
             check.@operator.name = MainStaticClass.Cash_Operator;
             check.@operator.vatin = MainStaticClass.cash_operator_inn;
@@ -5212,7 +5308,7 @@ namespace Cash8
                         item.amount = Convert.ToDouble(lvi.SubItems[7].Text);
                         item.tax = new FiscallPrintJason2.Tax();
                         item.measurementUnit = "piece";
-                        if (lvi.SubItems[14].Text.Trim().Length==1)//код маркировки не заполнен
+                        if (lvi.SubItems[14].Text.Trim().Length == 1)//код маркировки не заполнен
                         {
                             item.paymentObject = "commodityWithoutMarking";
                         }
@@ -5227,7 +5323,7 @@ namespace Cash8
                             imcParams.itemEstimatedStatus = "itemPieceSold";
                             imcParams.imcModeProcessing = 0;
                             item.imcParams = imcParams;
-                        }                       
+                        }
 
                         item.tax.type = tax_type;//ндс 
                         if (tax_type == "vat120")//Это специально для сертификатов если магазин не envd
@@ -5300,7 +5396,7 @@ namespace Cash8
                     pi.type = "text";
                     pi.text = s;
                     pi.alignment = "center";
-                    check.postItems.Add(pi);                    
+                    check.postItems.Add(pi);
 
                     if (client.Tag != null)
                     {
@@ -5321,7 +5417,7 @@ namespace Cash8
                             pi.text = s;
                             pi.alignment = "left";
                             check.postItems.Add(pi);
-                        }                       
+                        }
                     }
                 }
 
@@ -5419,7 +5515,7 @@ namespace Cash8
                         {
                             pi = new FiscallPrintJason2.PostItem();
                             pi.type = "text";
-                            pi.text = "СПИСАНО: " + (bonuses_it_is_written_off*100).ToString();
+                            pi.text = "СПИСАНО: " + (bonuses_it_is_written_off * 100).ToString();
                             pi.alignment = "left";
                             check.postItems.Add(pi);
                         }
@@ -5434,7 +5530,7 @@ namespace Cash8
                             }
                             else
                             {
-                                pi.text = "ДОСТУПНО: " + (bonus_total_centr - bonuses_it_is_written_off*100).ToString() + "\r\n" +
+                                pi.text = "ДОСТУПНО: " + (bonus_total_centr - bonuses_it_is_written_off * 100).ToString() + "\r\n" +
                                     "накапливайте с\r\n|+" +
                                     "ORANGE CARD, тратьте\r\n" +
                                     "с удовольствием.\r\n" +
@@ -5464,7 +5560,7 @@ namespace Cash8
                 pi.text = MainStaticClass.Nick_Shop + "-" + MainStaticClass.CashDeskNumber.ToString() + "-" + numdoc.ToString();// +" кассир " + this.cashier;
                 pi.alignment = "left";
                 check.postItems.Add(pi);
-                print_fiscal_advertisement2(check, pi);                                
+                print_fiscal_advertisement2(check, pi);
                 check.total = get_result_paymen[0] + get_result_paymen[1] + get_result_paymen[2];
                 try
                 {
@@ -5486,7 +5582,7 @@ namespace Cash8
                 {
                     MessageBox.Show(ex.Message);
                 }
-            }          
+            }
             catch (Exception ex)
             {
                 MessageBox.Show("Общая ошибка " + ex.Message);
@@ -5509,10 +5605,10 @@ namespace Cash8
             }
 
             MainStaticClass.delete_events_in_log(numdoc.ToString());
-            this.Close();         
+            this.Close();
 
         }
-        
+
         /// <summary>
         /// Фискальная Печать
         /// регистрация продажного чека
@@ -5548,11 +5644,11 @@ namespace Cash8
 
                 //Прошли всю историю по кодам маркировки
                 fiscall_print_pay_2(pay);//Печатаем чек
-            }           
+            }
             else
             {
                 MessageBox.Show("Не удалось определить версию ФН, печать чеков невозможна");
-            }        
+            }
 
             //if (MainStaticClass.SystemTaxation == 0)
             //{
@@ -5573,12 +5669,12 @@ namespace Cash8
             //    MessageBox.Show("Этот чек уже был успешно отправлен на печать");
             //    return;
             //}
-                       
+
             //closing = false;
-            
+
             //FiscallPrintJason.Check check = new FiscallPrintJason.Check();
             //check.type = "sell";
-            
+
             ////if (DateTime.Now > new DateTime(2021, 1, 1))
             ////{
             ////    check.taxationType = (MainStaticClass.UsnIncomeOutcome ? "usnIncomeOutcome" : "osn");
@@ -5648,7 +5744,7 @@ namespace Cash8
             //                nomer_naloga = 4;
             //                tax_type = "none";
             //            }
-                        
+
             //            FiscallPrintJason.Item item = new FiscallPrintJason.Item();
             //            item.name = lvi.SubItems[0].Text.Trim() + " " + lvi.SubItems[1].Text.Trim();// "Первая Позиция";
             //            item.price = Convert.ToDouble(lvi.SubItems[5].Text);// 1;
@@ -5656,7 +5752,7 @@ namespace Cash8
             //            item.type="position";
             //            item.amount=Convert.ToDouble(lvi.SubItems[7].Text);
             //            item.tax = new FiscallPrintJason.Tax();
-                        
+
             //            if (lvi.SubItems[14].Text.Trim() == "0")//Если код маркировки не заполнен тогда передаем тнвэд
             //            {
             //                //item.nomenclatureCode = get_tnved(lvi.SubItems[0].Text);
@@ -5669,7 +5765,7 @@ namespace Cash8
             //                //string mark_str = Convert.ToBase64String(textAsBytes);
             //                //markingCode.mark = mark_str.Substring(0, mark_str.Length - 1);
             //                //item.markingCode = markingCode;
-                                                        
+
             //                FiscallPrintJason.NomenclatureCode nomenclatureCode = new FiscallPrintJason.NomenclatureCode();
             //                nomenclatureCode.gtin = lvi.SubItems[14].Text.Trim().Substring(2, 14);
             //                nomenclatureCode.serial = lvi.SubItems[14].Text.Trim().Substring(18, 13);
@@ -5698,7 +5794,7 @@ namespace Cash8
             //            check.items.Add(item);                       
             //        }
             //    }
-                                                               
+
             //    check.clientInfo = new FiscallPrintJason.ClientInfo();
             //    if (txtB_email_telephone.Text.Trim().Length > 0)
             //    {
@@ -5710,9 +5806,9 @@ namespace Cash8
             //        check.clientInfo.vatin = txtB_inn.Text;
             //        check.clientInfo.name = txtB_name.Text;
             //    }
-                                
 
-                
+
+
             //    //cash или 0 - наличными 
             //    //electronically или 1 - электронными 
             //    //prepaid или 2 - предварительная оплата (аванс) 
@@ -5846,13 +5942,13 @@ namespace Cash8
             //    {
             //        if (client.Tag != null)//В чеке есть карта клиента
             //        {
-                        
+
             //            pi = new FiscallPrintJason.PostItem();
             //            pi.type = "text";
             //            pi.text = "СОСТОЯНИЕ СЧЕТА БОНУСОВ";
             //            pi.alignment = "left";
             //            check.postItems.Add(pi);
-                        
+
             //            pi = new FiscallPrintJason.PostItem();
             //            pi.type = "text";
             //            pi.text = "ORANGE CARD";
@@ -5893,7 +5989,7 @@ namespace Cash8
             //                pi.alignment = "left";
             //                check.postItems.Add(pi);
             //            }
-                        
+
             //            pi = new FiscallPrintJason.PostItem();
             //            pi.type = "text";
             //            if (spendAllowed == "1")
@@ -5923,7 +6019,7 @@ namespace Cash8
             //                    "или в Личном Кабинете\r\n"+
             //                    "www.evacosmetics.ru";
             //            }                      
-                            
+
             //            pi.alignment = "left";
             //            check.postItems.Add(pi);
             //        }
@@ -5934,7 +6030,7 @@ namespace Cash8
             //    pi.text = MainStaticClass.Nick_Shop + "-" + MainStaticClass.CashDeskNumber.ToString() + "-" + numdoc.ToString();// +" кассир " + this.cashier;
             //    pi.alignment = "left";
             //    check.postItems.Add(pi);
-                
+
 
 
 
@@ -6009,7 +6105,7 @@ namespace Cash8
             //        MessageBox.Show(ex.Message);
             //    }
             //}
-                
+
             ////catch (fptrsharp.FptrException ex)
             ////{
             ////    MessageBox.Show("Ошибка принтера " + ex.Message + " | " + ex.ResultCode + " | " + ex.ResutlDescription + " | " + ex.BadParamDescription);
@@ -6027,7 +6123,7 @@ namespace Cash8
             //    //    fiscal.Dispose();
             //    //}
             //}
-            
+
             ////check = null;
 
 
@@ -6092,7 +6188,7 @@ namespace Cash8
 
         //    return result;
         //}
-      
+
 
         /// <summary>
         /// Бонусы начисленные и бонусы списанные 
@@ -6104,8 +6200,8 @@ namespace Cash8
 
             foreach (ListViewItem lvi in listView1.Items)
             {
-                result[0] += (int)Math.Round(Convert.ToDecimal(lvi.SubItems[11].Text) + (int)Convert.ToDecimal(lvi.SubItems[12].Text),2,MidpointRounding.AwayFromZero);
-                result[1] += (int)Math.Round(Convert.ToDecimal(lvi.SubItems[12].Text),2,MidpointRounding.AwayFromZero);               
+                result[0] += (int)Math.Round(Convert.ToDecimal(lvi.SubItems[11].Text) + (int)Convert.ToDecimal(lvi.SubItems[12].Text), 2, MidpointRounding.AwayFromZero);
+                result[1] += (int)Math.Round(Convert.ToDecimal(lvi.SubItems[12].Text), 2, MidpointRounding.AwayFromZero);
             }
 
             return result;
@@ -6529,7 +6625,7 @@ namespace Cash8
                             item.tax = new FiscallPrintJason2.Tax();
                             item.tax.type = tax_type;//ндс
                             item.measurementUnit = "piece";
-                            if (lvi.SubItems[14].Text.Trim().Length==1)//Код маркировки не заполнен
+                            if (lvi.SubItems[14].Text.Trim().Length == 1)//Код маркировки не заполнен
                             {
                                 item.paymentObject = "commodityWithoutMarking";
                             }
@@ -6730,7 +6826,7 @@ namespace Cash8
                 int count_km = 0;
                 foreach (ListViewItem lvi in listView1.Items)
                 {
-                    if (lvi.SubItems[14].Text.Trim().Length >1)
+                    if (lvi.SubItems[14].Text.Trim().Length > 1)
                     {
                         count_km++;
                     }
@@ -6768,9 +6864,9 @@ namespace Cash8
         //            return;
         //        }
         //    }
-                                   
+
         //    bool error = false;
-            
+
         //    if (to_print_certainly == 1)
         //    {
         //        MainStaticClass.delete_document_wil_be_printed(numdoc.ToString());
@@ -6781,7 +6877,7 @@ namespace Cash8
         //        MessageBox.Show("Этот чек уже был успешно отправлен на печать");
         //        return;
         //    }
-            
+
         //    if (MainStaticClass.Use_Fiscall_Print)
         //    {
         //        //fptrsharp.Fptr fiscal = null;
@@ -6790,13 +6886,13 @@ namespace Cash8
         //        FiscallPrintJason.Check check = new FiscallPrintJason.Check();
         //        check.type = "sellReturn";                
         //        check.taxationType = (MainStaticClass.SystemTaxation==1 ? "osn" : "usnIncomeOutcome");
-                
+
         //        check.ignoreNonFiscalPrintErrors = false;
         //        check.@operator = new FiscallPrintJason.Operator();
         //        check.@operator.name = MainStaticClass.Cash_Operator;
         //        check.@operator.vatin = MainStaticClass.cash_operator_inn;
         //        check.items = new List<Cash8.FiscallPrintJason.Item>();
-                
+
         //        FiscallPrintJason.PostItem pi = new FiscallPrintJason.PostItem();
         //        check.postItems = new List<FiscallPrintJason.PostItem>();
 
@@ -6881,7 +6977,7 @@ namespace Cash8
         //                            item.name = "[M] "+item.name;
         //                        }
         //                    }
-                            
+
         //                    check.items.Add(item);
         //                }
         //            }
@@ -6953,7 +7049,7 @@ namespace Cash8
         //                pi.text = "ORANGE CARD";
         //                pi.alignment = "left";
         //                check.postItems.Add(pi);
-                        
+
         //                pi = new FiscallPrintJason.PostItem();
         //                pi.type = "text";
         //                pi.text = "КАРТА #: "+client.Tag.ToString();
@@ -6965,7 +7061,7 @@ namespace Cash8
         //                pi.text = "PRN: " + id_transaction;
         //                pi.alignment = "left";
         //                check.postItems.Add(pi);
-                        
+
         //                pi = new FiscallPrintJason.PostItem();
         //                pi.type = "text";
         //                pi.text = "БАЛАНС: "+ bonus_total_centr.ToString(); 
@@ -7046,14 +7142,14 @@ namespace Cash8
         //    //    //string s = this.calculation_of_the_sum_of_the_document().ToString();
         //    //    text_print(output, output, "0", "0", "0", "0");
         //    //}
-            
+
 
         //    this.Close();
-            
+
         //}
 
-        
-        
+
+
 
         /*Возвращает количество пустых строк 
          * которое необходимо добавить в конец чека
@@ -7098,7 +7194,7 @@ namespace Cash8
             }
             return result;
         }
-             
+
 
         private void pd_PrintPage(object sender, PrintPageEventArgs e)
         {
@@ -7293,11 +7389,11 @@ namespace Cash8
             {
                 conn = MainStaticClass.NpgsqlConn();
                 conn.Open();
-                string query = " UPDATE checks_header   SET its_print=true WHERE document_number="+numdoc.ToString();//date_time_start='" + date_time_start.Text.Replace("Чек", "") + "'"; ;
+                string query = " UPDATE checks_header   SET its_print=true WHERE document_number=" + numdoc.ToString();//date_time_start='" + date_time_start.Text.Replace("Чек", "") + "'"; ;
                 command = new NpgsqlCommand(query, conn);
                 command.ExecuteNonQuery();
 
-                query = " DELETE FROM document_wil_be_printed WHERE document_number="+numdoc.ToString();
+                query = " DELETE FROM document_wil_be_printed WHERE document_number=" + numdoc.ToString();
                 command = new NpgsqlCommand(query, conn);
                 command.ExecuteNonQuery();
 
@@ -7339,7 +7435,7 @@ namespace Cash8
 
             if (Convert.ToInt32(charge) > 0)
             {
-                buyNewRequest.charge = (Convert.ToInt32(charge)*100).ToString();
+                buyNewRequest.charge = (Convert.ToInt32(charge) * 100).ToString();
             }
 
             sentDataOnBonus.fill_items(buyNewRequest, numdoc.ToString(), client.Tag.ToString());
@@ -7376,7 +7472,7 @@ namespace Cash8
             sentDataOnBonusEva.sent_document_buyNew(buyNewRequest, numdoc.ToString(), ref buynewResponse);
             return buynewResponse;
         }
-        
+
         public SentDataOnBonusEva.TransactionResponse get_bonus_on_document_eva_by_return()
         {
             SentDataOnBonusEva sentDataOnBonusEva = new SentDataOnBonusEva();
@@ -7399,7 +7495,7 @@ namespace Cash8
                 MessageBox.Show(" Нет строк ", " Проверки переда записью документа ");
                 return;
             }
-            
+
             listView1.Focus();
 
             if (listView1.Items.Count == 0)
@@ -7661,9 +7757,9 @@ namespace Cash8
             {
 
                 conn.Open();
-                string query =         "SELECT COUNT(*) from information_schema.tables 		where table_schema='public' 	and table_name='checks_table_temp'";
-                NpgsqlCommand command = new NpgsqlCommand(query,conn);
-                
+                string query = "SELECT COUNT(*) from information_schema.tables 		where table_schema='public' 	and table_name='checks_table_temp'";
+                NpgsqlCommand command = new NpgsqlCommand(query, conn);
+
                 if (Convert.ToInt16(command.ExecuteScalar()) == 0)
                 {
                     query = "CREATE TABLE checks_table_temp( tovar bigint)WITH (  OIDS=FALSE);ALTER TABLE checks_table_temp  OWNER TO postgres;";
@@ -7684,7 +7780,7 @@ namespace Cash8
                 }
 
                 query = sb.ToString();
-                command = new NpgsqlCommand(query, conn);                
+                command = new NpgsqlCommand(query, conn);
                 command.ExecuteNonQuery();
 
                 conn.Close();
@@ -7889,7 +7985,7 @@ namespace Cash8
         //}
 
         private void to_define_the_action_dt()
-        {            
+        {
             if (!itsnew)
             {
                 return;
@@ -7903,32 +7999,32 @@ namespace Cash8
             DataTable[] dt = processingOfActions.to_process_actions(processingOfActions.create_dt(listView1));
         }
 
-       //     if (!check_and_create_checks_table_temp())
-       //     {
-       //         return;
-       //     }
+        //     if (!check_and_create_checks_table_temp())
+        //     {
+        //         return;
+        //     }
 
-            //total_seconnds = 0;
-            //NpgsqlConnection conn = null;
-            //NpgsqlCommand command = null;
-            //short tip_action;// = 0;
-            //Int64 count_minutes = Convert.ToInt64((DateTime.Now - DateTime.Now.Date).TotalMinutes);
-            //try
-            //{
-            //    conn = MainStaticClass.NpgsqlConn();
-            //    conn.Open();
-            //    //string query = "SELECT tip,num_doc,persent,comment,code_tovar,sum,barcode,marker FROM action_header " +
-            //    //    " WHERE '" + DateTime.Now.Date.ToString("yyy-MM-dd") + "' between date_started AND date_end "+
-            //    //    //" AND " + count_minutes.ToString() + " between time_start AND time_end  
-            //    //    " AND num_doc in(" +
-            //    //    " SELECT DISTINCT action_table.num_doc FROM checks_table_temp " +
-            //    //    " LEFT JOIN action_table ON checks_table_temp.tovar = action_table.code_tovar) order by date_started ";
+        //total_seconnds = 0;
+        //NpgsqlConnection conn = null;
+        //NpgsqlCommand command = null;
+        //short tip_action;// = 0;
+        //Int64 count_minutes = Convert.ToInt64((DateTime.Now - DateTime.Now.Date).TotalMinutes);
+        //try
+        //{
+        //    conn = MainStaticClass.NpgsqlConn();
+        //    conn.Open();
+        //    //string query = "SELECT tip,num_doc,persent,comment,code_tovar,sum,barcode,marker FROM action_header " +
+        //    //    " WHERE '" + DateTime.Now.Date.ToString("yyy-MM-dd") + "' between date_started AND date_end "+
+        //    //    //" AND " + count_minutes.ToString() + " between time_start AND time_end  
+        //    //    " AND num_doc in(" +
+        //    //    " SELECT DISTINCT action_table.num_doc FROM checks_table_temp " +
+        //    //    " LEFT JOIN action_table ON checks_table_temp.tovar = action_table.code_tovar) order by date_started ";
 
-            //    string query = "SELECT tip,num_doc,persent,comment,code_tovar,sum,barcode,marker FROM action_header " +
-            //        " WHERE '" + DateTime.Now.Date.ToString("yyy-MM-dd") + "' between date_started AND date_end " +
-            //        " AND " + count_minutes.ToString() + " between time_start AND time_end  AND num_doc in(" +
-            //        " SELECT DISTINCT action_table.num_doc FROM checks_table_temp " +
-            //        " LEFT JOIN action_table ON checks_table_temp.tovar = action_table.code_tovar) order by date_started ";
+        //    string query = "SELECT tip,num_doc,persent,comment,code_tovar,sum,barcode,marker FROM action_header " +
+        //        " WHERE '" + DateTime.Now.Date.ToString("yyy-MM-dd") + "' between date_started AND date_end " +
+        //        " AND " + count_minutes.ToString() + " between time_start AND time_end  AND num_doc in(" +
+        //        " SELECT DISTINCT action_table.num_doc FROM checks_table_temp " +
+        //        " LEFT JOIN action_table ON checks_table_temp.tovar = action_table.code_tovar) order by date_started ";
 
 
 
@@ -8586,7 +8682,7 @@ namespace Cash8
          * Определить есть ли акции в данный период
          */
         private void to_define_the_action()
-        { 
+        {
             if (!check_and_create_checks_table_temp())
             {
                 return;
@@ -8615,7 +8711,7 @@ namespace Cash8
 
                 string query = "SELECT tip,num_doc,persent,comment,code_tovar,sum,barcode,marker,execution_order FROM action_header " +
                     " WHERE '" + DateTime.Now.Date.ToString("yyy-MM-dd") + "' between date_started AND date_end " +
-                    " AND " + count_minutes.ToString() + " between time_start AND time_end AND bonus_promotion=0 "+
+                    " AND " + count_minutes.ToString() + " between time_start AND time_end AND bonus_promotion=0 " +
                     " AND barcode='' AND tip<>10 AND num_doc in(" +//AND tip<>10 
                     " SELECT DISTINCT action_table.num_doc FROM checks_table_temp " +
                     " LEFT JOIN action_table ON checks_table_temp.tovar = action_table.code_tovar) order by execution_order asc, tip asc";//date_started asc,, tip desc
@@ -8756,7 +8852,7 @@ namespace Cash8
                         MessageBox.Show("Неопознанный тип акции в документе  № " + reader[1].ToString(), " Обработка акций ");
                     }
                 }
-                reader.Close();                
+                reader.Close();
                 command.Dispose();
 
                 //10 тип для товаров вынесен отдельно, а затем проверка на акцию без товаров
@@ -8776,7 +8872,7 @@ namespace Cash8
                     if (reader.GetDecimal(5) <= action_10(reader.GetInt32(1)))
                     {
                         int multiplicity = (int)(calculation_of_the_sum_of_the_document() / action_10(reader.GetInt32(1)));
-                        MessageBox.Show("Крастность "+ multiplicity.ToString()+" "+ reader[3].ToString());
+                        MessageBox.Show("Крастность " + multiplicity.ToString() + " " + reader[3].ToString());
                         action_num_doc = Convert.ToInt32(reader[1].ToString());
                     }
                 }
@@ -8786,7 +8882,7 @@ namespace Cash8
                 command.Dispose();
 
                 checked_action_10();//Отдельная проверка поскольку может не быть товарной части, а все акции выше проверяются именно на вхождение товаров документа в таб части акционных документов
-                
+
             }
             catch (NpgsqlException ex)
             {
@@ -8832,7 +8928,7 @@ namespace Cash8
                 if (result_query > 0)
                 {
                     result = true;
-                }                
+                }
                 conn.Close();
                 command.Dispose();
             }
@@ -8853,7 +8949,7 @@ namespace Cash8
             }
             return result;
         }
-              
+
 
 
         private void checked_action_10()
@@ -8881,8 +8977,8 @@ namespace Cash8
 
                     if (reader.GetDecimal(5) <= calculation_of_the_sum_of_the_document())// action_10(Convert.ToInt32(reader["num_doc"]))
                     {
-                        int multiplicity = (int)(calculation_of_the_sum_of_the_document()/reader.GetDecimal(5));
-                        MessageBox.Show("Кратность "+ multiplicity.ToString()+" "+ reader[3].ToString());                        
+                        int multiplicity = (int)(calculation_of_the_sum_of_the_document() / reader.GetDecimal(5));
+                        MessageBox.Show("Кратность " + multiplicity.ToString() + " " + reader[3].ToString());
                         action_num_doc = Convert.ToInt32(reader[1].ToString());
                     }
                 }
@@ -8907,7 +9003,7 @@ namespace Cash8
                 }
             }
         }
-        
+
 
         /// <summary>
         /// Это 10 акция для тех акционных документов у которых есть строки и 
@@ -8929,10 +9025,10 @@ namespace Cash8
                 conn = MainStaticClass.NpgsqlConn();
                 conn.Open();
                 string query = "";
-                foreach(ListViewItem lvi in listView1.Items)
+                foreach (ListViewItem lvi in listView1.Items)
                 {
                     query = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + lvi.Tag.ToString() + " AND num_doc=" + num_doc.ToString();
-                    command = new NpgsqlCommand(query, conn);                    
+                    command = new NpgsqlCommand(query, conn);
                     if (Convert.ToInt16(command.ExecuteScalar()) == 1)//вхождение найдено 
                     {
                         result += Convert.ToDecimal(lvi.SubItems[7].Text);
@@ -8966,7 +9062,7 @@ namespace Cash8
             return result;
         }
 
-      
+
 
         /*
          * Обработать акцию по типу 1
@@ -9064,7 +9160,7 @@ namespace Cash8
                 }
             }
         }
-                               
+
 
         ///*
         // * Обработать акцию по типу 1
@@ -9114,7 +9210,7 @@ namespace Cash8
                             lvi.SubItems[7].Text = ((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)).ToString());
                             lvi.SubItems[8].Text = num_doc.ToString(); //Номер акционного документа
                             lvi.SubItems[10].Text = num_doc.ToString();//Тип акции                        
-                        }                        
+                        }
                     }
                 }
                 conn.Close();
@@ -9139,15 +9235,15 @@ namespace Cash8
 
         }
 
-            /*
-             * Обработать акцию по 2 типу
-             * это значит в документе должен быть товар 
-             * по вхождению в акционный список 
-             * 
-             * Здесь дается скидка на кратное количество позиций из 1-го списка
-             */
+        /*
+         * Обработать акцию по 2 типу
+         * это значит в документе должен быть товар 
+         * по вхождению в акционный список 
+         * 
+         * Здесь дается скидка на кратное количество позиций из 1-го списка
+         */
 
-            private void action_2(int num_doc, decimal persent)
+        private void action_2(int num_doc, decimal persent)
         {
             /*В этой переменной запомнится позиция которая первой входит в первый список акции
             * на него будет дана скидка, необходимо скопировать эту позицию в конец списка 
@@ -9295,13 +9391,13 @@ namespace Cash8
                                 lvi_new.SubItems[8].Text = num_doc.ToString(); //Номер акционного документа
                                 lvi_new.SubItems[10].Text = num_doc.ToString(); //Номер акционного документа
                                 //*****************************************************************************
-                                lvi_new.SubItems[11].Text="0";
-                                lvi_new.SubItems[12].Text="0";
-                                lvi_new.SubItems[13].Text="0";
+                                lvi_new.SubItems[11].Text = "0";
+                                lvi_new.SubItems[12].Text = "0";
+                                lvi_new.SubItems[13].Text = "0";
                                 lvi_new.SubItems[14].Text = "0";
                                 //*****************************************************************************
                                 listView1.Items.Add(lvi_new);
-                                SendDataToCustomerScreen(1,0);
+                                SendDataToCustomerScreen(1, 0);
                                 min_quantity = 0;
                             }
                         }
@@ -9612,7 +9708,7 @@ namespace Cash8
                 }
             }
         }
-               
+
         private bool create_temp_tovar_table()
         {
             bool result = true;
@@ -9791,10 +9887,10 @@ namespace Cash8
             {
                 conn = MainStaticClass.NpgsqlConn();
                 conn.Open();
-                string query_string = "";                
+                string query_string = "";
 
                 foreach (ListViewItem lvi in listView1.Items)
-                {                    
+                {
                     if (Convert.ToInt32(lvi.SubItems[10].Text.Trim()) > 0)//Этот товар уже участвовал в акции значит его пропускаем
                     {
                         //clon.Items.Add((ListViewItem)lvi.Clone());
@@ -9838,7 +9934,7 @@ namespace Cash8
                     }
 
                     command = new NpgsqlCommand(query.ToString(), conn);//устанавливаем акционные позиции во временную таблицу
-                    command.ExecuteNonQuery();                    
+                    command.ExecuteNonQuery();
                     query.Append("DELETE FROM tovar_action;");//Очищаем таблицу акционных товаров 
                     //иначе результат задваивается ранее эта строка была закомментирована и при 2 товарах по 1 шт. учавстсующих в акции
                     //работала неверно
@@ -9853,7 +9949,7 @@ namespace Cash8
                     int num_records = 1;
 
                     while (reader.Read())
-                    {                        
+                    {
                         if (multiplication_factor > 0)
                         {
                             if ((decimal)num_records / sum == Math.Round(num_records / sum, 0, MidpointRounding.AwayFromZero))//(sum_on_string == sum) && 
@@ -9866,7 +9962,7 @@ namespace Cash8
                                   reader[4].ToString() + "'," +
                                   (Math.Round(Convert.ToDecimal(reader[1].ToString()) - Convert.ToDecimal(reader[1].ToString()) * persent / 100, 2)).ToString().Replace(",", ".") + //Цена со скидкой            
                                   ");");
-                                multiplication_factor--;                                
+                                multiplication_factor--;
                             }
                             else
                             {
@@ -9876,9 +9972,9 @@ namespace Cash8
                                                          "1,'" +
                                                         reader[3].ToString() + "','" +
                                                         reader[4].ToString() + "'," +
-                                                        reader[1].ToString().Replace(",", ".") + ");");                             
+                                                        reader[1].ToString().Replace(",", ".") + ");");
                             }
-                            
+
                         }
                         else
                         {
@@ -9889,7 +9985,7 @@ namespace Cash8
                                                        reader[3].ToString() + "','" +
                                                        reader[4].ToString() + "'," +
                                                        reader[1].ToString().Replace(",", ".") + ");");
-                        }                        
+                        }
                         num_records++;
                     }
 
@@ -9931,7 +10027,7 @@ namespace Cash8
                         lvi.SubItems.Add("0");//lvi.SubItems[14].Text = "0";
                         //*****************************************************************************
                         listView1.Items.Add(lvi);
-                        SendDataToCustomerScreen(1,0);
+                        SendDataToCustomerScreen(1, 0);
                     }
 
                     /*акция сработала
@@ -9987,10 +10083,10 @@ namespace Cash8
                 conn = MainStaticClass.NpgsqlConn();
                 conn.Open();
                 string query_string = "";
-                
+
 
                 foreach (ListViewItem lvi in listView1.Items)
-                {                    
+                {
                     if (Convert.ToInt32(lvi.SubItems[10].Text.Trim()) > 0)//Этот товар уже участвовал в акции значит его пропускаем
                     {
                         //clon.Items.Add((ListViewItem)lvi.Clone());
@@ -10032,8 +10128,8 @@ namespace Cash8
 
                     command = new NpgsqlCommand(query.ToString(), conn);//устанавливаем акционные позиции во временную таблицу
                     command.ExecuteNonQuery();
-                                        
-                    int multiplication_factor = (int)(quantity_on_doc / sum);                    
+
+                    int multiplication_factor = (int)(quantity_on_doc / sum);
                     query_string = " SELECT tovar_action.code,tovar.name, tovar_action.retail_price,tovar_action.retail_price,tovar_action.quantity,tovar_action.characteristic_name,tovar_action.characteristic_guid " +
                         " FROM tovar_action LEFT JOIN tovar ON tovar_action.code=tovar.code " +
                         //" LEFT JOIN characteristic ON tovar_action.characteristic_guid = characteristic.guid " +
@@ -10057,29 +10153,29 @@ namespace Cash8
                                 lvi.SubItems.Add(reader[5].ToString());    //Характеристика
                                 lvi.SubItems[2].Tag = reader[6].ToString();
                                 lvi.SubItems.Add("1");    //Количество
-                                //if (DateTime.Now < new_date)
-                                //{
-                                //    lvi.SubItems.Add(reader.GetDecimal(2).ToString());//Цена
-                                //    lvi.SubItems.Add(reader.GetDecimal(3).ToString());//Цена со скидкой reader.GetDecimal(3).ToString()
-                                //    lvi.SubItems.Add("0");//Сумма без скидки
-                                //    lvi.SubItems.Add("0");//Сумма со скидкой
-                                //    lvi.SubItems.Add("0"); //Номер акционного документа скидка
-                                //    lvi.SubItems.Add(num_doc.ToString()); //Номер акционного документа подарок
-                                //    lvi.SubItems.Add("0"); //Номер акционного документа дополнительное поле пометка что участвовало в акции, но скидка может быть                                
-                                //    lvi.SubItems[10].Text = num_doc.ToString();
-                                //}
-                                //else
-                                //{
-                                    lvi.SubItems.Add(reader.GetDecimal(2).ToString());//Цена без скидки
-                                    //decimal price = get_reatil_price(code_tovar.ToString());
-                                    string price = get_price_action(num_doc);
-                                    lvi.SubItems.Add(price.ToString());//Цена со скидкой должна быть получена из подарка
-                                    lvi.SubItems.Add(reader.GetDecimal(2).ToString());//Сумма без скидки
-                                    lvi.SubItems.Add(price.ToString());//Сумма со скидкой должна быть получена из подарка
-                                    lvi.SubItems.Add("0"); //Номер акционного документа скидка
-                                    lvi.SubItems.Add(num_doc.ToString()); //Номер акционного документа подарок
-                                    lvi.SubItems.Add("0"); //Номер акционного документа дополнительное поле пометка что участвовало в акции, но скидка может быть                                
-                                    lvi.SubItems[10].Text = num_doc.ToString(); 
+                                                          //if (DateTime.Now < new_date)
+                                                          //{
+                                                          //    lvi.SubItems.Add(reader.GetDecimal(2).ToString());//Цена
+                                                          //    lvi.SubItems.Add(reader.GetDecimal(3).ToString());//Цена со скидкой reader.GetDecimal(3).ToString()
+                                                          //    lvi.SubItems.Add("0");//Сумма без скидки
+                                                          //    lvi.SubItems.Add("0");//Сумма со скидкой
+                                                          //    lvi.SubItems.Add("0"); //Номер акционного документа скидка
+                                                          //    lvi.SubItems.Add(num_doc.ToString()); //Номер акционного документа подарок
+                                                          //    lvi.SubItems.Add("0"); //Номер акционного документа дополнительное поле пометка что участвовало в акции, но скидка может быть                                
+                                                          //    lvi.SubItems[10].Text = num_doc.ToString();
+                                                          //}
+                                                          //else
+                                                          //{
+                                lvi.SubItems.Add(reader.GetDecimal(2).ToString());//Цена без скидки
+                                                                                  //decimal price = get_reatil_price(code_tovar.ToString());
+                                string price = get_price_action(num_doc);
+                                lvi.SubItems.Add(price.ToString());//Цена со скидкой должна быть получена из подарка
+                                lvi.SubItems.Add(reader.GetDecimal(2).ToString());//Сумма без скидки
+                                lvi.SubItems.Add(price.ToString());//Сумма со скидкой должна быть получена из подарка
+                                lvi.SubItems.Add("0"); //Номер акционного документа скидка
+                                lvi.SubItems.Add(num_doc.ToString()); //Номер акционного документа подарок
+                                lvi.SubItems.Add("0"); //Номер акционного документа дополнительное поле пометка что участвовало в акции, но скидка может быть                                
+                                lvi.SubItems[10].Text = num_doc.ToString();
                                 //}
                                 //*****************************************************************************
                                 lvi.SubItems.Add("0");
@@ -10088,8 +10184,8 @@ namespace Cash8
                                 lvi.SubItems.Add("0");
                                 //*****************************************************************************
                                 listView1.Items.Add(lvi);
-                                SendDataToCustomerScreen(1,0);
-                                multiplication_factor--;                                
+                                SendDataToCustomerScreen(1, 0);
+                                multiplication_factor--;
                             }
                             else
                             {
@@ -10114,8 +10210,8 @@ namespace Cash8
                                 lvi.SubItems.Add("0");
                                 //*****************************************************************************
                                 listView1.Items.Add(lvi);
-                                SendDataToCustomerScreen(1,0);
-                            }                           
+                                SendDataToCustomerScreen(1, 0);
+                            }
                         }
                         else
                         {
@@ -10140,8 +10236,8 @@ namespace Cash8
                             lvi.SubItems.Add("0");
                             //*****************************************************************************
                             listView1.Items.Add(lvi);
-                            SendDataToCustomerScreen(1,0);
-                        }                        
+                            SendDataToCustomerScreen(1, 0);
+                        }
                         num_records++;
                     }
 
@@ -10180,7 +10276,7 @@ namespace Cash8
                     //}
                     //else
                     //{
- 
+
                     //}
 
 
@@ -10222,13 +10318,13 @@ namespace Cash8
             try
             {
                 conn.Open();
-                string query="SELECT retail_price  FROM tovar where code="+code_tovar;
+                string query = "SELECT retail_price  FROM tovar where code=" + code_tovar;
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 result = Convert.ToDecimal(command.ExecuteScalar());
                 conn.Close();
                 command.Dispose();
             }
-            catch(NpgsqlException ex)
+            catch (NpgsqlException ex)
             {
                 MessageBox.Show("Ошибки при получении цены подарка " + ex.Message);
             }
@@ -10244,7 +10340,7 @@ namespace Cash8
 
             return result;
         }
-                              
+
 
         /*Эта акция срабатывает когда количество товаров в документе >= сумме(количество) товаров в акции
          * тогда выдается сообщение о подарке
@@ -10339,7 +10435,7 @@ namespace Cash8
                         lvi.SubItems[14].Text = "0";
                         //*****************************************************************************
                         listView1.Items.Add(lvi_new);
-                        SendDataToCustomerScreen(1,0);
+                        SendDataToCustomerScreen(1, 0);
                     }
 
                     //Добавляем подарок
@@ -10727,7 +10823,7 @@ namespace Cash8
                             lvi.SubItems[14].Text = "0";
                             //*****************************************************************************
                             listView1.Items.Add(lvi);
-                            SendDataToCustomerScreen(1,0);
+                            SendDataToCustomerScreen(1, 0);
 
                         }
                         else
@@ -10753,7 +10849,7 @@ namespace Cash8
                             lvi.SubItems[14].Text = "0";
                             //*****************************************************************************
                             listView1.Items.Add(lvi);
-                            SendDataToCustomerScreen(1,0);
+                            SendDataToCustomerScreen(1, 0);
                         }
 
                     }
@@ -10844,7 +10940,7 @@ namespace Cash8
                     have_action = true;//Признак того что в документе есть сработка по акции
 
                     int multiplication_factor = (int)(quantity_on_doc / sum);
-                                      
+
 
                     MessageBox.Show(comment.Trim() + " количество подарков = " + multiplication_factor.ToString() + " шт. ", " АКЦИЯ !!!");
 
@@ -11028,11 +11124,11 @@ namespace Cash8
                 lvi.SubItems.Add(listview_original.Items[x].SubItems[12].Text);
                 lvi.SubItems.Add(listview_original.Items[x].SubItems[13].Text);
                 lvi.SubItems.Add(listview_original.Items[x].SubItems[14].Text);
-                
+
                 listView1.Items.Add(lvi);
             }
-            write_new_document("0", "0", "0", "0", false,"0","0","0","0");
-            SendDataToCustomerScreen(1,0);
+            write_new_document("0", "0", "0", "0", false, "0", "0", "0", "0");
+            SendDataToCustomerScreen(1, 0);
         }
 
         /*
@@ -11087,10 +11183,10 @@ namespace Cash8
         //            conn.Close();
         //        }
         //    }
-            
+
         //    return result;
         //}
-        
+
 
         //#region buyerInfoRequest
         //public class BuyerInfoRequest
@@ -11128,7 +11224,7 @@ namespace Cash8
             string url = MainStaticClass.GetStartUrl + "/v3/buyerInfo/";
 
             byte[] body = Encoding.UTF8.GetBytes(json);
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);           
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             var authString = MainStaticClass.GetAuthStringProcessing;
             request.Headers.Add("Authorization", "Basic " + authString);
             request.Method = "POST";
@@ -11169,6 +11265,104 @@ namespace Cash8
 
             return buyerInfoResponce;
         }
+
+        ///// <summary>
+        ///// crm.cabinet.Info
+        ///// </summary>
+        //private void get_super_mama()
+        //{
+
+        //    int result = 0;
+
+        //    AssignCard assignCard = new AssignCard();
+        //    assignCard.uid = uid;
+        //    assignCard.cardNum = txtB_num_card.Text;
+        //    assignCard.cardPinHash = ComputeSHA256Hash(txtB_pin_code.Text);
+
+        //    string json = JsonConvert.SerializeObject(assignCard, Newtonsoft.Json.Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+        //    string url = MainStaticClass.GetStartUrl + "/";
+
+        //    byte[] body = Encoding.UTF8.GetBytes(json);
+        //    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+
+        //    var authString = MainStaticClass.GetAuthStringProcessing;
+
+        //    request.Headers.Add("Authorization", "Basic " + authString);
+        //    request.Headers.Add("X-FXAPI-RQ-METHOD", "crm.cabinet.assignCard");
+
+        //    request.Method = "POST";
+        //    request.ContentType = "application/json; charset=utf-8";
+        //    request.ContentLength = body.Length;
+
+        //    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+
+        //    try
+        //    {
+
+        //        using (Stream stream = request.GetRequestStream())
+        //        {
+        //            stream.Write(body, 0, body.Length);
+        //            stream.Close();
+        //        }
+
+        //        using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+        //        {
+        //            byte[] buf = new byte[10000];
+        //            int count = -1;
+        //            String read = "";
+        //            do
+        //            {
+        //                count = response.GetResponseStream().Read(buf, 0, buf.Length);
+        //                read += Encoding.UTF8.GetString(buf, 0, count);
+        //            } while (response.GetResponseStream().CanRead && count != 0);
+
+        //            Res res = JsonConvert.DeserializeObject<Res>(read.Replace("{}", @""""""), new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+        //            result = res.res;
+
+        //            if (res.res == 1)
+        //            {
+
+        //            }
+        //            else if (res.res == 3) //Куда то записать информацию о трудностях
+        //            {
+        //                MessageBox.Show(" Карта не найдена ");
+        //            }
+        //            else if (res.res == 4) //Куда то записать информацию о трудностях
+        //            {
+        //                MessageBox.Show(" карта не найдена, или неправильный PIN");
+        //            }
+        //            else if (res.res == 5) //Куда то записать информацию о трудностях
+        //            {
+        //                MessageBox.Show("Карта не активирована");
+        //            }
+        //            else if (res.res == 11) //Куда то записать информацию о трудностях
+        //            {
+        //                MessageBox.Show("карта уже зарегистрирована");
+        //            }
+
+        //            response.Close();
+        //        }
+        //    }
+        //    catch (WebException ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //    finally
+        //    {
+        //        if (conn.State == ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //        }
+        //    }
+
+        //    return result;
+        //}
+    
+        
 
         //public class Card
         //{
@@ -11645,6 +11839,8 @@ namespace Cash8
                     //if (MainStaticClass.Code_right_of_user != 1)
                     //{
                     inputbarcode.Enabled = false;
+                    client_barcode.Enabled = false;
+                    txtB_client_phone.Enabled = false;
                     //}
                 }
             }
