@@ -818,7 +818,7 @@ namespace Cash8
                                //" checks_header.sertificate_money,checks_header.non_cash_money,checks_header.cash_money,checks_header.sales_assistant,checks_header.bonuses_it_is_counted, " +
                                " checks_header.sertificate_money,checks_header.non_cash_money,checks_header.cash_money,checks_header.bonuses_it_is_counted, " +
                                " checks_header.bonuses_it_is_written_off, " +
-                               " checks_table.bonus_standard,checks_table.bonus_promotion,checks_table.promotion_b_mover,checks_table.item_marker,checks_header.requisite " +
+                               " checks_table.bonus_standard,checks_table.bonus_promotion,checks_table.promotion_b_mover,checks_table.item_marker,checks_header.requisite,checks_header.its_deleted " +
                                " FROM checks_header left join checks_table ON checks_header.document_number=checks_table.document_number " +
                                " left join clients ON checks_header.client  = clients.code " +
                                " left join tovar ON checks_table.tovar_code = tovar.code " +
@@ -862,16 +862,17 @@ namespace Cash8
                         //this.bonus_on_document = Convert.ToDecimal(reader["bonuses_it_is_counted"]);                       
                         this.bonuses_it_is_written_off = Convert.ToDecimal(reader["bonuses_it_is_written_off"]);
                         this.txtB_bonus_money.Text = this.bonuses_it_is_written_off.ToString();
+
                         if (reader["requisite"].ToString() == "1")
                         {
                             this.checkBox_club.Checked = true;
                         }
 
-                        //if (reader.GetBoolean(21))
-                        //{
-                        //    this.choice_of_currencies.CheckState = CheckState.Checked;
-                        //}
-                        //date_time_write = reader.GetDateTime(19).ToString("yyyy-MM-dd HH:mm:ss");
+                        if (Convert.ToInt16(reader["its_deleted"]) == 1)
+                        {
+                            pay.Enabled = false;
+                            checkBox_to_print_repeatedly.Enabled = false;
+                        }                        
                     }
 
                     //ListViewItem lvi = new ListViewItem(reader.GetString(9).Trim());
@@ -4656,7 +4657,7 @@ namespace Cash8
                 while (1 == 1)
                 {
                     count++;
-                    Thread.Sleep(1000);
+                    Thread.Sleep(500);
                     result = GET_AnswerAddingKmArrayToTableTested(MainStaticClass.url, guid);
                     status = result.results[0].status;
                     if (status != "ready")
@@ -7589,6 +7590,12 @@ namespace Cash8
                 MessageBox.Show(" Нет строк ", " Проверки переда записью документа ");
                 return;
             }
+
+            if (get_its_deleted_document() == 1)
+            {
+                MessageBox.Show("Удаленный чек не может быть распечатан");
+                return;
+            }
             //Проверка ИНН и Наименования
             if ((txtB_inn.Text.Trim().Length != 0) || (txtB_name.Text.Trim().Length != 0))
             {
@@ -7613,23 +7620,8 @@ namespace Cash8
                 bool continue_print = true;
                 if (count_km != 0)
                 {
-                    continue_print = checking_km_before_adding_to_buffer();
-                    //if (result == 1)//проверка массива кодов маркировки в ФР
-                    //{
-                    //    continue_print = true;
-                    //}
-                    //else if (result == 0)
-                    //{
-                    //    continue_print = false;
-                    //}
-                    //else if (result == -1)//Вызываем еще раз
-                    //{
-                    //    result = checking_km_before_adding_to_buffer();
-                    //    if (result == 1)//проверка массива кодов маркировки в ФР
-                    //    {
-                    //        continue_print = true;
-                    //    }
-                    //}
+                    clearMarkingCodeValidationResult();
+                    continue_print = checking_km_before_adding_to_buffer();                   
                     if (continue_print)
                     {
                         continue_print = check_imc_work_state(count_km);//Проверка соответсвия состояния буфера в ФН и 
@@ -11594,53 +11586,6 @@ namespace Cash8
         private void show_pay_form()
         {
 
-            //if (listView1.Items.Count == 0)
-            //{
-            //    MessageBox.Show(" Нет строк ", " Проверки переда записью документа ");
-            //    return;
-            //}
-            ////Проверка ИНН и Наименования
-            //if ((txtB_inn.Text.Trim().Length != 0) || (txtB_name.Text.Trim().Length != 0))
-            //{
-            //    if ((txtB_inn.Text.Trim().Length == 0) || (txtB_name.Text.Trim().Length == 0))
-            //    {
-            //        MessageBox.Show("Если заполнен ИНН, то должно быть заполнено и наименование и наоборот");
-            //        return;
-            //    }
-            //}
-
-            ////ПРОВЕРКА МАССИВА КОДОВ МАРКИРОВКИ
-            //if (MainStaticClass.GetVersionFn == 2)
-            //{
-            //    int count_km = 0;
-            //    foreach (ListViewItem lvi in listView1.Items)
-            //    {
-            //        if (lvi.SubItems[14].Text.Trim().Length > 1)
-            //        {
-            //            count_km++;
-            //        }
-            //    }
-            //    bool continue_print = true;
-            //    if (count_km != 0)
-            //    {
-            //        continue_print = checking_km_before_adding_to_buffer();//проверка массива кодов маркировки в ФР
-            //        if (continue_print)
-            //        {
-            //            continue_print = check_imc_work_state(count_km);//Проверка соответсвия состояния буфера в ФН и 
-            //        }
-            //        else
-            //        {
-            //            return;
-            //        }
-            //    }
-            //    if (!continue_print)
-            //    {
-            //        return;
-            //    }
-            //}
-            ////КОНЕЦ ПРОВЕРКИ МАССИВА КОДОВ МАРКИРОВКИ
-
-
             MainStaticClass.write_event_in_log("Попытка перейти в окно оплаты", "Документ чек", numdoc.ToString());            
 
             //Pay pay_form = new Pay();
@@ -12399,49 +12344,125 @@ namespace Cash8
                 MessageBox.Show("При поиске по ИНН произошли ошибки "+ex.Message);
             }
         }
-                     
-        //private void fill_client_on_return(string code_client)
-        //{
-        //    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
 
-        //    try
-        //    {
-        //        conn.Open();
-        //        string query = "SELECT code, pin FROM bonus_cards WHERE code='"+ code_client+"'";
-        //        NpgsqlCommand command = new NpgsqlCommand(query, conn);
-        //        NpgsqlDataReader reader = command.ExecuteReader();
-        //        while (reader.Read())
-        //        {
-        //            client.Tag = reader["code"].ToString();
-        //            client.Text = reader["code"].ToString();
-        //        }               
-        //        reader.Close();
-        //        conn.Close();
-        //    }
-        //    catch (NpgsqlException ex)
-        //    {
-        //        MessageBox.Show(ex.Message);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show(ex.Message);
-        //    }
-        //    finally
-        //    {
-        //        if (conn.State == ConnectionState.Open)
-        //        {
-        //            conn.Close();
-        //        }
-        //    }
+        public class ClearMarkingCodeValidationResult
+        {
+            public string type { get; set; }
+            public ClearMarkingCodeValidationResult()
+            {
+                type = "clearMarkingCodeValidationResult";
+            }
+        }
+
+        //private static AnswerAddingKmArrayToTableTested GET_AnswerAddingKmArrayToTableTested(string Url, string Data)
+        //{
+        //    System.Net.WebRequest req = System.Net.WebRequest.Create(Url + "/" + Data);
+        //    req.Timeout = 10000;
+        //    System.Net.WebResponse resp = req.GetResponse();
+        //    //HttpWebResponse myHttpWebResponse = (HttpWebResponse)req.GetResponse();
+
+        //    System.IO.Stream stream = resp.GetResponseStream();
+
+        //    System.IO.StreamReader sr = new System.IO.StreamReader(stream);
+        //    string Out = sr.ReadToEnd();
+        //    sr.Close();
+
+        //    //Newtonsoft.Json.Linq.JObject obj = Newtonsoft.Json.Linq.JObject.Parse(Out);
+        //    //var obj = JsonConvert.DeserializeObject(Out) as System.Collections.Generic.ICollection<Results>; 
+
+        //    var results = JsonConvert.DeserializeObject<AnswerAddingKmArrayToTableTested>(Out);
+
+        //    //AnswerAddingKmArrayToTableTested results = JsonConvert.DeserializeObject<AnswerAddingKmArrayToTableTested>(Out);
+        //    //Thread.Sleep(1000);
+        //    req = null;
+        //    resp.Close();
+        //    stream.Close();
+        //    sr = null;
+
+        //    return results;
+        //    //return Out;
         //}
 
-        /// <summary>
-        /// Заполнить табличную часть возврата
-        /// по номеру чека продажи
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btn_fill_on_sales_Click(object sender, EventArgs e)
+        private void clearMarkingCodeValidationResult()
+        {
+            ClearMarkingCodeValidationResult clearMarkingCodeValidationResult = new ClearMarkingCodeValidationResult();
+            ////////////////////////////////////////
+            string status = "";
+            AnswerAddingKmArrayToTableTested result = null;
+            string clearMarking = JsonConvert.SerializeObject(clearMarkingCodeValidationResult, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            string json = MainStaticClass.shablon.Replace("body", clearMarking);
+            string guid = Guid.NewGuid().ToString();
+            string replace = "\"uuid\": \"" + guid + "\"";
+            json = json.Replace("uuid", replace);
+            if (FiscallPrintJason.POST(MainStaticClass.url, json) == "Created")
+            {
+                int count = 0;
+                while (1 == 1)
+                {
+                    count++;
+                    Thread.Sleep(1000);
+                    result = GET_AnswerAddingKmArrayToTableTested(MainStaticClass.url, guid);
+                    status = result.results[0].status;
+                    if (status != "ready")
+                    {
+                        if (count > 14)
+                        {
+                            break;
+                        }
+                    }
+                    else if ((status == "ready") || (status == "error"))
+                    {
+                        break;
+                    }
+                }
+            }
+
+            //return result;
+            ////////////////////////////////////////
+        }
+
+    //private void fill_client_on_return(string code_client)
+    //{
+    //    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+
+    //    try
+    //    {
+    //        conn.Open();
+    //        string query = "SELECT code, pin FROM bonus_cards WHERE code='"+ code_client+"'";
+    //        NpgsqlCommand command = new NpgsqlCommand(query, conn);
+    //        NpgsqlDataReader reader = command.ExecuteReader();
+    //        while (reader.Read())
+    //        {
+    //            client.Tag = reader["code"].ToString();
+    //            client.Text = reader["code"].ToString();
+    //        }               
+    //        reader.Close();
+    //        conn.Close();
+    //    }
+    //    catch (NpgsqlException ex)
+    //    {
+    //        MessageBox.Show(ex.Message);
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        MessageBox.Show(ex.Message);
+    //    }
+    //    finally
+    //    {
+    //        if (conn.State == ConnectionState.Open)
+    //        {
+    //            conn.Close();
+    //        }
+    //    }
+    //}
+
+    /// <summary>
+    /// Заполнить табличную часть возврата
+    /// по номеру чека продажи
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void btn_fill_on_sales_Click(object sender, EventArgs e)
         {
 
             if (listView1.Items.Count > 0)
