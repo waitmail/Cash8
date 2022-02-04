@@ -1019,11 +1019,7 @@ namespace Cash8
                 //если это возврат и если сумма безнала меньше 1 тогда копейки прибаквить к наличным
                 string sum_cash_pay = (Convert.ToDecimal(cash_sum.Text) - Convert.ToDecimal(remainder.Text)).ToString().Replace(",", ".");
                 string non_sum_cash_pay = (get_non_cash_sum(1)).ToString().Replace(",", ".");
-
-
-
-
-
+                                                          
                 if (cc.it_is_paid(cash_sum.Text, cc.calculation_of_the_sum_of_the_document().ToString().Replace(",", "."), remainder.Text.Replace(",", "."),
                 (pay_bonus_many.Text.Trim() == "" ? "0" : pay_bonus_many.Text.Trim()),
                 true,

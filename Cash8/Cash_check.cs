@@ -13,6 +13,7 @@ using System.Collections;
 using Newtonsoft.Json;
 using System.Net;
 using System.Net.Sockets;
+using System.Text.RegularExpressions;
 
 namespace Cash8
 {
@@ -360,10 +361,13 @@ namespace Cash8
                     if (buyerInfoResponce.cards.card.Count > 0)
                     {
                         //здесь можно проверить на супермаму
-                        CrmCabinetInfo crmCabinetInfo = get_crm_cabinet_info(buyerInfoResponce.buyer.uid);
-                        if (crmCabinetInfo.buyer.subscriptions.Count > 0)
+                        if (buyerInfoResponce.buyer.uid != null)
                         {
-                            checkBox_club.Checked = true;
+                            CrmCabinetInfo crmCabinetInfo = get_crm_cabinet_info(buyerInfoResponce.buyer.uid);
+                            if (crmCabinetInfo.buyer.subscriptions.Count > 0)
+                            {
+                                checkBox_club.Checked = true;
+                            }
                         }
 
                         spendAllowed = buyerInfoResponce.buyer.spendAllowed;
@@ -890,7 +894,6 @@ namespace Cash8
                         lvi.SubItems.Add(((int)(Convert.ToDecimal(reader["bonus_promotion"]))).ToString());//bonus_standard
                         lvi.SubItems.Add(reader["promotion_b_mover"].ToString());//promotion_b_mover
                         lvi.SubItems.Add(reader["item_marker"].ToString().Replace("vasya2021", "'"));//item_marker
-
                         listView1.Items.Add(lvi);
                     }
                     else
@@ -1239,7 +1242,8 @@ namespace Cash8
                     }
                     //if (check_type.SelectedIndex == 0)
                     //{
-                    show_pay_form();
+                    //show_pay_form();
+                    pay_Click(null, null);
                     //}
                     //else
                     //{
@@ -2368,39 +2372,48 @@ namespace Cash8
                         {
                             if (!Console.CapsLock)
                             {
-                                this.qr_code = "";
-                                Input_action_barcode input_Action_Barcode = new Input_action_barcode();
-                                input_Action_Barcode.call_type = 6;
-                                input_Action_Barcode.caller = this;
-                                if (DialogResult.Cancel == input_Action_Barcode.ShowDialog())
+                                if ((Control.ModifierKeys & Keys.Shift) != Keys.Shift)
                                 {
-                                    error = true;
-                                }
-                                if (this.qr_code != "")//Был введен qr код необходимо его внести в чек
-                                {
-                                    //Проверим введенный код маркировки на правильность
-                                    if ((this.qr_code.Substring(0, 2) == "01") && (this.qr_code.Substring(16, 2) == "21"))
+                                    this.qr_code = "";
+                                    Input_action_barcode input_Action_Barcode = new Input_action_barcode();
+                                    input_Action_Barcode.call_type = 6;
+                                    input_Action_Barcode.caller = this;
+                                    if (DialogResult.Cancel == input_Action_Barcode.ShowDialog())
                                     {
-                                        //Перед добавлением проверить на уже добавленное                                         
-                                        foreach (ListViewItem item in listView1.Items)
-                                        {
-                                            if (item.SubItems[14].Text == this.qr_code)
-                                            {
-                                                MessageBox.Show("Номенклатура с введенным кодом маркировки который вы пытались добавить уже существует в чеке. \r\n Номенклатура не будет добавлена.");
-                                                //Не добавляем позицию в чек
-                                                error = true;
-                                                break;
-                                            }
-                                        }
-                                        lvi.SubItems[14].Text = this.qr_code;//добавим в чек qr код                                        
-                                    }
-                                    else
-                                    {
-                                        MessageBox.Show("Введен невернй код маркировки, попробуйте еще раз.Номенклатура не будет добавлена.");
                                         error = true;
-                                        //Не добавляем позицию в чек
                                     }
-                                    this.qr_code = "";//обнулим переменную
+                                    if (this.qr_code != "")//Был введен qr код необходимо его внести в чек
+                                    {
+                                        //Проверим введенный код маркировки на правильность
+                                        if ((this.qr_code.Substring(0, 2) == "01") && (this.qr_code.Substring(16, 2) == "21"))
+                                        {
+                                            //Перед добавлением проверить на уже добавленное                                         
+                                            foreach (ListViewItem item in listView1.Items)
+                                            {
+                                                if (item.SubItems[14].Text == this.qr_code)
+                                                {
+                                                    MessageBox.Show("Номенклатура с введенным кодом маркировки который вы пытались добавить уже существует в чеке. \r\n Номенклатура не будет добавлена.");
+                                                    //Не добавляем позицию в чек
+                                                    error = true;
+                                                    break;
+                                                }
+                                            }
+                                            lvi.SubItems[14].Text = this.qr_code;//добавим в чек qr код                                        
+                                        }
+                                        else
+                                        {
+                                            MessageBox.Show("Введен невернй код маркировки, попробуйте еще раз.Номенклатура не будет добавлена.");
+                                            error = true;
+                                            //Не добавляем позицию в чек
+                                        }
+                                        this.qr_code = "";//обнулим переменную
+                                    }
+                                }
+                                else
+                                {
+                                    MessageBox.Show("У вас нажата клавиша Shift, ввод кода маркировки невозможен.Номенклатура не будет добавлена.");
+                                    //Не добавляем позицию в чек
+                                    error = true;
                                 }
                             }
                             else
@@ -4437,7 +4450,7 @@ namespace Cash8
             bool result = true;
             AddingKmArrayToTableTested addingKmArrayToTableTestedKm = new AddingKmArrayToTableTested();
             addingKmArrayToTableTestedKm.type = "validateMarks";
-            addingKmArrayToTableTestedKm.timeout = 60000;
+            addingKmArrayToTableTestedKm.timeout = 6000;
             addingKmArrayToTableTestedKm.@params = new List<AddingKmArrayToTableTested.Param>();
             var num_strt_km = new Dictionary<int, int>();
             //int num = 0;
@@ -4448,12 +4461,36 @@ namespace Cash8
                     num_strt_km.Add(num_strt_km.Count, lvi.Index + 1);
                     AddingKmArrayToTableTested.Param param = new AddingKmArrayToTableTested.Param();
                     param.imcType = "auto";
+
+                    //string GS1 = Char.ConvertFromUtf32(29);
+                    //MessageBox.Show(lvi.SubItems[14].Text);
+                    //MessageBox.Show(lvi.SubItems[14].Text.Length.ToString());
+                    //int i = 30;
+                    //while (i < 35)
+                    //{
+                    //    MessageBox.Show(i.ToString() + " " + lvi.SubItems[14].Text.Substring(i, 1));
+                    //    byte[] asciiBytes = Encoding.ASCII.GetBytes(lvi.SubItems[14].Text.Substring(i, 1));
+                    //    MessageBox.Show(i.ToString() + "размер " + asciiBytes.Length.ToString() + " asciiBytes код " + asciiBytes[0].ToString());
+                    //    i++;
+                    //}
+
+                    //char gs2 = '\u001d';
+                    //if (lvi.SubItems[14].Text.IndexOf(gs2) == -1)
+                    //{
+                    //    MessageBox.Show("gs2" + " не найден");
+                    //    lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
+                    //    lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(38, GS1);
+                    //}
+
+                    //string km = lvi.SubItems[14].Text.Trim().Replace("'", "vasya2021")
+
                     string GS1 = Char.ConvertFromUtf32(29);
-                    if (lvi.SubItems[14].Text.IndexOf(GS1) == -1)
-                    {
+                    if ((lvi.SubItems[14].Text.Trim().Length == 83)|| (lvi.SubItems[14].Text.Trim().Length == 127))
+                    {                        
                         lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
                         lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(38, GS1);
                     }
+
                     byte[] textAsBytes = Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim());
                     string mark_str = Convert.ToBase64String(textAsBytes);
                     param.imc = mark_str;
@@ -4470,28 +4507,46 @@ namespace Cash8
                 {
                     if (answerAddingKmArrayToTableTested.results[0].result[0].onlineValidation != null)
                     {
-                        int i = 0;
-                        while (i < answerAddingKmArrayToTableTested.results[0].result.Count)
-                        {   //Успешная проверка это когда в секции "itemInfoCheckResult" реквизит "imcCheckResult" имеет значение true
-                            if (!answerAddingKmArrayToTableTested.results[0].result[i].onlineValidation.itemInfoCheckResult.imcCheckResult)
-                            {
-                                if (answerAddingKmArrayToTableTested.results[0].result[i].onlineValidation.markOperatorResponseResult != "correct")
+                        if (answerAddingKmArrayToTableTested.results[0].result[0].driverError.code == 0)
+                        {
+                            int i = 0;
+                            while (i < answerAddingKmArrayToTableTested.results[0].result.Count)
+                            {   //Успешная проверка это когда в секции "itemInfoCheckResult" реквизит "imcCheckResult" имеет значение true
+                                if (!answerAddingKmArrayToTableTested.results[0].result[i].onlineValidation.itemInfoCheckResult.imcCheckResult)
                                 {
-                                    if (answerAddingKmArrayToTableTested.results[0].result[i].onlineValidation.markOperatorResponseResult == "incorrect")
+                                    if (answerAddingKmArrayToTableTested.results[0].result[i].onlineValidation.markOperatorResponseResult != "correct")
                                     {
-                                        //MessageBox.Show("Запрос имеет некорректный формат markOperatorResponseResult = " + answerAddingKmArrayToTableTested.results[0].result[0].onlineValidation.markOperatorResponseResult.ToString());
-                                        MessageBox.Show("Запрос имеет некорректный формат в строке = " + num_strt_km[i].ToString());
-                                        result = false;
-                                    }
-                                    if (answerAddingKmArrayToTableTested.results[0].result[i].onlineValidation.markOperatorResponseResult == "unrecognized")
-                                    {
-                                        //MessageBox.Show("КМ имеет некорретный формат markOperatorResponseResult = " + answerAddingKmArrayToTableTested.results[0].result[0].onlineValidation.markOperatorResponseResult.ToString());
-                                        MessageBox.Show("КМ имеет некорретный формат в строке = " + num_strt_km[i].ToString());
-                                        result = false;
+                                        if (answerAddingKmArrayToTableTested.results[0].result[i].onlineValidation.markOperatorResponseResult == "incorrect")
+                                        {
+                                            //MessageBox.Show("Запрос имеет некорректный формат markOperatorResponseResult = " + answerAddingKmArrayToTableTested.results[0].result[0].onlineValidation.markOperatorResponseResult.ToString());
+                                            MessageBox.Show("Запрос имеет некорректный формат в строке = " + num_strt_km[i].ToString());
+                                            result = false;
+                                        }
+                                        if (answerAddingKmArrayToTableTested.results[0].result[i].onlineValidation.markOperatorResponseResult == "unrecognized")
+                                        {
+                                            //MessageBox.Show("КМ имеет некорретный формат markOperatorResponseResult = " + answerAddingKmArrayToTableTested.results[0].result[0].onlineValidation.markOperatorResponseResult.ToString());
+                                            MessageBox.Show("КМ имеет некорретный формат в строке = " + num_strt_km[i].ToString());
+                                            //listView1.Items[num_strt_km[i]-1].SubItems[14].Text = change_case_in_line(listView1.Items[num_strt_km[i]-1].SubItems[14].Text);
+                                            result = false;//попробовать вызвать еще раз с км с измененным регистром
+                                        }
                                     }
                                 }
+                                i++;
                             }
-                            i++;
+                        }
+                        else
+                        {
+                            string description = "";
+                            if (answerAddingKmArrayToTableTested.results[0].result[0].driverError.error != null)
+                            {
+                                description += answerAddingKmArrayToTableTested.results[0].result[0].driverError.error;
+                            }
+                            if (answerAddingKmArrayToTableTested.results[0].result[0].driverError.description != null)
+                            {
+                                description += answerAddingKmArrayToTableTested.results[0].result[0].driverError.description;
+                            }
+
+                            MessageBox.Show("Ошибка при проверке кодов маркировки код ошибки " + answerAddingKmArrayToTableTested.results[0].result[0].driverError.code.ToString() + " " + description);
                         }
                     }
                     else
@@ -4511,6 +4566,36 @@ namespace Cash8
                 MessageBox.Show(" Ошибка при проверке кодов маркировки код ошибки " + answerAddingKmArrayToTableTested.results[0].errorCode.ToString() + " " + answerAddingKmArrayToTableTested.results[0].errorDescription.ToString());
                 result = false;
             }
+            return result;
+        }
+
+
+        private string change_case_in_line(string s)
+        {
+            string result = "";
+            Regex reg = new Regex("[a-zA-Z]");
+            foreach (char c in s)
+            {
+                //Проверяем что это буква                
+                if (reg.IsMatch(c.ToString()))
+                {
+                    if (char.IsLower(c))
+                    {
+                        result += c.ToString().ToUpper();
+                    }
+                    else
+                    {
+                        result += c.ToString().ToLower();
+                    }
+                }
+                else
+                {
+                    result += c.ToString();
+                }
+            }
+
+
+
             return result;
         }
 
@@ -4682,7 +4767,7 @@ namespace Cash8
                     }
                     else
                     {
-                        MessageBox.Show("В чеке " + count_km.ToString() + " кода маркировки,а в буфере ФР " + answerCheckImcWorkState.results[0].result.fm.checkingCount.ToString());
+                        MessageBox.Show("В чеке " + count_km.ToString() + " код(а) маркировки,а в буфере ФР " + answerCheckImcWorkState.results[0].result.fm.checkingCount.ToString());
                     }
                 }
                 else
@@ -5633,6 +5718,7 @@ namespace Cash8
                     }
                 }
                 bool continue_print = true;
+
                 if (count_km != 0)
                 {
                     continue_print = check_imc_work_state(count_km);//Проверка соответсвия состояния буфера в ФН и                     
@@ -7527,7 +7613,23 @@ namespace Cash8
                 bool continue_print = true;
                 if (count_km != 0)
                 {
-                    continue_print = checking_km_before_adding_to_buffer();//проверка массива кодов маркировки в ФР
+                    continue_print = checking_km_before_adding_to_buffer();
+                    //if (result == 1)//проверка массива кодов маркировки в ФР
+                    //{
+                    //    continue_print = true;
+                    //}
+                    //else if (result == 0)
+                    //{
+                    //    continue_print = false;
+                    //}
+                    //else if (result == -1)//Вызываем еще раз
+                    //{
+                    //    result = checking_km_before_adding_to_buffer();
+                    //    if (result == 1)//проверка массива кодов маркировки в ФР
+                    //    {
+                    //        continue_print = true;
+                    //    }
+                    //}
                     if (continue_print)
                     {
                         continue_print = check_imc_work_state(count_km);//Проверка соответсвия состояния буфера в ФН и 
@@ -8817,10 +8919,20 @@ namespace Cash8
                     else if (tip_action == 9)//Акция работает в день рождения владельца дисконтной карты
                     {
                         //start_action = DateTime.Now;
-                        if (!actions_birthday())
+                        if (MainStaticClass.GetWorkSchema == 1)
                         {
-                            //write_time_execution("проверка на день рождения", tip_action.ToString());
-                            continue;
+                            if (!actions_birthday())
+                            {
+                                //write_time_execution("проверка на день рождения", tip_action.ToString());
+                                continue;
+                            }
+                        }
+                        else if (MainStaticClass.GetWorkSchema == 2)//Для кулуба супермама будет дана скидка
+                        {
+                            if (checkBox_club.CheckState != CheckState.Checked)
+                            {
+                                continue;
+                            }
                         }
 
                         if (reader.GetDecimal(2) != 0)
@@ -10118,6 +10230,7 @@ namespace Cash8
 
                 if (quantity_on_doc >= sum)//Есть вхождение в акцию
                 {
+                    //MessageBox.Show(comment, " АКЦИЯ !!!");
                     have_action = true;//Признак того что в документе есть сработка по акции
 
                     listView1.Items.Clear();//Очищаем многострочную часть документа
@@ -12352,14 +12465,14 @@ namespace Cash8
             {
 
                 string query = " SELECT dt.tovar_code, dt.name,SUM(dt.quantity)AS quantity, dt.price, dt.price_at_a_discount, SUM(dt.sum) AS sum," +
-                               "  SUM(dt.sum_at_a_discount) AS sum_at_a_discount, dt.id_transaction,dt.client,dt.item_marker,dt.numstr " +
+                               "  SUM(dt.sum_at_a_discount) AS sum_at_a_discount, dt.id_transaction,dt.client,dt.item_marker"+//,dt.numstr " +
                                " FROM " +
                                " (SELECT numstr, tovar_code, tovar.name, quantity AS quantity, price, price_at_a_discount, sum, sum_at_a_discount," +
                                " checks_header.id_transaction, checks_header.client, item_marker " +
                                " FROM " +
                                " checks_table LEFT JOIN tovar ON checks_table.tovar_code = tovar.code " +
                                " LEFT JOIN checks_header ON checks_table.document_number = checks_header.document_number " +
-                               " WHERE checks_table.document_number = '"+txtB_num_sales.Text.Trim()+"' AND checks_header.check_type = 0 AND checks_header.its_deleted = 0 " +
+                               " WHERE checks_table.document_number = '" + txtB_num_sales.Text.Trim() + "' AND checks_header.check_type = 0 AND checks_header.its_deleted = 0 " +
                                " AND checks_header.date_time_write BETWEEN '" + DateTime.Now.AddDays(-14).Date.ToString("dd-MM-yyyy") + "' AND  '" + DateTime.Now.AddDays(1).ToString("dd-MM-yyyy") + "'" +
                                " UNION ALL " +
                                " SELECT numstr, tovar_code, tovar.name, -quantity, price, price_at_a_discount, -sum, -sum_at_a_discount, checks_header.id_transaction," +
@@ -12367,8 +12480,10 @@ namespace Cash8
                                " LEFT JOIN checks_header ON checks_table.document_number = checks_header.document_number " +
                                " WHERE checks_header.id_sale = '" + txtB_num_sales.Text.Trim() + "'  AND checks_header.check_type = 1 AND checks_header.its_deleted = 0 " +
                                " AND checks_header.date_time_write BETWEEN '" + DateTime.Now.AddDays(-14).Date.ToString("dd-MM-yyyy") + "' AND  '" + DateTime.Now.AddDays(1).ToString("dd-MM-yyyy") + "' )AS dt " +
-                               " GROUP BY dt.numstr,dt.tovar_code, dt.name, dt.price, dt.price_at_a_discount, dt.id_transaction,dt.client,dt.item_marker " +
-                               " HAVING SUM(dt.quantity) > 0 order by numstr";
+                               " GROUP BY "+//dt.numstr," +
+                               "dt.tovar_code, dt.name, dt.price, dt.price_at_a_discount, dt.id_transaction,dt.client,dt.item_marker " +
+                               " HAVING SUM(dt.quantity) > 0 ";
+                               //"order by numstr";
 
                 conn.Open();
                 //string query = " SELECT tovar_code, tovar.name,quantity, price, price_at_a_discount, sum, sum_at_a_discount,checks_header.id_transaction,checks_header.client,item_marker FROM checks_table " +
@@ -12406,7 +12521,7 @@ namespace Cash8
                     lvi.SubItems.Add("0");//Бонус
                     lvi.SubItems.Add("0");//Бонус
                     lvi.SubItems.Add("0");//Бонус
-                    lvi.SubItems.Add(reader["item_marker"].ToString());//Маркер
+                    lvi.SubItems.Add(reader["item_marker"].ToString().Replace("vasya2021", "'"));//Маркер                    
                     listView1.Items.Add(lvi);
                 }
                 reader.Close();

@@ -59,7 +59,7 @@
             this.label1.AutoSize = true;
             this.label1.BackColor = System.Drawing.SystemColors.Control;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label1.Location = new System.Drawing.Point(72, 188);
+            this.label1.Location = new System.Drawing.Point(72, 183);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(354, 55);
             this.label1.TabIndex = 1;
@@ -74,7 +74,7 @@
             this.pay_sum.Enabled = false;
             this.pay_sum.Font = new System.Drawing.Font("Microsoft Sans Serif", 39.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.pay_sum.ForeColor = System.Drawing.Color.Black;
-            this.pay_sum.Location = new System.Drawing.Point(494, 183);
+            this.pay_sum.Location = new System.Drawing.Point(494, 178);
             this.pay_sum.MaxLength = 10;
             this.pay_sum.Multiline = true;
             this.pay_sum.Name = "pay_sum";
@@ -189,7 +189,7 @@
             // 
             this.label9.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label9.Location = new System.Drawing.Point(739, 359);
+            this.label9.Location = new System.Drawing.Point(739, 362);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(18, 55);
             this.label9.TabIndex = 1;
@@ -201,7 +201,7 @@
             this.non_cash_sum_kop.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.non_cash_sum_kop.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.non_cash_sum_kop.Font = new System.Drawing.Font("Microsoft Sans Serif", 32.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.non_cash_sum_kop.Location = new System.Drawing.Point(760, 360);
+            this.non_cash_sum_kop.Location = new System.Drawing.Point(760, 363);
             this.non_cash_sum_kop.MaxLength = 2;
             this.non_cash_sum_kop.Name = "non_cash_sum_kop";
             this.non_cash_sum_kop.Size = new System.Drawing.Size(54, 56);
@@ -214,7 +214,7 @@
             this.non_cash_sum.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.non_cash_sum.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.non_cash_sum.Font = new System.Drawing.Font("Microsoft Sans Serif", 32.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.non_cash_sum.Location = new System.Drawing.Point(493, 360);
+            this.non_cash_sum.Location = new System.Drawing.Point(493, 363);
             this.non_cash_sum.MaxLength = 5;
             this.non_cash_sum.Name = "non_cash_sum";
             this.non_cash_sum.Size = new System.Drawing.Size(243, 56);
@@ -227,7 +227,7 @@
             this.label8.AutoSize = true;
             this.label8.BackColor = System.Drawing.SystemColors.Control;
             this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label8.Location = new System.Drawing.Point(72, 360);
+            this.label8.Location = new System.Drawing.Point(72, 363);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(403, 55);
             this.label8.TabIndex = 16;
@@ -270,7 +270,7 @@
             this.bonus_total_in_centr.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.bonus_total_in_centr.Font = new System.Drawing.Font("Microsoft Sans Serif", 39.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.bonus_total_in_centr.ForeColor = System.Drawing.Color.ForestGreen;
-            this.bonus_total_in_centr.Location = new System.Drawing.Point(494, 122);
+            this.bonus_total_in_centr.Location = new System.Drawing.Point(494, 114);
             this.bonus_total_in_centr.MaxLength = 10;
             this.bonus_total_in_centr.Multiline = true;
             this.bonus_total_in_centr.Name = "bonus_total_in_centr";
@@ -286,7 +286,7 @@
             this.label5.AutoSize = true;
             this.label5.BackColor = System.Drawing.SystemColors.Control;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label5.Location = new System.Drawing.Point(75, 123);
+            this.label5.Location = new System.Drawing.Point(75, 115);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(356, 55);
             this.label5.TabIndex = 7;
@@ -301,7 +301,7 @@
             this.bonus_on_document.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.bonus_on_document.Font = new System.Drawing.Font("Microsoft Sans Serif", 39.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.bonus_on_document.ForeColor = System.Drawing.Color.ForestGreen;
-            this.bonus_on_document.Location = new System.Drawing.Point(495, 62);
+            this.bonus_on_document.Location = new System.Drawing.Point(495, 52);
             this.bonus_on_document.MaxLength = 10;
             this.bonus_on_document.Multiline = true;
             this.bonus_on_document.Name = "bonus_on_document";
@@ -329,7 +329,7 @@
             this.label4.AutoSize = true;
             this.label4.BackColor = System.Drawing.SystemColors.Control;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 27.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label4.Location = new System.Drawing.Point(75, 75);
+            this.label4.Location = new System.Drawing.Point(75, 65);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(415, 42);
             this.label4.TabIndex = 6;
@@ -345,7 +345,7 @@
             this.pay_bonus_many.Enabled = false;
             this.pay_bonus_many.Font = new System.Drawing.Font("Microsoft Sans Serif", 32.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.pay_bonus_many.ForeColor = System.Drawing.SystemColors.MenuHighlight;
-            this.pay_bonus_many.Location = new System.Drawing.Point(679, 243);
+            this.pay_bonus_many.Location = new System.Drawing.Point(679, 241);
             this.pay_bonus_many.MaxLength = 10;
             this.pay_bonus_many.Name = "pay_bonus_many";
             this.pay_bonus_many.Size = new System.Drawing.Size(135, 49);
@@ -359,7 +359,7 @@
             this.pay_bonus.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.pay_bonus.Enabled = false;
             this.pay_bonus.Font = new System.Drawing.Font("Microsoft Sans Serif", 32.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.pay_bonus.Location = new System.Drawing.Point(493, 241);
+            this.pay_bonus.Location = new System.Drawing.Point(493, 239);
             this.pay_bonus.MaxLength = 10;
             this.pay_bonus.Name = "pay_bonus";
             this.pay_bonus.Size = new System.Drawing.Size(180, 56);
@@ -373,7 +373,7 @@
             this.label6.AutoSize = true;
             this.label6.BackColor = System.Drawing.SystemColors.Control;
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label6.Location = new System.Drawing.Point(72, 243);
+            this.label6.Location = new System.Drawing.Point(72, 241);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(235, 55);
             this.label6.TabIndex = 11;

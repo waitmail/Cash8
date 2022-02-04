@@ -114,7 +114,7 @@ namespace Cash8
             else if (call_type == 6)
             {
                 authorization.Text = " Просканируйте код маркировки. Отказ - Esc ";
-                this.input_barcode.MaxLength = 100;
+                //this.input_barcode.MaxLength = 100;
             }
 
             input_barcode.Focus();            

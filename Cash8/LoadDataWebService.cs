@@ -667,21 +667,19 @@ namespace Cash8
                 data_encrypt = CryptorEngine.Encrypt(data, true, key);
             }
             
-            List<string> queries = new List<string>();//Список запросов                              
-
+            List<string> queries = new List<string>();//Список запросов                                          
             using (LoadPacketData loadPacketData = getLoadPacketDataFull(nick_shop, data_encrypt, key))
-            {
+            {                
                 if (!loadPacketData.PacketIsFull)
                 {
                     MessageBox.Show("Неудачная попытка получения данных");
                     return;
-                }
+                }                
                 if (loadPacketData.Exchange)
                 {
                     MessageBox.Show("Пакет данных получен во время обновления данных на сервере, загрузка прервана");
                     return;
-                }
-                
+                }                
                 queries.Add("Delete from action_table");
                 queries.Add("Delete from action_header");
                 queries.Add("Delete from advertisement");

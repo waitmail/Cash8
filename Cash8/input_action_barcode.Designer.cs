@@ -35,7 +35,7 @@
             // input_barcode
             // 
             this.input_barcode.Location = new System.Drawing.Point(16, 43);
-            this.input_barcode.MaxLength = 100;
+            this.input_barcode.MaxLength = 200;
             this.input_barcode.Name = "input_barcode";
             this.input_barcode.Size = new System.Drawing.Size(472, 20);
             this.input_barcode.TabIndex = 0;

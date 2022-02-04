@@ -35,8 +35,8 @@ namespace Cash8
             //this.listView1.Font = new System.Drawing.Font("Microsoft Sans Serif", MainStaticClass.Font_list_view(), System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.KeyPreview = true;
             this.Load+=new EventHandler(Cash_checks_Load);
+        }       
 
-        }
         //protected override void OnMinimumSizeChanged(EventArgs e)
         //{
         //    base.OnMinimumSizeChanged(e);
@@ -294,7 +294,7 @@ namespace Cash8
             listView1.GridLines = true;
             listView1.Columns.Clear();
             listView1.Columns.Add("Статус", 50, HorizontalAlignment.Left);
-            listView1.Columns.Add("Дата", 180, HorizontalAlignment.Left);
+            listView1.Columns.Add("Дата", 250, HorizontalAlignment.Left);
             listView1.Columns.Add("Клиент", 180, HorizontalAlignment.Left);
             listView1.Columns.Add("Сумма", 100, HorizontalAlignment.Right);
             listView1.Columns.Add("Сдача", 100, HorizontalAlignment.Right);
@@ -486,20 +486,29 @@ namespace Cash8
                             {
                                 if (reader.GetDecimal(0) == 0)
                                 {
+                                    //lvi.UseItemStyleForSubItems = false;
                                     lvi.BackColor = Color.Pink;
+                                    lvi.Font = new System.Drawing.Font("Microsoft Sans Serif", 18, System.Drawing.FontStyle.Underline);
+                                    //lvi.SubItems[1].Font = new Font(lvi.SubItems[1].Font, lvi.SubItems[1].Font.Style | FontStyle.Bold);
+                                    //lvi.SubItems[2].Font = new Font(lvi.SubItems[2].Font, lvi.SubItems[2].Font.Style | FontStyle.Bold);
+                                    //lvi.SubItems[3].Font = new Font(lvi.SubItems[3].Font, lvi.SubItems[3].Font.Style | FontStyle.Bold);
                                 }
                             }
                         }
                         else
                         {
                             if (reader.GetDecimal(0) == 0)
-                            {
+                            {                                
                                 lvi.BackColor = Color.Pink;
+                                lvi.Font = new System.Drawing.Font("Microsoft Sans Serif", 18, System.Drawing.FontStyle.Underline);                                
                             }
                         }
                     }
-                    lvi.SubItems.Add(reader["document_number"].ToString()); 
-
+                    lvi.SubItems.Add(reader["document_number"].ToString());
+                    if (reader.GetDecimal(0) == 1)//Это удаленный чек
+                    {
+                        lvi.Font = new System.Drawing.Font("Microsoft Sans Serif", 18, System.Drawing.FontStyle.Strikeout);
+                    }
                     listView1.Items.Add(lvi);
                 }
                 reader.Close();

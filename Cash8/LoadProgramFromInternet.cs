@@ -92,6 +92,8 @@ namespace Cash8
                         label_update.Text = "Есть обновление программы " + result_web_query;
                         btn_download.Enabled = true;
                         new_version_of_the_program = true;
+                        //Принудительно вызываем обновление версии программы
+                        btn_download_Click(null, null);
                     }                    
                 }
             } 

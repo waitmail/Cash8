@@ -27,9 +27,9 @@ namespace Cash8
         //public static 
 
         //public static string url = "http://192.168.0.220:16732/requests";
-        //public static string url = "http://localhost:16732/requests";
+        public static string url = "http://localhost:16732/requests";
         //public static string url = "http://127.0.0.1:16732/requests";
-        public static string url = "http://" + get_ip_adress() + ":16732/requests";
+        //public static string url = "http://" + get_ip_adress() + ":16732/requests";
         //public static string url = "http://192.168.0.96:16732/requests";
 
         public static string shablon = "{uuid,\"request\": [body]}\"";
@@ -1199,6 +1199,11 @@ namespace Cash8
         }
 
 
+        /// <summary>
+        /// Отправить информацию что касса включена
+        /// и на нейт такая то версия программы
+        /// </summary>
+        /// <returns></returns>
         public static bool SendOnlineStatus()
         {
             bool result = true;
