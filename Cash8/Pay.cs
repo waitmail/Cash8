@@ -811,6 +811,13 @@ namespace Cash8
                 label6.Visible = true;
                 pay_bonus.Visible = true;
                 pay_bonus_many.Visible = true;
+                if (pay_bonus.Enabled)
+                {
+                    if (Convert.ToInt64(bonus_total_in_centr.Text) == 0)
+                    {
+                        pay_bonus.Enabled = false;
+                    }
+                }
             }
         }
 

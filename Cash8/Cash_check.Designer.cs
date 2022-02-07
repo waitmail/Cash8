@@ -189,7 +189,7 @@
             this.panel2.Controls.Add(this.select_tovar);
             this.panel2.Location = new System.Drawing.Point(21, 32);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(1003, 210);
+            this.panel2.Size = new System.Drawing.Size(1003, 269);
             this.panel2.TabIndex = 23;
             this.panel2.Visible = false;
             // 
@@ -199,7 +199,7 @@
             this.listView2.Location = new System.Drawing.Point(22, 53);
             this.listView2.MultiSelect = false;
             this.listView2.Name = "listView2";
-            this.listView2.Size = new System.Drawing.Size(956, 135);
+            this.listView2.Size = new System.Drawing.Size(956, 195);
             this.listView2.TabIndex = 0;
             this.listView2.UseCompatibleStateImageBehavior = false;
             this.listView2.Visible = false;
@@ -305,7 +305,7 @@
             this.panel_return.Controls.Add(this.return_kop);
             this.panel_return.Controls.Add(this.return_rouble);
             this.panel_return.Controls.Add(this.return_quantity);
-            this.panel_return.Location = new System.Drawing.Point(174, 257);
+            this.panel_return.Location = new System.Drawing.Point(620, 86);
             this.panel_return.Name = "panel_return";
             this.panel_return.Size = new System.Drawing.Size(432, 88);
             this.panel_return.TabIndex = 42;
@@ -401,7 +401,6 @@
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.panel_return);
             this.tabPage1.Controls.Add(this.panel2);
             this.tabPage1.Controls.Add(this.panel1);
             this.tabPage1.Controls.Add(this.listView1);
@@ -692,6 +691,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1075, 643);
+            this.Controls.Add(this.panel_return);
             this.Controls.Add(this.checkBox_club);
             this.Controls.Add(this.btn_fill_on_sales);
             this.Controls.Add(this.txtB_num_sales);

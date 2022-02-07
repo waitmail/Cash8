@@ -68,7 +68,8 @@ namespace Cash8
                     " comment, " +
                     " its_print, " +
                     "id_transaction,"+
-                    "id_transaction_sale" +
+                    "id_transaction_sale," +
+                    "remainder "+
                     " FROM checks_header WHERE document_number in  (" + document_number_list.ToString() + ")";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();                                
@@ -106,6 +107,7 @@ namespace Cash8
                     }
                     salesPortionsHeader.Id_transaction = reader["id_transaction"].ToString();
                     salesPortionsHeader.Id_transaction_sale = reader["id_transaction_sale"].ToString();
+                    salesPortionsHeader.SumCashRemainder = reader["remainder"].ToString().Replace(",",".");
                     salesPortions.ListSalesPortionsHeader.Add(salesPortionsHeader);
                     //Конец Новое заполнение                 
                 }
@@ -149,7 +151,7 @@ namespace Cash8
                 string query = "SELECT checks_header.document_number,checks_header.cash_desk_number,checks_table.tovar_code,checks_table.quantity, checks_table.price," +
                     " checks_table.price_at_a_discount,checks_table.sum,checks_table.sum_at_a_discount,checks_table.action_num_doc," +
                     " checks_table.action_num_doc1, checks_table.action_num_doc2,checks_table.characteristic,checks_header.date_time_start,checks_table.numstr, "+
-                    " checks_table.bonus_standard,checks_table.bonus_promotion,checks_table.promotion_b_mover " +
+                    " checks_table.bonus_standard,checks_table.bonus_promotion,checks_table.promotion_b_mover,checks_table.item_marker " +
                     " FROM checks_header " +
                     " LEFT JOIN checks_table ON checks_header.document_number = checks_table.document_number " +
                     " WHERE checks_table.document_number in (" + document_number_list.ToString() + ")";
@@ -178,6 +180,7 @@ namespace Cash8
                     salesPortionsTable.Bonus_stand = (reader["bonus_standard"].ToString() == "" ? "0" : reader["bonus_standard"].ToString().Replace(",", "."));
                     salesPortionsTable.Bonus_prom = (reader["bonus_promotion"].ToString() == "" ? "0" : reader["bonus_promotion"].ToString().Replace(",", "."));
                     salesPortionsTable.Promotion_b_mover = (reader["promotion_b_mover"].ToString() == "" ? "0" : reader["promotion_b_mover"].ToString().Replace(",", "."));
+                    salesPortionsTable.MarkingCode = reader["item_marker"].ToString();
                     salesPortions.ListSalesPortionsTable.Add(salesPortionsTable);
                     //Конец Новой заполнение
                 }
@@ -508,6 +511,7 @@ namespace Cash8
             public string Id_transaction_sale { get; set; }
             public string ClientInfo_vatin { get; set; }
             public string ClientInfo_name { get; set; }
+            public string SumCashRemainder { get; set; }
         }
         
         public class SalesPortionsTable
@@ -529,7 +533,10 @@ namespace Cash8
             public string Num_str { get; set; }
             public string Bonus_stand { get; set; }
             public string Bonus_prom { get; set; }
-            public string Promotion_b_mover { get; set; }      
+            public string Promotion_b_mover { get; set; }
+            public string MarkingCode { get; set; }
+
+            
         }
 
             public void send_sales_data_Click(object sender, EventArgs e)
