@@ -19,6 +19,7 @@ namespace Cash8
         public bool inpun_action_barcode = false;//Доступ из формы ввода акционного штрихкода
         public bool have_action = false;
         public decimal discount = 0;
+        public bool show_messages = false;
 
         public ProcessingOfActions()
         {
@@ -73,7 +74,6 @@ namespace Cash8
 
             return result;
         }
-
 
         private bool check_and_create_checks_table_temp()
         {
@@ -323,7 +323,7 @@ namespace Cash8
                     if (new_row)
                     {
                         dt.Rows.Add(row);
-                    }                  
+                    }
                 }
 
 
@@ -437,15 +437,15 @@ namespace Cash8
 
             //write_new_document("0", "0", "0", "0", false, "0", "0", "0");
         }
-        
-       
+
+
         /// <summary>
         /// обработка акций вызывается в двух режимах
         /// 1. Без окна вызова ввода штрихкода Предварительный рассчет
         /// 2. С вызовом всех дополнительных окон, окончательный рассчет
         /// </summary>
         /// <param name="show_query_window_barcode"></param>
-        public void to_define_the_action_dt(bool show_query_window_barcode)
+        public void to_define_the_action_dt()
         {
 
             if (!check_and_create_checks_table_temp())
@@ -462,19 +462,12 @@ namespace Cash8
             {
                 conn = MainStaticClass.NpgsqlConn();
                 conn.Open();
-                //string query = "SELECT tip,num_doc,persent,comment,code_tovar,sum,barcode,marker FROM action_header " +
-                //    " WHERE '" + DateTime.Now.Date.ToString("yyy-MM-dd") + "' between date_started AND date_end "+
-                //    //" AND " + count_minutes.ToString() + " between time_start AND time_end  
-                //    " AND num_doc in(" +
-                //    " SELECT DISTINCT action_table.num_doc FROM checks_table_temp " +
-                //    " LEFT JOIN action_table ON checks_table_temp.tovar = action_table.code_tovar) order by date_started ";
-
                 string query = "SELECT tip,num_doc,persent,comment,code_tovar,sum,barcode,marker FROM action_header " +
                     " WHERE '" + DateTime.Now.Date.ToString("yyy-MM-dd") + "' between date_started AND date_end " +
                     " AND " + count_minutes.ToString() + " between time_start AND time_end  AND num_doc in(" +
                     " SELECT DISTINCT action_table.num_doc FROM checks_table_temp " +
                     " LEFT JOIN action_table ON checks_table_temp.tovar = action_table.code_tovar) order by date_started ";
-                               
+
                 command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();
 
@@ -485,7 +478,7 @@ namespace Cash8
                     {
                         continue;
                     }
-                    
+
                     tip_action = reader.GetInt16(0);
                     /* Обработать акцию по типу 1
                     * первый тип это скидка на конкретный товар
@@ -500,7 +493,7 @@ namespace Cash8
                         }
                         else
                         {
-                            if (!show_query_window_barcode)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
+                            if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
                             {
                                 action_1_dt(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7), reader.GetInt32(4)); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
                             }
@@ -517,7 +510,7 @@ namespace Cash8
                         }
                         else
                         {
-                            if (!show_query_window_barcode)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
+                            if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
                             {
                                 action_2_dt(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7), reader.GetInt32(4)); //Сообщить о подарке                           
                             }
@@ -532,11 +525,14 @@ namespace Cash8
                         //action_2(reader.GetInt32(1));
                         if (reader.GetDecimal(2) != 0)
                         {
-                            //action_3(reader.GetInt32(1), reader.GetDecimal(2), reader.GetDecimal(5));//Дать скидку на все позиции из списка позицию                                                 
+                            action_3(reader.GetInt32(1), reader.GetDecimal(2), reader.GetDecimal(5));//Дать скидку на все позиции из списка позицию                                                 
                         }
                         else
                         {
-                            //action_3(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt16(7)); //Сообщить о подарке                           
+                            if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
+                            {
+                                action_3(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt16(7)); //Сообщить о подарке                           
+                            }
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
 
@@ -551,14 +547,17 @@ namespace Cash8
                         }
                         else
                         {
-                            //action_4(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt32(4));
+                            if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
+                            {
+                                action_4(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt32(4));
+                            }
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
                     }
                     else if (tip_action == 6)
                     {           //Номер документа  //Сообщение о подарке //Сумма в данном случае шаг акции
                         //start_action = DateTime.Now;
-                        //action_6(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt16(7));
+                        action_6(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt16(7));
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
                     }
                     else if (tip_action == 8)
@@ -633,7 +632,7 @@ namespace Cash8
                 command.Dispose();
 
                 checked_action_10_dt();//Отдельная проверка поскольку может не быть товарной части, а все акции выше проверяются именно на вхождение товаров документа в таб части акционных документов
-                
+
             }
             catch (NpgsqlException ex)
             {
@@ -670,7 +669,7 @@ namespace Cash8
                     if (Convert.ToInt32(row["action2"]) > 0)//Этот товар уже участвовал в акции значит его пропускаем
                     {
                         continue;
-                    }                    
+                    }
                     string query = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + row["tovar_code"].ToString() + " AND num_doc=" + num_doc.ToString();
                     command = new NpgsqlCommand(query, conn);
                     Int16 result = Convert.ToInt16(command.ExecuteScalar());
@@ -678,7 +677,7 @@ namespace Cash8
                     {
                         row["action2"] = num_doc.ToString();
                     }
-                }                
+                }
             }
             catch (NpgsqlException ex)
             {
@@ -693,7 +692,7 @@ namespace Cash8
             {
                 if (conn.State == ConnectionState.Open)
                 {
-                    conn.Close();                 
+                    conn.Close();
                 }
             }
         }
@@ -854,7 +853,7 @@ namespace Cash8
 
             return result;
         }
-        
+
         /*Поиск товара по штрихкоду
         * и добвление его в табличную часть
         * это подарочный товар
@@ -935,7 +934,7 @@ namespace Cash8
 
             }
         }
-        
+
         private DialogResult show_query_window_barcode(int call_type, int count, int num_doc)
         {
             Input_action_barcode ib = new Input_action_barcode();
@@ -947,7 +946,7 @@ namespace Cash8
             ib.Dispose();
             return dr;
         }
-                
+
         /// <summary>
         ///Обработать акцию по типу 1
         ///первый тип это скидка на конкретный товар
@@ -994,7 +993,7 @@ namespace Cash8
                         {
                             if (code_tovar != 0)
                             {
-                                find_barcode_or_code_in_tovar_dt(code_tovar.ToString());                               
+                                find_barcode_or_code_in_tovar_dt(code_tovar.ToString());
                             }
                         }
 
@@ -1079,7 +1078,7 @@ namespace Cash8
                 }
             }
         }
-               
+
         /// <summary>
         ///Обработать акцию по 2 типу
         ///это значит в документе должен быть товар
@@ -1104,7 +1103,7 @@ namespace Cash8
             int min_quantity = 1000000000;
             int num_list = 0;
             int num_pos = 0;
-            ArrayList ar = new ArrayList();           
+            ArrayList ar = new ArrayList();
 
             try
             {
@@ -1198,8 +1197,8 @@ namespace Cash8
                             if (ar.IndexOf(row["code"].ToString(), 0) == -1)
                             {
                                 continue;
-                            }                            
-                            quantity_of_pieces = Convert.ToInt16(row["quantity"]);                            
+                            }
+                            quantity_of_pieces = Convert.ToInt16(row["quantity"]);
                             if (quantity_of_pieces <= min_quantity)
                             {
                                 row["price_at_discount"] = Math.Round(Convert.ToDecimal(row["price"]) - Convert.ToDecimal(row["price"]) * persent / 100, 2);//Цена со скидкой                                            
@@ -1210,7 +1209,7 @@ namespace Cash8
                             }
                             if ((quantity_of_pieces > min_quantity) && (min_quantity > 0))
                             {
-                                row["quantity"] = Convert.ToInt32(row["quantity"]) - min_quantity;                                
+                                row["quantity"] = Convert.ToInt32(row["quantity"]) - min_quantity;
                                 row["action"] = num_doc.ToString(); //Номер акционного документа                                 
                             }
                         }
@@ -1348,13 +1347,13 @@ namespace Cash8
                             num_pos = index;
                         }
                         if (num_list == 1)
-                        {                            
+                        {
                             ar.Add(row["code"].ToString());
                         }
                         quantity_of_pieces--;
                     }
                 }
-                
+
                 bool the_action_has_worked = false;
                 x = 0;
                 min_quantity = 1000000000;
@@ -1417,7 +1416,144 @@ namespace Cash8
                 }
             }
         }
-        
+
+        /*Эта акция срабатывает когда сумма без скидки в документе >= сумме акции
+        * тогда дается скидка на те позиции которые перечисляются в условии акции
+        */
+        private void action_3(int num_doc, decimal persent, decimal sum)
+        {
+            NpgsqlConnection conn = null;
+            NpgsqlCommand command = null;
+            decimal sum_on_doc = 0;//сумма документа без скидок 
+            try
+            {
+                conn = MainStaticClass.NpgsqlConn();
+                conn.Open();
+                foreach (DataRow row in dt.Rows)
+                {
+                    if (Convert.ToInt32(row["action2"]) > 0)//Этот товар уже участвовал в акции значит его пропускаем                  
+                    {
+                        continue;
+                    }
+                    string query = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + row["tovar_code"] + " AND num_doc=" + num_doc.ToString();
+                    command = new NpgsqlCommand(query, conn);
+                    if (Convert.ToInt16(command.ExecuteScalar()) != 0)
+                    {
+                        sum_on_doc += Convert.ToDecimal(row["sum_at_discount"]);
+                    }
+                }
+                //Сумма документа без скидки больше или равна той что в условии ации
+                //значит акция сработала
+                if (sum_on_doc >= sum)
+                {
+                    have_action = true;//Признак того что в документе есть сработка по акции
+
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        if (Convert.ToInt32(row["action2"]) > 0)//Этот товар уже участвовал в акции значит его пропускаем                  
+                        {
+                            continue;
+                        }
+                        string query = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + row["tovar_code"] + " AND num_doc=" + num_doc.ToString();
+                        command = new NpgsqlCommand(query, conn);
+                        if (Convert.ToInt16(command.ExecuteScalar()) != 0)
+                        {
+                            row["price_at_discount"] = (Math.Round(Convert.ToDecimal(row["price"]) - Convert.ToDecimal(row["price"]) * persent / 100, 2)).ToString();//Цена со скидкой            
+                            row["sum_full"] = ((Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price"])).ToString());
+                            row["sum_at_discount"] = ((Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price_at_discount"])).ToString());
+                            row["action"] = num_doc.ToString();
+                            row["action2"] = num_doc.ToString();
+                        }
+                    }
+                }
+            }
+            catch (NpgsqlException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "ошибка при обработке 3 типа акций");
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+        }
+
+        /*Эта акция срабатывает когда сумма без скидки в документе >= сумме акции
+         * тогда выдается сообщение о подарке
+         */
+        private void action_3(int num_doc, string comment, decimal sum, int marker)
+        {
+
+            NpgsqlConnection conn = null;
+            NpgsqlCommand command = null;
+            decimal sum_on_doc = 0;//сумма документа без скидок 
+            int index = 0;
+            try
+            {
+                conn = MainStaticClass.NpgsqlConn();
+                conn.Open();
+
+                foreach (DataRow row in dt.Rows)
+                {
+                    if (Convert.ToInt32(row["action2"]) > 0)//Этот товар уже участвовал в акции значит его пропускаем                  
+                    {
+                        continue;
+                    }
+                    string query = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + row["tovar_code"] + " AND num_doc=" + num_doc.ToString();
+                    command = new NpgsqlCommand(query, conn);
+                    if (Convert.ToInt16(command.ExecuteScalar()) != 0)
+                    {
+                        sum_on_doc += Convert.ToDecimal(row["sum_at_discount"]);
+                        index = dt.Rows.IndexOf(row);
+                    }
+                }
+                //Сумма документа без скидки больше или равна той что в условии ации
+                //значит акция сработала
+                if (sum_on_doc >= sum)
+                {
+                    have_action = true;//Признак того что в документе есть сработка по акции                    
+                    dt.Rows[index]["gift"] = num_doc.ToString();//Тип акции                    
+                    MessageBox.Show(comment, " АКЦИЯ !!!");
+                    DialogResult dr = DialogResult.Cancel;
+                    if (show_messages)
+                    {
+                        if (marker == 1)
+                        {
+                            dr = show_query_window_barcode(2, 1, num_doc);
+                        }
+                    }
+                    /*акция сработала
+                    * надо отметить все товарные позиции 
+                    * чтобы они не участвовали в других акциях 
+                    */
+                    marked_action_tovar_dt(num_doc);
+                }
+            }
+            catch (NpgsqlException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "ошибка при обработке 3 типа акций");
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                    // conn.Dispose();
+                }
+            }
+        }
+                     
         /// <summary>
         /// Создание временной таблицы для 4 типа акций
         /// </summary>
@@ -1509,8 +1645,8 @@ namespace Cash8
                         row2.ItemArray = row.ItemArray;
                         dt.Rows.Add(row2);
                         continue;
-                    }                    
-                    query_string = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + row["tovar_code"]  + " AND num_doc=" + num_doc.ToString();
+                    }
+                    query_string = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + row["tovar_code"] + " AND num_doc=" + num_doc.ToString();
                     command = new NpgsqlCommand(query_string, conn);
 
                     if (Convert.ToInt16(command.ExecuteScalar()) != 0)
@@ -1523,12 +1659,12 @@ namespace Cash8
                                 row["price"].ToString().Replace(",", ".") + "," +
                                "1,'" +
                                row["characteristic_name"].ToString() + "','" +
-                               row["characteristic_code"].ToString()+ "');");
+                               row["characteristic_code"].ToString() + "');");
                         }
                         quantity_on_doc += Convert.ToDecimal(row["quantity"]);
                     }
                     else//Не участвует в акции убираем пока в сторонку
-                    {                        
+                    {
                         DataRow row2 = dt2.NewRow();
                         row2.ItemArray = row.ItemArray;
                         dt.Rows.Add(row2);
@@ -1539,7 +1675,7 @@ namespace Cash8
                 if (quantity_on_doc >= sum)//Есть вхождение в акцию
                 {
                     have_action = true;//Признак того что в документе есть сработка по акции                    
-                    dt.Rows.Clear();                    
+                    dt.Rows.Clear();
                     foreach (DataRow row2 in dt2.Rows)
                     {
                         DataRow row = dt.NewRow();
@@ -1617,15 +1753,15 @@ namespace Cash8
                     while (reader.Read())
                     {
                         DataRow row = dt.NewRow();
-                        row["tovar_code"]          = reader[0].ToString();
-                        row["tovar_name"]          = reader[1].ToString().Trim();
+                        row["tovar_code"] = reader[0].ToString();
+                        row["tovar_name"] = reader[1].ToString().Trim();
                         row["characteristic_name"] = reader[5].ToString();
-                        row["characteristic_code"] = reader[6].ToString();                        
-                        row["quantity"]            = reader[4].ToString().Trim();
-                        row["price"]               = reader.GetDecimal(2).ToString();
-                        row["price_at_discount"]   = reader.GetDecimal(3).ToString();
-                        row["sum_full"]            = (Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price"])).ToString();
-                        row["sum_at_discount"]     = (Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price_at_discount"])).ToString();
+                        row["characteristic_code"] = reader[6].ToString();
+                        row["quantity"] = reader[4].ToString().Trim();
+                        row["price"] = reader.GetDecimal(2).ToString();
+                        row["price_at_discount"] = reader.GetDecimal(3).ToString();
+                        row["sum_full"] = (Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price"])).ToString();
+                        row["sum_at_discount"] = (Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price_at_discount"])).ToString();
                         if (Convert.ToDecimal(row["price"]) != Convert.ToDecimal(row["price_at_discount"]))
                         {
                             row["action"] = num_doc.ToString();
@@ -1635,7 +1771,7 @@ namespace Cash8
                             row["action"] = "0";
                         }
                         row["gift"] = "0";
-                        row["action2"] = num_doc.ToString();                        
+                        row["action2"] = num_doc.ToString();
                         dt.Rows.Add(row);
                         //SendDataToCustomerScreen(1, 0);
                     }
@@ -1645,7 +1781,7 @@ namespace Cash8
              * чтобы они не участвовали в других акциях 
              */
                     marked_action_tovar_dt(num_doc);
-                }                
+                }
             }
             catch (NpgsqlException ex)
             {
@@ -1659,12 +1795,11 @@ namespace Cash8
             {
                 if (conn.State == ConnectionState.Open)
                 {
-                    conn.Close();                    
+                    conn.Close();
                 }
             }
         }
-
-
+        
         /// <summary>
         /// Возвращает цену подарка
         /// </summary>
@@ -1752,7 +1887,6 @@ namespace Cash8
                     }
                     query_string = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + row["tovar_code"] + " AND num_doc=" + num_doc.ToString();
                     command = new NpgsqlCommand(query_string, conn);
-
                     if (Convert.ToInt16(command.ExecuteScalar()) != 0)
                     {
 
@@ -1802,17 +1936,17 @@ namespace Cash8
                         if (multiplication_factor > 0)//Это количество позиций которые будут выданы в качестве подарка
                         {
                             if ((decimal)num_records / sum == Math.Round(num_records / sum, 0, MidpointRounding.AwayFromZero))
-                            {                             
-                                DataRow row                = dt.NewRow();
-                                row["tovar_code"]          = reader[0].ToString();
-                                row["tovar_name"]          = reader[1].ToString().Trim();
+                            {
+                                DataRow row = dt.NewRow();
+                                row["tovar_code"] = reader[0].ToString();
+                                row["tovar_name"] = reader[1].ToString().Trim();
                                 row["characteristic_name"] = reader[5].ToString();
                                 row["characteristic_code"] = reader[6].ToString();
-                                row["quantity"]            = 1;
-                                row["price"]               = reader.GetDecimal(2).ToString();
-                                row["price_at_discount"]   = get_price_action(num_doc);
-                                row["sum_full"]            = (Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price"])).ToString();
-                                row["sum_at_discount"]     = (Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price_at_discount"])).ToString();
+                                row["quantity"] = 1;
+                                row["price"] = reader.GetDecimal(2).ToString();
+                                row["price_at_discount"] = get_price_action(num_doc);
+                                row["sum_full"] = (Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price"])).ToString();
+                                row["sum_at_discount"] = (Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price_at_discount"])).ToString();
                                 if (Convert.ToDecimal(row["price"]) != Convert.ToDecimal(row["price_at_discount"]))
                                 {
                                     row["action"] = num_doc.ToString();
@@ -1877,17 +2011,12 @@ namespace Cash8
                         }
                         num_records++;
                     }
-
                     /*акция сработала
              * надо отметить все товарные позиции 
              * чтобы они не участвовали в других акциях 
              */
-
                     marked_action_tovar_dt(num_doc);
-
                 }
-
-                //                conn.Close();
             }
             catch (NpgsqlException ex)
             {
@@ -1902,13 +2031,228 @@ namespace Cash8
                 if (conn.State == ConnectionState.Open)
                 {
                     conn.Close();
+                }
+            }
+        }
+
+        /*Эта акция работает только по предъявлению 
+        * акционного купона то есть по штрихкоду
+        * если в чеке есть товары из списка. в случае, если сумма этих товаров в чеке, меньше суммы, 
+        * на которую даётся скидка, разница покупателю не возвращается, а цены товаров ставятся равными 0.01грн.; 
+        * скидка выдаётся при предъявлении специального купона с ШК. в случае, если в чеке вообще нет товаров, 
+        * на которые должна выдаваться скидка, то выдаётся предупреждение и купон не используется. 
+        * в одном чеке может использоваться только один акционный купон!!!
+        * имеется ввиду что сколько раз не предъявляй купон скидка не накапливается
+        */
+        private void action_5(int num_doc, decimal sum)
+        {
+            // 1 сНачала надо проверить сработку акции
+            //bool the_action_has_worked = false;
+            NpgsqlConnection conn = null;
+            NpgsqlCommand command = null;
+            Int16 result = 0;
+            try
+            {
+                conn = MainStaticClass.NpgsqlConn();
+                conn.Open();
+                //Поскольку документ не записан еще найти строки которые могут участвовать в акции можно только последовательным перебором 
+                string query = "";
+                foreach (DataRow row in dt.Rows)
+                {
+                    if (Convert.ToInt32(row["action2"]) > 0)//Этот товар уже участвовал в акции значит его пропускаем                  
+                    {
+                        continue;
+                    }
+                    query = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + row["tovar_code"] + " AND num_doc=" + num_doc.ToString();
+                    command = new NpgsqlCommand(query, conn);
+                    result = Convert.ToInt16(command.ExecuteScalar());
+
+                    if (result == 1)//Сработала акция
+                    {
+                        have_action = true;//Признак того что в документе есть сработка по акции
+
+                        decimal the_sum_without_a_discount = Convert.ToDecimal(row["sum_full"]);
+                        if (sum >= the_sum_without_a_discount)
+                        {
+                            sum = sum - the_sum_without_a_discount;
+                            row["price_at_discount"] = (Convert.ToDecimal(1 / 100)).ToString();
+                            row["sum_full"] = ((Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price"])).ToString());
+                            row["sum_at_discount"] = ((Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price_at_discount"])).ToString());
+                            row["action"] = num_doc.ToString(); //Номер акционного документа
+                            row["action2"] = num_doc.ToString(); //Номер акционного документа                           
+                        }
+                        else
+                        {
+                            //Здесь сначала получаем сумму путем вычитания оставшейся суммы скидки 
+                            //от суммы без скидки, а только затем получаем цену со скидкой
+                            row["sum_at_discount"] = Convert.ToDecimal(the_sum_without_a_discount - sum).ToString();//Сумма со скидкой
+                            row["price_at_discount"] = Math.Round(Convert.ToDecimal(row["sum_at_discount"]) / Convert.ToDecimal(row["quantity"]), 2).ToString();
+                            row["action"] = num_doc.ToString(); //Номер акционного документа
+                            row["action2"] = num_doc.ToString(); //Номер акционного документа
+                            sum = 0; break; //Поскольку сумма скидки закончилась прерываем цикл
+                        }
+                    }
+                }
+                //                conn.Close();
+                /*Помечаем позиции которые 
+                 * остались не помеченными 
+                 * при сработке акции                 
+                 */
+                marked_action_tovar_dt(num_doc);
+
+            }
+            catch (NpgsqlException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "ошибка при обработке 5 типа акций");
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
                     // conn.Dispose();
                 }
             }
         }
 
+        /*новый тип акции (6): за каждые ***грн. внутри чека (товаров из определённого списка) выдаётся сообщение типа 
+        * "акция такая-то сработала *** раз, выдайте *** подарков" 
+        * (в реальной акции, которая должна быть, будут выдаваться стикера, которые наклеиваются на купон, когда человек 
+        * собирает 10 стикеров на этом купоне, то может обменять этот купон с наклеенными стикерами на подарочный комплект,
+        * состав может быть разный, контролировать будет кассир)
+        * 
+        */
+        private void action_6(int num_doc, string comment, decimal sum, Int32 marker)
+        {
+            NpgsqlConnection conn = null;
+            NpgsqlCommand command = null;
+            Int16 result = 0;
+            decimal action_sum_of_this_document = 0;
+            try
+            {
+                conn = MainStaticClass.NpgsqlConn();
+                conn.Open();
+                //Поскольку документ не записан еще найти строки которые могут участвовать в акции можно только последовательным перебором 
+                string query = "";
+                foreach (DataRow row in dt.Rows)
+                {
+                    if (Convert.ToInt32(row["action2"]) > 0)//Этот товар уже участвовал в акции значит его пропускаем                  
+                    {
+                        continue;
+                    }
+                    query = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + row["tovar_code"] + " AND num_doc=" + num_doc.ToString();
+                    command = new NpgsqlCommand(query, conn);
+                    result = Convert.ToInt16(command.ExecuteScalar());
+                    if (result == 1)//Акция сработала
+                    {
+                        have_action = true;//Признак того что в документе есть сработка по акции
 
+                        action_sum_of_this_document += Convert.ToDecimal(row["sum_full"]);
+                    }
+                }
+            }
+            catch (NpgsqlException ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка при работе с базой данных");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "ошибка при обработке 6 типа акций");
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
 
+            int quantity_of_gifts = (int)(action_sum_of_this_document / sum);
+            //decimal quantity_of_gifts = Math.Round(action_sum_of_this_document / sum,0);
 
+            if (quantity_of_gifts > 0)//значит акция сработала
+            {
+                MessageBox.Show(comment + " количество подарков = " + quantity_of_gifts.ToString() + " шт. ", " АКЦИЯ !!!");
+                /*акция сработала
+             * надо отметить все товарные позиции 
+             * чтобы они не участвовали в других акциях 
+             */
+                if (marker == 1)
+                {
+                    for (int i = 0; i < quantity_of_gifts; i++)
+                    {
+                        show_query_window_barcode(2, 1, num_doc);
+                    }
+                }
+                marked_action_tovar_dt(num_doc);
+            }
+        }
+
+        /*новый тип акции (7). для фиксирования выданных подарков по акции (6)
+         * человек приносит купон и выбирает определённые товары с полки (согласно условиям акции),
+         * кассир пробивает эти товары (подарки) в отдельный чек и проводит ШК купона по сканеру.
+         * в чеке обнуляются цены на эти товары и добавляется строка типа "ПОДАРОК 0.01грн" - 4шт. 
+         * (количество равно количеству товаров-подарков). кассир сам будет контролировать товарный состав чека, точнее, чтобы количество 
+         * подарков было такое, которое позволяет купон со стикерами, если вдруг в чеке будут обычные товары, то их цена не должна меняться 
+         * или можно выдать предупреждение, что для этого типа акции наличие в чеке не акционных товаров недопустимо.
+         */
+        private void action_7(int num_doc, long code_tovar)
+        {
+            NpgsqlConnection conn = null;
+            NpgsqlCommand command = null;
+            int gift = 0;
+            Int16 result = 0;
+            try
+            {
+                conn = MainStaticClass.NpgsqlConn();
+                conn.Open();
+                //Поскольку документ не записан еще найти строки которые могут участвовать в акции можно только последовательным перебором 
+                string query = "";
+                foreach (DataRow row in dt.Rows)
+                {
+                    query = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + row["tovar_code"] + " AND num_doc=" + num_doc.ToString();
+                    command = new NpgsqlCommand(query, conn);
+                    result = Convert.ToInt16(command.ExecuteScalar());
+                    if (result > 0)
+                    {
+                        have_action = true;//Признак того что в документе есть сработка по акции
+
+                        //lvi.SubItems[4].Text = ((decimal)1 / 100).ToString();
+                        row["sum_full"] = "0";
+                        row["sum_at_discount"] = "0"; //((Convert.ToDecimal(lvi.SubItems[2].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString());
+                        row["action"] = num_doc.ToString(); //Номер акционного документа
+                        row["action"] = num_doc.ToString(); //Номер акционного документа
+                        gift += Convert.ToInt32(row["quantity"]);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Обнаружен неакционный товар " + row["code"]);
+                    }
+                }
+                find_barcode_or_code_in_tovar_action(code_tovar.ToString(), gift, false, num_doc);
+                //                conn.Close();
+            }
+            catch (NpgsqlException ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка при работе с базой данных");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "ошибка при обработке 7 типа акций");
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                    // conn.Dispose();
+                }
+            }
+        }
     }
 }
+

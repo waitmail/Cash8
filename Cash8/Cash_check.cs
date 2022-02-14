@@ -67,7 +67,8 @@ namespace Cash8
         public bool it_is_possible_to_write_off_bonuses = false;//флаг возможности списания бонусов устанавливается в истина если клиент найден покарте, а не по номеру телефона
         public string id_transaction = "";
         private string id_transaction_sale = "";
-        public int bonus_on_document = 0;
+        //public int bonus_on_document = 0;
+        public int bonuses_it_is_counted = 0;
         private Pay pay_form = new Pay();
         //private string cardTrack2 = "";
         private string phone = "";
@@ -2405,6 +2406,21 @@ namespace Cash8
                                     }
                                     if (this.qr_code != "")//Был введен qr код необходимо его внести в чек
                                     {
+                                        //здесь проверка на известные ошибки \u001d                                        
+                                        int num_pos = this.qr_code.IndexOf("\\");
+                                        if (num_pos > 0)
+                                        {                                            
+                                            if (this.qr_code.Substring(num_pos + 1, 5) == "u001d")//необходимо из строки вырезать этот символ
+                                            {
+                                                this.qr_code = this.qr_code.Substring(0, num_pos) + this.qr_code.Substring(num_pos + 1 + 5, this.qr_code.Length - (num_pos + 1 + 5));
+                                                num_pos = this.qr_code.IndexOf("\\");
+                                                if (num_pos > 0)
+                                                {
+                                                    this.qr_code = this.qr_code.Substring(0, num_pos) + this.qr_code.Substring(num_pos + 1 + 5, this.qr_code.Length - (num_pos + 1 + 5));
+                                                }
+                                            }
+                                        }
+                                        
                                         //Проверим введенный код маркировки на правильность
                                         if ((this.qr_code.Substring(0, 2) == "01") && (this.qr_code.Substring(16, 2) == "21"))
                                         {
@@ -2445,7 +2461,7 @@ namespace Cash8
 
                             }
                         }
-                        if (!error)//Если с qr кодом все хорошо тогда добавляем позицию иначе не добавляем
+                        if ((!error)||(MainStaticClass.CashDeskNumber==9))//Если с qr кодом все хорошо тогда добавляем позицию иначе не добавляем, но в 9 кассу добавляем всегда 
                         {
                             listView1.Items.Add(lvi);
                         }
@@ -3764,7 +3780,8 @@ namespace Cash8
                                         "clientInfo_name," +
                                         "id_sale," +
                                         "sent_to_processing_center,"+
-                                        "requisite) VALUES(" +
+                                        "requisite,"+
+                                        "bonuses_it_is_counted) VALUES(" +
 
                                         "@document_number," +
                                         "@date_time_start," +
@@ -3793,7 +3810,8 @@ namespace Cash8
                                         "@clientInfo_name," +
                                         "@id_sale," +
                                         "@sent_to_processing_center,"+
-                                        "@requisite)", conn);
+                                        "@requisite,"+
+                                        "@bonuses_it_is_counted)", conn);
 
                 command.Parameters.AddWithValue("document_number", numdoc.ToString());
                 command.Parameters.AddWithValue("date_time_start", date_time_start.Text.Replace("Чек", ""));
@@ -3835,8 +3853,10 @@ namespace Cash8
                 else
                 {
                     command.Parameters.AddWithValue("requisite", 0);
-                }
-                
+                }               
+                command.Parameters.AddWithValue("bonuses_it_is_counted", bonuses_it_is_counted.ToString());
+
+
 
                 string sent_to_processing_center = "0";
                 if (MainStaticClass.GetWorkSchema == 1)
@@ -5073,11 +5093,11 @@ namespace Cash8
 
                             if (bonuses_it_is_written_off == 0)
                             {
-                                if (bonus_on_document != 0)
+                                if (bonuses_it_is_counted != 0)
                                 {
                                     pi = new FiscallPrintJason.PostItem();
                                     pi.type = "text";
-                                    pi.text = "Начислено бонусов : " + bonus_on_document.ToString();
+                                    pi.text = "Начислено бонусов : " + bonuses_it_is_counted.ToString();
                                     pi.alignment = "left";
                                     check.postItems.Add(pi);
                                 }
@@ -5131,7 +5151,7 @@ namespace Cash8
                             {
                                 pi = new FiscallPrintJason.PostItem();
                                 pi.type = "text";
-                                pi.text = "НАЧИСЛЕНО: " + bonus_on_document.ToString();
+                                pi.text = "НАЧИСЛЕНО: " + bonuses_it_is_counted.ToString();
                                 pi.alignment = "left";
                                 check.postItems.Add(pi);
                             }
@@ -5150,7 +5170,7 @@ namespace Cash8
                             {
                                 if (bonuses_it_is_written_off == 0)
                                 {
-                                    pi.text = "ДОСТУПНО: " + (bonus_total_centr + bonus_on_document).ToString();
+                                    pi.text = "ДОСТУПНО: " + (bonus_total_centr + bonuses_it_is_counted).ToString();
                                 }
                                 else
                                 {
@@ -5164,7 +5184,7 @@ namespace Cash8
                             }
                             else
                             {
-                                pi.text = "ДОСТУПНО: " + (bonus_total_centr + bonus_on_document).ToString() + "\r\n" +
+                                pi.text = "ДОСТУПНО: " + (bonus_total_centr + bonuses_it_is_counted).ToString() + "\r\n" +
                                     "ВНИМАНИЕ!\r\n" +
                                     "Использование\r\n" +
                                     "бонусов невозможно.\r\n" +
@@ -5553,11 +5573,11 @@ namespace Cash8
 
                         if (bonuses_it_is_written_off == 0)
                         {
-                            if (bonus_on_document != 0)
+                            if (bonuses_it_is_counted != 0)
                             {
                                 pi = new FiscallPrintJason2.PostItem();
                                 pi.type = "text";
-                                pi.text = "Начислено бонусов : " + bonus_on_document.ToString();
+                                pi.text = "Начислено бонусов : " + bonuses_it_is_counted.ToString();
                                 pi.alignment = "left";
                                 check.postItems.Add(pi);
                             }
@@ -5611,7 +5631,7 @@ namespace Cash8
                         {
                             pi = new FiscallPrintJason2.PostItem();
                             pi.type = "text";
-                            pi.text = "НАЧИСЛЕНО: " + bonus_on_document.ToString();
+                            pi.text = "НАЧИСЛЕНО: " + bonuses_it_is_counted.ToString();
                             pi.alignment = "left";
                             check.postItems.Add(pi);
                         }
@@ -5630,7 +5650,7 @@ namespace Cash8
                         {
                             if (bonuses_it_is_written_off == 0)
                             {
-                                pi.text = "ДОСТУПНО: " + (bonus_total_centr + bonus_on_document).ToString();
+                                pi.text = "ДОСТУПНО: " + (bonus_total_centr + bonuses_it_is_counted).ToString();
                             }
                             else
                             {
@@ -5644,7 +5664,7 @@ namespace Cash8
                         }
                         else
                         {
-                            pi.text = "ДОСТУПНО: " + (bonus_total_centr + bonus_on_document).ToString() + "\r\n" +
+                            pi.text = "ДОСТУПНО: " + (bonus_total_centr + bonuses_it_is_counted).ToString() + "\r\n" +
                                 "ВНИМАНИЕ!\r\n" +
                                 "Использование\r\n" +
                                 "бонусов невозможно.\r\n" +
@@ -7800,9 +7820,7 @@ namespace Cash8
             }
             //MessageBox.Show(total_seconnds.ToString());
         }
-
-
-
+               
         private bool actions_birthday()
         {
 
@@ -8024,7 +8042,8 @@ namespace Cash8
             }
             ProcessingOfActions processingOfActions = new ProcessingOfActions();
             processingOfActions.dt = processingOfActions.create_dt(listView1);
-            processingOfActions.to_define_the_action_dt(false);
+            processingOfActions.show_messages = false;
+            processingOfActions.to_define_the_action_dt();
             dataTable = processingOfActions.dt;           
 
             return dataTable;
@@ -8060,13 +8079,6 @@ namespace Cash8
             {
                 conn = MainStaticClass.NpgsqlConn();
                 conn.Open();
-                //string query = "SELECT tip,num_doc,persent,comment,code_tovar,sum,barcode,marker FROM action_header " +
-                //    " WHERE '" + DateTime.Now.Date.ToString("yyy-MM-dd") + "' between date_started AND date_end "+
-                //    //" AND " + count_minutes.ToString() + " between time_start AND time_end  
-                //    " AND num_doc in(" +
-                //    " SELECT DISTINCT action_table.num_doc FROM checks_table_temp " +
-                //    " LEFT JOIN action_table ON checks_table_temp.tovar = action_table.code_tovar) order by date_started ";
-
                 string query = "SELECT tip,num_doc,persent,comment,code_tovar,sum,barcode,marker,execution_order FROM action_header " +
                     " WHERE '" + DateTime.Now.Date.ToString("yyy-MM-dd") + "' between date_started AND date_end " +
                     " AND " + count_minutes.ToString() + " between time_start AND time_end AND bonus_promotion=0 " +
@@ -8250,6 +8262,8 @@ namespace Cash8
                 command.Dispose();
 
                 checked_action_10();//Отдельная проверка поскольку может не быть товарной части, а все акции выше проверяются именно на вхождение товаров документа в таб части акционных документов
+                //После сработки всех акций проверка и подсказка по сработке дальнейших акций
+                load_list1_action2();
 
             }
             catch (NpgsqlException ex)
@@ -8711,19 +8725,18 @@ namespace Cash8
                 }
                 if (the_action_has_worked)
                 {
-
-                    if (MainStaticClass.GetWorkSchema == 2)
-                    {
-                        load_list1_action2(num_doc.ToString());
-                        //if (listView2.Items.Count > 0)
-                        //{
-                        //    panel2.BringToFront();
-                        //    panel2.Visible = true;
-                        //}
-                        //MessageBox.Show("1");
-                        //Для Евы необходимо вытащить содержимое первого списка 
-                        //MessageBox.Show("Сработала акция, НЕОБХОДИМО выдать подарок количестве " + min_quantity.ToString() + " шт. " + comment);
-                    }
+                    //if (MainStaticClass.GetWorkSchema == 2)
+                    //{
+                    //    load_list1_action2(num_doc.ToString());
+                    //    //if (listView2.Items.Count > 0)
+                    //    //{
+                    //    //    panel2.BringToFront();
+                    //    //    panel2.Visible = true;
+                    //    //}
+                    //    //MessageBox.Show("1");
+                    //    //Для Евы необходимо вытащить содержимое первого списка 
+                    //    //MessageBox.Show("Сработала акция, НЕОБХОДИМО выдать подарок количестве " + min_quantity.ToString() + " шт. " + comment);
+                    //}
                     foreach (ListViewItem lvi in listView1.Items)
                     {
 
@@ -8812,36 +8825,42 @@ namespace Cash8
                 }
             }
         }
-
-
+            
         /// <summary>
-        /// Для Евы напоминание о подарке
+        /// вывести сообщение по 1 списку в акции 2 типа 
         /// </summary>
         /// <param name="num_doc"></param>
-        private void load_list1_action2(string num_doc)
+        private void show_list1(string num_doc)
         {
             NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
             try
             {
                 conn.Open();
-                string query = "SELECT tovar.name	FROM public.action_table LEFT JOIN tovar ON action_table.code_tovar=tovar.code where num_doc=" + num_doc + " AND num_list=1	 ";
+                string query = "SELECT tovar.name FROM public.action_table LEFT JOIN tovar ON action_table.code_tovar = tovar.code where num_doc="+num_doc+" and num_list= 1 limit 10";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();
-                //listView2.Items.Clear();
                 string result = "";
                 while (reader.Read())
-                {                    
-                    result += reader[0].ToString()+"\r\n";                 
+                {
+                    result += reader[0].ToString().Trim() + "\r\n"; 
                 }
-                MessageBox.Show(result,"Выдайте подарок");
+                if (result != "")
+                {
+                    //MessageBox.Show(result,"Для сработки акции необходимо добавить любую позицию ИЗ ... ");
+                    MyMessageBox myMessageBox = new MyMessageBox();
+                    myMessageBox.text_message.Text = result;
+                    myMessageBox.Text = " Для сработки акции необходимо добавить любую позицию ИЗ ... ";
+                    myMessageBox.text_message.TextAlign = HorizontalAlignment.Left;
+                    myMessageBox.ShowDialog();
+                }
             }
             catch (NpgsqlException ex)
             {
-
+                MessageBox.Show("Ошибка при подсказке по 2 акции" + ex.Message);
             }
             catch (Exception ex)
             {
-
+                MessageBox.Show("Ошибка при подсказке по 2 акции" + ex.Message);
             }
             finally
             {
@@ -8851,8 +8870,61 @@ namespace Cash8
                 }
             }
         }
-
-
+               
+        /// <summary>
+        /// Для Евы напоминание о подарке
+        /// После сработки всех акций 
+        /// 1.Сначала в табличной части проверяем товары которые не участвовали в акциях
+        /// 2.Формируем список акций 2 типа(скидочные) которые в периоде действия и в них максимальный номер списка=2
+        /// 3.Последовательно проверяем свободные товары на вхождение во 2-й список этих акций подокументно и выводим первые 10 поизций 1 списка в сообщение 
+        /// </summary>
+        /// <param name="num_doc"></param>
+        private void load_list1_action2()
+        {
+            string list_code_tovar = "";
+            foreach (ListViewItem lvi in listView1.Items)
+            {
+                if (Convert.ToInt32(lvi.SubItems[10].Text.Trim()) == 0)//Этот товар не участовал в акции
+                {
+                    list_code_tovar += lvi.SubItems[0].Text + ",";
+                }
+            }
+            if (list_code_tovar == "")
+            {
+                return;
+            }
+            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+            try
+            {
+                conn.Open();
+                string query = "SELECT action_header.num_doc FROM action_header " +
+                    " LEFT JOIN action_table ON action_header.num_doc = action_table.num_doc " +
+                    " WHERE tip = 2 AND  '" + DateTime.Now.ToString("dd-MM-yyyy") + "' between date_started AND date_end " +
+                    " AND action_table.code_tovar in (" + list_code_tovar.Substring(0, list_code_tovar.Length - 1) +
+                    " ) AND action_table.num_list = 2 GROUP BY action_header.num_doc HAVING MAX(action_table.num_list)=2 ";
+                NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                NpgsqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    show_list1(reader[0].ToString());
+                }
+            }
+            catch (NpgsqlException ex)
+            {
+                MessageBox.Show("Ошибка при подсказке по 2 акции" + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ошибка при подсказке по 2 акции" + ex.Message);
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+        }
         /*
        * Обработать акцию по 2 типу
        * это значит в документе должен быть товар 
@@ -9675,8 +9747,7 @@ namespace Cash8
                 }
             }
         }
-
-
+        
         private decimal get_reatil_price(string code_tovar)
         {
             decimal result = 0;
@@ -9701,141 +9772,137 @@ namespace Cash8
                     conn.Close();
                 }
             }
-
-
-
             return result;
         }
 
+        ///*Эта акция срабатывает когда количество товаров в документе >= сумме(количество) товаров в акции
+        // * тогда выдается сообщение о подарке
+        // * самый дешевый товар из документа дается в подарок кратное число единиц 
+        // * и еще добавляется некий товар из акционного документа 
+        // * 
+        // */
+        //private void action_4_1(int num_doc, string comment, decimal sum, long code_tovar)
+        //{
+        //    NpgsqlConnection conn = null;
+        //    NpgsqlCommand command = null;
+        //    decimal quantity_on_doc = 0;//количество позиций в документе
+        //    decimal min_cena = 0;
+        //    //int x = 0;
+        //    int index_position = 1000000;
+        //    try
+        //    {
+        //        conn = MainStaticClass.NpgsqlConn();
+        //        conn.Open();
 
-        /*Эта акция срабатывает когда количество товаров в документе >= сумме(количество) товаров в акции
-         * тогда выдается сообщение о подарке
-         * самый дешевый товар из документа дается в подарок кратное число единиц 
-         * и еще добавляется некий товар из акционного документа 
-         * 
-         */
-        private void action_4_1(int num_doc, string comment, decimal sum, long code_tovar)
-        {
-            NpgsqlConnection conn = null;
-            NpgsqlCommand command = null;
-            decimal quantity_on_doc = 0;//количество позиций в документе
-            decimal min_cena = 0;
-            //int x = 0;
-            int index_position = 1000000;
-            try
-            {
-                conn = MainStaticClass.NpgsqlConn();
-                conn.Open();
+        //        foreach (ListViewItem lvi in listView1.Items)
+        //        {
+        //            if (Convert.ToInt32(lvi.SubItems[9].Text.Trim()) > 0)//Этот товар уже участвовал в акции значит его пропускаем
+        //            {
+        //                continue;
+        //            }
+        //            string query = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + lvi.Tag.ToString() + " AND num_doc=" + num_doc.ToString();
+        //            command = new NpgsqlCommand(query, conn);
+        //            if (Convert.ToInt16(command.ExecuteScalar()) != 0)
+        //            {
+        //                if (min_cena == 0)
+        //                {
+        //                    min_cena = Convert.ToDecimal(lvi.SubItems[3].Text);
+        //                    index_position = lvi.Index;
+        //                }
+        //                else
+        //                {
+        //                    if (min_cena > Convert.ToDecimal(lvi.SubItems[3].Text))
+        //                    {
+        //                        index_position = lvi.Index;
+        //                    }
+        //                }
+        //                quantity_on_doc += Convert.ToDecimal(lvi.SubItems[2].Text);
+        //                //if (quantity_on_doc >= sum)
+        //                //{
+        //                //    if (min_cena == 0)
+        //                //    {
+        //                //        min_cena = Convert.ToDecimal(lvi.SubItems[3].Text);
+        //                //        index_position = lvi.Index;
+        //                //    } 
+        //                //}                   
+        //            }
+        //        }
+        //        //                if(index_position!=1000000)//Есть вхождение в акцию
+        //        if (quantity_on_doc >= sum)//Есть вхождение в акцию
+        //        {
+        //            have_action = true;//Признак того что в документе есть сработка по акции
 
-                foreach (ListViewItem lvi in listView1.Items)
-                {
-                    if (Convert.ToInt32(lvi.SubItems[9].Text.Trim()) > 0)//Этот товар уже участвовал в акции значит его пропускаем
-                    {
-                        continue;
-                    }
-                    string query = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + lvi.Tag.ToString() + " AND num_doc=" + num_doc.ToString();
-                    command = new NpgsqlCommand(query, conn);
-                    if (Convert.ToInt16(command.ExecuteScalar()) != 0)
-                    {
-                        if (min_cena == 0)
-                        {
-                            min_cena = Convert.ToDecimal(lvi.SubItems[3].Text);
-                            index_position = lvi.Index;
-                        }
-                        else
-                        {
-                            if (min_cena > Convert.ToDecimal(lvi.SubItems[3].Text))
-                            {
-                                index_position = lvi.Index;
-                            }
-                        }
-                        quantity_on_doc += Convert.ToDecimal(lvi.SubItems[2].Text);
-                        //if (quantity_on_doc >= sum)
-                        //{
-                        //    if (min_cena == 0)
-                        //    {
-                        //        min_cena = Convert.ToDecimal(lvi.SubItems[3].Text);
-                        //        index_position = lvi.Index;
-                        //    } 
-                        //}                   
-                    }
-                }
-                //                if(index_position!=1000000)//Есть вхождение в акцию
-                if (quantity_on_doc >= sum)//Есть вхождение в акцию
-                {
-                    have_action = true;//Признак того что в документе есть сработка по акции
+        //            ListViewItem lvi = listView1.Items[index_position];
+        //            if (lvi.SubItems[2].Text == "1")
+        //            {
+        //                // lvi.SubItems[3].Text = "0";Цена должна остаться
+        //                // lvi.SubItems[4].Text = "0";
+        //                lvi.SubItems[5].Text = "0";
+        //                lvi.SubItems[6].Text = "0";
+        //                lvi.SubItems[7].Text = num_doc.ToString(); //Номер акционного документа 
+        //                lvi.SubItems[9].Text = num_doc.ToString(); //Номер акционного документа
+        //                //*****************************************************************************
+        //                lvi.SubItems[11].Text = "0";
+        //                lvi.SubItems[12].Text = "0";
+        //                lvi.SubItems[13].Text = "0";
+        //                lvi.SubItems[14].Text = "0";
+        //                //*****************************************************************************
+        //            }
+        //            else
+        //            {
+        //                //уменьшаем количество на 1
+        //                lvi.SubItems[2].Text = (Convert.ToInt32(lvi.SubItems[2].Text) - 1).ToString();
+        //                calculate_on_string(lvi);//пересчитываем сумму по этой строке
+        //                ListViewItem lvi_new = (ListViewItem)lvi.Clone();
+        //                lvi_new.SubItems[2].Text = "1";
+        //                //lvi_new.SubItems[3].Text = "0";Цена должна остаться
+        //                //lvi_new.SubItems[4].Text = "0";
+        //                lvi_new.SubItems[5].Text = "0";
+        //                lvi_new.SubItems[6].Text = "0";
+        //                lvi_new.SubItems[7].Text = num_doc.ToString(); //Номер акционного документа 
+        //                lvi_new.SubItems[9].Text = num_doc.ToString(); //Номер акционного документа 
+        //                //*****************************************************************************
+        //                lvi.SubItems[11].Text = "0";
+        //                lvi.SubItems[12].Text = "0";
+        //                lvi.SubItems[13].Text = "0";
+        //                lvi.SubItems[14].Text = "0";
+        //                //*****************************************************************************
+        //                listView1.Items.Add(lvi_new);
+        //                SendDataToCustomerScreen(1, 0);
+        //            }
 
-                    ListViewItem lvi = listView1.Items[index_position];
-                    if (lvi.SubItems[2].Text == "1")
-                    {
-                        // lvi.SubItems[3].Text = "0";Цена должна остаться
-                        // lvi.SubItems[4].Text = "0";
-                        lvi.SubItems[5].Text = "0";
-                        lvi.SubItems[6].Text = "0";
-                        lvi.SubItems[7].Text = num_doc.ToString(); //Номер акционного документа 
-                        lvi.SubItems[9].Text = num_doc.ToString(); //Номер акционного документа
-                        //*****************************************************************************
-                        lvi.SubItems[11].Text = "0";
-                        lvi.SubItems[12].Text = "0";
-                        lvi.SubItems[13].Text = "0";
-                        lvi.SubItems[14].Text = "0";
-                        //*****************************************************************************
-                    }
-                    else
-                    {
-                        //уменьшаем количество на 1
-                        lvi.SubItems[2].Text = (Convert.ToInt32(lvi.SubItems[2].Text) - 1).ToString();
-                        calculate_on_string(lvi);//пересчитываем сумму по этой строке
-                        ListViewItem lvi_new = (ListViewItem)lvi.Clone();
-                        lvi_new.SubItems[2].Text = "1";
-                        //lvi_new.SubItems[3].Text = "0";Цена должна остаться
-                        //lvi_new.SubItems[4].Text = "0";
-                        lvi_new.SubItems[5].Text = "0";
-                        lvi_new.SubItems[6].Text = "0";
-                        lvi_new.SubItems[7].Text = num_doc.ToString(); //Номер акционного документа 
-                        lvi_new.SubItems[9].Text = num_doc.ToString(); //Номер акционного документа 
-                        //*****************************************************************************
-                        lvi.SubItems[11].Text = "0";
-                        lvi.SubItems[12].Text = "0";
-                        lvi.SubItems[13].Text = "0";
-                        lvi.SubItems[14].Text = "0";
-                        //*****************************************************************************
-                        listView1.Items.Add(lvi_new);
-                        SendDataToCustomerScreen(1, 0);
-                    }
+        //            //Добавляем подарок
 
-                    //Добавляем подарок
+        //            find_barcode_or_code_in_tovar(code_tovar.ToString());
+        //            listView1.Items[listView1.Items.Count - 1].SubItems[7].Text = num_doc.ToString(); //Номер акционного документа 
+        //            listView1.Items[listView1.Items.Count - 1].SubItems[9].Text = num_doc.ToString(); //Номер акционного документа 
+        //            /*акция сработала
+        //     * надо отметить все товарные позиции 
+        //     * чтобы они не участвовали в других акциях 
+        //     */
 
-                    find_barcode_or_code_in_tovar(code_tovar.ToString());
-                    listView1.Items[listView1.Items.Count - 1].SubItems[7].Text = num_doc.ToString(); //Номер акционного документа 
-                    listView1.Items[listView1.Items.Count - 1].SubItems[9].Text = num_doc.ToString(); //Номер акционного документа 
-                    /*акция сработала
-             * надо отметить все товарные позиции 
-             * чтобы они не участвовали в других акциях 
-             */
+        //            marked_action_tovar(num_doc);
 
-                    marked_action_tovar(num_doc);
-
-                }
-                //                conn.Close();
-            }
-            catch (NpgsqlException ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ошибка при обработке 4 типа акций");
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                    // conn.Dispose();
-                }
-            }
-        }
+        //        }
+        //        //                conn.Close();
+        //    }
+        //    catch (NpgsqlException ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message, "ошибка при обработке 4 типа акций");
+        //    }
+        //    finally
+        //    {
+        //        if (conn.State == ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //            // conn.Dispose();
+        //        }
+        //    }
+        //}
 
         /*Эта акция работает только по предъявлению 
          * акционного купона то есть по штрихкоду
@@ -9883,7 +9950,6 @@ namespace Cash8
                             lvi.SubItems[8].Text = num_doc.ToString(); //Номер акционного документа
                             lvi.SubItems[10].Text = num_doc.ToString(); //Номер акционного документа
                         }
-
                         else
                         {
                             //Здесь сначала получаем сумму путем вычитания оставшейся суммы скидки 
@@ -10156,7 +10222,6 @@ namespace Cash8
                     decimal _sum_ = sum;
                     while (reader.Read())
                     {
-
                         if ((multiplication_factor > 0) || (_sum_ > 0))
                         {
                             if ((_sum_ == 0) && (multiplication_factor > 0))
@@ -10931,6 +10996,12 @@ namespace Cash8
                             bool second = check_availability_card_sale();
                         if (first != second)
                         {
+
+                            if (client.Tag == null)
+                            {
+                                MessageBox.Show("В шапке чека отсутсвует бонусная карта клиента со статусом 1 т.е. не активирована");
+                                return;
+                            }
                             if (client.Tag.ToString() != code_bonus_card)
                             {
                                 if (change_bonus_card)//Это замена карты дальше не проверяем
@@ -11664,7 +11735,7 @@ namespace Cash8
                     Thread.Sleep(1000);
                     result = GET_AnswerAddingKmArrayToTableTested(MainStaticClass.url, guid);
                     status = result.results[0].status;
-                    if (status != "ready")
+                    if ((status != "ready")&&(status != "error"))
                     {
                         if (count > 14)
                         {

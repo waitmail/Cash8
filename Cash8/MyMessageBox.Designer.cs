@@ -44,11 +44,11 @@
             // 
             // text_message
             // 
-            this.text_message.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.text_message.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.text_message.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.text_message.Enabled = false;
-            this.text_message.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.text_message.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.text_message.Location = new System.Drawing.Point(12, 12);
             this.text_message.Multiline = true;
             this.text_message.Name = "text_message";
@@ -66,6 +66,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "MyMessageBox";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MyMessageBox";
             this.ResumeLayout(false);
             this.PerformLayout();

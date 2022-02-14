@@ -804,6 +804,7 @@ namespace Cash8
             calculate();
             if (MainStaticClass.GetWorkSchema == 2)
             {
+                continue_sales();//Для получения бонусов по документу и записи его в документ
                 label4.Visible = true;
                 bonus_on_document.Visible = true;
                 label5.Visible = true;
@@ -813,7 +814,14 @@ namespace Cash8
                 pay_bonus_many.Visible = true;
                 if (pay_bonus.Enabled)
                 {
-                    if (Convert.ToInt64(bonus_total_in_centr.Text) == 0)
+                    if (bonus_total_in_centr.Text.Trim() != "")
+                    {
+                        if (Convert.ToInt64(bonus_total_in_centr.Text) == 0)
+                        {
+                            pay_bonus.Enabled = false;
+                        }
+                    }
+                    else
                     {
                         pay_bonus.Enabled = false;
                     }
@@ -1083,7 +1091,7 @@ namespace Cash8
                                     {
                                         this.bonus_on_document.Text = ((int)(Convert.ToInt64(buynewResponse.bonusSum) / 100)).ToString();
                                         cc.id_transaction = buynewResponse.transactionId;
-                                        cc.bonus_on_document = Convert.ToInt32(this.bonus_on_document.Text);
+                                        cc.bonuses_it_is_counted = Convert.ToInt32(this.bonus_on_document.Text);
                                     }
                                     else
                                     {
@@ -1113,7 +1121,7 @@ namespace Cash8
                                     //this.bonus_on_document.Text = ((int)(Convert.ToInt64(buynewResponse.bonusSum) / 100)).ToString();
                                     this.bonus_on_document.Text = buynewResponse.bonusSum;
                                     cc.id_transaction = buynewResponse.transactionId;
-                                    cc.bonus_on_document = Convert.ToInt32(this.bonus_on_document.Text);
+                                    cc.bonuses_it_is_counted = Convert.ToInt32(this.bonus_on_document.Text);
                                     cc.message_processing = buynewResponse.message;
                                 }
                                 else
@@ -1137,26 +1145,28 @@ namespace Cash8
                 {
                     if (MainStaticClass.GetWorkSchema == 2)
                     {
-
-                        SentDataOnBonusEva.TransactionResponse transactionResponse = cc.get_bonus_on_document_eva_by_return();
-                        if (transactionResponse != null)
+                        if (cc.client.Tag != null)
                         {
-                            if (transactionResponse.res == "1")
+                            SentDataOnBonusEva.TransactionResponse transactionResponse = cc.get_bonus_on_document_eva_by_return();
+                            if (transactionResponse != null)
                             {
-                                cc.id_transaction = transactionResponse.returnTransactionId;
-                                cc.message_processing = transactionResponse.message;
-                                cc.bonuses_it_is_written_off = ((int)(Convert.ToInt64(transactionResponse.bonusSum) / 100));
+                                if (transactionResponse.res == "1")
+                                {
+                                    cc.id_transaction = transactionResponse.returnTransactionId;
+                                    cc.message_processing = transactionResponse.message;
+                                    cc.bonuses_it_is_written_off = ((int)(Convert.ToInt64(transactionResponse.bonusSum) / 100));
+                                }
+                                else
+                                {
+                                    get_description_errors_on_code(transactionResponse.res);//Сообщим об ошибках пользователю
+                                    result = false;
+                                }
                             }
                             else
                             {
-                                get_description_errors_on_code(transactionResponse.res);//Сообщим об ошибках пользователю
+                                MessageBox.Show(" Нет связи с процессинговым центром ");
                                 result = false;
                             }
-                        }
-                        else
-                        {
-                            MessageBox.Show(" Нет связи с процессинговым центром ");
-                            result = false;
                         }
                     }
                 }
