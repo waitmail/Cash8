@@ -887,6 +887,7 @@ namespace Cash8
             public string message { get; set; }
             public string requestId { get; set; }
             public string res { get; set; }
+            public string error { get; set; }
         }
 
         public bool fill_items(BuyNewRequest buyNewRequest,string document_number,string client)

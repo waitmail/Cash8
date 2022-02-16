@@ -804,7 +804,10 @@ namespace Cash8
             calculate();
             if (MainStaticClass.GetWorkSchema == 2)
             {
-                continue_sales();//Для получения бонусов по документу и записи его в документ
+                if (cc.check_type.SelectedIndex == 0)
+                {
+                    continue_sales();//Для получения бонусов по документу и записи его в документ
+                }
                 label4.Visible = true;
                 bonus_on_document.Visible = true;
                 label5.Visible = true;
@@ -1158,6 +1161,10 @@ namespace Cash8
                                 }
                                 else
                                 {
+                                    if (transactionResponse.error != null)
+                                    {
+                                        MessageBox.Show(transactionResponse.error);
+                                    }
                                     get_description_errors_on_code(transactionResponse.res);//Сообщим об ошибках пользователю
                                     result = false;
                                 }

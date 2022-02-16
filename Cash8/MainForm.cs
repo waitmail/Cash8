@@ -1303,11 +1303,12 @@ namespace Cash8
             sd.show_messages = false;
             sd.send_sales_data_Click(null, null);
             sd.Dispose();*/
-            //Tim
+            
             timer_send_data.Stop();
-            SendDataOnSalesPortions sdsp = new SendDataOnSalesPortions();
-            sdsp.send_sales_data_Click(null, null);
-            sdsp.Dispose();
+            //SendDataOnSalesPortions sdsp = new SendDataOnSalesPortions();
+            //sdsp.send_sales_data_Click(null, null);
+            //sdsp.Dispose();
+            timer_send_data_Elapsed(null, null);
             UploadPhoneClients();
             UploadDeletedItems();
         }
