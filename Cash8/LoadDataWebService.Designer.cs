@@ -38,7 +38,6 @@
             // 
             // download_bonus_clients
             // 
-            this.download_bonus_clients.Enabled = false;
             this.download_bonus_clients.Location = new System.Drawing.Point(6, 58);
             this.download_bonus_clients.Name = "download_bonus_clients";
             this.download_bonus_clients.Size = new System.Drawing.Size(248, 23);

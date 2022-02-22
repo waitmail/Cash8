@@ -55,7 +55,6 @@
             this.return_kop = new System.Windows.Forms.TextBox();
             this.return_rouble = new System.Windows.Forms.TextBox();
             this.return_quantity = new System.Windows.Forms.TextBox();
-            this.load_document = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.listView1 = new System.Windows.Forms.ListView();
@@ -95,12 +94,11 @@
             // 
             // comment
             // 
-            this.comment.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.comment.Location = new System.Drawing.Point(99, 608);
+            this.comment.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.comment.Location = new System.Drawing.Point(99, 567);
             this.comment.MaxLength = 50;
             this.comment.Name = "comment";
-            this.comment.Size = new System.Drawing.Size(623, 20);
+            this.comment.Size = new System.Drawing.Size(412, 20);
             this.comment.TabIndex = 3;
             this.comment.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -108,7 +106,7 @@
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 613);
+            this.label1.Location = new System.Drawing.Point(6, 572);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(69, 13);
             this.label1.TabIndex = 4;
@@ -129,16 +127,16 @@
             this.client.Location = new System.Drawing.Point(61, 42);
             this.client.MaxLength = 200;
             this.client.Name = "client";
-            this.client.Size = new System.Drawing.Size(236, 20);
+            this.client.Size = new System.Drawing.Size(185, 20);
             this.client.TabIndex = 17;
             // 
             // client_barcode
             // 
             this.client_barcode.BackColor = System.Drawing.SystemColors.Window;
-            this.client_barcode.Location = new System.Drawing.Point(426, 41);
+            this.client_barcode.Location = new System.Drawing.Point(366, 45);
             this.client_barcode.MaxLength = 13;
             this.client_barcode.Name = "client_barcode";
-            this.client_barcode.Size = new System.Drawing.Size(192, 20);
+            this.client_barcode.Size = new System.Drawing.Size(145, 20);
             this.client_barcode.TabIndex = 0;
             this.client_barcode.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.client_barcode_KeyPress);
             // 
@@ -148,7 +146,7 @@
             this.inputbarcode.BackColor = System.Drawing.SystemColors.Window;
             this.inputbarcode.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.inputbarcode.ForeColor = System.Drawing.Color.Green;
-            this.inputbarcode.Location = new System.Drawing.Point(886, 144);
+            this.inputbarcode.Location = new System.Drawing.Point(611, 146);
             this.inputbarcode.MaxLength = 13;
             this.inputbarcode.Name = "inputbarcode";
             this.inputbarcode.Size = new System.Drawing.Size(177, 29);
@@ -187,9 +185,9 @@
             this.panel2.BackColor = System.Drawing.Color.ForestGreen;
             this.panel2.Controls.Add(this.listView2);
             this.panel2.Controls.Add(this.select_tovar);
-            this.panel2.Location = new System.Drawing.Point(21, 32);
+            this.panel2.Location = new System.Drawing.Point(16, 34);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(1003, 269);
+            this.panel2.Size = new System.Drawing.Size(745, 243);
             this.panel2.TabIndex = 23;
             this.panel2.Visible = false;
             // 
@@ -199,7 +197,7 @@
             this.listView2.Location = new System.Drawing.Point(22, 53);
             this.listView2.MultiSelect = false;
             this.listView2.Name = "listView2";
-            this.listView2.Size = new System.Drawing.Size(956, 195);
+            this.listView2.Size = new System.Drawing.Size(698, 147);
             this.listView2.TabIndex = 0;
             this.listView2.UseCompatibleStateImageBehavior = false;
             this.listView2.Visible = false;
@@ -213,14 +211,14 @@
             this.select_tovar.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.select_tovar.Location = new System.Drawing.Point(22, 18);
             this.select_tovar.Name = "select_tovar";
-            this.select_tovar.Size = new System.Drawing.Size(956, 29);
+            this.select_tovar.Size = new System.Drawing.Size(698, 29);
             this.select_tovar.TabIndex = 1;
             // 
             // pay
             // 
             this.pay.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.pay.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.pay.Location = new System.Drawing.Point(926, 608);
+            this.pay.Location = new System.Drawing.Point(658, 567);
             this.pay.Name = "pay";
             this.pay.Size = new System.Drawing.Size(137, 23);
             this.pay.TabIndex = 25;
@@ -235,17 +233,17 @@
             this.last_tovar.BackColor = System.Drawing.SystemColors.Window;
             this.last_tovar.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.last_tovar.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.last_tovar.Location = new System.Drawing.Point(9, 68);
+            this.last_tovar.Location = new System.Drawing.Point(13, 68);
             this.last_tovar.MaxLength = 200;
             this.last_tovar.Multiline = true;
             this.last_tovar.Name = "last_tovar";
             this.last_tovar.ReadOnly = true;
-            this.last_tovar.Size = new System.Drawing.Size(1054, 70);
+            this.last_tovar.Size = new System.Drawing.Size(775, 70);
             this.last_tovar.TabIndex = 29;
             // 
             // date_time_start
             // 
-            this.date_time_start.Location = new System.Drawing.Point(543, 8);
+            this.date_time_start.Location = new System.Drawing.Point(520, 8);
             this.date_time_start.Name = "date_time_start";
             this.date_time_start.ReadOnly = true;
             this.date_time_start.Size = new System.Drawing.Size(141, 20);
@@ -253,7 +251,7 @@
             // 
             // num_cash
             // 
-            this.num_cash.Location = new System.Drawing.Point(437, 7);
+            this.num_cash.Location = new System.Drawing.Point(414, 7);
             this.num_cash.Name = "num_cash";
             this.num_cash.ReadOnly = true;
             this.num_cash.Size = new System.Drawing.Size(100, 20);
@@ -263,9 +261,9 @@
             // user
             // 
             this.user.BackColor = System.Drawing.SystemColors.Control;
-            this.user.Location = new System.Drawing.Point(690, 8);
+            this.user.Location = new System.Drawing.Point(667, 8);
             this.user.Name = "user";
-            this.user.Size = new System.Drawing.Size(106, 20);
+            this.user.Size = new System.Drawing.Size(119, 20);
             this.user.TabIndex = 35;
             // 
             // status_com_scaner
@@ -305,7 +303,7 @@
             this.panel_return.Controls.Add(this.return_kop);
             this.panel_return.Controls.Add(this.return_rouble);
             this.panel_return.Controls.Add(this.return_quantity);
-            this.panel_return.Location = new System.Drawing.Point(620, 86);
+            this.panel_return.Location = new System.Drawing.Point(99, 81);
             this.panel_return.Name = "panel_return";
             this.panel_return.Size = new System.Drawing.Size(432, 88);
             this.panel_return.TabIndex = 42;
@@ -374,18 +372,6 @@
             this.return_quantity.Size = new System.Drawing.Size(100, 20);
             this.return_quantity.TabIndex = 0;
             // 
-            // load_document
-            // 
-            this.load_document.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.load_document.Location = new System.Drawing.Point(986, 5);
-            this.load_document.Name = "load_document";
-            this.load_document.Size = new System.Drawing.Size(78, 23);
-            this.load_document.TabIndex = 45;
-            this.load_document.Text = "Загрузить";
-            this.load_document.UseVisualStyleBackColor = true;
-            this.load_document.Visible = false;
-            this.load_document.Click += new System.EventHandler(this.load_document_Click);
-            // 
             // tabControl1
             // 
             this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -396,7 +382,7 @@
             this.tabControl1.Location = new System.Drawing.Point(8, 198);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1066, 404);
+            this.tabControl1.Size = new System.Drawing.Size(791, 363);
             this.tabControl1.TabIndex = 46;
             // 
             // tabPage1
@@ -407,7 +393,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(1058, 378);
+            this.tabPage1.Size = new System.Drawing.Size(783, 337);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Товары";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -421,7 +407,7 @@
             this.listView1.Location = new System.Drawing.Point(3, 3);
             this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(1051, 378);
+            this.listView1.Size = new System.Drawing.Size(780, 334);
             this.listView1.TabIndex = 4;
             this.listView1.UseCompatibleStateImageBehavior = false;
             // 
@@ -451,7 +437,7 @@
             // txtB_sertificate_money
             // 
             this.txtB_sertificate_money.Enabled = false;
-            this.txtB_sertificate_money.Location = new System.Drawing.Point(234, 146);
+            this.txtB_sertificate_money.Location = new System.Drawing.Point(88, 151);
             this.txtB_sertificate_money.Name = "txtB_sertificate_money";
             this.txtB_sertificate_money.Size = new System.Drawing.Size(53, 20);
             this.txtB_sertificate_money.TabIndex = 47;
@@ -459,7 +445,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(158, 151);
+            this.label9.Location = new System.Drawing.Point(12, 156);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(76, 13);
             this.label9.TabIndex = 48;
@@ -468,7 +454,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(290, 149);
+            this.label10.Location = new System.Drawing.Point(144, 154);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(77, 13);
             this.label10.TabIndex = 49;
@@ -477,7 +463,7 @@
             // txtB_non_cash_money
             // 
             this.txtB_non_cash_money.Enabled = false;
-            this.txtB_non_cash_money.Location = new System.Drawing.Point(368, 145);
+            this.txtB_non_cash_money.Location = new System.Drawing.Point(222, 150);
             this.txtB_non_cash_money.Name = "txtB_non_cash_money";
             this.txtB_non_cash_money.Size = new System.Drawing.Size(51, 20);
             this.txtB_non_cash_money.TabIndex = 50;
@@ -485,7 +471,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(422, 151);
+            this.label11.Location = new System.Drawing.Point(276, 156);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(58, 13);
             this.label11.TabIndex = 51;
@@ -494,7 +480,7 @@
             // txtB_cash_money
             // 
             this.txtB_cash_money.Enabled = false;
-            this.txtB_cash_money.Location = new System.Drawing.Point(480, 147);
+            this.txtB_cash_money.Location = new System.Drawing.Point(334, 152);
             this.txtB_cash_money.Name = "txtB_cash_money";
             this.txtB_cash_money.Size = new System.Drawing.Size(53, 20);
             this.txtB_cash_money.TabIndex = 52;
@@ -502,17 +488,17 @@
             // txtB_email_telephone
             // 
             this.txtB_email_telephone.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtB_email_telephone.Location = new System.Drawing.Point(886, 180);
+            this.txtB_email_telephone.Location = new System.Drawing.Point(570, 180);
             this.txtB_email_telephone.MaxLength = 50;
             this.txtB_email_telephone.Name = "txtB_email_telephone";
-            this.txtB_email_telephone.Size = new System.Drawing.Size(181, 20);
+            this.txtB_email_telephone.Size = new System.Drawing.Size(216, 20);
             this.txtB_email_telephone.TabIndex = 53;
             // 
             // label12
             // 
             this.label12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(800, 183);
+            this.label12.Location = new System.Drawing.Point(484, 183);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(86, 13);
             this.label12.TabIndex = 54;
@@ -521,16 +507,16 @@
             // txtB_client_phone
             // 
             this.txtB_client_phone.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtB_client_phone.Location = new System.Drawing.Point(797, 40);
+            this.txtB_client_phone.Location = new System.Drawing.Point(596, 45);
             this.txtB_client_phone.MaxLength = 10;
             this.txtB_client_phone.Name = "txtB_client_phone";
-            this.txtB_client_phone.Size = new System.Drawing.Size(120, 20);
+            this.txtB_client_phone.Size = new System.Drawing.Size(190, 20);
             this.txtB_client_phone.TabIndex = 1;
             // 
             // label_client_barcode
             // 
             this.label_client_barcode.AutoSize = true;
-            this.label_client_barcode.Location = new System.Drawing.Point(344, 48);
+            this.label_client_barcode.Location = new System.Drawing.Point(290, 49);
             this.label_client_barcode.Name = "label_client_barcode";
             this.label_client_barcode.Size = new System.Drawing.Size(70, 13);
             this.label_client_barcode.TabIndex = 58;
@@ -542,7 +528,7 @@
             this.label_client_phone.AutoSize = true;
             this.label_client_phone.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.label_client_phone.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.label_client_phone.Location = new System.Drawing.Point(713, 45);
+            this.label_client_phone.Location = new System.Drawing.Point(521, 47);
             this.label_client_phone.Name = "label_client_phone";
             this.label_client_phone.Size = new System.Drawing.Size(69, 15);
             this.label_client_phone.TabIndex = 59;
@@ -552,7 +538,7 @@
             // btn_inpute_phone_client
             // 
             this.btn_inpute_phone_client.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btn_inpute_phone_client.Location = new System.Drawing.Point(692, 613);
+            this.btn_inpute_phone_client.Location = new System.Drawing.Point(-230, 100);
             this.btn_inpute_phone_client.Name = "btn_inpute_phone_client";
             this.btn_inpute_phone_client.Size = new System.Drawing.Size(82, 22);
             this.btn_inpute_phone_client.TabIndex = 60;
@@ -563,7 +549,7 @@
             // 
             // btn_change_status_client
             // 
-            this.btn_change_status_client.Location = new System.Drawing.Point(308, 41);
+            this.btn_change_status_client.Location = new System.Drawing.Point(252, 43);
             this.btn_change_status_client.Name = "btn_change_status_client";
             this.btn_change_status_client.Size = new System.Drawing.Size(32, 23);
             this.btn_change_status_client.TabIndex = 61;
@@ -575,7 +561,7 @@
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(536, 152);
+            this.label13.Location = new System.Drawing.Point(390, 157);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(45, 13);
             this.label13.TabIndex = 62;
@@ -584,7 +570,7 @@
             // txtB_bonus_money
             // 
             this.txtB_bonus_money.Enabled = false;
-            this.txtB_bonus_money.Location = new System.Drawing.Point(582, 147);
+            this.txtB_bonus_money.Location = new System.Drawing.Point(436, 152);
             this.txtB_bonus_money.Name = "txtB_bonus_money";
             this.txtB_bonus_money.Size = new System.Drawing.Size(50, 20);
             this.txtB_bonus_money.TabIndex = 63;
@@ -593,7 +579,7 @@
             // 
             this.checkBox_to_print_repeatedly.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.checkBox_to_print_repeatedly.AutoSize = true;
-            this.checkBox_to_print_repeatedly.Location = new System.Drawing.Point(785, 612);
+            this.checkBox_to_print_repeatedly.Location = new System.Drawing.Point(517, 571);
             this.checkBox_to_print_repeatedly.Name = "checkBox_to_print_repeatedly";
             this.checkBox_to_print_repeatedly.Size = new System.Drawing.Size(135, 17);
             this.checkBox_to_print_repeatedly.TabIndex = 64;
@@ -635,7 +621,7 @@
             this.txtB_name.Location = new System.Drawing.Point(205, 179);
             this.txtB_name.MaxLength = 250;
             this.txtB_name.Name = "txtB_name";
-            this.txtB_name.Size = new System.Drawing.Size(427, 20);
+            this.txtB_name.Size = new System.Drawing.Size(275, 20);
             this.txtB_name.TabIndex = 68;
             // 
             // txtB_num_sales
@@ -643,13 +629,13 @@
             this.txtB_num_sales.Location = new System.Drawing.Point(175, 6);
             this.txtB_num_sales.MaxLength = 10;
             this.txtB_num_sales.Name = "txtB_num_sales";
-            this.txtB_num_sales.Size = new System.Drawing.Size(122, 20);
+            this.txtB_num_sales.Size = new System.Drawing.Size(98, 20);
             this.txtB_num_sales.TabIndex = 69;
             this.txtB_num_sales.Visible = false;
             // 
             // btn_fill_on_sales
             // 
-            this.btn_fill_on_sales.Location = new System.Drawing.Point(299, 4);
+            this.btn_fill_on_sales.Location = new System.Drawing.Point(279, 4);
             this.btn_fill_on_sales.Name = "btn_fill_on_sales";
             this.btn_fill_on_sales.Size = new System.Drawing.Size(131, 23);
             this.btn_fill_on_sales.TabIndex = 70;
@@ -664,7 +650,7 @@
             this.cash.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.cash.ForeColor = System.Drawing.Color.Black;
             this.cash.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.cash.Location = new System.Drawing.Point(799, 5);
+            this.cash.Location = new System.Drawing.Point(45, 25);
             this.cash.MaxLength = 10;
             this.cash.Name = "cash";
             this.cash.Size = new System.Drawing.Size(122, 23);
@@ -679,7 +665,7 @@
             this.checkBox_club.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.checkBox_club.AutoSize = true;
             this.checkBox_club.CheckAlign = System.Drawing.ContentAlignment.TopRight;
-            this.checkBox_club.Location = new System.Drawing.Point(992, 41);
+            this.checkBox_club.Location = new System.Drawing.Point(555, 146);
             this.checkBox_club.Name = "checkBox_club";
             this.checkBox_club.Size = new System.Drawing.Size(50, 17);
             this.checkBox_club.TabIndex = 71;
@@ -690,7 +676,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1075, 643);
+            this.ClientSize = new System.Drawing.Size(800, 600);
             this.Controls.Add(this.panel_return);
             this.Controls.Add(this.checkBox_club);
             this.Controls.Add(this.btn_fill_on_sales);
@@ -716,7 +702,6 @@
             this.Controls.Add(this.label9);
             this.Controls.Add(this.txtB_sertificate_money);
             this.Controls.Add(this.tabControl1);
-            this.Controls.Add(this.load_document);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.check_type);
             this.Controls.Add(this.status_com_scaner);
@@ -780,7 +765,6 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Button return_enter;
-        private System.Windows.Forms.Button load_document;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
         public System.Windows.Forms.ListView listView1;

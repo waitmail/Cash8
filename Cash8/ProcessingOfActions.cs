@@ -557,7 +557,7 @@ namespace Cash8
                     else if (tip_action == 6)
                     {           //Номер документа  //Сообщение о подарке //Сумма в данном случае шаг акции
                         //start_action = DateTime.Now;
-                        action_6(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt16(7));
+                        //action_6(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt16(7));
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
                     }
                     else if (tip_action == 8)
@@ -588,7 +588,7 @@ namespace Cash8
                         }
                         else
                         {
-                            action_1_dt(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7), reader.GetInt32(4)); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
+                            //action_1_dt(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7), reader.GetInt32(4)); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
                     }
@@ -596,7 +596,7 @@ namespace Cash8
                     {
                         if (reader.GetDecimal(5) <= calculation_of_the_sum_of_the_document_dt())
                         {
-                            MessageBox.Show(reader[3].ToString());
+                            //MessageBox.Show(reader[3].ToString());
                             action_num_doc = Convert.ToInt32(reader[1].ToString());
                         }
                     }
@@ -607,31 +607,31 @@ namespace Cash8
                 }
                 reader.Close();
 
-                query = "SELECT tip,num_doc,persent,comment,code_tovar,sum,barcode,marker,execution_order FROM action_header " +
-                 " WHERE '" + DateTime.Now.Date.ToString("yyy-MM-dd") + "' between date_started AND date_end " +
-                 " AND " + count_minutes.ToString() + " between time_start AND time_end AND bonus_promotion=0 " +
-                 " AND barcode='' AND tip=10 AND num_doc in(" +//AND tip<>10 
-                 " SELECT DISTINCT action_table.num_doc FROM checks_table_temp " +
-                 " LEFT JOIN action_table ON checks_table_temp.tovar = action_table.code_tovar) order by execution_order asc, tip asc";//date_started asc,, tip desc
+                //query = "SELECT tip,num_doc,persent,comment,code_tovar,sum,barcode,marker,execution_order FROM action_header " +
+                // " WHERE '" + DateTime.Now.Date.ToString("yyy-MM-dd") + "' between date_started AND date_end " +
+                // " AND " + count_minutes.ToString() + " between time_start AND time_end AND bonus_promotion=0 " +
+                // " AND barcode='' AND tip=10 AND num_doc in(" +//AND tip<>10 
+                // " SELECT DISTINCT action_table.num_doc FROM checks_table_temp " +
+                // " LEFT JOIN action_table ON checks_table_temp.tovar = action_table.code_tovar) order by execution_order asc, tip asc";//date_started asc,, tip desc
 
-                command = new NpgsqlCommand(query, conn);
-                reader = command.ExecuteReader();
+                //command = new NpgsqlCommand(query, conn);
+                //reader = command.ExecuteReader();
 
-                while (reader.Read())
-                {
-                    if (reader.GetDecimal(5) <= action_10_dt(reader.GetInt32(1)))
-                    {
-                        int multiplicity = (int)(calculation_of_the_sum_of_the_document_dt() / action_10_dt(reader.GetInt32(1)));
-                        MessageBox.Show("Крастность " + multiplicity.ToString() + " " + reader[3].ToString());
-                        action_num_doc = Convert.ToInt32(reader[1].ToString());
-                    }
-                }
+                //while (reader.Read())
+                //{
+                //    if (reader.GetDecimal(5) <= action_10_dt(reader.GetInt32(1)))
+                //    {
+                //        int multiplicity = (int)(calculation_of_the_sum_of_the_document_dt() / action_10_dt(reader.GetInt32(1)));
+                //        MessageBox.Show("Крастность " + multiplicity.ToString() + " " + reader[3].ToString());
+                //        action_num_doc = Convert.ToInt32(reader[1].ToString());
+                //    }
+                //}
 
-                reader.Close();
-                conn.Close();
-                command.Dispose();
+                //reader.Close();
+                //conn.Close();
+                //command.Dispose();
 
-                checked_action_10_dt();//Отдельная проверка поскольку может не быть товарной части, а все акции выше проверяются именно на вхождение товаров документа в таб части акционных документов
+                //checked_action_10_dt();//Отдельная проверка поскольку может не быть товарной части, а все акции выше проверяются именно на вхождение товаров документа в таб части акционных документов
 
             }
             catch (NpgsqlException ex)

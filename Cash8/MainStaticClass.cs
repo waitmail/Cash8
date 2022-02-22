@@ -185,14 +185,13 @@ namespace Cash8
                 }
                 else if (MainStaticClass.GetWorkSchema == 2)
                 {
-                    result = "https://evaviza1.cardnonstop.com/test";//"http://5.188.118.39/test";// https://evaviza1.cardnonstop.com/test/";
+                    //это боевой процессинг https://evaviza1.cardnonstop.com/processing
+                    result = "https://evaviza1.cardnonstop.com/processing";// "https://evaviza1.cardnonstop.com/test";//"http://5.188.118.39/test";
                 }
 
                 return result;
             }
         }
-
-
 
         /// <summary>
         /// Флаг возвращает истина если 
@@ -223,8 +222,7 @@ namespace Cash8
                 return work_schema;
             }
         }
-
-
+        
         private static int get_work_schema()
         {
             int result = 0;
@@ -256,8 +254,7 @@ namespace Cash8
 
             return result;
         }
-
-
+        
         //private static int BonusTreshold
         //{
         //    get
@@ -292,8 +289,7 @@ namespace Cash8
         //        return bonus_treshold;
         //    }
         //}
-
-
+        
         public static bool validate_cash_sum_non_cash_sum_on_return(int id_sale, decimal cash_summ,decimal non_cash_sum)
         {
             bool result = true;
@@ -505,14 +501,14 @@ namespace Cash8
 
 
 
-        public static string get_ip_adress()
-        {
-            // Получение имени компьютера.
-            String host = System.Net.Dns.GetHostName();
-            // Получение ip-адреса.
-            System.Net.IPAddress ip = System.Net.Dns.GetHostByName(host).AddressList[0];
-            return ip.ToString();
-        }
+        //public static string get_ip_adress()
+        //{
+        //    // Получение имени компьютера.
+        //    String host = System.Net.Dns.GetHostName();
+        //    // Получение ip-адреса.
+        //    System.Net.IPAddress ip = System.Net.Dns.GetHostByName(host).AddressList[0];
+        //    return ip.ToString();
+        //}
 
 
         public static void delete_old_checks(DateTime date)

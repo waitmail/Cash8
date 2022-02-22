@@ -105,10 +105,11 @@ namespace Cash8
         /// этот режим будет доступен после перехода в окно оплаты
         /// </summary>
         /// <param name="mode"></param>
-        private void SendDataToCustomerScreen(int mode, int show_price)
+        private void SendDataToCustomerScreen(int mode, int show_price,int calculate_actionc)
         {
 
-            if ((MainStaticClass.UseOldProcessiingActions) || (!itsnew))
+            //if ((MainStaticClass.UseOldProcessiingActions) || (!itsnew))
+            if(( mode==1 && show_price==1) || (mode == 0 && show_price == 0))
             {
                 CustomerScreen customerScreen = new CustomerScreen();
                 customerScreen.show_price = show_price;
@@ -2036,7 +2037,7 @@ namespace Cash8
                     lvi.SubItems.Add("0");
                     lvi.SubItems.Add("0");
                     listView1.Items.Add(lvi);
-                    SendDataToCustomerScreen(1, 0);
+                    SendDataToCustomerScreen(1, 0,1);
                     there_are_goods = true;
                     this.listView1.Select();
                     this.listView1.Items[this.listView1.Items.Count - 1].Selected = true;
@@ -2469,7 +2470,7 @@ namespace Cash8
                         {
                             return;
                         }
-                        SendDataToCustomerScreen(1, 0);
+                        SendDataToCustomerScreen(1, 0,1);
                         if (MainStaticClass.GetWorkSchema == 1)
                         {
                             listView1.Select();
@@ -2619,7 +2620,7 @@ namespace Cash8
                     lvi.SubItems.Add("0");//Номер акционного документа подарок
                     lvi.SubItems.Add("0"); //Номер акционного документа дополнительное поле пометка что участвовало в акции, но скидка может быть
                     listView1.Items.Add(lvi);
-                    SendDataToCustomerScreen(1, 0);
+                    SendDataToCustomerScreen(1, 0,1);
                     this.listView1.Select();
                     this.listView1.Items[this.listView1.Items.Count - 1].Selected = true;
                     update_record_last_tovar(listView1.Items[this.listView1.Items.Count - 1].SubItems[1].Text, listView1.Items[this.listView1.Items.Count - 1].SubItems[4].Text);
@@ -3663,7 +3664,7 @@ namespace Cash8
             //    }
             //}
 
-            SendDataToCustomerScreen(1, 0);
+            SendDataToCustomerScreen(1, 0,1);
         }
 
 
@@ -4013,16 +4014,16 @@ namespace Cash8
                 if (last_rewrite)
                 {
                     itsnew = false;
-                    SendDataToCustomerScreen(0, 0);
+                    SendDataToCustomerScreen(0, 0,0);
                 }
                 else
                 {
                     itsnew = true;
-                    SendDataToCustomerScreen(1, 0);
+                    SendDataToCustomerScreen(1, 0,1);
                 }
                 if (its_deleted == "1")
                 {
-                    SendDataToCustomerScreen(0, 0);
+                    SendDataToCustomerScreen(0, 0,0);
                 }
                 result = true;
 
@@ -7644,6 +7645,7 @@ namespace Cash8
                 }
             }
 
+            
             //ПРОВЕРКА МАССИВА КОДОВ МАРКИРОВКИ
             if (MainStaticClass.GetVersionFn == 2)
             {
@@ -7676,6 +7678,7 @@ namespace Cash8
                 }
             }
             //КОНЕЦ ПРОВЕРКИ МАССИВА КОДОВ МАРКИРОВКИ
+            
 
 
             if (itsnew)
@@ -8791,7 +8794,7 @@ namespace Cash8
                                 lvi_new.SubItems[14].Text = "0";
                                 //*****************************************************************************
                                 listView1.Items.Add(lvi_new);
-                                SendDataToCustomerScreen(1, 0);
+                                SendDataToCustomerScreen(1, 0,1);
                                 min_quantity = 0;
                             }
                         }
@@ -9518,7 +9521,7 @@ namespace Cash8
                         lvi.SubItems.Add("0");//lvi.SubItems[14].Text = "0";
                         //*****************************************************************************
                         listView1.Items.Add(lvi);
-                        SendDataToCustomerScreen(1, 0);
+                        SendDataToCustomerScreen(1, 0,1);
                     }
 
                     /*акция сработала
@@ -9662,7 +9665,7 @@ namespace Cash8
                                 lvi.SubItems.Add("0");
                                 //*****************************************************************************
                                 listView1.Items.Add(lvi);
-                                SendDataToCustomerScreen(1, 0);
+                                SendDataToCustomerScreen(1, 0,1);
                                 multiplication_factor--;
                             }
                             else
@@ -9688,7 +9691,7 @@ namespace Cash8
                                 lvi.SubItems.Add("0");
                                 //*****************************************************************************
                                 listView1.Items.Add(lvi);
-                                SendDataToCustomerScreen(1, 0);
+                                SendDataToCustomerScreen(1, 0,1);
                             }
                         }
                         else
@@ -9714,7 +9717,7 @@ namespace Cash8
                             lvi.SubItems.Add("0");
                             //*****************************************************************************
                             listView1.Items.Add(lvi);
-                            SendDataToCustomerScreen(1, 0);
+                            SendDataToCustomerScreen(1, 0,1);
                         }
                         num_records++;
                     }
@@ -10254,7 +10257,7 @@ namespace Cash8
                             lvi.SubItems[14].Text = "0";
                             //*****************************************************************************
                             listView1.Items.Add(lvi);
-                            SendDataToCustomerScreen(1, 0);
+                            SendDataToCustomerScreen(1, 0,1);
 
                         }
                         else
@@ -10280,7 +10283,7 @@ namespace Cash8
                             lvi.SubItems[14].Text = "0";
                             //*****************************************************************************
                             listView1.Items.Add(lvi);
-                            SendDataToCustomerScreen(1, 0);
+                            SendDataToCustomerScreen(1, 0,1);
                         }
 
                     }
@@ -10559,7 +10562,7 @@ namespace Cash8
                 listView1.Items.Add(lvi);
             }
             write_new_document("0", "0", "0", "0", false, "0", "0", "0", "0");
-            SendDataToCustomerScreen(1, 0);
+            SendDataToCustomerScreen(1, 0,1);
         }
 
         /*
@@ -11085,7 +11088,7 @@ namespace Cash8
                 }               
             }
             //При переходе в окно оплаты цены должны быть отрисованы
-            SendDataToCustomerScreen(1,1);
+            SendDataToCustomerScreen(1,1,1);
             //pay_form.Top = this.Top;
             //pay_form.Left = this.Left;
             //pay_form.Right = this.Right;
@@ -11753,40 +11756,242 @@ namespace Cash8
             ////////////////////////////////////////
         }
 
-    //private void fill_client_on_return(string code_client)
-    //{
-    //    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+        //private void fill_client_on_return(string code_client)
+        //{
+        //    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
 
-    //    try
-    //    {
-    //        conn.Open();
-    //        string query = "SELECT code, pin FROM bonus_cards WHERE code='"+ code_client+"'";
-    //        NpgsqlCommand command = new NpgsqlCommand(query, conn);
-    //        NpgsqlDataReader reader = command.ExecuteReader();
-    //        while (reader.Read())
-    //        {
-    //            client.Tag = reader["code"].ToString();
-    //            client.Text = reader["code"].ToString();
-    //        }               
-    //        reader.Close();
-    //        conn.Close();
-    //    }
-    //    catch (NpgsqlException ex)
-    //    {
-    //        MessageBox.Show(ex.Message);
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        MessageBox.Show(ex.Message);
-    //    }
-    //    finally
-    //    {
-    //        if (conn.State == ConnectionState.Open)
-    //        {
-    //            conn.Close();
-    //        }
-    //    }
-    //}
+        //    try
+        //    {
+        //        conn.Open();
+        //        string query = "SELECT code, pin FROM bonus_cards WHERE code='"+ code_client+"'";
+        //        NpgsqlCommand command = new NpgsqlCommand(query, conn);
+        //        NpgsqlDataReader reader = command.ExecuteReader();
+        //        while (reader.Read())
+        //        {
+        //            client.Tag = reader["code"].ToString();
+        //            client.Text = reader["code"].ToString();
+        //        }               
+        //        reader.Close();
+        //        conn.Close();
+        //    }
+        //    catch (NpgsqlException ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //    finally
+        //    {
+        //        if (conn.State == ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //        }
+        //    }
+        //}
+
+        private void fill_on_sales()
+        {
+
+            id_sale = Convert.ToInt32(txtB_num_sales.Text);
+            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+
+            if (MainStaticClass.GetWorkSchema == 1)
+            {
+                try
+                {
+                    string query = "";
+
+                    query = " SELECT dt.tovar_code, dt.name,SUM(dt.quantity)AS quantity, dt.price, dt.price_at_a_discount, SUM(dt.sum) AS sum," +
+                                   "  SUM(dt.sum_at_a_discount) AS sum_at_a_discount, dt.id_transaction,dt.client,dt.item_marker" +
+                                   " FROM " +
+                                   " (SELECT tovar_code, tovar.name, quantity AS quantity, price, price_at_a_discount, sum, sum_at_a_discount," +
+                                   " checks_header.id_transaction, checks_header.client, item_marker " +
+                                   " FROM " +
+                                   " checks_table LEFT JOIN tovar ON checks_table.tovar_code = tovar.code " +
+                                   " LEFT JOIN checks_header ON checks_table.document_number = checks_header.document_number " +
+                                   " WHERE checks_table.document_number = '" + txtB_num_sales.Text.Trim() + "' AND checks_header.check_type = 0 AND checks_header.its_deleted = 0 " +
+                                   " AND checks_header.date_time_write BETWEEN '" + DateTime.Now.AddDays(-14).Date.ToString("dd-MM-yyyy") + "' AND  '" + DateTime.Now.AddDays(1).ToString("dd-MM-yyyy") + "'" +
+                                   " UNION ALL " +
+                                   " SELECT tovar_code, tovar.name, -quantity, price, price_at_a_discount, -sum, -sum_at_a_discount, checks_header.id_transaction," +
+                                   " checks_header.client, item_marker FROM checks_table LEFT JOIN tovar ON checks_table.tovar_code = tovar.code " +
+                                   " LEFT JOIN checks_header ON checks_table.document_number = checks_header.document_number " +
+                                   " WHERE checks_header.id_sale = '" + txtB_num_sales.Text.Trim() + "'  AND checks_header.check_type = 1 AND checks_header.its_deleted = 0 " +
+                                   " AND checks_header.date_time_write BETWEEN '" + DateTime.Now.AddDays(-14).Date.ToString("dd-MM-yyyy") + "' AND  '" + DateTime.Now.AddDays(1).ToString("dd-MM-yyyy") + "' )AS dt " +
+                                   " GROUP BY " +
+                                   "dt.tovar_code, dt.name, dt.price, dt.price_at_a_discount, dt.id_transaction,dt.client,dt.item_marker " +
+                                   " HAVING SUM(dt.quantity) > 0 ";
+
+                    conn.Open();
+                    NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                    NpgsqlDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        if (its_sertificate(reader[0].ToString()))
+                        {
+                            continue;
+                        }
+                        //**************************
+                        id_transaction_sale = reader["id_transaction"].ToString();
+                        if (reader["client"].ToString().Trim().Length != 0)
+                        {
+                            client.Tag = reader["client"].ToString().Trim();
+                            client.Text = reader["client"].ToString().Trim();
+                            //fill_client_on_return(reader["client"].ToString().Trim());
+                            client_barcode.Enabled = false;
+                        }
+                        //**************************
+                        ListViewItem lvi = new ListViewItem(reader[0].ToString());
+                        lvi.Tag = reader[0].ToString();
+                        lvi.SubItems.Add(reader[1].ToString());//Наименование
+                        lvi.SubItems.Add("");//Характеристика
+                        lvi.SubItems[2].Tag = "";
+                        lvi.SubItems.Add(reader[2].ToString());//Количество
+                        lvi.SubItems.Add(reader[3].ToString());//Цена без скидки
+                        lvi.SubItems.Add(reader[4].ToString());//Цена Со скидкой
+                        lvi.SubItems.Add(reader[5].ToString());//Сумма без скидки
+                        lvi.SubItems.Add(reader[6].ToString());//Сумма со скидкой
+                        lvi.SubItems.Add("0");//Акционный документ
+                        lvi.SubItems.Add("0");//Акционный документ
+                        lvi.SubItems.Add("0");//Акционный документ
+                        lvi.SubItems.Add("0");//Бонус
+                        lvi.SubItems.Add("0");//Бонус
+                        lvi.SubItems.Add("0");//Бонус
+                        lvi.SubItems.Add(reader["item_marker"].ToString().Replace("vasya2021", "'"));//Маркер                    
+                        listView1.Items.Add(lvi);
+                    }
+                    reader.Close();
+                    conn.Close();
+                    command.Dispose();                    
+                    write_new_document("0", calculation_of_the_sum_of_the_document().ToString(), "0", "0", false, "0", "0", "0", "0");
+                }
+                catch (NpgsqlException ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+                finally
+                {
+                    if (conn.State == ConnectionState.Open)
+                    {
+                        conn.Close();
+                    }
+                }
+
+            }
+            else if (MainStaticClass.GetWorkSchema == 2)
+            {
+                try
+                {
+                    string query_sales = "SELECT tovar_code, tovar.name, quantity AS quantity, price, price_at_a_discount, sum, sum_at_a_discount," +
+                                        " checks_header.id_transaction, checks_header.client, item_marker " +
+                                        " FROM " +
+                                        " checks_table LEFT JOIN tovar ON checks_table.tovar_code = tovar.code " +
+                                        " LEFT JOIN checks_header ON checks_table.document_number = checks_header.document_number " +
+                                        " WHERE checks_table.document_number = '" + txtB_num_sales.Text.Trim() + "' AND checks_header.check_type = 0 AND checks_header.its_deleted = 0 " +
+                                        " AND checks_header.date_time_write BETWEEN '" + DateTime.Now.AddDays(-14).Date.ToString("dd-MM-yyyy") +
+                                        "' AND  '" + DateTime.Now.AddDays(1).ToString("dd-MM-yyyy") + "'";
+
+                    string query_return = " SELECT tovar_code, tovar.name, quantity, price, price_at_a_discount, sum, sum_at_a_discount, checks_header.id_transaction," +
+                                            " checks_header.client, item_marker FROM checks_table LEFT JOIN tovar ON checks_table.tovar_code = tovar.code " +
+                                            " LEFT JOIN checks_header ON checks_table.document_number = checks_header.document_number " +
+                                            " WHERE checks_header.id_sale = '" + txtB_num_sales.Text.Trim() + "'  AND checks_header.check_type = 1 AND checks_header.its_deleted = 0 " +
+                                            " AND checks_header.date_time_write BETWEEN '" + DateTime.Now.AddDays(-14).Date.ToString("dd-MM-yyyy") + "' AND  '" +
+                                            DateTime.Now.AddDays(1).ToString("dd-MM-yyyy") + "'";
+
+                    conn.Open();
+                    DataTable t_sales = new DataTable();
+                    using (NpgsqlDataAdapter npgsqlDataAdapter = new NpgsqlDataAdapter(query_sales, conn))
+                    {
+                        npgsqlDataAdapter.Fill(t_sales);
+                    }
+
+                    DataTable t_return = new DataTable();
+                    using (NpgsqlDataAdapter npgsqlDataAdapter = new NpgsqlDataAdapter(query_return, conn))
+                    {
+                        npgsqlDataAdapter.Fill(t_return);
+                    }
+
+                    foreach (DataRow row in t_return.Rows)
+                    {
+                        DataRow[] result = t_sales.Select("tovar_code=" + row["tovar_code"] +
+                                                            " AND price_at_a_discount='" + row["price_at_a_discount"] + "'"+
+                                                            " AND item_marker='" + row["item_marker"] + "'");
+                        if (result.Length > 0)
+                        {
+                            t_sales.Rows.Remove(result[0]);
+                        }
+                    }
+
+                    if (t_sales.Rows.Count > 0)
+                    {
+                        foreach (DataRow row in t_sales.Rows)
+                        {
+                            if (its_sertificate(row["tovar_code"].ToString()))
+                            {
+                                continue;
+                            }
+                            id_transaction_sale = row["id_transaction"].ToString();
+                            if (row["client"].ToString().Trim().Length != 0)
+                            {
+                                client.Tag = row["client"].ToString().Trim();// Надо заполнить еще и строку                                 
+                                client.Text = row["client"].ToString().Trim();
+                                client_barcode.Enabled = false;
+                            }
+                            ListViewItem lvi = new ListViewItem(row["tovar_code"].ToString());
+                            lvi.Tag = row["tovar_code"].ToString();
+                            lvi.SubItems.Add(row["name"].ToString());//Наименование
+                            lvi.SubItems.Add("");//Характеристика
+                            lvi.SubItems[2].Tag = "";
+                            lvi.SubItems.Add(row["quantity"].ToString());//Количество
+                            lvi.SubItems.Add(row["price"].ToString());//Цена без скидки
+                            lvi.SubItems.Add(row["price_at_a_discount"].ToString());//Цена Со скидкой
+                            lvi.SubItems.Add(row["sum"].ToString());//Сумма без скидки
+                            lvi.SubItems.Add(row["sum_at_a_discount"].ToString());//Сумма со скидкой
+                            lvi.SubItems.Add("0");//Акционный документ
+                            lvi.SubItems.Add("0");//Акционный документ
+                            lvi.SubItems.Add("0");//Акционный документ
+                            lvi.SubItems.Add("0");//Бонус
+                            lvi.SubItems.Add("0");//Бонус
+                            lvi.SubItems.Add("0");//Бонус
+                            lvi.SubItems.Add(row["item_marker"].ToString().Replace("vasya2021", "'"));//Маркер                    
+                            listView1.Items.Add(lvi);
+                        }
+                    }                    
+                    conn.Close();                   
+                    
+                }
+                catch (NpgsqlException ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+                finally
+                {
+                    if (conn.State == ConnectionState.Open)
+                    {
+                        conn.Close();
+                    }
+                }
+                if (listView1.Items.Count == 0)
+                {
+                    MessageBox.Show(" По введенному номеру  " + txtB_num_sales.Text + " за период 14 дней чек не найден ");
+                }
+                else
+                {
+                    comment.Text = txtB_num_sales.Text;
+                    btn_fill_on_sales.Enabled = false;
+                }
+                write_new_document("0", calculation_of_the_sum_of_the_document().ToString(), "0", "0", false, "0", "0", "0", "0");
+            }
+        }
 
     /// <summary>
     /// Заполнить табличную часть возврата
@@ -11810,293 +12015,169 @@ namespace Cash8
                 }              
             }
 
-            id_sale = Convert.ToInt32(txtB_num_sales.Text);
-
-            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
-
-            try
-            {
-                string query = "";
-                if (MainStaticClass.GetWorkSchema == 1)
-                {
-                    query = " SELECT dt.tovar_code, dt.name,SUM(dt.quantity)AS quantity, dt.price, dt.price_at_a_discount, SUM(dt.sum) AS sum," +
-                                   "  SUM(dt.sum_at_a_discount) AS sum_at_a_discount, dt.id_transaction,dt.client,dt.item_marker" +//,dt.numstr " +
-                                   " FROM " +
-                                   " (SELECT numstr, tovar_code, tovar.name, quantity AS quantity, price, price_at_a_discount, sum, sum_at_a_discount," +
-                                   " checks_header.id_transaction, checks_header.client, item_marker " +
-                                   " FROM " +
-                                   " checks_table LEFT JOIN tovar ON checks_table.tovar_code = tovar.code " +
-                                   " LEFT JOIN checks_header ON checks_table.document_number = checks_header.document_number " +
-                                   " WHERE checks_table.document_number = '" + txtB_num_sales.Text.Trim() + "' AND checks_header.check_type = 0 AND checks_header.its_deleted = 0 " +
-                                   " AND checks_header.date_time_write BETWEEN '" + DateTime.Now.AddDays(-14).Date.ToString("dd-MM-yyyy") + "' AND  '" + DateTime.Now.AddDays(1).ToString("dd-MM-yyyy") + "'" +
-                                   " UNION ALL " +
-                                   " SELECT numstr, tovar_code, tovar.name, -quantity, price, price_at_a_discount, -sum, -sum_at_a_discount, checks_header.id_transaction," +
-                                   " checks_header.client, item_marker FROM checks_table LEFT JOIN tovar ON checks_table.tovar_code = tovar.code " +
-                                   " LEFT JOIN checks_header ON checks_table.document_number = checks_header.document_number " +
-                                   " WHERE checks_header.id_sale = '" + txtB_num_sales.Text.Trim() + "'  AND checks_header.check_type = 1 AND checks_header.its_deleted = 0 " +
-                                   " AND checks_header.date_time_write BETWEEN '" + DateTime.Now.AddDays(-14).Date.ToString("dd-MM-yyyy") + "' AND  '" + DateTime.Now.AddDays(1).ToString("dd-MM-yyyy") + "' )AS dt " +
-                                   " GROUP BY " +//dt.numstr," +
-                                   "dt.tovar_code, dt.name, dt.price, dt.price_at_a_discount, dt.id_transaction,dt.client,dt.item_marker " +
-                                   " HAVING SUM(dt.quantity) > 0 ";
-                    //"order by numstr";
-                }
-                else if (MainStaticClass.GetWorkSchema == 2)
-                {
-                    query = " SELECT dt.tovar_code, dt.name,SUM(dt.quantity)AS quantity, dt.price, dt.price_at_a_discount, SUM(dt.sum) AS sum," +
-                                   "  SUM(dt.sum_at_a_discount) AS sum_at_a_discount, dt.id_transaction,dt.client,dt.item_marker,dt.numstr " +
-                                   " FROM " +
-                                   " (SELECT numstr, tovar_code, tovar.name, quantity AS quantity, price, price_at_a_discount, sum, sum_at_a_discount," +
-                                   " checks_header.id_transaction, checks_header.client, item_marker " +
-                                   " FROM " +
-                                   " checks_table LEFT JOIN tovar ON checks_table.tovar_code = tovar.code " +
-                                   " LEFT JOIN checks_header ON checks_table.document_number = checks_header.document_number " +
-                                   " WHERE checks_table.document_number = '" + txtB_num_sales.Text.Trim() + "' AND checks_header.check_type = 0 AND checks_header.its_deleted = 0 " +
-                                   " AND checks_header.date_time_write BETWEEN '" + DateTime.Now.AddDays(-14).Date.ToString("dd-MM-yyyy") + "' AND  '" + DateTime.Now.AddDays(1).ToString("dd-MM-yyyy") + "'" +
-                                   " UNION ALL " +
-                                   " SELECT numstr, tovar_code, tovar.name, -quantity, price, price_at_a_discount, -sum, -sum_at_a_discount, checks_header.id_transaction," +
-                                   " checks_header.client, item_marker FROM checks_table LEFT JOIN tovar ON checks_table.tovar_code = tovar.code " +
-                                   " LEFT JOIN checks_header ON checks_table.document_number = checks_header.document_number " +
-                                   " WHERE checks_header.id_sale = '" + txtB_num_sales.Text.Trim() + "'  AND checks_header.check_type = 1 AND checks_header.its_deleted = 0 " +
-                                   " AND checks_header.date_time_write BETWEEN '" + DateTime.Now.AddDays(-14).Date.ToString("dd-MM-yyyy") + "' AND  '" + DateTime.Now.AddDays(1).ToString("dd-MM-yyyy") + "' )AS dt " +
-                                   " GROUP BY dt.numstr," +
-                                   "dt.tovar_code, dt.name, dt.price, dt.price_at_a_discount, dt.id_transaction,dt.client,dt.item_marker " +
-                                   " HAVING SUM(dt.quantity) > 0  order by numstr";
-                }
-
-                conn.Open();
-                //string query = " SELECT tovar_code, tovar.name,quantity, price, price_at_a_discount, sum, sum_at_a_discount,checks_header.id_transaction,checks_header.client,item_marker FROM checks_table " +
-                //               " LEFT JOIN tovar ON checks_table.tovar_code = tovar.code "+
-                //               " LEFT JOIN checks_header ON checks_table.document_number = checks_header.document_number "+
-                //               " WHERE checks_table.document_number = " + txtB_num_sales.Text+ " AND checks_header.check_type = 0 AND checks_header.its_deleted=0 " +
-                //               " AND checks_header.date_time_write BETWEEN '" +DateTime.Now.AddDays(-14).ToString("dd.MM.yyyy")+" 00:00:00' AND  '"+ DateTime.Now.ToString("dd.MM.yyyy")+" 23:59:59' order by numstr ";
-
-                NpgsqlCommand command = new NpgsqlCommand(query, conn);
-                NpgsqlDataReader reader = command.ExecuteReader();                
-                while (reader.Read())
-                {
-                    if (its_sertificate(reader[0].ToString()))
-                    {
-                        continue;
-                    }
-                    //**************************
-                    id_transaction_sale = reader["id_transaction"].ToString();
-                    if (reader["client"].ToString().Trim().Length != 0)
-                    {
-                        client.Tag = reader["client"].ToString().Trim();
-                        //fill_client_on_return(reader["client"].ToString().Trim());
-                        client_barcode.Enabled = false;
-                    }
-                    //**************************
-                    ListViewItem lvi = new ListViewItem(reader[0].ToString());
-                    lvi.Tag = reader[0].ToString();
-                    lvi.SubItems.Add(reader[1].ToString());//Наименование
-                    lvi.SubItems.Add("");//Характеристика
-                    lvi.SubItems[2].Tag = "";
-                    lvi.SubItems.Add(reader[2].ToString());//Количество
-                    lvi.SubItems.Add(reader[3].ToString());//Цена без скидки
-                    lvi.SubItems.Add(reader[4].ToString());//Цена Со скидкой
-                    lvi.SubItems.Add(reader[5].ToString());//Сумма без скидки
-                    lvi.SubItems.Add(reader[6].ToString());//Сумма со скидкой
-                    lvi.SubItems.Add("0");//Акционный документ
-                    lvi.SubItems.Add("0");//Акционный документ
-                    lvi.SubItems.Add("0");//Акционный документ
-                    lvi.SubItems.Add("0");//Бонус
-                    lvi.SubItems.Add("0");//Бонус
-                    lvi.SubItems.Add("0");//Бонус
-                    lvi.SubItems.Add(reader["item_marker"].ToString().Replace("vasya2021", "'"));//Маркер                    
-                    listView1.Items.Add(lvi);
-                }
-                reader.Close();
-                conn.Close();
-                command.Dispose();
-                if (listView1.Items.Count == 0)
-                {
-                    MessageBox.Show(" По введенному номеру  " + txtB_num_sales.Text + " за период 14 дней чек не найден ");
-                }
-                else
-                {
-                    comment.Text = txtB_num_sales.Text;
-                    btn_fill_on_sales.Enabled = false;
-                }
-                write_new_document("0", calculation_of_the_sum_of_the_document().ToString(), "0", "0", false, "0", "0", "0", "0");
-            }
-            catch (NpgsqlException ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                }
-            }
+            fill_on_sales();            
         }
 
-        private void btn_fill_on_sales_Click_Eva(object sender, EventArgs e)
-        {
-            if (listView1.Items.Count > 0)
-            {
-                DialogResult dr = MessageBox.Show(" Перезаполнить товары в чеке ?", "", MessageBoxButtons.YesNo);
-                if (dr == DialogResult.No)
-                {
-                    return;
-                }
-                else
-                {
-                    listView1.Items.Clear();
-                }
-            }
+        //private void btn_fill_on_sales_Click_Eva(object sender, EventArgs e)
+        //{
+        //    if (listView1.Items.Count > 0)
+        //    {
+        //        DialogResult dr = MessageBox.Show(" Перезаполнить товары в чеке ?", "", MessageBoxButtons.YesNo);
+        //        if (dr == DialogResult.No)
+        //        {
+        //            return;
+        //        }
+        //        else
+        //        {
+        //            listView1.Items.Clear();
+        //        }
+        //    }
 
-            id_sale = Convert.ToInt32(txtB_num_sales.Text);
-            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+        //    id_sale = Convert.ToInt32(txtB_num_sales.Text);
+        //    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
 
-            try
-            {
-                string query_sales = "SELECT tovar_code, tovar.name, quantity AS quantity, price, price_at_a_discount, sum, sum_at_a_discount," +
-                                    " checks_header.id_transaction, checks_header.client, item_marker " +
-                                    " FROM " +
-                                    " checks_table LEFT JOIN tovar ON checks_table.tovar_code = tovar.code " +
-                                    " LEFT JOIN checks_header ON checks_table.document_number = checks_header.document_number " +
-                                    " WHERE checks_table.document_number = '" + txtB_num_sales.Text.Trim() + "' AND checks_header.check_type = 0 AND checks_header.its_deleted = 0 " +
-                                    " AND checks_header.date_time_write BETWEEN '" + DateTime.Now.AddDays(-14).Date.ToString("dd-MM-yyyy") +
-                                    "' AND  '" + DateTime.Now.AddDays(1).ToString("dd-MM-yyyy") + "'";
+        //    try
+        //    {
+        //        string query_sales = "SELECT tovar_code, tovar.name, quantity AS quantity, price, price_at_a_discount, sum, sum_at_a_discount," +
+        //                            " checks_header.id_transaction, checks_header.client, item_marker " +
+        //                            " FROM " +
+        //                            " checks_table LEFT JOIN tovar ON checks_table.tovar_code = tovar.code " +
+        //                            " LEFT JOIN checks_header ON checks_table.document_number = checks_header.document_number " +
+        //                            " WHERE checks_table.document_number = '" + txtB_num_sales.Text.Trim() + "' AND checks_header.check_type = 0 AND checks_header.its_deleted = 0 " +
+        //                            " AND checks_header.date_time_write BETWEEN '" + DateTime.Now.AddDays(-14).Date.ToString("dd-MM-yyyy") +
+        //                            "' AND  '" + DateTime.Now.AddDays(1).ToString("dd-MM-yyyy") + "'";
 
-                string query_return = " SELECT tovar_code, tovar.name, quantity, price, price_at_a_discount, sum, sum_at_a_discount, checks_header.id_transaction," +
-                                        " checks_header.client, item_marker FROM checks_table LEFT JOIN tovar ON checks_table.tovar_code = tovar.code " +
-                                        " LEFT JOIN checks_header ON checks_table.document_number = checks_header.document_number " +
-                                        " WHERE checks_header.id_sale = '" + txtB_num_sales.Text.Trim() + "'  AND checks_header.check_type = 1 AND checks_header.its_deleted = 0 " +
-                                        " AND checks_header.date_time_write BETWEEN '" + DateTime.Now.AddDays(-14).Date.ToString("dd-MM-yyyy") + "' AND  '" +
-                                        DateTime.Now.AddDays(1).ToString("dd-MM-yyyy") + "'"; 
+        //        string query_return = " SELECT tovar_code, tovar.name, quantity, price, price_at_a_discount, sum, sum_at_a_discount, checks_header.id_transaction," +
+        //                                " checks_header.client, item_marker FROM checks_table LEFT JOIN tovar ON checks_table.tovar_code = tovar.code " +
+        //                                " LEFT JOIN checks_header ON checks_table.document_number = checks_header.document_number " +
+        //                                " WHERE checks_header.id_sale = '" + txtB_num_sales.Text.Trim() + "'  AND checks_header.check_type = 1 AND checks_header.its_deleted = 0 " +
+        //                                " AND checks_header.date_time_write BETWEEN '" + DateTime.Now.AddDays(-14).Date.ToString("dd-MM-yyyy") + "' AND  '" +
+        //                                DateTime.Now.AddDays(1).ToString("dd-MM-yyyy") + "'"; 
 
-                conn.Open();
-                DataTable t_sales = new DataTable();
-                using (NpgsqlDataAdapter npgsqlDataAdapter = new NpgsqlDataAdapter(query_sales, conn))
-                {
-                    npgsqlDataAdapter.Fill(t_sales);
-                }
+        //        conn.Open();
+        //        DataTable t_sales = new DataTable();
+        //        using (NpgsqlDataAdapter npgsqlDataAdapter = new NpgsqlDataAdapter(query_sales, conn))
+        //        {
+        //            npgsqlDataAdapter.Fill(t_sales);
+        //        }
 
-                DataTable t_return = new DataTable();
-                using (NpgsqlDataAdapter npgsqlDataAdapter = new NpgsqlDataAdapter(query_return, conn))
-                {
-                    npgsqlDataAdapter.Fill(t_return);
-                }
+        //        DataTable t_return = new DataTable();
+        //        using (NpgsqlDataAdapter npgsqlDataAdapter = new NpgsqlDataAdapter(query_return, conn))
+        //        {
+        //            npgsqlDataAdapter.Fill(t_return);
+        //        }
 
-                foreach (DataRow row in t_return.Rows)
-                {
-                    DataRow[] result = t_sales.Select("tovar_code=" + row["tovar_code"]+ 
-                                                        " AND price_at_a_discount]"+ row["price_at_a_discount"] + 
-                                                        " AND item_marker='"+row["item_marker"]+"'");
-                    if (result.Length > 0)
-                    {
-                        t_sales.Rows.Remove(result[0]);
-                    }
-                }
+        //        foreach (DataRow row in t_return.Rows)
+        //        {
+        //            DataRow[] result = t_sales.Select("tovar_code=" + row["tovar_code"]+ 
+        //                                                " AND price_at_a_discount]"+ row["price_at_a_discount"] + 
+        //                                                " AND item_marker='"+row["item_marker"]+"'");
+        //            if (result.Length > 0)
+        //            {
+        //                t_sales.Rows.Remove(result[0]);
+        //            }
+        //        }
 
-                if (t_sales.Rows.Count > 0)
-                {
-                    foreach (DataRow row in t_sales.Rows)
-                    {
-                        if (its_sertificate(row["tovar_code"].ToString()))
-                        {
-                            continue;
-                        }
-                            id_transaction_sale = row["id_transaction"].ToString();
-                            if (row["client"].ToString().Trim().Length != 0)
-                            {
-                                client.Tag = row["client"].ToString().Trim();// Надо заполнить еще и строку                                 
-                                client_barcode.Enabled = false;
-                            }
-                            ListViewItem lvi = new ListViewItem(row["tovar_code"].ToString());
-                            lvi.Tag = row["tovar_code"].ToString();
-                            lvi.SubItems.Add(row["name"].ToString());//Наименование
-                            lvi.SubItems.Add("");//Характеристика
-                            lvi.SubItems[2].Tag = "";
-                            lvi.SubItems.Add(row["quantity"].ToString());//Количество
-                            lvi.SubItems.Add(row["price"].ToString());//Цена без скидки
-                            lvi.SubItems.Add(row["price_at_a_discount"].ToString());//Цена Со скидкой
-                            lvi.SubItems.Add(row["sum"].ToString());//Сумма без скидки
-                            lvi.SubItems.Add(row["sum_at_a_discount"].ToString());//Сумма со скидкой
-                            lvi.SubItems.Add("0");//Акционный документ
-                            lvi.SubItems.Add("0");//Акционный документ
-                            lvi.SubItems.Add("0");//Акционный документ
-                            lvi.SubItems.Add("0");//Бонус
-                            lvi.SubItems.Add("0");//Бонус
-                            lvi.SubItems.Add("0");//Бонус
-                            lvi.SubItems.Add(row["item_marker"].ToString().Replace("vasya2021", "'"));//Маркер                    
-                            listView1.Items.Add(lvi);
-                    }
-                }
+        //        if (t_sales.Rows.Count > 0)
+        //        {
+        //            foreach (DataRow row in t_sales.Rows)
+        //            {
+        //                if (its_sertificate(row["tovar_code"].ToString()))
+        //                {
+        //                    continue;
+        //                }
+        //                    id_transaction_sale = row["id_transaction"].ToString();
+        //                    if (row["client"].ToString().Trim().Length != 0)
+        //                    {
+        //                        client.Tag = row["client"].ToString().Trim();// Надо заполнить еще и строку                                 
+        //                        client_barcode.Enabled = false;
+        //                    }
+        //                    ListViewItem lvi = new ListViewItem(row["tovar_code"].ToString());
+        //                    lvi.Tag = row["tovar_code"].ToString();
+        //                    lvi.SubItems.Add(row["name"].ToString());//Наименование
+        //                    lvi.SubItems.Add("");//Характеристика
+        //                    lvi.SubItems[2].Tag = "";
+        //                    lvi.SubItems.Add(row["quantity"].ToString());//Количество
+        //                    lvi.SubItems.Add(row["price"].ToString());//Цена без скидки
+        //                    lvi.SubItems.Add(row["price_at_a_discount"].ToString());//Цена Со скидкой
+        //                    lvi.SubItems.Add(row["sum"].ToString());//Сумма без скидки
+        //                    lvi.SubItems.Add(row["sum_at_a_discount"].ToString());//Сумма со скидкой
+        //                    lvi.SubItems.Add("0");//Акционный документ
+        //                    lvi.SubItems.Add("0");//Акционный документ
+        //                    lvi.SubItems.Add("0");//Акционный документ
+        //                    lvi.SubItems.Add("0");//Бонус
+        //                    lvi.SubItems.Add("0");//Бонус
+        //                    lvi.SubItems.Add("0");//Бонус
+        //                    lvi.SubItems.Add(row["item_marker"].ToString().Replace("vasya2021", "'"));//Маркер                    
+        //                    listView1.Items.Add(lvi);
+        //            }
+        //        }
 
-                    //NpgsqlCommand command = new NpgsqlCommand(query, conn);
-                    //NpgsqlDataReader reader = command.ExecuteReader();
-                    //while (reader.Read())
-                    //{
-                    //    if (its_sertificate(reader[0].ToString()))
-                    //    {
-                    //        continue;
-                    //    }
-                    //    //**************************
-                    //    id_transaction_sale = reader["id_transaction"].ToString();
-                    //    if (reader["client"].ToString().Trim().Length != 0)
-                    //    {
-                    //        client.Tag = reader["client"].ToString().Trim();
-                    //        //fill_client_on_return(reader["client"].ToString().Trim());
-                    //        client_barcode.Enabled = false;
-                    //    }
-                    //    //**************************
-                    //    ListViewItem lvi = new ListViewItem(reader[0].ToString());
-                    //    lvi.Tag = reader[0].ToString();
-                    //    lvi.SubItems.Add(reader[1].ToString());//Наименование
-                    //    lvi.SubItems.Add("");//Характеристика
-                    //    lvi.SubItems[2].Tag = "";
-                    //    lvi.SubItems.Add(reader[2].ToString());//Количество
-                    //    lvi.SubItems.Add(reader[3].ToString());//Цена без скидки
-                    //    lvi.SubItems.Add(reader[4].ToString());//Цена Со скидкой
-                    //    lvi.SubItems.Add(reader[5].ToString());//Сумма без скидки
-                    //    lvi.SubItems.Add(reader[6].ToString());//Сумма со скидкой
-                    //    lvi.SubItems.Add("0");//Акционный документ
-                    //    lvi.SubItems.Add("0");//Акционный документ
-                    //    lvi.SubItems.Add("0");//Акционный документ
-                    //    lvi.SubItems.Add("0");//Бонус
-                    //    lvi.SubItems.Add("0");//Бонус
-                    //    lvi.SubItems.Add("0");//Бонус
-                    //    lvi.SubItems.Add(reader["item_marker"].ToString().Replace("vasya2021", "'"));//Маркер                    
-                    //    listView1.Items.Add(lvi);
-                    //}
-                    //reader.Close();
-                    //conn.Close();
-                    //command.Dispose();
-                    //if (listView1.Items.Count == 0)
-                    //{
-                    //    MessageBox.Show(" По введенному номеру  " + txtB_num_sales.Text + " за период 14 дней чек не найден ");
-                    //}
-                    //else
-                    //{
-                    //    comment.Text = txtB_num_sales.Text;
-                    //    btn_fill_on_sales.Enabled = false;
-                    //}
-                    //write_new_document("0", calculation_of_the_sum_of_the_document().ToString(), "0", "0", false, "0", "0", "0", "0");
-                }
-            catch (NpgsqlException ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                }
-            }
-        }
+        //            //NpgsqlCommand command = new NpgsqlCommand(query, conn);
+        //            //NpgsqlDataReader reader = command.ExecuteReader();
+        //            //while (reader.Read())
+        //            //{
+        //            //    if (its_sertificate(reader[0].ToString()))
+        //            //    {
+        //            //        continue;
+        //            //    }
+        //            //    //**************************
+        //            //    id_transaction_sale = reader["id_transaction"].ToString();
+        //            //    if (reader["client"].ToString().Trim().Length != 0)
+        //            //    {
+        //            //        client.Tag = reader["client"].ToString().Trim();
+        //            //        //fill_client_on_return(reader["client"].ToString().Trim());
+        //            //        client_barcode.Enabled = false;
+        //            //    }
+        //            //    //**************************
+        //            //    ListViewItem lvi = new ListViewItem(reader[0].ToString());
+        //            //    lvi.Tag = reader[0].ToString();
+        //            //    lvi.SubItems.Add(reader[1].ToString());//Наименование
+        //            //    lvi.SubItems.Add("");//Характеристика
+        //            //    lvi.SubItems[2].Tag = "";
+        //            //    lvi.SubItems.Add(reader[2].ToString());//Количество
+        //            //    lvi.SubItems.Add(reader[3].ToString());//Цена без скидки
+        //            //    lvi.SubItems.Add(reader[4].ToString());//Цена Со скидкой
+        //            //    lvi.SubItems.Add(reader[5].ToString());//Сумма без скидки
+        //            //    lvi.SubItems.Add(reader[6].ToString());//Сумма со скидкой
+        //            //    lvi.SubItems.Add("0");//Акционный документ
+        //            //    lvi.SubItems.Add("0");//Акционный документ
+        //            //    lvi.SubItems.Add("0");//Акционный документ
+        //            //    lvi.SubItems.Add("0");//Бонус
+        //            //    lvi.SubItems.Add("0");//Бонус
+        //            //    lvi.SubItems.Add("0");//Бонус
+        //            //    lvi.SubItems.Add(reader["item_marker"].ToString().Replace("vasya2021", "'"));//Маркер                    
+        //            //    listView1.Items.Add(lvi);
+        //            //}
+        //            //reader.Close();
+        //            //conn.Close();
+        //            //command.Dispose();
+        //            //if (listView1.Items.Count == 0)
+        //            //{
+        //            //    MessageBox.Show(" По введенному номеру  " + txtB_num_sales.Text + " за период 14 дней чек не найден ");
+        //            //}
+        //            //else
+        //            //{
+        //            //    comment.Text = txtB_num_sales.Text;
+        //            //    btn_fill_on_sales.Enabled = false;
+        //            //}
+        //            //write_new_document("0", calculation_of_the_sum_of_the_document().ToString(), "0", "0", false, "0", "0", "0", "0");
+        //        }
+        //    catch (NpgsqlException ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //    finally
+        //    {
+        //        if (conn.State == ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //        }
+        //    }
+        //}
     }
 }
