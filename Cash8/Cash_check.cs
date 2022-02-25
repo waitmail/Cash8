@@ -1583,10 +1583,171 @@ namespace Cash8
             foreach (ListViewItem lvi in listView1.Items)
             {
                 total += Convert.ToDecimal(lvi.SubItems[7].Text);
+                //MessageBox.Show("Подсчет суммы документа " + lvi.SubItems[7].Text + " общая сумма " + total.ToString()," Подсчет суммы ");
             }
 
             return total;
         }
+        ///// <summary>
+        ///// Нет сдачи в копейках 
+        ///// для этого отсекается копеечная часть
+        ///// потом она равномерно распределяется
+        ///// по товарам
+        ///// </summary>
+        ///// <param name="sum"></param>
+        //public void distribute(decimal sum, decimal total)
+        //{
+
+        //    if (sum == 0)
+        //    {
+        //        return;
+        //    }
+
+        //    decimal part = Convert.ToDecimal(sum) / total;//как общая сумма относится к части
+        //    decimal part_on_string = 0;
+
+        //    foreach (ListViewItem lvi in listView1.Items)
+        //    {
+        //        MessageBox.Show("Надо распределить " + part.ToString());
+        //        //if ((lvi.SubItems[7].Text.Trim() == "0") && (lvi.SubItems[8].Text.Trim() == "0") && (lvi.SubItems[9].Text == "0"))
+        //        if (Convert.ToDecimal(lvi.SubItems[4].Text.Replace(".", ",")) > 1)
+        //        //if (decimal.Parse(lvi.SubItems[3].Text.Replace(".",",")) > 1)
+        //        {
+        //            if (its_certificate(lvi.SubItems[0].Text) == "1")//Сертификаты с копейками не работают
+        //            {
+        //                continue;
+        //            }
+
+        //            MessageBox.Show(" Умножаем " + lvi.SubItems[7].Text + " на " + part.ToString());
+        //            MessageBox.Show(" Надо распределить по строке без округления " + (Convert.ToDouble(lvi.SubItems[7].Text) * Convert.ToDouble(part)).ToString());
+        //            part_on_string = Math.Round(Convert.ToDecimal(lvi.SubItems[7].Text) * part, 2);
+        //            MessageBox.Show("Надо распределить по строке " + part_on_string.ToString());
+
+
+        //            if ((part_on_string > sum) || (sum == part_on_string + (Convert.ToDecimal(1) / 100)))
+        //            {
+        //                part_on_string = sum;
+        //            }
+
+        //            MessageBox.Show("Распределяемое по строке " + part_on_string.ToString());
+
+        //            if ((Convert.ToDecimal(lvi.SubItems[7].Text) > part_on_string) && (Convert.ToDecimal(lvi.SubItems[7].Text) > 1))
+        //            {
+        //                //получаем новую цену соскидкой
+        //                lvi.SubItems[5].Text = (Math.Round((Convert.ToDecimal(lvi.SubItems[7].Text) - part_on_string) / Convert.ToDecimal(Convert.ToDecimal(lvi.SubItems[3].Text)), 2)).ToString();
+        //                //Запоминаем старую сумму со скидкой
+        //                decimal sum_on_string = Convert.ToDecimal(lvi.SubItems[7].Text);
+        //                MessageBox.Show(" Старая сумма со скидкой " + sum_on_string.ToString());
+        //                //получаем новую сумму со скидкой
+        //                lvi.SubItems[7].Text = (Convert.ToDecimal(lvi.SubItems[5].Text) * Convert.ToDecimal(lvi.SubItems[3].Text)).ToString();
+        //                MessageBox.Show(" Новая сумма со скидкой " + lvi.SubItems[7].Text.ToString());
+        //                //Получаем разницу между старой суммойц со скидкой и новой
+        //                decimal difference = sum_on_string - Convert.ToDecimal(lvi.SubItems[7].Text);
+        //                MessageBox.Show(" Остаток " + difference.ToString());
+
+        //                //lvi.SubItems[6].Text = (Convert.ToDecimal(lvi.SubItems[6].Text) - part_on_string).ToString();
+        //                if (difference == part_on_string)
+        //                {
+        //                    sum -= part_on_string;
+        //                }
+        //                else
+        //                {
+        //                    sum -= difference;
+        //                }
+        //            }
+        //            else
+        //            {
+        //                //sum = sum - part_on_string;//вычитаем из общей суммы распределения , то что распределилось по строке
+        //                //if (Convert.ToDecimal(lvi.SubItems[6].Text) > part_on_string)//если в строке сумма больше распределения то вычитаем ее
+        //                //{
+        //                //    lvi.SubItems[6].Text = (Convert.ToDecimal(lvi.SubItems[6].Text) - part_on_string).ToString();
+        //                //    part_on_string = 0;
+        //                //}
+        //                //else
+        //                //{
+        //                //    //lvi.SubItems[6].Text = (Convert.ToDecimal(1) / 100).ToString();
+        //                //    part_on_string = part_on_string + (Convert.ToDecimal(1) / 100) - Convert.ToDecimal(lvi.SubItems[6].Text);
+        //                //    sum += part_on_string;
+        //                //}
+        //            }
+        //        }
+        //        if (sum == 0)//уже все распределили
+        //        {
+        //            break;
+        //        }
+        //    }
+
+        //    if (sum != 0)//Снова цикл
+        //    {
+
+        //        //if (sum < 0)
+        //        //{
+        //        //    sum = sum * -1;
+        //        //}
+
+        //        foreach (ListViewItem lvi in listView1.Items)
+        //        {
+        //            //                 if //(Convert.ToDecimal(lvi.SubItems[6].Text) > Convert.ToDecimal(1) / 100)
+        //            //                   (Convert.ToDecimal(lvi.SubItems[3].Text)>1)
+        //            //if (Convert.ToDecimal(lvi.SubItems[4].Text.Replace(".", ",")) > 1)
+        //            if (Convert.ToDecimal(lvi.SubItems[7].Text.Replace(".", ",")) > 1)
+        //            {
+        //                if (Convert.ToDecimal(lvi.SubItems[3].Text) == 1)
+        //                {
+        //                    lvi.SubItems[5].Text = (Convert.ToDecimal(lvi.SubItems[7].Text) - sum).ToString();
+        //                    lvi.SubItems[6].Text = (Convert.ToDecimal(lvi.SubItems[4].Text) * Convert.ToDecimal(lvi.SubItems[3].Text)).ToString();
+        //                    lvi.SubItems[7].Text = (Convert.ToDecimal(lvi.SubItems[5].Text) * Convert.ToDecimal(lvi.SubItems[3].Text)).ToString();
+        //                    sum = 0;
+        //                }
+        //                else
+        //                {
+        //                    lvi.SubItems[3].Text = (Convert.ToDecimal(lvi.SubItems[3].Text) - 1).ToString();
+        //                    lvi.SubItems[6].Text = (Convert.ToDecimal(lvi.SubItems[4].Text) * Convert.ToDecimal(lvi.SubItems[3].Text)).ToString();
+        //                    lvi.SubItems[7].Text = (Convert.ToDecimal(lvi.SubItems[5].Text) * Convert.ToDecimal(lvi.SubItems[3].Text)).ToString();
+        //                    //уменьшаем кол-во на единицу , пересчитываем сумму 
+
+        //                    //затем добавляем новый элемент
+        //                    ListViewItem lvi2 = new ListViewItem(lvi.SubItems[0].Text);
+        //                    lvi2.Tag = lvi.SubItems[0].Text;
+        //                    lvi2.SubItems.Add(lvi.SubItems[1].Text);
+        //                    lvi2.SubItems.Add(lvi.SubItems[2].Text);
+        //                    //lvi2.SubItems.Add(lvi.SubItems[3].Text);
+        //                    lvi2.SubItems[2].Tag = lvi.SubItems[2].Tag;
+        //                    lvi2.SubItems.Add("1");
+        //                    lvi2.SubItems.Add(lvi.SubItems[4].Text);
+        //                    lvi2.SubItems.Add((Convert.ToDecimal(lvi.SubItems[5].Text) - sum).ToString());
+        //                    lvi2.SubItems.Add((Convert.ToDecimal(lvi2.SubItems[4].Text) * Convert.ToDecimal(lvi2.SubItems[3].Text)).ToString());
+        //                    lvi2.SubItems.Add((Convert.ToDecimal(lvi2.SubItems[5].Text) * Convert.ToDecimal(lvi2.SubItems[3].Text)).ToString());
+        //                    lvi2.SubItems.Add(lvi.SubItems[8].Text);
+        //                    lvi2.SubItems.Add(lvi.SubItems[9].Text);
+        //                    lvi2.SubItems.Add(lvi.SubItems[10].Text);
+        //                    //*****************************************************************************
+        //                    lvi2.SubItems.Add("0");
+        //                    lvi2.SubItems.Add("0");
+        //                    lvi2.SubItems.Add("0");
+        //                    lvi2.SubItems.Add("0");
+        //                    //*****************************************************************************
+        //                    listView1.Items.Add(lvi2);
+
+        //                    sum = 0;
+        //                }
+        //            }
+        //            //else
+        //            //{
+
+        //            //}
+        //            if (sum == 0)//уже все распределили
+        //            {
+        //                break;
+        //            }
+        //        }
+        //    }
+        //    if (sum != 0)//Снова цикл
+        //    {
+        //        MessageBox.Show("Не распределилось");
+        //    }
+        //}
+
         /// <summary>
         /// Нет сдачи в копейках 
         /// для этого отсекается копеечная часть
@@ -1594,7 +1755,7 @@ namespace Cash8
         /// по товарам
         /// </summary>
         /// <param name="sum"></param>
-        public void distribute(decimal sum, decimal total)
+        public void distribute(double sum, double total)
         {
 
             if (sum == 0)
@@ -1602,11 +1763,12 @@ namespace Cash8
                 return;
             }
 
-            decimal part = Convert.ToDecimal(sum) / total;//как общая сумма относится к части
-            decimal part_on_string = 0;
+            double part = sum / total;//как общая сумма относится к части
+            double part_on_string = 0;
 
             foreach (ListViewItem lvi in listView1.Items)
             {
+                //MessageBox.Show("Надо распределить " + part.ToString());
                 //if ((lvi.SubItems[7].Text.Trim() == "0") && (lvi.SubItems[8].Text.Trim() == "0") && (lvi.SubItems[9].Text == "0"))
                 if (Convert.ToDecimal(lvi.SubItems[4].Text.Replace(".", ",")) > 1)
                 //if (decimal.Parse(lvi.SubItems[3].Text.Replace(".",",")) > 1)
@@ -1615,23 +1777,33 @@ namespace Cash8
                     {
                         continue;
                     }
-                    part_on_string = Math.Round(Convert.ToDecimal(lvi.SubItems[7].Text) * part, 2);
 
-
-                    if ((part_on_string > sum) || (sum == part_on_string + (Convert.ToDecimal(1) / 100)))
+                    //MessageBox.Show(" Умножаем " + lvi.SubItems[7].Text + " на " + part.ToString());
+                    //MessageBox.Show(" Надо распределить по строке без округления " + (Convert.ToDouble(lvi.SubItems[7].Text) * Convert.ToDouble(part)).ToString());
+                    part_on_string = Math.Round(Convert.ToDouble(lvi.SubItems[7].Text) * part, 2);
+                    //MessageBox.Show("Надо распределить по строке " + part_on_string.ToString());
+                    
+                    if ((part_on_string > sum) || (sum == part_on_string + (Convert.ToDouble(1) / 100)))
                     {
                         part_on_string = sum;
                     }
-                    if ((Convert.ToDecimal(lvi.SubItems[7].Text) > part_on_string) && (Convert.ToDecimal(lvi.SubItems[7].Text) > 1))
+
+                    //MessageBox.Show("Распределяемое по строке " + part_on_string.ToString());
+
+                    if ((Convert.ToDouble(lvi.SubItems[7].Text) > part_on_string) && (Convert.ToDecimal(lvi.SubItems[7].Text) > 1))
                     {
                         //получаем новую цену соскидкой
-                        lvi.SubItems[5].Text = (Math.Round((Convert.ToDecimal(lvi.SubItems[7].Text) - part_on_string) / Convert.ToDecimal(Convert.ToDecimal(lvi.SubItems[3].Text)), 2)).ToString();
+                        lvi.SubItems[5].Text = (Math.Round((Convert.ToDouble(lvi.SubItems[7].Text) - part_on_string) / Convert.ToDouble(Convert.ToDouble(lvi.SubItems[3].Text)), 2)).ToString();
                         //Запоминаем старую сумму со скидкой
-                        decimal sum_on_string = Convert.ToDecimal(lvi.SubItems[7].Text);
+                        double sum_on_string = Convert.ToDouble(lvi.SubItems[7].Text);
+                        //MessageBox.Show(" Старая сумма со скидкой " + sum_on_string.ToString());
                         //получаем новую сумму со скидкой
-                        lvi.SubItems[7].Text = (Convert.ToDecimal(lvi.SubItems[5].Text) * Convert.ToDecimal(lvi.SubItems[3].Text)).ToString();
+                        lvi.SubItems[7].Text = (Convert.ToDouble(lvi.SubItems[5].Text) * Convert.ToDouble(lvi.SubItems[3].Text)).ToString();
+                        //MessageBox.Show(" Новая сумма со скидкой " + lvi.SubItems[7].Text.ToString());
                         //Получаем разницу между старой суммойц со скидкой и новой
-                        decimal difference = sum_on_string - Convert.ToDecimal(lvi.SubItems[7].Text);
+                        double difference = sum_on_string - Convert.ToDouble(lvi.SubItems[7].Text);
+                        //MessageBox.Show(" Остаток " + difference.ToString());
+
                         //lvi.SubItems[6].Text = (Convert.ToDecimal(lvi.SubItems[6].Text) - part_on_string).ToString();
                         if (difference == part_on_string)
                         {
@@ -1681,16 +1853,16 @@ namespace Cash8
                     {
                         if (Convert.ToDecimal(lvi.SubItems[3].Text) == 1)
                         {
-                            lvi.SubItems[5].Text = (Convert.ToDecimal(lvi.SubItems[7].Text) - sum).ToString();
-                            lvi.SubItems[6].Text = (Convert.ToDecimal(lvi.SubItems[4].Text) * Convert.ToDecimal(lvi.SubItems[3].Text)).ToString();
-                            lvi.SubItems[7].Text = (Convert.ToDecimal(lvi.SubItems[5].Text) * Convert.ToDecimal(lvi.SubItems[3].Text)).ToString();
+                            lvi.SubItems[5].Text = (Convert.ToDouble(lvi.SubItems[7].Text) - sum).ToString();
+                            lvi.SubItems[6].Text = (Convert.ToDouble(lvi.SubItems[4].Text) * Convert.ToDouble(lvi.SubItems[3].Text)).ToString();
+                            lvi.SubItems[7].Text = (Convert.ToDouble(lvi.SubItems[5].Text) * Convert.ToDouble(lvi.SubItems[3].Text)).ToString();
                             sum = 0;
                         }
                         else
                         {
-                            lvi.SubItems[3].Text = (Convert.ToDecimal(lvi.SubItems[3].Text) - 1).ToString();
-                            lvi.SubItems[6].Text = (Convert.ToDecimal(lvi.SubItems[4].Text) * Convert.ToDecimal(lvi.SubItems[3].Text)).ToString();
-                            lvi.SubItems[7].Text = (Convert.ToDecimal(lvi.SubItems[5].Text) * Convert.ToDecimal(lvi.SubItems[3].Text)).ToString();
+                            lvi.SubItems[3].Text = (Convert.ToDouble(lvi.SubItems[3].Text) - 1).ToString();
+                            lvi.SubItems[6].Text = (Convert.ToDouble(lvi.SubItems[4].Text) * Convert.ToDouble(lvi.SubItems[3].Text)).ToString();
+                            lvi.SubItems[7].Text = (Convert.ToDouble(lvi.SubItems[5].Text) * Convert.ToDouble(lvi.SubItems[3].Text)).ToString();
                             //уменьшаем кол-во на единицу , пересчитываем сумму 
 
                             //затем добавляем новый элемент
@@ -1702,9 +1874,9 @@ namespace Cash8
                             lvi2.SubItems[2].Tag = lvi.SubItems[2].Tag;
                             lvi2.SubItems.Add("1");
                             lvi2.SubItems.Add(lvi.SubItems[4].Text);
-                            lvi2.SubItems.Add((Convert.ToDecimal(lvi.SubItems[5].Text) - sum).ToString());
-                            lvi2.SubItems.Add((Convert.ToDecimal(lvi2.SubItems[4].Text) * Convert.ToDecimal(lvi2.SubItems[3].Text)).ToString());
-                            lvi2.SubItems.Add((Convert.ToDecimal(lvi2.SubItems[5].Text) * Convert.ToDecimal(lvi2.SubItems[3].Text)).ToString());
+                            lvi2.SubItems.Add((Convert.ToDouble(lvi.SubItems[5].Text) - sum).ToString());
+                            lvi2.SubItems.Add((Convert.ToDouble(lvi2.SubItems[4].Text) * Convert.ToDouble(lvi2.SubItems[3].Text)).ToString());
+                            lvi2.SubItems.Add((Convert.ToDouble(lvi2.SubItems[5].Text) * Convert.ToDouble(lvi2.SubItems[3].Text)).ToString());
                             lvi2.SubItems.Add(lvi.SubItems[8].Text);
                             lvi2.SubItems.Add(lvi.SubItems[9].Text);
                             lvi2.SubItems.Add(lvi.SubItems[10].Text);
@@ -4540,58 +4712,75 @@ namespace Cash8
                 }
             }
 
-            AnswerAddingKmArrayToTableTested answerAddingKmArrayToTableTested = Tested_Km(addingKmArrayToTableTestedKm);
-            if (answerAddingKmArrayToTableTested.results[0].errorCode == 0)
+            //MessageBox.Show("1");
+            try
             {
+                AnswerAddingKmArrayToTableTested answerAddingKmArrayToTableTested = Tested_Km(addingKmArrayToTableTestedKm);
+                if (answerAddingKmArrayToTableTested.results[0].status != "ready")
+                {
+                    MessageBox.Show("Не удалось получить корректный ответ от ФР в течении 24 секунд, можете попробовать еще раз.");
+                }
                 if (answerAddingKmArrayToTableTested.results[0].errorCode == 0)
                 {
-                    if (answerAddingKmArrayToTableTested.results[0].result[0].onlineValidation != null)
+                    //MessageBox.Show("2");
+                    if (answerAddingKmArrayToTableTested.results[0].errorCode == 0)
                     {
-                        if (answerAddingKmArrayToTableTested.results[0].result[0].driverError.code == 0)
+                        //MessageBox.Show("3");
+                        if (answerAddingKmArrayToTableTested.results[0].result[0].onlineValidation != null)
                         {
-                            int i = 0;
-                            while (i < answerAddingKmArrayToTableTested.results[0].result.Count)
-                            {   //Успешная проверка это когда в секции "itemInfoCheckResult" реквизит "imcCheckResult" имеет значение true
-                                if (!answerAddingKmArrayToTableTested.results[0].result[i].onlineValidation.itemInfoCheckResult.imcCheckResult)
-                                {
-                                    if (answerAddingKmArrayToTableTested.results[0].result[i].onlineValidation.markOperatorResponseResult != "correct")
+                            //MessageBox.Show("4");
+                            if (answerAddingKmArrayToTableTested.results[0].result[0].driverError.code == 0)
+                            {
+                                //MessageBox.Show("5");
+                                int i = 0;
+                                while (i < answerAddingKmArrayToTableTested.results[0].result.Count)
+                                {   //Успешная проверка это когда в секции "itemInfoCheckResult" реквизит "imcCheckResult" имеет значение true
+                                    if (!answerAddingKmArrayToTableTested.results[0].result[i].onlineValidation.itemInfoCheckResult.imcCheckResult)
                                     {
-                                        if (answerAddingKmArrayToTableTested.results[0].result[i].onlineValidation.markOperatorResponseResult == "incorrect")
+                                        if (answerAddingKmArrayToTableTested.results[0].result[i].onlineValidation.markOperatorResponseResult != "correct")
                                         {
-                                            //MessageBox.Show("Запрос имеет некорректный формат markOperatorResponseResult = " + answerAddingKmArrayToTableTested.results[0].result[0].onlineValidation.markOperatorResponseResult.ToString());
-                                            MessageBox.Show("Запрос имеет некорректный формат в строке = " + num_strt_km[i].ToString());
-                                            result = false;
-                                        }
-                                        if (answerAddingKmArrayToTableTested.results[0].result[i].onlineValidation.markOperatorResponseResult == "unrecognized")
-                                        {
-                                            //MessageBox.Show("КМ имеет некорретный формат markOperatorResponseResult = " + answerAddingKmArrayToTableTested.results[0].result[0].onlineValidation.markOperatorResponseResult.ToString());
-                                            MessageBox.Show("КМ имеет некорретный формат в строке = " + num_strt_km[i].ToString());
-                                            //listView1.Items[num_strt_km[i]-1].SubItems[14].Text = change_case_in_line(listView1.Items[num_strt_km[i]-1].SubItems[14].Text);
-                                            result = false;//попробовать вызвать еще раз с км с измененным регистром
+                                            if (answerAddingKmArrayToTableTested.results[0].result[i].onlineValidation.markOperatorResponseResult == "incorrect")
+                                            {
+                                                //MessageBox.Show("Запрос имеет некорректный формат markOperatorResponseResult = " + answerAddingKmArrayToTableTested.results[0].result[0].onlineValidation.markOperatorResponseResult.ToString());
+                                                MessageBox.Show("Запрос имеет некорректный формат в строке = " + num_strt_km[i].ToString());
+                                                result = false;
+                                            }
+                                            if (answerAddingKmArrayToTableTested.results[0].result[i].onlineValidation.markOperatorResponseResult == "unrecognized")
+                                            {
+                                                //MessageBox.Show("КМ имеет некорретный формат markOperatorResponseResult = " + answerAddingKmArrayToTableTested.results[0].result[0].onlineValidation.markOperatorResponseResult.ToString());
+                                                MessageBox.Show("КМ имеет некорретный формат в строке = " + num_strt_km[i].ToString());
+                                                //listView1.Items[num_strt_km[i]-1].SubItems[14].Text = change_case_in_line(listView1.Items[num_strt_km[i]-1].SubItems[14].Text);
+                                                result = false;//попробовать вызвать еще раз с км с измененным регистром
+                                            }
                                         }
                                     }
+                                    i++;
                                 }
-                                i++;
+                            }
+                            else
+                            {
+                                string description = "";
+                                if (answerAddingKmArrayToTableTested.results[0].result[0].driverError.error != null)
+                                {
+                                    description += answerAddingKmArrayToTableTested.results[0].result[0].driverError.error;
+                                }
+                                if (answerAddingKmArrayToTableTested.results[0].result[0].driverError.description != null)
+                                {
+                                    description += answerAddingKmArrayToTableTested.results[0].result[0].driverError.description;
+                                }
+
+                                MessageBox.Show("Ошибка при проверке кодов маркировки код ошибки " + answerAddingKmArrayToTableTested.results[0].result[0].driverError.code.ToString() + " " + description);
                             }
                         }
                         else
                         {
-                            string description = "";
-                            if (answerAddingKmArrayToTableTested.results[0].result[0].driverError.error != null)
-                            {
-                                description += answerAddingKmArrayToTableTested.results[0].result[0].driverError.error;
-                            }
-                            if (answerAddingKmArrayToTableTested.results[0].result[0].driverError.description != null)
-                            {
-                                description += answerAddingKmArrayToTableTested.results[0].result[0].driverError.description;
-                            }
-
-                            MessageBox.Show("Ошибка при проверке кодов маркировки код ошибки " + answerAddingKmArrayToTableTested.results[0].result[0].driverError.code.ToString() + " " + description);
+                            MessageBox.Show("Ошибка при проверке кодов маркировки код ошибки " + answerAddingKmArrayToTableTested.results[0].result[0].driverError.code + " " + answerAddingKmArrayToTableTested.results[0].result[0].driverError.description);
+                            result = false;
                         }
                     }
                     else
                     {
-                        MessageBox.Show("Ошибка при проверке кодов маркировки код ошибки " + answerAddingKmArrayToTableTested.results[0].result[0].driverError.code + " " + answerAddingKmArrayToTableTested.results[0].result[0].driverError.description);
+                        MessageBox.Show(" Ошибка при проверке кодов маркировки код ошибки " + answerAddingKmArrayToTableTested.results[0].errorCode.ToString() + " " + answerAddingKmArrayToTableTested.results[0].errorDescription.ToString());
                         result = false;
                     }
                 }
@@ -4601,9 +4790,9 @@ namespace Cash8
                     result = false;
                 }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show(" Ошибка при проверке кодов маркировки код ошибки " + answerAddingKmArrayToTableTested.results[0].errorCode.ToString() + " " + answerAddingKmArrayToTableTested.results[0].errorDescription.ToString());
+                MessageBox.Show(ex.Message);
                 result = false;
             }
             return result;
@@ -4660,6 +4849,7 @@ namespace Cash8
 
             //Newtonsoft.Json.Linq.JObject obj = Newtonsoft.Json.Linq.JObject.Parse(Out);
             //var obj = JsonConvert.DeserializeObject(Out) as System.Collections.Generic.ICollection<Results>; 
+           //File.AppendAllText(Application.StartupPath.Replace("\\","/") + "/"+ DateTime.Now.ToString("yyy-MM-dd HH-mm-ss") + ".txt", Out);
 
             var results = JsonConvert.DeserializeObject<AnswerAddingKmArrayToTableTested>(Out);
 
@@ -4696,12 +4886,12 @@ namespace Cash8
                 while (1 == 1)
                 {
                     count++;
-                    Thread.Sleep(500);
+                    Thread.Sleep(1000);
                     result = GET_AnswerAddingKmArrayToTableTested(MainStaticClass.url, guid);
                     status = result.results[0].status;
                     if (status != "ready")
                     {
-                        if (count > 14)
+                        if (count > 24)
                         {
                             break;
                         }

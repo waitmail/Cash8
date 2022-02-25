@@ -26,7 +26,7 @@ namespace Cash8
         //public static Cash_check cc = null;
         //public static 
 
-        //public static string url = "http://192.168.0.220:16732/requests";
+        //public static string url = "http://10.21.47.111:16732/requests";
         public static string url = "http://localhost:16732/requests";
         //public static string url = "http://127.0.0.1:16732/requests";
         //public static string url = "http://" + get_ip_adress() + ":16732/requests";
@@ -185,8 +185,9 @@ namespace Cash8
                 }
                 else if (MainStaticClass.GetWorkSchema == 2)
                 {
-                    //это боевой процессинг https://evaviza1.cardnonstop.com/processing
-                    result = "https://evaviza1.cardnonstop.com/processing";// "https://evaviza1.cardnonstop.com/test";//"http://5.188.118.39/test";
+                    //это боевой процессинг "https://evaviza1.cardnonstop.com/processing";
+                    result = "https://evaviza1.cardnonstop.com/processing";
+                    //result = "https://evaviza1.cardnonstop.com/test";//"http://5.188.118.39/test";
                 }
 
                 return result;

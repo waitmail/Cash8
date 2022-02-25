@@ -985,8 +985,8 @@ namespace Cash8
                     return;
                 }
                 //Получаем копейки которые необходимо распределить
-                decimal total = Convert.ToDecimal(pay_sum.Text);
-                decimal bonus = Convert.ToDecimal(pay_bonus_many.Text);
+                double total = Convert.ToDouble(pay_sum.Text);
+                double bonus = Convert.ToDouble(pay_bonus_many.Text);
 
                 //if (!MainStaticClass.get_use_debug())
                 //{                    
@@ -1000,11 +1000,11 @@ namespace Cash8
                         {
                             if (Convert.ToDecimal(non_cash_sum.Text) == 0)
                             {
-                                cc.distribute(Convert.ToDecimal(pay_bonus_many.Text) + (total - (int)total), total);//теперь бонусы 
+                                cc.distribute(Convert.ToDouble(pay_bonus_many.Text) + (total - (int)total), total);//теперь бонусы 
                             }
                             else
                             {
-                                cc.distribute(Convert.ToDecimal(pay_bonus_many.Text), total);//теперь бонусы 
+                                cc.distribute(Convert.ToDouble(pay_bonus_many.Text), total);//теперь бонусы 
                             }
                         }
                         else
@@ -1021,7 +1021,7 @@ namespace Cash8
                     {
                         if (Convert.ToDecimal(pay_bonus_many.Text) > 0)
                         {
-                            cc.distribute(Convert.ToDecimal(pay_bonus_many.Text), total);//теперь бонусы 
+                            cc.distribute(Convert.ToDouble(pay_bonus_many.Text), total);//теперь бонусы 
                         }                       
                     }
                 }
@@ -1331,12 +1331,17 @@ namespace Cash8
             //Необходимо проверка на сумму документа где сумма всех форм оплаты равно сумме документа
             //Получаем общу сумму по оплате 
             decimal _cash_summ_ = Convert.ToDecimal(cash_sum.Text) - Convert.ToDecimal(remainder.Text);
+            //MessageBox.Show("Наличные " + _cash_summ_.ToString());
             decimal _non_cash_summ_ = Math.Round(Convert.ToDecimal(get_non_cash_sum(1)),2);
+            //MessageBox.Show("Безнал " + _non_cash_summ_.ToString());
             decimal _sertificates_sum_ = Convert.ToDecimal(sertificates_sum.Text);
+            //MessageBox.Show("Сертификаты " + _sertificates_sum_.ToString());
             //decimal _pay_bonus_many_ = Convert.ToDecimal((int)(Convert.ToInt32(pay_bonus_many.Text)/100));
             decimal _pay_bonus_many_ = Convert.ToDecimal(pay_bonus_many.Text);
-
+            //MessageBox.Show("Бонусы " + _pay_bonus_many_.ToString());
             decimal sum_of_the_document = cc.calculation_of_the_sum_of_the_document();
+            //decimal sum_of_the_document = Math.Round(Convert.ToDecimal(pay_sum.Text.Replace(".", ",")), 2);
+            //MessageBox.Show("Сумма документа " + sum_of_the_document.ToString());
 
             if (_non_cash_summ_ == 0)
             {
@@ -1363,7 +1368,8 @@ namespace Cash8
             }
             else if (MainStaticClass.GetWorkSchema == 2)
             {
-                if (sum_of_the_document != _cash_summ_ + _non_cash_summ_ + _sertificates_sum_ + _pay_bonus_many_)
+                //if (sum_of_the_document != _cash_summ_ + _non_cash_summ_ + _sertificates_sum_ + _pay_bonus_many_)
+                if (Math.Round(sum_of_the_document, 2) != Math.Round((_cash_summ_ + _non_cash_summ_ + _sertificates_sum_ + _pay_bonus_many_), 2))
                 {
 
                     MessageBox.Show(" Повторно внесите суммы оплаты, обнаружено несхождение в окне оплаты ");
