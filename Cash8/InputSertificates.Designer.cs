@@ -30,7 +30,6 @@
         {
             this.input_sertificate = new System.Windows.Forms.TextBox();
             this.listView_sertificates = new System.Windows.Forms.ListView();
-            this.button_cancel = new System.Windows.Forms.Button();
             this.button_commit = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
@@ -52,22 +51,6 @@
             this.listView_sertificates.Size = new System.Drawing.Size(739, 305);
             this.listView_sertificates.TabIndex = 1;
             this.listView_sertificates.UseCompatibleStateImageBehavior = false;
-            // 
-            // button_cancel
-            // 
-            this.button_cancel.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.button_cancel.AutoSize = true;
-            this.button_cancel.BackColor = System.Drawing.SystemColors.Control;
-            this.button_cancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button_cancel.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button_cancel.Location = new System.Drawing.Point(12, 382);
-            this.button_cancel.Name = "button_cancel";
-            this.button_cancel.Size = new System.Drawing.Size(268, 36);
-            this.button_cancel.TabIndex = 9;
-            this.button_cancel.Text = "Отменить ввод  (F5)";
-            this.button_cancel.UseVisualStyleBackColor = false;
-            this.button_cancel.Visible = false;
-            this.button_cancel.Click += new System.EventHandler(this.button_cancel_Click);
             // 
             // button_commit
             // 
@@ -91,7 +74,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(768, 562);
             this.ControlBox = false;
-            this.Controls.Add(this.button_cancel);
             this.Controls.Add(this.button_commit);
             this.Controls.Add(this.listView_sertificates);
             this.Controls.Add(this.input_sertificate);
@@ -110,7 +92,6 @@
         #endregion
 
         private System.Windows.Forms.TextBox input_sertificate;
-        private System.Windows.Forms.Button button_cancel;
         private System.Windows.Forms.Button button_commit;
         public System.Windows.Forms.ListView listView_sertificates;
     }

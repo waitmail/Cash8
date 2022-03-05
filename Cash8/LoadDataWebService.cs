@@ -588,7 +588,11 @@ namespace Cash8
                 using (Cash8.DS.DS ds = MainStaticClass.get_ds())
                 {
                     ds.Timeout = 60000;
-                    byte[] result_query_byte = ds.GetDataForCasheV8Jason(nick_shop, data_encrypt);
+                    if (MainStaticClass.GetWorkSchema == 2)
+                    {
+                        ds.Url = "http://10.21.200.21/DiscountSystem/Ds.asmx"; //"http://localhost:50520/DS.asmx";
+                    }
+                    byte[] result_query_byte = ds.GetDataForCasheV8Jason(nick_shop, data_encrypt);                   
                     result_query = DecompressString(result_query_byte);
                     decrypt_data = CryptorEngine.Decrypt(result_query, true, key);
                     loadPacketData = JsonConvert.DeserializeObject<LoadPacketData>(decrypt_data);

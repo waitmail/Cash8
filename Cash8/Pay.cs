@@ -924,6 +924,11 @@ namespace Cash8
                     //i_s.Top = 1;
                     i_s.TopMost = true;
                     i_s.ShowDialog();
+                    if (!i_s.closed_normally)
+                    {
+                        MessageBox.Show("Введенные сертификаты будут удалены");
+                        this.listView_sertificates.Clear();
+                    }
                     i_s.Dispose();
                     calculate();
                     cash_sum.Focus();

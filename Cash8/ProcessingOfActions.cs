@@ -144,7 +144,7 @@ namespace Cash8
 
             DataTable dt = new DataTable();
             DataColumn tovar_code = new DataColumn();
-            tovar_code.DataType = System.Type.GetType("System.Int32");
+            tovar_code.DataType = System.Type.GetType("System.Double");
             tovar_code.ColumnName = "tovar_code"; //listView1.Columns.Add("Код", 100, HorizontalAlignment.Left);           
             dt.Columns.Add(tovar_code);
 

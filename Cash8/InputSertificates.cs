@@ -13,13 +13,23 @@ namespace Cash8
     {
 
         public Pay pay=null;
-
+        public bool closed_normally=false;
         public InputSertificates()
         {
             InitializeComponent();
             this.input_sertificate.KeyDown += new KeyEventHandler(input_sertificate_KeyDown);
             this.listView_sertificates.KeyDown += new KeyEventHandler(listView_sertificates_KeyDown);
             this.Load += new EventHandler(InputSertificates_Load); this.KeyPreview = true;
+            this.FormClosing += InputSertificates_FormClosing;
+        }
+
+        private void InputSertificates_FormClosing(object sender, FormClosingEventArgs e)
+        {            
+            if (!closed_normally)
+            {
+                e.Cancel = true;
+                MessageBox.Show("Так нельзя закрывать окно ввода");
+            }
         }
 
         private void listView_sertificates_KeyDown(object sender, KeyEventArgs e)
@@ -318,13 +328,7 @@ namespace Cash8
             }
 
             pay.sertificates_sum.Text = summ_sertificates.ToString();
-
-            this.Close();
-        }
-
-        private void button_cancel_Click(object sender, EventArgs e)
-        {
-            this.DialogResult = DialogResult.Cancel;
+            closed_normally = true;
             this.Close();
         }
     }

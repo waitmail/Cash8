@@ -107,10 +107,14 @@ namespace Cash8
         /// <param name="mode"></param>
         private void SendDataToCustomerScreen(int mode, int show_price,int calculate_actionc)
         {
+            if (MainStaticClass.GetWorkSchema == 2)
+            {
+                return;
+            }
 
             //if ((MainStaticClass.UseOldProcessiingActions) || (!itsnew))
             if(( mode==1 && show_price==1) || (mode == 0 && show_price == 0))
-            {
+            {                
                 CustomerScreen customerScreen = new CustomerScreen();
                 customerScreen.show_price = show_price;
                 customerScreen.ListCheckPositions = new List<CheckPosition>();
@@ -124,15 +128,15 @@ namespace Cash8
                         checkPosition.Price = listViewItem.SubItems[5].Text;
                         customerScreen.ListCheckPositions.Add(checkPosition);
                     }
-                }
+                }                
                 string message = JsonConvert.SerializeObject(customerScreen, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
                 SendUDPMessage(message);
             }
             else
-            {
-                CustomerScreen customerScreen = new CustomerScreen();
-                customerScreen.show_price = 1;
-                customerScreen.ListCheckPositions = new List<CheckPosition>();
+            {                
+                CustomerScreen customerScreen = new CustomerScreen();                
+                customerScreen.show_price = 1;                
+                customerScreen.ListCheckPositions = new List<CheckPosition>();                
                 DataTable dataTable = to_define_the_action_dt();
                 foreach (DataRow row in dataTable.Rows)
                 {
@@ -141,9 +145,9 @@ namespace Cash8
                     checkPosition.Quantity = row["quantity"].ToString();
                     checkPosition.Price = row["price_at_discount"].ToString();
                     customerScreen.ListCheckPositions.Add(checkPosition);
-                }
+                }                
                 string message = JsonConvert.SerializeObject(customerScreen, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                SendUDPMessage(message);
+                SendUDPMessage(message);                
             }
         }
 
@@ -1930,12 +1934,12 @@ namespace Cash8
             return total;
         }
 
-        private ListViewItem exist_tovar_in_listView(ListView listView, Int32 tovar_code, object characteristic)
+        private ListViewItem exist_tovar_in_listView(ListView listView, Int64 tovar_code, object characteristic)
         {
 
             foreach (ListViewItem lvi in listView.Items)
             {
-                if (Convert.ToInt32(lvi.Tag) == tovar_code)
+                if (Convert.ToInt64(lvi.Tag) == tovar_code)
                 {
                     if ((characteristic == null) && ((lvi.SubItems[2].Tag == null) || (lvi.SubItems[2].Tag.ToString() == "")))
                     {
@@ -2383,8 +2387,7 @@ namespace Cash8
                     if (reader[3].ToString().Trim() == "3")
                     {
                         its_bonus_card = true;
-                    }
-
+                    }                    
                     ListViewItem lvi = new ListViewItem(reader[3].ToString().Trim());//Внутренний код товара
                     //lvi.Tag = reader.GetInt32(0);//Внутренний код товара
                     //lvi.SubItems.Add(reader[1].ToString().Trim());//Наименование
@@ -2415,7 +2418,7 @@ namespace Cash8
                             }
                         }
                     }
-                    //КОНЕЦ Надо проверить может уже сертификат есть в чеке
+                    //КОНЕЦ Надо проверить может уже сертификат есть в чеке                    
                 }
 
                 if (find_sertificate)
@@ -2430,11 +2433,9 @@ namespace Cash8
                     return;
                 }
 
-
-
                 //Проверка по сертификату
                 if (its_certificate == 1)
-                {
+                {                    
                     Cash8.DS.DS ds = MainStaticClass.get_ds();
                     ds.Timeout = 60000;
                     //Получить параметр для запроса на сервер 
@@ -2451,7 +2452,7 @@ namespace Cash8
                         return;
                     }
                     string count_day = CryptorEngine.get_count_day();
-                    string key = nick_shop.Trim() + count_day.Trim() + code_shop.Trim();
+                    string key = nick_shop.Trim() + count_day.Trim() + code_shop.Trim();                    
                     string sertificate_code = get_tovar_code(barcode);
                     string encrypt_data = CryptorEngine.Encrypt(sertificate_code, true, key);
                     string status = "";
@@ -2504,25 +2505,18 @@ namespace Cash8
                             return;
                         }
                     }
-                }
-
-
-                //this.panel2.Visible = true;
-                //this.listView2.Visible = true;
-                //listView2.Select();
-                //listView2.Items[0].Selected = true;
-                //listView2.Items[0].Focused = true;
-
+                }               
+                
                 //Подсчет суммы по документу
                 if (listView2.Items.Count == 1)//1 товар найден
                 {
                     ListViewItem lvi = null;
                     if ((its_marked == 0) && (MainStaticClass.GetWorkSchema == 1))
                     {
-                        lvi = exist_tovar_in_listView(listView1, Convert.ToInt32(select_tovar.Tag), listView2.Items[0].Tag);
+                        lvi = exist_tovar_in_listView(listView1, Convert.ToInt64(select_tovar.Tag), listView2.Items[0].Tag);
                     }
                     if (lvi == null)
-                    {
+                    {                        
                         //select_tovar.Tag.ToString()
                         lvi = new ListViewItem(select_tovar.Tag.ToString());
                         lvi.Tag = select_tovar.Tag.ToString();
@@ -2548,7 +2542,7 @@ namespace Cash8
                         else
                         {
                             lvi.SubItems.Add(Math.Round(Convert.ToDecimal(lvi.SubItems[4].Text), 2).ToString());//Цена со скидкой 
-                        }
+                        }                        
                         lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString());//Сумма
                         lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)).ToString()); //Сумма со скидкой                        
                         lvi.SubItems.Add("0"); //Номер акционного документа скидка
@@ -2562,7 +2556,7 @@ namespace Cash8
                                               //listView1.Select();
                                               //listView1.Items[this.listView1.Items.Count - 1].Selected = true;
                                               //update_record_last_tovar(listView1.Items[this.listView1.Items.Count - 1].SubItems[1].Text, listView1.Items[this.listView1.Items.Count - 1].SubItems[3].Text);
-                        bool error = false;
+                        bool error = false;                        
                         if (check_marker_code(select_tovar.Tag.ToString()) > 0)
                         {
                             if (!Console.CapsLock)
@@ -2633,7 +2627,7 @@ namespace Cash8
                                 error = true;
 
                             }
-                        }
+                        }                        
                         if ((!error)||(MainStaticClass.CashDeskNumber==9))//Если с qr кодом все хорошо тогда добавляем позицию иначе не добавляем, но в 9 кассу добавляем всегда 
                         {
                             listView1.Items.Add(lvi);
@@ -2641,8 +2635,8 @@ namespace Cash8
                         else
                         {
                             return;
-                        }
-                        SendDataToCustomerScreen(1, 0,1);
+                        }                        
+                        SendDataToCustomerScreen(1, 0,1);                        
                         if (MainStaticClass.GetWorkSchema == 1)
                         {
                             listView1.Select();
@@ -2652,6 +2646,7 @@ namespace Cash8
                         {
                             inputbarcode.Focus();
                         }
+                        
                         update_record_last_tovar(listView1.Items[this.listView1.Items.Count - 1].SubItems[1].Text, listView1.Items[this.listView1.Items.Count - 1].SubItems[3].Text);
 
                         //if (MainStaticClass.Use_Trassir > 0)
@@ -2744,7 +2739,7 @@ namespace Cash8
             {
                 if (conn.State == ConnectionState.Open)
                 {
-
+                    conn.Close();
                 }
             }
 
