@@ -878,7 +878,8 @@ namespace Cash8
                 //t2.Start();               
             }
             
-            LoadProgramFromInternet lpfi = new LoadProgramFromInternet();            
+            LoadProgramFromInternet lpfi = new LoadProgramFromInternet();
+            lpfi.show_phone = true;
             lpfi.check_new_version_programm();            
             bool new_version_of_the_program_exist = lpfi.new_version_of_the_program;
             lpfi.Dispose();

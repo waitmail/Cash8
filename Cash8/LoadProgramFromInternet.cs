@@ -15,6 +15,7 @@ namespace Cash8
     {
         private string version = "";
         public bool new_version_of_the_program = false;
+        public bool show_phone = false;
 
         public LoadProgramFromInternet()
         {
@@ -50,18 +51,17 @@ namespace Cash8
             }
 
             string count_day = CryptorEngine.get_count_day();
-
             string key = nick_shop.Trim() + count_day.Trim() + code_shop.Trim();
             string data = code_shop.Trim() + "|" + MainStaticClass.version() + "|" + code_shop.Trim();
-            string result_web_query = "";
+            string result_web_query = "";                        
 
             try
             {
                 result_web_query = ds.ExistsUpdateProrgam(nick_shop, CryptorEngine.Encrypt(data, true, key));
             }
             catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
+            {                
+                MessageBox.Show("Ошибка при получении версии программы на сервере " + ex.Message);
                 return;
             }
 
@@ -96,8 +96,11 @@ namespace Cash8
                         label_update.Text = "Есть обновление программы " + result_web_query;
                         btn_download.Enabled = true;
                         new_version_of_the_program = true;
-                        //Принудительно вызываем обновление версии программы
-                        btn_download_Click(null, null);
+                        //Принудительно вызываем обновление версии программы                        
+                        if (!show_phone)
+                        {
+                            btn_download_Click(null, null);
+                        }
                     }                    
                 }
             } 
@@ -106,7 +109,10 @@ namespace Cash8
 
         private void LoadProgramFromInternet_Shown(object sender, EventArgs e)
         {
-            check_new_version_programm();           
+            if (!show_phone)
+            {
+                check_new_version_programm();
+            }
         }
 
         private void check_and_update_npgsql()
@@ -192,7 +198,7 @@ namespace Cash8
         private void btn_download_Click(object sender, EventArgs e)
         {
 
-            check_and_update_npgsql();
+            //check_and_update_npgsql();
 
             btn_close.Enabled = false;
             if (!MainStaticClass.service_is_worker())
@@ -228,14 +234,13 @@ namespace Cash8
             string my_version = version;
 
             string data = code_shop.Trim() + "|" + version + "|" + code_shop.Trim();
-            byte[] result_web_query = new byte[0];
+            byte[] result_web_query = new byte[0];            
             try
             {
                 result_web_query = ds.GetUpdateProgram(nick_shop, CryptorEngine.Encrypt(data, true, key));
             }
             catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
+            {                
                 return;
             }
 

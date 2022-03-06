@@ -204,6 +204,10 @@ namespace Cash8
 
             Cash8.DS.DS ds = MainStaticClass.get_ds();
             ds.Timeout = 60000;
+            if (MainStaticClass.GetWorkSchema == 2)
+            {
+                ds.Url = "http://10.21.200.21/DiscountSystem/Ds.asmx"; //"http://localhost:50520/DS.asmx";
+            }
             //Получить параметр для запроса на сервер 
             string nick_shop = MainStaticClass.Nick_Shop.Trim();
             if (nick_shop.Trim().Length == 0)
