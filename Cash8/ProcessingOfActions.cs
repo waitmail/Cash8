@@ -1643,7 +1643,7 @@ namespace Cash8
                     {
                         DataRow row2 = dt2.NewRow();
                         row2.ItemArray = row.ItemArray;
-                        dt.Rows.Add(row2);
+                        dt2.Rows.Add(row2);
                         continue;
                     }
                     query_string = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + row["tovar_code"] + " AND num_doc=" + num_doc.ToString();
@@ -1667,7 +1667,7 @@ namespace Cash8
                     {
                         DataRow row2 = dt2.NewRow();
                         row2.ItemArray = row.ItemArray;
-                        dt.Rows.Add(row2);
+                        dt2.Rows.Add(row2);
                     }
                 }
 

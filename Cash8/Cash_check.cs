@@ -1279,30 +1279,31 @@ namespace Cash8
                 }
                 else
                 {
+                    pay_Click(null, null);
 
-                    if (DateTime.Now.ToString("yyyy-MM-dd") == this.date_time_write.Substring(0, 10))
-                    {
-                        //if (!MainStaticClass.Use_Fiscall_Print)
-                        //{
-                        //    update_comment();//Комментарий обновляется все время, даже если документ не новый
-                        //    text_print(this.p_sum_pay, this.p_sum_doc, this.p_remainder,"0","0","0");
-                        //}
-                    }
-                    if (MainStaticClass.Use_Fiscall_Print)
-                    {
-                        if (!itc_printed())
-                        {
-                            if (this.check_type.SelectedIndex == 0)
-                            {
+                    //if (DateTime.Now.ToString("yyyy-MM-dd") == this.date_time_write.Substring(0, 10))
+                    //{
+                    //if (!MainStaticClass.Use_Fiscall_Print)
+                    //{
+                    //    update_comment();//Комментарий обновляется все время, даже если документ не новый
+                    //    text_print(this.p_sum_pay, this.p_sum_doc, this.p_remainder,"0","0","0");
+                    //}
+                    //}
+                    //if (MainStaticClass.Use_Fiscall_Print)
+                    //{
+                    //    if (!itc_printed())
+                    //    {
+                    //        if (this.check_type.SelectedIndex == 0)
+                    //        {
 
-                                fiscall_print_pay(this.p_sum_doc);
-                            }
-                            else
-                            {
-                                fiscall_print_disburse(txtB_cash_money.Text, txtB_non_cash_money.Text);
-                            }
-                        }
-                    }
+                    //            fiscall_print_pay(this.p_sum_doc);
+                    //        }
+                    //        else
+                    //        {
+                    //            fiscall_print_disburse(txtB_cash_money.Text, txtB_non_cash_money.Text);
+                    //        }
+                    //    }
+                    //}
                     //else
                     //{
                     //    if (MessageBox.Show("Повторная печать этого чека добавит сумму в фискальный принтер", "Повторная печать чека", MessageBoxButtons.YesNo) == DialogResult.Yes)
@@ -5934,24 +5935,24 @@ namespace Cash8
             }
             else if (MainStaticClass.GetVersionFn == 2)
             {
-                int count_km = 0;
-                foreach (ListViewItem lvi in listView1.Items)
-                {
-                    if (lvi.SubItems[14].Text.Trim().Length > 1)
-                    {
-                        count_km++;
-                    }
-                }
-                bool continue_print = true;
+                //int count_km = 0;
+                //foreach (ListViewItem lvi in listView1.Items)
+                //{
+                //    if (lvi.SubItems[14].Text.Trim().Length > 1)
+                //    {
+                //        count_km++;
+                //    }
+                //}
+                //bool continue_print = true;
 
-                if (count_km != 0)
-                {
-                    continue_print = check_imc_work_state(count_km);//Проверка соответсвия состояния буфера в ФН и                     
-                }
-                if (!continue_print)
-                {
-                    return;
-                }
+                //if (count_km != 0)
+                //{
+                //    continue_print = check_imc_work_state(count_km);//Проверка соответсвия состояния буфера в ФН и                     
+                //}
+                //if (!continue_print)
+                //{
+                //    //return;
+                //}
 
                 //Прошли всю историю по кодам маркировки
                 fiscall_print_pay_2(pay);//Печатаем чек
@@ -7854,12 +7855,12 @@ namespace Cash8
                     }
                     else
                     {
-                        return;
+                        //return;
                     }
                 }
                 if (!continue_print)
                 {
-                    return;
+                    //return;
                 }
             }
             //КОНЕЦ ПРОВЕРКИ МАССИВА КОДОВ МАРКИРОВКИ
