@@ -1159,7 +1159,7 @@ namespace Cash8
                         if (num_list == 1)
                         {
                             //ar.Add(lvi.Tag.ToString());
-                            ar.Add(row["code"].ToString());
+                            ar.Add(row["tovar_code"].ToString());
                         }
                         quantity_of_pieces--;
                     }
@@ -1194,7 +1194,7 @@ namespace Cash8
                             have_action = true;//Признак того что в документе есть сработка по акции
                             //Сначала получим количество,если больше кратного количества наборов то копируем строку,
                             //а в исходной уменьшаем количество на количества наборов и пересчитываем суммы                            
-                            if (ar.IndexOf(row["code"].ToString(), 0) == -1)
+                            if (ar.IndexOf(row["tovar_code"].ToString(), 0) == -1)
                             {
                                 continue;
                             }
