@@ -531,6 +531,7 @@ namespace Cash8
             //public string clientInfo { get; set; }
             public List<PostItem> postItems { get; set; }
             public ClientInfo clientInfo { get; set; }            
+            public bool electronically { get; set; }
         }
 
 

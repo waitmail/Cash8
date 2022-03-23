@@ -318,6 +318,7 @@ namespace Cash8
                 result = false;
                 return result;
             }
+            //return true;
             //Список нормально заполнился 
             string data = get_not_sent_sertificates();
             if (data == "-1")
@@ -355,7 +356,7 @@ namespace Cash8
 
                 string key = nick_shop.Trim() + count_day.Trim() + code_shop.Trim();
                 string encrypt_string = CryptorEngine.Encrypt(data, true, key);
-                string result_web_query = ds.SetStatusSertificat(nick_shop, encrypt_string);
+                string result_web_query = ds.SetStatusSertificat(nick_shop, encrypt_string,MainStaticClass.GetWorkSchema.ToString());
                 if (result_web_query == "-1")
                 {
                     result = false;
@@ -363,9 +364,76 @@ namespace Cash8
                 }
             }
 
-
             return result;
         }
+
+        ///// <summary>
+        ///// Получаем строку код сертификата и его номинал
+        ///// </summary>
+        ///// <returns></returns>
+        //private string get_not_sent_sertificates()
+        //{
+        //    string result="";
+
+        //        NpgsqlConnection conn=MainStaticClass.NpgsqlConn();
+
+        //    try
+        //    {                
+        //        conn.Open();
+        //        string query = "SELECT "+
+        //            " checks_table.document_number"+","+
+        //            " checks_table.tovar_code" + ","+//Здесь при изменении схемы с сертификатами старое поле оставлено как псевдоним
+        //            " price" + "," +//Здесь при изменении схемы с сертификатами старое поле оставлено как псевдоним
+        //            " checks_header.cash_desk_number" +","+
+        //            " sertificates.code AS sertificates_code"+"," +
+        //            " checks_header.date_time_write "+
+        //        " FROM checks_table LEFT JOIN tovar ON checks_table.tovar_code = tovar.code "+
+        //        " LEFT JOIN checks_header ON checks_header.document_number = checks_table.document_number " +
+        //        " LEFT JOIN sertificates ON checks_table.tovar_code = sertificates.code_tovar " +
+        //        " where checks_table.document_number in (" +
+        //        document_number_list.ToString()  +
+        //        ") AND tovar.its_certificate = 1 AND checks_header.its_deleted = 0 ";//сертификаты только из проведенных документов 
+        //        NpgsqlCommand command=new NpgsqlCommand(query,conn);
+        //        NpgsqlDataReader reader=command.ExecuteReader();
+        //        while(reader.Read())
+        //        {
+        //            result += reader["document_number"].ToString()   +","+
+        //                reader["tovar_code"].ToString()              +","+
+        //                reader["price"].ToString().Replace(",", ".") +","+
+        //                reader["cash_desk_number"].ToString()        +","+
+        //                reader["sertificates_code"].ToString()       +","+
+        //                reader.GetDateTime(5).ToString("dd-MM-yyyy HH:mm:ss") + "|";                       
+
+        //        }
+        //        if (result != "")
+        //        {
+        //            result = result.Substring(0, result.Length - 1);
+        //        }
+        //        reader.Close();
+        //        conn.Close();
+        //    }
+        //    catch(NpgsqlException ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //        result="-1";
+
+        //    }
+        //    catch(Exception)
+        //    {
+        //        result="-1";
+        //    }
+        //    finally
+        //    {
+        //        if(conn.State== ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //        }
+        //    }
+
+
+        //    return result; 
+        //}
+
 
         /// <summary>
         /// Получаем строку код сертификата и его номинал
@@ -373,37 +441,37 @@ namespace Cash8
         /// <returns></returns>
         private string get_not_sent_sertificates()
         {
-            string result="";
+            string result = "";
 
-                NpgsqlConnection conn=MainStaticClass.NpgsqlConn();
+            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
 
             try
-            {                
+            {
                 conn.Open();
-                string query = "SELECT "+
-                    " checks_table.document_number"+","+
-                    " tovar_code"+","+
-                    " price"+","+
-                    " checks_header.cash_desk_number"+","+
-                    " sertificates.code AS sertificates_code"+"," +
-                    " checks_header.date_time_write "+
-                " FROM checks_table LEFT JOIN tovar ON checks_table.tovar_code = tovar.code "+
+                string query = "SELECT " +
+                    " checks_table.document_number" + "," +
+                    " checks_table.tovar_code" + "," +//Здесь при изменении схемы с сертификатами старое поле оставлено как псевдоним
+                    " price" + "," +//Здесь при изменении схемы с сертификатами старое поле оставлено как псевдоним
+                    " checks_header.cash_desk_number" + "," +
+                    " checks_table.item_marker AS sertificates_code" + "," +
+                    " checks_header.date_time_write " +
+                " FROM checks_table LEFT JOIN tovar ON checks_table.tovar_code = tovar.code " +
                 " LEFT JOIN checks_header ON checks_header.document_number = checks_table.document_number " +
                 " LEFT JOIN sertificates ON checks_table.tovar_code = sertificates.code_tovar " +
                 " where checks_table.document_number in (" +
-                document_number_list.ToString()  +
+                document_number_list.ToString() +
                 ") AND tovar.its_certificate = 1 AND checks_header.its_deleted = 0 ";//сертификаты только из проведенных документов 
-                NpgsqlCommand command=new NpgsqlCommand(query,conn);
-                NpgsqlDataReader reader=command.ExecuteReader();
-                while(reader.Read())
+                NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                NpgsqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
                 {
-                    result += reader["document_number"].ToString()   +","+
-                        reader["tovar_code"].ToString()              +","+
-                        reader["price"].ToString().Replace(",", ".") +","+
-                        reader["cash_desk_number"].ToString()        +","+
-                        reader["sertificates_code"].ToString()       +","+
-                        reader.GetDateTime(5).ToString("dd-MM-yyyy HH:mm:ss") + "|";                       
-                    
+                    result += reader["document_number"].ToString() + "," +
+                        reader["tovar_code"].ToString() + "," +
+                        reader["price"].ToString().Replace(",", ".") + "," +
+                        reader["cash_desk_number"].ToString() + "," +
+                        reader["sertificates_code"].ToString() + "," +
+                        reader.GetDateTime(5).ToString("dd-MM-yyyy HH:mm:ss") + "|";
+
                 }
                 if (result != "")
                 {
@@ -412,31 +480,30 @@ namespace Cash8
                 reader.Close();
                 conn.Close();
             }
-            catch(NpgsqlException)
+            catch (NpgsqlException ex)
             {
-                result="-1";
+                MessageBox.Show(ex.Message);
+                result = "-1";
 
             }
-            catch(Exception)
+            catch (Exception)
             {
-                result="-1";
+                result = "-1";
             }
             finally
             {
-                if(conn.State== ConnectionState.Open)
+                if (conn.State == ConnectionState.Open)
                 {
                     conn.Close();
                 }
             }
-
-            
-            return result; 
+            return result;
         }
-        
-        /// <summary>
-        /// Обновим статусы после успешной отправки документов
-        /// </summary>
-        private void update_status_is_sent()
+
+            /// <summary>
+            /// Обновим статусы после успешной отправки документов
+            /// </summary>
+            private void update_status_is_sent()
         {
             NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
             NpgsqlTransaction trans = null;
@@ -545,7 +612,7 @@ namespace Cash8
             
         }
 
-            public void send_sales_data_Click(object sender, EventArgs e)
+       public void send_sales_data_Click(object sender, EventArgs e)
         {            
             if (MainStaticClass.get_unloading_interval() == 0)
             {
@@ -563,7 +630,7 @@ namespace Cash8
             {
                 return;
             }
-            
+            //gaa
             if (!its_sent_sertificate()) //не удалось отправить данные по сертификатам, отправка основных данных прервана 
             {
                 return;
@@ -608,7 +675,7 @@ namespace Cash8
             string data_crypt = CryptorEngine.Encrypt(data, true,key);
             try
             {
-                result_web_quey = ds.UploadDataOnSalesPortionJason(nick_shop, data_crypt);                            
+                result_web_quey = ds.UploadDataOnSalesPortionJason(nick_shop, data_crypt,MainStaticClass.GetWorkSchema.ToString());                            
             }
             catch(Exception ex)
             {

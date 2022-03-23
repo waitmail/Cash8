@@ -52,7 +52,7 @@ namespace Cash8
             try
             {
                 //MessageBox.Show("2");
-                answer = ds.GetUsers(MainStaticClass.Nick_Shop, encrypt_string);
+                answer = ds.GetUsers(MainStaticClass.Nick_Shop, encrypt_string,MainStaticClass.GetWorkSchema.ToString());
                 //MessageBox.Show("3");
             }
             catch
@@ -313,7 +313,7 @@ namespace Cash8
                 string count_day = CryptorEngine.get_count_day();
                 string key = nick_shop.Trim() + count_day.Trim() + code_shop.Trim();
                 string encrypt_string = CryptorEngine.Encrypt(sb.ToString(), true, key);
-                string answer = ds.UploadCodeClients(nick_shop, encrypt_string);
+                string answer = ds.UploadCodeClients(nick_shop, encrypt_string,MainStaticClass.GetWorkSchema.ToString());
                 if (answer == "1")
                 {
                     query = "DELETE FROM temp_code_clients";
@@ -410,7 +410,7 @@ namespace Cash8
                 string data = JsonConvert.SerializeObject(changeStatusClients , Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
                 string encrypt_string = CryptorEngine.Encrypt(data, true, key);
 
-                string answer = ds.UploadChangeStatusClients(nick_shop,encrypt_string);
+                string answer = ds.UploadChangeStatusClients(nick_shop,encrypt_string,MainStaticClass.GetWorkSchema.ToString());
                 if (answer == "1")
                 {
                     query = "DELETE FROM client_with_changed_status_to_send";
@@ -549,7 +549,7 @@ namespace Cash8
                 string key = nick_shop.Trim() + count_day.Trim() + code_shop.Trim();
                 string data = JsonConvert.SerializeObject(deletedItems, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
                 string encrypt_string = CryptorEngine.Encrypt(data, true, key);
-                string answer = ds.UploadDeletedItems(nick_shop, encrypt_string);
+                string answer = ds.UploadDeletedItems(nick_shop, encrypt_string,MainStaticClass.GetWorkSchema.ToString());
                 if (answer == "1")
                 {
                     query = "DELETE FROM deleted_items";
@@ -637,7 +637,7 @@ namespace Cash8
                 string key = nick_shop.Trim() + count_day.Trim() + code_shop.Trim();
                 string data = JsonConvert.SerializeObject(phonesClients, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
                 string encrypt_string = CryptorEngine.Encrypt(data, true, key);
-                string answer = ds.UploadPhoneClients(nick_shop, encrypt_string);
+                string answer = ds.UploadPhoneClients(nick_shop, encrypt_string,MainStaticClass.GetWorkSchema.ToString());
                 if (answer == "1")
                 {
                     query = "DELETE FROM temp_phone_clients";
@@ -677,10 +677,10 @@ namespace Cash8
                 {
                     if (MainStaticClass.GetWorkSchema == 1)
                     {
-                        SentDataOnBonus sentDataOnBonus = new SentDataOnBonus();
-                        sentDataOnBonus.run_in_the_background = true;
-                        sentDataOnBonus.sent_Click(null, null);
-                        sentDataOnBonus.Dispose();
+                        //SentDataOnBonus sentDataOnBonus = new SentDataOnBonus();
+                        //sentDataOnBonus.run_in_the_background = true;
+                        //sentDataOnBonus.sent_Click(null, null);
+                        //sentDataOnBonus.Dispose();
                     }
                     else if (MainStaticClass.GetWorkSchema == 2)
                     {
@@ -975,7 +975,7 @@ namespace Cash8
                 using (Cash8.DS.DS ds = MainStaticClass.get_ds())
                 {
                     ds.Timeout = 10000;
-                    string result_web_query = ds.GetParametersOnBonusProgram(nick_shop, data_encrypt);                    
+                    string result_web_query = ds.GetParametersOnBonusProgram(nick_shop, data_encrypt,MainStaticClass.GetWorkSchema.ToString());                    
                     string decrypt_data = CryptorEngine.Decrypt(result_web_query, true, key);
                     if (decrypt_data != "-1")
                     {

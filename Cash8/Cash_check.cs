@@ -2328,7 +2328,7 @@ namespace Cash8
                 return;
             }
 
-            MainStaticClass.write_event_in_log("Попытка добавить новый товар в чек", "Документ чек", numdoc.ToString());
+            MainStaticClass.write_event_in_log("Попытка добавить новый товар в чек "+ barcode, "Документ чек", numdoc.ToString());
 
             NpgsqlConnection conn = null;
 
@@ -2360,7 +2360,7 @@ namespace Cash8
                 {
                     //command.CommandText = "select tovar.code,tovar.name,tovar.retail_price from  tovar where tovar.code='" + inputbarcode.Text + "'";
                     command.CommandText = "select tovar.code,tovar.name,tovar.retail_price, characteristic.name,characteristic.guid,characteristic.retail_price_characteristic,tovar.its_certificate,tovar.its_marked " +
-                        " FROM tovar left join characteristic  ON tovar.code = characteristic.tovar_code where tovar.its_deleted=0 AND (retail_price<>0 OR characteristic.retail_price_characteristic<>0) " +
+                        " FROM tovar left join characteristic  ON tovar.code = characteristic.tovar_code where tovar.its_deleted=0 AND tovar.its_certificate=0 AND  (retail_price<>0 OR characteristic.retail_price_characteristic<>0) " +
                         " AND tovar.code='" + barcode + "'";
                     //if (MainStaticClass.Use_Trassir > 0)
                     //{
@@ -2459,7 +2459,7 @@ namespace Cash8
                     string status = "";
                     try
                     {
-                        status = ds.GetStatusSertificat(MainStaticClass.Nick_Shop, encrypt_data);
+                        status = ds.GetStatusSertificat(MainStaticClass.Nick_Shop, encrypt_data,MainStaticClass.GetWorkSchema.ToString());
                     }
                     catch (Exception ex)
                     {
@@ -2480,6 +2480,7 @@ namespace Cash8
                             return;
                         }
                     }
+
                 }
                 else if (its_certificate == 2)//Это продажа бонусной карты проверяем, что в шапке нет другой карты
                 {
@@ -2552,7 +2553,14 @@ namespace Cash8
                         lvi.SubItems.Add("0");//Бонус
                         lvi.SubItems.Add("0");//Бонус1
                         lvi.SubItems.Add("0");//Бонус2
-                        lvi.SubItems.Add("0");//Маркер
+                        if (its_certificate == 0)
+                        {
+                            lvi.SubItems.Add("0");//Маркер
+                        }
+                        else if (its_certificate == 1)
+                        {
+                            lvi.SubItems.Add(barcode);//Это сертификат и при продаже мы добавляем его штрихкод 
+                        }
                                               //listView1.Items.Add(lvi);
                                               //listView1.Select();
                                               //listView1.Items[this.listView1.Items.Count - 1].Selected = true;
@@ -2631,10 +2639,16 @@ namespace Cash8
                         }                        
                         if ((!error)||(MainStaticClass.CashDeskNumber==9))//Если с qr кодом все хорошо тогда добавляем позицию иначе не добавляем, но в 9 кассу добавляем всегда 
                         {
+                            MainStaticClass.write_event_in_log("Товар добавлен "+barcode, "Документ чек", numdoc.ToString());
                             listView1.Items.Add(lvi);
                         }
                         else
                         {
+                            MainStaticClass.write_event_in_log("Отказ от ввода qr кода, товар не добавлен", "Документ чек", numdoc.ToString());
+                            last_tovar.Text = barcode;
+                            Tovar_Not_Found t_n_f = new Tovar_Not_Found();
+                            t_n_f.ShowDialog();
+                            t_n_f.Dispose();
                             return;
                         }                        
                         SendDataToCustomerScreen(1, 0,1);                        
@@ -3295,6 +3309,7 @@ namespace Cash8
             listView_sertificates.Columns.Add("Код", 100, HorizontalAlignment.Left);
             listView_sertificates.Columns.Add("Сертификат", 400, HorizontalAlignment.Left);
             listView_sertificates.Columns.Add("Номинал", 100, HorizontalAlignment.Left);
+            listView_sertificates.Columns.Add("Штрихкод", 100, HorizontalAlignment.Left);
 
             //Создание таблицы для перераспределения акций
             DataColumn dc = new DataColumn("Code", System.Type.GetType("System.Int32"));
@@ -4136,7 +4151,8 @@ namespace Cash8
                         " numstr,             " +
                         " action_num_doc,     " +
                         " action_num_doc1,    " +
-                        " action_num_doc2)VALUES(" +
+                        " action_num_doc2,    " +
+                        "item_marker  )VALUES(" +
                         "@document_number,    " +
                         "@tovar_code,         " +
                         "@characteristic,     " +
@@ -4148,7 +4164,8 @@ namespace Cash8
                         "@numstr,             " +
                         "@action_num_doc,     " +
                         "@action_num_doc1,    " +
-                        "@action_num_doc2)", conn);
+                        "@action_num_doc2,    "+
+                        "@item_marker)", conn);
 
                     command.Parameters.AddWithValue("document_number", numdoc.ToString());
                     command.Parameters.AddWithValue("tovar_code", lvi.Tag);
@@ -4162,6 +4179,7 @@ namespace Cash8
                     command.Parameters.AddWithValue("action_num_doc", "0");
                     command.Parameters.AddWithValue("action_num_doc1", "0");
                     command.Parameters.AddWithValue("action_num_doc2", "0");
+                    command.Parameters.AddWithValue("item_marker", lvi.SubItems[3].Text);
 
                     command.Transaction = tran;
                     command.ExecuteNonQuery();
@@ -4664,7 +4682,7 @@ namespace Cash8
             //int num = 0;
             foreach (ListViewItem lvi in listView1.Items)
             {
-                if (lvi.SubItems[14].Text.Trim().Length > 1)
+                if (lvi.SubItems[14].Text.Trim().Length > 13)
                 {
                     num_strt_km.Add(num_strt_km.Count, lvi.Index + 1);
                     AddingKmArrayToTableTested.Param param = new AddingKmArrayToTableTested.Param();
@@ -5036,6 +5054,16 @@ namespace Cash8
 
                 FiscallPrintJason.Check check = new FiscallPrintJason.Check();
                 check.type = "sell";
+                check.electronically = false;
+                if (client.Tag != null)
+                {
+                    if (client.Tag.ToString() == "0000000123")
+                    {
+                        txtB_email_telephone.Text = "zajtsev@gmail.com";
+                        check.electronically = true;
+                        MessageBox.Show(" Чек отправлен по электронной почте ");
+                    }
+                }
 
                 //if (DateTime.Now > new DateTime(2021, 1, 1))
                 //{
@@ -5619,7 +5647,7 @@ namespace Cash8
                         item.amount = Convert.ToDouble(lvi.SubItems[7].Text);
                         item.tax = new FiscallPrintJason2.Tax();
                         item.measurementUnit = "piece";
-                        if (lvi.SubItems[14].Text.Trim().Length == 1)//код маркировки не заполнен
+                        if (lvi.SubItems[14].Text.Trim().Length <= 13)//код маркировки не заполнен
                         {
                             item.paymentObject = "commodityWithoutMarking";
                         }
@@ -6632,7 +6660,7 @@ namespace Cash8
                             item.amount = Convert.ToDouble(lvi.SubItems[7].Text);
                             item.tax = new FiscallPrintJason.Tax();
                             item.tax.type = tax_type;//ндс
-                            if (lvi.SubItems[14].Text.Trim().Length > 1)
+                            if (lvi.SubItems[14].Text.Trim().Length > 13)
                             {
                                 //FiscallPrintJason.MarkingCode markingCode = new FiscallPrintJason.MarkingCode();
                                 //byte[] textAsBytes = Encoding.UTF8.GetBytes(lvi.SubItems[14].Text.Trim());
@@ -6937,7 +6965,7 @@ namespace Cash8
                             item.tax = new FiscallPrintJason2.Tax();
                             item.tax.type = tax_type;//ндс
                             item.measurementUnit = "piece";
-                            if (lvi.SubItems[14].Text.Trim().Length == 1)//Код маркировки не заполнен
+                            if (lvi.SubItems[14].Text.Trim().Length <= 13)//Код маркировки не заполнен
                             {
                                 item.paymentObject = "commodityWithoutMarking";
                             }
@@ -7138,7 +7166,7 @@ namespace Cash8
                 int count_km = 0;
                 foreach (ListViewItem lvi in listView1.Items)
                 {
-                    if (lvi.SubItems[14].Text.Trim().Length > 1)
+                    if (lvi.SubItems[14].Text.Trim().Length > 13)
                     {
                         count_km++;
                     }
@@ -7840,7 +7868,7 @@ namespace Cash8
                 int count_km = 0;
                 foreach (ListViewItem lvi in listView1.Items)
                 {
-                    if (lvi.SubItems[14].Text.Trim().Length > 1)
+                    if (lvi.SubItems[14].Text.Trim().Length > 13)
                     {
                         count_km++;
                     }

@@ -77,6 +77,7 @@ namespace Cash8
             listView_sertificates.Columns.Add("Код", 100, HorizontalAlignment.Right);
             listView_sertificates.Columns.Add("Сертификат", 400, HorizontalAlignment.Left);                        
             listView_sertificates.Columns.Add("Сумма", 100, HorizontalAlignment.Right);
+            listView_sertificates.Columns.Add("Штрихкод", 100, HorizontalAlignment.Left);
 
             if (pay.listView_sertificates.Items.Count > 0)
             {
@@ -137,6 +138,7 @@ namespace Cash8
                         lvi.Tag = reader["tovar_code"].ToString();
                         lvi.SubItems.Add(reader["tovar_name"].ToString());  // Наименование 
                         lvi.SubItems.Add(reader["retail_price"].ToString());//Сумма
+                        lvi.SubItems.Add(code);//Сумма
                         listView_sertificates.Items.Add(lvi);
                         listView_sertificates.Focus();
                         listView_sertificates.Items[listView_sertificates.Items.Count - 1].Focused = true;
@@ -204,10 +206,10 @@ namespace Cash8
 
             Cash8.DS.DS ds = MainStaticClass.get_ds();
             ds.Timeout = 60000;
-            if (MainStaticClass.GetWorkSchema == 2)
-            {
-                ds.Url = "http://10.21.200.21/DiscountSystem/Ds.asmx"; //"http://localhost:50520/DS.asmx";
-            }
+            //if (MainStaticClass.GetWorkSchema == 2)
+            //{
+            //    ds.Url = "http://10.21.200.21/DiscountSystem/Ds.asmx"; //"http://localhost:50520/DS.asmx";
+            //}
             //Получить параметр для запроса на сервер 
             string nick_shop = MainStaticClass.Nick_Shop.Trim();
             if (nick_shop.Trim().Length == 0)
@@ -228,7 +230,7 @@ namespace Cash8
             string status = "-1";
             try
             {
-                status = ds.GetStatusSertificat(MainStaticClass.Nick_Shop, encrypt_data);
+                status = ds.GetStatusSertificat(MainStaticClass.Nick_Shop, encrypt_data,MainStaticClass.GetWorkSchema.ToString());
             }
             catch (Exception ex)
             {
@@ -325,11 +327,11 @@ namespace Cash8
                 summ_sertificates += decimal.Parse(lvi.SubItems[2].Text);
             }             
 
-            if (Convert.ToDecimal(pay.pay_sum.Text) < summ_sertificates + Convert.ToDecimal(pay.non_cash_sum.Text))
-            {
-                MessageBox.Show("Сумма сертификатов + сумма по карте оплаты превышает сумму чека ");
-                return;
-            }
+            //if (Convert.ToDecimal(pay.pay_sum.Text) < summ_sertificates + Convert.ToDecimal(pay.non_cash_sum.Text))
+            //{
+            //    MessageBox.Show("Сумма сертификатов + сумма по карте оплаты превышает сумму чека ");
+            //    return;
+            //}
 
             pay.sertificates_sum.Text = summ_sertificates.ToString();
             closed_normally = true;

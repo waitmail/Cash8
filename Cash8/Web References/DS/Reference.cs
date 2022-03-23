@@ -37,8 +37,6 @@ namespace Cash8.DS {
         
         private System.Threading.SendOrPostCallback GetUsersOperationCompleted;
         
-        private System.Threading.SendOrPostCallback GetBonusCardsV8DateTimeOperationCompleted;
-        
         private System.Threading.SendOrPostCallback GetDateTimeServerOperationCompleted;
         
         private System.Threading.SendOrPostCallback SetStatusSertificatOperationCompleted;
@@ -126,9 +124,6 @@ namespace Cash8.DS {
         
         /// <remarks/>
         public event GetUsersCompletedEventHandler GetUsersCompleted;
-        
-        /// <remarks/>
-        public event GetBonusCardsV8DateTimeCompletedEventHandler GetBonusCardsV8DateTimeCompleted;
         
         /// <remarks/>
         public event GetDateTimeServerCompletedEventHandler GetDateTimeServerCompleted;
@@ -270,64 +265,34 @@ namespace Cash8.DS {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetUsers", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public string GetUsers(string nick_shop, string data) {
+        public string GetUsers(string nick_shop, string data, string scheme) {
             object[] results = this.Invoke("GetUsers", new object[] {
                         nick_shop,
-                        data});
+                        data,
+                        scheme});
             return ((string)(results[0]));
         }
         
         /// <remarks/>
-        public void GetUsersAsync(string nick_shop, string data) {
-            this.GetUsersAsync(nick_shop, data, null);
+        public void GetUsersAsync(string nick_shop, string data, string scheme) {
+            this.GetUsersAsync(nick_shop, data, scheme, null);
         }
         
         /// <remarks/>
-        public void GetUsersAsync(string nick_shop, string data, object userState) {
+        public void GetUsersAsync(string nick_shop, string data, string scheme, object userState) {
             if ((this.GetUsersOperationCompleted == null)) {
                 this.GetUsersOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetUsersOperationCompleted);
             }
             this.InvokeAsync("GetUsers", new object[] {
                         nick_shop,
-                        data}, this.GetUsersOperationCompleted, userState);
+                        data,
+                        scheme}, this.GetUsersOperationCompleted, userState);
         }
         
         private void OnGetUsersOperationCompleted(object arg) {
             if ((this.GetUsersCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetUsersCompleted(this, new GetUsersCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetBonusCardsV8DateTime", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute(DataType="base64Binary")]
-        public byte[] GetBonusCardsV8DateTime(string nick_shop, string data) {
-            object[] results = this.Invoke("GetBonusCardsV8DateTime", new object[] {
-                        nick_shop,
-                        data});
-            return ((byte[])(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetBonusCardsV8DateTimeAsync(string nick_shop, string data) {
-            this.GetBonusCardsV8DateTimeAsync(nick_shop, data, null);
-        }
-        
-        /// <remarks/>
-        public void GetBonusCardsV8DateTimeAsync(string nick_shop, string data, object userState) {
-            if ((this.GetBonusCardsV8DateTimeOperationCompleted == null)) {
-                this.GetBonusCardsV8DateTimeOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetBonusCardsV8DateTimeOperationCompleted);
-            }
-            this.InvokeAsync("GetBonusCardsV8DateTime", new object[] {
-                        nick_shop,
-                        data}, this.GetBonusCardsV8DateTimeOperationCompleted, userState);
-        }
-        
-        private void OnGetBonusCardsV8DateTimeOperationCompleted(object arg) {
-            if ((this.GetBonusCardsV8DateTimeCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetBonusCardsV8DateTimeCompleted(this, new GetBonusCardsV8DateTimeCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -360,26 +325,28 @@ namespace Cash8.DS {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/SetStatusSertificat", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public string SetStatusSertificat(string nick_shop, string data) {
+        public string SetStatusSertificat(string nick_shop, string data, string scheme) {
             object[] results = this.Invoke("SetStatusSertificat", new object[] {
                         nick_shop,
-                        data});
+                        data,
+                        scheme});
             return ((string)(results[0]));
         }
         
         /// <remarks/>
-        public void SetStatusSertificatAsync(string nick_shop, string data) {
-            this.SetStatusSertificatAsync(nick_shop, data, null);
+        public void SetStatusSertificatAsync(string nick_shop, string data, string scheme) {
+            this.SetStatusSertificatAsync(nick_shop, data, scheme, null);
         }
         
         /// <remarks/>
-        public void SetStatusSertificatAsync(string nick_shop, string data, object userState) {
+        public void SetStatusSertificatAsync(string nick_shop, string data, string scheme, object userState) {
             if ((this.SetStatusSertificatOperationCompleted == null)) {
                 this.SetStatusSertificatOperationCompleted = new System.Threading.SendOrPostCallback(this.OnSetStatusSertificatOperationCompleted);
             }
             this.InvokeAsync("SetStatusSertificat", new object[] {
                         nick_shop,
-                        data}, this.SetStatusSertificatOperationCompleted, userState);
+                        data,
+                        scheme}, this.SetStatusSertificatOperationCompleted, userState);
         }
         
         private void OnSetStatusSertificatOperationCompleted(object arg) {
@@ -391,26 +358,28 @@ namespace Cash8.DS {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetDiscountClientsV8DateTime_NEW", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public string GetDiscountClientsV8DateTime_NEW(string nick_shop, string data) {
+        public string GetDiscountClientsV8DateTime_NEW(string nick_shop, string data, string scheme) {
             object[] results = this.Invoke("GetDiscountClientsV8DateTime_NEW", new object[] {
                         nick_shop,
-                        data});
+                        data,
+                        scheme});
             return ((string)(results[0]));
         }
         
         /// <remarks/>
-        public void GetDiscountClientsV8DateTime_NEWAsync(string nick_shop, string data) {
-            this.GetDiscountClientsV8DateTime_NEWAsync(nick_shop, data, null);
+        public void GetDiscountClientsV8DateTime_NEWAsync(string nick_shop, string data, string scheme) {
+            this.GetDiscountClientsV8DateTime_NEWAsync(nick_shop, data, scheme, null);
         }
         
         /// <remarks/>
-        public void GetDiscountClientsV8DateTime_NEWAsync(string nick_shop, string data, object userState) {
+        public void GetDiscountClientsV8DateTime_NEWAsync(string nick_shop, string data, string scheme, object userState) {
             if ((this.GetDiscountClientsV8DateTime_NEWOperationCompleted == null)) {
                 this.GetDiscountClientsV8DateTime_NEWOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetDiscountClientsV8DateTime_NEWOperationCompleted);
             }
             this.InvokeAsync("GetDiscountClientsV8DateTime_NEW", new object[] {
                         nick_shop,
-                        data}, this.GetDiscountClientsV8DateTime_NEWOperationCompleted, userState);
+                        data,
+                        scheme}, this.GetDiscountClientsV8DateTime_NEWOperationCompleted, userState);
         }
         
         private void OnGetDiscountClientsV8DateTime_NEWOperationCompleted(object arg) {
@@ -422,26 +391,28 @@ namespace Cash8.DS {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/ExistsUpdateProrgam", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public string ExistsUpdateProrgam(string nick_shop, string data) {
+        public string ExistsUpdateProrgam(string nick_shop, string data, string scheme) {
             object[] results = this.Invoke("ExistsUpdateProrgam", new object[] {
                         nick_shop,
-                        data});
+                        data,
+                        scheme});
             return ((string)(results[0]));
         }
         
         /// <remarks/>
-        public void ExistsUpdateProrgamAsync(string nick_shop, string data) {
-            this.ExistsUpdateProrgamAsync(nick_shop, data, null);
+        public void ExistsUpdateProrgamAsync(string nick_shop, string data, string scheme) {
+            this.ExistsUpdateProrgamAsync(nick_shop, data, scheme, null);
         }
         
         /// <remarks/>
-        public void ExistsUpdateProrgamAsync(string nick_shop, string data, object userState) {
+        public void ExistsUpdateProrgamAsync(string nick_shop, string data, string scheme, object userState) {
             if ((this.ExistsUpdateProrgamOperationCompleted == null)) {
                 this.ExistsUpdateProrgamOperationCompleted = new System.Threading.SendOrPostCallback(this.OnExistsUpdateProrgamOperationCompleted);
             }
             this.InvokeAsync("ExistsUpdateProrgam", new object[] {
                         nick_shop,
-                        data}, this.ExistsUpdateProrgamOperationCompleted, userState);
+                        data,
+                        scheme}, this.ExistsUpdateProrgamOperationCompleted, userState);
         }
         
         private void OnExistsUpdateProrgamOperationCompleted(object arg) {
@@ -454,26 +425,28 @@ namespace Cash8.DS {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetUpdateProgram", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlElementAttribute(DataType="base64Binary")]
-        public byte[] GetUpdateProgram(string nick_shop, string data) {
+        public byte[] GetUpdateProgram(string nick_shop, string data, string scheme) {
             object[] results = this.Invoke("GetUpdateProgram", new object[] {
                         nick_shop,
-                        data});
+                        data,
+                        scheme});
             return ((byte[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetUpdateProgramAsync(string nick_shop, string data) {
-            this.GetUpdateProgramAsync(nick_shop, data, null);
+        public void GetUpdateProgramAsync(string nick_shop, string data, string scheme) {
+            this.GetUpdateProgramAsync(nick_shop, data, scheme, null);
         }
         
         /// <remarks/>
-        public void GetUpdateProgramAsync(string nick_shop, string data, object userState) {
+        public void GetUpdateProgramAsync(string nick_shop, string data, string scheme, object userState) {
             if ((this.GetUpdateProgramOperationCompleted == null)) {
                 this.GetUpdateProgramOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetUpdateProgramOperationCompleted);
             }
             this.InvokeAsync("GetUpdateProgram", new object[] {
                         nick_shop,
-                        data}, this.GetUpdateProgramOperationCompleted, userState);
+                        data,
+                        scheme}, this.GetUpdateProgramOperationCompleted, userState);
         }
         
         private void OnGetUpdateProgramOperationCompleted(object arg) {
@@ -486,26 +459,28 @@ namespace Cash8.DS {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetNpgsqlNew", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlElementAttribute(DataType="base64Binary")]
-        public byte[] GetNpgsqlNew(string nick_shop, string data) {
+        public byte[] GetNpgsqlNew(string nick_shop, string data, string scheme) {
             object[] results = this.Invoke("GetNpgsqlNew", new object[] {
                         nick_shop,
-                        data});
+                        data,
+                        scheme});
             return ((byte[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetNpgsqlNewAsync(string nick_shop, string data) {
-            this.GetNpgsqlNewAsync(nick_shop, data, null);
+        public void GetNpgsqlNewAsync(string nick_shop, string data, string scheme) {
+            this.GetNpgsqlNewAsync(nick_shop, data, scheme, null);
         }
         
         /// <remarks/>
-        public void GetNpgsqlNewAsync(string nick_shop, string data, object userState) {
+        public void GetNpgsqlNewAsync(string nick_shop, string data, string scheme, object userState) {
             if ((this.GetNpgsqlNewOperationCompleted == null)) {
                 this.GetNpgsqlNewOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetNpgsqlNewOperationCompleted);
             }
             this.InvokeAsync("GetNpgsqlNew", new object[] {
                         nick_shop,
-                        data}, this.GetNpgsqlNewOperationCompleted, userState);
+                        data,
+                        scheme}, this.GetNpgsqlNewOperationCompleted, userState);
         }
         
         private void OnGetNpgsqlNewOperationCompleted(object arg) {
@@ -517,26 +492,28 @@ namespace Cash8.DS {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetStatusSertificat", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public string GetStatusSertificat(string nick_shop, string data) {
+        public string GetStatusSertificat(string nick_shop, string data, string scheme) {
             object[] results = this.Invoke("GetStatusSertificat", new object[] {
                         nick_shop,
-                        data});
+                        data,
+                        scheme});
             return ((string)(results[0]));
         }
         
         /// <remarks/>
-        public void GetStatusSertificatAsync(string nick_shop, string data) {
-            this.GetStatusSertificatAsync(nick_shop, data, null);
+        public void GetStatusSertificatAsync(string nick_shop, string data, string scheme) {
+            this.GetStatusSertificatAsync(nick_shop, data, scheme, null);
         }
         
         /// <remarks/>
-        public void GetStatusSertificatAsync(string nick_shop, string data, object userState) {
+        public void GetStatusSertificatAsync(string nick_shop, string data, string scheme, object userState) {
             if ((this.GetStatusSertificatOperationCompleted == null)) {
                 this.GetStatusSertificatOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetStatusSertificatOperationCompleted);
             }
             this.InvokeAsync("GetStatusSertificat", new object[] {
                         nick_shop,
-                        data}, this.GetStatusSertificatOperationCompleted, userState);
+                        data,
+                        scheme}, this.GetStatusSertificatOperationCompleted, userState);
         }
         
         private void OnGetStatusSertificatOperationCompleted(object arg) {
@@ -548,26 +525,28 @@ namespace Cash8.DS {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/ChangeStatusWorkerOnline", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public string ChangeStatusWorkerOnline(string nick_shop, string data) {
+        public string ChangeStatusWorkerOnline(string nick_shop, string data, string scheme) {
             object[] results = this.Invoke("ChangeStatusWorkerOnline", new object[] {
                         nick_shop,
-                        data});
+                        data,
+                        scheme});
             return ((string)(results[0]));
         }
         
         /// <remarks/>
-        public void ChangeStatusWorkerOnlineAsync(string nick_shop, string data) {
-            this.ChangeStatusWorkerOnlineAsync(nick_shop, data, null);
+        public void ChangeStatusWorkerOnlineAsync(string nick_shop, string data, string scheme) {
+            this.ChangeStatusWorkerOnlineAsync(nick_shop, data, scheme, null);
         }
         
         /// <remarks/>
-        public void ChangeStatusWorkerOnlineAsync(string nick_shop, string data, object userState) {
+        public void ChangeStatusWorkerOnlineAsync(string nick_shop, string data, string scheme, object userState) {
             if ((this.ChangeStatusWorkerOnlineOperationCompleted == null)) {
                 this.ChangeStatusWorkerOnlineOperationCompleted = new System.Threading.SendOrPostCallback(this.OnChangeStatusWorkerOnlineOperationCompleted);
             }
             this.InvokeAsync("ChangeStatusWorkerOnline", new object[] {
                         nick_shop,
-                        data}, this.ChangeStatusWorkerOnlineOperationCompleted, userState);
+                        data,
+                        scheme}, this.ChangeStatusWorkerOnlineOperationCompleted, userState);
         }
         
         private void OnChangeStatusWorkerOnlineOperationCompleted(object arg) {
@@ -579,26 +558,28 @@ namespace Cash8.DS {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/ChangeStatusWorkerOffline", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public int ChangeStatusWorkerOffline(string nick_shop, string data) {
+        public int ChangeStatusWorkerOffline(string nick_shop, string data, string scheme) {
             object[] results = this.Invoke("ChangeStatusWorkerOffline", new object[] {
                         nick_shop,
-                        data});
+                        data,
+                        scheme});
             return ((int)(results[0]));
         }
         
         /// <remarks/>
-        public void ChangeStatusWorkerOfflineAsync(string nick_shop, string data) {
-            this.ChangeStatusWorkerOfflineAsync(nick_shop, data, null);
+        public void ChangeStatusWorkerOfflineAsync(string nick_shop, string data, string scheme) {
+            this.ChangeStatusWorkerOfflineAsync(nick_shop, data, scheme, null);
         }
         
         /// <remarks/>
-        public void ChangeStatusWorkerOfflineAsync(string nick_shop, string data, object userState) {
+        public void ChangeStatusWorkerOfflineAsync(string nick_shop, string data, string scheme, object userState) {
             if ((this.ChangeStatusWorkerOfflineOperationCompleted == null)) {
                 this.ChangeStatusWorkerOfflineOperationCompleted = new System.Threading.SendOrPostCallback(this.OnChangeStatusWorkerOfflineOperationCompleted);
             }
             this.InvokeAsync("ChangeStatusWorkerOffline", new object[] {
                         nick_shop,
-                        data}, this.ChangeStatusWorkerOfflineOperationCompleted, userState);
+                        data,
+                        scheme}, this.ChangeStatusWorkerOfflineOperationCompleted, userState);
         }
         
         private void OnChangeStatusWorkerOfflineOperationCompleted(object arg) {
@@ -610,26 +591,28 @@ namespace Cash8.DS {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/UploadChangeStatusClients", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public string UploadChangeStatusClients(string nick_shop, string data) {
+        public string UploadChangeStatusClients(string nick_shop, string data, string scheme) {
             object[] results = this.Invoke("UploadChangeStatusClients", new object[] {
                         nick_shop,
-                        data});
+                        data,
+                        scheme});
             return ((string)(results[0]));
         }
         
         /// <remarks/>
-        public void UploadChangeStatusClientsAsync(string nick_shop, string data) {
-            this.UploadChangeStatusClientsAsync(nick_shop, data, null);
+        public void UploadChangeStatusClientsAsync(string nick_shop, string data, string scheme) {
+            this.UploadChangeStatusClientsAsync(nick_shop, data, scheme, null);
         }
         
         /// <remarks/>
-        public void UploadChangeStatusClientsAsync(string nick_shop, string data, object userState) {
+        public void UploadChangeStatusClientsAsync(string nick_shop, string data, string scheme, object userState) {
             if ((this.UploadChangeStatusClientsOperationCompleted == null)) {
                 this.UploadChangeStatusClientsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnUploadChangeStatusClientsOperationCompleted);
             }
             this.InvokeAsync("UploadChangeStatusClients", new object[] {
                         nick_shop,
-                        data}, this.UploadChangeStatusClientsOperationCompleted, userState);
+                        data,
+                        scheme}, this.UploadChangeStatusClientsOperationCompleted, userState);
         }
         
         private void OnUploadChangeStatusClientsOperationCompleted(object arg) {
@@ -641,26 +624,28 @@ namespace Cash8.DS {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/UploadPhoneClients", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public string UploadPhoneClients(string nick_shop, string data) {
+        public string UploadPhoneClients(string nick_shop, string data, string scheme) {
             object[] results = this.Invoke("UploadPhoneClients", new object[] {
                         nick_shop,
-                        data});
+                        data,
+                        scheme});
             return ((string)(results[0]));
         }
         
         /// <remarks/>
-        public void UploadPhoneClientsAsync(string nick_shop, string data) {
-            this.UploadPhoneClientsAsync(nick_shop, data, null);
+        public void UploadPhoneClientsAsync(string nick_shop, string data, string scheme) {
+            this.UploadPhoneClientsAsync(nick_shop, data, scheme, null);
         }
         
         /// <remarks/>
-        public void UploadPhoneClientsAsync(string nick_shop, string data, object userState) {
+        public void UploadPhoneClientsAsync(string nick_shop, string data, string scheme, object userState) {
             if ((this.UploadPhoneClientsOperationCompleted == null)) {
                 this.UploadPhoneClientsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnUploadPhoneClientsOperationCompleted);
             }
             this.InvokeAsync("UploadPhoneClients", new object[] {
                         nick_shop,
-                        data}, this.UploadPhoneClientsOperationCompleted, userState);
+                        data,
+                        scheme}, this.UploadPhoneClientsOperationCompleted, userState);
         }
         
         private void OnUploadPhoneClientsOperationCompleted(object arg) {
@@ -672,26 +657,28 @@ namespace Cash8.DS {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/UploadDeletedItems", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public string UploadDeletedItems(string nick_shop, string data) {
+        public string UploadDeletedItems(string nick_shop, string data, string scheme) {
             object[] results = this.Invoke("UploadDeletedItems", new object[] {
                         nick_shop,
-                        data});
+                        data,
+                        scheme});
             return ((string)(results[0]));
         }
         
         /// <remarks/>
-        public void UploadDeletedItemsAsync(string nick_shop, string data) {
-            this.UploadDeletedItemsAsync(nick_shop, data, null);
+        public void UploadDeletedItemsAsync(string nick_shop, string data, string scheme) {
+            this.UploadDeletedItemsAsync(nick_shop, data, scheme, null);
         }
         
         /// <remarks/>
-        public void UploadDeletedItemsAsync(string nick_shop, string data, object userState) {
+        public void UploadDeletedItemsAsync(string nick_shop, string data, string scheme, object userState) {
             if ((this.UploadDeletedItemsOperationCompleted == null)) {
                 this.UploadDeletedItemsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnUploadDeletedItemsOperationCompleted);
             }
             this.InvokeAsync("UploadDeletedItems", new object[] {
                         nick_shop,
-                        data}, this.UploadDeletedItemsOperationCompleted, userState);
+                        data,
+                        scheme}, this.UploadDeletedItemsOperationCompleted, userState);
         }
         
         private void OnUploadDeletedItemsOperationCompleted(object arg) {
@@ -703,26 +690,28 @@ namespace Cash8.DS {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/UploadCodeClients", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public string UploadCodeClients(string nick_shop, string data) {
+        public string UploadCodeClients(string nick_shop, string data, string scheme) {
             object[] results = this.Invoke("UploadCodeClients", new object[] {
                         nick_shop,
-                        data});
+                        data,
+                        scheme});
             return ((string)(results[0]));
         }
         
         /// <remarks/>
-        public void UploadCodeClientsAsync(string nick_shop, string data) {
-            this.UploadCodeClientsAsync(nick_shop, data, null);
+        public void UploadCodeClientsAsync(string nick_shop, string data, string scheme) {
+            this.UploadCodeClientsAsync(nick_shop, data, scheme, null);
         }
         
         /// <remarks/>
-        public void UploadCodeClientsAsync(string nick_shop, string data, object userState) {
+        public void UploadCodeClientsAsync(string nick_shop, string data, string scheme, object userState) {
             if ((this.UploadCodeClientsOperationCompleted == null)) {
                 this.UploadCodeClientsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnUploadCodeClientsOperationCompleted);
             }
             this.InvokeAsync("UploadCodeClients", new object[] {
                         nick_shop,
-                        data}, this.UploadCodeClientsOperationCompleted, userState);
+                        data,
+                        scheme}, this.UploadCodeClientsOperationCompleted, userState);
         }
         
         private void OnUploadCodeClientsOperationCompleted(object arg) {
@@ -735,26 +724,28 @@ namespace Cash8.DS {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetDataForCasheV8Jason", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlElementAttribute(DataType="base64Binary")]
-        public byte[] GetDataForCasheV8Jason(string nick_shop, string data) {
+        public byte[] GetDataForCasheV8Jason(string nick_shop, string data, string scheme) {
             object[] results = this.Invoke("GetDataForCasheV8Jason", new object[] {
                         nick_shop,
-                        data});
+                        data,
+                        scheme});
             return ((byte[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetDataForCasheV8JasonAsync(string nick_shop, string data) {
-            this.GetDataForCasheV8JasonAsync(nick_shop, data, null);
+        public void GetDataForCasheV8JasonAsync(string nick_shop, string data, string scheme) {
+            this.GetDataForCasheV8JasonAsync(nick_shop, data, scheme, null);
         }
         
         /// <remarks/>
-        public void GetDataForCasheV8JasonAsync(string nick_shop, string data, object userState) {
+        public void GetDataForCasheV8JasonAsync(string nick_shop, string data, string scheme, object userState) {
             if ((this.GetDataForCasheV8JasonOperationCompleted == null)) {
                 this.GetDataForCasheV8JasonOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetDataForCasheV8JasonOperationCompleted);
             }
             this.InvokeAsync("GetDataForCasheV8Jason", new object[] {
                         nick_shop,
-                        data}, this.GetDataForCasheV8JasonOperationCompleted, userState);
+                        data,
+                        scheme}, this.GetDataForCasheV8JasonOperationCompleted, userState);
         }
         
         private void OnGetDataForCasheV8JasonOperationCompleted(object arg) {
@@ -829,26 +820,28 @@ namespace Cash8.DS {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetDataForCasheV8JasonUpdateOnly", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlElementAttribute(DataType="base64Binary")]
-        public byte[] GetDataForCasheV8JasonUpdateOnly(string nick_shop, string data) {
+        public byte[] GetDataForCasheV8JasonUpdateOnly(string nick_shop, string data, string scheme) {
             object[] results = this.Invoke("GetDataForCasheV8JasonUpdateOnly", new object[] {
                         nick_shop,
-                        data});
+                        data,
+                        scheme});
             return ((byte[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetDataForCasheV8JasonUpdateOnlyAsync(string nick_shop, string data) {
-            this.GetDataForCasheV8JasonUpdateOnlyAsync(nick_shop, data, null);
+        public void GetDataForCasheV8JasonUpdateOnlyAsync(string nick_shop, string data, string scheme) {
+            this.GetDataForCasheV8JasonUpdateOnlyAsync(nick_shop, data, scheme, null);
         }
         
         /// <remarks/>
-        public void GetDataForCasheV8JasonUpdateOnlyAsync(string nick_shop, string data, object userState) {
+        public void GetDataForCasheV8JasonUpdateOnlyAsync(string nick_shop, string data, string scheme, object userState) {
             if ((this.GetDataForCasheV8JasonUpdateOnlyOperationCompleted == null)) {
                 this.GetDataForCasheV8JasonUpdateOnlyOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetDataForCasheV8JasonUpdateOnlyOperationCompleted);
             }
             this.InvokeAsync("GetDataForCasheV8JasonUpdateOnly", new object[] {
                         nick_shop,
-                        data}, this.GetDataForCasheV8JasonUpdateOnlyOperationCompleted, userState);
+                        data,
+                        scheme}, this.GetDataForCasheV8JasonUpdateOnlyOperationCompleted, userState);
         }
         
         private void OnGetDataForCasheV8JasonUpdateOnlyOperationCompleted(object arg) {
@@ -860,26 +853,28 @@ namespace Cash8.DS {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/UploadDataOnSalesPortionJason", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public bool UploadDataOnSalesPortionJason(string nick_shop, string data) {
+        public bool UploadDataOnSalesPortionJason(string nick_shop, string data, string scheme) {
             object[] results = this.Invoke("UploadDataOnSalesPortionJason", new object[] {
                         nick_shop,
-                        data});
+                        data,
+                        scheme});
             return ((bool)(results[0]));
         }
         
         /// <remarks/>
-        public void UploadDataOnSalesPortionJasonAsync(string nick_shop, string data) {
-            this.UploadDataOnSalesPortionJasonAsync(nick_shop, data, null);
+        public void UploadDataOnSalesPortionJasonAsync(string nick_shop, string data, string scheme) {
+            this.UploadDataOnSalesPortionJasonAsync(nick_shop, data, scheme, null);
         }
         
         /// <remarks/>
-        public void UploadDataOnSalesPortionJasonAsync(string nick_shop, string data, object userState) {
+        public void UploadDataOnSalesPortionJasonAsync(string nick_shop, string data, string scheme, object userState) {
             if ((this.UploadDataOnSalesPortionJasonOperationCompleted == null)) {
                 this.UploadDataOnSalesPortionJasonOperationCompleted = new System.Threading.SendOrPostCallback(this.OnUploadDataOnSalesPortionJasonOperationCompleted);
             }
             this.InvokeAsync("UploadDataOnSalesPortionJason", new object[] {
                         nick_shop,
-                        data}, this.UploadDataOnSalesPortionJasonOperationCompleted, userState);
+                        data,
+                        scheme}, this.UploadDataOnSalesPortionJasonOperationCompleted, userState);
         }
         
         private void OnUploadDataOnSalesPortionJasonOperationCompleted(object arg) {
@@ -891,26 +886,28 @@ namespace Cash8.DS {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetParametersOnBonusProgram", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public string GetParametersOnBonusProgram(string nick_shop, string data) {
+        public string GetParametersOnBonusProgram(string nick_shop, string data, string scheme) {
             object[] results = this.Invoke("GetParametersOnBonusProgram", new object[] {
                         nick_shop,
-                        data});
+                        data,
+                        scheme});
             return ((string)(results[0]));
         }
         
         /// <remarks/>
-        public void GetParametersOnBonusProgramAsync(string nick_shop, string data) {
-            this.GetParametersOnBonusProgramAsync(nick_shop, data, null);
+        public void GetParametersOnBonusProgramAsync(string nick_shop, string data, string scheme) {
+            this.GetParametersOnBonusProgramAsync(nick_shop, data, scheme, null);
         }
         
         /// <remarks/>
-        public void GetParametersOnBonusProgramAsync(string nick_shop, string data, object userState) {
+        public void GetParametersOnBonusProgramAsync(string nick_shop, string data, string scheme, object userState) {
             if ((this.GetParametersOnBonusProgramOperationCompleted == null)) {
                 this.GetParametersOnBonusProgramOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetParametersOnBonusProgramOperationCompleted);
             }
             this.InvokeAsync("GetParametersOnBonusProgram", new object[] {
                         nick_shop,
-                        data}, this.GetParametersOnBonusProgramOperationCompleted, userState);
+                        data,
+                        scheme}, this.GetParametersOnBonusProgramOperationCompleted, userState);
         }
         
         private void OnGetParametersOnBonusProgramOperationCompleted(object arg) {
@@ -1039,32 +1036,6 @@ namespace Cash8.DS {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((string)(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1590.0")]
-    public delegate void GetBonusCardsV8DateTimeCompletedEventHandler(object sender, GetBonusCardsV8DateTimeCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1590.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetBonusCardsV8DateTimeCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetBonusCardsV8DateTimeCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public byte[] Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((byte[])(this.results[0]));
             }
         }
     }
