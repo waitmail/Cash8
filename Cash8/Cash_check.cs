@@ -1854,6 +1854,10 @@ namespace Cash8
                     //                 if //(Convert.ToDecimal(lvi.SubItems[6].Text) > Convert.ToDecimal(1) / 100)
                     //                   (Convert.ToDecimal(lvi.SubItems[3].Text)>1)
                     //if (Convert.ToDecimal(lvi.SubItems[4].Text.Replace(".", ",")) > 1)
+                    if (its_certificate(lvi.SubItems[0].Text) == "1")//Сертификаты с копейками не работают
+                    {
+                        continue;
+                    }
                     if (Convert.ToDecimal(lvi.SubItems[7].Text.Replace(".", ",")) > 1)
                     {
                         if (Convert.ToDecimal(lvi.SubItems[3].Text) == 1)
@@ -2388,7 +2392,7 @@ namespace Cash8
                     if (reader[3].ToString().Trim() == "3")
                     {
                         its_bonus_card = true;
-                    }                    
+                    }
                     ListViewItem lvi = new ListViewItem(reader[3].ToString().Trim());//Внутренний код товара
                     //lvi.Tag = reader.GetInt32(0);//Внутренний код товара
                     //lvi.SubItems.Add(reader[1].ToString().Trim());//Наименование
@@ -2404,7 +2408,7 @@ namespace Cash8
                         lvi.SubItems[1].Text = reader.GetDecimal(5).ToString();
                     }
                     its_certificate = Convert.ToInt16(reader["its_certificate"]);
-                    its_marked = Convert.ToInt16(reader["its_marked"]);
+                    its_marked = reader["its_marked"].ToString().Length > 13 ? 1 : 0;
                     listView2.Items.Add(lvi);
 
                     //Надо проверить может уже сертификат есть в чеке      
@@ -2412,7 +2416,8 @@ namespace Cash8
                     {
                         foreach (ListViewItem _lvi_ in listView1.Items)
                         {
-                            if (_lvi_.SubItems[0].Text == reader.GetInt64(0).ToString())
+                            //if (_lvi_.SubItems[0].Text == reader.GetInt64(0).ToString())
+                            if (_lvi_.SubItems[0].Text == barcode)
                             {
                                 find_sertificate = true;
                                 break;
@@ -2454,7 +2459,8 @@ namespace Cash8
                     }
                     string count_day = CryptorEngine.get_count_day();
                     string key = nick_shop.Trim() + count_day.Trim() + code_shop.Trim();                    
-                    string sertificate_code = get_tovar_code(barcode);
+                    //string sertificate_code = get_tovar_code(barcode);
+                    string sertificate_code = barcode;
                     string encrypt_data = CryptorEngine.Encrypt(sertificate_code, true, key);
                     string status = "";
                     try
@@ -2513,7 +2519,7 @@ namespace Cash8
                 if (listView2.Items.Count == 1)//1 товар найден
                 {
                     ListViewItem lvi = null;
-                    if ((its_marked == 0) && (MainStaticClass.GetWorkSchema == 1))
+                    if ((its_marked == 0) && (its_certificate==0) && (MainStaticClass.GetWorkSchema == 1))
                     {
                         lvi = exist_tovar_in_listView(listView1, Convert.ToInt64(select_tovar.Tag), listView2.Items[0].Tag);
                     }
@@ -5023,9 +5029,7 @@ namespace Cash8
             return result;
 
         }
-
-
-
+               
         private void fiscall_print_pay_1(string pay)
         {
             {
@@ -5143,7 +5147,7 @@ namespace Cash8
                             item.amount = Convert.ToDouble(lvi.SubItems[7].Text);
                             item.tax = new FiscallPrintJason.Tax();
 
-                            if (lvi.SubItems[14].Text.Trim() == "0")//Если код маркировки не заполнен тогда передаем тнвэд
+                            if (lvi.SubItems[14].Text.Trim().Length<=13)//Если код маркировки не заполнен тогда передаем тнвэд
                             {
                                 //item.nomenclatureCode = get_tnved(lvi.SubItems[0].Text);
                             }

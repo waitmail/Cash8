@@ -451,13 +451,13 @@ namespace Cash8
                 string query = "SELECT " +
                     " checks_table.document_number" + "," +
                     " checks_table.tovar_code" + "," +//Здесь при изменении схемы с сертификатами старое поле оставлено как псевдоним
-                    " price" + "," +//Здесь при изменении схемы с сертификатами старое поле оставлено как псевдоним
+                    " checks_table.sum_at_a_discount*-1 AS price " + "," +//Здесь при изменении схемы с сертификатами старое поле оставлено как псевдоним
                     " checks_header.cash_desk_number" + "," +
                     " checks_table.item_marker AS sertificates_code" + "," +
                     " checks_header.date_time_write " +
                 " FROM checks_table LEFT JOIN tovar ON checks_table.tovar_code = tovar.code " +
                 " LEFT JOIN checks_header ON checks_header.document_number = checks_table.document_number " +
-                " LEFT JOIN sertificates ON checks_table.tovar_code = sertificates.code_tovar " +
+                //" LEFT JOIN sertificates ON checks_table.tovar_code = sertificates.code_tovar " +
                 " where checks_table.document_number in (" +
                 document_number_list.ToString() +
                 ") AND tovar.its_certificate = 1 AND checks_header.its_deleted = 0 ";//сертификаты только из проведенных документов 
@@ -486,7 +486,7 @@ namespace Cash8
                 result = "-1";
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 result = "-1";
             }

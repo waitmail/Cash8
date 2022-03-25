@@ -1184,7 +1184,7 @@ namespace Cash8
                 ds.Timeout = 60000;
                 try
                 {
-                    ds.GetDataForCasheV8Successfully(nick_shop, data_encrypt);
+                    ds.GetDataForCasheV8Successfully(nick_shop, data_encrypt, MainStaticClass.GetWorkSchema.ToString());
                 }
                 catch
                 {
@@ -1219,7 +1219,7 @@ namespace Cash8
                 ds.Timeout = 60000;
                 try
                 {
-                    ds.OnlineCasheV8Successfully(nick_shop, data_encrypt);
+                    ds.OnlineCasheV8Successfully(nick_shop, data_encrypt,MainStaticClass.GetWorkSchema.ToString());
                 }
                 catch
                 {

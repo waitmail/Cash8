@@ -78,13 +78,14 @@ namespace Cash8
             listView_sertificates.Columns.Add("Сертификат", 400, HorizontalAlignment.Left);                        
             listView_sertificates.Columns.Add("Сумма", 100, HorizontalAlignment.Right);
             listView_sertificates.Columns.Add("Штрихкод", 100, HorizontalAlignment.Left);
+            listView_sertificates.Items.Clear();
 
             if (pay.listView_sertificates.Items.Count > 0)
             {
                 foreach (ListViewItem lvi in pay.listView_sertificates.Items)
                 {
-                    //listView_sertificates.Items.Add((ListViewItem)lvi.Clone());
-                    find_sertificate_on_code(lvi.Tag.ToString());
+                    //listView_sertificates.Items.Add((ListViewItem)lvi.Clone());//в Линуксе не работает                     
+                    find_sertificate_on_code(lvi.SubItems[3].Text.Trim());
                 }
             }
         }
@@ -98,7 +99,7 @@ namespace Cash8
             {
                 conn.Open();
                 string query = "";
-                if (input_sertificate.Text.Length > 6)
+                if (code.Length > 6)
                 {                    
                     query = "select tovar.code AS tovar_code,tovar.name AS tovar_name ,tovar.retail_price AS retail_price " +
                         " FROM  barcode left join tovar ON barcode.tovar_code=tovar.code " +
@@ -125,8 +126,10 @@ namespace Cash8
                     {
                         for (int i = 0; i < listView_sertificates.Items.Count; i++)
                         {
-                            if (listView_sertificates.Items[i].Tag.ToString().Trim() == reader["tovar_code"].ToString().Trim())
+                            //if (listView_sertificates.Items[i].Tag.ToString().Trim() == reader["tovar_code"].ToString().Trim())
+                            if (listView_sertificates.Items[i].Tag.ToString().Trim() == code)
                             {
+                                MessageBox.Show("Сертификат с номером " + code + " уже выбран в строках ");
                                 exist = true;
                                 break;                                
                             }
@@ -150,7 +153,7 @@ namespace Cash8
                 conn.Close();
                 if (!have)
                 {
-                    MessageBox.Show(" Сертификат не найден ");
+                    MessageBox.Show(" Сертификат с номером "+ code+" не найден ");
                 }
             }
             catch (NpgsqlException ex)
@@ -246,7 +249,7 @@ namespace Cash8
                 string decrypt_data = CryptorEngine.Decrypt(status, true, key);
                 if (decrypt_data != "1")
                 {
-                    MessageBox.Show("Сертификат с кодом " + sertificate_code + " не активирован");
+                    MessageBox.Show("Сертификат номер " + sertificate_code + " не активирован");
                     result = false;
                 }
 
@@ -307,8 +310,9 @@ namespace Cash8
             bool result_check = true;
             foreach (ListViewItem lvi in listView_sertificates.Items)
             {
-                if (!check_sertificate_active(lvi.Tag.ToString()))
-                {
+                //if (!check_sertificate_active(lvi.Tag.ToString()))
+                if (!check_sertificate_active(lvi.SubItems[3].Text))
+                     {
                     result_check = false;
                     break;
                 }
@@ -325,7 +329,7 @@ namespace Cash8
                 //ListViewItem item = (ListViewItem)lvi.Clone();
                 pay.listView_sertificates.Items.Add((ListViewItem)lvi.Clone());
                 summ_sertificates += decimal.Parse(lvi.SubItems[2].Text);
-            }             
+            }
 
             //if (Convert.ToDecimal(pay.pay_sum.Text) < summ_sertificates + Convert.ToDecimal(pay.non_cash_sum.Text))
             //{

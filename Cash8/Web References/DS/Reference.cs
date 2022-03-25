@@ -757,26 +757,28 @@ namespace Cash8.DS {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetDataForCasheV8Successfully", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public string GetDataForCasheV8Successfully(string nick_shop, string data) {
+        public string GetDataForCasheV8Successfully(string nick_shop, string data, string scheme) {
             object[] results = this.Invoke("GetDataForCasheV8Successfully", new object[] {
                         nick_shop,
-                        data});
+                        data,
+                        scheme});
             return ((string)(results[0]));
         }
         
         /// <remarks/>
-        public void GetDataForCasheV8SuccessfullyAsync(string nick_shop, string data) {
-            this.GetDataForCasheV8SuccessfullyAsync(nick_shop, data, null);
+        public void GetDataForCasheV8SuccessfullyAsync(string nick_shop, string data, string scheme) {
+            this.GetDataForCasheV8SuccessfullyAsync(nick_shop, data, scheme, null);
         }
         
         /// <remarks/>
-        public void GetDataForCasheV8SuccessfullyAsync(string nick_shop, string data, object userState) {
+        public void GetDataForCasheV8SuccessfullyAsync(string nick_shop, string data, string scheme, object userState) {
             if ((this.GetDataForCasheV8SuccessfullyOperationCompleted == null)) {
                 this.GetDataForCasheV8SuccessfullyOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetDataForCasheV8SuccessfullyOperationCompleted);
             }
             this.InvokeAsync("GetDataForCasheV8Successfully", new object[] {
                         nick_shop,
-                        data}, this.GetDataForCasheV8SuccessfullyOperationCompleted, userState);
+                        data,
+                        scheme}, this.GetDataForCasheV8SuccessfullyOperationCompleted, userState);
         }
         
         private void OnGetDataForCasheV8SuccessfullyOperationCompleted(object arg) {
@@ -788,26 +790,28 @@ namespace Cash8.DS {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/OnlineCasheV8Successfully", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public string OnlineCasheV8Successfully(string nick_shop, string data) {
+        public string OnlineCasheV8Successfully(string nick_shop, string data, string scheme) {
             object[] results = this.Invoke("OnlineCasheV8Successfully", new object[] {
                         nick_shop,
-                        data});
+                        data,
+                        scheme});
             return ((string)(results[0]));
         }
         
         /// <remarks/>
-        public void OnlineCasheV8SuccessfullyAsync(string nick_shop, string data) {
-            this.OnlineCasheV8SuccessfullyAsync(nick_shop, data, null);
+        public void OnlineCasheV8SuccessfullyAsync(string nick_shop, string data, string scheme) {
+            this.OnlineCasheV8SuccessfullyAsync(nick_shop, data, scheme, null);
         }
         
         /// <remarks/>
-        public void OnlineCasheV8SuccessfullyAsync(string nick_shop, string data, object userState) {
+        public void OnlineCasheV8SuccessfullyAsync(string nick_shop, string data, string scheme, object userState) {
             if ((this.OnlineCasheV8SuccessfullyOperationCompleted == null)) {
                 this.OnlineCasheV8SuccessfullyOperationCompleted = new System.Threading.SendOrPostCallback(this.OnOnlineCasheV8SuccessfullyOperationCompleted);
             }
             this.InvokeAsync("OnlineCasheV8Successfully", new object[] {
                         nick_shop,
-                        data}, this.OnlineCasheV8SuccessfullyOperationCompleted, userState);
+                        data,
+                        scheme}, this.OnlineCasheV8SuccessfullyOperationCompleted, userState);
         }
         
         private void OnOnlineCasheV8SuccessfullyOperationCompleted(object arg) {

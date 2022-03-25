@@ -797,7 +797,8 @@ namespace Cash8
         }
 
         private void Pay_Load(object sender, EventArgs e)
-        {
+        {           
+            
             this.cash_sum.Focus();
             cash_sum.SelectionStart = 0;
             non_cash_sum.SelectionStart = 0;
@@ -809,7 +810,8 @@ namespace Cash8
             this.pay_bonus_many.Text = "0";
             this.pay_bonus.Text = "0";
             this.non_cash_sum.Text = "0";
-            this.non_cash_sum_kop.Text = "0";            
+            this.non_cash_sum_kop.Text = "0";
+            this.cash_sum.Text = "";
 
             calculate();
             if (MainStaticClass.GetWorkSchema == 2)
