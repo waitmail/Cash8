@@ -2408,7 +2408,8 @@ namespace Cash8
                         lvi.SubItems[1].Text = reader.GetDecimal(5).ToString();
                     }
                     its_certificate = Convert.ToInt16(reader["its_certificate"]);
-                    its_marked = reader["its_marked"].ToString().Length > 13 ? 1 : 0;
+                    //its_marked = reader["its_marked"].ToString().Length > 13 ? 1 : 0;
+                    its_marked = Convert.ToInt16(reader["its_marked"]);
                     listView2.Items.Add(lvi);
 
                     //Надо проверить может уже сертификат есть в чеке      
@@ -4206,19 +4207,27 @@ namespace Cash8
                 if (last_rewrite)
                 {
                     itsnew = false;
-                    SendDataToCustomerScreen(0, 0,0);
+                    if (this.check_type.SelectedIndex == 0)
+                    {
+                        SendDataToCustomerScreen(0, 0, 0);
+                    }
                 }
                 else
                 {
                     itsnew = true;
-                    SendDataToCustomerScreen(1, 0,1);
+                    if (this.check_type.SelectedIndex == 0)
+                    {
+                        SendDataToCustomerScreen(1, 0, 1);
+                    }
                 }
                 if (its_deleted == "1")
                 {
-                    SendDataToCustomerScreen(0, 0,0);
+                    if (this.check_type.SelectedIndex == 0)
+                    {
+                        SendDataToCustomerScreen(0, 0, 0);
+                    }
                 }
                 result = true;
-
             }
             catch (NpgsqlException ex)
             {

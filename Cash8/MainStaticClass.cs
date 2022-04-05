@@ -186,8 +186,8 @@ namespace Cash8
                 else if (MainStaticClass.GetWorkSchema == 2)
                 {
                     //это боевой процессинг "https://evaviza1.cardnonstop.com/processing";
-                    //result = "https://evaviza1.cardnonstop.com/processing";
-                    result = "https://evaviza1.cardnonstop.com/test";//"http://5.188.118.39/test";
+                    result = "https://evaviza1.cardnonstop.com/processing";
+                    //result = "https://evaviza1.cardnonstop.com/test";//"http://5.188.118.39/test";
                 }
 
                 return result;

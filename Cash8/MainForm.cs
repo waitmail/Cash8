@@ -932,7 +932,7 @@ namespace Cash8
 
             if (MainStaticClass.Nick_Shop == "A01")//Для отладки нового механизма пока что сделаю такую заплатку
             {
-                MainStaticClass.UseOldProcessiingActions = false;
+                //MainStaticClass.UseOldProcessiingActions = false;
             }
 
             this.menuStrip.Items.Clear();
