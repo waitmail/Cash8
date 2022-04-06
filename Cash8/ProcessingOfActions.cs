@@ -547,10 +547,10 @@ namespace Cash8
                         }
                         else
                         {
-                            if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
-                            {
-                                action_4(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt32(4));
-                            }
+                            //if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
+                            //{
+                                action_4(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt64(4));
+                            //}
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
                     }
@@ -1925,7 +1925,11 @@ namespace Cash8
                     //иначе результат задваивается ранее эта строка была закомментирована и при 2 товарах по 1 шт. учавстсующих в акции
                     //работала неверно
                     int multiplication_factor = (int)(quantity_on_doc / sum);
-                    query_string = " SELECT code, retail_price, quantity,characteristic_name,characteristic_guid FROM tovar_action ORDER BY retail_price desc";//запросим товары отсортированные по цене, теперь еще и с характеристиками
+                    //query_string = " SELECT code, retail_price, quantity,characteristic_name,characteristic_guid FROM tovar_action ORDER BY retail_price desc";//запросим товары отсортированные по цене, теперь еще и с характеристиками
+                    query_string = " SELECT tovar_action.code,tovar.name, tovar_action.retail_price,tovar_action.retail_price,tovar_action.quantity,tovar_action.characteristic_name,tovar_action.characteristic_guid " +
+                       " FROM tovar_action LEFT JOIN tovar ON tovar_action.code=tovar.code " +
+                       //" LEFT JOIN characteristic ON tovar_action.characteristic_guid = characteristic.guid " +
+                       " order by tovar_action.retail_price desc ";
                     command = new NpgsqlCommand(query_string, conn);
                     NpgsqlDataReader reader = command.ExecuteReader();
                     Decimal sum_on_string = sum;
@@ -1990,8 +1994,8 @@ namespace Cash8
                             DataRow row = dt.NewRow();
                             row["tovar_code"] = reader[0].ToString();
                             row["tovar_name"] = reader[1].ToString().Trim();
-                            row["characteristic_name"] = reader[5].ToString();
-                            row["characteristic_code"] = reader[6].ToString();
+                            row["characteristic_name"] = reader[3].ToString();
+                            row["characteristic_code"] = reader[4].ToString();
                             row["quantity"] = 1;
                             row["price"] = reader.GetDecimal(2).ToString();
                             row["price_at_discount"] = reader.GetDecimal(3).ToString();

@@ -2611,6 +2611,7 @@ namespace Cash8
         {
             //return new NpgsqlConnection("Server=" + Cash8.MainStaticClass.ipAdrServer + ";Port=" + Cash8.MainStaticClass.portServer + ";User Id=" + Cash8.MainStaticClass.postgresUser + ";Password=" + Cash8.MainStaticClass.PasswordPostgres + ";Database=" + Cash8.MainStaticClass.DataBaseName + ";CommandTimeout=300;Pooling=false");
             return new NpgsqlConnection("Server=" + Cash8.MainStaticClass.ipAdrServer + ";Port=" + Cash8.MainStaticClass.portServer + ";User Id=postgres" + ";Password=" + Cash8.MainStaticClass.PasswordPostgres + ";Database=" + Cash8.MainStaticClass.DataBaseName + ";CommandTimeout=300;Pooling=false");
+            //return new NpgsqlConnection("Server=" + Cash8.MainStaticClass.ipAdrServer + ";Port=" + Cash8.MainStaticClass.portServer + ";User Id=postgres" + ";Password=" + Cash8.MainStaticClass.PasswordPostgres + ";Database=Cash_Place_CH" + ";CommandTimeout=300;Pooling=false");
             //return new NpgsqlConnection("Server=127.0.0.1;Port=5432;User Id=postgres;Password=a123456789;Database=Cash_Place;CommandTimeout=60;");
             //return new NpgsqlConnection("Server=127.0.0.1;Port=5432;User Id=postgres;Password=1;Database=Cash_Place;CommandTimeout=60;");
 

@@ -497,6 +497,7 @@ namespace Cash8
             string json = JsonConvert.SerializeObject(buyer_UID, Newtonsoft.Json.Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             byte[] body = Encoding.UTF8.GetBytes(json);
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.Timeout = 20000;
             var authString = MainStaticClass.GetAuthStringProcessing;
             request.Headers.Add("Authorization", "Basic " + authString);
             request.Headers.Add("X-FXAPI-RQ-METHOD", "crm.cabinet.info");
@@ -9657,7 +9658,7 @@ namespace Cash8
                     command = new NpgsqlCommand(query.ToString(), conn);//устанавливаем акционные позиции во временную таблицу
                     command.ExecuteNonQuery();
                     query.Append("DELETE FROM tovar_action;");//Очищаем таблицу акционных товаров 
-                    //иначе результат задваивается ранее эта строка была закомментирована и при 2 товарах по 1 шт. учавстсующих в акции
+                    //иначе результат задваивается ранее эта строка была закомментирована и при 2 товарах по 1 шт. учавствующих в акции
                     //работала неверно
 
                     int multiplication_factor = (int)(quantity_on_doc / sum);
@@ -10883,9 +10884,9 @@ namespace Cash8
             //txtB_jason.Text = json;
             //string url = "http://92.242.41.218/processing/v3/buyerInfo/";
             string url = MainStaticClass.GetStartUrl + "/v3/buyerInfo/";
-
             byte[] body = Encoding.UTF8.GetBytes(json);
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.Timeout = 20000;
             var authString = MainStaticClass.GetAuthStringProcessing;
             request.Headers.Add("Authorization", "Basic " + authString);
             request.Method = "POST";
@@ -11868,7 +11869,7 @@ namespace Cash8
                 req.Method = "POST";
                 req.ContentType = "application/json";
                 req.Headers.Add("Authorization", "Token 9d101a5cde3d28f5bade72ea5613f8f536a4d219");
-                req.Timeout = 10000;
+                req.Timeout = 20000;
                 //{ "query": "7707083893" }
                 string inn = "{\"query\": \"" + txtB_inn.Text + "\" }";                
                 byte[] sentData = Encoding.UTF8.GetBytes(inn);

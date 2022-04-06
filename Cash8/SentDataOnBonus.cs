@@ -142,6 +142,7 @@ namespace Cash8
 
             byte[] body = Encoding.UTF8.GetBytes(json);
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.Timeout = 20000;
             string shop_request = "";
             if (MainStaticClass.Nick_Shop.Substring(0, 1).ToUpper() == "A")
             {
