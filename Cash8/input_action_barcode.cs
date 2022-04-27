@@ -301,9 +301,9 @@ namespace Cash8
                     return;
                 }
                 //длина строки маркера не должна быть меньше 31 символов
-                if (input_barcode.Text.Trim().Length < 31)
+                if (input_barcode.Text.Trim().Length < 42)
                 {
-                    MessageBox.Show("Длина строки кода маркера меньше 31 символа, это ошибка !!! ");
+                    MessageBox.Show("Длина строки кода маркера меньше 42 символа, это ошибка !!! ");
                     input_barcode.Text = "";
                     return;
                 }

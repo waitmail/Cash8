@@ -25,7 +25,7 @@ namespace Cash8
             {
                 conn = MainStaticClass.NpgsqlConn();
                 conn.Open();
-                string query = "SELECT action_header.date_started, action_header.date_end, action_header.num_doc, action_header.tip, action_header.barcode, action_header.persent, action_header.sum,action_header.comment,tovar.name   FROM action_header left join tovar on action_header.code_tovar=tovar.code ;";
+                string query = "SELECT action_header.date_started, action_header.date_end, action_header.num_doc, action_header.tip, action_header.barcode, action_header.persent, action_header.sum,action_header.comment,tovar.name   FROM action_header left join tovar on action_header.code_tovar=tovar.code order by action_header.date_started;";
                 command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())

@@ -76,6 +76,9 @@ namespace Cash8
             //var obj = JsonConvert.DeserializeObject(Out) as System.Collections.Generic.ICollection<Results>; 
 
             var results = JsonConvert.DeserializeObject<RootObject>(Out);
+            System.IO.File.AppendAllText(Application.StartupPath.Replace("\\", "/") + "/" + "json.txt", DateTime.Now.ToString()+" print\r\n");
+            System.IO.File.AppendAllText(Application.StartupPath.Replace("\\", "/") + "/" + "json.txt", Out+"\r\n");
+
             //Thread.Sleep(1000);
             req = null;
             resp.Close();
@@ -226,7 +229,7 @@ namespace Cash8
                     Thread.Sleep(1000);
                     result = GET(MainStaticClass.url, guid);
                     status = result.results[0].status;
-                    if (status != "ready")
+                    if ((status != "ready") && (status != "error"))
                     {
                         if (count > 14)
                         {
@@ -249,7 +252,7 @@ namespace Cash8
 
             System.Net.WebRequest req = System.Net.WebRequest.Create(MainStaticClass.url + "/" + guid);
             req.Method = "DELETE";
-            req.Timeout = 100000;
+            req.Timeout = 10000;
             req.ContentType = "application/json";
 
             HttpWebResponse myHttpWebResponse = (HttpWebResponse)req.GetResponse();
@@ -342,7 +345,7 @@ namespace Cash8
                     Thread.Sleep(1000);
                     result = GET(MainStaticClass.url, guid);
                     status = result.results[0].status;
-                    if (status != "ready")
+                    if ((status != "ready") && (status != "error"))
                     {
                         if (count > 14)
                         {
@@ -424,12 +427,31 @@ namespace Cash8
             public string vatin { get; set; }
         }
 
+        /// <summary>
+        /// Результат проверки кода 
+        /// передается в печать 
+        /// </summary>
+        public class ItemInfoCheckResult
+        {
+            public bool ecrStandAloneFlag { get; set; }
+            public bool imcCheckFlag { get; set; }
+            public bool imcCheckResult { get; set; }
+            public bool imcEstimatedStatusCorrect { get; set; }
+            public bool imcStatusInfo { get; set; }
+        }
+
+        public class OnlineValidation
+        {
+            public ItemInfoCheckResult itemInfoCheckResult { get; set; }
+        }
+
         public class ImcParams
         {
             public string imcType { get; set; }
             public string imc { get; set; }
             public string itemEstimatedStatus { get; set; }
             public int imcModeProcessing { get; set; }
+            public ItemInfoCheckResult itemInfoCheckResult { get; set; }
         }
 
         public class Item
@@ -491,6 +513,10 @@ namespace Cash8
         //    public string serial { get; set; }
         //}
 
+
+
+       
+
         public class Check
         {
            
@@ -549,6 +575,9 @@ namespace Cash8
             check.type = type;
             string _check_ = JsonConvert.SerializeObject(check, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             string json = MainStaticClass.shablon.Replace("body", _check_);
+            System.IO.File.AppendAllText(Application.StartupPath.Replace("\\", "/") + "/" + "json.txt", DateTime.Now.ToString() + " print\r\n ");
+            System.IO.File.AppendAllText(Application.StartupPath.Replace("\\", "/") + "/" + "json.txt", json+"\r\n");
+
             guid = Guid.NewGuid().ToString();
             string replace = "\"uuid\": \"" + guid + "\"";
             json = json.Replace("uuid", replace);
@@ -564,7 +593,7 @@ namespace Cash8
                     Thread.Sleep(1000);
                     result = GET(MainStaticClass.url, guid);
                     status = result.results[0].status;
-                    if (status != "ready")
+                    if ((status != "ready")&& (status != "error"))
                     {
                         if (count > 14)
                         {

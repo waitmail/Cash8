@@ -813,6 +813,16 @@ namespace Cash8
             this.non_cash_sum_kop.Text = "0";
             this.cash_sum.Text = "";
 
+            //decimal summ_sertificates = 0;
+            //foreach (ListViewItem lvi in listView_sertificates.Items)
+            //{
+                
+            //    listView_sertificates.Items.Add((ListViewItem)lvi.Clone());
+            //    summ_sertificates += decimal.Parse(lvi.SubItems[2].Text);
+            //}
+
+            //sertificates_sum.Text = summ_sertificates.ToString();
+
             calculate();
             if (MainStaticClass.GetWorkSchema == 2)
             {
@@ -1422,6 +1432,11 @@ namespace Cash8
                 MessageBox.Show("Список введённых подарков будет очищен.При следующем переходе в окно оплаты необходимо повторить их ввод, если программа предложит это сделать.");
             }
             cc.cancel_action();
+            cc.listView_sertificates.Items.Clear();
+            foreach (ListViewItem lvi in listView_sertificates.Items)
+            {
+                cc.listView_sertificates.Items.Add((ListViewItem)lvi.Clone());
+            }
             //записать в лог что кассир вернулся в документ 
             MainStaticClass.write_event_in_log("Возврат в документ из окна оплата", "Документ чек",cc.numdoc.ToString());            
             this.Close();

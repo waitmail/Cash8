@@ -81,6 +81,8 @@ namespace Cash8
         public string message_processing = "";
         public bool change_bonus_card = false;
         private bool client_plastic_scaned = false;//клиент определен по платиковой карте или по номеру платиковой карты
+        AnswerAddingKmArrayToTableTested answerAddingKmArrayToTableTested = null;
+
 
         System.Windows.Forms.Timer timer = null;
 
@@ -3238,13 +3240,12 @@ namespace Cash8
                     conn.Close();
                 }
             }
-
-
-
         }
+
 
         private void Cash_check_Load(object sender, System.EventArgs e)
         {
+            System.IO.File.Delete(Application.StartupPath.Replace("\\", "/") + "/" + "json.txt");
 
             if (MainStaticClass.GetWorkSchema == 2)
             {
@@ -4687,9 +4688,140 @@ namespace Cash8
         /// <summary>
         /// Проверка кодов маркировки + добавление кодов в буфер
         /// </summary>
-        private bool checking_km_before_adding_to_buffer()
+        private bool km_adding_to_buffer(int num_pos)
         {
             bool result = true;
+            AddingKmArrayToTableTested addingKmArrayToTableTestedKm = new AddingKmArrayToTableTested();
+            addingKmArrayToTableTestedKm.type = "addMarksToBuffer";
+            //addingKmArrayToTableTestedKm.timeout = 6000;
+            addingKmArrayToTableTestedKm.@params = new List<AddingKmArrayToTableTested.Param>();
+            //var num_strt_km = new Dictionary<int, int>();
+            int num = 0;
+            foreach (ListViewItem lvi in listView1.Items)
+            {
+                if (lvi.SubItems[14].Text.Trim().Length > 13)
+                {
+                    if (num_pos != num)
+                    {
+                        num++;
+                        continue;
+                    }
+                    num++;
+                    //num_strt_km.Add(num_strt_km.Count, lvi.Index + 1);
+                    AddingKmArrayToTableTested.Param param = new AddingKmArrayToTableTested.Param();
+                    param.imcType = "auto";
+                    
+                    string GS1 = Char.ConvertFromUtf32(29);
+                    if ((lvi.SubItems[14].Text.Trim().Length == 83) || (lvi.SubItems[14].Text.Trim().Length == 127) || (lvi.SubItems[14].Text.Trim().Length == 115))
+                    {
+                        lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
+                        lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(38, GS1);
+                    }
+
+                    byte[] textAsBytes = Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim());
+                    string mark_str = Convert.ToBase64String(textAsBytes);
+                    param.imc = mark_str;
+                    param.itemEstimatedStatus = "itemPieceSold";
+                    param.imcModeProcessing = 0;
+                    addingKmArrayToTableTestedKm.@params.Add(param);                  
+                }
+                
+            }
+
+            //MessageBox.Show("1");
+            try
+            {
+                AnswerAddingKmArrayToTableTested answerAddingKmArrayToTableTested = Tested_Km(addingKmArrayToTableTestedKm);
+                //if (answerAddingKmArrayToTableTested.results[0].status != "ready")
+                //{
+                //    MessageBox.Show("Не удалось получить корректный ответ от ФР в течении 24 секунд, можете попробовать еще раз.");
+                //}
+                //if (answerAddingKmArrayToTableTested.results[0].errorCode == 0)
+                //{
+                //    //MessageBox.Show("2");
+                //    if (answerAddingKmArrayToTableTested.results[0].errorCode == 0)
+                //    {
+                //        //MessageBox.Show("3");
+                //        if (answerAddingKmArrayToTableTested.results[0].result[0].onlineValidation != null)
+                //        {
+                //            //MessageBox.Show("4");
+                //            if (answerAddingKmArrayToTableTested.results[0].result[0].driverError.code == 0)
+                //            {
+                //                //MessageBox.Show("5");
+                //                int i = 0;
+                //                while (i < answerAddingKmArrayToTableTested.results[0].result.Count)
+                //                {   //Успешная проверка это когда в секции "itemInfoCheckResult" реквизит "imcCheckResult" имеет значение true
+                //                    if (!answerAddingKmArrayToTableTested.results[0].result[i].onlineValidation.itemInfoCheckResult.imcCheckResult)
+                //                    {
+                //                        if (answerAddingKmArrayToTableTested.results[0].result[i].onlineValidation.markOperatorResponseResult != "correct")
+                //                        {
+                //                            if (answerAddingKmArrayToTableTested.results[0].result[i].onlineValidation.markOperatorResponseResult == "incorrect")
+                //                            {
+                //                                //MessageBox.Show("Запрос имеет некорректный формат markOperatorResponseResult = " + answerAddingKmArrayToTableTested.results[0].result[0].onlineValidation.markOperatorResponseResult.ToString());
+                //                                MessageBox.Show("Запрос имеет некорректный формат в строке = " + num_strt_km[i].ToString());
+                //                                result = false;
+                //                            }
+                //                            if (answerAddingKmArrayToTableTested.results[0].result[i].onlineValidation.markOperatorResponseResult == "unrecognized")
+                //                            {
+                //                                //MessageBox.Show("КМ имеет некорретный формат markOperatorResponseResult = " + answerAddingKmArrayToTableTested.results[0].result[0].onlineValidation.markOperatorResponseResult.ToString());
+                //                                MessageBox.Show("КМ имеет некорретный формат в строке = " + num_strt_km[i].ToString());
+                //                                //listView1.Items[num_strt_km[i]-1].SubItems[14].Text = change_case_in_line(listView1.Items[num_strt_km[i]-1].SubItems[14].Text);
+                //                                result = false;//попробовать вызвать еще раз с км с измененным регистром
+                //                            }
+                //                        }
+                //                    }
+                //                    i++;
+                //                }
+                //            }
+                //            else
+                //            {
+                //                string description = "";
+                //                if (answerAddingKmArrayToTableTested.results[0].result[0].driverError.error != null)
+                //                {
+                //                    description += answerAddingKmArrayToTableTested.results[0].result[0].driverError.error;
+                //                }
+                //                if (answerAddingKmArrayToTableTested.results[0].result[0].driverError.description != null)
+                //                {
+                //                    description += answerAddingKmArrayToTableTested.results[0].result[0].driverError.description;
+                //                }
+
+                //                MessageBox.Show("Ошибка при проверке кодов маркировки код ошибки " + answerAddingKmArrayToTableTested.results[0].result[0].driverError.code.ToString() + " " + description);
+                //            }
+                //        }
+                //        else
+                //        {
+                //            MessageBox.Show("Ошибка при проверке кодов маркировки код ошибки " + answerAddingKmArrayToTableTested.results[0].result[0].driverError.code + " " + answerAddingKmArrayToTableTested.results[0].result[0].driverError.description);
+                //            result = false;
+                //        }
+                //    }
+                //    else
+                //    {
+                //        MessageBox.Show(" Ошибка при проверке кодов маркировки код ошибки " + answerAddingKmArrayToTableTested.results[0].errorCode.ToString() + " " + answerAddingKmArrayToTableTested.results[0].errorDescription.ToString());
+                //        result = false;
+                //    }
+                //}
+                //else
+                //{
+                //    MessageBox.Show(" Ошибка при проверке кодов маркировки код ошибки " + answerAddingKmArrayToTableTested.results[0].errorCode.ToString() + " " + answerAddingKmArrayToTableTested.results[0].errorDescription.ToString());
+                //    result = false;
+                //}
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                result = false;
+            }
+            return result;
+        }
+
+
+        //Регистрация кодов марикровки перед печатью чека
+        /// <summary>
+        /// Проверка кодов маркировки + добавление кодов в буфер
+        /// </summary>
+        private int checking_km_before_adding_to_buffer()
+        {
+            int result = 0;
             AddingKmArrayToTableTested addingKmArrayToTableTestedKm = new AddingKmArrayToTableTested();
             addingKmArrayToTableTestedKm.type = "validateMarks";
             addingKmArrayToTableTestedKm.timeout = 6000;
@@ -4727,8 +4859,153 @@ namespace Cash8
                     //string km = lvi.SubItems[14].Text.Trim().Replace("'", "vasya2021")
 
                     string GS1 = Char.ConvertFromUtf32(29);
-                    if ((lvi.SubItems[14].Text.Trim().Length == 83)|| (lvi.SubItems[14].Text.Trim().Length == 127))
-                    {                        
+                    if ((lvi.SubItems[14].Text.Trim().Length == 83) || (lvi.SubItems[14].Text.Trim().Length == 127) || (lvi.SubItems[14].Text.Trim().Length == 115))
+                    {
+                        lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
+                        lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(38, GS1);
+                    }
+
+                    byte[] textAsBytes = Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim());
+                    string mark_str = Convert.ToBase64String(textAsBytes);
+                    param.imc = mark_str;
+                    param.itemEstimatedStatus = "itemPieceSold";
+                    param.imcModeProcessing = 0;
+                    addingKmArrayToTableTestedKm.@params.Add(param);
+                }
+            }
+                        
+            try
+            {
+                AnswerAddingKmArrayToTableTested answerAddingKmArrayToTableTested = Tested_Km(addingKmArrayToTableTestedKm);
+                if (answerAddingKmArrayToTableTested.results[0].status != "ready")
+                {
+                    MessageBox.Show("Не удалось получить корректный ответ от ФР в течении 24 секунд, можете попробовать еще раз.");
+                }             
+
+                int x = 0;
+                while (x < answerAddingKmArrayToTableTested.results[0].result.Count)
+                {
+                    //if (answerAddingKmArrayToTableTested.results[0].errorCode == 0)
+                    //{
+                    //MessageBox.Show("2");
+                    //if (answerAddingKmArrayToTableTested.results[0].errorCode == 0)
+                    //{
+                    //MessageBox.Show("3");
+                    if (answerAddingKmArrayToTableTested.results[0].result[x].onlineValidation != null)
+                    {
+                        //MessageBox.Show("4");
+                        if (answerAddingKmArrayToTableTested.results[0].result[x].driverError.code == 0)
+                        {
+                            //MessageBox.Show("5");
+                            int i = 0;
+                            while (i < answerAddingKmArrayToTableTested.results[0].result.Count)
+                            {   //Успешная проверка это когда в секции "itemInfoCheckResult" реквизит "imcCheckResult" имеет значение true
+                                if (!answerAddingKmArrayToTableTested.results[0].result[i].onlineValidation.itemInfoCheckResult.imcCheckResult)
+                                {
+                                    if (answerAddingKmArrayToTableTested.results[0].result[i].onlineValidation.markOperatorResponseResult != "correct")
+                                    {
+                                        if (answerAddingKmArrayToTableTested.results[0].result[i].onlineValidation.markOperatorResponseResult == "incorrect")
+                                        {
+                                            //MessageBox.Show("Запрос имеет некорректный формат markOperatorResponseResult = " + answerAddingKmArrayToTableTested.results[0].result[0].onlineValidation.markOperatorResponseResult.ToString());
+                                            MessageBox.Show("Запрос имеет некорректный формат в строке = " + num_strt_km[i].ToString());
+                                            result = -1;
+                                        }
+                                        if (answerAddingKmArrayToTableTested.results[0].result[i].onlineValidation.markOperatorResponseResult == "unrecognized")
+                                        {
+                                            //MessageBox.Show("КМ имеет некорретный формат markOperatorResponseResult = " + answerAddingKmArrayToTableTested.results[0].result[0].onlineValidation.markOperatorResponseResult.ToString());
+                                            MessageBox.Show("КМ имеет некорретный формат в строке = " + num_strt_km[i].ToString());
+                                            //listView1.Items[num_strt_km[i]-1].SubItems[14].Text = change_case_in_line(listView1.Items[num_strt_km[i]-1].SubItems[14].Text);
+                                            result = -1;//попробовать вызвать еще раз с км с измененным регистром
+                                        }
+                                    }
+                                }
+                                i++;
+                            }
+                        }
+                        else
+                        {
+                            result = answerAddingKmArrayToTableTested.results[0].result[x].driverError.code;
+                            string description = "";
+                            if (answerAddingKmArrayToTableTested.results[0].result[x].driverError.error != null)
+                            {
+                                description += answerAddingKmArrayToTableTested.results[0].result[x].driverError.error;
+                            }
+                            if (answerAddingKmArrayToTableTested.results[0].result[x].driverError.description != null)
+                            {
+                                description += answerAddingKmArrayToTableTested.results[0].result[x].driverError.description;
+                            }
+
+                            MessageBox.Show("Ошибка при проверке кодов маркировки код ошибки " + answerAddingKmArrayToTableTested.results[0].result[x].driverError.code.ToString() + " " + description);
+                            //result;
+                            
+                           if ((result == 421) || (result == 402))
+                            {
+                                km_adding_to_buffer(x);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Ошибка при проверке кодов маркировки код ошибки " + answerAddingKmArrayToTableTested.results[0].result[x].driverError.code + " " + answerAddingKmArrayToTableTested.results[0].result[x].driverError.description);
+                        result = answerAddingKmArrayToTableTested.results[0].result[x].driverError.code;
+                        if ((result == 421) || (result == 402))
+                        {
+                            km_adding_to_buffer(x);
+                        }
+                        //return result;//result = -1;
+                    }
+                    //    }
+                    //    else
+                    //    {
+                    //        MessageBox.Show(" Ошибка при проверке кодов маркировки код ошибки " + answerAddingKmArrayToTableTested.results[0].errorCode.ToString() + " " + answerAddingKmArrayToTableTested.results[0].errorDescription.ToString());
+                    //        result = -1;
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    MessageBox.Show(" Ошибка при проверке кодов маркировки код ошибки " + answerAddingKmArrayToTableTested.results[0].errorCode.ToString() + " " + answerAddingKmArrayToTableTested.results[0].errorDescription.ToString());
+                    //    result = -1;
+                    //}
+                    x++;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                result = -1;
+            }
+            return result;
+        }
+
+
+
+
+
+
+        //Регистрация кодов марикровки перед печатью чека
+        /// <summary>
+        /// Проверка кодов маркировки + добавление кодов в буфер
+        /// </summary>
+        private bool checking_km_before_adding_to_buffer(ref AnswerAddingKmArrayToTableTested answerAddingKmArrayToTableTested)
+        {
+            bool result = true;
+            AddingKmArrayToTableTested addingKmArrayToTableTestedKm = new AddingKmArrayToTableTested();
+            addingKmArrayToTableTestedKm.type = "validateMarks";
+            addingKmArrayToTableTestedKm.timeout = 6000;
+            addingKmArrayToTableTestedKm.@params = new List<AddingKmArrayToTableTested.Param>();
+            var num_strt_km = new Dictionary<int, int>();
+            //int num = 0;
+            foreach (ListViewItem lvi in listView1.Items)
+            {
+                if (lvi.SubItems[14].Text.Trim().Length > 13)
+                {
+                    num_strt_km.Add(num_strt_km.Count, lvi.Index + 1);
+                    AddingKmArrayToTableTested.Param param = new AddingKmArrayToTableTested.Param();
+                    param.imcType = "auto";
+                    
+                    string GS1 = Char.ConvertFromUtf32(29);
+                    if ((lvi.SubItems[14].Text.Trim().Length == 83) || (lvi.SubItems[14].Text.Trim().Length == 127))
+                    {
                         lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
                         lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(38, GS1);
                     }
@@ -4745,7 +5022,7 @@ namespace Cash8
             //MessageBox.Show("1");
             try
             {
-                AnswerAddingKmArrayToTableTested answerAddingKmArrayToTableTested = Tested_Km(addingKmArrayToTableTestedKm);
+                answerAddingKmArrayToTableTested = Tested_Km(addingKmArrayToTableTestedKm);
                 if (answerAddingKmArrayToTableTested.results[0].status != "ready")
                 {
                     MessageBox.Show("Не удалось получить корректный ответ от ФР в течении 24 секунд, можете попробовать еще раз.");
@@ -4867,7 +5144,7 @@ namespace Cash8
         private static AnswerAddingKmArrayToTableTested GET_AnswerAddingKmArrayToTableTested(string Url, string Data)
         {
             System.Net.WebRequest req = System.Net.WebRequest.Create(Url + "/" + Data);
-            req.Timeout = 10000;
+            req.Timeout = 24000;
             System.Net.WebResponse resp = req.GetResponse();
             //HttpWebResponse myHttpWebResponse = (HttpWebResponse)req.GetResponse();
 
@@ -4879,8 +5156,9 @@ namespace Cash8
 
             //Newtonsoft.Json.Linq.JObject obj = Newtonsoft.Json.Linq.JObject.Parse(Out);
             //var obj = JsonConvert.DeserializeObject(Out) as System.Collections.Generic.ICollection<Results>; 
-           //File.AppendAllText(Application.StartupPath.Replace("\\","/") + "/"+ DateTime.Now.ToString("yyy-MM-dd HH-mm-ss") + ".txt", Out);
-
+            System.IO.File.AppendAllText(Application.StartupPath.Replace("\\", "/") + "/" + "json.txt", DateTime.Now.ToString() + " answer_chech_KM \r\n");
+            File.AppendAllText(Application.StartupPath.Replace("\\","/") + "/"+ "json.txt", Out+"\r\n");
+            
             var results = JsonConvert.DeserializeObject<AnswerAddingKmArrayToTableTested>(Out);
 
             //AnswerAddingKmArrayToTableTested results = JsonConvert.DeserializeObject<AnswerAddingKmArrayToTableTested>(Out);
@@ -4893,6 +5171,10 @@ namespace Cash8
             return results;
             //return Out;
         }
+
+
+       
+
 
 
         /// <summary>
@@ -4910,6 +5192,8 @@ namespace Cash8
             string guid = Guid.NewGuid().ToString();
             string replace = "\"uuid\": \"" + guid + "\"";
             json = json.Replace("uuid", replace);
+            System.IO.File.AppendAllText(Application.StartupPath.Replace("\\", "/") + "/" + "json.txt", DateTime.Now.ToString() + " chech_KM\r\n");            
+            File.AppendAllText(Application.StartupPath.Replace("\\", "/") + "/" + "json.txt", json+"\r\n");
             if (FiscallPrintJason.POST(MainStaticClass.url, json) == "Created")
             {
                 int count = 0;
@@ -4919,9 +5203,9 @@ namespace Cash8
                     Thread.Sleep(1000);
                     result = GET_AnswerAddingKmArrayToTableTested(MainStaticClass.url, guid);
                     status = result.results[0].status;
-                    if (status != "ready")
+                    if ((status != "ready") && (status != "error"))
                     {
-                        if (count > 24)
+                        if (count > 14)
                         {
                             break;
                         }
@@ -5003,7 +5287,7 @@ namespace Cash8
                     Thread.Sleep(1000);
                     answerCheckImcWorkState = GET_AnswerCheckImcWorkState(MainStaticClass.url, guid);
                     status = answerCheckImcWorkState.results[0].status;
-                    if (status != "ready")
+                    if ((status != "ready") && (status != "error"))
                     {
                         if (count > 14)
                         {
@@ -5053,16 +5337,16 @@ namespace Cash8
                 bool error = false;
 
 
-                if (to_print_certainly == 1)
-                {
-                    MainStaticClass.delete_document_wil_be_printed(numdoc.ToString());
-                }
+                //if (to_print_certainly == 1)
+                //{
+                //    MainStaticClass.delete_document_wil_be_printed(numdoc.ToString());
+                //}
 
-                if (MainStaticClass.get_document_wil_be_printed(numdoc.ToString()) != 0)
-                {
-                    MessageBox.Show("Этот чек уже был успешно отправлен на печать");
-                    return;
-                }
+                //if (MainStaticClass.get_document_wil_be_printed(numdoc.ToString()) != 0)
+                //{
+                //    MessageBox.Show("Этот чек уже был успешно отправлен на печать");
+                //    return;
+                //}
 
                 closing = false;
 
@@ -5594,6 +5878,7 @@ namespace Cash8
             check.taxationType = (MainStaticClass.SystemTaxation == 1 ? "osn" : "usnIncomeOutcome");
 
             check.ignoreNonFiscalPrintErrors = false;
+            //check.ignoreNonFiscalPrintErrors = true;
             check.validateMarkingCodes = false;
             check.@operator = new FiscallPrintJason.Operator();
             check.@operator.name = MainStaticClass.Cash_Operator;
@@ -5605,6 +5890,7 @@ namespace Cash8
 
                 int nomer_naloga = 0;
                 string tax_type = "";
+                int index_marker_position = 0;
 
                 foreach (ListViewItem lvi in listView1.Items)
                 {
@@ -5666,7 +5952,7 @@ namespace Cash8
                             item.paymentObject = "commodityWithoutMarking";
                         }
                         else//иначе передаем код маркировки 
-                        {
+                        {                            
                             item.paymentObject = "commodityWithMarking";
                             FiscallPrintJason2.ImcParams imcParams = new FiscallPrintJason2.ImcParams();
                             imcParams.imcType = "auto";
@@ -5675,7 +5961,17 @@ namespace Cash8
                             imcParams.imc = mark_str;
                             imcParams.itemEstimatedStatus = "itemPieceSold";
                             imcParams.imcModeProcessing = 0;
+
+                            //imcParams.itemInfoCheckResult                           = new FiscallPrintJason2.ItemInfoCheckResult();
+                            //imcParams.itemInfoCheckResult.ecrStandAloneFlag         = true;//this.answerAddingKmArrayToTableTested.results[0].result[index_marker_position].onlineValidation.itemInfoCheckResult.ecrStandAloneFlag;
+                            //imcParams.itemInfoCheckResult.imcCheckFlag              = true;//this.answerAddingKmArrayToTableTested.results[0].result[index_marker_position].onlineValidation.itemInfoCheckResult.imcCheckFlag;
+                            //imcParams.itemInfoCheckResult.imcCheckResult            = true;//this.answerAddingKmArrayToTableTested.results[0].result[index_marker_position].onlineValidation.itemInfoCheckResult.imcCheckResult;
+                            //imcParams.itemInfoCheckResult.imcEstimatedStatusCorrect = true; //his.answerAddingKmArrayToTableTested.results[0].result[index_marker_position].onlineValidation.itemInfoCheckResult.imcEstimatedStatusCorrect;
+                            //imcParams.itemInfoCheckResult.imcStatusInfo             = true;// this.answerAddingKmArrayToTableTested.results[0].result[index_marker_position].onlineValidation.itemInfoCheckResult.imcStatusInfo;
+
                             item.imcParams = imcParams;
+
+                            index_marker_position++;
                         }
 
                         item.tax.type = tax_type;//ндс 
@@ -7873,11 +8169,22 @@ namespace Cash8
                 }
             }
 
-            
+            if (to_print_certainly == 1)
+            {
+                MainStaticClass.delete_document_wil_be_printed(numdoc.ToString());
+            }
+
+            if (MainStaticClass.get_document_wil_be_printed(numdoc.ToString()) != 0)
+            {
+                MessageBox.Show("Этот чек уже был успешно отправлен на печать");
+                return;
+            }
+
             //ПРОВЕРКА МАССИВА КОДОВ МАРКИРОВКИ
             if (MainStaticClass.GetVersionFn == 2)
             {
-                clearMarkingCodeValidationResult();
+                System.IO.File.AppendAllText(Application.StartupPath.Replace("\\", "/") + "/" + "json.txt", DateTime.Now.ToString() + " clearMarkingBuffer \r\n");
+                clearMarkingCodeValidationResult();                
 
                 int count_km = 0;
                 foreach (ListViewItem lvi in listView1.Items)
@@ -7887,23 +8194,27 @@ namespace Cash8
                         count_km++;
                     }
                 }
-                bool continue_print = true;
+                //bool continue_print = true;
+                int code_error = 0;// continue_print = true;
                 if (count_km != 0)
-                {                    
-                    continue_print = checking_km_before_adding_to_buffer();                   
-                    if (continue_print)
-                    {
-                        continue_print = check_imc_work_state(count_km);//Проверка соответсвия состояния буфера в ФН и 
-                    }
-                    else
-                    {
-                        //return;
-                    }
-                }
-                if (!continue_print)
                 {
-                    //return;
+                    code_error = checking_km_before_adding_to_buffer();
+                    //this.answerAddingKmArrayToTableTested = null;
+                    //continue_print = checking_km_before_adding_to_buffer(ref this.answerAddingKmArrayToTableTested);
+                    check_imc_work_state(count_km);
+                    if (code_error==0)
+                    {
+                        //continue_print = check_imc_work_state(count_km);//Проверка соответсвия состояния буфера в ФН и 
+                    }
+                    //else
+                    //{
+                    //    //return;
+                    //}
                 }
+                //if (!continue_print)
+                //{
+                //    //return;
+                //}
             }
             //КОНЕЦ ПРОВЕРКИ МАССИВА КОДОВ МАРКИРОВКИ
             
@@ -11143,9 +11454,19 @@ namespace Cash8
         private void show_pay_form()
         {
 
-            MainStaticClass.write_event_in_log("Попытка перейти в окно оплаты", "Документ чек", numdoc.ToString());            
+            MainStaticClass.write_event_in_log("Попытка перейти в окно оплаты", "Документ чек", numdoc.ToString());
 
+            //if (listView_sertificates.Items.Count > 0)
+            //{
+            //    pay_form.listView_sertificates.Items.Clear();
+            //    foreach (ListViewItem lvi in listView_sertificates.Items)
+            //    {
+            //        pay_form.listView_sertificates.Items.Add((ListViewItem)lvi.Clone());
+            //    }
+            //}
             //Pay pay_form = new Pay();
+            listView_sertificates.Items.Clear();
+            pay_form.listView_sertificates.Items.Clear();
             pay_form.cc = this;
             DialogResult dr ;
 

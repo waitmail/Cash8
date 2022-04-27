@@ -60,7 +60,7 @@ namespace Cash8
             public List<Result2> result { get; set; }
             public int errorCode { get; set; }
             public string errorDescription { get; set; }
+            public OnlineValidation onlineValidation { get; set; }
         }
-
     }
 }

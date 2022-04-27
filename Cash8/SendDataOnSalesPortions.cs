@@ -451,7 +451,8 @@ namespace Cash8
                 string query = "SELECT " +
                     " checks_table.document_number" + "," +
                     " checks_table.tovar_code" + "," +//Здесь при изменении схемы с сертификатами старое поле оставлено как псевдоним
-                    " checks_table.sum_at_a_discount*-1 AS price " + "," +//Здесь при изменении схемы с сертификатами старое поле оставлено как псевдоним
+                    //" checks_table.sum_at_a_discount*-1 AS price " + "," +//Здесь при изменении схемы с сертификатами старое поле оставлено как псевдоним
+                    " checks_table.sum_at_a_discount AS price " + "," +//Здесь при изменении схемы с сертификатами старое поле оставлено как псевдоним
                     " checks_header.cash_desk_number" + "," +
                     " checks_table.item_marker AS sertificates_code" + "," +
                     " checks_header.date_time_write " +

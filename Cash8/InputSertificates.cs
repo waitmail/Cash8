@@ -127,7 +127,7 @@ namespace Cash8
                         for (int i = 0; i < listView_sertificates.Items.Count; i++)
                         {
                             //if (listView_sertificates.Items[i].Tag.ToString().Trim() == reader["tovar_code"].ToString().Trim())
-                            if (listView_sertificates.Items[i].Tag.ToString().Trim() == code)
+                            if (listView_sertificates.Items[i].SubItems[3].Text.Trim() == code)
                             {
                                 MessageBox.Show("Сертификат с номером " + code + " уже выбран в строках ");
                                 exist = true;
