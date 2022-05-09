@@ -455,7 +455,8 @@ namespace Cash8
                     " checks_table.sum_at_a_discount AS price " + "," +//Здесь при изменении схемы с сертификатами старое поле оставлено как псевдоним
                     " checks_header.cash_desk_number" + "," +
                     " checks_table.item_marker AS sertificates_code" + "," +
-                    " checks_header.date_time_write " +
+                    " checks_header.date_time_write " +","+
+                    " checks_header.check_type "+
                 " FROM checks_table LEFT JOIN tovar ON checks_table.tovar_code = tovar.code " +
                 " LEFT JOIN checks_header ON checks_header.document_number = checks_table.document_number " +
                 //" LEFT JOIN sertificates ON checks_table.tovar_code = sertificates.code_tovar " +
@@ -471,8 +472,8 @@ namespace Cash8
                         reader["price"].ToString().Replace(",", ".") + "," +
                         reader["cash_desk_number"].ToString() + "," +
                         reader["sertificates_code"].ToString() + "," +
-                        reader.GetDateTime(5).ToString("dd-MM-yyyy HH:mm:ss") + "|";
-
+                        reader.GetDateTime(5).ToString("dd-MM-yyyy HH:mm:ss") + "," +
+                        reader["check_type"].ToString() + "|";
                 }
                 if (result != "")
                 {

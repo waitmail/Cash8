@@ -12377,10 +12377,10 @@ namespace Cash8
                     NpgsqlDataReader reader = command.ExecuteReader();
                     while (reader.Read())
                     {
-                        if (its_sertificate(reader[0].ToString()))
-                        {
-                            continue;
-                        }
+                        //if (its_sertificate(reader[0].ToString()))
+                        //{
+                        //    continue;
+                        //}
                         //**************************
                         id_transaction_sale = reader["id_transaction"].ToString();
                         if (reader["client"].ToString().Trim().Length != 0)

@@ -406,7 +406,7 @@ namespace Cash8
                             //string query = "UPDATE checks_header SET sent_to_processing_center=1, id_transaction_sale = "+ buynewResponse.transactionId +" WHERE document_number =" + document_number ;
                             string query = "UPDATE checks_header SET sent_to_processing_center=1  WHERE document_number =" + document_number;
                             NpgsqlCommand command = new NpgsqlCommand(query, conn);
-                            //int rowsaffected = command.ExecuteNonQuery();
+                            int rowsaffected = command.ExecuteNonQuery();
 
                             //if (buyNewRequest.type == "2")//понадобится для возвратов 
                             //{
@@ -503,8 +503,9 @@ namespace Cash8
                     TransactionResponse transactionResponse = JsonConvert.DeserializeObject<TransactionResponse>(read.Replace("{}", @""""""), new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
                     if (transactionResponse.res == "1")
                     {                       
-                            conn.Open();                            
-                            string query = "UPDATE checks_header SET sent_to_processing_center=1  WHERE document_number =" + document_number;
+                            conn.Open();
+                            //string query = "UPDATE checks_header SET sent_to_processing_center=1, id_transaction_sale = " + transactionResponse.transactionId + "   WHERE document_number =" + document_number;
+                            string query = "UPDATE checks_header SET sent_to_processing_center=1 WHERE document_number =" + document_number;
                             NpgsqlCommand command = new NpgsqlCommand(query, conn);
                             conn.Close();
                             command.Dispose();                        
