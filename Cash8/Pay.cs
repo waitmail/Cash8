@@ -948,9 +948,15 @@ namespace Cash8
             }
             if (e.KeyCode == Keys.F6)//попытка сделать доступным полее вода списания бонусов
             {
+                
                 if (cc.client.Tag == null)
                 {
                     MessageBox.Show("В чеке нет карты лояльности.Оплата бонусами невозможна.");
+                    return;
+                }
+                if (cc.checkBox_viza_d.CheckState == CheckState.Checked)
+                {
+                    MessageBox.Show("В чеке выбрана скидка.Оплата бонусами невозможна!");
                     return;
                 }
                 if (MainStaticClass.GetWorkSchema == 1)

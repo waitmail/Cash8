@@ -84,6 +84,7 @@
             this.btn_fill_on_sales = new System.Windows.Forms.Button();
             this.cash = new System.Windows.Forms.TextBox();
             this.checkBox_club = new System.Windows.Forms.CheckBox();
+            this.checkBox_viza_d = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel_return.SuspendLayout();
@@ -303,7 +304,7 @@
             this.panel_return.Controls.Add(this.return_kop);
             this.panel_return.Controls.Add(this.return_rouble);
             this.panel_return.Controls.Add(this.return_quantity);
-            this.panel_return.Location = new System.Drawing.Point(99, 81);
+            this.panel_return.Location = new System.Drawing.Point(21, 282);
             this.panel_return.Name = "panel_return";
             this.panel_return.Size = new System.Drawing.Size(432, 88);
             this.panel_return.TabIndex = 42;
@@ -387,6 +388,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.panel_return);
             this.tabPage1.Controls.Add(this.panel2);
             this.tabPage1.Controls.Add(this.panel1);
             this.tabPage1.Controls.Add(this.listView1);
@@ -417,7 +419,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(1058, 378);
+            this.tabPage2.Size = new System.Drawing.Size(783, 337);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Сертификаты";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -621,7 +623,7 @@
             this.txtB_name.Location = new System.Drawing.Point(205, 179);
             this.txtB_name.MaxLength = 250;
             this.txtB_name.Name = "txtB_name";
-            this.txtB_name.Size = new System.Drawing.Size(275, 20);
+            this.txtB_name.Size = new System.Drawing.Size(273, 20);
             this.txtB_name.TabIndex = 68;
             // 
             // txtB_num_sales
@@ -672,12 +674,25 @@
             this.checkBox_club.Text = "Клуб";
             this.checkBox_club.UseVisualStyleBackColor = true;
             // 
+            // checkBox_viza_d
+            // 
+            this.checkBox_viza_d.AutoSize = true;
+            this.checkBox_viza_d.Enabled = false;
+            this.checkBox_viza_d.Location = new System.Drawing.Point(492, 146);
+            this.checkBox_viza_d.Name = "checkBox_viza_d";
+            this.checkBox_viza_d.Size = new System.Drawing.Size(63, 17);
+            this.checkBox_viza_d.TabIndex = 72;
+            this.checkBox_viza_d.Text = "Скидка";
+            this.checkBox_viza_d.UseVisualStyleBackColor = true;
+            this.checkBox_viza_d.Visible = false;
+            this.checkBox_viza_d.CheckedChanged += new System.EventHandler(this.checkBox_viza_d_CheckedChanged);
+            // 
             // Cash_check
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 600);
-            this.Controls.Add(this.panel_return);
+            this.Controls.Add(this.checkBox_viza_d);
             this.Controls.Add(this.checkBox_club);
             this.Controls.Add(this.btn_fill_on_sales);
             this.Controls.Add(this.txtB_num_sales);
@@ -795,5 +810,6 @@
         private System.Windows.Forms.Button btn_fill_on_sales;
         private System.Windows.Forms.TextBox cash;
         private System.Windows.Forms.CheckBox checkBox_club;
+        public System.Windows.Forms.CheckBox checkBox_viza_d;
     }
 }

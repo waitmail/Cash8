@@ -441,7 +441,16 @@ namespace Cash8
                             client.Text = buyerInfoResponce.cards.card[0].cardNum;
                         }
                         //client.Tag = phone;
+
                         client.Tag = buyerInfoResponce.cards.card[0].cardNum;
+                        if (MainStaticClass.Nick_Shop == "E99")
+                        {
+                            checkBox_viza_d.Enabled = true;
+                           /* checkBox_viza_d.Checked = true;                         
+                            Discount = Convert.ToDecimal(0.05);
+                            checkBox_viza_d.Enabled = true;*/
+                        }
+
                         if (client.Text.Trim() == "")
                         {
                             client.Text = client.Tag.ToString();
@@ -3251,6 +3260,8 @@ namespace Cash8
             {
                 this.checkBox_club.Visible = true;
                 btn_change_status_client.Visible = true;
+                checkBox_viza_d.Visible = true;
+                checkBox_viza_d.Enabled=false;
             }
             else
             {
@@ -3974,7 +3985,8 @@ namespace Cash8
                                         "id_sale," +
                                         "sent_to_processing_center,"+
                                         "requisite,"+
-                                        "bonuses_it_is_counted) VALUES(" +
+                                        "bonuses_it_is_counted,"+
+                                        "viza_d) VALUES(" +
 
                                         "@document_number," +
                                         "@date_time_start," +
@@ -4004,7 +4016,8 @@ namespace Cash8
                                         "@id_sale," +
                                         "@sent_to_processing_center,"+
                                         "@requisite,"+
-                                        "@bonuses_it_is_counted)", conn);
+                                        "@bonuses_it_is_counted,"+
+                                        "@checkBox_viza_d)", conn);
 
                 command.Parameters.AddWithValue("document_number", numdoc.ToString());
                 command.Parameters.AddWithValue("date_time_start", date_time_start.Text.Replace("Чек", ""));
@@ -4048,7 +4061,7 @@ namespace Cash8
                     command.Parameters.AddWithValue("requisite", 0);
                 }               
                 command.Parameters.AddWithValue("bonuses_it_is_counted", bonuses_it_is_counted.ToString());
-
+                command.Parameters.AddWithValue("checkBox_viza_d", checkBox_viza_d.Checked ? 1 : 0);
 
 
                 string sent_to_processing_center = "0";
@@ -12565,6 +12578,24 @@ namespace Cash8
             }
 
             fill_on_sales();            
+        }
+
+        private void checkBox_viza_d_CheckedChanged(object sender, EventArgs e)
+        {
+            if (client.Tag == null)
+            {
+                return;
+            }
+            if (checkBox_viza_d.Checked)
+            {
+                Discount = Convert.ToDecimal(0.05);
+            }
+            else
+            {
+                Discount = 0;
+            }
+
+            recalculate_all();
         }
 
         //private void btn_fill_on_sales_Click_Eva(object sender, EventArgs e)

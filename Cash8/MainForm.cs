@@ -672,6 +672,7 @@ namespace Cash8
                 SendDataOnSalesPortions sdsp = new SendDataOnSalesPortions();
                 sdsp.send_sales_data_Click(null, null);
                 sdsp.Dispose();
+                UploadDeletedItems();
 
                 if (MainStaticClass.PassPromo != "")
                 {
@@ -1311,7 +1312,7 @@ namespace Cash8
             //sdsp.Dispose();
             timer_send_data_Elapsed(null, null);
             UploadPhoneClients();
-            UploadDeletedItems();
+            //UploadDeletedItems();
         }
 
 

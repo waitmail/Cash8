@@ -1011,6 +1011,7 @@ namespace Cash8
             queries.Add("ALTER TABLE public.constants ADD COLUMN version_fn smallint; UPDATE public.constants SET version_fn=1");
             queries.Add("ALTER TABLE public.checks_header ADD COLUMN requisite smallint;");
             queries.Add("ALTER TABLE deleted_items ALTER COLUMN tovar TYPE bigint");
+            queries.Add("ALTER TABLE public.checks_header ADD COLUMN viza_d smallint;");
 
             foreach (string str in queries)
             {
