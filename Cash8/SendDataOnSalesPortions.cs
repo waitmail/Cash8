@@ -113,6 +113,10 @@ namespace Cash8
                     salesPortionsHeader.SumCashRemainder = reader["remainder"].ToString().Replace(",",".");
                     salesPortionsHeader.NumOrder = reader["id_sale"].ToString();
                     salesPortionsHeader.VizaD = reader["viza_d"].ToString();
+                    if (salesPortionsHeader.VizaD == "")
+                    {
+                        salesPortionsHeader.VizaD = "0";
+                    }
 
                     salesPortions.ListSalesPortionsHeader.Add(salesPortionsHeader);
                     //Конец Новое заполнение                 

@@ -615,8 +615,8 @@ namespace Cash8
                         double.Parse(sertificates_sum.Text) - double.Parse(pay_sum.Text)).ToString("F", System.Globalization.CultureInfo.CurrentCulture);
                 }
 
-                if (double.Parse(cash_sum.Text.Replace(".", ",")) + double.Parse(non_cash_sum.Text) +
-                    double.Parse(sertificates_sum.Text) + double.Parse(pay_bonus_many.Text) + double.Parse(non_cash_sum_kop.Text) / 100 - double.Parse(pay_sum.Text.Replace(".", ",")) < 0)
+                if (Math.Round(double.Parse(cash_sum.Text.Replace(".", ",")) + double.Parse(non_cash_sum.Text) +
+                    double.Parse(sertificates_sum.Text) + double.Parse(pay_bonus_many.Text) + Convert.ToDouble(double.Parse(non_cash_sum_kop.Text) / 100),2,MidpointRounding.ToEven) - double.Parse(pay_sum.Text.Replace(".", ",")) < 0)
                 {
                     this.button_pay.Enabled = false;
                 }

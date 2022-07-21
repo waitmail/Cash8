@@ -64,13 +64,13 @@ namespace Cash8
             }
         }
         
-        private void size_font_listview_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (!(Char.IsDigit(e.KeyChar)) && (e.KeyChar != (char)Keys.Back))
-            {
-                e.Handled = true;
-            }
-        }
+        //private void size_font_listview_KeyPress(object sender, KeyPressEventArgs e)
+        //{
+        //    if (!(Char.IsDigit(e.KeyChar)) && (e.KeyChar != (char)Keys.Back))
+        //    {
+        //        e.Handled = true;
+        //    }
+        //}
 
         
 

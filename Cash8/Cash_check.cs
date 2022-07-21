@@ -113,43 +113,49 @@ namespace Cash8
             {
                 return;
             }
-
-            //if ((MainStaticClass.UseOldProcessiingActions) || (!itsnew))
-            if(( mode==1 && show_price==1) || (mode == 0 && show_price == 0))
-            {                
-                CustomerScreen customerScreen = new CustomerScreen();
-                customerScreen.show_price = show_price;
-                customerScreen.ListCheckPositions = new List<CheckPosition>();
-                if (mode == 1)
+            try
+            {
+                //if ((MainStaticClass.UseOldProcessiingActions) || (!itsnew))
+                if ((mode == 1 && show_price == 1) || (mode == 0 && show_price == 0))
                 {
-                    foreach (ListViewItem listViewItem in listView1.Items)
+                    CustomerScreen customerScreen = new CustomerScreen();
+                    customerScreen.show_price = show_price;
+                    customerScreen.ListCheckPositions = new List<CheckPosition>();
+                    if (mode == 1)
+                    {
+                        foreach (ListViewItem listViewItem in listView1.Items)
+                        {
+                            CheckPosition checkPosition = new CheckPosition();
+                            checkPosition.NamePosition = listViewItem.SubItems[1].Text;
+                            checkPosition.Quantity = listViewItem.SubItems[3].Text;
+                            checkPosition.Price = listViewItem.SubItems[5].Text;
+                            customerScreen.ListCheckPositions.Add(checkPosition);
+                        }
+                    }
+                    string message = JsonConvert.SerializeObject(customerScreen, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                    SendUDPMessage(message);
+                }
+                else
+                {
+                    CustomerScreen customerScreen = new CustomerScreen();
+                    customerScreen.show_price = 1;
+                    customerScreen.ListCheckPositions = new List<CheckPosition>();
+                    DataTable dataTable = to_define_the_action_dt();
+                    foreach (DataRow row in dataTable.Rows)
                     {
                         CheckPosition checkPosition = new CheckPosition();
-                        checkPosition.NamePosition = listViewItem.SubItems[1].Text;
-                        checkPosition.Quantity = listViewItem.SubItems[3].Text;
-                        checkPosition.Price = listViewItem.SubItems[5].Text;
+                        checkPosition.NamePosition = row["tovar_name"].ToString();
+                        checkPosition.Quantity = row["quantity"].ToString();
+                        checkPosition.Price = row["price_at_discount"].ToString();
                         customerScreen.ListCheckPositions.Add(checkPosition);
                     }
-                }                
-                string message = JsonConvert.SerializeObject(customerScreen, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                SendUDPMessage(message);
+                    string message = JsonConvert.SerializeObject(customerScreen, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                    SendUDPMessage(message);
+                }
             }
-            else
-            {                
-                CustomerScreen customerScreen = new CustomerScreen();                
-                customerScreen.show_price = 1;                
-                customerScreen.ListCheckPositions = new List<CheckPosition>();                
-                DataTable dataTable = to_define_the_action_dt();
-                foreach (DataRow row in dataTable.Rows)
-                {
-                    CheckPosition checkPosition = new CheckPosition();
-                    checkPosition.NamePosition = row["tovar_name"].ToString();
-                    checkPosition.Quantity = row["quantity"].ToString();
-                    checkPosition.Price = row["price_at_discount"].ToString();
-                    customerScreen.ListCheckPositions.Add(checkPosition);
-                }                
-                string message = JsonConvert.SerializeObject(customerScreen, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                SendUDPMessage(message);                
+            catch
+            {
+
             }
         }
 
@@ -267,6 +273,7 @@ namespace Cash8
                     ///////////////////////////////////////////////////////////////
                     if (MainStaticClass.Code_right_of_user != 1)
                     {
+                        enable_delete = false;
                         Interface_switching isw = new Interface_switching();
                         isw.caller_type = 3;
                         isw.cc = this;
@@ -443,13 +450,13 @@ namespace Cash8
                         //client.Tag = phone;
 
                         client.Tag = buyerInfoResponce.cards.card[0].cardNum;
-                        if (MainStaticClass.Nick_Shop == "E99")
-                        {
-                            checkBox_viza_d.Enabled = true;
-                           /* checkBox_viza_d.Checked = true;                         
-                            Discount = Convert.ToDecimal(0.05);
-                            checkBox_viza_d.Enabled = true;*/
-                        }
+                        //if (MainStaticClass.Nick_Shop == "E01")
+                        //{
+                        checkBox_viza_d.Enabled = true;
+                        /* checkBox_viza_d.Checked = true;                         
+                         Discount = Convert.ToDecimal(0.05);
+                         checkBox_viza_d.Enabled = true;*/
+                        //}
 
                         if (client.Text.Trim() == "")
                         {
@@ -764,14 +771,20 @@ namespace Cash8
                     MessageBox.Show("Номер телефона должен содержать 10 цифр");
                     return;
                 }
-
-                if (MainStaticClass.GetWorkSchema == 1)//Это ЧД
+                if (DateTime.Now < new DateTime(2022, 08, 01))//Начиная с первого августа 2022 года алгоритм однаковый для чд и визы
+                {
+                    if (MainStaticClass.GetWorkSchema == 1)//Это ЧД
+                    {
+                        check_and_verify_phone_number(txtB_client_phone.Text.ToString().Trim());
+                    }
+                    else if (MainStaticClass.GetWorkSchema == 2) //Это Ева
+                    {
+                        get_client_in_processing();
+                    }
+                }
+                else
                 {
                     check_and_verify_phone_number(txtB_client_phone.Text.ToString().Trim());
-                }
-                else if (MainStaticClass.GetWorkSchema == 2) //Это Ева
-                {
-                    get_client_in_processing();
                 }
             }
         }
@@ -1137,10 +1150,28 @@ namespace Cash8
                     //
                     if (check_type.SelectedIndex == 1)
                     {
-                        if (listView1.Focused)
+                        if (listView1.Focused)//Удаление строки
                         {
-                            if (DialogResult.OK == MessageBox.Show("Вы действительно хотите удалить строку ? ", "", MessageBoxButtons.OKCancel))
-                            {
+                            //if (MainStaticClass.Code_right_of_user != 1)
+                            //{
+                            //    enable_delete = false;
+                            //    Interface_switching isw = new Interface_switching();
+                            //    isw.caller_type = 3;
+                            //    isw.cc = this;
+                            //    isw.not_change_Cash_Operator = true;
+                            //    isw.ShowDialog();
+                            //    isw.Dispose();
+
+                            //    if (enable_delete)
+                            //    {
+                            //        listView1.Items.Remove(listView1.Items[listView1.SelectedIndices[0]]);
+                            //        write_new_document("0", calculation_of_the_sum_of_the_document().ToString(), "0", "0", false, "0", "0", "0", "0");
+                            //    }
+                            //}
+                            //else
+                            //{
+                           if (DialogResult.OK == MessageBox.Show("Вы действительно хотите удалить строку ? ", "", MessageBoxButtons.OKCancel))
+                            { 
                                 //MainStaticClass.write_event_in_log("Удаление строки документа | " + listView1.Items[listView1.SelectedIndices[0]].SubItems[0].Text, "Документ чек");
                                 listView1.Items.Remove(listView1.Items[listView1.SelectedIndices[0]]);
                                 write_new_document("0", calculation_of_the_sum_of_the_document().ToString(), "0", "0", false, "0", "0", "0", "0");
@@ -1175,7 +1206,7 @@ namespace Cash8
                             MessageBox.Show("Нет строк");
                             return;
                         }
-
+                        enable_delete = false;
                         Interface_switching isw = new Interface_switching();
                         isw.caller_type = 3;
                         isw.cc = this;
@@ -3199,13 +3230,20 @@ namespace Cash8
         {
             if (e.KeyChar == (char)Keys.Enter)
             {
-                if (MainStaticClass.GetWorkSchema == 1)
+                if (DateTime.Now < new DateTime(2022, 08, 01))//Начиная с первого августа 2022 года алгоритм однаковый для чд и визы
+                {
+                    if (MainStaticClass.GetWorkSchema == 1)
+                    {
+                        process_client_discount(this.client_barcode.Text);
+                    }
+                    else if (MainStaticClass.GetWorkSchema == 2)
+                    {
+                        get_client_in_processing();
+                    }
+                }
+                else
                 {
                     process_client_discount(this.client_barcode.Text);
-                }
-                else if (MainStaticClass.GetWorkSchema == 2)
-                {
-                    get_client_in_processing();
                 }
             }
         }
@@ -3760,6 +3798,7 @@ namespace Cash8
                     ///////////////////////////////////////////////////////////////
                     if (MainStaticClass.Code_right_of_user != 1)
                     {
+                        enable_delete = false;
                         Interface_switching isw = new Interface_switching();
                         isw.caller_type = 3;
                         isw.cc = this;
@@ -11478,6 +11517,12 @@ namespace Cash8
             //    }
             //}
             //Pay pay_form = new Pay();
+            //pay_form = new Pay();
+            pay_form.pay_bonus.Text = "0";
+            pay_form.pay_bonus.Visible = false;
+            pay_form.pay_bonus_many.Text = "0";
+            pay_form.pay_bonus.Enabled = false;
+
             listView_sertificates.Items.Clear();
             pay_form.listView_sertificates.Items.Clear();
             pay_form.cc = this;
