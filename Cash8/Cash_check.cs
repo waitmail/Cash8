@@ -410,7 +410,7 @@ namespace Cash8
                         {
                             if (buyerInfoResponce.cards.card[0].state == "3")
                             {
-                                if (MainStaticClass.GetWorkSchema == 1)
+                                if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema==3))
                                 {
                                     pay_form.bonus_total_in_centr.Text = (((int)Convert.ToDecimal(buyerInfoResponce.balance.activeBalance) / 100) * 100).ToString();
                                     pay_form.pay_bonus.Enabled = true;
@@ -583,8 +583,12 @@ namespace Cash8
                 conn.Open();
                 //string query = "SELECT code FROM clients where phone LIKE'%" + txtB_client_phone.Text.Trim() + "%'";
                 //string query = "SELECT MIN(to_number(code)),code,its_work,COALESCE(bonus_is_on,0) as bonus_is_on FROM clients where right(phone,10)='" + txtB_client_phone.Text.Trim() + "'";
-                string query = "SELECT MIN(CAST(code as numeric)),code,its_work,COALESCE(bonus_is_on, 0) as bonus_is_on FROM clients where right(phone,10)= '" + phone_number + "' " +
-                    " group by code,its_work,COALESCE(bonus_is_on, 0) order by MIN(CAST(code as numeric)) limit 1";
+                string query = "SELECT MIN(CAST(code as numeric)),code,MAX(its_work) AS its_work,COALESCE(bonus_is_on, 0) as bonus_is_on FROM clients where right(phone,10)= '" + phone_number + "' " +
+                    " group by code,its_work,COALESCE(bonus_is_on, 0) order by MAX(its_work) DESC ,MIN(CAST(code as numeric)) limit 1";
+
+                //string query = "SELECT code,MAX(its_work) AS its_work,COALESCE(bonus_is_on, 0) as bonus_is_on FROM clients where right(phone,10)= '" + phone_number + "' " +
+                //    " group by code,COALESCE(bonus_is_on, 0) order by MAX(its_work) DESC  limit 1";
+
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();
                 string code_client = ""; int its_work = 0; int bonus_is_on = 0;
@@ -771,21 +775,21 @@ namespace Cash8
                     MessageBox.Show("Номер телефона должен содержать 10 цифр");
                     return;
                 }
-                if (DateTime.Now < new DateTime(2022, 08, 01))//Начиная с первого августа 2022 года алгоритм однаковый для чд и визы
-                {
-                    if (MainStaticClass.GetWorkSchema == 1)//Это ЧД
-                    {
-                        check_and_verify_phone_number(txtB_client_phone.Text.ToString().Trim());
-                    }
-                    else if (MainStaticClass.GetWorkSchema == 2) //Это Ева
-                    {
-                        get_client_in_processing();
-                    }
-                }
-                else
+                //if (DateTime.Now < new DateTime(2022, 08, 01))//Начиная с первого августа 2022 года алгоритм однаковый для чд и визы
+                //{
+                if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema==3))//Это ЧД
                 {
                     check_and_verify_phone_number(txtB_client_phone.Text.ToString().Trim());
                 }
+                else if (MainStaticClass.GetWorkSchema == 2) //Это Ева
+                {
+                    get_client_in_processing();
+                }
+                //}
+                //else
+                //{
+                //    check_and_verify_phone_number(txtB_client_phone.Text.ToString().Trim());
+                //}
             }
         }
 
@@ -1076,7 +1080,7 @@ namespace Cash8
                 }
                 else if (e.KeyCode == Keys.F6)
                 {
-                    if (MainStaticClass.GetWorkSchema == 1)
+                    if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema==3))
                     {
                         inpun_client_barcode = true;
                     }
@@ -2563,7 +2567,7 @@ namespace Cash8
                 if (listView2.Items.Count == 1)//1 товар найден
                 {
                     ListViewItem lvi = null;
-                    if ((its_marked == 0) && (its_certificate==0) && (MainStaticClass.GetWorkSchema == 1))
+                    if ((its_marked == 0) && (its_certificate==0) && ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema==3)))
                     {
                         lvi = exist_tovar_in_listView(listView1, Convert.ToInt64(select_tovar.Tag), listView2.Items[0].Tag);
                     }
@@ -2702,10 +2706,11 @@ namespace Cash8
                             return;
                         }                        
                         SendDataToCustomerScreen(1, 0,1);                        
-                        if (MainStaticClass.GetWorkSchema == 1)
+                        if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema==3))
                         {
                             listView1.Select();
                             listView1.Items[this.listView1.Items.Count - 1].Selected = true;
+                            inputbarcode.Focus();//01.08.2022 Теперь здесь для Визы автоматом переност фокуса
                         }
                         else if (MainStaticClass.GetWorkSchema == 2)
                         {
@@ -2982,7 +2987,7 @@ namespace Cash8
             //    return;
             //}
 
-            if (barcode.Trim().Length == 10)
+            if ((barcode.Trim().Length == 10) || (barcode.Trim().Length == 11) || (barcode.Trim().Length == 13))
             {
                 //if (MainStaticClass.PassPromo == "")
                 //{
@@ -3061,6 +3066,7 @@ namespace Cash8
 
                 if (this.client.Tag == null)//По каким то причинам клиент или не найден или не прошел проверки 
                 {
+                    MessageBox.Show("Клиент не найден");
                     return;
                 }
 
@@ -3230,21 +3236,21 @@ namespace Cash8
         {
             if (e.KeyChar == (char)Keys.Enter)
             {
-                if (DateTime.Now < new DateTime(2022, 08, 01))//Начиная с первого августа 2022 года алгоритм однаковый для чд и визы
-                {
-                    if (MainStaticClass.GetWorkSchema == 1)
-                    {
-                        process_client_discount(this.client_barcode.Text);
-                    }
-                    else if (MainStaticClass.GetWorkSchema == 2)
-                    {
-                        get_client_in_processing();
-                    }
-                }
-                else
+                //if (DateTime.Now < new DateTime(2022, 08, 01))//Начиная с первого августа 2022 года алгоритм однаковый для чд и визы
+                //{
+                if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema==3))
                 {
                     process_client_discount(this.client_barcode.Text);
                 }
+                else if (MainStaticClass.GetWorkSchema == 2)
+                {
+                    get_client_in_processing();
+                }
+                //}
+                //else
+                //{
+                //    process_client_discount(this.client_barcode.Text);
+                //}
             }
         }
 
@@ -4101,10 +4107,9 @@ namespace Cash8
                 }               
                 command.Parameters.AddWithValue("bonuses_it_is_counted", bonuses_it_is_counted.ToString());
                 command.Parameters.AddWithValue("checkBox_viza_d", checkBox_viza_d.Checked ? 1 : 0);
-
-
+                
                 string sent_to_processing_center = "0";
-                if (MainStaticClass.GetWorkSchema == 1)
+                if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema==3))
                 {
                     //Необходимо отделить бонусные документы от дисконтных и те которые дисконтные записакть с sent_to_processing_center = 1
                     if (client.Tag != null)//Клиент обязательно должен быть выбран при этом 
@@ -5631,7 +5636,7 @@ namespace Cash8
                     //length = MainStaticClass.Nick_Shop.Length;
                     //length = (MainStaticClass.Nick_Shop + " кассир " + this.cashier).Length;
                     //Бонусы если такие есть 
-                    if (MainStaticClass.GetWorkSchema == 1)
+                    if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema==3))
                     {
                         if (MainStaticClass.PassPromo != "")
                         {
@@ -6123,7 +6128,7 @@ namespace Cash8
                 }
 
                 //Бонусы если такие есть 
-                if (MainStaticClass.GetWorkSchema == 1)
+                if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema==3))
                 {
                     if (MainStaticClass.PassPromo != "")
                     {
@@ -8781,7 +8786,7 @@ namespace Cash8
                     else if (tip_action == 9)//Акция работает в день рождения владельца дисконтной карты
                     {
                         //start_action = DateTime.Now;
-                        if (MainStaticClass.GetWorkSchema == 1)
+                        if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema==3))
                         {
                             if (!actions_birthday())
                             {
@@ -12144,7 +12149,7 @@ namespace Cash8
 
         private void btn_change_status_client_Click(object sender, EventArgs e)
         {
-            if (MainStaticClass.GetWorkSchema == 1)
+            if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema==3))
             {
                 if (listView1.Items.Count > 0)
                 {
@@ -12404,7 +12409,7 @@ namespace Cash8
             id_sale = Convert.ToInt32(txtB_num_sales.Text);
             NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
 
-            if (MainStaticClass.GetWorkSchema == 1)
+            if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema==3))
             {
                 try
                 {

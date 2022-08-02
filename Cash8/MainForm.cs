@@ -890,9 +890,12 @@ namespace Cash8
                 обновлениеПрограммыToolStripMenuItem_Click(null, null);
             }
 
-            Thread t = new Thread(load_bonus_clients);
-            t.IsBackground = true;
-            t.Start();
+            if (MainStaticClass.GetWorkSchema != 2)
+            {
+                Thread t = new Thread(load_bonus_clients);
+                t.IsBackground = true;
+                t.Start();
+            }
 
             if (MainStaticClass.GetWorkSchema == 1)//Это условие будет работать только для ЧД
             {
@@ -938,6 +941,66 @@ namespace Cash8
 
             this.menuStrip.Items.Clear();
             MainStaticClass.Main.start_interface_switching();
+            change_schema_2_to_3();
+
+        }
+
+        private void change_schema_2_to_3()
+        {
+            if (MainStaticClass.GetWorkSchema == 2)//Переводим на 3 схему 
+            {
+                //MessageBox.Show("2to3");
+                NpgsqlConnection conn = null;
+                NpgsqlTransaction tran = null;
+                try
+                {
+                    conn = MainStaticClass.NpgsqlConn();
+                    conn.Open();
+                    tran = conn.BeginTransaction();
+                    string query = "TRUNCATE TABLE clients;";
+                    NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                    command.Transaction = tran;
+                    command.ExecuteNonQuery();
+                    //MessageBox.Show("2to3,1");
+
+                    query = "UPDATE constants SET last_date_download_bonus_clients='01.01.1980';";
+                    command = new NpgsqlCommand(query, conn);
+                    command.Transaction = tran;
+                    command.ExecuteNonQuery();
+                    //MessageBox.Show("2to3,2");
+
+                    query = "UPDATE constants	SET work_schema=3;";
+                    command = new NpgsqlCommand(query, conn);
+                    command.Transaction = tran;
+                    command.ExecuteNonQuery();
+                    //MessageBox.Show("2to3,3");
+
+                    query = "UPDATE constants SET pass_promo='', login_promo = ''";
+                    command = new NpgsqlCommand(query, conn);
+                    command.Transaction = tran;
+                    command.ExecuteNonQuery();
+                    //MessageBox.Show("2to3,4");
+                    tran.Commit();
+                    conn.Close();
+                    MessageBox.Show("Переход со 2-й на 3-ю схему успешно завершен");
+                    this.Close();
+                }
+                catch(NpgsqlException ex)
+                {
+                    MessageBox.Show(" Ошибка при обновлении схему " + ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(" Ошибка при обновлении схемы " + ex.Message);
+                }
+                finally
+                {
+                    if (conn.State == ConnectionState.Open)
+                    {
+                        conn.Close();
+                    }
+                }              
+            }
         }
 
 
@@ -948,7 +1011,7 @@ namespace Cash8
                 //MessageBox.Show("Веб сервис недоступен");
                 return;
             }
-            
+
             //Получить параметра для запроса на сервер 
             string nick_shop = MainStaticClass.Nick_Shop.Trim();
             if (nick_shop.Trim().Length == 0)
@@ -976,21 +1039,21 @@ namespace Cash8
                 using (Cash8.DS.DS ds = MainStaticClass.get_ds())
                 {
                     ds.Timeout = 10000;
-                    string result_web_query = ds.GetParametersOnBonusProgram(nick_shop, data_encrypt,MainStaticClass.GetWorkSchema.ToString());                    
+                    string result_web_query = ds.GetParametersOnBonusProgram(nick_shop, data_encrypt, MainStaticClass.GetWorkSchema.ToString());
                     string decrypt_data = CryptorEngine.Decrypt(result_web_query, true, key);
                     if (decrypt_data != "-1")
                     {
                         passPromo = JsonConvert.DeserializeObject<LoginPassPromo>(decrypt_data);
                         if (passPromo.PassPromoForCashDeskNumber != "")
                         {
-                            update_login_and_pass_promo(passPromo.LoginPromoForCashDeskNumber,passPromo.PassPromoForCashDeskNumber);
+                            update_login_and_pass_promo(passPromo.LoginPromoForCashDeskNumber, passPromo.PassPromoForCashDeskNumber);
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);                
+                MessageBox.Show(ex.Message);
             }
         }
 
