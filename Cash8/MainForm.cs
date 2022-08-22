@@ -942,7 +942,81 @@ namespace Cash8
             this.menuStrip.Items.Clear();
             MainStaticClass.Main.start_interface_switching();
             change_schema_2_to_3();
+            change_clients_for_schema1();
+        }
 
+        /// <summary>
+        /// Первоначально применялось для 1 схемы,
+        /// но потом алгоритм функции стал меняться
+        /// название осталось старым
+        /// </summary>
+        private void change_clients_for_schema1()
+        {
+            //if (MainStaticClass.GetWorkSchema == 1)
+            //{
+            NpgsqlConnection conn = null;
+            NpgsqlTransaction tran = null;
+            try
+            {
+                conn = MainStaticClass.NpgsqlConn();
+                conn.Open();
+                tran = conn.BeginTransaction();
+                string query = "SELECT COALESCE (threshold,0) FROM constants;";
+                NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                int threshold = Convert.ToInt32(command.ExecuteScalar());
+                if (threshold != 50000)
+                {
+                    query = "TRUNCATE TABLE clients;";
+                    command = new NpgsqlCommand(query, conn);
+                    command.Transaction = tran;
+                    command.ExecuteNonQuery();
+                    //MessageBox.Show("2to3,1");
+
+                    query = "UPDATE constants SET last_date_download_bonus_clients='01.01.1980';";
+                    command = new NpgsqlCommand(query, conn);
+                    command.Transaction = tran;
+                    command.ExecuteNonQuery();
+
+                    query = "UPDATE constants SET threshold=50000;";
+                    command = new NpgsqlCommand(query, conn);
+                    command.Transaction = tran;
+                    command.ExecuteNonQuery();
+                    tran.Commit();
+                    MessageBox.Show("При следующем запуске будут обновлены клиенты, в течении 30 минут  не все клиенты могут быть найдены ");
+                    conn.Close();
+                    this.Close();
+                }
+                //else
+                //{
+                //    //MessageBox.Show(count.ToString());
+                //}
+
+            }
+            catch (NpgsqlException ex)
+            {
+                MessageBox.Show(" Ошибка при обновлении клиентов " + ex.Message,"Сообщите в ит отдел !!!");
+                if (tran != null)
+                {
+                    tran.Rollback();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(" Ошибка при обновлении клиентов " + ex.Message, "Сообщите в ит отдел !!!");
+                if (tran != null)
+                {
+                    tran.Rollback();
+                }
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            //}
         }
 
         private void change_schema_2_to_3()

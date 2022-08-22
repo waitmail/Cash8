@@ -687,7 +687,7 @@ namespace Cash8
                 queries.Add("Delete from action_table");
                 queries.Add("Delete from action_header");
                 queries.Add("Delete from advertisement");
-                queries.Add("UPDATE constants SET threshold="+loadPacketData.Threshold.ToString());
+                //queries.Add("UPDATE constants SET threshold="+loadPacketData.Threshold.ToString());
 
 
                 if (loadPacketData.ListPromoText != null)

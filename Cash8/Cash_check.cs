@@ -107,7 +107,7 @@ namespace Cash8
         /// этот режим будет доступен после перехода в окно оплаты
         /// </summary>
         /// <param name="mode"></param>
-        private void SendDataToCustomerScreen(int mode, int show_price,int calculate_actionc)
+        private void SendDataToCustomerScreen(int mode, int show_price, int calculate_actionc)
         {
             if (MainStaticClass.GetWorkSchema == 2)
             {
@@ -410,7 +410,7 @@ namespace Cash8
                         {
                             if (buyerInfoResponce.cards.card[0].state == "3")
                             {
-                                if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema==3))
+                                if ((MainStaticClass.GetWorkSchema == 1) || (MainStaticClass.GetWorkSchema == 3))
                                 {
                                     pay_form.bonus_total_in_centr.Text = (((int)Convert.ToDecimal(buyerInfoResponce.balance.activeBalance) / 100) * 100).ToString();
                                     pay_form.pay_bonus.Enabled = true;
@@ -583,8 +583,10 @@ namespace Cash8
                 conn.Open();
                 //string query = "SELECT code FROM clients where phone LIKE'%" + txtB_client_phone.Text.Trim() + "%'";
                 //string query = "SELECT MIN(to_number(code)),code,its_work,COALESCE(bonus_is_on,0) as bonus_is_on FROM clients where right(phone,10)='" + txtB_client_phone.Text.Trim() + "'";
-                string query = "SELECT MIN(CAST(code as numeric)),code,MAX(its_work) AS its_work,COALESCE(bonus_is_on, 0) as bonus_is_on FROM clients where right(phone,10)= '" + phone_number + "' " +
-                    " group by code,its_work,COALESCE(bonus_is_on, 0) order by MAX(its_work) DESC ,MIN(CAST(code as numeric)) limit 1";
+                //string query = "SELECT MIN(CAST(code as numeric)),code,MAX(its_work) AS its_work,COALESCE(bonus_is_on, 0) as bonus_is_on FROM clients where right(phone,10)= '" + phone_number + "' " +
+                //    " group by code,its_work,COALESCE(bonus_is_on, 0) order by MAX(its_work) DESC ,MIN(CAST(code as numeric)) limit 1";
+                string query = "SELECT code, MAX(its_work) AS its_work,CASE WHEN code = right(phone, 10) THEN 1 else 0 END AS virtual, COALESCE(bonus_is_on, 0) as bonus_is_on FROM clients " +
+                    " where right(phone,10)= '" + phone_number + "' group by code,virtual,bonus_is_on order by virtual DESC limit 1";
 
                 //string query = "SELECT code,MAX(its_work) AS its_work,COALESCE(bonus_is_on, 0) as bonus_is_on FROM clients where right(phone,10)= '" + phone_number + "' " +
                 //    " group by code,COALESCE(bonus_is_on, 0) order by MAX(its_work) DESC  limit 1";
@@ -770,14 +772,24 @@ namespace Cash8
 
             if (e.KeyChar == (char)Keys.Enter)
             {
+                if (txtB_client_phone.Text.ToString().Trim().Length > 0)
+                {
+                    if (txtB_client_phone.Text.ToString().Trim().Substring(0, 1) != "9")
+                    {
+                        MessageBox.Show("Номер телефона должен начинаться с цифры 9 ");
+                        return;
+                    }
+                }
+
                 if (txtB_client_phone.Text.ToString().Trim().Length != 10)
                 {
                     MessageBox.Show("Номер телефона должен содержать 10 цифр");
                     return;
                 }
+
                 //if (DateTime.Now < new DateTime(2022, 08, 01))//Начиная с первого августа 2022 года алгоритм однаковый для чд и визы
                 //{
-                if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema==3))//Это ЧД
+                if ((MainStaticClass.GetWorkSchema == 1) || (MainStaticClass.GetWorkSchema == 3))//Это ЧД и новая схева Визы
                 {
                     check_and_verify_phone_number(txtB_client_phone.Text.ToString().Trim());
                 }
@@ -792,6 +804,8 @@ namespace Cash8
                 //}
             }
         }
+    
+
 
 
         void return_kop_KeyPress(object sender, KeyPressEventArgs e)
@@ -2987,8 +3001,9 @@ namespace Cash8
             //    return;
             //}
 
-            if ((barcode.Trim().Length == 10) || (barcode.Trim().Length == 11) || (barcode.Trim().Length == 13))
-            {
+            //if ((barcode.Trim().Length == 10) || (barcode.Trim().Length == 11) || (barcode.Trim().Length == 13))
+            if ((barcode.Trim().Length == 10) || (barcode.Trim().Length == 13))
+                {
                 //if (MainStaticClass.PassPromo == "")
                 //{
                 NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
@@ -3168,6 +3183,10 @@ namespace Cash8
                     txtB_client_phone.Enabled = false;//дисконтная карта определена, сделаем недоступным окно ввода телефона                    
 
                 }
+            }
+            else
+            {
+                MessageBox.Show("Введено неверное количество символов");
             }
         }
 

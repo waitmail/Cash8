@@ -977,7 +977,7 @@ namespace Cash8
             queries.Add("UPDATE constants SET use_debug = false");
             queries.Add("ALTER TABLE constants ADD COLUMN pass_promo character varying(100)");
             //queries.Add("CREATE TABLE bonus_cards(code character varying(10), pin character varying(11))WITH(OIDS = FALSE); ALTER TABLE bonus_cards OWNER TO postgres;");
-            queries.Add("ALTER TABLE constants ADD COLUMN threshold integer;COMMENT ON COLUMN constants.threshold IS 'Порог срабатывания по выдаче бонусной карты';UPDATE public.constants	SET threshold=0;");
+            //queries.Add("ALTER TABLE constants ADD COLUMN threshold integer;COMMENT ON COLUMN constants.threshold IS 'Порог срабатывания по выдаче бонусной карты';UPDATE public.constants	SET threshold=0;");
             queries.Add("ALTER TABLE constants ADD COLUMN last_date_download_bonus_cards timestamp without time zone;COMMENT ON COLUMN constants.last_date_download_bonus_cards IS 'Дата последнего удачного получения данных бонусных карт';UPDATE constants   SET last_date_download_bonus_cards='01-01-2000';");
             queries.Add("ALTER TABLE checks_header ADD COLUMN sent_to_processing_center smallint;  ALTER TABLE checks_header ALTER COLUMN sent_to_processing_center SET DEFAULT 0;");
             queries.Add("ALTER TABLE public.checks_header ADD COLUMN id_transaction character varying(10) COLLATE pg_catalog.default; COMMENT ON COLUMN public.checks_header.id_transaction IS 'Номер транзакции в процессинговом центре бонусной программы';");
