@@ -585,8 +585,11 @@ namespace Cash8
                 //string query = "SELECT MIN(to_number(code)),code,its_work,COALESCE(bonus_is_on,0) as bonus_is_on FROM clients where right(phone,10)='" + txtB_client_phone.Text.Trim() + "'";
                 //string query = "SELECT MIN(CAST(code as numeric)),code,MAX(its_work) AS its_work,COALESCE(bonus_is_on, 0) as bonus_is_on FROM clients where right(phone,10)= '" + phone_number + "' " +
                 //    " group by code,its_work,COALESCE(bonus_is_on, 0) order by MAX(its_work) DESC ,MIN(CAST(code as numeric)) limit 1";
-                string query = "SELECT code, MAX(its_work) AS its_work,CASE WHEN code = right(phone, 10) THEN 1 else 0 END AS virtual, COALESCE(bonus_is_on, 0) as bonus_is_on FROM clients " +
-                    " where right(phone,10)= '" + phone_number + "' group by code,virtual,bonus_is_on order by virtual DESC limit 1";
+                string query = "SELECT MIN(CAST(code as numeric)) AS number_card,code, MAX(its_work) AS its_work," +
+                    "CASE WHEN left(code,10) = right(phone, 10) THEN 1 else 0 END AS virtual," +
+                    " COALESCE(bonus_is_on, 0) as bonus_is_on FROM clients " +
+                    " where right(phone,10)= '" + phone_number + "' group by code,virtual,bonus_is_on" +
+                    " order by its_work DESC,virtual DESC,number_card limit 1";
 
                 //string query = "SELECT code,MAX(its_work) AS its_work,COALESCE(bonus_is_on, 0) as bonus_is_on FROM clients where right(phone,10)= '" + phone_number + "' " +
                 //    " group by code,COALESCE(bonus_is_on, 0) order by MAX(its_work) DESC  limit 1";
@@ -2650,24 +2653,35 @@ namespace Cash8
                                     }
                                     if (this.qr_code != "")//Был введен qr код необходимо его внести в чек
                                     {
-                                        //здесь проверка на известные ошибки \u001d                                        
-                                        int num_pos = this.qr_code.IndexOf("\\");
-                                        if (num_pos > 0)
-                                        {                                            
-                                            if (this.qr_code.Substring(num_pos + 1, 5) == "u001d")//необходимо из строки вырезать этот символ
+
+                                        if (this.qr_code.ToUpper().Substring(0, 4).IndexOf("HTTP") != -1)
+                                        {
+                                            error = true;
+                                            MessageBox.Show("Считан не верный qr код");
+                                            MainStaticClass.write_event_in_log("HTTP не верный qr код  " + barcode, "Документ чек", numdoc.ToString());
+                                            this.qr_code = "";
+
+                                        }
+                                        else
+                                        {
+                                            //здесь проверка на известные ошибки \u001d                                        
+                                            int num_pos = this.qr_code.IndexOf("\\");
+                                            if (num_pos > 0)
                                             {
-                                                this.qr_code = this.qr_code.Substring(0, num_pos) + this.qr_code.Substring(num_pos + 1 + 5, this.qr_code.Length - (num_pos + 1 + 5));
-                                                num_pos = this.qr_code.IndexOf("\\");
-                                                if (num_pos > 0)
+                                                if (this.qr_code.Substring(num_pos + 1, 5) == "u001d")//необходимо из строки вырезать этот символ
                                                 {
                                                     this.qr_code = this.qr_code.Substring(0, num_pos) + this.qr_code.Substring(num_pos + 1 + 5, this.qr_code.Length - (num_pos + 1 + 5));
+                                                    num_pos = this.qr_code.IndexOf("\\");
+                                                    if (num_pos > 0)
+                                                    {
+                                                        this.qr_code = this.qr_code.Substring(0, num_pos) + this.qr_code.Substring(num_pos + 1 + 5, this.qr_code.Length - (num_pos + 1 + 5));
+                                                    }
                                                 }
                                             }
-                                        }
-                                        
-                                        //Проверим введенный код маркировки на правильность
-                                        if ((this.qr_code.Substring(0, 2) == "01") && (this.qr_code.Substring(16, 2) == "21"))
-                                        {
+
+                                            //Проверим введенный код маркировки на правильность
+                                            //if ((this.qr_code.Substring(0, 2) == "01") && (this.qr_code.Substring(16, 2) == "21"))
+                                            //{
                                             //Перед добавлением проверить на уже добавленное                                         
                                             foreach (ListViewItem item in listView1.Items)
                                             {
@@ -2680,15 +2694,16 @@ namespace Cash8
                                                 }
                                             }
                                             lvi.SubItems[14].Text = this.qr_code;//добавим в чек qr код                                        
+                                                                                 //}
+                                                                                 //else
+                                                                                 //{
+                                                                                 //    MessageBox.Show("Введен неверный код маркировки, попробуйте еще раз. Номенклатура не будет добавлена.");
+                                                                                 //    error = true;
+                                                                                 //    //Не добавляем позицию в чек
+                                                                                 //}
+                                            this.qr_code = "";//обнулим переменную
                                         }
-                                        else
-                                        {
-                                            MessageBox.Show("Введен невернй код маркировки, попробуйте еще раз.Номенклатура не будет добавлена.");
-                                            error = true;
-                                            //Не добавляем позицию в чек
-                                        }
-                                        this.qr_code = "";//обнулим переменную
-                                    }
+                                    }                                
                                 }
                                 else
                                 {
@@ -2704,7 +2719,18 @@ namespace Cash8
                                 error = true;
 
                             }
-                        }                        
+                        }
+                        //if (this.qr_code != "")
+                        //{
+                        //    if (this.qr_code.ToUpper().Substring(0, 4).IndexOf("HTTP") != -1)
+                        //    {
+                        //        error = true;
+                        //        MessageBox.Show("Считан не верный qr код");
+                        //        MainStaticClass.write_event_in_log("HTTP не верный qr код  " + barcode, "Документ чек", numdoc.ToString());
+
+                        //    }
+                        //    this.qr_code = "";
+                        //}
                         if ((!error)||(MainStaticClass.CashDeskNumber==9))//Если с qr кодом все хорошо тогда добавляем позицию иначе не добавляем, но в 9 кассу добавляем всегда 
                         {
                             MainStaticClass.write_event_in_log("Товар добавлен "+barcode, "Документ чек", numdoc.ToString());
@@ -4794,6 +4820,16 @@ namespace Cash8
                         lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(38, GS1);
                     }
 
+                    if (lvi.SubItems[14].Text.Trim().Length == 30)
+                    {
+                        lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(24, GS1);
+                    }
+
+                    if (lvi.SubItems[14].Text.Trim().Length == 32)
+                    {
+                        lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(26, GS1);
+                    }
+
                     byte[] textAsBytes = Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim());
                     string mark_str = Convert.ToBase64String(textAsBytes);
                     param.imc = mark_str;
@@ -4886,6 +4922,7 @@ namespace Cash8
             {
                 MessageBox.Show(ex.Message);
                 result = false;
+                MainStaticClass.write_event_in_log(ex.Message+ "km_adding_to_buffer", "Документ чек", numdoc.ToString());
             }
             return result;
         }
@@ -4941,6 +4978,16 @@ namespace Cash8
                         lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(38, GS1);
                     }
 
+                    if (lvi.SubItems[14].Text.Trim().Length == 30)
+                    {
+                        lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(24, GS1);
+                    }
+
+                    if (lvi.SubItems[14].Text.Trim().Length == 32)
+                    {
+                        lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(26, GS1);
+                    }
+
                     byte[] textAsBytes = Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim());
                     string mark_str = Convert.ToBase64String(textAsBytes);
                     param.imc = mark_str;
@@ -4955,7 +5002,8 @@ namespace Cash8
                 AnswerAddingKmArrayToTableTested answerAddingKmArrayToTableTested = Tested_Km(addingKmArrayToTableTestedKm);
                 if (answerAddingKmArrayToTableTested.results[0].status != "ready")
                 {
-                    MessageBox.Show("Не удалось получить корректный ответ от ФР в течении 24 секунд, можете попробовать еще раз.");
+                    MessageBox.Show("Не удалось получить корректный ответ от ФР в течении 48 секунд, можете попробовать еще раз.");
+                    MainStaticClass.write_event_in_log("Не удалось получить корректный ответ от ФР в течении 48 секунд, можете попробовать еще раз.", "Документ чек", numdoc.ToString());
                 }             
 
                 int x = 0;
@@ -4984,12 +5032,14 @@ namespace Cash8
                                         {
                                             //MessageBox.Show("Запрос имеет некорректный формат markOperatorResponseResult = " + answerAddingKmArrayToTableTested.results[0].result[0].onlineValidation.markOperatorResponseResult.ToString());
                                             MessageBox.Show("Запрос имеет некорректный формат в строке = " + num_strt_km[i].ToString());
+                                            MainStaticClass.write_event_in_log("Запрос имеет некорректный формат в строке = " + num_strt_km[i].ToString(), "Документ чек", numdoc.ToString());
                                             result = -1;
                                         }
                                         if (answerAddingKmArrayToTableTested.results[0].result[i].onlineValidation.markOperatorResponseResult == "unrecognized")
                                         {
                                             //MessageBox.Show("КМ имеет некорретный формат markOperatorResponseResult = " + answerAddingKmArrayToTableTested.results[0].result[0].onlineValidation.markOperatorResponseResult.ToString());
                                             MessageBox.Show("КМ имеет некорретный формат в строке = " + num_strt_km[i].ToString());
+                                            MainStaticClass.write_event_in_log("КМ имеет некорретный формат в строке = " + num_strt_km[i].ToString(), "Документ чек", numdoc.ToString());
                                             //listView1.Items[num_strt_km[i]-1].SubItems[14].Text = change_case_in_line(listView1.Items[num_strt_km[i]-1].SubItems[14].Text);
                                             result = -1;//попробовать вызвать еще раз с км с измененным регистром
                                         }
@@ -5011,22 +5061,32 @@ namespace Cash8
                                 description += answerAddingKmArrayToTableTested.results[0].result[x].driverError.description;
                             }
 
-                            MessageBox.Show("Ошибка при проверке кодов маркировки код ошибки " + answerAddingKmArrayToTableTested.results[0].result[x].driverError.code.ToString() + " " + description);
-                            //result;
                             
-                           if ((result == 421) || (result == 402))
+                            //result;
+
+                            if ((result == 421) || (result == 402))
                             {
                                 km_adding_to_buffer(x);
+                            }
+                            else
+                            {
+                                MessageBox.Show("Ошибка при проверке кодов маркировки код ошибки " + answerAddingKmArrayToTableTested.results[0].result[x].driverError.code.ToString() + " " + description);
+                                MainStaticClass.write_event_in_log("Ошибка при проверке кодов маркировки код ошибки " + answerAddingKmArrayToTableTested.results[0].result[x].driverError.code.ToString() + " " + description, "Документ чек", numdoc.ToString());
                             }
                         }
                     }
                     else
                     {
-                        MessageBox.Show("Ошибка при проверке кодов маркировки код ошибки " + answerAddingKmArrayToTableTested.results[0].result[x].driverError.code + " " + answerAddingKmArrayToTableTested.results[0].result[x].driverError.description);
+                        
                         result = answerAddingKmArrayToTableTested.results[0].result[x].driverError.code;
                         if ((result == 421) || (result == 402))
                         {
                             km_adding_to_buffer(x);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Ошибка при проверке кодов маркировки код ошибки " + answerAddingKmArrayToTableTested.results[0].result[x].driverError.code + " " + answerAddingKmArrayToTableTested.results[0].result[x].driverError.description);
+                            MainStaticClass.write_event_in_log("Ошибка при проверке кодов маркировки код ошибки " + answerAddingKmArrayToTableTested.results[0].result[x].driverError.code + " " + answerAddingKmArrayToTableTested.results[0].result[x].driverError.description, "Документ чек", numdoc.ToString());
                         }
                         //return result;//result = -1;
                     }
@@ -5079,11 +5139,21 @@ namespace Cash8
                     AddingKmArrayToTableTested.Param param = new AddingKmArrayToTableTested.Param();
                     param.imcType = "auto";
                     
-                    string GS1 = Char.ConvertFromUtf32(29);
-                    if ((lvi.SubItems[14].Text.Trim().Length == 83) || (lvi.SubItems[14].Text.Trim().Length == 127))
-                    {
+                   string GS1 = Char.ConvertFromUtf32(29);                    
+                   if ((lvi.SubItems[14].Text.Trim().Length == 83) || (lvi.SubItems[14].Text.Trim().Length == 127) || (lvi.SubItems[14].Text.Trim().Length == 115))
+                    { 
                         lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
                         lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(38, GS1);
+                    }
+
+                    if (lvi.SubItems[14].Text.Trim().Length == 30)
+                    {
+                        lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(24, GS1);
+                    }
+
+                    if (lvi.SubItems[14].Text.Trim().Length == 32)
+                    {
+                        lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(26, GS1);
                     }
 
                     byte[] textAsBytes = Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim());
@@ -5220,7 +5290,8 @@ namespace Cash8
         private static AnswerAddingKmArrayToTableTested GET_AnswerAddingKmArrayToTableTested(string Url, string Data)
         {
             System.Net.WebRequest req = System.Net.WebRequest.Create(Url + "/" + Data);
-            req.Timeout = 24000;
+
+            req.Timeout = 48000;
             System.Net.WebResponse resp = req.GetResponse();
             //HttpWebResponse myHttpWebResponse = (HttpWebResponse)req.GetResponse();
 
@@ -5877,6 +5948,7 @@ namespace Cash8
                 catch (Exception ex)
                 {
                     MessageBox.Show("Общая ошибка " + ex.Message);
+                    MainStaticClass.write_event_in_log("Общая ошибка " + ex.Message, "Печать яека продажи ", numdoc.ToString());
                     error = true;
                 }
                 finally
@@ -5895,7 +5967,7 @@ namespace Cash8
                     //its_print();
                 }
 
-                MainStaticClass.delete_events_in_log(numdoc.ToString());
+                //MainStaticClass.delete_events_in_log(numdoc.ToString());
                 this.Close();
 
 
@@ -6081,29 +6153,29 @@ namespace Cash8
                 //fiscal.Payment(false, Convert.ToDouble(pay), this.type_pay.SelectedIndex, out remainder, out change);
                 check.payments = new List<FiscallPrintJason2.Payment>();
 
-                double[] get_result_paymen = get_cash_on_type_payment();
-                if (get_result_paymen[0] != 0)//Наличные
+                double[] get_result_payment = get_cash_on_type_payment();
+                if (get_result_payment[0] != 0)//Наличные
                 {
                     FiscallPrintJason2.Payment payment = new FiscallPrintJason2.Payment();
                     payment.type = "cash";
                     //payment.type = "other";
-                    payment.sum = Convert.ToDouble(get_result_paymen[0]);
+                    payment.sum = Convert.ToDouble(get_result_payment[0]);
                     check.payments.Add(payment);
                     //fiscal.Payment(false, Convert.ToDouble(result[0]), 0, out remainder, out change);
                 }
-                if (get_result_paymen[1] != 0)
+                if (get_result_payment[1] != 0)
                 {
                     FiscallPrintJason2.Payment payment = new FiscallPrintJason2.Payment();
                     payment.type = "electronically";
-                    payment.sum = Convert.ToDouble(get_result_paymen[1]);
+                    payment.sum = Convert.ToDouble(get_result_payment[1]);
                     check.payments.Add(payment);
                     //fiscal.Payment(false, Convert.ToDouble(result[1]), 3, out remainder, out change);
                 }
-                if (get_result_paymen[2] != 0)
+                if (get_result_payment[2] != 0)
                 {
                     FiscallPrintJason2.Payment payment = new FiscallPrintJason2.Payment();
                     payment.type = "prepaid";
-                    payment.sum = Convert.ToDouble(get_result_paymen[2]);
+                    payment.sum = Convert.ToDouble(get_result_payment[2]);
                     check.payments.Add(payment);
                     //fiscal.Payment(false, Convert.ToDouble(result[2]), 4, out remainder, out change);
                 }
@@ -6286,7 +6358,7 @@ namespace Cash8
                 pi.alignment = "left";
                 check.postItems.Add(pi);
                 print_fiscal_advertisement2(check, pi);
-                check.total = get_result_paymen[0] + get_result_paymen[1] + get_result_paymen[2];
+                check.total = get_result_payment[0] + get_result_payment[1] + get_result_payment[2];
                 try
                 {
 
@@ -6310,7 +6382,7 @@ namespace Cash8
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Общая ошибка " + ex.Message);
+                MessageBox.Show("Общая ошибка " + ex.Message);                
                 error = true;
             }
             finally
@@ -7405,6 +7477,14 @@ namespace Cash8
                         check.payments.Add(payment);
                         //fiscal.Payment(Convert.ToDouble(result[1]), 3, out remainder, out change);
                     }
+                    if (get_result_payment[2] != 0)
+                    {
+                        FiscallPrintJason2.Payment payment = new FiscallPrintJason2.Payment();
+                        payment.type = "prepaid";
+                        payment.sum = Convert.ToDouble(get_result_payment[2]);
+                        check.payments.Add(payment);
+                        //fiscal.Payment(false, Convert.ToDouble(result[2]), 4, out remainder, out change);
+                    }
 
 
                     if (MainStaticClass.GetWorkSchema == 2)
@@ -7489,7 +7569,7 @@ namespace Cash8
 
                     //Оплата клиенту
                     //fiscal.CloseCheck(false, type_pay.SelectedIndex);
-                    check.total = get_result_payment[0] + get_result_payment[1];
+                    check.total = get_result_payment[0] + get_result_payment[1]+ get_result_payment[2];
 
                     try
                     {

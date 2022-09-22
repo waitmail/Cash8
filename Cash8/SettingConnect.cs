@@ -1012,6 +1012,7 @@ namespace Cash8
             queries.Add("ALTER TABLE public.checks_header ADD COLUMN requisite smallint;");
             queries.Add("ALTER TABLE deleted_items ALTER COLUMN tovar TYPE bigint");
             queries.Add("ALTER TABLE public.checks_header ADD COLUMN viza_d smallint;");
+            queries.Add("CREATE UNIQUE INDEX _clients_code_  ON clients  USING btree(code COLLATE pg_catalog.default);");
 
             foreach (string str in queries)
             {

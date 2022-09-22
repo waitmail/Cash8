@@ -942,7 +942,7 @@ namespace Cash8
             this.menuStrip.Items.Clear();
             MainStaticClass.Main.start_interface_switching();
             change_schema_2_to_3();
-            change_clients_for_schema1();
+            //change_clients_for_schema1();
         }
 
         /// <summary>

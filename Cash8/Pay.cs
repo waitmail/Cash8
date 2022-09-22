@@ -929,8 +929,8 @@ namespace Cash8
             }
             if (e.KeyCode == Keys.F8)
             {
-                if (cc.check_type.SelectedIndex == 0)
-                {
+                //if (cc.check_type.SelectedIndex == 0)
+                //{
                     InputSertificates i_s = new InputSertificates();
                     i_s.pay = this;
                     //i_s.Top = 1;
@@ -944,7 +944,7 @@ namespace Cash8
                     i_s.Dispose();
                     calculate();
                     cash_sum.Focus();
-                }
+                //}
             }
             if (e.KeyCode == Keys.F6)//попытка сделать доступным полее вода списания бонусов
             {
