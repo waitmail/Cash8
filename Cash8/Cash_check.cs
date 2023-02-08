@@ -5171,7 +5171,7 @@ namespace Cash8
                 answerAddingKmArrayToTableTested = Tested_Km(addingKmArrayToTableTestedKm);
                 if (answerAddingKmArrayToTableTested.results[0].status != "ready")
                 {
-                    MessageBox.Show("Не удалось получить корректный ответ от ФР в течении 24 секунд, можете попробовать еще раз.");
+                    MessageBox.Show("Не удалось получить корректный ответ от ФР в течении 48 секунд, можете попробовать еще раз.");
                 }
                 if (answerAddingKmArrayToTableTested.results[0].errorCode == 0)
                 {
@@ -5291,7 +5291,7 @@ namespace Cash8
         {
             System.Net.WebRequest req = System.Net.WebRequest.Create(Url + "/" + Data);
 
-            req.Timeout = 48000;
+            req.Timeout = 480000;
             System.Net.WebResponse resp = req.GetResponse();
             //HttpWebResponse myHttpWebResponse = (HttpWebResponse)req.GetResponse();
 
@@ -5352,7 +5352,7 @@ namespace Cash8
                     status = result.results[0].status;
                     if ((status != "ready") && (status != "error"))
                     {
-                        if (count > 14)
+                        if (count > 47)
                         {
                             break;
                         }
@@ -10324,6 +10324,12 @@ namespace Cash8
                         " FROM tovar_action LEFT JOIN tovar ON tovar_action.code=tovar.code " +
                         //" LEFT JOIN characteristic ON tovar_action.characteristic_guid = characteristic.guid " +
                         " order by tovar_action.retail_price desc ";
+
+                    //query_string = " SELECT tovar_action.code,tovar.name, tovar_action.retail_price,tovar_action.retail_price,SUM(tovar_action.quantity) AS quantity,tovar_action.characteristic_name,tovar_action.characteristic_guid " +
+                    // " FROM tovar_action LEFT JOIN tovar ON tovar_action.code=tovar.code " +
+                    // //" LEFT JOIN characteristic ON tovar_action.characteristic_guid = characteristic.guid " +
+                    // " GROUP BY tovar_action.code,tovar.name, tovar_action.retail_price,tovar_action.retail_price,tovar_action.characteristic_name,tovar_action.characteristic_guid " +
+                    // "order by tovar_action.retail_price desc ";
                     command = new NpgsqlCommand(query_string, conn);
                     NpgsqlDataReader reader = command.ExecuteReader();
 
@@ -10339,10 +10345,9 @@ namespace Cash8
                                 ListViewItem lvi = new ListViewItem(reader[0].ToString());
                                 lvi.Tag = reader.GetInt64(0).ToString();          //Внутренний код товара
                                 lvi.SubItems.Add(reader[1].ToString().Trim());    //Наименование
-
                                 lvi.SubItems.Add(reader[5].ToString());    //Характеристика
                                 lvi.SubItems[2].Tag = reader[6].ToString();
-                                lvi.SubItems.Add("1");    
+                                lvi.SubItems.Add("1");
                                 lvi.SubItems.Add(reader.GetDecimal(2).ToString());//Цена без скидки                                                                                  
                                 string price = get_price_action(num_doc);
                                 lvi.SubItems.Add(price.ToString());//Цена со скидкой должна быть получена из подарка
@@ -10360,7 +10365,7 @@ namespace Cash8
                                 lvi.SubItems.Add("0");
                                 //*****************************************************************************
                                 listView1.Items.Add(lvi);
-                                SendDataToCustomerScreen(1, 0,1);
+                                SendDataToCustomerScreen(1, 0, 1);
                                 multiplication_factor--;
                             }
                             else
@@ -10370,7 +10375,8 @@ namespace Cash8
                                 lvi.SubItems.Add(reader[1].ToString().Trim());    //Наименование
                                 lvi.SubItems.Add(reader[5].ToString());           //Характеристика
                                 lvi.SubItems[2].Tag = reader[6].ToString();       //guid Характеристики
-                                lvi.SubItems.Add("1");    //Количество
+                                //lvi.SubItems.Add("1");    //Количество
+                                lvi.SubItems.Add(reader[4].ToString());
                                 lvi.SubItems.Add(reader.GetDecimal(2).ToString());//Цена
                                 lvi.SubItems.Add(reader.GetDecimal(3).ToString());//Цена со скидкой
                                 lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString());//Сумма без скидки
@@ -10386,7 +10392,7 @@ namespace Cash8
                                 lvi.SubItems.Add("0");
                                 //*****************************************************************************
                                 listView1.Items.Add(lvi);
-                                SendDataToCustomerScreen(1, 0,1);
+                                SendDataToCustomerScreen(1, 0, 1);
                             }
                         }
                         else
@@ -10395,8 +10401,9 @@ namespace Cash8
                             lvi.Tag = reader.GetInt64(0).ToString();          //Внутренний код товара
                             lvi.SubItems.Add(reader[1].ToString().Trim());    //Наименование
                             lvi.SubItems.Add(reader[5].ToString());           //Характеристика
-                            lvi.SubItems[2].Tag = reader[6].ToString();       //guid Характеристики
-                            lvi.SubItems.Add("1");    //Количество
+                            lvi.SubItems[2].Tag = reader[6].ToString();       //guid Характеристики                            
+                            //lvi.SubItems.Add("1");    //Количество
+                            lvi.SubItems.Add(reader[4].ToString());
                             lvi.SubItems.Add(reader.GetDecimal(2).ToString());//Цена
                             lvi.SubItems.Add(reader.GetDecimal(3).ToString());//Цена со скидкой
                             lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString());//Сумма без скидки
@@ -10412,21 +10419,59 @@ namespace Cash8
                             lvi.SubItems.Add("0");
                             //*****************************************************************************
                             listView1.Items.Add(lvi);
-                            SendDataToCustomerScreen(1, 0,1);
+                            SendDataToCustomerScreen(1, 0, 1);
                         }
                         num_records++;
                     }
-
                     /*акция сработала
              * надо отметить все товарные позиции 
              * чтобы они не участвовали в других акциях 
              */
-
                     marked_action_tovar(num_doc);
-
                 }
-
                 //                conn.Close();
+                //Теперь надо свернуть табличную часть если много позиций, тогда чек не может распечататься 
+                //ListView clon2 = new ListView();
+                //foreach (ListViewItem lvi in listView1.Items)
+                //{
+                //    copy_list_view_item(lvi, clon2);
+                //}
+                //listView1.Items.Clear();
+                //foreach (ListViewItem lvi2 in clon2.Items)
+                //{
+                //    ListViewItem lvi = new ListViewItem(lvi2.SubItems[0].Text);
+                //    lvi.Tag = lvi2.SubItems[0].Text;          //Внутренний код товара
+                //    lvi.SubItems.Add(lvi2.SubItems[1].Text);    //Наименование
+                //    lvi.SubItems.Add(lvi2.SubItems[2].Text);    //Характеристика
+                //    lvi.SubItems[2].Tag = lvi2.SubItems[2].Tag.ToString();
+                //    lvi.SubItems.Add("1");
+                //    lvi.SubItems.Add(lvi2.SubItems[4].Text);//Цена без скидки                                                                                  
+                //    lvi.SubItems.Add(lvi2.SubItems[5].Text);//Цена со скидкой
+                //    lvi.SubItems.Add(lvi2.SubItems[6].Text);//Сумма без скидки
+                //    lvi.SubItems.Add(lvi2.SubItems[7].Text);//Сумма со скидкой
+                //    lvi.SubItems.Add(lvi2.SubItems[8].Text);//Цена со скидкой
+                //    lvi.SubItems.Add(lvi2.SubItems[9].Text);//Сумма без скидки
+                //    lvi.SubItems.Add(lvi2.SubItems[10].Text);//Сумма со скидкой
+
+                //    //string price = get_price_action(num_doc);
+                //    //lvi.SubItems.Add(price.ToString());//Цена со скидкой должна быть получена из подарка
+                //    lvi.SubItems.Add(reader.GetDecimal(2).ToString());//Сумма без скидки
+                //    lvi.SubItems.Add(price.ToString());//Сумма со скидкой должна быть получена из подарка
+                //    lvi.SubItems.Add("0"); //Номер акционного документа скидка
+                //    lvi.SubItems.Add(num_doc.ToString()); //Номер акционного документа подарок
+                //    lvi.SubItems.Add("0"); //Номер акционного документа дополнительное поле пометка что участвовало в акции, но скидка может быть                                
+                //    lvi.SubItems[10].Text = num_doc.ToString();
+                //    //}
+                //    //*****************************************************************************
+                //    lvi.SubItems.Add("0");
+                //    lvi.SubItems.Add("0");
+                //    lvi.SubItems.Add("0");
+                //    lvi.SubItems.Add("0");
+                //    //*****************************************************************************
+                //    listView1.Items.Add(lvi);
+                //    SendDataToCustomerScreen(1, 0, 1);
+                //}                
+                roll_up_listview();
             }
             catch (NpgsqlException ex)
             {
@@ -10445,7 +10490,109 @@ namespace Cash8
                 }
             }
         }
-        
+
+
+        private void roll_up_listview()
+        {
+            //return;
+            string query = "";
+            NpgsqlConnection conn = null;
+            NpgsqlCommand command = null;
+            NpgsqlTransaction trans = null;
+            try
+            {
+                conn = MainStaticClass.NpgsqlConn();
+                conn.Open();
+                trans = conn.BeginTransaction();
+                query = "DELETE FROM roll_up_temp ";
+                command = new NpgsqlCommand(query, conn);
+                command.Transaction = trans;
+                command.ExecuteNonQuery();
+
+                foreach (ListViewItem lvi in listView1.Items)
+                {
+                    query = "INSERT INTO public.roll_up_temp(code_tovar," +
+                                                            " name_tovar, " +
+                                                            "characteristic_guid, " +
+                                                            "characteristic_name, " +
+                                                            "quantity, " +
+                                                            "price, " +
+                                                            "price_at_a_discount, " +
+                                                            "sum, " +
+                                                            "sum_at_a_discount, " +
+                                                            "action_num_doc, " +
+                                                            "action_num_doc1, " +
+                                                            "action_num_doc2, " +
+                                                            "item_marker)VALUES(" +
+                                                            lvi.SubItems[0].Text + ",'" +
+                                                            lvi.SubItems[1].Text + "','" +
+                                                            lvi.SubItems[2].Tag.ToString() + "','" +
+                                                            lvi.SubItems[2].Text + "'," +
+                                                            lvi.SubItems[3].Text + "," +
+                                                            lvi.SubItems[4].Text.Replace(",", ".") + "," +
+                                                            lvi.SubItems[5].Text.Replace(",", ".") + "," +
+                                                            lvi.SubItems[6].Text.Replace(",", ".") + "," +
+                                                            lvi.SubItems[7].Text.Replace(",", ".") + "," +
+                                                            lvi.SubItems[8].Text + "," +
+                                                            lvi.SubItems[9].Text + "," +
+                                                            lvi.SubItems[10].Text + ",'" +
+                                                            lvi.SubItems[14].Text.Trim().Replace("'", "vasya2021")+ "')";
+                    command = new NpgsqlCommand(query, conn);
+                    command.Transaction = trans;
+                    command.ExecuteNonQuery();
+                }
+                query = "SELECT code_tovar, name_tovar, characteristic_guid, characteristic_name, SUM(quantity), price," +
+                    " price_at_a_discount, SUM(sum), SUM(sum_at_a_discount), action_num_doc, action_num_doc1, action_num_doc2, item_marker" +
+                    " FROM public.roll_up_temp    GROUP BY code_tovar, name_tovar, characteristic_guid, characteristic_name, price," +
+                    " price_at_a_discount, action_num_doc, action_num_doc1, action_num_doc2, item_marker;";
+                command = new NpgsqlCommand(query, conn);
+                command.Transaction = trans;
+                NpgsqlDataReader reader = command.ExecuteReader();
+                listView1.Items.Clear();
+                while (reader.Read())
+                {
+                    ListViewItem lvi = new ListViewItem(reader[0].ToString());
+                    lvi.Tag = reader.GetInt64(0).ToString();          //Внутренний код товара
+                    lvi.SubItems.Add(reader[1].ToString().Trim());    //Наименование
+                    lvi.SubItems.Add(reader[2].ToString());    //Характеристика
+                    lvi.SubItems[2].Tag = reader[3].ToString();
+                    lvi.SubItems.Add(reader[4].ToString());
+                    lvi.SubItems.Add(reader.GetDecimal(5).ToString());//Цена без скидки                                                                                                      
+                    lvi.SubItems.Add(reader.GetDecimal(6).ToString());//Цена со скидкой
+                    lvi.SubItems.Add(reader.GetDecimal(7).ToString());//Сумма без скидки                                                                                                      
+                    lvi.SubItems.Add(reader.GetDecimal(8).ToString());//Сумма со скидкой                    
+                    lvi.SubItems.Add(reader[9].ToString()); //Номер акционного документа скидка
+                    lvi.SubItems.Add(reader[10].ToString()); //Номер акционного документа скидка
+                    lvi.SubItems.Add(reader[11].ToString()); //Номер акционного документа скидка                    
+                    //*****************************************************************************
+                    lvi.SubItems.Add("0");
+                    lvi.SubItems.Add("0");
+                    lvi.SubItems.Add("0");
+                    //*****************************************************************************
+                    lvi.SubItems.Add(reader[12].ToString().Replace("vasya2021", "'"));//qr-code                                        
+                    listView1.Items.Add(lvi);
+                    SendDataToCustomerScreen(1, 0, 1);
+                }
+                reader.Close();
+                conn.Close();
+            }
+            catch (NpgsqlException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+        }
+
         private decimal get_reatil_price(string code_tovar)
         {
             decimal result = 0;

@@ -967,17 +967,17 @@ namespace Cash8
 
         public void add_field_Click(object sender, EventArgs e)
         {
-            List<string> queries = new List<string>();            
-            queries.Add("CREATE TABLE failed_input_phone(client_code character varying(10),  datetime_input timestamp without time zone)WITH (OIDS=FALSE);ALTER TABLE failed_input_phone  OWNER TO postgres");            
+            List<string> queries = new List<string>();
+            queries.Add("CREATE TABLE failed_input_phone(client_code character varying(10),  datetime_input timestamp without time zone)WITH (OIDS=FALSE);ALTER TABLE failed_input_phone  OWNER TO postgres");
             queries.Add("ALTER TABLE tovar DROP COLUMN purchase_price");
             queries.Add("ALTER TABLE tovar DROP COLUMN opt_price");
-            queries.Add("DROP TABLE public.date_sync; CREATE TABLE public.date_sync (tovar timestamp without time zone,    client date)WITH(    OIDS = FALSE)");            
+            queries.Add("DROP TABLE public.date_sync; CREATE TABLE public.date_sync (tovar timestamp without time zone,    client date)WITH(    OIDS = FALSE)");
             queries.Add("ALTER TABLE action_header ADD COLUMN execution_order smallint");
             queries.Add("ALTER TABLE action_table ADD COLUMN price numeric(10, 2)");
             queries.Add("UPDATE constants SET use_debug = false");
             queries.Add("ALTER TABLE constants ADD COLUMN pass_promo character varying(100)");
             //queries.Add("CREATE TABLE bonus_cards(code character varying(10), pin character varying(11))WITH(OIDS = FALSE); ALTER TABLE bonus_cards OWNER TO postgres;");
-            //queries.Add("ALTER TABLE constants ADD COLUMN threshold integer;COMMENT ON COLUMN constants.threshold IS 'Порог срабатывания по выдаче бонусной карты';UPDATE public.constants	SET threshold=0;");
+            queries.Add("ALTER TABLE constants ADD COLUMN threshold integer;COMMENT ON COLUMN constants.threshold IS 'Порог срабатывания по выдаче бонусной карты';UPDATE public.constants	SET threshold=0;");
             queries.Add("ALTER TABLE constants ADD COLUMN last_date_download_bonus_cards timestamp without time zone;COMMENT ON COLUMN constants.last_date_download_bonus_cards IS 'Дата последнего удачного получения данных бонусных карт';UPDATE constants   SET last_date_download_bonus_cards='01-01-2000';");
             queries.Add("ALTER TABLE checks_header ADD COLUMN sent_to_processing_center smallint;  ALTER TABLE checks_header ALTER COLUMN sent_to_processing_center SET DEFAULT 0;");
             queries.Add("ALTER TABLE public.checks_header ADD COLUMN id_transaction character varying(10) COLLATE pg_catalog.default; COMMENT ON COLUMN public.checks_header.id_transaction IS 'Номер транзакции в процессинговом центре бонусной программы';");
@@ -1013,7 +1013,10 @@ namespace Cash8
             queries.Add("ALTER TABLE deleted_items ALTER COLUMN tovar TYPE bigint");
             queries.Add("ALTER TABLE public.checks_header ADD COLUMN viza_d smallint;");
             queries.Add("CREATE UNIQUE INDEX _clients_code_  ON clients  USING btree(code COLLATE pg_catalog.default);");
-
+            queries.Add("CREATE TABLE public.roll_up_temp(code_tovar bigint,name_tovar character varying(200) COLLATE pg_catalog.default,    characteristic_guid character varying(36) COLLATE pg_catalog.default," +
+                "characteristic_name character varying(200) COLLATE pg_catalog.default,quantity integer,price numeric(10,2),price_at_a_discount numeric(10,2),sum numeric(10,2),sum_at_a_discount numeric(10,2)," +
+                "action_num_doc integer,action_num_doc1 integer,action_num_doc2 integer,item_marker character varying(200) COLLATE pg_catalog.default)WITH(OIDS = FALSE)TABLESPACE pg_default;" +
+                "ALTER TABLE public.roll_up_temp OWNER to postgres;");
             foreach (string str in queries)
             {
                 append_column(str);
@@ -1023,7 +1026,7 @@ namespace Cash8
             check_and_correct_date_sync();
             //if (MainStaticClass.CashDeskNumber != 9)
             //{
-                //check_system_taxation();
+            //check_system_taxation();
             //}
 
             MessageBox.Show(" Дополнительные колонки добавлены ");
