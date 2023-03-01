@@ -439,7 +439,7 @@ namespace Cash8
             //Ping pinger = new Ping();//под wine не работает
             //try
             //{
-            //    PingReply reply = pinger.Send("8.8.8.8");                
+            //    PingReply reply = pinger.Send("8.8.8.8");
             //    pingable = reply.Status == IPStatus.Success;
             //}
             //catch (PingException)
@@ -2610,7 +2610,11 @@ namespace Cash8
         public static NpgsqlConnection NpgsqlConn()
         {
             //return new NpgsqlConnection("Server=" + Cash8.MainStaticClass.ipAdrServer + ";Port=" + Cash8.MainStaticClass.portServer + ";User Id=" + Cash8.MainStaticClass.postgresUser + ";Password=" + Cash8.MainStaticClass.PasswordPostgres + ";Database=" + Cash8.MainStaticClass.DataBaseName + ";CommandTimeout=300;Pooling=false");
-            return new NpgsqlConnection("Server=" + Cash8.MainStaticClass.ipAdrServer + ";Port=" + Cash8.MainStaticClass.portServer + ";User Id=postgres" + ";Password=" + Cash8.MainStaticClass.PasswordPostgres + ";Database=" + Cash8.MainStaticClass.DataBaseName + ";CommandTimeout=300;Pooling=false");
+
+            //IPAddress ip = IPAddress.Parse("192.234.58.78.9");
+            return new NpgsqlConnection("Server=" + Cash8.MainStaticClass.ipAdrServer + ";Port=" + Cash8.MainStaticClass.portServer + ";User Id=postgres" + ";Password=" + Cash8.MainStaticClass.PasswordPostgres + ";Database=" + Cash8.MainStaticClass.DataBaseName + ";CommandTimeout=300;Pooling=false");            
+            
+            //return new NpgsqlConnection("Server="+ IPAddress.Parse("192.168.0.107").Address.ToString() + ";Port=" + Cash8.MainStaticClass.portServer + ";User Id=postgres" + ";Password=" + Cash8.MainStaticClass.PasswordPostgres + ";Database=" + Cash8.MainStaticClass.DataBaseName + ";CommandTimeout=300;Pooling=false");
             //return new NpgsqlConnection("Server=" + Cash8.MainStaticClass.ipAdrServer + ";Port=" + Cash8.MainStaticClass.portServer + ";User Id=postgres" + ";Password=" + Cash8.MainStaticClass.PasswordPostgres + ";Database=Cash_Place_CH" + ";CommandTimeout=300;Pooling=false");
             //return new NpgsqlConnection("Server=127.0.0.1;Port=5432;User Id=postgres;Password=a123456789;Database=Cash_Place;CommandTimeout=60;");
             //return new NpgsqlConnection("Server=127.0.0.1;Port=5432;User Id=postgres;Password=1;Database=Cash_Place;CommandTimeout=60;");

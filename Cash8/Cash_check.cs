@@ -2720,23 +2720,25 @@ namespace Cash8
 
                             }
                         }
-                        //if (this.qr_code != "")
-                        //{
-                        //    if (this.qr_code.ToUpper().Substring(0, 4).IndexOf("HTTP") != -1)
-                        //    {
-                        //        error = true;
-                        //        MessageBox.Show("Считан не верный qr код");
-                        //        MainStaticClass.write_event_in_log("HTTP не верный qr код  " + barcode, "Документ чек", numdoc.ToString());
-
-                        //    }
-                        //    this.qr_code = "";
-                        //}
-                        if ((!error)||(MainStaticClass.CashDeskNumber==9))//Если с qr кодом все хорошо тогда добавляем позицию иначе не добавляем, но в 9 кассу добавляем всегда 
+                        if (this.qr_code != "")
                         {
-                            MainStaticClass.write_event_in_log("Товар добавлен "+barcode, "Документ чек", numdoc.ToString());
+                            if (this.qr_code.ToUpper().Substring(0, 4).IndexOf("HTTP") != -1)
+                            {
+                                error = true;
+                                MessageBox.Show("Считан не верный qr код");
+                                MainStaticClass.write_event_in_log("HTTP не верный qr код  " + barcode, "Документ чек", numdoc.ToString());
+
+                            }
+                            this.qr_code = "";
+                        }
+                        //if ((!error) || (MainStaticClass.CashDeskNumber == 9))//Если с qr кодом все хорошо тогда добавляем позицию иначе не добавляем, но в 9 кассу добавляем всегда 
+                        if (!error)//Если с qr кодом все хорошо тогда добавляем позицию иначе не добавляем
+                        {
+                            MainStaticClass.write_event_in_log("Товар добавлен " + barcode, "Документ чек", numdoc.ToString());
                             listView1.Items.Add(lvi);
                         }
                         else
+                        //if (error)
                         {
                             MainStaticClass.write_event_in_log("Отказ от ввода qr кода, товар не добавлен", "Документ чек", numdoc.ToString());
                             last_tovar.Text = barcode;
@@ -2744,7 +2746,7 @@ namespace Cash8
                             t_n_f.ShowDialog();
                             t_n_f.Dispose();
                             return;
-                        }                        
+                        }
                         SendDataToCustomerScreen(1, 0,1);                        
                         if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema==3))
                         {
@@ -10511,7 +10513,7 @@ namespace Cash8
 
                 foreach (ListViewItem lvi in listView1.Items)
                 {
-                    query = "INSERT INTO public.roll_up_temp(code_tovar," +
+                    query = "INSERT INTO roll_up_temp(code_tovar," +
                                                             " name_tovar, " +
                                                             "characteristic_guid, " +
                                                             "characteristic_name, " +
@@ -11081,6 +11083,7 @@ namespace Cash8
                             lvi.Tag = reader.GetInt64(0).ToString();          //Внутренний код товара
                             lvi.SubItems.Add(reader[1].ToString().Trim());    //Наименование
                             lvi.SubItems.Add("");                             //Характеристика
+                            lvi.SubItems[2].Tag = "";
                             lvi.SubItems.Add(reader[4].ToString().Trim());    //Количество
                             lvi.SubItems.Add(reader.GetDecimal(2).ToString());//Цена
                             lvi.SubItems.Add(Math.Round(reader.GetDecimal(2) - reader.GetDecimal(2) * persent / 100, 2).ToString());//Цена со скидкой            
@@ -11093,10 +11096,14 @@ namespace Cash8
 
                             lvi.SubItems[10].Text = num_doc.ToString();
                             //*****************************************************************************
-                            lvi.SubItems[11].Text = "0";
-                            lvi.SubItems[12].Text = "0";
-                            lvi.SubItems[13].Text = "0";
-                            lvi.SubItems[14].Text = "0";
+                            //lvi.SubItems[11].Text = "0";
+                            //lvi.SubItems[12].Text = "0";
+                            //lvi.SubItems[13].Text = "0";
+                            //lvi.SubItems[14].Text = "0";
+                            lvi.SubItems.Add("0");
+                            lvi.SubItems.Add("0");
+                            lvi.SubItems.Add("0");
+                            lvi.SubItems.Add("0");
                             //*****************************************************************************
                             listView1.Items.Add(lvi);
                             SendDataToCustomerScreen(1, 0,1);
@@ -11107,7 +11114,8 @@ namespace Cash8
                             ListViewItem lvi = new ListViewItem(reader[0].ToString());
                             lvi.Tag = reader.GetInt64(0).ToString();          //Внутренний код товара
                             lvi.SubItems.Add(reader[1].ToString().Trim());    //Наименование
-                            lvi.SubItems.Add("");    //Наименование
+                            lvi.SubItems.Add("");    //Характеристика
+                            lvi.SubItems[2].Tag = "";
                             lvi.SubItems.Add(reader[4].ToString().Trim());    //Количество
                             lvi.SubItems.Add(reader.GetDecimal(2).ToString());//Цена                            
                             lvi.SubItems.Add(reader.GetDecimal(3).ToString());//Цена со скидкой
@@ -11119,10 +11127,14 @@ namespace Cash8
 
                             lvi.SubItems[10].Text = num_doc.ToString();
                             //*****************************************************************************
-                            lvi.SubItems[11].Text = "0";
-                            lvi.SubItems[12].Text = "0";
-                            lvi.SubItems[13].Text = "0";
-                            lvi.SubItems[14].Text = "0";
+                            //lvi.SubItems[11].Text = "0";
+                            //lvi.SubItems[12].Text = "0";
+                            //lvi.SubItems[13].Text = "0";
+                            //lvi.SubItems[14].Text = "0";
+                            lvi.SubItems.Add("0");
+                            lvi.SubItems.Add("0");
+                            lvi.SubItems.Add("0");
+                            lvi.SubItems.Add("0");
                             //*****************************************************************************
                             listView1.Items.Add(lvi);
                             SendDataToCustomerScreen(1, 0,1);
@@ -11137,6 +11149,8 @@ namespace Cash8
 
                     marked_action_tovar(num_doc);
                 }
+
+                roll_up_listview();
             }
             catch (NpgsqlException ex)
             {
