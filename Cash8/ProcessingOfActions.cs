@@ -203,21 +203,47 @@ namespace Cash8
             action2.ColumnName = "action2"; //listView1.Columns.Add("Акция2", 50, HorizontalAlignment.Right);
             dt.Columns.Add(action2);
 
+            DataColumn bonus_reg = new DataColumn();
+            bonus_reg.DataType = System.Type.GetType("System.Int32");
+            bonus_reg.ColumnName = "bonus_reg"; //listView1.Columns.Add("Акция2", 50, HorizontalAlignment.Right);
+            dt.Columns.Add(bonus_reg);
+
+            DataColumn bonus_action = new DataColumn();
+            bonus_action.DataType = System.Type.GetType("System.Int32");
+            bonus_action.ColumnName = "bonus_action"; //listView1.Columns.Add("Акция2", 50, HorizontalAlignment.Right);
+            dt.Columns.Add(bonus_action);
+
+            DataColumn bonus_action_b = new DataColumn();
+            bonus_action_b.DataType = System.Type.GetType("System.Int32");
+            bonus_action_b.ColumnName = "bonus_action_b"; //listView1.Columns.Add("Акция2", 50, HorizontalAlignment.Right);
+            dt.Columns.Add(bonus_action_b);
+
+            DataColumn marking = new DataColumn();
+            marking.DataType = System.Type.GetType("System.Int32");
+            marking.ColumnName = "marking"; //listView1.Columns.Add("Акция2", 50, HorizontalAlignment.Right);
+            dt.Columns.Add(marking);
+
+
             foreach (ListViewItem lvi in listView1.Items)
             {
                 DataRow row = dt.NewRow();
-                row["tovar_code"] = lvi.SubItems[0].Text;
-                row["tovar_name"] = lvi.SubItems[1].Text;
-                row["characteristic_code"] = lvi.SubItems[2].Tag.ToString();
-                row["characteristic_name"] = lvi.SubItems[2].Text;
-                row["quantity"] = lvi.SubItems[3].Text;
-                row["price"] = lvi.SubItems[4].Text;
-                row["price_at_discount"] = lvi.SubItems[5].Text;
-                row["sum_full"] = lvi.SubItems[6].Text;
-                row["sum_at_discount"] = lvi.SubItems[7].Text;
-                row["action"] = lvi.SubItems[8].Text;
-                row["gift"] = lvi.SubItems[9].Text;
-                row["action2"] = lvi.SubItems[10].Text;
+                row["tovar_code"]                  = lvi.SubItems[0].Text;
+                row["tovar_name"]                  = lvi.SubItems[1].Text;
+                row["characteristic_code"]         = lvi.SubItems[2].Tag.ToString();
+                row["characteristic_name"]         = lvi.SubItems[2].Text;
+                row["quantity"]                    = lvi.SubItems[3].Text;
+                row["price"]                       = lvi.SubItems[4].Text;
+                row["price_at_discount"]           = lvi.SubItems[5].Text;
+                row["sum_full"]                    = lvi.SubItems[6].Text;
+                row["sum_at_discount"]             = lvi.SubItems[7].Text;
+                row["action"]                      = lvi.SubItems[8].Text;
+                row["gift"]                        = lvi.SubItems[9].Text;
+                row["action2"]                     = lvi.SubItems[10].Text;
+                row["bonus_reg"]                   = lvi.SubItems[11].Text;
+                row["bonus_action"]                = lvi.SubItems[12].Text;
+                row["bonus_action_b"]              = lvi.SubItems[13].Text;
+                row["marking"]                     = lvi.SubItems[14].Text;
+
                 dt.Rows.Add(row);
             }
 
@@ -550,6 +576,216 @@ namespace Cash8
                             //if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
                             //{
                                 action_4(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt64(4));
+                            //}
+                        }
+                        //write_time_execution(reader[1].ToString(), tip_action.ToString());
+                    }
+                    else if (tip_action == 6)
+                    {           //Номер документа  //Сообщение о подарке //Сумма в данном случае шаг акции
+                        //start_action = DateTime.Now;
+                        //action_6(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt16(7));
+                        //write_time_execution(reader[1].ToString(), tip_action.ToString());
+                    }
+                    else if (tip_action == 8)
+                    {
+                        //start_action = DateTime.Now;
+                        if (reader.GetDecimal(2) != 0)
+                        {
+                            //action_8(reader.GetInt32(1), reader.GetDecimal(2), reader.GetDecimal(5));//Дать скидку на все позиции из списка позицию                                                 
+                        }
+                        else
+                        {
+                            //action_8(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt32(4), reader.GetInt16(7));
+                        }
+                        //write_time_execution(reader[1].ToString(), tip_action.ToString());
+                    }
+                    else if (tip_action == 9)//Акция работает в день рождения владельца дисконтной карты
+                    {
+                        //start_action = DateTime.Now;
+                        if (!actions_birthday())
+                        {
+                            //write_time_execution("проверка на день рождения", tip_action.ToString());
+                            continue;
+                        }
+
+                        if (reader.GetDecimal(2) != 0)
+                        {
+                            action_1_dt(reader.GetInt32(1), reader.GetDecimal(2));//Дать скидку на эту позицию                                                 
+                        }
+                        else
+                        {
+                            //action_1_dt(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7), reader.GetInt32(4)); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
+                        }
+                        //write_time_execution(reader[1].ToString(), tip_action.ToString());
+                    }
+                    else if (tip_action == 10)
+                    {
+                        if (reader.GetDecimal(5) <= calculation_of_the_sum_of_the_document_dt())
+                        {
+                            //MessageBox.Show(reader[3].ToString());
+                            action_num_doc = Convert.ToInt32(reader[1].ToString());
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Неопознанный тип акции в документе  № " + reader[1].ToString(), " Обработка акций ");
+                    }
+                }
+                reader.Close();
+
+                //query = "SELECT tip,num_doc,persent,comment,code_tovar,sum,barcode,marker,execution_order FROM action_header " +
+                // " WHERE '" + DateTime.Now.Date.ToString("yyy-MM-dd") + "' between date_started AND date_end " +
+                // " AND " + count_minutes.ToString() + " between time_start AND time_end AND bonus_promotion=0 " +
+                // " AND barcode='' AND tip=10 AND num_doc in(" +//AND tip<>10 
+                // " SELECT DISTINCT action_table.num_doc FROM checks_table_temp " +
+                // " LEFT JOIN action_table ON checks_table_temp.tovar = action_table.code_tovar) order by execution_order asc, tip asc";//date_started asc,, tip desc
+
+                //command = new NpgsqlCommand(query, conn);
+                //reader = command.ExecuteReader();
+
+                //while (reader.Read())
+                //{
+                //    if (reader.GetDecimal(5) <= action_10_dt(reader.GetInt32(1)))
+                //    {
+                //        int multiplicity = (int)(calculation_of_the_sum_of_the_document_dt() / action_10_dt(reader.GetInt32(1)));
+                //        MessageBox.Show("Крастность " + multiplicity.ToString() + " " + reader[3].ToString());
+                //        action_num_doc = Convert.ToInt32(reader[1].ToString());
+                //    }
+                //}
+
+                //reader.Close();
+                //conn.Close();
+                //command.Dispose();
+
+                //checked_action_10_dt();//Отдельная проверка поскольку может не быть товарной части, а все акции выше проверяются именно на вхождение товаров документа в таб части акционных документов
+
+            }
+            catch (NpgsqlException ex)
+            {
+                MessageBox.Show(ex.Message + " | " + ex.Detail);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "ошибка при обработке акций");
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                    // conn.Dispose();
+                }
+            }
+            //MessageBox.Show(total_seconnds.ToString());
+        }
+
+        /// <summary>
+        /// обработка акций вызывается в двух режимах
+        /// 1. Без окна вызова ввода штрихкода Предварительный рассчет
+        /// 2. С вызовом всех дополнительных окон, окончательный рассчет
+        /// </summary>
+        /// <param name="show_query_window_barcode"></param>
+        public void to_define_the_action_dt(string barcode)
+        {
+
+            if (!check_and_create_checks_table_temp())
+            {
+                return;
+            }
+
+            //total_seconnds = 0;
+            NpgsqlConnection conn = null;
+            NpgsqlCommand command = null;
+            short tip_action;// = 0;
+            Int64 count_minutes = Convert.ToInt64((DateTime.Now - DateTime.Now.Date).TotalMinutes);
+            try
+            {
+                conn = MainStaticClass.NpgsqlConn();
+                conn.Open();
+                string query = "SELECT tip,num_doc,persent,comment,code_tovar,sum,barcode,marker,action_by_discount FROM action_header WHERE '" + DateTime.Now.Date.ToString("yyy-MM-dd") + "' between date_started AND date_end AND barcode='" + barcode + "'";
+
+                command = new NpgsqlCommand(query, conn);
+                NpgsqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    //listView1.Focus();
+                    if (reader.GetString(6).Trim().Length != 0)
+                    {
+                        continue;
+                    }
+
+                    tip_action = reader.GetInt16(0);
+                    /* Обработать акцию по типу 1
+                    * первый тип это скидка на конкретный товар
+                    * если есть процент скидки то дается скидка 
+                    * иначе выдается сообщение о подарке*/
+                    if (tip_action == 1)
+                    {
+                        //start_action = DateTime.Now;
+                        if (reader.GetDecimal(2) != 0)
+                        {
+                            action_1_dt(reader.GetInt32(1), reader.GetDecimal(2));//Дать скидку на эту позицию                                                 
+                        }
+                        else
+                        {
+                            if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
+                            {
+                                action_1_dt(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7), reader.GetInt32(4)); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
+                            }
+                        }
+                        //write_time_execution(reader[1].ToString(), tip_action.ToString());
+                    }
+                    else if (tip_action == 2)
+                    {
+                        //start_action = DateTime.Now;
+
+                        if (reader.GetDecimal(2) != 0)
+                        {
+                            action_2_dt(reader.GetInt32(1), reader.GetDecimal(2));//Дать скидку на эту позицию                                                 
+                        }
+                        else
+                        {
+                            if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
+                            {
+                                action_2_dt(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7), reader.GetInt32(4)); //Сообщить о подарке                           
+                            }
+                        }
+                        //write_time_execution(reader[1].ToString(), tip_action.ToString());
+
+                    }
+                    else if (tip_action == 3)
+                    {
+                        //start_action = DateTime.Now;
+
+                        //action_2(reader.GetInt32(1));
+                        if (reader.GetDecimal(2) != 0)
+                        {
+                            action_3(reader.GetInt32(1), reader.GetDecimal(2), reader.GetDecimal(5));//Дать скидку на все позиции из списка позицию                                                 
+                        }
+                        else
+                        {
+                            if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
+                            {
+                                action_3(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt16(7)); //Сообщить о подарке                           
+                            }
+                        }
+                        //write_time_execution(reader[1].ToString(), tip_action.ToString());
+
+                    }
+                    else if (tip_action == 4)
+                    {
+                        //start_action = DateTime.Now;
+
+                        if (reader.GetDecimal(2) != 0)
+                        {
+                            action_4_dt(reader.GetInt32(1), reader.GetDecimal(2), reader.GetDecimal(5));//Дать скидку на все позиции из списка позицию                                                 
+                        }
+                        else
+                        {
+                            //if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
+                            //{
+                            action_4(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt64(4));
                             //}
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());

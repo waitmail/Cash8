@@ -38,7 +38,7 @@ namespace Cash8
         public ArrayList action_barcode_bonus_list = new ArrayList();//Доступ из формы ввода акционного штрихкода                           
         ListView listview_original = new ListView();
         //private decimal discount = 1;
-        private decimal discount = 0;
+        private double discount = 0;
         public Int64 numdoc = 0;
         private bool inpun_client_barcode = false;
         //public Nomenklatura tovar;
@@ -153,9 +153,9 @@ namespace Cash8
                     SendUDPMessage(message);
                 }
             }
-            catch
+            catch(Exception ex)
             {
-
+                MessageBox.Show(ex.Message);
             }
         }
 
@@ -730,7 +730,7 @@ namespace Cash8
                     {
                         client.Tag = phone_number;
                         client.Text = phone_number;
-                        Discount = Convert.ToDecimal(0.05);
+                        Discount = Convert.ToDouble(0.05);
                         txtB_client_phone.Enabled = false;
                     }
                 }
@@ -1519,7 +1519,7 @@ namespace Cash8
                 {
                     if (check_type.SelectedIndex == 0)
                     {
-                        lvi.SubItems[5].Text = (Math.Round(Convert.ToDecimal(lvi.SubItems[4].Text) - Convert.ToDecimal(lvi.SubItems[4].Text) * Discount, 2)).ToString();//Цена со скидкой            
+                        lvi.SubItems[5].Text = (Math.Round(Convert.ToDouble(lvi.SubItems[4].Text) - Convert.ToDouble(lvi.SubItems[4].Text) * Discount, 2)).ToString();//Цена со скидкой            
                     }
                     else if (check_type.SelectedIndex == 1)
                     {
@@ -1553,7 +1553,7 @@ namespace Cash8
                 //Проверка на сертификат               
                 if (its_certificate(row["code"].ToString()) != "1")
                 {
-                    row["price_at_discount"] = Math.Round(Convert.ToDecimal(row["price"]) - Convert.ToDecimal(row["price"]) * Discount, 2);//Цена со скидкой            
+                    row["price_at_discount"] = Math.Round(Convert.ToDouble(row["price"]) - Convert.ToDouble(row["price"]) * Discount, 2);//Цена со скидкой            
                 }
                 else
                 {
@@ -2070,7 +2070,7 @@ namespace Cash8
         //    return null;
         //}
 
-        public decimal Discount
+        public double Discount
         {
             get
             {
@@ -2610,7 +2610,7 @@ namespace Cash8
                                                                               //Проверка на сертификат               
                         if (this.its_certificate(select_tovar.Tag.ToString()) != "1")
                         {
-                            lvi.SubItems.Add(Math.Round(Convert.ToDecimal(lvi.SubItems[4].Text) - Convert.ToDecimal(lvi.SubItems[4].Text) * Discount, 2).ToString());//Цена со скидкой
+                            lvi.SubItems.Add(Math.Round(Convert.ToDouble(lvi.SubItems[4].Text) - Convert.ToDouble(lvi.SubItems[4].Text) * Discount, 2).ToString());//Цена со скидкой
                         }
                         else
                         {
@@ -2892,7 +2892,7 @@ namespace Cash8
                     //lvi.SubItems[2].Tag = listView2.Items[0].SubItems[2].Tag;//GUID характеристики
                     lvi.SubItems.Add("1");//Количество
                     lvi.SubItems.Add(listView2.Items[index].SubItems[1].Text);//Цена                        
-                    lvi.SubItems.Add(Math.Round(Convert.ToDecimal(lvi.SubItems[4].Text) - Convert.ToDecimal(lvi.SubItems[4].Text) * Discount, 2).ToString());//Цена со скидкой
+                    lvi.SubItems.Add(Math.Round(Convert.ToDouble(lvi.SubItems[4].Text) - Convert.ToDouble(lvi.SubItems[4].Text) * Convert.ToDouble(Discount), 2).ToString());//Цена со скидкой
                     lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString());//Сумма
                     lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)).ToString()); //Сумма со скидкой                        
                     lvi.SubItems.Add("0");//Номер акционного документа скидка
@@ -3061,7 +3061,7 @@ namespace Cash8
 
                     if (bonus_is_on == 0)
                     {
-                        Discount = reader.GetDecimal(0);
+                        Discount = Convert.ToDouble(reader.GetDecimal(0));
                     }
 
 
@@ -3319,7 +3319,7 @@ namespace Cash8
 
                 while (reader.Read())
                 {
-                    Discount = reader.GetDecimal(0);
+                    Discount = Convert.ToDouble(reader.GetDecimal(0));
                     Discount = Discount / 100;
                 }
                 reader.Close();
@@ -4822,6 +4822,11 @@ namespace Cash8
                         lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(38, GS1);
                     }
 
+                    if (lvi.SubItems[14].Text.Trim().Length == 37 && lvi.SubItems[14].Text.Substring(16, 2) == "21")
+                    {
+                        lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
+                    }
+
                     if (lvi.SubItems[14].Text.Trim().Length == 30)
                     {
                         lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(24, GS1);
@@ -4974,10 +4979,18 @@ namespace Cash8
                     //string km = lvi.SubItems[14].Text.Trim().Replace("'", "vasya2021")
 
                     string GS1 = Char.ConvertFromUtf32(29);
-                    if ((lvi.SubItems[14].Text.Trim().Length == 83) || (lvi.SubItems[14].Text.Trim().Length == 127) || (lvi.SubItems[14].Text.Trim().Length == 115))
+                    if ((lvi.SubItems[14].Text.Trim().Length == 83)  ||
+                        (lvi.SubItems[14].Text.Trim().Length == 127) || 
+                        (lvi.SubItems[14].Text.Trim().Length == 115)) 
+                        
                     {
                         lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
                         lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(38, GS1);
+                    }
+
+                    if (lvi.SubItems[14].Text.Trim().Length == 37 && lvi.SubItems[14].Text.Substring(16, 2) == "21")
+                    {
+                        lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
                     }
 
                     if (lvi.SubItems[14].Text.Trim().Length == 30)
@@ -5146,6 +5159,11 @@ namespace Cash8
                     { 
                         lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
                         lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(38, GS1);
+                    }
+
+                    if (lvi.SubItems[14].Text.Trim().Length == 37 && lvi.SubItems[14].Text.Substring(16, 2) == "21")
+                    {
+                        lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
                     }
 
                     if (lvi.SubItems[14].Text.Trim().Length == 30)
@@ -8298,6 +8316,15 @@ namespace Cash8
 
         private void pay_Click(object sender, EventArgs e)
         {
+
+            //string machine_name = Environment.MachineName;//имя компьютера
+            //int path_execute_actions = 0;
+
+            //if (machine_name == "GAA-IT")
+            //{
+            //    path_execute_actions = 1;
+            //}
+
             if (listView1.Items.Count == 0)
             {
                 MessageBox.Show(" Нет строк ", " Проверки переда записью документа ");
@@ -11771,6 +11798,14 @@ namespace Cash8
         private void show_pay_form()
         {
 
+            //string machine_name = Environment.MachineName;//имя компьютера
+            //int path_execute_actions = 0;
+
+            //if (machine_name == "GAA-IT")
+            //{
+            //    path_execute_actions = 1;
+            //}
+
             MainStaticClass.write_event_in_log("Попытка перейти в окно оплаты", "Документ чек", numdoc.ToString());
 
             //if (listView_sertificates.Items.Count > 0)
@@ -11820,7 +11855,7 @@ namespace Cash8
                     }
 
                     //Теперь все остальные акции
-                    MainStaticClass.write_event_in_log(" Попытка обработать все остальные акции ", "Документ чек", numdoc.ToString());
+                    MainStaticClass.write_event_in_log(" Попытка обработать все остальные акции ", "Документ чек", numdoc.ToString());                    
                     to_define_the_action();//Обработка на дисконтные акции 
                 }
                 else
@@ -12898,7 +12933,7 @@ namespace Cash8
             }
             if (checkBox_viza_d.Checked)
             {
-                Discount = Convert.ToDecimal(0.05);
+                Discount = Convert.ToDouble(0.05);
             }
             else
             {

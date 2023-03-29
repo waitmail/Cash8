@@ -99,7 +99,7 @@ namespace Cash8
                         {
                             cash_Check.client.Tag = this.txtB_phone_number.Text.Trim();
                             cash_Check.client.Text = this.txtB_phone_number.Text.Trim();
-                            cash_Check.Discount = Convert.ToDecimal(0.05);
+                            cash_Check.Discount = Convert.ToDouble(0.05);
                         }
                         this.DialogResult = DialogResult.OK;
                     }

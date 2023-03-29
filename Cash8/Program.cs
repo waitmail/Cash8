@@ -20,7 +20,17 @@ namespace Cash8
                 mmb.ShowDialog();
                 return;
             }
-            Application.Run(new Main());
+
+            if (System.Diagnostics.Process.GetProcessesByName(Application.ProductName).Length > 1)
+            {
+                MessageBox.Show("Приложение уже запущено");
+                return;
+            }
+            else
+            {
+                Application.Run(new Main());
+            }
+            
         }
 
         private static bool IsApplicationRunningOnMono(string processName)
