@@ -21,7 +21,8 @@ namespace Cash8
          * 6.вызов для ввода QR - кода маркера товара
          */
         public Cash_check caller = null;
-        //public ProcessingOfActions caller = null;
+        public ProcessingOfActions caller2 = null;
+        
 
         public int call_type = 0;
         public int count = 0;
@@ -32,7 +33,7 @@ namespace Cash8
         {
             this.TopMost = true;
             InitializeComponent();
-            this.Load += new EventHandler(Input_action_barcode_Load);
+            this.Load += new EventHandler(Input_action_barcode_Load);            
         }
 
         private void input_barcode_MouseUp(object sender, MouseEventArgs e)
@@ -171,25 +172,16 @@ namespace Cash8
             {
                 //Cash_check parent = ((Cash_check)this.Parent);
                 if (e.KeyChar == 13)
-                {
-                    //int count = caller.listView1.Items.Count; это ошибка, количество позиций присваивается предварительно 
-                    int count_string = caller.listView1.Items.Count;//это количество строк
-
-                    if (this.input_barcode.Text.Trim() != "")
-                    {
+                {                    
+                    if (caller != null)
+                    {                        
                         caller.find_barcode_or_code_in_tovar_action(this.input_barcode.Text, count, true, num_doc);
                     }
-
-                    //Этот подарок всегда добавляется отдельной строкой
-
-                    //if (count_string == caller.listView1.Items.Count)
-                    //{
-                    //    this.DialogResult = DialogResult.Cancel;
-                    //}
-                    //else
-                    //{
-                    //    this.DialogResult = DialogResult.OK;
-                    //}
+                    else
+                    {
+                        caller2.find_barcode_or_code_in_tovar_action_dt(this.input_barcode.Text, count, true, num_doc);
+                    }
+                    
                     this.Close();
 
                 }
@@ -201,42 +193,7 @@ namespace Cash8
                     caller.inpun_action_barcode = false;
                     this.Close();
                 }
-            }
-            //else if (call_type == 4)//Штрихкод продавца в данный момент не используется
-            //{
-            //    if (!(Char.IsDigit(e.KeyChar)) && (e.KeyChar != (char)Keys.Back))
-            //    {
-            //        e.Handled = true;
-            //    }
-
-            //    if (!e.Handled)
-            //    {
-            //        if (input_barcode.Text.Trim().Length == 1)
-            //        {
-            //            input_barcode_timer.Start();
-            //        }
-            //    }
-
-            //    if (e.KeyChar == 13)
-            //    {
-            //        if (input_barcode.Text.Trim().Length == 11)
-            //        {
-            //            caller.txtB_sales_assistant.Text = input_barcode.Text;
-            //        }
-            //        else
-            //        {
-            //            if (input_barcode.Text.Trim().Length == 0)
-            //            {
-            //                MessageBox.Show(" Введен некорректный штрихкод ");
-            //            }
-            //            else
-            //            {
-            //                MessageBox.Show(" Штрихкод не введен ");
-            //            }
-            //        }
-            //        this.Close();
-            //    }
-            //}
+            }            
             else if (call_type == 5)//Проверка на 4 последние цифры телефона 
             {
                 if (e.KeyChar != 13)

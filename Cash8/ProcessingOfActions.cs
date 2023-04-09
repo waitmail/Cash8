@@ -219,7 +219,7 @@ namespace Cash8
             dt.Columns.Add(bonus_action_b);
 
             DataColumn marking = new DataColumn();
-            marking.DataType = System.Type.GetType("System.Int32");
+            marking.DataType = System.Type.GetType("System.String");
             marking.ColumnName = "marking"; //listView1.Columns.Add("Акция2", 50, HorizontalAlignment.Right);
             dt.Columns.Add(marking);
 
@@ -350,100 +350,7 @@ namespace Cash8
                     {
                         dt.Rows.Add(row);
                     }
-                }
-
-
-                ////Подсчет суммы по документу
-                //if (listView2.Items.Count == 1)//1 товар найден
-                //{
-                //    //Проверим не сертификат ли это 
-
-
-                //    ListViewItem lvi = exist_tovar_in_listView(listView1, Convert.ToInt32(select_tovar.Tag), listView2.Items[0].Tag);
-                //    if (lvi == null)
-                //    {
-                //        //select_tovar.Tag.ToString()
-                //        lvi = new ListViewItem(select_tovar.Tag.ToString());
-                //        lvi.Tag = select_tovar.Tag.ToString();
-                //        lvi.SubItems.Add(select_tovar.Text);//Наименование
-                //        lvi.SubItems.Add(listView2.Items[0].Text);//Характеиристика                         
-
-                //        if (listView2.Items[0].Tag == null)
-                //        {
-                //            lvi.SubItems[2].Tag = "";  // listView2.Items[0].Tag;//GUID характеристики   
-                //        }
-                //        else
-                //        {
-                //            lvi.SubItems[2].Tag = listView2.Items[0].Tag;//GUID характеристики   
-                //        }
-
-                //        lvi.SubItems.Add("1");
-                //        lvi.SubItems.Add(listView2.Items[0].SubItems[1].Text);//Цена 
-                //        //Проверка на сертификат               
-                //        if (this.its_certificate(select_tovar.Tag.ToString()) != "1")
-                //        {
-                //            lvi.SubItems.Add(Math.Round(Convert.ToDecimal(lvi.SubItems[4].Text) - Convert.ToDecimal(lvi.SubItems[4].Text) * Discount, 2).ToString());//Цена со скидкой
-                //        }
-                //        else
-                //        {
-                //            lvi.SubItems.Add(Math.Round(Convert.ToDecimal(lvi.SubItems[4].Text), 2).ToString());//Цена со скидкой 
-                //        }
-                //        lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString());//Сумма
-                //        lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)).ToString()); //Сумма со скидкой                        
-                //        lvi.SubItems.Add("0"); //Номер акционного документа скидка
-                //        lvi.SubItems.Add("0"); //Номер акционного документа подарок
-                //        lvi.SubItems.Add("0"); //Номер акционного документа дополнительное поле пометка что участвовало в акции, но скидка может быть
-
-                //        listView1.Items.Add(lvi);
-                //        listView1.Select();
-                //        listView1.Items[this.listView1.Items.Count - 1].Selected = true;
-                //        update_record_last_tovar(listView1.Items[this.listView1.Items.Count - 1].SubItems[1].Text, listView1.Items[this.listView1.Items.Count - 1].SubItems[3].Text);
-                //        if (MainStaticClass.Use_Trassir > 0)
-                //        {
-                //            string s = MainStaticClass.get_string_message_for_trassir("POSNG_POSITION_ADD", numdoc.ToString(), MainStaticClass.Cash_Operator, DateTime.Now.Date.ToString("MM'/'dd'/'yyyy"), DateTime.Now.ToString("HH:mm:ss"), (listView1.Items.Count - 1).ToString(), "1", listView2.Items[0].SubItems[1].Text, barcode, "", MainStaticClass.CashDeskNumber.ToString(), select_tovar.Text + " " + listView2.Items[0].Text);
-                //            MainStaticClass.send_data_trassir(s);
-                //        }
-                //    }
-                //    else
-                //    {
-                //        lvi.SubItems[3].Text = (Convert.ToInt64(lvi.SubItems[3].Text) + 1).ToString();
-                //        //lvi.SubItems[4].Text = listView2.Items[0].SubItems[2].Text;//Цена
-                //        calculate_on_string(lvi);
-                //        lvi.Selected = true;
-                //        listView1.Select();
-                //        update_record_last_tovar(lvi.SubItems[1].Text, lvi.SubItems[4].Text);
-
-                //    }
-                //    calculation_of_the_sum_of_the_document();
-                //    //listView1.Select();
-                //    //listView1.Items[this.listView1.Items.Count - 1].Selected = true;
-
-                //    //this.last_tovar.Text = listView1.Items[this.listView1.Items.Count - 1].SubItems[1].Text;
-                //    //this.last_cena.Text = listView1.Items[this.listView1.Items.Count - 1].SubItems[3].Text;
-                //}
-                //else if (listView2.Items.Count > 1)//Найденных товаров больше одного необходимо показать список выбра пользователю
-                //{
-
-                //    // this.listView2.Width = SystemInformation.PrimaryMonitorSize.Width;
-                //    this.panel2.Visible = true;
-                //    this.panel2.BringToFront();
-                //    this.listView2.Visible = true;
-                //    listView2.Select();
-                //    listView2.Items[0].Selected = true;
-                //    listView2.Items[0].Focused = true;
-
-                //    //listView2.Focus();
-                //}
-                //else if (listView2.Items.Count == 0)
-                //{
-                //    //MessageBox.Show("Не найден");
-                //    //stop_com_barcode_scaner();
-                //    last_tovar.Text = barcode;
-                //    Tovar_Not_Found t_n_f = new Tovar_Not_Found();
-                //    t_n_f.ShowDialog();
-                //    t_n_f.Dispose();
-                //    //start_com_barcode_scaner();
-                //}
+                }               
 
                 reader.Close();
                 //                 conn.Close();
@@ -521,7 +428,7 @@ namespace Cash8
                         {
                             if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
                             {
-                                action_1_dt(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7), reader.GetInt32(4)); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
+                                action_1_dt(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7), reader.GetInt64(4)); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
                             }
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
@@ -538,7 +445,7 @@ namespace Cash8
                         {
                             if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
                             {
-                                action_2_dt(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7), reader.GetInt32(4)); //Сообщить о подарке                           
+                                action_2_dt(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7), reader.GetInt64(4)); //Сообщить о подарке                           
                             }
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
@@ -551,13 +458,13 @@ namespace Cash8
                         //action_2(reader.GetInt32(1));
                         if (reader.GetDecimal(2) != 0)
                         {
-                            action_3(reader.GetInt32(1), reader.GetDecimal(2), reader.GetDecimal(5));//Дать скидку на все позиции из списка позицию                                                 
+                            action_3_dt(reader.GetInt32(1), reader.GetDecimal(2), reader.GetDecimal(5));//Дать скидку на все позиции из списка позицию                                                 
                         }
                         else
                         {
                             if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
                             {
-                                action_3(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt16(7)); //Сообщить о подарке                           
+                                action_3_dt(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt16(7)); //Сообщить о подарке                           
                             }
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
@@ -761,13 +668,13 @@ namespace Cash8
                         //action_2(reader.GetInt32(1));
                         if (reader.GetDecimal(2) != 0)
                         {
-                            action_3(reader.GetInt32(1), reader.GetDecimal(2), reader.GetDecimal(5));//Дать скидку на все позиции из списка позицию                                                 
+                            action_3_dt(reader.GetInt32(1), reader.GetDecimal(2), reader.GetDecimal(5));//Дать скидку на все позиции из списка позицию                                                 
                         }
                         else
                         {
                             if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
                             {
-                                action_3(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt16(7)); //Сообщить о подарке                           
+                                action_3_dt(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt16(7)); //Сообщить о подарке                           
                             }
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
@@ -1099,7 +1006,7 @@ namespace Cash8
         * sum_null если true тогда сумма и сумма со скидкой 0 иначе как обычный товар
         * это для акции 
         */
-        public void find_barcode_or_code_in_tovar_action(string barcode, int count, bool sum_null, int num_doc)
+        public void find_barcode_or_code_in_tovar_action_dt(string barcode, int count, bool sum_null, int num_doc)
         {
 
             NpgsqlConnection conn = null;
@@ -1126,28 +1033,38 @@ namespace Cash8
                 while (reader.Read())
                 {
                     DataRow row = dt.NewRow();
-                    row["tovar_code"] = reader.GetInt32(0).ToString();//ListViewItem lvi = new ListViewItem(reader.GetInt32(0).ToString());                    
+                    row["tovar_code"] = reader.GetInt64(0).ToString();//ListViewItem lvi = new ListViewItem(reader.GetInt32(0).ToString());                    
                     row["tovar_name"] = reader.GetString(1);//Наименование
-                    //lvi.SubItems.Add("");//Характеристика
+                    row["characteristic_code"] = "";
+                    row["characteristic_name"] = "";                    
                     row["quantity"] = count;//Количество
                     row["price"] = reader.GetDecimal(2);//Цена
-                    row["price_at_discount"] = reader.GetDecimal(2);//Цена соскидкой    
-                    if (sum_null)
+                    string retail_price = get_price_action(num_doc);
+                    if (retail_price != "")
                     {
-                        row["sum_full"] = 0;// reader.GetDecimal(2);//Цена
-                        row["sum_at_discount"] = 0;// reader.GetDecimal(2);//Цена соскидкой                            
+                        //row["price_at_discount"] = reader.GetDecimal(2);//Цена соскидкой    
+                        row["price_at_discount"] = Decimal.Parse(retail_price);
                     }
-                    else
-                    {
+                        
+                    //if (sum_null)//это пережиток
+                    //{
+                    //    row["sum_full"] = 0;// reader.GetDecimal(2);//Цена
+                    //    row["sum_at_discount"] = 0;// reader.GetDecimal(2);//Цена соскидкой                            
+                    //}
+                    //else
+                    //{
                         row["sum_full"] = Convert.ToDecimal(row["price"]) * Convert.ToDecimal(row["quantity"]);// lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[2].Text) * Convert.ToDecimal(lvi.SubItems[3].Text)).ToString());//Сумма
                         row["sum_at_discount"] = Convert.ToDecimal(row["price_at_discount"]) * Convert.ToDecimal(row["quantity"]); //lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[2].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString()); //Сумма со скидкой                        
-                    }
+                    //}
                     row["action"] = 0;// lvi.SubItems.Add("0");
                     row["gift"] = num_doc;
                     row["action2"] = num_doc;
-                    there_are_goods = true;
-                    //this.listView1.Select();
-                    //this.listView1.Items[this.listView1.Items.Count - 1].Selected = true;
+                    row["bonus_reg"] = 0;
+                    row["bonus_action"] = 0;
+                    row["bonus_action_b"] = 0;
+                    row["marking"] = "";
+                    dt.Rows.Add(row);
+                    there_are_goods = true;                    
                 }
 
                 reader.Close();
@@ -1175,7 +1092,7 @@ namespace Cash8
         {
             Input_action_barcode ib = new Input_action_barcode();
             ib.count = count;
-            //ib.caller = this;
+            ib.caller2 = this;
             ib.call_type = call_type;
             ib.num_doc = num_doc;
             DialogResult dr = ib.ShowDialog();
@@ -1194,7 +1111,7 @@ namespace Cash8
         /// <param name="comment"></param>
         /// <param name="marker"></param>
         /// <param name="code_tovar"></param>
-        private void action_1_dt(int num_doc, string comment, int marker, int code_tovar)
+        private void action_1_dt(int num_doc, string comment, int marker, long code_tovar)
         {
             NpgsqlConnection conn = null;
             NpgsqlCommand command = null;
@@ -1211,13 +1128,13 @@ namespace Cash8
                     {
                         continue;
                     }
-                    query = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + row["code"].ToString() + " AND num_doc=" + num_doc.ToString();
+                    query = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + row["tovar_code"].ToString() + " AND num_doc=" + num_doc.ToString();
                     command = new NpgsqlCommand(query, conn);
                     result = Convert.ToInt16(command.ExecuteScalar());
                     if (result > 0)
                     {
-
                         //have_action = true;//Признак того что в документе есть сработка по акции                        
+
                         row["gift"] = num_doc.ToString();//Тип акции                                                 
                         MessageBox.Show("Сработала акция, НЕОБХОДИМО выдать подарок " + comment);
                         DialogResult dr = DialogResult.Cancel;
@@ -1232,7 +1149,6 @@ namespace Cash8
                                 find_barcode_or_code_in_tovar_dt(code_tovar.ToString());
                             }
                         }
-
                     }
                 }
                 conn.Close();
@@ -1510,7 +1426,7 @@ namespace Cash8
        * Списки товаров могут быть абсолютно одинаковыми, а могут и отличатся
        * 
        */
-        private void action_2_dt(int num_doc, string comment, int marker, int code_tovar)
+        private void action_2_dt(int num_doc, string comment, int marker, long code_tovar)
         {
             /*В этой переменной запомнится позиция которая первой входит в первый список акции
             * на него будет дана скидка, необходимо скопировать эту позицию в конец списка 
@@ -1584,7 +1500,7 @@ namespace Cash8
                         }
                         if (num_list == 1)
                         {
-                            ar.Add(row["code"].ToString());
+                            ar.Add(row["tovar_code"].ToString());
                         }
                         quantity_of_pieces--;
                     }
@@ -1656,7 +1572,7 @@ namespace Cash8
         /*Эта акция срабатывает когда сумма без скидки в документе >= сумме акции
         * тогда дается скидка на те позиции которые перечисляются в условии акции
         */
-        private void action_3(int num_doc, decimal persent, decimal sum)
+        private void action_3_dt(int num_doc, decimal persent, decimal sum)
         {
             NpgsqlConnection conn = null;
             NpgsqlCommand command = null;
@@ -1724,7 +1640,7 @@ namespace Cash8
         /*Эта акция срабатывает когда сумма без скидки в документе >= сумме акции
          * тогда выдается сообщение о подарке
          */
-        private void action_3(int num_doc, string comment, decimal sum, int marker)
+        private void action_3_dt(int num_doc, string comment, decimal sum, int marker)
         {
 
             NpgsqlConnection conn = null;
@@ -2008,6 +1924,10 @@ namespace Cash8
                         }
                         row["gift"] = "0";
                         row["action2"] = num_doc.ToString();
+                        row["bonus_reg"] = 0;
+                        row["bonus_action"] = 0;
+                        row["bonus_action_b"] = 0;
+                        row["marking"] = "";
                         dt.Rows.Add(row);
                         //SendDataToCustomerScreen(1, 0);
                     }
@@ -2197,6 +2117,10 @@ namespace Cash8
                                 }
                                 row["gift"] = "0";
                                 row["action2"] = num_doc.ToString();
+                                row["bonus_reg"] = 0;
+                                row["bonus_action"] = 0;
+                                row["bonus_action_b"] = 0;
+                                row["marking"] = "";
                                 dt.Rows.Add(row);
                                 multiplication_factor--;
                             }
@@ -2222,6 +2146,10 @@ namespace Cash8
                                 }
                                 row["gift"] = "0";
                                 row["action2"] = num_doc.ToString();
+                                row["bonus_reg"] = 0;
+                                row["bonus_action"] = 0;
+                                row["bonus_action_b"] = 0;
+                                row["marking"] = "";
                                 dt.Rows.Add(row);
                             }
                         }
@@ -2247,6 +2175,10 @@ namespace Cash8
                             }
                             row["gift"] = "0";
                             row["action2"] = num_doc.ToString();
+                            row["bonus_reg"] = 0;
+                            row["bonus_action"] = 0;
+                            row["bonus_action_b"] = 0;
+                            row["marking"] = "";
                             dt.Rows.Add(row);
                         }
                         num_records++;
@@ -2473,7 +2405,7 @@ namespace Cash8
                         MessageBox.Show("Обнаружен неакционный товар " + row["code"]);
                     }
                 }
-                find_barcode_or_code_in_tovar_action(code_tovar.ToString(), gift, false, num_doc);
+                find_barcode_or_code_in_tovar_action_dt(code_tovar.ToString(), gift, false, num_doc);
                 //                conn.Close();
             }
             catch (NpgsqlException ex)

@@ -140,7 +140,7 @@ namespace Cash8
                     CustomerScreen customerScreen = new CustomerScreen();
                     customerScreen.show_price = 1;
                     customerScreen.ListCheckPositions = new List<CheckPosition>();
-                    DataTable dataTable = to_define_the_action_dt();
+                    DataTable dataTable = to_define_the_action_dt(false);
                     foreach (DataRow row in dataTable.Rows)
                     {
                         CheckPosition checkPosition = new CheckPosition();
@@ -2245,6 +2245,7 @@ namespace Cash8
                     lvi.Tag = reader.GetInt64(0);
                     lvi.SubItems.Add(reader.GetString(1));//Наименование
                     lvi.SubItems.Add("");//Характеристика
+                    lvi.SubItems[2].Tag = "";
                     lvi.SubItems.Add(count.ToString());//Количество
                     string retail_price = get_price_action(num_doc);
                     if (retail_price != "")
@@ -3018,9 +3019,7 @@ namespace Cash8
         {
             Discount = 0;
             int bonus_is_on = 0;
-
-
-
+                       
             //if (listView1.Items.Count > 0)
             //{
             //    MyMessageBox mmb = new MyMessageBox(" Дисконтную карту можно сканировать только до ввода товаров ", " Проверка ввода ");
@@ -8756,7 +8755,7 @@ namespace Cash8
 
         #region action_dt        
 
-        private DataTable to_define_the_action_dt()
+        private DataTable to_define_the_action_dt(bool show_messages)
         {
             DataTable dataTable = null;
             if (!itsnew)
@@ -8769,7 +8768,7 @@ namespace Cash8
             }
             ProcessingOfActions processingOfActions = new ProcessingOfActions();
             processingOfActions.dt = processingOfActions.create_dt(listView1);
-            processingOfActions.show_messages = false;
+            processingOfActions.show_messages = show_messages;
             processingOfActions.to_define_the_action_dt();
             dataTable = processingOfActions.dt;           
 
@@ -11853,14 +11852,37 @@ namespace Cash8
                     {
                         to_define_the_action(barcode);
                     }
-
                     //Теперь все остальные акции
                     MainStaticClass.write_event_in_log(" Попытка обработать все остальные акции ", "Документ чек", numdoc.ToString());                    
                     to_define_the_action();//Обработка на дисконтные акции 
                 }
                 else
                 {
-                    to_define_the_action_dt();//Обработка на дисконтные акции 
+                    DataTable dataTable = to_define_the_action_dt(true);//Обработка на дисконтные акции с использованием datatable 
+                    //рассчитанные данные в памяти по акциям теперь помещаем в листвью 
+                    listView1.Items.Clear();
+                    foreach (DataRow row in dataTable.Rows)
+                    {
+                        ListViewItem lvi = new ListViewItem(row["tovar_code"].ToString());
+                        lvi.Tag = row["tovar_code"].ToString();
+                        lvi.SubItems.Add(row["tovar_name"].ToString());//Наименование                        
+                        lvi.SubItems.Add(row["characteristic_name"].ToString());//Характеристика
+                        lvi.SubItems[2].Tag = row["characteristic_code"].ToString();
+                        lvi.SubItems.Add(row["quantity"].ToString());//Количество
+                        lvi.SubItems.Add(row["price"].ToString());//Цена без скидки
+                        lvi.SubItems.Add(row["price_at_discount"].ToString());//Цена Со скидкой
+                        lvi.SubItems.Add(row["sum_full"].ToString());//Сумма без скидки
+                        lvi.SubItems.Add(row["sum_at_discount"].ToString());//Сумма со скидкой
+                        lvi.SubItems.Add(row["action"].ToString());//Акционный документ
+                        lvi.SubItems.Add(row["gift"].ToString());//Акционный документ
+                        lvi.SubItems.Add(row["action2"].ToString());//Акционный документ
+                        lvi.SubItems.Add(row["bonus_reg"].ToString());//Бонус
+                        lvi.SubItems.Add(row["bonus_action"].ToString());//Бонус
+                        lvi.SubItems.Add(row["bonus_action_b"].ToString());//Бонус
+                        lvi.SubItems.Add(row["marking"].ToString());//Маркировка
+
+                        listView1.Items.Add(lvi);
+                    }
                 }
 
                 //Теперь необходимо пересчитать все суммы по документу
@@ -11892,7 +11914,7 @@ namespace Cash8
             if (MainStaticClass.PassPromo != "")//Пароль не пустой бонусная магазин включен в бнусную систему
             {
                 if (check_type.SelectedIndex == 0) // Это продажа
-                {                    
+                {
                     if (MainStaticClass.GetWorkSchema == 2)
                     {
                         if (client_plastic_scaned)
@@ -11901,9 +11923,9 @@ namespace Cash8
                         }
                         //if (!change_bonus_card)//Если это не замена карты то проверить 
                         //{
-                            //Проверяем есть ли в чеке бонусная карта на продажу.
-                            bool first = (card_state == 1);//В чек считана бонусная карта клиента со статусом 1 т.е. не активирована                       
-                            bool second = check_availability_card_sale();
+                        //Проверяем есть ли в чеке бонусная карта на продажу.
+                        bool first = (card_state == 1);//В чек считана бонусная карта клиента со статусом 1 т.е. не активирована                       
+                        bool second = check_availability_card_sale();
                         if (first != second)
                         {
 
@@ -11935,64 +11957,7 @@ namespace Cash8
                         }
                         //}
                     }
-                    //if (client.Tag == null)// Если нет карты клиента, то предложить выдать карточку 
-                    //{
-                    //    if (MainStaticClass.check_amount_exceeds_threshold(calculation_of_the_sum_of_the_document()))
-                    //    {
-                    //        DialogResult dialog = MessageBox.Show(" Сработало условие выдачи бонусной карты клиенту, карту будем выдавать ? ", null, MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
-                    //        if (dialog == DialogResult.Yes)//Кассир выбрал вариант выдать карту 
-                    //        {
-                    //            cancel_action();                                
-                    //            InputeCodeClient inputeCodeClient = new InputeCodeClient();
-                    //            inputeCodeClient.cc = this;
-                    //            inputeCodeClient.ShowDialog();
-                    //            return;
-                    //        }
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    if ((client.Tag.ToString().Trim().Length == 36)||(client.Tag.ToString().Trim().Length == 11))//Это бонусная карта 
-                    //    {
-                    //        //BuyerInfoResponce buyerInfoResponce = get_buyerInfo();
-                    //        SentDataOnBonus.BuynewResponse buynewResponse = get_bonus_on_document();
-                    //        if (buynewResponse != null)
-                    //        {
-                    //            if (buynewResponse.res == "1")
-                    //            {
-                    //                pay_form.bonus_on_document.Text = ((int)(Convert.ToInt64(buynewResponse.bonusSum) / 100)).ToString();
-                    //                id_transaction = buynewResponse.transactionId;
-                    //                bonus_on_document = Convert.ToInt32(pay_form.bonus_on_document.Text);
-
-                    //            }
-                    //            else
-                    //            {
-                    //                get_description_errors_on_code(buynewResponse.res);
-                    //            }
-                    //        }
-                    //        //if (buyerInfoResponce != null)
-                    //        //{
-                    //        //    if (buyerInfoResponce.res == "1")
-                    //        //    {
-                    //        //        if (buyerInfoResponce.balance.activeBalance != "0")
-                    //        //        {
-                    //        //            pay_form.bonus_total_in_centr.Text = ((int)Convert.ToDecimal(buyerInfoResponce.balance.activeBalance) / 100).ToString();
-                    //        //            if (buyerInfoResponce.cards.card.state == "3")
-                    //        //            {
-                    //        //                pay_form.pay_bonus.Enabled = true;
-                    //        //            }
-                    //        //            bonus_total_centr = Convert.ToInt32(pay_form.bonus_total_in_centr.Text);
-                    //        //        }
-                    //        //    }
-                    //        //    else
-                    //        //    {
-                    //        //        bonus_total_centr = -1;
-                    //        //    }
-                    //        //}
-                    //    }
-                    //}
-
-                }               
+                }
             }
             //При переходе в окно оплаты цены должны быть отрисованы
             SendDataToCustomerScreen(1,1,1);
@@ -12941,168 +12906,6 @@ namespace Cash8
             }
 
             recalculate_all();
-        }
-
-        //private void btn_fill_on_sales_Click_Eva(object sender, EventArgs e)
-        //{
-        //    if (listView1.Items.Count > 0)
-        //    {
-        //        DialogResult dr = MessageBox.Show(" Перезаполнить товары в чеке ?", "", MessageBoxButtons.YesNo);
-        //        if (dr == DialogResult.No)
-        //        {
-        //            return;
-        //        }
-        //        else
-        //        {
-        //            listView1.Items.Clear();
-        //        }
-        //    }
-
-        //    id_sale = Convert.ToInt32(txtB_num_sales.Text);
-        //    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
-
-        //    try
-        //    {
-        //        string query_sales = "SELECT tovar_code, tovar.name, quantity AS quantity, price, price_at_a_discount, sum, sum_at_a_discount," +
-        //                            " checks_header.id_transaction, checks_header.client, item_marker " +
-        //                            " FROM " +
-        //                            " checks_table LEFT JOIN tovar ON checks_table.tovar_code = tovar.code " +
-        //                            " LEFT JOIN checks_header ON checks_table.document_number = checks_header.document_number " +
-        //                            " WHERE checks_table.document_number = '" + txtB_num_sales.Text.Trim() + "' AND checks_header.check_type = 0 AND checks_header.its_deleted = 0 " +
-        //                            " AND checks_header.date_time_write BETWEEN '" + DateTime.Now.AddDays(-14).Date.ToString("dd-MM-yyyy") +
-        //                            "' AND  '" + DateTime.Now.AddDays(1).ToString("dd-MM-yyyy") + "'";
-
-        //        string query_return = " SELECT tovar_code, tovar.name, quantity, price, price_at_a_discount, sum, sum_at_a_discount, checks_header.id_transaction," +
-        //                                " checks_header.client, item_marker FROM checks_table LEFT JOIN tovar ON checks_table.tovar_code = tovar.code " +
-        //                                " LEFT JOIN checks_header ON checks_table.document_number = checks_header.document_number " +
-        //                                " WHERE checks_header.id_sale = '" + txtB_num_sales.Text.Trim() + "'  AND checks_header.check_type = 1 AND checks_header.its_deleted = 0 " +
-        //                                " AND checks_header.date_time_write BETWEEN '" + DateTime.Now.AddDays(-14).Date.ToString("dd-MM-yyyy") + "' AND  '" +
-        //                                DateTime.Now.AddDays(1).ToString("dd-MM-yyyy") + "'"; 
-
-        //        conn.Open();
-        //        DataTable t_sales = new DataTable();
-        //        using (NpgsqlDataAdapter npgsqlDataAdapter = new NpgsqlDataAdapter(query_sales, conn))
-        //        {
-        //            npgsqlDataAdapter.Fill(t_sales);
-        //        }
-
-        //        DataTable t_return = new DataTable();
-        //        using (NpgsqlDataAdapter npgsqlDataAdapter = new NpgsqlDataAdapter(query_return, conn))
-        //        {
-        //            npgsqlDataAdapter.Fill(t_return);
-        //        }
-
-        //        foreach (DataRow row in t_return.Rows)
-        //        {
-        //            DataRow[] result = t_sales.Select("tovar_code=" + row["tovar_code"]+ 
-        //                                                " AND price_at_a_discount]"+ row["price_at_a_discount"] + 
-        //                                                " AND item_marker='"+row["item_marker"]+"'");
-        //            if (result.Length > 0)
-        //            {
-        //                t_sales.Rows.Remove(result[0]);
-        //            }
-        //        }
-
-        //        if (t_sales.Rows.Count > 0)
-        //        {
-        //            foreach (DataRow row in t_sales.Rows)
-        //            {
-        //                if (its_sertificate(row["tovar_code"].ToString()))
-        //                {
-        //                    continue;
-        //                }
-        //                    id_transaction_sale = row["id_transaction"].ToString();
-        //                    if (row["client"].ToString().Trim().Length != 0)
-        //                    {
-        //                        client.Tag = row["client"].ToString().Trim();// Надо заполнить еще и строку                                 
-        //                        client_barcode.Enabled = false;
-        //                    }
-        //                    ListViewItem lvi = new ListViewItem(row["tovar_code"].ToString());
-        //                    lvi.Tag = row["tovar_code"].ToString();
-        //                    lvi.SubItems.Add(row["name"].ToString());//Наименование
-        //                    lvi.SubItems.Add("");//Характеристика
-        //                    lvi.SubItems[2].Tag = "";
-        //                    lvi.SubItems.Add(row["quantity"].ToString());//Количество
-        //                    lvi.SubItems.Add(row["price"].ToString());//Цена без скидки
-        //                    lvi.SubItems.Add(row["price_at_a_discount"].ToString());//Цена Со скидкой
-        //                    lvi.SubItems.Add(row["sum"].ToString());//Сумма без скидки
-        //                    lvi.SubItems.Add(row["sum_at_a_discount"].ToString());//Сумма со скидкой
-        //                    lvi.SubItems.Add("0");//Акционный документ
-        //                    lvi.SubItems.Add("0");//Акционный документ
-        //                    lvi.SubItems.Add("0");//Акционный документ
-        //                    lvi.SubItems.Add("0");//Бонус
-        //                    lvi.SubItems.Add("0");//Бонус
-        //                    lvi.SubItems.Add("0");//Бонус
-        //                    lvi.SubItems.Add(row["item_marker"].ToString().Replace("vasya2021", "'"));//Маркер                    
-        //                    listView1.Items.Add(lvi);
-        //            }
-        //        }
-
-        //            //NpgsqlCommand command = new NpgsqlCommand(query, conn);
-        //            //NpgsqlDataReader reader = command.ExecuteReader();
-        //            //while (reader.Read())
-        //            //{
-        //            //    if (its_sertificate(reader[0].ToString()))
-        //            //    {
-        //            //        continue;
-        //            //    }
-        //            //    //**************************
-        //            //    id_transaction_sale = reader["id_transaction"].ToString();
-        //            //    if (reader["client"].ToString().Trim().Length != 0)
-        //            //    {
-        //            //        client.Tag = reader["client"].ToString().Trim();
-        //            //        //fill_client_on_return(reader["client"].ToString().Trim());
-        //            //        client_barcode.Enabled = false;
-        //            //    }
-        //            //    //**************************
-        //            //    ListViewItem lvi = new ListViewItem(reader[0].ToString());
-        //            //    lvi.Tag = reader[0].ToString();
-        //            //    lvi.SubItems.Add(reader[1].ToString());//Наименование
-        //            //    lvi.SubItems.Add("");//Характеристика
-        //            //    lvi.SubItems[2].Tag = "";
-        //            //    lvi.SubItems.Add(reader[2].ToString());//Количество
-        //            //    lvi.SubItems.Add(reader[3].ToString());//Цена без скидки
-        //            //    lvi.SubItems.Add(reader[4].ToString());//Цена Со скидкой
-        //            //    lvi.SubItems.Add(reader[5].ToString());//Сумма без скидки
-        //            //    lvi.SubItems.Add(reader[6].ToString());//Сумма со скидкой
-        //            //    lvi.SubItems.Add("0");//Акционный документ
-        //            //    lvi.SubItems.Add("0");//Акционный документ
-        //            //    lvi.SubItems.Add("0");//Акционный документ
-        //            //    lvi.SubItems.Add("0");//Бонус
-        //            //    lvi.SubItems.Add("0");//Бонус
-        //            //    lvi.SubItems.Add("0");//Бонус
-        //            //    lvi.SubItems.Add(reader["item_marker"].ToString().Replace("vasya2021", "'"));//Маркер                    
-        //            //    listView1.Items.Add(lvi);
-        //            //}
-        //            //reader.Close();
-        //            //conn.Close();
-        //            //command.Dispose();
-        //            //if (listView1.Items.Count == 0)
-        //            //{
-        //            //    MessageBox.Show(" По введенному номеру  " + txtB_num_sales.Text + " за период 14 дней чек не найден ");
-        //            //}
-        //            //else
-        //            //{
-        //            //    comment.Text = txtB_num_sales.Text;
-        //            //    btn_fill_on_sales.Enabled = false;
-        //            //}
-        //            //write_new_document("0", calculation_of_the_sum_of_the_document().ToString(), "0", "0", false, "0", "0", "0", "0");
-        //        }
-        //    catch (NpgsqlException ex)
-        //    {
-        //        MessageBox.Show(ex.Message);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show(ex.Message);
-        //    }
-        //    finally
-        //    {
-        //        if (conn.State == ConnectionState.Open)
-        //        {
-        //            conn.Close();
-        //        }
-        //    }
-        //}
+        }        
     }
 }
