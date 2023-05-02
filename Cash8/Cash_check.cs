@@ -82,6 +82,8 @@ namespace Cash8
         public bool change_bonus_card = false;
         private bool client_plastic_scaned = false;//клиент определен по платиковой карте или по номеру платиковой карты
         AnswerAddingKmArrayToTableTested answerAddingKmArrayToTableTested = null;
+        public string id_transaction_terminal     = "";
+        public string code_authorization_terminal = "";
 
 
         System.Windows.Forms.Timer timer = null;
@@ -110,6 +112,10 @@ namespace Cash8
         private void SendDataToCustomerScreen(int mode, int show_price, int calculate_actionc)
         {
             if (MainStaticClass.GetWorkSchema == 2)
+            {
+                return;
+            }
+            if (MainStaticClass.OneMonitorsConnected == 1)
             {
                 return;
             }
@@ -890,7 +896,7 @@ namespace Cash8
                                //" checks_header.sertificate_money,checks_header.non_cash_money,checks_header.cash_money,checks_header.sales_assistant,checks_header.bonuses_it_is_counted, " +
                                " checks_header.sertificate_money,checks_header.non_cash_money,checks_header.cash_money,checks_header.bonuses_it_is_counted, " +
                                " checks_header.bonuses_it_is_written_off, " +
-                               " checks_table.bonus_standard,checks_table.bonus_promotion,checks_table.promotion_b_mover,checks_table.item_marker,checks_header.requisite,checks_header.its_deleted " +
+                               " checks_table.bonus_standard,checks_table.bonus_promotion,checks_table.promotion_b_mover,checks_table.item_marker,checks_header.requisite,checks_header.its_deleted,checks_header.system_taxation " +
                                " FROM checks_header left join checks_table ON checks_header.document_number=checks_table.document_number " +
                                " left join clients ON checks_header.client  = clients.code " +
                                " left join tovar ON checks_table.tovar_code = tovar.code " +
@@ -917,6 +923,11 @@ namespace Cash8
                                                                              //}
                         this.user.Text = reader["users_name"].ToString();//.GetString(8);
                         this.pay.Text = "Напечатать F8";
+                        if (Convert.ToInt32(reader["system_taxation"]) == 3)
+                        {
+                            checkBox_to_print_repeatedly_p.Visible = true;
+                        }
+
                         header_fill = true;
                         //if (reader.GetBoolean(19))
                         //{
@@ -4077,7 +4088,9 @@ namespace Cash8
                                         "sent_to_processing_center,"+
                                         "requisite,"+
                                         "bonuses_it_is_counted,"+
-                                        "viza_d) VALUES(" +
+                                        "viza_d,"+
+                                        "id_transaction_terminal," +
+                                        "system_taxation) VALUES(" +
 
                                         "@document_number," +
                                         "@date_time_start," +
@@ -4108,7 +4121,9 @@ namespace Cash8
                                         "@sent_to_processing_center,"+
                                         "@requisite,"+
                                         "@bonuses_it_is_counted,"+
-                                        "@checkBox_viza_d)", conn);
+                                        "@checkBox_viza_d,"+
+                                        "@id_transaction_terminal,+" +
+                                        "@system_taxation)", conn);
 
                 command.Parameters.AddWithValue("document_number", numdoc.ToString());
                 command.Parameters.AddWithValue("date_time_start", date_time_start.Text.Replace("Чек", ""));
@@ -4153,7 +4168,9 @@ namespace Cash8
                 }               
                 command.Parameters.AddWithValue("bonuses_it_is_counted", bonuses_it_is_counted.ToString());
                 command.Parameters.AddWithValue("checkBox_viza_d", checkBox_viza_d.Checked ? 1 : 0);
-                
+                command.Parameters.AddWithValue("id_transaction_terminal", id_transaction_terminal);
+                command.Parameters.AddWithValue("system_taxation", MainStaticClass.SystemTaxation);
+
                 string sent_to_processing_center = "0";
                 if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema==3))
                 {
@@ -6054,7 +6071,6 @@ namespace Cash8
 
             try
             {
-
                 int nomer_naloga = 0;
                 string tax_type = "";
                 int index_marker_position = 0;
@@ -8754,7 +8770,13 @@ namespace Cash8
         }
 
         #region action_dt        
-
+        /// <summary>
+        /// Здесь происходит обработка по всем 
+        /// регулярным акциям течто со штрихкодом
+        /// и те что без штрихкода        
+        /// </summary>
+        /// <param name="show_messages"></param>
+        /// <returns></returns>
         private DataTable to_define_the_action_dt(bool show_messages)
         {
             DataTable dataTable = null;
@@ -8769,6 +8791,12 @@ namespace Cash8
             ProcessingOfActions processingOfActions = new ProcessingOfActions();
             processingOfActions.dt = processingOfActions.create_dt(listView1);
             processingOfActions.show_messages = show_messages;
+            MainStaticClass.write_event_in_log(" Попытка обработать акции по штрихкодам ", "Документ чек", numdoc.ToString());
+            foreach (string barcode in action_barcode_list)
+            {
+                processingOfActions.to_define_the_action_dt(barcode);
+            }
+
             processingOfActions.to_define_the_action_dt();
             dataTable = processingOfActions.dt;           
 
@@ -11845,7 +11873,7 @@ namespace Cash8
                 }
 
                 MainStaticClass.write_event_in_log(" Попытка обработать акции по штрихкодам ", "Документ чек", numdoc.ToString());
-                if (MainStaticClass.UseOldProcessiingActions)
+                if (MainStaticClass.EnableStockProcessingInMemory <= 0)
                 {
                     //Акции по штрихкодам
                     foreach (string barcode in action_barcode_list)
@@ -11858,6 +11886,8 @@ namespace Cash8
                 }
                 else
                 {
+                    
+                    //Акции по штрихкодам                    
                     DataTable dataTable = to_define_the_action_dt(true);//Обработка на дисконтные акции с использованием datatable 
                     //рассчитанные данные в памяти по акциям теперь помещаем в листвью 
                     listView1.Items.Clear();
@@ -11892,12 +11922,32 @@ namespace Cash8
                 //ПРОВЕРОЧНЫЙ ПЕРЕСЧЕТ ПО АКЦИЯМ 
                 MainStaticClass.write_event_in_log(" Попытка пересчитать чек ", "Документ чек", numdoc.ToString());
                 recalculate_all();
-                // КОНЕЦ ПРОВЕРОЧНЫЙ ПЕРЕСЧЕТ ПО АКЦИЯМ                
-                pay_form.pay_sum.Text = calculation_of_the_sum_of_the_document().ToString();
-                decimal total = calculation_of_the_sum_of_the_document();
-                string kop = ((int)((total - (int)total) * 100)).ToString();
-                kop = (kop.Length == 2 ? kop : "0" + kop);
-                pay_form.set_kop_on_non_cash_sum_kop(kop);
+                // КОНЕЦ ПРОВЕРОЧНЫЙ ПЕРЕСЧЕТ ПО АКЦИЯМ               
+               
+                //Если это киоск самообслуживания 
+                if (MainStaticClass.SelfServiceKiosk == 1)//это киоск самообслуживания 
+                {
+                    pay_form.cash_sum.Enabled         = false;
+                    pay_form.non_cash_sum.Enabled     = false;
+                    pay_form.non_cash_sum_kop.Enabled = false;
+                    pay_form.pay_sum.Text             = calculation_of_the_sum_of_the_document().ToString();
+
+                    double total = Convert.ToDouble(calculation_of_the_sum_of_the_document());
+                    string kop = ((int)((total - (int)total) * 100)).ToString();
+                    kop = (kop.Length == 2 ? kop : "0" + kop);
+                    pay_form.set_kop_on_non_cash_sum_kop(kop);
+                    pay_form.non_cash_sum.Text = ((int)total).ToString();
+                    //этот блок надо переделать
+                }
+                else
+                {
+                    pay_form.pay_sum.Text = calculation_of_the_sum_of_the_document().ToString();
+                    decimal total = calculation_of_the_sum_of_the_document();
+                    string kop = ((int)((total - (int)total) * 100)).ToString();
+                    kop = (kop.Length == 2 ? kop : "0" + kop);
+                    pay_form.set_kop_on_non_cash_sum_kop(kop);
+                }
+
             }
             else
             {
@@ -12679,7 +12729,7 @@ namespace Cash8
                                    "  SUM(dt.sum_at_a_discount) AS sum_at_a_discount, dt.id_transaction,dt.client,dt.item_marker" +
                                    " FROM " +
                                    " (SELECT tovar_code, tovar.name, quantity AS quantity, price, price_at_a_discount, sum, sum_at_a_discount," +
-                                   " checks_header.id_transaction, checks_header.client, item_marker " +
+                                   " checks_header.id_transaction, checks_header.client, item_marker,checks_header.id_transaction_terminal,checks_header.code_authorization_terminal " +
                                    " FROM " +
                                    " checks_table LEFT JOIN tovar ON checks_table.tovar_code = tovar.code " +
                                    " LEFT JOIN checks_header ON checks_table.document_number = checks_header.document_number " +

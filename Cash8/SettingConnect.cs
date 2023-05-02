@@ -1017,6 +1017,16 @@ namespace Cash8
                 "characteristic_name character varying(200) COLLATE pg_catalog.default,quantity integer,price numeric(10,2),price_at_a_discount numeric(10,2),sum numeric(10,2),sum_at_a_discount numeric(10,2)," +
                 "action_num_doc integer,action_num_doc1 integer,action_num_doc2 integer,item_marker character varying(200) COLLATE pg_catalog.default)WITH(OIDS = FALSE)TABLESPACE pg_default;" +
                 "ALTER TABLE public.roll_up_temp OWNER to postgres;");
+            queries.Add("ALTER TABLE public.constants ADD COLUMN Enable_stock_processing_in_memory boolean;UPDATE public.constants	SET Enable_stock_processing_in_memory=false;");
+            queries.Add("ALTER TABLE public.constants ADD COLUMN id_acquirer_terminal character varying(8) COLLATE pg_catalog.default;UPDATE public.constants	SET id_acquirer_terminal=''");
+            queries.Add("ALTER TABLE public.constants ADD COLUMN ip_address_acquiring_terminal character varying(21) COLLATE pg_catalog.default;UPDATE public.constants	SET ip_address_acquiring_terminal=''");
+            queries.Add("ALTER TABLE public.constants ADD COLUMN self_service_kiosk boolean;COMMENT ON COLUMN public.constants.self_service_kiosk IS 'Это киоск самообслуживания'; UPDATE public.constants	SET self_service_kiosk=false");
+            queries.Add("ALTER TABLE public.constants ADD COLUMN one_monitors_connected boolean;UPDATE public.constants	SET one_monitors_connected=false");
+            queries.Add("ALTER TABLE public.checks_header ADD COLUMN id_transaction_terminal character varying(18) COLLATE pg_catalog.default;");
+            queries.Add("ALTER TABLE public.checks_header ADD COLUMN system_taxation smallint DEFAULT 0; COMMENT ON COLUMN public.checks_header.system_taxation IS 'Система налогообложения';");
+            queries.Add("ALTER TABLE public.checks_header ADD COLUMN code_authorization_terminal character varying(8) COLLATE pg_catalog.default;COMMENT ON COLUMN public.checks_header.code_authorization_terminal IS 'Это служебное поле в ответе от терминала при оплате, его необходимо указывать при возврате ';");
+            queries.Add("ALTER TABLE public.checks_header ADD COLUMN its_print_p boolean;COMMENT ON COLUMN public.checks_header.its_print_p IS 'Признако того что чек был нормально рапечатан на фискальном принтере по налогообложению патент.';");
+            
             foreach (string str in queries)
             {
                 append_column(str);

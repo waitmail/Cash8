@@ -104,6 +104,289 @@ namespace Cash8
         private static string barcode = "";
 
         public static bool continue_to_read_the_data_from_a_port = false;
+        private static int enable_stock_processing_in_memory=-1;
+        private static int self_service_kiosk = -1;
+        private static string id_acquirer_terminal = "00000000";
+        private static string ip_address_acquiring_terminal = "000000000000000";
+        private static int one_monitors_connected = -1;
+        //private static int sno = -1;//это система налогообложения
+
+        //public static int SNO
+        //{
+        //    get
+        //    {
+        //        if (sno == -1)
+        //        {
+        //            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+        //            try
+        //            {
+        //                conn.Open();
+        //                string query = "SELECT sno FROM constants";
+        //                NpgsqlCommand command = new NpgsqlCommand(query, conn);
+        //                sno =Convert.ToInt16(command.ExecuteScalar());                        
+        //            }
+        //            catch (NpgsqlException ex)
+        //            {
+        //                sno = 0;
+        //                MessageBox.Show(" Ошибка при чтении системы налогообложения " + ex.Message);
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                sno = 0;                        
+        //                MessageBox.Show("Ошибка при чтении системы налогообложения" + ex.Message);
+        //            }
+        //            finally
+        //            {
+        //                if (conn.State == ConnectionState.Open)
+        //                {
+        //                    conn.Close();
+        //                }
+        //            }
+
+        //        }
+        //        return sno;
+        //    }
+        //}
+
+        public static int OneMonitorsConnected
+        {
+            get
+            {
+                if (one_monitors_connected == -1)
+                {
+
+                    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+                    try
+                    {
+                        conn.Open();
+                        string query = "SELECT one_monitors_connected FROM constants";
+                        NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                        object result_query = command.ExecuteScalar();
+                        if (Convert.ToBoolean(result_query) == false)
+                        {
+                            one_monitors_connected = 0;
+                        }
+                        else
+                        {
+                            one_monitors_connected = 1;
+                        }
+                    }
+                    catch (NpgsqlException ex)
+                    {
+                        one_monitors_connected = 0;
+                        MessageBox.Show("Ошибка при чтении флага о том что подключен один монитор" + ex.Message);
+                    }
+                    catch (Exception ex)
+                    {
+                        one_monitors_connected = 0;
+                        MessageBox.Show("Ошибка при чтении флага о том что подключен один монитор" + ex.Message);
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                }
+                return one_monitors_connected;
+            }
+        }
+
+
+        /// <summary>
+        /// Возвращает ип адрес эквайриного
+        /// терминала если такой установлен
+        /// </summary>
+        public static string IpAddressAcquiringTerminal
+        {
+            get
+            {
+                if (ip_address_acquiring_terminal == "000000000000000")
+                {
+                    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+                    try
+                    {
+                        conn.Open();
+                        string query = "SELECT ip_address_acquiring_terminal FROM constants";
+                        NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                        ip_address_acquiring_terminal = command.ExecuteScalar().ToString();
+                    }
+                    catch (NpgsqlException ex)
+                    {
+                        ip_address_acquiring_terminal = "";
+                        MessageBox.Show("Ошибка при чтении ид терминала эквайринга" + ex.Message);
+                    }
+                    catch (Exception ex)
+                    {
+                        ip_address_acquiring_terminal = "";
+                        MessageBox.Show("Ошибка при чтении ид терминала эквайринга" + ex.Message);
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+
+                }
+                return ip_address_acquiring_terminal;
+            }
+        }
+
+
+
+
+        /// <summary>
+        /// Возвращает ид эквайриного
+        /// терминала если он указан
+        /// в константах
+        /// </summary>
+        public static string IdAcquirerTerminal
+        {
+            get
+            {
+                if (id_acquirer_terminal == "00000000")
+                {
+                    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+                    try
+                    {
+                        conn.Open();
+                        string query = "SELECT id_acquirer_terminal FROM constants";
+                        NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                        id_acquirer_terminal = command.ExecuteScalar().ToString();                        
+                    }
+                    catch (NpgsqlException ex)
+                    {
+                        id_acquirer_terminal = "";
+                        MessageBox.Show("Ошибка при чтении ид терминала эквайринга" + ex.Message);
+                    }
+                    catch (Exception ex)
+                    {
+                        id_acquirer_terminal = "";
+                        MessageBox.Show("Ошибка при чтении ид терминала эквайринга" + ex.Message);
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }                   
+
+                }
+
+                return id_acquirer_terminal;
+            }
+            
+        }
+
+
+
+
+        /// <summary>
+        /// Возвращает флаг 1 если это киоск
+        /// саммобслуживания иначе 0
+        /// </summary>
+        public static int SelfServiceKiosk
+        {
+            get
+            {
+                if (self_service_kiosk == -1)
+                {
+                    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+                    try
+                    {
+                        conn.Open();
+                        string query = "SELECT self_service_kiosk FROM constants";
+                        NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                        object result_query = command.ExecuteScalar();
+                        if (Convert.ToBoolean(result_query) == false)
+                        {
+                            self_service_kiosk = 0;
+                        }
+                        else
+                        {
+                            self_service_kiosk = 1;
+                        }
+                    }
+                    catch (NpgsqlException ex)
+                    {
+                        self_service_kiosk = 0;
+                        MessageBox.Show("Ошибка при чтении флага это киоск самообслуживания" + ex.Message);
+                    }
+                    catch (Exception ex)
+                    {
+                        self_service_kiosk = 0;
+                        MessageBox.Show("Ошибка при чтении флага это киоск самообслуживания" + ex.Message);
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                }                
+                    return self_service_kiosk;
+            }
+        }
+
+
+
+
+        /// <summary>
+        /// Флаг возвращает истина если 
+        /// действует старый алгоритм по обработке акций 
+        /// и ложь если уже включен новый 
+        /// алгоритм с использованием DataTable
+        /// </summary>
+        public static int EnableStockProcessingInMemory
+        {
+            get
+            {
+                if (enable_stock_processing_in_memory == -1)
+                {
+                    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+                    try
+                    {
+                        conn.Open();
+                        string query = "SELECT enable_stock_processing_in_memory FROM constants";
+                        NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                        object result_query = command.ExecuteScalar();
+                        if (Convert.ToBoolean(result_query) == false)
+                        {
+                            enable_stock_processing_in_memory = 0;
+                        }
+                        else
+                        {
+                            enable_stock_processing_in_memory = 1;
+                        }
+                    }
+                    catch (NpgsqlException ex)
+                    {
+                        enable_stock_processing_in_memory = 0;
+                        MessageBox.Show("Ошибка при чтении версии обработки акций" + ex.Message);
+                    }
+                    catch (Exception ex)
+                    {
+                        enable_stock_processing_in_memory = 0;
+                        MessageBox.Show("Ошибка при чтении версии обработки акций" + ex.Message);
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                }
+
+                return enable_stock_processing_in_memory;
+            }
+        }
+                
 
 
         public static int GetVersionFn
@@ -200,17 +483,17 @@ namespace Cash8
         /// и ложь если уже включен новый 
         /// алгоритм с использованием DataTable
         /// </summary>
-        public static bool UseOldProcessiingActions
-        {
-            get
-            {
-                return use_old_processiing_actions;
-            }
-            set
-            {
-                use_old_processiing_actions = value;
-            }
-        }
+        //public static bool UseOldProcessiingActions
+        //{
+        //    get
+        //    {
+        //        return use_old_processiing_actions;
+        //    }
+        //    set
+        //    {
+        //        use_old_processiing_actions = value;
+        //    }
+        //}
 
         public static int GetWorkSchema
         {

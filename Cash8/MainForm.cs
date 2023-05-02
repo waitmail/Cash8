@@ -934,10 +934,10 @@ namespace Cash8
             //check_and_update_npgsql();
             UploadDeletedItems();//передача удаленных строк и строк с изменением количества вниз
 
-            if (MainStaticClass.Nick_Shop == "A01")//Для отладки нового механизма пока что сделаю такую заплатку
-            {
-                MainStaticClass.UseOldProcessiingActions = false;
-            }
+            //if (MainStaticClass.Nick_Shop == "A01")//Для отладки нового механизма пока что сделаю такую заплатку
+            //{
+            //    MainStaticClass.UseOldProcessiingActions = false;
+            //}
 
             this.menuStrip.Items.Clear();
             MainStaticClass.Main.start_interface_switching();

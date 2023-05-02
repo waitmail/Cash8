@@ -102,7 +102,9 @@ namespace Cash8
                 conn.Open();
                 string query = "SELECT nick_shop,cash_desk_number,use_debug,code_shop,"+
                     " path_for_web_service,currency,unloading_period,last_date_download_bonus_clients,"+
-                    " envd,pass_promo,print_m,system_taxation,work_schema,version_fn FROM constants";
+                    " envd,pass_promo,print_m,system_taxation,work_schema,version_fn,enable_stock_processing_in_memory," +
+                    " id_acquirer_terminal,ip_address_acquiring_terminal,self_service_kiosk "+
+                    " FROM constants";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
@@ -125,6 +127,10 @@ namespace Cash8
                     this.comboBox_system_taxation.SelectedIndex = Convert.ToInt16(reader["system_taxation"]);
                     this.txtB_work_schema.Text = reader["work_schema"].ToString();
                     this.txtB_version_fn.Text = reader["version_fn"].ToString();
+                    this.checkBox_enable_stock_processing_in_memory.CheckState= (reader["enable_stock_processing_in_memory"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
+                    this.txtB_id_acquiring_terminal.Text= reader["id_acquirer_terminal"].ToString();
+                    this.txtB_ip_address_acquiring_terminal.Text= reader["ip_address_acquiring_terminal"].ToString();
+                    this.checkBox_self_service_kiosk.CheckState = (reader["self_service_kiosk"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
                 }
                 reader.Close();                
             }
@@ -251,7 +257,9 @@ namespace Cash8
             }
                         
             string print_m = (checkBox_print_m.CheckState == CheckState.Unchecked ? "false" : "true");
-            //string usn_income_out_come = (checkBox_osn_usnIncomeOutcome.CheckState == CheckState.Unchecked ? "false" : "true");
+            string enable_stock_processing_in_memory = (checkBox_enable_stock_processing_in_memory.CheckState == CheckState.Unchecked ? "false" : "true");
+            string self_service_kiosk = (checkBox_self_service_kiosk.CheckState == CheckState.Unchecked ? "false" : "true");
+            string one_monitors_connected = (checkBox_one_monitors_connected.CheckState == CheckState.Unchecked ? "false" : "true");
 
             try
             {
@@ -269,7 +277,12 @@ namespace Cash8
                     "last_date_download_bonus_clients ='" + txtB_last_date_download_bonus_clients.Text + "'," +
                     "system_taxation = '" + comboBox_system_taxation.SelectedIndex.ToString() + "'," +
                     "work_schema = '" + txtB_work_schema.Text+"',"+
-                    "version_fn = "+txtB_version_fn.Text;                    
+                    "version_fn = "+txtB_version_fn.Text+","+
+                    "enable_stock_processing_in_memory="+ enable_stock_processing_in_memory+","+
+                    "id_acquirer_terminal='"+txtB_id_acquiring_terminal.Text.ToString()+"',"+
+                    "ip_address_acquiring_terminal='" + txtB_ip_address_acquiring_terminal.Text.ToString().Trim() + "'," +
+                    "self_service_kiosk=" + self_service_kiosk+","+
+                    "one_monitors_connected="+ one_monitors_connected;                    
        
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 int resul_update = command.ExecuteNonQuery();
@@ -286,7 +299,12 @@ namespace Cash8
                         "print_m,"+
                         "system_taxation,"+
                         "work_schema,"+
-                        "version_fn) VALUES(" +
+                        "version_fn,"+
+                        "enable_stock_processing_in_memory,"+
+                        "id_acquirer_terminal,"+
+                        "ip_address_acquiring_terminal,"+
+                        "self_service_kiosk,"+
+                        "one_monitors_connected) VALUES(" +
                         cash_desk_number.Text + ",'" +
                         nick_shop.Text + "'," +
                         get_use_debug() + ",'" +                        
@@ -297,7 +315,12 @@ namespace Cash8
                         print_m+"','"+
                         comboBox_system_taxation.SelectedIndex.ToString()+ "','"+
                         txtB_work_schema.Text+"','"+
-                        txtB_version_fn.Text+"')";
+                        txtB_version_fn.Text+"','"+
+                        enable_stock_processing_in_memory+"','"+
+                        txtB_id_acquiring_terminal.Text.ToString()+"','"+
+                        txtB_ip_address_acquiring_terminal.ToString().Trim()+"','"+
+                        self_service_kiosk+","+
+                        one_monitors_connected+")";
 
                     command = new NpgsqlCommand(query, conn);
                     command.ExecuteNonQuery();

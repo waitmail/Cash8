@@ -71,8 +71,9 @@ namespace Cash8
                     " id_transaction_sale," +
                     " remainder, "+
                     " bonuses_it_is_counted ,"+
-                    "id_sale, "+
-                    "viza_d    " + 
+                    " id_sale, "+
+                    " viza_d, "+
+                    " system_taxation" + 
                     " FROM checks_header WHERE document_number in  (" + document_number_list.ToString() + ")";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();                                
@@ -117,7 +118,7 @@ namespace Cash8
                     {
                         salesPortionsHeader.VizaD = "0";
                     }
-
+                    salesPortionsHeader.SystemTaxation = reader["system_taxation"].ToString();
                     salesPortions.ListSalesPortionsHeader.Add(salesPortionsHeader);
                     //Конец Новое заполнение                 
                 }
@@ -593,6 +594,7 @@ namespace Cash8
             public string SumCashRemainder { get; set; }
             public string NumOrder { get; set; }
             public string VizaD { get; set; }
+            public string SystemTaxation { get; set; }
 
         }
         

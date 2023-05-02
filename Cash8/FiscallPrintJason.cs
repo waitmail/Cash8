@@ -250,6 +250,7 @@ namespace Cash8
             cash_in_out.type = type;
             cash_in_out.cashSum = cashSum;
             string cash_in = JsonConvert.SerializeObject(cash_in_out, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            cash_in = cash_in+","+cash_in+"";
             string json = MainStaticClass.shablon.Replace("body", cash_in);
             guid = Guid.NewGuid().ToString();
             string replace = "\"uuid\": \"" + guid + "\"";

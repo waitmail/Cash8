@@ -1,6 +1,11 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows.Forms;
+using System.Net;
+using System.IO;
+using System.Text;
+using System.Xml.Serialization;
+using System.Collections.Generic;
 
 namespace Cash8
 {
@@ -15,10 +20,15 @@ namespace Cash8
         private bool firs_input_non_cash = true;
         public ListView listView_sertificates = null;
         public bool code_it_is_confirmed = false;//При списании бонусов, присланный код полтвержден клиентом  
-
+        private bool complete = false;
+        private string reference_number = "";
+        string str_command_sale = @"<?xml version=""1.0"" encoding=""UTF-8""?><request><field id = ""00"" >sum</field><field id=""04"">643</field><field id = ""25"" >1</field><field id=""27"">id_terminal</field></request>";
+        string str_command_cancel_sale = @"<?xml version=""1.0"" encoding=""UTF-8""?><request><field id = ""00"" >sum</field><field id=""04"">643</field><field id=""13"">code_authorization</field><field id=""14"">number_reference</field><field id = ""25"" >4</field><field id=""27"">id_terminal</field></request>";
 
         public Cash_check cc = null;
                
+        
+
         
         public Pay()
         {         
@@ -571,6 +581,8 @@ namespace Cash8
 
             try
             {
+                //if (MainStaticClass.SelfServiceKiosk == 0)
+                //{
                 if (this.cash_sum.Text.Length == 0)
                 {
                     if (numberDecimalSeparator() == ".")
@@ -582,12 +594,15 @@ namespace Cash8
                     }
                     else
                     {
-                        this.cash_sum.Text = "0";
-                        this.non_cash_sum.Text = "0";
+                        if (MainStaticClass.SelfServiceKiosk == 0)
+                        {                            
+                            this.non_cash_sum.Text = "0";                            
+                        }
                         this.sertificates_sum.Text = "0";
-
+                        this.cash_sum.Text = "0";
                     }
                 }
+                //}
 
                 this.cash_sum.Text = Convert.ToDouble(this.cash_sum.Text).ToString("F", System.Globalization.CultureInfo.CurrentCulture);
                 if (Convert.ToDecimal(pay_bonus_many.Text) == 0)//Если нет бонусов то проверить 
@@ -797,8 +812,16 @@ namespace Cash8
         }
 
         private void Pay_Load(object sender, EventArgs e)
-        {           
-            
+        {
+            if (MainStaticClass.SelfServiceKiosk == 1)//это киоск самообслуживания 
+            {
+                this.cash_sum.Enabled = false;
+                this.non_cash_sum.Enabled = false;                
+            }
+            else
+            {
+                this.cash_sum.Text = "";
+            }
             this.cash_sum.Focus();
             cash_sum.SelectionStart = 0;
             non_cash_sum.SelectionStart = 0;
@@ -806,24 +829,32 @@ namespace Cash8
             this.panel1.Size = new System.Drawing.Size(SystemInformation.PrimaryMonitorSize.Width - 100, SystemInformation.PrimaryMonitorSize.Height - 100);
             this.Top = 0;
             this.Left = 0;
-            this.Size = new System.Drawing.Size(SystemInformation.PrimaryMonitorSize.Width, SystemInformation.PrimaryMonitorSize.Height);           
+            this.Size = new System.Drawing.Size(SystemInformation.PrimaryMonitorSize.Width, SystemInformation.PrimaryMonitorSize.Height);
             this.pay_bonus_many.Text = "0";
             this.pay_bonus.Text = "0";
-            this.non_cash_sum.Text = "0";
-            this.non_cash_sum_kop.Text = "0";
-            this.cash_sum.Text = "";
+            //this.non_cash_sum.Text = "0";
+            //this.non_cash_sum_kop.Text = "0";
+            //this.cash_sum.Text = "";
 
             //decimal summ_sertificates = 0;
             //foreach (ListViewItem lvi in listView_sertificates.Items)
             //{
-                
+
             //    listView_sertificates.Items.Add((ListViewItem)lvi.Clone());
             //    summ_sertificates += decimal.Parse(lvi.SubItems[2].Text);
             //}
 
             //sertificates_sum.Text = summ_sertificates.ToString();
 
+            if (MainStaticClass.SelfServiceKiosk == 0)//это не киоск самообслуживания )
+            {
+                this.non_cash_sum.Text = "0";
+                this.non_cash_sum_kop.Text = "0";               
+            }
+
             calculate();
+
+
             if (MainStaticClass.GetWorkSchema == 2)
             {
                 if (cc.check_type.SelectedIndex == 0)
@@ -1082,6 +1113,47 @@ namespace Cash8
                     return;
                 }
 
+                //здесь если автокиос
+                //if (MainStaticClass.SelfServiceKiosk == 1)//отправляем запрос на сумму оплаты
+                //{
+                //    string url = "http://" + MainStaticClass.IpAddressAcquiringTerminal;
+                //    string money = ((Convert.ToDouble(this.non_cash_sum.Text.Trim())+Convert.ToDouble(non_cash_sum_kop.Text)/100)*100).ToString();
+                //    str_command_sale = str_command_sale.Replace("sum",    money);
+                //    str_command_sale = str_command_sale.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
+                //    send_command_acquiring_terminal(url, str_command_sale, ref complete, ref reference_number);
+                //    if (!complete)//ответ от терминала не удовлетворительный
+                //    {
+                //        calculate();
+                //        return;
+                //    }
+                //    else
+                //    {
+                //        cc.id_transaction_terminal = reference_number;
+                //    }
+                //}
+                
+                //параметры подключение терминала заполнены и сумма по карте к оплате заполнена
+                if ((MainStaticClass.IpAddressAcquiringTerminal.Trim() != "") && (MainStaticClass.IdAcquirerTerminal.Trim() != "") && (Convert.ToDouble(non_cash_sum.Text) > 0))
+                {                   
+                        string url = "http://" + MainStaticClass.IpAddressAcquiringTerminal;
+                        string money = ((Convert.ToDouble(this.non_cash_sum.Text.Trim()) + Convert.ToDouble(non_cash_sum_kop.Text) / 100) * 100).ToString();
+                        str_command_sale = str_command_sale.Replace("sum", money);
+                        str_command_sale = str_command_sale.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
+                        AnswerTerminal answerTerminal = new AnswerTerminal();
+                        send_command_acquiring_terminal(url, str_command_sale, ref complete, ref answerTerminal);
+                        if (!complete)//ответ от терминала не удовлетворительный
+                        {
+                            calculate();
+                            MessageBox.Show(" Неудачная попытка получения оплаты ");
+                            return;
+                        }
+                        else
+                        {
+                        cc.code_authorization_terminal = answerTerminal.code_authorization;     //13 поле
+                        cc.id_transaction_terminal = answerTerminal.number_reference;  //14 поле
+                    }                   
+                }
+                
                 //Получить сумму наличных
                 //если это возврат и если сумма безнала меньше 1 тогда копейки прибаквить к наличным
                 string sum_cash_pay = (Convert.ToDecimal(cash_sum.Text) - Convert.ToDecimal(remainder.Text)).ToString().Replace(",", ".");
@@ -1113,10 +1185,146 @@ namespace Cash8
                     }
                 }
 
+                //здесь надо понимать возврат сегодняшний или более ранний
+                
+                if ((MainStaticClass.IpAddressAcquiringTerminal.Trim() != "") && (MainStaticClass.IdAcquirerTerminal.Trim() != "") && (Convert.ToDouble(non_cash_sum.Text) > 0))
+                {
+                    string url = "http://" + MainStaticClass.IpAddressAcquiringTerminal;
+                    string money = ((Convert.ToDouble(this.non_cash_sum.Text.Trim()) + Convert.ToDouble(non_cash_sum_kop.Text) / 100) * 100).ToString();
+                    str_command_cancel_sale = str_command_cancel_sale.Replace("sum", money);
+                    AnswerTerminal answerTerminal = new AnswerTerminal();
+                    str_command_cancel_sale = str_command_cancel_sale.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
+                    send_command_acquiring_terminal(url, str_command_cancel_sale, ref complete, ref answerTerminal);
+                    if (!complete)//ответ от терминала не удовлетворительный
+                    {
+                        calculate();
+                        MessageBox.Show(" Неудачная попытка получения оплаты ");
+                        return;
+                    }
+                    else
+                    {
+                        cc.code_authorization_terminal = answerTerminal.code_authorization;//13 поле
+                        cc.id_transaction_terminal = answerTerminal.number_reference;  //14 поле
+                    }
+                }
+
                 cc.sale_cancellation_Click(sum_cash_pay, non_sum_cash_pay);
                 cc.closing = false;
                 this.DialogResult = DialogResult.OK;
                 this.Close();
+            }
+        }
+
+               
+        public class AnswerTerminal
+        {
+            public string code_authorization { get; set; }
+            public string number_reference { get; set; }
+
+            public AnswerTerminal()
+            {
+                number_reference = "";
+                code_authorization = "";
+            }
+        }
+
+
+        [XmlRoot(ElementName = "field")]
+        public class Field
+        {
+
+            [XmlAttribute(AttributeName = "id")]
+            public string Id { get; set; }
+
+            [XmlText]
+            public string Text { get; set; }
+        }
+
+        [XmlRoot(ElementName = "response")]
+        public class Response
+        {
+            
+            [XmlElement(ElementName = "field")]
+            public List<Field> Field { get; set; }
+        }
+
+
+        /// <summary>
+        /// Отправляет команду в эквайринг
+        /// терминал и возвращает результат
+        /// </summary>
+        /// <param name="Url"></param>
+        /// <param name="Data"></param>
+        /// <param name="status"></param>
+        public void send_command_acquiring_terminal(string Url, string Data, ref bool status,ref AnswerTerminal answerTerminal)
+        {
+            //string Out = String.Empty;
+            try
+            {
+                System.Net.WebRequest req = System.Net.WebRequest.Create(Url);
+                req.Method = "POST";
+                req.Timeout = 60000;
+                req.ContentType = "text/xml;charset = windows-1251";
+                //req.ContentType = "text/xml;charset = UTF-8";                
+                byte[] sentData = Encoding.GetEncoding("Windows-1251").GetBytes(Data);
+                //byte[] sentData = Encoding.UTF8.GetBytes(Data);
+                req.ContentLength = sentData.Length;
+                System.IO.Stream sendStream = req.GetRequestStream();
+                sendStream.Write(sentData, 0, sentData.Length);
+                sendStream.Close();
+                HttpWebResponse myHttpWebResponse = (HttpWebResponse)req.GetResponse();
+                if (myHttpWebResponse.StatusCode == HttpStatusCode.OK)
+                {
+                    var streamReader = new StreamReader(myHttpWebResponse.GetResponseStream(), Encoding.GetEncoding("Windows-1251"));
+                    var responseContent = streamReader.ReadToEnd();
+
+                    XmlSerializer serializer = new XmlSerializer(typeof(Response));
+                    using (StringReader reader = new StringReader(responseContent))
+                    {
+                        var test = (Response)serializer.Deserialize(reader);
+                        foreach (Field field in test.Field)
+                        {
+                            if (field.Id == "39")
+                            {
+                                if (field.Text.Trim() == "1")
+                                {
+                                    status = true;
+                                }
+                                else
+                                {
+                                    status = false;
+                                }
+                            }
+                            else if(field.Id=="13")
+                            {
+                                answerTerminal.code_authorization = field.Text.Trim();
+                            }
+                            else if(field.Id == "14")
+                            {
+                                answerTerminal.number_reference = field.Text.Trim();
+                            }
+
+                        }
+                    }
+                }
+                else
+                {
+                    status = false;
+                }
+
+                req = null;
+                sendStream = null;
+                myHttpWebResponse.Close();// = null;
+            }
+            catch (WebException ex)
+            {
+                status = false;
+                MessageBox.Show(" Ошибка при оплате по карте  " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                status = false;
+                MessageBox.Show(" Ошибка при оплате по карте  " + ex.Message);
             }
         }
 

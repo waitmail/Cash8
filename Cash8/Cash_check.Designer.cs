@@ -85,6 +85,7 @@
             this.cash = new System.Windows.Forms.TextBox();
             this.checkBox_club = new System.Windows.Forms.CheckBox();
             this.checkBox_viza_d = new System.Windows.Forms.CheckBox();
+            this.checkBox_to_print_repeatedly_p = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel_return.SuspendLayout();
@@ -99,7 +100,7 @@
             this.comment.Location = new System.Drawing.Point(99, 567);
             this.comment.MaxLength = 50;
             this.comment.Name = "comment";
-            this.comment.Size = new System.Drawing.Size(412, 20);
+            this.comment.Size = new System.Drawing.Size(208, 20);
             this.comment.TabIndex = 3;
             this.comment.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -581,7 +582,7 @@
             // 
             this.checkBox_to_print_repeatedly.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.checkBox_to_print_repeatedly.AutoSize = true;
-            this.checkBox_to_print_repeatedly.Location = new System.Drawing.Point(517, 571);
+            this.checkBox_to_print_repeatedly.Location = new System.Drawing.Point(313, 569);
             this.checkBox_to_print_repeatedly.Name = "checkBox_to_print_repeatedly";
             this.checkBox_to_print_repeatedly.Size = new System.Drawing.Size(135, 17);
             this.checkBox_to_print_repeatedly.TabIndex = 64;
@@ -687,11 +688,23 @@
             this.checkBox_viza_d.Visible = false;
             this.checkBox_viza_d.CheckedChanged += new System.EventHandler(this.checkBox_viza_d_CheckedChanged);
             // 
+            // checkBox_to_print_repeatedly_p
+            // 
+            this.checkBox_to_print_repeatedly_p.AutoSize = true;
+            this.checkBox_to_print_repeatedly_p.Location = new System.Drawing.Point(471, 568);
+            this.checkBox_to_print_repeatedly_p.Name = "checkBox_to_print_repeatedly_p";
+            this.checkBox_to_print_repeatedly_p.Size = new System.Drawing.Size(172, 17);
+            this.checkBox_to_print_repeatedly_p.TabIndex = 73;
+            this.checkBox_to_print_repeatedly_p.Text = "Напечатать повторно патент";
+            this.checkBox_to_print_repeatedly_p.UseVisualStyleBackColor = true;
+            this.checkBox_to_print_repeatedly_p.Visible = false;
+            // 
             // Cash_check
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 600);
+            this.Controls.Add(this.checkBox_to_print_repeatedly_p);
             this.Controls.Add(this.checkBox_viza_d);
             this.Controls.Add(this.checkBox_club);
             this.Controls.Add(this.btn_fill_on_sales);
@@ -811,5 +824,6 @@
         private System.Windows.Forms.TextBox cash;
         private System.Windows.Forms.CheckBox checkBox_club;
         public System.Windows.Forms.CheckBox checkBox_viza_d;
+        private System.Windows.Forms.CheckBox checkBox_to_print_repeatedly_p;
     }
 }
