@@ -2405,9 +2405,10 @@ namespace Cash8
             {
                 conn = MainStaticClass.NpgsqlConn();
                 conn.Open();
-                string query = "INSERT INTO document_wil_be_printed(document_number)VALUES ("+document_number+");";
+                string query = "INSERT INTO document_wil_be_printed(document_number,tax_type)VALUES ("+document_number+","+MainStaticClass.system_taxation.ToString()+");";
                 command = new NpgsqlCommand(query, conn);
                 command.ExecuteNonQuery();
+                command.Dispose();
                 conn.Close();
 
             }
@@ -2421,6 +2422,36 @@ namespace Cash8
                 {
                     conn.Close();
                 }
+                conn.Dispose();
+            }
+        }
+
+        public static void write_document_wil_be_printed(string document_number, int variant)
+        {
+            NpgsqlConnection conn = null;
+            NpgsqlCommand command = null;
+            try
+            {
+                conn = MainStaticClass.NpgsqlConn();
+                conn.Open();
+                string query = "INSERT INTO document_wil_be_printed(document_number,tax_type)VALUES (" + document_number + "," + (MainStaticClass.system_taxation + variant).ToString() + ");";
+                command = new NpgsqlCommand(query, conn);
+                command.ExecuteNonQuery();
+                command.Dispose();
+                conn.Close();
+
+            }
+            catch (NpgsqlException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+                conn.Dispose();
             }
         }
 
@@ -2433,7 +2464,7 @@ namespace Cash8
             {
                 conn = MainStaticClass.NpgsqlConn();
                 conn.Open();
-                string query = "DELETE FROM document_wil_be_printed WHERE document_number=" + document_number + ";";
+                string query = "DELETE FROM document_wil_be_printed WHERE document_number=" + document_number + " AND tax_type="+MainStaticClass.system_taxation.ToString();
                 command = new NpgsqlCommand(query, conn);
                 command.ExecuteNonQuery();
                 conn.Close();
@@ -2449,11 +2480,40 @@ namespace Cash8
                 {
                     conn.Close();
                 }
+                conn.Dispose();
             }            
         }
 
+        public static void delete_document_wil_be_printed(string document_number,int variant)
+        {
+            NpgsqlConnection conn = null;
+            NpgsqlCommand command = null;
+            try
+            {
+                conn = MainStaticClass.NpgsqlConn();
+                conn.Open();
+                string query = "DELETE FROM document_wil_be_printed WHERE document_number=" + document_number + " AND tax_type=" + (MainStaticClass.system_taxation+variant).ToString();
+                command = new NpgsqlCommand(query, conn);
+                command.ExecuteNonQuery();
+                conn.Close();
+                command.Dispose();
+            }
+            catch (NpgsqlException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+                conn.Dispose();
+            }
+        }
+
         /// <summary>
-        /// Получаем признак печатать лир букву m при печати 
+        /// Получаем признак печатать ли букву m при печати 
         /// маркированного товара
         /// </summary>
         /// <returns></returns>
@@ -2494,7 +2554,7 @@ namespace Cash8
             {
                 conn = MainStaticClass.NpgsqlConn();
                 conn.Open();
-                string query = "SELECT COUNT(document_number) FROM document_wil_be_printed WHERE document_number=" + document_number + ";";
+                string query = "SELECT COUNT(document_number) FROM document_wil_be_printed WHERE document_number=" + document_number + " AND tax_type ="+MainStaticClass.system_taxation.ToString();
                 command = new NpgsqlCommand(query, conn);
                 result = Convert.ToInt16(command.ExecuteScalar());
                 conn.Close();
@@ -2510,6 +2570,37 @@ namespace Cash8
                 {
                     conn.Close();
                 }
+                conn.Dispose();
+            }
+            return result;
+        }
+
+        public static int get_document_wil_be_printed(string document_number,int variant)
+        {
+            NpgsqlConnection conn = null;
+            NpgsqlCommand command = null;
+            int result = 0;
+            try
+            {
+                conn = MainStaticClass.NpgsqlConn();
+                conn.Open();
+                string query = "SELECT COUNT(document_number) FROM document_wil_be_printed WHERE document_number=" + document_number + " AND tax_type =" + (MainStaticClass.system_taxation+variant).ToString();
+                command = new NpgsqlCommand(query, conn);
+                result = Convert.ToInt16(command.ExecuteScalar());
+                conn.Close();
+                command.Dispose();
+            }
+            catch (NpgsqlException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+                conn.Dispose();
             }
             return result;
         }
@@ -2529,8 +2620,8 @@ namespace Cash8
                 string query = "INSERT INTO logs(time_event,description,metadata,document_number) VALUES('" + DateTime.Now.ToString("yyy-MM-dd HH:mm:ss") + "','" + description + "','" + metadata + "','" + document_number + "')";
                 command = new NpgsqlCommand(query, conn);
                 command.ExecuteNonQuery();
+                command.Dispose();
                 conn.Close();
-
             }
             catch (NpgsqlException ex)
             {
@@ -2542,6 +2633,7 @@ namespace Cash8
                 {
                     conn.Close();
                 }
+                conn.Dispose();
             }
         }
 

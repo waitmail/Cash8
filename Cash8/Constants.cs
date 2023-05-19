@@ -94,7 +94,7 @@ namespace Cash8
 
 
         private void Constants_Load(object sender, EventArgs e)
-        {
+        {           
             NpgsqlConnection conn = null;
             try
             {
@@ -103,7 +103,7 @@ namespace Cash8
                 string query = "SELECT nick_shop,cash_desk_number,use_debug,code_shop,"+
                     " path_for_web_service,currency,unloading_period,last_date_download_bonus_clients,"+
                     " envd,pass_promo,print_m,system_taxation,work_schema,version_fn,enable_stock_processing_in_memory," +
-                    " id_acquirer_terminal,ip_address_acquiring_terminal,self_service_kiosk "+
+                    " id_acquirer_terminal,ip_address_acquiring_terminal,self_service_kiosk,one_monitors_connected " +
                     " FROM constants";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();
@@ -131,8 +131,13 @@ namespace Cash8
                     this.txtB_id_acquiring_terminal.Text= reader["id_acquirer_terminal"].ToString();
                     this.txtB_ip_address_acquiring_terminal.Text= reader["ip_address_acquiring_terminal"].ToString();
                     this.checkBox_self_service_kiosk.CheckState = (reader["self_service_kiosk"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
+                    this.checkBox_one_monitors_connected.CheckState = (reader["one_monitors_connected"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
                 }
-                reader.Close();                
+                reader.Close();
+                if (nick_shop.Text.Trim() != "A01")
+                {
+                    checkBox_enable_stock_processing_in_memory.Enabled = false;
+                }
             }
             catch (NpgsqlException ex)
             {

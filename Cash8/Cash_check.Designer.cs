@@ -582,6 +582,7 @@
             // 
             this.checkBox_to_print_repeatedly.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.checkBox_to_print_repeatedly.AutoSize = true;
+            this.checkBox_to_print_repeatedly.Enabled = false;
             this.checkBox_to_print_repeatedly.Location = new System.Drawing.Point(313, 569);
             this.checkBox_to_print_repeatedly.Name = "checkBox_to_print_repeatedly";
             this.checkBox_to_print_repeatedly.Size = new System.Drawing.Size(135, 17);
@@ -690,7 +691,9 @@
             // 
             // checkBox_to_print_repeatedly_p
             // 
+            this.checkBox_to_print_repeatedly_p.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.checkBox_to_print_repeatedly_p.AutoSize = true;
+            this.checkBox_to_print_repeatedly_p.Enabled = false;
             this.checkBox_to_print_repeatedly_p.Location = new System.Drawing.Point(471, 568);
             this.checkBox_to_print_repeatedly_p.Name = "checkBox_to_print_repeatedly_p";
             this.checkBox_to_print_repeatedly_p.Size = new System.Drawing.Size(172, 17);
@@ -698,6 +701,7 @@
             this.checkBox_to_print_repeatedly_p.Text = "Напечатать повторно патент";
             this.checkBox_to_print_repeatedly_p.UseVisualStyleBackColor = true;
             this.checkBox_to_print_repeatedly_p.Visible = false;
+            this.checkBox_to_print_repeatedly_p.CheckedChanged += new System.EventHandler(this.checkBox_to_print_repeatedly_p_CheckedChanged);
             // 
             // Cash_check
             // 

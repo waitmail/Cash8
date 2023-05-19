@@ -564,7 +564,7 @@ namespace Cash8
         //    return result;
         //}
 
-        public static RootObject check_print(string type, Check check, string num_doc)
+        public static RootObject check_print(string type, Check check, string num_doc,int variant)
         {
             string status = "";
             RootObject result = null;
@@ -585,7 +585,7 @@ namespace Cash8
             if (POST(MainStaticClass.url, json) == "Created")
             {
                 //Здесь отметить задание, что оно принято к исполнению
-                MainStaticClass.write_document_wil_be_printed(num_doc);
+                MainStaticClass.write_document_wil_be_printed(num_doc,variant);
                 int count = 0;
                 while (1 == 1)
                 {

@@ -825,9 +825,10 @@ namespace Cash8
                 }
             }
 
-        }
+        }      
 
-        void Main_Load(object sender, System.EventArgs e)
+
+        private void Main_Load(object sender, System.EventArgs e)
         {           
 
             if (File.Exists(Application.StartupPath + "/UpdateNpgsql/Npgsql.dll"))

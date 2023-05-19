@@ -250,7 +250,7 @@ namespace Cash8
             cash_in_out.type = type;
             cash_in_out.cashSum = cashSum;
             string cash_in = JsonConvert.SerializeObject(cash_in_out, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-            cash_in = cash_in+","+cash_in+"";
+            //cash_in = cash_in+","+cash_in+"";
             string json = MainStaticClass.shablon.Replace("body", cash_in);
             guid = Guid.NewGuid().ToString();
             string replace = "\"uuid\": \"" + guid + "\"";
@@ -566,7 +566,7 @@ namespace Cash8
         //    return result;
         //}
         
-        public static RootObject check_print(string type, Check check,string num_doc)
+        public static RootObject check_print(string type, Check check,string num_doc,int variant)
         {
             string status = "";
             RootObject result = null;
@@ -584,7 +584,8 @@ namespace Cash8
             if (POST(MainStaticClass.url, json) == "Created")
             {
                 //Здесь отметить задание, что оно принято к исполнению
-                MainStaticClass.write_document_wil_be_printed(num_doc);
+                //MainStaticClass.write_document_wil_be_printed(num_doc);
+                MainStaticClass.write_document_wil_be_printed(num_doc, variant);
                 int count = 0;
                 while (1 == 1)
                 {

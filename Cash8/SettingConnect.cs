@@ -1026,7 +1026,10 @@ namespace Cash8
             queries.Add("ALTER TABLE public.checks_header ADD COLUMN system_taxation smallint DEFAULT 0; COMMENT ON COLUMN public.checks_header.system_taxation IS 'Система налогообложения';");
             queries.Add("ALTER TABLE public.checks_header ADD COLUMN code_authorization_terminal character varying(8) COLLATE pg_catalog.default;COMMENT ON COLUMN public.checks_header.code_authorization_terminal IS 'Это служебное поле в ответе от терминала при оплате, его необходимо указывать при возврате ';");
             queries.Add("ALTER TABLE public.checks_header ADD COLUMN its_print_p boolean;COMMENT ON COLUMN public.checks_header.its_print_p IS 'Признако того что чек был нормально рапечатан на фискальном принтере по налогообложению патент.';");
-            
+            queries.Add("ALTER TABLE public.document_wil_be_printed ADD COLUMN tax_type smallint; COMMENT ON COLUMN public.document_wil_be_printed.tax_type IS 'Реквизит добавлен для 3 типа налогообложения';");
+            queries.Add("DROP INDEX public.document_wil_be_printed_document_number_idx;");
+            queries.Add("CREATE INDEX document_wil_be_printed_document_number_idx2    ON public.document_wil_be_printed USING btree    (document_number ASC NULLS LAST, tax_type ASC NULLS LAST)    TABLESPACE pg_default;");
+
             foreach (string str in queries)
             {
                 append_column(str);

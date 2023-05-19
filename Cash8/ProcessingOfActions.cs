@@ -490,7 +490,10 @@ namespace Cash8
                     else if (tip_action == 6)
                     {           //Номер документа  //Сообщение о подарке //Сумма в данном случае шаг акции
                         //start_action = DateTime.Now;
-                        action_6(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt16(7));
+                        if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
+                        {
+                            action_6(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt16(7));
+                        }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
                     }
                     else if (tip_action == 8)
@@ -498,11 +501,17 @@ namespace Cash8
                         //start_action = DateTime.Now;
                         if (reader.GetDecimal(2) != 0)
                         {
-                            //action_8(reader.GetInt32(1), reader.GetDecimal(2), reader.GetDecimal(5));//Дать скидку на все позиции из списка позицию                                                 
+                            if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
+                            {
+                                action_8_dt(reader.GetInt32(1), reader.GetDecimal(2), reader.GetDecimal(5));//Дать скидку на все позиции из списка позицию                                                 
+                            }
                         }
                         else
                         {
-                            //action_8(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt32(4), reader.GetInt16(7));
+                            if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
+                            {
+                                action_8_dt(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt64(4), reader.GetInt16(7));
+                            }
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
                     }
@@ -2413,10 +2422,10 @@ namespace Cash8
                         row["action"] = num_doc.ToString(); //Номер акционного документа
                         gift += Convert.ToInt32(row["quantity"]);
                     }
-                    else
-                    {
-                        MessageBox.Show("Обнаружен неакционный товар " + row["code"]);
-                    }
+                    //else
+                    //{
+                    //    MessageBox.Show("Обнаружен неакционный товар " + row["code"]);
+                    //}
                 }
                 find_barcode_or_code_in_tovar_action_dt(code_tovar.ToString(), gift, false, num_doc);
                 //                conn.Close();
@@ -2451,7 +2460,7 @@ namespace Cash8
         /// <param name="num_doc"></param>
         /// <param name="persent"></param>
         /// <param name="sum"></param>
-        private void action_8(int num_doc, decimal persent, decimal sum)
+        private void action_8_dt(int num_doc, decimal persent, decimal sum)
         {
 
             if (!create_temp_tovar_table_4())
@@ -2480,7 +2489,7 @@ namespace Cash8
                     {
                         DataRow row2 = dt2.NewRow();
                         row2.ItemArray = row.ItemArray;
-                        dt.Rows.Add(row2);
+                        dt2.Rows.Add(row2);
                         continue;
                     }
                     //query_string = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + lvi.Tag.ToString() + " AND num_doc=" + num_doc.ToString();
@@ -2524,7 +2533,7 @@ namespace Cash8
                     {
                         DataRow row2 = dt2.NewRow();
                         row2.ItemArray = row.ItemArray;
-                        dt.Rows.Add(row2);
+                        dt2.Rows.Add(row2);
                     }
                 }
 
@@ -2617,6 +2626,10 @@ namespace Cash8
                             }
                             row["gift"] = "0";
                             row["action2"] = num_doc.ToString();
+                            row["bonus_reg"] = 0;
+                            row["bonus_action"] = 0;
+                            row["bonus_action_b"] = 0;
+                            row["marking"] = "";
                             dt.Rows.Add(row);
                             multiplication_factor--;
 
@@ -2665,6 +2678,10 @@ namespace Cash8
                             }
                             row["gift"] = "0";
                             row["action2"] = num_doc.ToString();
+                            row["bonus_reg"] = 0;
+                            row["bonus_action"] = 0;
+                            row["bonus_action_b"] = 0;
+                            row["marking"] = "";
                             dt.Rows.Add(row);
                             multiplication_factor--;
                         }
@@ -2710,7 +2727,7 @@ namespace Cash8
         /// <param name="num_doc"></param>
         /// <param name="persent"></param>
         /// <param name="sum"></param>
-        private void action_8(int num_doc, string comment, decimal sum, long code_tovar, Int32 marker)
+        private void action_8_dt(int num_doc, string comment, decimal sum, long code_tovar, Int32 marker)
         {
 
             if (!create_temp_tovar_table_4())
@@ -2836,7 +2853,7 @@ namespace Cash8
                     command.Transaction = trans;
                     command.ExecuteNonQuery();
                 }
-                query = "SELECT code_tovar, name_tovar, characteristic_guid, characteristic_name, SUM(quantity), price," +
+                query = "SELECT code_tovar, name_tovar, characteristic_guid, characteristic_name, SUM(quantity) AS quantity, price," +
                     " price_at_a_discount, SUM(sum), SUM(sum_at_a_discount), action_num_doc, action_num_doc1, action_num_doc2, item_marker" +
                     " FROM public.roll_up_temp    GROUP BY code_tovar, name_tovar, characteristic_guid, characteristic_name, price," +
                     " price_at_a_discount, action_num_doc, action_num_doc1, action_num_doc2, item_marker;";
@@ -2851,7 +2868,7 @@ namespace Cash8
                     row["tovar_name"] = reader[1].ToString().Trim();
                     row["characteristic_code"] = reader[2].ToString();
                     row["characteristic_name"] = reader[3].ToString();
-                    row["quantity"] = reader.GetInt32(4);
+                    row["quantity"] = reader.GetInt64(4);
                     row["price"] = reader.GetDecimal(5);
                     row["price_at_discount"] = reader.GetDecimal(6);
                     row["sum_full"] = reader.GetDecimal(7);
