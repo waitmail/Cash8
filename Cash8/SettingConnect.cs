@@ -1029,6 +1029,9 @@ namespace Cash8
             queries.Add("ALTER TABLE public.document_wil_be_printed ADD COLUMN tax_type smallint; COMMENT ON COLUMN public.document_wil_be_printed.tax_type IS 'Реквизит добавлен для 3 типа налогообложения';");
             queries.Add("DROP INDEX public.document_wil_be_printed_document_number_idx;");
             queries.Add("CREATE INDEX document_wil_be_printed_document_number_idx2    ON public.document_wil_be_printed USING btree    (document_number ASC NULLS LAST, tax_type ASC NULLS LAST)    TABLESPACE pg_default;");
+            queries.Add("ALTER TABLE public.action_header ADD COLUMN kind smallint NOT NULL DEFAULT 0;");
+            queries.Add("CREATE UNIQUE INDEX code_client_num_doc ON public.action_clients USING btree (code_client, num_doc); ALTER TABLE public.action_clients CLUSTER ON code_client_num_doc;");
+            queries.Add("ALTER TABLE public.tovar ADD COLUMN its_excise smallint NOT NULL DEFAULT 0;COMMENT ON COLUMN public.tovar.its_excise IS '0 - обычный товар 1 - подакцизный товар';");
 
             foreach (string str in queries)
             {

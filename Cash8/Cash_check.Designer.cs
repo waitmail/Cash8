@@ -86,6 +86,9 @@
             this.checkBox_club = new System.Windows.Forms.CheckBox();
             this.checkBox_viza_d = new System.Windows.Forms.CheckBox();
             this.checkBox_to_print_repeatedly_p = new System.Windows.Forms.CheckBox();
+            this.btn_del_position = new System.Windows.Forms.Button();
+            this.btn_cancel_check = new System.Windows.Forms.Button();
+            this.txtB_total_sum = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel_return.SuspendLayout();
@@ -97,10 +100,10 @@
             // comment
             // 
             this.comment.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.comment.Location = new System.Drawing.Point(99, 567);
+            this.comment.Location = new System.Drawing.Point(81, 567);
             this.comment.MaxLength = 50;
             this.comment.Name = "comment";
-            this.comment.Size = new System.Drawing.Size(208, 20);
+            this.comment.Size = new System.Drawing.Size(165, 20);
             this.comment.TabIndex = 3;
             this.comment.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -138,7 +141,7 @@
             this.client_barcode.Location = new System.Drawing.Point(366, 45);
             this.client_barcode.MaxLength = 13;
             this.client_barcode.Name = "client_barcode";
-            this.client_barcode.Size = new System.Drawing.Size(145, 20);
+            this.client_barcode.Size = new System.Drawing.Size(99, 20);
             this.client_barcode.TabIndex = 0;
             this.client_barcode.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.client_barcode_KeyPress);
             // 
@@ -148,7 +151,7 @@
             this.inputbarcode.BackColor = System.Drawing.SystemColors.Window;
             this.inputbarcode.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.inputbarcode.ForeColor = System.Drawing.Color.Green;
-            this.inputbarcode.Location = new System.Drawing.Point(611, 146);
+            this.inputbarcode.Location = new System.Drawing.Point(611, 123);
             this.inputbarcode.MaxLength = 13;
             this.inputbarcode.Name = "inputbarcode";
             this.inputbarcode.Size = new System.Drawing.Size(177, 29);
@@ -220,9 +223,11 @@
             // 
             this.pay.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.pay.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.pay.Location = new System.Drawing.Point(658, 567);
+            this.pay.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.pay.ForeColor = System.Drawing.Color.LimeGreen;
+            this.pay.Location = new System.Drawing.Point(639, 544);
             this.pay.Name = "pay";
-            this.pay.Size = new System.Drawing.Size(137, 23);
+            this.pay.Size = new System.Drawing.Size(157, 48);
             this.pay.TabIndex = 25;
             this.pay.Text = "Оплатить/Вернуть(F8)";
             this.pay.UseVisualStyleBackColor = true;
@@ -233,14 +238,14 @@
             this.last_tovar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.last_tovar.BackColor = System.Drawing.SystemColors.Window;
-            this.last_tovar.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.last_tovar.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.last_tovar.ForeColor = System.Drawing.SystemColors.HotTrack;
             this.last_tovar.Location = new System.Drawing.Point(13, 68);
             this.last_tovar.MaxLength = 200;
             this.last_tovar.Multiline = true;
             this.last_tovar.Name = "last_tovar";
             this.last_tovar.ReadOnly = true;
-            this.last_tovar.Size = new System.Drawing.Size(775, 70);
+            this.last_tovar.Size = new System.Drawing.Size(775, 47);
             this.last_tovar.TabIndex = 29;
             // 
             // date_time_start
@@ -351,6 +356,7 @@
             // 
             // return_kop
             // 
+            this.return_kop.Enabled = false;
             this.return_kop.Location = new System.Drawing.Point(345, 27);
             this.return_kop.MaxLength = 2;
             this.return_kop.Name = "return_kop";
@@ -360,6 +366,7 @@
             // 
             // return_rouble
             // 
+            this.return_rouble.Enabled = false;
             this.return_rouble.Location = new System.Drawing.Point(237, 27);
             this.return_rouble.MaxLength = 12;
             this.return_rouble.Name = "return_rouble";
@@ -381,7 +388,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Location = new System.Drawing.Point(8, 198);
+            this.tabControl1.Location = new System.Drawing.Point(8, 175);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(791, 363);
@@ -440,7 +447,7 @@
             // txtB_sertificate_money
             // 
             this.txtB_sertificate_money.Enabled = false;
-            this.txtB_sertificate_money.Location = new System.Drawing.Point(88, 151);
+            this.txtB_sertificate_money.Location = new System.Drawing.Point(88, 128);
             this.txtB_sertificate_money.Name = "txtB_sertificate_money";
             this.txtB_sertificate_money.Size = new System.Drawing.Size(53, 20);
             this.txtB_sertificate_money.TabIndex = 47;
@@ -448,7 +455,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(12, 156);
+            this.label9.Location = new System.Drawing.Point(12, 133);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(76, 13);
             this.label9.TabIndex = 48;
@@ -457,7 +464,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(144, 154);
+            this.label10.Location = new System.Drawing.Point(144, 131);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(77, 13);
             this.label10.TabIndex = 49;
@@ -466,7 +473,7 @@
             // txtB_non_cash_money
             // 
             this.txtB_non_cash_money.Enabled = false;
-            this.txtB_non_cash_money.Location = new System.Drawing.Point(222, 150);
+            this.txtB_non_cash_money.Location = new System.Drawing.Point(222, 127);
             this.txtB_non_cash_money.Name = "txtB_non_cash_money";
             this.txtB_non_cash_money.Size = new System.Drawing.Size(51, 20);
             this.txtB_non_cash_money.TabIndex = 50;
@@ -474,7 +481,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(276, 156);
+            this.label11.Location = new System.Drawing.Point(276, 133);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(58, 13);
             this.label11.TabIndex = 51;
@@ -483,7 +490,7 @@
             // txtB_cash_money
             // 
             this.txtB_cash_money.Enabled = false;
-            this.txtB_cash_money.Location = new System.Drawing.Point(334, 152);
+            this.txtB_cash_money.Location = new System.Drawing.Point(334, 129);
             this.txtB_cash_money.Name = "txtB_cash_money";
             this.txtB_cash_money.Size = new System.Drawing.Size(53, 20);
             this.txtB_cash_money.TabIndex = 52;
@@ -491,7 +498,7 @@
             // txtB_email_telephone
             // 
             this.txtB_email_telephone.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtB_email_telephone.Location = new System.Drawing.Point(570, 180);
+            this.txtB_email_telephone.Location = new System.Drawing.Point(570, 157);
             this.txtB_email_telephone.MaxLength = 50;
             this.txtB_email_telephone.Name = "txtB_email_telephone";
             this.txtB_email_telephone.Size = new System.Drawing.Size(216, 20);
@@ -501,7 +508,7 @@
             // 
             this.label12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(484, 183);
+            this.label12.Location = new System.Drawing.Point(484, 160);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(86, 13);
             this.label12.TabIndex = 54;
@@ -510,10 +517,10 @@
             // txtB_client_phone
             // 
             this.txtB_client_phone.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtB_client_phone.Location = new System.Drawing.Point(596, 45);
+            this.txtB_client_phone.Location = new System.Drawing.Point(545, 45);
             this.txtB_client_phone.MaxLength = 10;
             this.txtB_client_phone.Name = "txtB_client_phone";
-            this.txtB_client_phone.Size = new System.Drawing.Size(190, 20);
+            this.txtB_client_phone.Size = new System.Drawing.Size(72, 20);
             this.txtB_client_phone.TabIndex = 1;
             // 
             // label_client_barcode
@@ -531,7 +538,7 @@
             this.label_client_phone.AutoSize = true;
             this.label_client_phone.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.label_client_phone.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.label_client_phone.Location = new System.Drawing.Point(521, 47);
+            this.label_client_phone.Location = new System.Drawing.Point(470, 47);
             this.label_client_phone.Name = "label_client_phone";
             this.label_client_phone.Size = new System.Drawing.Size(69, 15);
             this.label_client_phone.TabIndex = 59;
@@ -564,7 +571,7 @@
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(390, 157);
+            this.label13.Location = new System.Drawing.Point(390, 134);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(45, 13);
             this.label13.TabIndex = 62;
@@ -573,7 +580,7 @@
             // txtB_bonus_money
             // 
             this.txtB_bonus_money.Enabled = false;
-            this.txtB_bonus_money.Location = new System.Drawing.Point(436, 152);
+            this.txtB_bonus_money.Location = new System.Drawing.Point(436, 129);
             this.txtB_bonus_money.Name = "txtB_bonus_money";
             this.txtB_bonus_money.Size = new System.Drawing.Size(50, 20);
             this.txtB_bonus_money.TabIndex = 63;
@@ -583,7 +590,7 @@
             this.checkBox_to_print_repeatedly.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.checkBox_to_print_repeatedly.AutoSize = true;
             this.checkBox_to_print_repeatedly.Enabled = false;
-            this.checkBox_to_print_repeatedly.Location = new System.Drawing.Point(313, 569);
+            this.checkBox_to_print_repeatedly.Location = new System.Drawing.Point(261, 544);
             this.checkBox_to_print_repeatedly.Name = "checkBox_to_print_repeatedly";
             this.checkBox_to_print_repeatedly.Size = new System.Drawing.Size(135, 17);
             this.checkBox_to_print_repeatedly.TabIndex = 64;
@@ -594,7 +601,7 @@
             // lbl_inn
             // 
             this.lbl_inn.AutoSize = true;
-            this.lbl_inn.Location = new System.Drawing.Point(8, 179);
+            this.lbl_inn.Location = new System.Drawing.Point(8, 156);
             this.lbl_inn.Name = "lbl_inn";
             this.lbl_inn.Size = new System.Drawing.Size(31, 13);
             this.lbl_inn.TabIndex = 65;
@@ -602,7 +609,7 @@
             // 
             // txtB_inn
             // 
-            this.txtB_inn.Location = new System.Drawing.Point(45, 176);
+            this.txtB_inn.Location = new System.Drawing.Point(45, 153);
             this.txtB_inn.MaxLength = 12;
             this.txtB_inn.Name = "txtB_inn";
             this.txtB_inn.Size = new System.Drawing.Size(83, 20);
@@ -610,7 +617,7 @@
             // 
             // btn_get_name
             // 
-            this.btn_get_name.Location = new System.Drawing.Point(135, 177);
+            this.btn_get_name.Location = new System.Drawing.Point(135, 154);
             this.btn_get_name.Name = "btn_get_name";
             this.btn_get_name.Size = new System.Drawing.Size(64, 23);
             this.btn_get_name.TabIndex = 67;
@@ -622,7 +629,7 @@
             // 
             this.txtB_name.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtB_name.Location = new System.Drawing.Point(205, 179);
+            this.txtB_name.Location = new System.Drawing.Point(205, 156);
             this.txtB_name.MaxLength = 250;
             this.txtB_name.Name = "txtB_name";
             this.txtB_name.Size = new System.Drawing.Size(273, 20);
@@ -669,7 +676,7 @@
             this.checkBox_club.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.checkBox_club.AutoSize = true;
             this.checkBox_club.CheckAlign = System.Drawing.ContentAlignment.TopRight;
-            this.checkBox_club.Location = new System.Drawing.Point(555, 146);
+            this.checkBox_club.Location = new System.Drawing.Point(555, 123);
             this.checkBox_club.Name = "checkBox_club";
             this.checkBox_club.Size = new System.Drawing.Size(50, 17);
             this.checkBox_club.TabIndex = 71;
@@ -680,7 +687,7 @@
             // 
             this.checkBox_viza_d.AutoSize = true;
             this.checkBox_viza_d.Enabled = false;
-            this.checkBox_viza_d.Location = new System.Drawing.Point(492, 146);
+            this.checkBox_viza_d.Location = new System.Drawing.Point(492, 123);
             this.checkBox_viza_d.Name = "checkBox_viza_d";
             this.checkBox_viza_d.Size = new System.Drawing.Size(63, 17);
             this.checkBox_viza_d.TabIndex = 72;
@@ -694,7 +701,7 @@
             this.checkBox_to_print_repeatedly_p.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.checkBox_to_print_repeatedly_p.AutoSize = true;
             this.checkBox_to_print_repeatedly_p.Enabled = false;
-            this.checkBox_to_print_repeatedly_p.Location = new System.Drawing.Point(471, 568);
+            this.checkBox_to_print_repeatedly_p.Location = new System.Drawing.Point(263, 566);
             this.checkBox_to_print_repeatedly_p.Name = "checkBox_to_print_repeatedly_p";
             this.checkBox_to_print_repeatedly_p.Size = new System.Drawing.Size(172, 17);
             this.checkBox_to_print_repeatedly_p.TabIndex = 73;
@@ -703,11 +710,51 @@
             this.checkBox_to_print_repeatedly_p.Visible = false;
             this.checkBox_to_print_repeatedly_p.CheckedChanged += new System.EventHandler(this.checkBox_to_print_repeatedly_p_CheckedChanged);
             // 
+            // btn_del_position
+            // 
+            this.btn_del_position.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btn_del_position.Location = new System.Drawing.Point(81, 538);
+            this.btn_del_position.Name = "btn_del_position";
+            this.btn_del_position.Size = new System.Drawing.Size(165, 23);
+            this.btn_del_position.TabIndex = 74;
+            this.btn_del_position.Text = "Удалить позицию из чека";
+            this.btn_del_position.UseVisualStyleBackColor = true;
+            this.btn_del_position.Click += new System.EventHandler(this.btn_del_position_Click);
+            // 
+            // btn_cancel_check
+            // 
+            this.btn_cancel_check.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btn_cancel_check.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btn_cancel_check.ForeColor = System.Drawing.Color.OrangeRed;
+            this.btn_cancel_check.Location = new System.Drawing.Point(623, 34);
+            this.btn_cancel_check.Name = "btn_cancel_check";
+            this.btn_cancel_check.Size = new System.Drawing.Size(166, 33);
+            this.btn_cancel_check.TabIndex = 75;
+            this.btn_cancel_check.Text = "Отменить чек";
+            this.btn_cancel_check.UseVisualStyleBackColor = true;
+            this.btn_cancel_check.Click += new System.EventHandler(this.btn_cancel_check_Click);
+            // 
+            // txtB_total_sum
+            // 
+            this.txtB_total_sum.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtB_total_sum.BackColor = System.Drawing.SystemColors.Window;
+            this.txtB_total_sum.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.txtB_total_sum.ForeColor = System.Drawing.Color.Blue;
+            this.txtB_total_sum.Location = new System.Drawing.Point(436, 542);
+            this.txtB_total_sum.Multiline = true;
+            this.txtB_total_sum.Name = "txtB_total_sum";
+            this.txtB_total_sum.Size = new System.Drawing.Size(197, 46);
+            this.txtB_total_sum.TabIndex = 76;
+            this.txtB_total_sum.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // Cash_check
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 600);
+            this.Controls.Add(this.txtB_total_sum);
+            this.Controls.Add(this.btn_cancel_check);
+            this.Controls.Add(this.btn_del_position);
             this.Controls.Add(this.checkBox_to_print_repeatedly_p);
             this.Controls.Add(this.checkBox_viza_d);
             this.Controls.Add(this.checkBox_club);
@@ -829,5 +876,8 @@
         private System.Windows.Forms.CheckBox checkBox_club;
         public System.Windows.Forms.CheckBox checkBox_viza_d;
         private System.Windows.Forms.CheckBox checkBox_to_print_repeatedly_p;
+        private System.Windows.Forms.Button btn_del_position;
+        private System.Windows.Forms.Button btn_cancel_check;
+        private System.Windows.Forms.TextBox txtB_total_sum;
     }
 }

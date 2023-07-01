@@ -22,7 +22,7 @@ namespace Cash8
         public bool code_it_is_confirmed = false;//При списании бонусов, присланный код полтвержден клиентом  
         private bool complete = false;
         //private string reference_number = "";
-        string str_command_sale = @"<?xml version=""1.0"" encoding=""UTF-8""?><request><field id = ""00"" >sum</field><field id=""04"">643</field><field id = ""25"" >1</field><field id=""27"">id_terminal</field></request>";
+        private string str_command_sale = @"<?xml version=""1.0"" encoding=""UTF-8""?><request><field id = ""00"" >sum</field><field id=""04"">643</field><field id = ""25"" >1</field><field id=""27"">id_terminal</field></request>";
         string str_command_return_sale = @"<?xml version=""1.0"" encoding=""UTF-8""?><request><field id = ""00"" >sum</field><field id=""04"">643</field><field id=""13"">code_authorization</field><field id=""14"">number_reference</field><field id = ""25"" >29</field><field id=""27"">id_terminal</field></request>";
         string str_command_cancel_sale = @"<?xml version=""1.0"" encoding=""UTF-8""?><request><field id = ""00"" >sum</field><field id=""04"">643</field><field id = ""25"" >4</field><field id=""27"">id_terminal</field></request>";
         //string str_command_cancel_sale = @"<?xml version=""1.0"" encoding=""UTF-8""?><request><field id = ""00"" >sum</field><field id=""04"">643</field><field id=""14"">number_reference</field><field id = ""25"" >4</field><field id=""27"">id_terminal</field></request>";
@@ -1138,10 +1138,11 @@ namespace Cash8
                 {                   
                         string url = "http://" + MainStaticClass.IpAddressAcquiringTerminal;
                         string money = ((Convert.ToDouble(this.non_cash_sum.Text.Trim()) + Convert.ToDouble(non_cash_sum_kop.Text) / 100) * 100).ToString();
-                        str_command_sale = str_command_sale.Replace("sum", money);
-                        str_command_sale = str_command_sale.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
+                        string _str_command_sale_ = str_command_sale.Replace("sum", money);
+                        _str_command_sale_ = _str_command_sale_.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
+                        //MessageBox.Show(_str_command_sale_);
                         AnswerTerminal answerTerminal = new AnswerTerminal();
-                        send_command_acquiring_terminal(url, str_command_sale, ref complete, ref answerTerminal);
+                        send_command_acquiring_terminal(url, _str_command_sale_, ref complete, ref answerTerminal);
                         if (!complete)//ответ от терминала не удовлетворительный
                         {
                             calculate();
@@ -1197,19 +1198,19 @@ namespace Cash8
                     AnswerTerminal answerTerminal = new AnswerTerminal();
                     if (cc.sale_date.CompareTo(today) < 0)
                     {
-                        str_command_return_sale = str_command_return_sale.Replace("sum", money);
-                        str_command_return_sale = str_command_return_sale.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
-                        str_command_return_sale = str_command_return_sale.Replace("code_authorization_terminal", cc.sale_code_authorization_terminal);
-                        str_command_return_sale = str_command_return_sale.Replace("number_reference", cc.sale_id_transaction_terminal);
-                        send_command_acquiring_terminal(url, str_command_return_sale, ref complete, ref answerTerminal);
+                        string _str_command_return_sale_ = str_command_return_sale.Replace("sum", money);
+                        _str_command_return_sale_ = _str_command_return_sale_.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
+                        _str_command_return_sale_ = _str_command_return_sale_.Replace("code_authorization_terminal", cc.sale_code_authorization_terminal);
+                        _str_command_return_sale_ = _str_command_return_sale_.Replace("number_reference", cc.sale_id_transaction_terminal);
+                        send_command_acquiring_terminal(url, _str_command_return_sale_, ref complete, ref answerTerminal);
                     }
                     else
                     {
-                        str_command_cancel_sale = str_command_cancel_sale.Replace("sum", money);
-                        str_command_cancel_sale = str_command_cancel_sale.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
-                        str_command_cancel_sale = str_command_cancel_sale.Replace("code_authorization_terminal", cc.sale_code_authorization_terminal);
-                        str_command_cancel_sale = str_command_cancel_sale.Replace("number_reference", cc.sale_id_transaction_terminal);
-                        send_command_acquiring_terminal(url, str_command_cancel_sale, ref complete, ref answerTerminal);
+                        string _str_command_return_sale_ = str_command_cancel_sale.Replace("sum", money);
+                        _str_command_return_sale_ = _str_command_return_sale_.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
+                        _str_command_return_sale_ = _str_command_return_sale_.Replace("code_authorization_terminal", cc.sale_code_authorization_terminal);
+                        _str_command_return_sale_ = _str_command_return_sale_.Replace("number_reference", cc.sale_id_transaction_terminal);
+                        send_command_acquiring_terminal(url, _str_command_return_sale_, ref complete, ref answerTerminal);
                     }
                     if (!complete)//ответ от терминала не удовлетворительный
                     {

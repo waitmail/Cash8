@@ -331,6 +331,11 @@ namespace Cash8
                 this.WindowState = FormWindowState.Normal;
                 this.BringToFront();
             }
+
+            if (MainStaticClass.SelfServiceKiosk == 0)
+            {
+                btn_new_check.Visible = false;
+            }
         }
 
         protected override void OnClosed(EventArgs e)
@@ -713,6 +718,12 @@ namespace Cash8
         private void checkBox_show_3_last_checks_CheckedChanged(object sender, EventArgs e)
         {
             loaddocuments();
+        }
+
+        private void btn_new_check_Click(object sender, EventArgs e)
+        {
+            KeyEventArgs e_key = new KeyEventArgs(Keys.Insert);
+            OnKeyDown(e_key);
         }
     }
 }

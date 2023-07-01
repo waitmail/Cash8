@@ -25,7 +25,7 @@ namespace Cash8
         public bool enable_delete = false;
         private string[] print_data;
         private bool selection_goods = false;
-        private bool have_action = false;
+        public bool have_action = false;
         private StringBuilder print_string = new StringBuilder();
         private int count_pages = 0;
         private int to_print_certainly = 0;
@@ -89,7 +89,7 @@ namespace Cash8
         public string sale_code_authorization_terminal = "";
         public DateTime sale_date;
         public int print_to_button = 0;
-
+        
 
         System.Windows.Forms.Timer timer = null;
 
@@ -203,7 +203,7 @@ namespace Cash8
             this.return_rouble.KeyPress += new KeyPressEventHandler(return_rouble_KeyPress);
             this.return_kop.KeyPress += new KeyPressEventHandler(return_kop_KeyPress);
             this.listView1.KeyPress += new KeyPressEventHandler(listView1_KeyPress);
-            this.listView1.KeyDown += ListView1_KeyDown;
+            this.listView1.KeyDown += ListView1_KeyDown;            
             this.txtB_client_phone.KeyPress += new KeyPressEventHandler(txtB_client_phone_KeyPress);
             if (MainStaticClass.Code_right_of_user == 1)
             {
@@ -212,6 +212,12 @@ namespace Cash8
             this.checkBox_to_print_repeatedly.CheckStateChanged += new EventHandler(checkBox_to_print_repeatedly_CheckStateChanged);
             txtB_inn.KeyPress += new KeyPressEventHandler(TxtB_inn_KeyPress);
             comment.KeyPress += new KeyPressEventHandler(Comment_KeyPress);
+            this.Paint += Cash_check_Paint;
+        }
+
+        private void Cash_check_Paint(object sender, PaintEventArgs e)
+        {
+            txtB_total_sum.Text = "Сумма: "+calculation_of_the_sum_of_the_document().ToString("F2");
         }
 
         private void insert_incident_record(string tovar, string quantity, string type_of_operation)
@@ -284,13 +290,20 @@ namespace Cash8
                     ///////////////////////////////////////////////////////////////
                     if (MainStaticClass.Code_right_of_user != 1)
                     {
-                        enable_delete = false;
-                        Interface_switching isw = new Interface_switching();
-                        isw.caller_type = 3;
-                        isw.cc = this;
-                        isw.not_change_Cash_Operator = true;
-                        isw.ShowDialog();
-                        isw.Dispose();
+                        if (MainStaticClass.SelfServiceKiosk == 0)
+                        {
+                            enable_delete = false;
+                            Interface_switching isw = new Interface_switching();
+                            isw.caller_type = 3;
+                            isw.cc = this;
+                            isw.not_change_Cash_Operator = true;
+                            isw.ShowDialog();
+                            isw.Dispose();
+                        }
+                        else
+                        {
+                            enable_delete = true;
+                        }
 
                         if (!enable_delete)
                         {
@@ -303,6 +316,10 @@ namespace Cash8
                             listView1.Items.Remove(listView1.SelectedItems[0]);
                             calculation_of_the_sum_of_the_document();
                             write_new_document("0", calculation_of_the_sum_of_the_document().ToString().Replace(",", "."), "0", "0", false, "0", "0", "0", "0"); //Это удаляемый документ                            
+                            if (MainStaticClass.SelfServiceKiosk == 1)
+                            {
+                                inputbarcode.Focus();
+                            }
                         }
                     }
                     else
@@ -311,6 +328,10 @@ namespace Cash8
                         listView1.Items.Remove(listView1.SelectedItems[0]);
                         calculation_of_the_sum_of_the_document();
                         write_new_document("0", calculation_of_the_sum_of_the_document().ToString().Replace(",", "."), "0", "0", false, "0", "0", "0", "0"); //Это удаляемый документ                            
+                        if (MainStaticClass.SelfServiceKiosk == 1)
+                        {
+                            inputbarcode.Focus();
+                        }
                     }
                 }
                 else if (listView1.Items.Count == 1)
@@ -1207,7 +1228,7 @@ namespace Cash8
                             //}
                             //else
                             //{
-                           if (DialogResult.OK == MessageBox.Show("Вы действительно хотите удалить строку ? ", "", MessageBoxButtons.OKCancel))
+                           if (DialogResult.OK == MessageBox.Show("Вы действительно хотите удалить позицию ? ", "", MessageBoxButtons.OKCancel))
                             { 
                                 //MainStaticClass.write_event_in_log("Удаление строки документа | " + listView1.Items[listView1.SelectedIndices[0]].SubItems[0].Text, "Документ чек");
                                 listView1.Items.Remove(listView1.Items[listView1.SelectedIndices[0]]);
@@ -1240,16 +1261,28 @@ namespace Cash8
 
                         if (listView1.Items.Count == 0)
                         {
-                            MessageBox.Show("Нет строк");
-                            return;
+                            if (MainStaticClass.SelfServiceKiosk == 1)
+                            {
+                                this.Close();
+                                return;
+                            }
+                            else
+                            {
+                                MessageBox.Show("Нет строк");
+                                return;
+                            }
                         }
-                        enable_delete = false;
-                        Interface_switching isw = new Interface_switching();
-                        isw.caller_type = 3;
-                        isw.cc = this;
-                        isw.not_change_Cash_Operator = true;
-                        isw.ShowDialog();
-                        isw.Dispose();
+                        enable_delete = true;
+                        if (MainStaticClass.SelfServiceKiosk == 0)
+                        {
+                            enable_delete = false;
+                            Interface_switching isw = new Interface_switching();
+                            isw.caller_type = 3;
+                            isw.cc = this;
+                            isw.not_change_Cash_Operator = true;
+                            isw.ShowDialog();
+                            isw.Dispose();
+                        }
 
                         if (enable_delete)
                         {
@@ -1264,8 +1297,16 @@ namespace Cash8
                     {
                         if (listView1.Items.Count == 0)
                         {
-                            MessageBox.Show("Нет строк");
-                            return;
+                            if (MainStaticClass.SelfServiceKiosk == 1)
+                            {
+                                this.Close();
+                                return;
+                            }
+                            else
+                            {
+                                MessageBox.Show("Нет строк");
+                                return;
+                            }
                         }
                         write_new_document("0", calculation_of_the_sum_of_the_document().ToString().Replace(",", "."), "0", "0", false, "0", "0", "0", "1"); //Это удаляемый документ
                         closing = false;
@@ -2769,11 +2810,11 @@ namespace Cash8
                         {
                             listView1.Select();
                             listView1.Items[this.listView1.Items.Count - 1].Selected = true;
-                            inputbarcode.Focus();//01.08.2022 Теперь здесь для Визы автоматом переност фокуса
+                            //inputbarcode.Focus();//01.08.2022 Теперь здесь для Визы автоматом переност фокуса
                         }
                         else if (MainStaticClass.GetWorkSchema == 2)
                         {
-                            inputbarcode.Focus();
+                            //inputbarcode.Focus();
                         }
                         
                         update_record_last_tovar(listView1.Items[this.listView1.Items.Count - 1].SubItems[1].Text, listView1.Items[this.listView1.Items.Count - 1].SubItems[3].Text);
@@ -2792,8 +2833,10 @@ namespace Cash8
                         lvi.Selected = true;
                         listView1.Select();
                         update_record_last_tovar(lvi.SubItems[1].Text, lvi.SubItems[4].Text);
+                        //inputbarcode.Focus();
 
                     }
+                    inputbarcode.Focus();
                     calculation_of_the_sum_of_the_document();
                     //listView1.Select();
                     //listView1.Items[this.listView1.Items.Count - 1].Selected = true;
@@ -3449,9 +3492,23 @@ namespace Cash8
             listView1.Columns.Add("Товар", 400, HorizontalAlignment.Left);
             listView1.Columns.Add("Характеристика", 20, HorizontalAlignment.Left);
             listView1.Columns.Add("Количество", 50, HorizontalAlignment.Right);
-            listView1.Columns.Add("Цена", 100, HorizontalAlignment.Right);
+            if (MainStaticClass.service_is_worker())
+            {
+                listView1.Columns.Add("Цена", 1, HorizontalAlignment.Right);
+            }
+            else
+            {
+                listView1.Columns.Add("Цена", 100, HorizontalAlignment.Right);
+            }            
             listView1.Columns.Add("Цена со скидкой", 100, HorizontalAlignment.Right);
-            listView1.Columns.Add("Сумма", 100, HorizontalAlignment.Right);
+            if (MainStaticClass.service_is_worker())
+            {
+                listView1.Columns.Add("Сумма", 1, HorizontalAlignment.Right);
+            }
+            else
+            {
+                listView1.Columns.Add("Сумма", 100, HorizontalAlignment.Right);
+            }
             listView1.Columns.Add("Сумма со скидкой", 200, HorizontalAlignment.Right);
             listView1.Columns.Add("Акция", 50);
             listView1.Columns.Add("Подарок", 50);
@@ -3634,6 +3691,17 @@ namespace Cash8
                         this.checkBox_to_print_repeatedly.Enabled = false;
                     }
                 }
+            }
+
+            if (MainStaticClass.SelfServiceKiosk == 0)
+            {
+                btn_del_position.Visible = false;
+                btn_cancel_check.Visible = false;
+                txtB_total_sum.Visible = false;
+            }
+            else
+            {
+                process_client_discount("9999999999");
             }
 
         }
@@ -6622,7 +6690,39 @@ namespace Cash8
             //t.Join();
 
         }
-        
+               
+        private int its_excise(string code_tovar)
+        {
+            int result = 0;
+
+            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+            try
+            {                
+                conn.Open();
+                string query = "SELECT its_excise FROM tovar WHERE code="+code_tovar;
+                NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                result = Convert.ToInt16(command.ExecuteScalar());
+                conn.Close();
+            }
+            catch (NpgsqlException ex)
+            {
+                MessageBox.Show("Ошибка при чтении свойства подакцизный товар "+ex.Message);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ошибка при чтении свойства подакцизный товар "+ex.Message);
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+                conn.Dispose();
+            }
+
+            return result;
+        }
 
 
         /// <summary>
@@ -6728,31 +6828,53 @@ namespace Cash8
                         item.amount = Convert.ToDouble(lvi.SubItems[7].Text);
                         item.tax = new FiscallPrintJason2.Tax();
                         item.measurementUnit = "piece";
-                        if (lvi.SubItems[14].Text.Trim().Length <= 13)//код маркировки не заполнен
+                        if (its_excise(lvi.SubItems[0].Text.Trim()) == 0)
                         {
-                            item.paymentObject = "commodityWithoutMarking";
+                            if (lvi.SubItems[14].Text.Trim().Length <= 13)//код маркировки не заполнен
+                            {
+                                item.paymentObject = "commodityWithoutMarking";
+                            }
+                            else//иначе передаем код маркировки 
+                            {
+                                item.paymentObject = "commodityWithMarking";
+                                FiscallPrintJason2.ImcParams imcParams = new FiscallPrintJason2.ImcParams();
+                                imcParams.imcType = "auto";
+                                byte[] textAsBytes = Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim());
+                                string mark_str = Convert.ToBase64String(textAsBytes);
+                                imcParams.imc = mark_str;
+                                imcParams.itemEstimatedStatus = "itemPieceSold";
+                                imcParams.imcModeProcessing = 0;
+
+                                //imcParams.itemInfoCheckResult                           = new FiscallPrintJason2.ItemInfoCheckResult();
+                                //imcParams.itemInfoCheckResult.ecrStandAloneFlag         = true;//this.answerAddingKmArrayToTableTested.results[0].result[index_marker_position].onlineValidation.itemInfoCheckResult.ecrStandAloneFlag;
+                                //imcParams.itemInfoCheckResult.imcCheckFlag              = true;//this.answerAddingKmArrayToTableTested.results[0].result[index_marker_position].onlineValidation.itemInfoCheckResult.imcCheckFlag;
+                                //imcParams.itemInfoCheckResult.imcCheckResult            = true;//this.answerAddingKmArrayToTableTested.results[0].result[index_marker_position].onlineValidation.itemInfoCheckResult.imcCheckResult;
+                                //imcParams.itemInfoCheckResult.imcEstimatedStatusCorrect = true; //his.answerAddingKmArrayToTableTested.results[0].result[index_marker_position].onlineValidation.itemInfoCheckResult.imcEstimatedStatusCorrect;
+                                //imcParams.itemInfoCheckResult.imcStatusInfo             = true;// this.answerAddingKmArrayToTableTested.results[0].result[index_marker_position].onlineValidation.itemInfoCheckResult.imcStatusInfo;
+
+                                item.imcParams = imcParams;
+                                index_marker_position++;
+                            }
                         }
-                        else//иначе передаем код маркировки 
-                        {                            
-                            item.paymentObject = "commodityWithMarking";
-                            FiscallPrintJason2.ImcParams imcParams = new FiscallPrintJason2.ImcParams();
-                            imcParams.imcType = "auto";
-                            byte[] textAsBytes = Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim());
-                            string mark_str = Convert.ToBase64String(textAsBytes);
-                            imcParams.imc = mark_str;
-                            imcParams.itemEstimatedStatus = "itemPieceSold";
-                            imcParams.imcModeProcessing = 0;
-
-                            //imcParams.itemInfoCheckResult                           = new FiscallPrintJason2.ItemInfoCheckResult();
-                            //imcParams.itemInfoCheckResult.ecrStandAloneFlag         = true;//this.answerAddingKmArrayToTableTested.results[0].result[index_marker_position].onlineValidation.itemInfoCheckResult.ecrStandAloneFlag;
-                            //imcParams.itemInfoCheckResult.imcCheckFlag              = true;//this.answerAddingKmArrayToTableTested.results[0].result[index_marker_position].onlineValidation.itemInfoCheckResult.imcCheckFlag;
-                            //imcParams.itemInfoCheckResult.imcCheckResult            = true;//this.answerAddingKmArrayToTableTested.results[0].result[index_marker_position].onlineValidation.itemInfoCheckResult.imcCheckResult;
-                            //imcParams.itemInfoCheckResult.imcEstimatedStatusCorrect = true; //his.answerAddingKmArrayToTableTested.results[0].result[index_marker_position].onlineValidation.itemInfoCheckResult.imcEstimatedStatusCorrect;
-                            //imcParams.itemInfoCheckResult.imcStatusInfo             = true;// this.answerAddingKmArrayToTableTested.results[0].result[index_marker_position].onlineValidation.itemInfoCheckResult.imcStatusInfo;
-
-                            item.imcParams = imcParams;
-
-                            index_marker_position++;
+                        else
+                        {
+                            if (lvi.SubItems[14].Text.Trim().Length <= 13)//код маркировки не заполнен
+                            {
+                                item.paymentObject = "exciseWithoutMarking";
+                            }
+                            else//иначе передаем код маркировки 
+                            {
+                                item.paymentObject = "exciseWithMarking";
+                                FiscallPrintJason2.ImcParams imcParams = new FiscallPrintJason2.ImcParams();
+                                imcParams.imcType = "auto";
+                                byte[] textAsBytes = Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim());
+                                string mark_str = Convert.ToBase64String(textAsBytes);
+                                imcParams.imc = mark_str;
+                                imcParams.itemEstimatedStatus = "itemPieceSold";
+                                imcParams.imcModeProcessing = 0;
+                                item.imcParams = imcParams;
+                                index_marker_position++;
+                            }
                         }
 
                         item.tax.type = tax_type;//ндс 
@@ -9038,7 +9160,7 @@ namespace Cash8
             {
                 conn = MainStaticClass.NpgsqlConn();
                 conn.Open();
-                string query = "SELECT tip,num_doc,persent,comment,code_tovar,sum,barcode,marker,action_by_discount FROM action_header WHERE '" + DateTime.Now.Date.ToString("yyy-MM-dd") + "' between date_started AND date_end AND barcode='" + barcode + "'";
+                string query = "SELECT tip,num_doc,persent,comment,code_tovar,sum,barcode,marker,action_by_discount FROM action_header WHERE '" + DateTime.Now.Date.ToString("yyy-MM-dd") + "' between date_started AND date_end AND barcode='" + barcode + "' AND kind=1";
                 command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();
 
@@ -9362,7 +9484,7 @@ namespace Cash8
             {
                 return dataTable;
             }
-            ProcessingOfActions processingOfActions = new ProcessingOfActions();
+            ProcessingOfActions processingOfActions = new ProcessingOfActions();            
             processingOfActions.dt = processingOfActions.create_dt(listView1);
             processingOfActions.show_messages = show_messages;
             MainStaticClass.write_event_in_log(" Попытка обработать акции по штрихкодам ", "Документ чек", numdoc.ToString());
@@ -9370,9 +9492,20 @@ namespace Cash8
             {
                 processingOfActions.to_define_the_action_dt(barcode);
             }
+            
+            if (client.Tag != null)
+            {
+                processingOfActions.to_define_the_action_personal_dt(this.client.Tag.ToString());
+            }
 
             processingOfActions.to_define_the_action_dt();
-            dataTable = processingOfActions.dt;           
+
+            dataTable = processingOfActions.dt;
+
+            if (show_messages)//если с показом сообщений, то это уже боевой режим 
+            {
+                have_action = processingOfActions.have_action;
+            }
 
             return dataTable;
         }       
@@ -9410,7 +9543,7 @@ namespace Cash8
                 string query = "SELECT tip,num_doc,persent,comment,code_tovar,sum,barcode,marker,execution_order FROM action_header " +
                     " WHERE '" + DateTime.Now.Date.ToString("yyy-MM-dd") + "' between date_started AND date_end " +
                     " AND " + count_minutes.ToString() + " between time_start AND time_end AND bonus_promotion=0 " +
-                    " AND barcode='' AND tip<>10 AND num_doc in(" +//AND tip<>10 
+                    " AND barcode='' AND kind=0 AND tip<>10 AND num_doc in(" +//AND tip<>10 
                     " SELECT DISTINCT action_table.num_doc FROM checks_table_temp " +
                     " LEFT JOIN action_table ON checks_table_temp.tovar = action_table.code_tovar) order by execution_order asc, tip asc";//date_started asc,, tip desc
 
@@ -10253,6 +10386,7 @@ namespace Cash8
                 }
             }
         }
+
         /*
        * Обработать акцию по 2 типу
        * это значит в документе должен быть товар 
@@ -12047,6 +12181,7 @@ namespace Cash8
             }
             write_new_document("0", "0", "0", "0", false, "0", "0", "0", "0");
             SendDataToCustomerScreen(1, 0,1);
+            inputbarcode.Focus();
         }
 
         /*
@@ -12459,10 +12594,10 @@ namespace Cash8
                     to_define_the_action();//Обработка на дисконтные акции 
                 }
                 else
-                {
-                    
+                {                    
                     //Акции по штрихкодам                    
                     DataTable dataTable = to_define_the_action_dt(true);//Обработка на дисконтные акции с использованием datatable 
+                    
                     //рассчитанные данные в памяти по акциям теперь помещаем в листвью 
                     listView1.Items.Clear();
                     foreach (DataRow row in dataTable.Rows)
@@ -12524,8 +12659,21 @@ namespace Cash8
 
             }
             else
-            {
+            {                
                 pay_form.pay_sum.Text = calculation_of_the_sum_of_the_document().ToString();
+                if (MainStaticClass.SelfServiceKiosk == 1)
+                {
+                    pay_form.cash_sum.Enabled = false;
+                    pay_form.non_cash_sum.Enabled = false;
+                    pay_form.non_cash_sum_kop.Enabled = false;
+                    pay_form.pay_sum.Text = calculation_of_the_sum_of_the_document().ToString();
+
+                    double total = Convert.ToDouble(calculation_of_the_sum_of_the_document());
+                    string kop = ((int)((total - (int)total) * 100)).ToString();
+                    kop = (kop.Length == 2 ? kop : "0" + kop);
+                    pay_form.set_kop_on_non_cash_sum_kop(kop);
+                    pay_form.non_cash_sum.Text = ((int)total).ToString();
+                }
             }
 
             pay_form.cash_sum.Focus();
@@ -12597,7 +12745,10 @@ namespace Cash8
             {
                 this.Close();
             }
-            
+            inputbarcode.Focus();
+            pay_form = new Pay();
+
+
         }
 
         /// <summary>
@@ -12696,19 +12847,26 @@ namespace Cash8
             {
                 return;
             }
-
-            if (this.check_type.SelectedIndex == 1)
+            if (MainStaticClass.SelfServiceKiosk == 1)
             {
-                if (client.Tag != null)
+                this.client.Text = "";
+                this.client.Tag = "";
+            }
+            else
+            { 
+                if (this.check_type.SelectedIndex == 1)
                 {
-                    if (client.Tag.ToString().Trim() != "")//Выбрана дисконтная карта, тип документа изенен быть не может
+                    if (client.Tag != null)
                     {
-                        MessageBox.Show(" Выбрана дисконтная карта, тип документа изменен быть не может ");
-                        this.check_type.SelectedIndex = 0;
-                        return;
+                        if (client.Tag.ToString().Trim() != "")//Выбрана дисконтная карта, тип документа изенен быть не может
+                        {
+                            MessageBox.Show(" Выбрана дисконтная карта, тип документа изменен быть не может ");
+                            this.check_type.SelectedIndex = 0;
+                            return;
+                        }
                     }
                 }
-            }           
+            }
         }
 
         private void check_type_SelectedIndexChanged(object sender, EventArgs e)
@@ -13553,6 +13711,18 @@ namespace Cash8
             {
                 to_print_certainly_p = 0;
             }
+        }
+
+        private void btn_del_position_Click(object sender, EventArgs e)
+        {
+            KeyEventArgs args = new KeyEventArgs(Keys.Delete);            
+            ListView1_KeyDown(null, args);
+        }
+
+        private void btn_cancel_check_Click(object sender, EventArgs e)
+        {
+            KeyEventArgs args = new KeyEventArgs(Keys.F12);
+            OnKeyDown(args);
         }
     }
 }

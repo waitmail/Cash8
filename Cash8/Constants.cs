@@ -134,10 +134,10 @@ namespace Cash8
                     this.checkBox_one_monitors_connected.CheckState = (reader["one_monitors_connected"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
                 }
                 reader.Close();
-                if (nick_shop.Text.Trim() != "A01")
-                {
-                    checkBox_enable_stock_processing_in_memory.Enabled = false;
-                }
+                //if (nick_shop.Text.Trim() != "A01")
+                //{
+                //    checkBox_enable_stock_processing_in_memory.Enabled = false;
+                //}
             }
             catch (NpgsqlException ex)
             {

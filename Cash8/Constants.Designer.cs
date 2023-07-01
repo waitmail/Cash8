@@ -273,7 +273,7 @@
             // label5
             // 
             this.label5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label5.Location = new System.Drawing.Point(514, 166);
+            this.label5.Location = new System.Drawing.Point(514, 190);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(100, 31);
             this.label5.TabIndex = 72;
@@ -281,7 +281,7 @@
             // 
             // txtB_id_acquiring_terminal
             // 
-            this.txtB_id_acquiring_terminal.Location = new System.Drawing.Point(149, 35);
+            this.txtB_id_acquiring_terminal.Location = new System.Drawing.Point(149, 59);
             this.txtB_id_acquiring_terminal.MaxLength = 8;
             this.txtB_id_acquiring_terminal.Name = "txtB_id_acquiring_terminal";
             this.txtB_id_acquiring_terminal.Size = new System.Drawing.Size(72, 20);
@@ -289,7 +289,7 @@
             // 
             // label6
             // 
-            this.label6.Location = new System.Drawing.Point(514, 209);
+            this.label6.Location = new System.Drawing.Point(514, 228);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(72, 46);
             this.label6.TabIndex = 74;
@@ -297,7 +297,7 @@
             // 
             // txtB_ip_address_acquiring_terminal
             // 
-            this.txtB_ip_address_acquiring_terminal.Location = new System.Drawing.Point(595, 228);
+            this.txtB_ip_address_acquiring_terminal.Location = new System.Drawing.Point(595, 247);
             this.txtB_ip_address_acquiring_terminal.MaxLength = 21;
             this.txtB_ip_address_acquiring_terminal.Name = "txtB_ip_address_acquiring_terminal";
             this.txtB_ip_address_acquiring_terminal.Size = new System.Drawing.Size(129, 20);
@@ -306,7 +306,7 @@
             // checkBox_self_service_kiosk
             // 
             this.checkBox_self_service_kiosk.AutoSize = true;
-            this.checkBox_self_service_kiosk.Location = new System.Drawing.Point(514, 271);
+            this.checkBox_self_service_kiosk.Location = new System.Drawing.Point(514, 291);
             this.checkBox_self_service_kiosk.Name = "checkBox_self_service_kiosk";
             this.checkBox_self_service_kiosk.Size = new System.Drawing.Size(179, 17);
             this.checkBox_self_service_kiosk.TabIndex = 76;
