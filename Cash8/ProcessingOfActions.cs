@@ -1564,7 +1564,7 @@ namespace Cash8
                         if (Convert.ToDecimal(result_query) == 0)
                         {
                             //have_action = true;//Признак того что в документе есть сработка по акции                        
-                            row["price_at_discount"] = Math.Round(Convert.ToDecimal(Convert.ToDecimal(row["price_at_discount"]) - Convert.ToDecimal(row["price_at_discount"]) * persent / 100), 2);//Цена со скидкой                                    
+                            row["price_at_discount"] = Math.Round(Convert.ToDecimal(Convert.ToDecimal(row["price"]) - Convert.ToDecimal(row["price"]) * persent / 100), 2);//Цена со скидкой                                    
                             row["sum_full"] = Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price"]);
                             row["sum_at_discount"] = Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price_at_discount"]);
                             row["action"] = num_doc.ToString(); //Номер акционного документа                        
@@ -1709,6 +1709,7 @@ namespace Cash8
                 }
                 if (the_action_has_worked)
                 {
+                    DataRow row2 = null;
                     //foreach (ListViewItem lvi in listView1.Items)
                     foreach (DataRow row in dt.Rows)
                     {
@@ -1733,9 +1734,59 @@ namespace Cash8
                             if ((quantity_of_pieces > min_quantity) && (min_quantity > 0))
                             {
                                 row["quantity"] = Convert.ToInt32(row["quantity"]) - min_quantity;
-                                row["action"] = num_doc.ToString(); //Номер акционного документа                                 
+                                row["sum_at_discount"] = ((Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price_at_discount"])).ToString());
+                                
+                                //Добавляем новую строку с количеством min_quantity 
+                                row2 = dt.NewRow();
+                                row2.ItemArray = row.ItemArray;
+                                row2["quantity"] = min_quantity;
+                                row2["price_at_discount"] = Math.Round(Convert.ToDecimal(row2["price"]) - Convert.ToDecimal(row2["price"]) * persent / 100, 2);//Цена со скидкой                                            
+                                row2["sum_at_discount"] = ((Convert.ToDecimal(row2["quantity"]) * Convert.ToDecimal(row2["price_at_discount"])).ToString());
+                                row2["action"] = num_doc.ToString(); //Номер акционного документа 
+                                row2["action"] = num_doc.ToString(); //Номер акционного документа 
+                                //dt.Rows.Add(row2);
+
+                                //row["action"] = num_doc.ToString(); //Номер акционного документа 
+
+
+                                //calculation_of_the_sum_of_the_document_dt()
+                                // calculate_on_string(lvi);
+
+                                ////Добавляем строку с акционным товаром 
+                                //ListViewItem lvi_new = new ListViewItem(lvi.Tag.ToString());
+                                //lvi_new.Tag = lvi.Tag;
+                                //x = 0;
+                                //while (x < lvi.SubItems.Count - 1)
+                                //{
+                                //    lvi_new.SubItems.Add(lvi.SubItems[x + 1].Text);
+                                //    x++;
+                                //}
+
+                                //lvi_new.SubItems[2].Text = lvi.SubItems[2].Text;
+                                //lvi_new.SubItems[2].Tag = lvi.SubItems[2].Tag;
+                                //lvi_new.SubItems[3].Text = min_quantity.ToString();
+                                //lvi_new.SubItems[5].Text = (Math.Round(Convert.ToDecimal(lvi.SubItems[4].Text) - Convert.ToDecimal(lvi.SubItems[4].Text) * persent / 100, 2)).ToString();//Цена со скидкой            
+                                //lvi_new.SubItems[6].Text = ((Convert.ToDecimal(lvi_new.SubItems[3].Text) * Convert.ToDecimal(lvi_new.SubItems[4].Text)).ToString());
+                                //lvi_new.SubItems[7].Text = ((Convert.ToDecimal(lvi_new.SubItems[3].Text) * Convert.ToDecimal(lvi_new.SubItems[5].Text)).ToString());
+                                //lvi_new.SubItems[8].Text = num_doc.ToString(); //Номер акционного документа
+                                //lvi_new.SubItems[10].Text = num_doc.ToString(); //Номер акционного документа
+                                ////*****************************************************************************
+                                //lvi_new.SubItems[11].Text = "0";
+                                //lvi_new.SubItems[12].Text = "0";
+                                //lvi_new.SubItems[13].Text = "0";
+                                //lvi_new.SubItems[14].Text = "0";
+                                ////*****************************************************************************
+                                //listView1.Items.Add(lvi_new);
+                                //SendDataToCustomerScreen(1, 0, 1);
+                                //min_quantity = 0;
+
+
                             }
                         }
+                    }
+                    if (row2 != null)
+                    {
+                        dt.Rows.Add(row2);
                     }
 
                     /*акция сработала

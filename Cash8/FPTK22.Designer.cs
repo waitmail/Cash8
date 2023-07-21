@@ -48,6 +48,7 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.z_report = new System.Windows.Forms.Button();
             this.x_report = new System.Windows.Forms.Button();
+            this.txtB_fn_info = new System.Windows.Forms.TextBox();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -63,7 +64,7 @@
             this.groupBox4.Controls.Add(this.txtB_have_internet);
             this.groupBox4.Location = new System.Drawing.Point(438, 12);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(443, 190);
+            this.groupBox4.Size = new System.Drawing.Size(443, 398);
             this.groupBox4.TabIndex = 20;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Проверки";
@@ -256,11 +257,22 @@
             this.x_report.UseVisualStyleBackColor = true;
             this.x_report.Click += new System.EventHandler(this.x_report_Click);
             // 
+            // txtB_fn_info
+            // 
+            this.txtB_fn_info.Enabled = false;
+            this.txtB_fn_info.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.txtB_fn_info.Location = new System.Drawing.Point(445, 208);
+            this.txtB_fn_info.Multiline = true;
+            this.txtB_fn_info.Name = "txtB_fn_info";
+            this.txtB_fn_info.Size = new System.Drawing.Size(430, 196);
+            this.txtB_fn_info.TabIndex = 21;
+            // 
             // FPTK22
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(893, 215);
+            this.ClientSize = new System.Drawing.Size(893, 422);
+            this.Controls.Add(this.txtB_fn_info);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.print_last_check);
             this.Controls.Add(this.annul_check);
@@ -304,5 +316,6 @@
         private System.Windows.Forms.TextBox txtB_ofd_exchange_status;
         private System.Windows.Forms.TextBox txtB_ofd_utility_status;
         private System.Windows.Forms.Button btn_send_fiscal;
+        private System.Windows.Forms.TextBox txtB_fn_info;
     }
 }

@@ -123,6 +123,106 @@ namespace Cash8
             //return Out;
         }
 
+                     
+        //private static FnInfoResults GET2(string Url, string Data)
+        //{
+        //    System.Net.WebRequest req = System.Net.WebRequest.Create(Url + "/" + Data);
+        //    req.Timeout = 10000;
+        //    System.Net.WebResponse resp = req.GetResponse();
+        //    //HttpWebResponse myHttpWebResponse = (HttpWebResponse)req.GetResponse();
+
+        //    System.IO.Stream stream = resp.GetResponseStream();
+
+        //    System.IO.StreamReader sr = new System.IO.StreamReader(stream);
+        //    string Out = sr.ReadToEnd();
+        //    sr.Close();
+
+        //    //Newtonsoft.Json.Linq.JObject obj = Newtonsoft.Json.Linq.JObject.Parse(Out);
+        //    //var obj = JsonConvert.DeserializeObject(Out) as System.Collections.Generic.ICollection<Results>; 
+
+        //    var results = JsonConvert.DeserializeObject<FnInfoResults>(Out);
+        //    //Thread.Sleep(1000);
+        //    req = null;
+        //    resp.Close();
+        //    stream.Close();
+        //    sr = null;
+
+        //    return results;
+        //    //return Out;
+        //}
+
+
+        //public static FnInfoResults get_info_fn(string type)
+        //{
+        //    string status = "";
+        //    FnInfoResults result = null;
+        //    //Operator_type cds = new Operator_type();
+        //    //cds.@operator = new Operator();
+        //    //cds.@operator.name = MainStaticClass.Cash_Operator;//"name";//необходимо переопределить
+        //    //cds.@operator.vatin = MainStaticClass.cash_operator_inn;// "123654789507";//необходимо переопределить
+        //    //cds.type = type;
+        //    string c_d_s = JsonConvert.SerializeObject(cds, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+        //    string json = MainStaticClass.shablon.Replace("body", c_d_s);
+        //    guid = Guid.NewGuid().ToString();
+        //    string replace = "\"uuid\": \"" + guid + "\"";
+        //    json = json.Replace("uuid", replace);
+        //    if (POST(MainStaticClass.url, json) == "Created")
+        //    {
+        //        int count = 0;
+        //        while (1 == 1)
+        //        {
+        //            count++;
+        //            Thread.Sleep(1000);
+        //            result = GET2(MainStaticClass.url, guid);
+        //            status = result.results[0].status;
+        //            if (status != "ready")
+        //            {
+        //                if (count > 14)
+        //                {
+        //                    break;
+        //                }
+        //            }
+        //            else if ((status == "ready") || (status == "error"))
+        //            {
+        //                break;
+        //            }
+        //        }
+        //    }
+
+        //    //cds = null;
+
+        //    return result;
+        //}
+
+        public class FnInfo
+        {
+            public string execution { get; set; }
+            public string ffdVersion { get; set; }
+            public bool fnContainsKeysUpdaterServerUri { get; set; }
+            public string fnFfdVersion { get; set; }
+            public string livePhase { get; set; }
+            public int numberOfRegistrations { get; set; }
+            public int registrationsRemaining { get; set; }
+            public string serial { get; set; }
+            public DateTime validityDate { get; set; }
+            public string version { get; set; }
+            public Warnings warnings { get; set; }
+        }
+
+        public class FnInfoResults
+        {
+            public FnInfo fnInfo { get; set; }
+        }
+
+        public class Warnings
+        {
+            public bool criticalError { get; set; }
+            public bool memoryOverflow { get; set; }
+            public bool needReplacement { get; set; }
+            public bool ofdTimeout { get; set; }
+            public bool resourceExhausted { get; set; }
+        }
+
 
         //private static RootObject GET(string Url, string Data)
         //{
@@ -209,6 +309,7 @@ namespace Cash8
             public Status status { get; set; }
             public ShiftStatus shiftStatus { get; set; }
             public DeviceInfo deviceInfo { get; set; }
+            public FnInfo fnInfo { get; set; }
         }
 
         public class Result

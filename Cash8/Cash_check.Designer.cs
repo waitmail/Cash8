@@ -89,6 +89,7 @@
             this.btn_del_position = new System.Windows.Forms.Button();
             this.btn_cancel_check = new System.Windows.Forms.Button();
             this.txtB_total_sum = new System.Windows.Forms.TextBox();
+            this.txtB_num_doc = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel_return.SuspendLayout();
@@ -199,6 +200,7 @@
             // listView2
             // 
             this.listView2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.listView2.HideSelection = false;
             this.listView2.Location = new System.Drawing.Point(22, 53);
             this.listView2.MultiSelect = false;
             this.listView2.Name = "listView2";
@@ -224,7 +226,7 @@
             this.pay.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.pay.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.pay.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.pay.ForeColor = System.Drawing.Color.LimeGreen;
+            this.pay.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.pay.Location = new System.Drawing.Point(639, 544);
             this.pay.Name = "pay";
             this.pay.Size = new System.Drawing.Size(157, 48);
@@ -414,6 +416,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.listView1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.listView1.HideSelection = false;
             this.listView1.Location = new System.Drawing.Point(3, 3);
             this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
@@ -438,6 +441,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.listView_sertificates.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.listView_sertificates.HideSelection = false;
             this.listView_sertificates.Location = new System.Drawing.Point(3, 0);
             this.listView_sertificates.Name = "listView_sertificates";
             this.listView_sertificates.Size = new System.Drawing.Size(922, 362);
@@ -676,7 +680,7 @@
             this.checkBox_club.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.checkBox_club.AutoSize = true;
             this.checkBox_club.CheckAlign = System.Drawing.ContentAlignment.TopRight;
-            this.checkBox_club.Location = new System.Drawing.Point(555, 123);
+            this.checkBox_club.Location = new System.Drawing.Point(570, 561);
             this.checkBox_club.Name = "checkBox_club";
             this.checkBox_club.Size = new System.Drawing.Size(50, 17);
             this.checkBox_club.TabIndex = 71;
@@ -687,7 +691,7 @@
             // 
             this.checkBox_viza_d.AutoSize = true;
             this.checkBox_viza_d.Enabled = false;
-            this.checkBox_viza_d.Location = new System.Drawing.Point(492, 123);
+            this.checkBox_viza_d.Location = new System.Drawing.Point(461, 561);
             this.checkBox_viza_d.Name = "checkBox_viza_d";
             this.checkBox_viza_d.Size = new System.Drawing.Size(63, 17);
             this.checkBox_viza_d.TabIndex = 72;
@@ -747,12 +751,22 @@
             this.txtB_total_sum.TabIndex = 76;
             this.txtB_total_sum.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
+            // txtB_num_doc
+            // 
+            this.txtB_num_doc.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtB_num_doc.Enabled = false;
+            this.txtB_num_doc.Location = new System.Drawing.Point(498, 130);
+            this.txtB_num_doc.Name = "txtB_num_doc";
+            this.txtB_num_doc.Size = new System.Drawing.Size(100, 20);
+            this.txtB_num_doc.TabIndex = 77;
+            this.txtB_num_doc.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
             // Cash_check
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 600);
-            this.Controls.Add(this.txtB_total_sum);
+            this.Controls.Add(this.txtB_num_doc);
             this.Controls.Add(this.btn_cancel_check);
             this.Controls.Add(this.btn_del_position);
             this.Controls.Add(this.checkBox_to_print_repeatedly_p);
@@ -796,6 +810,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.comment);
             this.Controls.Add(this.last_tovar);
+            this.Controls.Add(this.txtB_total_sum);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "Cash_check";
             this.Text = "Cash_check";
@@ -879,5 +894,6 @@
         private System.Windows.Forms.Button btn_del_position;
         private System.Windows.Forms.Button btn_cancel_check;
         private System.Windows.Forms.TextBox txtB_total_sum;
+        private System.Windows.Forms.TextBox txtB_num_doc;
     }
 }

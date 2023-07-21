@@ -18,6 +18,8 @@ namespace Cash8
 
         private void FPTK22_Load(object sender, EventArgs e)
         {
+            get_fiscall_info();
+
             btn_ofd_exchange_status_Click(null, null);
             btn_have_internet_Click(null, null);
             
@@ -31,6 +33,62 @@ namespace Cash8
                 get_summ_in_cashe.Enabled = false;
                 x_report.Enabled = false;
             }            
+        }
+
+
+        private void get_fiscall_info()
+        {
+            try
+            {
+                Cash8.FiscallPrintJason.RootObject result = FiscallPrintJason.execute_operator_type("getFnInfo");
+                if (result != null)
+                {
+                    if (result.results[0].status == "ready")//Задание выполнено успешно 
+                    {
+                        //sum_incass.Text = result.results[0].result.counters.cashSum.ToString();
+                        if (result.results[0].result.fnInfo.validityDate.Date > DateTime.Today.Date)
+                        {
+                            (result.results[0].result.fnInfo.validityDate.Date - DateTime.Today.Date).TotalDays.ToString();
+                        }
+                        string fn_info= "Ресурс ФН " + (result.results[0].result.fnInfo.validityDate.Date - DateTime.Today.Date).TotalDays.ToString() + " дней ";
+                        if (result.results[0].result.fnInfo.warnings.needReplacement)
+                        {
+                            fn_info += "\r\n"+"Требуется срочная замена ФН !!!";
+                        }
+                        if (result.results[0].result.fnInfo.warnings.ofdTimeout)
+                        {
+                            fn_info += "\r\n" + "Превышено время ожидания ответа от ОФД !!!";
+                        }
+                        if (result.results[0].result.fnInfo.warnings.memoryOverflow)
+                        {
+                            fn_info += "\r\n" + "Память ФН переполнена !!!";
+                        }
+                        if (result.results[0].result.fnInfo.warnings.resourceExhausted)
+                        {
+                            fn_info += "\r\n" + "Исчерпан ресурс ФН !!!";
+                        }
+                        if (result.results[0].result.fnInfo.warnings.criticalError)
+                        {
+                            fn_info += "\r\n" + "Критическая ошибка ФН !!!";
+                        }
+
+                        txtB_fn_info.Text = fn_info;
+                    }
+                    else
+                    {
+                        MessageBox.Show(" Ошибка !!! " + result.results[0].status + " | " + result.results[0].errorDescription);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Общая ошибка");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("get_fiscall_info" + ex.Message);
+            }
+
         }
 
         void incass_KeyPress(object sender, KeyPressEventArgs e)
