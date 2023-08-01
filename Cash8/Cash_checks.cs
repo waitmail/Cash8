@@ -463,7 +463,7 @@ namespace Cash8
                     "checks_header.comment,"+
                     //"checks_header.inventory,"+
                     "checks_header.its_print,"+
-                    "checks_header.check_type,checks_header.document_number  FROM checks_header left join clients ON checks_header.client=clients.code WHERE checks_header.date_time_write BETWEEN '" + dateTimePicker1.Value.ToString("yyy-MM-dd") + " 00:00:00" + "' and '" + dateTimePicker1.Value.AddDays(1).ToString("yyy-MM-dd") + " 00:00:00" + "' AND its_deleted<2 order by checks_header.date_time_write  ";
+                    "checks_header.check_type,checks_header.document_number,checks_header.its_print_p  FROM checks_header left join clients ON checks_header.client=clients.code WHERE checks_header.date_time_write BETWEEN '" + dateTimePicker1.Value.ToString("yyy-MM-dd") + " 00:00:00" + "' and '" + dateTimePicker1.Value.AddDays(1).ToString("yyy-MM-dd") + " 00:00:00" + "' AND its_deleted<2 order by checks_header.date_time_write  ";
                 if (checkBox_show_3_last_checks.CheckState == CheckState.Checked)
                 {
                     myQuery += " desc limit 3 ";
@@ -485,9 +485,9 @@ namespace Cash8
 
                     if (MainStaticClass.Use_Fiscall_Print)
                     {
-                        if (!Convert.IsDBNull(reader[6]))
+                        if (!Convert.IsDBNull(reader[6]) && !Convert.IsDBNull(reader[9]))
                         {
-                            if (!reader.GetBoolean(6))
+                            if ((!reader.GetBoolean(6)) || (!reader.GetBoolean(9)))
                             {
                                 if (reader.GetDecimal(0) == 0)
                                 {

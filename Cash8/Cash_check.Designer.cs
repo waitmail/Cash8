@@ -705,11 +705,11 @@
             this.checkBox_to_print_repeatedly_p.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.checkBox_to_print_repeatedly_p.AutoSize = true;
             this.checkBox_to_print_repeatedly_p.Enabled = false;
-            this.checkBox_to_print_repeatedly_p.Location = new System.Drawing.Point(263, 566);
+            this.checkBox_to_print_repeatedly_p.Location = new System.Drawing.Point(261, 566);
             this.checkBox_to_print_repeatedly_p.Name = "checkBox_to_print_repeatedly_p";
-            this.checkBox_to_print_repeatedly_p.Size = new System.Drawing.Size(172, 17);
+            this.checkBox_to_print_repeatedly_p.Size = new System.Drawing.Size(163, 17);
             this.checkBox_to_print_repeatedly_p.TabIndex = 73;
-            this.checkBox_to_print_repeatedly_p.Text = "Напечатать повторно патент";
+            this.checkBox_to_print_repeatedly_p.Text = "Нап. повторно маркировку";
             this.checkBox_to_print_repeatedly_p.UseVisualStyleBackColor = true;
             this.checkBox_to_print_repeatedly_p.Visible = false;
             this.checkBox_to_print_repeatedly_p.CheckedChanged += new System.EventHandler(this.checkBox_to_print_repeatedly_p_CheckedChanged);
@@ -755,7 +755,7 @@
             // 
             this.txtB_num_doc.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtB_num_doc.Enabled = false;
-            this.txtB_num_doc.Location = new System.Drawing.Point(498, 130);
+            this.txtB_num_doc.Location = new System.Drawing.Point(497, 130);
             this.txtB_num_doc.Name = "txtB_num_doc";
             this.txtB_num_doc.Size = new System.Drawing.Size(100, 20);
             this.txtB_num_doc.TabIndex = 77;

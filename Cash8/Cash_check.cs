@@ -3700,10 +3700,28 @@ namespace Cash8
             {
                 if (MainStaticClass.Use_Fiscall_Print)
                 {
-                    if (this.itc_printed())
+                    if (MainStaticClass.SystemTaxation != 3)
                     {
-                        this.pay.Enabled = false;
-                        this.checkBox_to_print_repeatedly.Enabled = false;
+                        if (this.itc_printed())
+                        {
+                            this.pay.Enabled = false;
+                            this.checkBox_to_print_repeatedly.Enabled = false;
+                        }
+                    }
+                    else if (MainStaticClass.SystemTaxation == 3)
+                    {
+                        if (this.itc_printed())
+                        {                            
+                            this.checkBox_to_print_repeatedly.Enabled = false;                            
+                        }
+                        if (this.itc_printed_p())
+                        {                            
+                            this.checkBox_to_print_repeatedly_p.Enabled = false;
+                        }
+                        if (itc_printed() && this.itc_printed_p())
+                        {
+                            this.pay.Enabled = false;
+                        }                        
                     }
                 }
             }
@@ -4759,15 +4777,15 @@ namespace Cash8
 
                 if (variant == 0)//печать без кодов маркировки 
                 {
-                    query = "SELECT sum_at_a_discount FROM public.checks_table WHERE document_number=" + numdoc + " AND length(item_marker)<14";
+                    query = "SELECT SUM(sum_at_a_discount) FROM public.checks_table WHERE document_number=" + numdoc + " AND length(item_marker)<14 AND sum_at_a_discount>0";
                 }
                 else //1 вариант это только маркировка
                 {
-                    query = "SELECT SUM(sum_at_a_discount) FROM public.checks_table WHERE document_number=" + numdoc + " AND length(item_marker)>13";
+                    query = "SELECT SUM(sum_at_a_discount) FROM public.checks_table WHERE document_number=" + numdoc + " AND length(item_marker)>13 AND sum_at_a_discount>0 ";
                 }
 
                 command = new NpgsqlCommand(query, conn);
-                double sum_print = Convert.ToDouble(command.ExecuteScalar());
+                double sum_print = Math.Round(Convert.ToDouble(command.ExecuteScalar()),2,MidpointRounding.ToEven);
                 if (result[0] > 0)
                 {
                     if (result[0] >= sum_print)
@@ -4780,10 +4798,12 @@ namespace Cash8
 
                     if (result[0] < sum_print)
                     {
-                        sum_print = sum_print - result[0];
+                        sum_print = Math.Round(sum_print - result[0], 2, MidpointRounding.ToEven);
                     }
+                }
 
-
+                if (result[1] > 0)
+                {
                     if (result[1] >= sum_print)
                     {
                         result[1] = sum_print;
@@ -4793,9 +4813,11 @@ namespace Cash8
 
                     if (result[1] < sum_print)
                     {
-                        sum_print = sum_print - result[1];
+                        sum_print = Math.Round(sum_print - result[1], 2, MidpointRounding.ToEven);
                     }
-
+                }
+                if (result[2] > 0)
+                {
                     if (result[2] >= sum_print)
                     {
                         result[2] = sum_print;
@@ -4804,15 +4826,16 @@ namespace Cash8
 
                     if (result[2] < sum_print)
                     {
-                        sum_print = sum_print - result[2];
+                        sum_print = Math.Round(sum_print - result[2], 2, MidpointRounding.ToEven);
                     }
                 }
+                
                 //}
                 //if (variant == 1)//считаем суммы по маркировкам и вычитаем из общей суммы 
                 //{
-                    result_variant_1[0] = result_variant_1[0] - result[0];
-                    result_variant_1[1] = result_variant_1[1] - result[1];
-                    result_variant_1[2] = result_variant_1[2] - result[2];                    
+                    result_variant_1[0] = Math.Round(result_variant_1[0] - result[0],2,MidpointRounding.ToEven);
+                    result_variant_1[1] = Math.Round(result_variant_1[1] - result[1],2,MidpointRounding.ToEven);
+                    result_variant_1[2] = Math.Round(result_variant_1[2] - result[2],2,MidpointRounding.ToEven);                    
                 //}
 
                 //reader.Close();
@@ -7237,6 +7260,37 @@ namespace Cash8
                     MessageBox.Show("Этот чек уже был успешно отправлен на печать");
                     return;
                 }
+                //if (MainStaticClass.SystemTaxation != 3)
+                //{
+                    System.IO.File.AppendAllText(Application.StartupPath.Replace("\\", "/") + "/" + "json.txt", DateTime.Now.ToString() + " clearMarkingBuffer \r\n");
+                    clearMarkingCodeValidationResult();
+
+                    int count_km = 0;
+                    foreach (ListViewItem lvi in listView1.Items)
+                    {
+                        if (lvi.SubItems[14].Text.Trim().Length > 13)
+                        {
+                            count_km++;
+                        }
+                    }
+                    //bool continue_print = true;
+                    int code_error = 0;// continue_print = true;
+                    if (count_km != 0)
+                    {
+                        code_error = checking_km_before_adding_to_buffer();
+                        //this.answerAddingKmArrayToTableTested = null;
+                        //continue_print = checking_km_before_adding_to_buffer(ref this.answerAddingKmArrayToTableTested);
+                        check_imc_work_state(count_km);
+                        if (code_error == 0)
+                        {
+                            //continue_print = check_imc_work_state(count_km);//Проверка соответсвия состояния буфера в ФН и 
+                        }
+                        //else
+                        //{
+                        //    //return;
+                        //}
+                    }
+                //}
             }
 
             closing = false;
@@ -7660,7 +7714,7 @@ namespace Cash8
                     if (print_to_button == 0)
                     {
                         fiscall_print_pay_2_3(pay, 0, result_variant_1);
-                        fiscall_print_pay_2_3(pay, 1, result_variant_1);
+                        fiscall_print_pay_2_3(pay, 1, result_variant_1);                        
                     }
                     else if (print_to_button==1)
                     {
@@ -8883,6 +8937,55 @@ namespace Cash8
             return result;
         }
 
+        /// <summary>
+        /// Функция возвращает значение флага напечатан для чека,
+        /// при ошибке получения вернется истина
+        /// </summary>
+        /// <returns></returns>
+        private bool itc_printed_p()
+        {
+            NpgsqlConnection conn = null;
+            NpgsqlCommand command = null;
+            bool result = true;
+            try
+            {
+                conn = MainStaticClass.NpgsqlConn();
+                conn.Open();
+                string query = "SELECT its_print_p  FROM checks_header WHERE date_time_write = '" + this.date_time_write + "'";
+                command = new NpgsqlCommand(query, conn);
+                object result_query = command.ExecuteScalar();
+
+                if (result_query != DBNull.Value)
+                {
+                    result = Convert.ToBoolean(result_query);
+                }
+                else
+                {
+                    result = false;
+                }
+
+                conn.Close();
+
+            }
+            catch (NpgsqlException ex)
+            {
+                MessageBox.Show("Ошибка при получении флага распечатан по патенту " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ошибка при получении флага распечатан по патенту " + ex.Message);
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return result;
+        }
+
         private void its_print()
         {
             NpgsqlConnection conn = null;
@@ -9131,33 +9234,36 @@ namespace Cash8
             //ПРОВЕРКА МАССИВА КОДОВ МАРКИРОВКИ
             if (MainStaticClass.GetVersionFn == 2)
             {
-                System.IO.File.AppendAllText(Application.StartupPath.Replace("\\", "/") + "/" + "json.txt", DateTime.Now.ToString() + " clearMarkingBuffer \r\n");
-                clearMarkingCodeValidationResult();                
+                if ((MainStaticClass.SystemTaxation != 3)|| (check_type.SelectedIndex==1))
+                {
+                    System.IO.File.AppendAllText(Application.StartupPath.Replace("\\", "/") + "/" + "json.txt", DateTime.Now.ToString() + " clearMarkingBuffer \r\n");
+                    clearMarkingCodeValidationResult();
 
-                int count_km = 0;
-                foreach (ListViewItem lvi in listView1.Items)
-                {
-                    if (lvi.SubItems[14].Text.Trim().Length > 13)
+                    int count_km = 0;
+                    foreach (ListViewItem lvi in listView1.Items)
                     {
-                        count_km++;
+                        if (lvi.SubItems[14].Text.Trim().Length > 13)
+                        {
+                            count_km++;
+                        }
                     }
-                }
-                //bool continue_print = true;
-                int code_error = 0;// continue_print = true;
-                if (count_km != 0)
-                {
-                    code_error = checking_km_before_adding_to_buffer();
-                    //this.answerAddingKmArrayToTableTested = null;
-                    //continue_print = checking_km_before_adding_to_buffer(ref this.answerAddingKmArrayToTableTested);
-                    check_imc_work_state(count_km);
-                    if (code_error==0)
+                    //bool continue_print = true;
+                    int code_error = 0;// continue_print = true;
+                    if (count_km != 0)
                     {
-                        //continue_print = check_imc_work_state(count_km);//Проверка соответсвия состояния буфера в ФН и 
+                        code_error = checking_km_before_adding_to_buffer();
+                        //this.answerAddingKmArrayToTableTested = null;
+                        //continue_print = checking_km_before_adding_to_buffer(ref this.answerAddingKmArrayToTableTested);
+                        check_imc_work_state(count_km);
+                        if (code_error == 0)
+                        {
+                            //continue_print = check_imc_work_state(count_km);//Проверка соответсвия состояния буфера в ФН и 
+                        }
+                        //else
+                        //{
+                        //    //return;
+                        //}
                     }
-                    //else
-                    //{
-                    //    //return;
-                    //}
                 }
                 //if (!continue_print)
                 //{
@@ -9176,16 +9282,34 @@ namespace Cash8
             {
                 if (MainStaticClass.Use_Fiscall_Print)
                 {
-                    if (!itc_printed())
+                    if (MainStaticClass.SystemTaxation != 3)
                     {
-                        if (this.check_type.SelectedIndex == 0)
+                        if (!itc_printed())
                         {
-                            fiscall_print_pay(this.p_sum_doc);
+                            if (this.check_type.SelectedIndex == 0)
+                            {
+                                fiscall_print_pay(this.p_sum_doc);
+                            }
+                            else
+                            {
+                                fiscall_print_disburse(txtB_cash_money.Text, txtB_non_cash_money.Text);
+                            }
                         }
-                        else
+                    }
+                    else if (MainStaticClass.SystemTaxation == 3)
+                    {
+                        if (!itc_printed()|| !itc_printed_p())
                         {
-                            fiscall_print_disburse(txtB_cash_money.Text, txtB_non_cash_money.Text);
+                            if (this.check_type.SelectedIndex == 0)
+                            {
+                                fiscall_print_pay(this.p_sum_doc);
+                            }
+                            else
+                            {
+                                fiscall_print_disburse(txtB_cash_money.Text, txtB_non_cash_money.Text);
+                            }
                         }
+
                     }
                 }
 
