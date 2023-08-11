@@ -109,6 +109,7 @@ namespace Cash8
         private static string id_acquirer_terminal = "00000000";
         private static string ip_address_acquiring_terminal = "000000000000000";
         private static int one_monitors_connected = -1;
+        //private static int version_fn = 0;
         //private static int sno = -1;//это система налогообложения
 
         //public static int SNO

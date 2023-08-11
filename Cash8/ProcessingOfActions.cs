@@ -12,6 +12,7 @@ namespace Cash8
     {
 
         public DataTable dt = new DataTable();
+        public DataTable dt_copy = new DataTable();//эта таблица необходима для временного хранения строк которые позднее будут добавлены в осносную базу в тот момент когда идет перебор строк основной таблицы в нее добавлять строки нельзя
         //private DataTable dt_gift = new DataTable();
         public string client_code = "";
         public int action_num_doc = 0;
@@ -1363,7 +1364,7 @@ namespace Cash8
         * sum_null если true тогда сумма и сумма со скидкой 0 иначе как обычный товар
         * это для акции 
         */
-        public void find_barcode_or_code_in_tovar_action_dt(string barcode, int count, bool sum_null, int num_doc)
+        public void find_barcode_or_code_in_tovar_action_dt(string barcode, int count, bool sum_null, int num_doc,int mode)
         {
 
             NpgsqlConnection conn = null;
@@ -1386,10 +1387,17 @@ namespace Cash8
                 NpgsqlDataReader reader = command.ExecuteReader();
 
                 bool there_are_goods = false;//Флаг для понимания есть ли акционный товар
-
+                DataRow row = null;
                 while (reader.Read())
                 {
-                    DataRow row = dt.NewRow();
+                    if (mode == 0)
+                    {
+                        row = dt.NewRow();
+                    }
+                    else
+                    {
+                        row = dt_copy.NewRow();
+                    }
                     row["tovar_code"] = reader.GetInt64(0).ToString();//ListViewItem lvi = new ListViewItem(reader.GetInt32(0).ToString());                    
                     row["tovar_name"] = reader.GetString(1);//Наименование
                     row["characteristic_code"] = "";
@@ -1420,7 +1428,14 @@ namespace Cash8
                     row["bonus_action"] = 0;
                     row["bonus_action_b"] = 0;
                     row["marking"] = "";
-                    dt.Rows.Add(row);
+                    if (mode == 0)
+                    {
+                        dt.Rows.Add(row);
+                    }
+                    else
+                    {
+                        dt_copy.Rows.Add(row);
+                    }
                     there_are_goods = true;                    
                 }
 
@@ -1445,13 +1460,14 @@ namespace Cash8
             }
         }
 
-        private DialogResult show_query_window_barcode(int call_type, int count, int num_doc)
+        private DialogResult show_query_window_barcode(int call_type, int count, int num_doc, int mode)
         {
             Input_action_barcode ib = new Input_action_barcode();
             ib.count = count;
             ib.caller2 = this;
             ib.call_type = call_type;
             ib.num_doc = num_doc;
+            ib.mode = mode;
             DialogResult dr = ib.ShowDialog();
             ib.Dispose();
             return dr;
@@ -1479,6 +1495,8 @@ namespace Cash8
                 conn.Open();
                 //Поскольку документ не записан еще найти строки которые могут участвовать в акции можно только последовательным перебором 
                 string query = "";
+                dt_copy = dt.Clone();                
+
                 foreach (DataRow row in dt.Rows)
                 {
                     if (Convert.ToInt32(row["action2"]) > 0)//Этот товар уже участвовал в акции значит его пропускаем
@@ -1497,7 +1515,7 @@ namespace Cash8
                         DialogResult dr = DialogResult.Cancel;
                         if (marker == 1)
                         {
-                            dr = show_query_window_barcode(2, 1, num_doc);
+                            dr = show_query_window_barcode(2, 1, num_doc,1);
                         }
                         if (dr != DialogResult.Cancel)
                         {
@@ -1508,7 +1526,11 @@ namespace Cash8
                         }
                     }
                 }
-                conn.Close();
+                foreach (DataRow row in dt_copy.Rows)
+                {
+                    dt.ImportRow(row);
+                }
+                    conn.Close();
             }
             catch (NpgsqlException ex)
             {
@@ -1954,7 +1976,7 @@ namespace Cash8
                     DialogResult dr = DialogResult.Cancel;
                     if (marker == 1)
                     {
-                        dr = show_query_window_barcode(2, min_quantity, num_doc);
+                        dr = show_query_window_barcode(2, min_quantity, num_doc,0);
                     }
 
                     if (dr != DialogResult.Cancel)
@@ -2100,7 +2122,7 @@ namespace Cash8
                     {
                         if (marker == 1)
                         {
-                            dr = show_query_window_barcode(2, 1, num_doc);
+                            dr = show_query_window_barcode(2, 1, num_doc,0);
                         }
                     }
                     /*акция сработала
@@ -2784,7 +2806,7 @@ namespace Cash8
                 {
                     for (int i = 0; i < quantity_of_gifts; i++)
                     {
-                        show_query_window_barcode(2, 1, num_doc);
+                        show_query_window_barcode(2, 1, num_doc,0);
                     }
                 }
                 marked_action_tovar_dt(num_doc);
@@ -2832,7 +2854,7 @@ namespace Cash8
                     //    MessageBox.Show("Обнаружен неакционный товар " + row["code"]);
                     //}
                 }
-                find_barcode_or_code_in_tovar_action_dt(code_tovar.ToString(), gift, false, num_doc);
+                find_barcode_or_code_in_tovar_action_dt(code_tovar.ToString(), gift, false, num_doc,0);
                 //                conn.Close();
             }
             catch (NpgsqlException ex)
@@ -3160,7 +3182,7 @@ namespace Cash8
                     {
                         for (int i = 0; i < multiplication_factor; i++)
                         {
-                            show_query_window_barcode(2, 1, num_doc);
+                            show_query_window_barcode(2, 1, num_doc,0);
                         }
                     }
                     marked_action_tovar_dt(num_doc);

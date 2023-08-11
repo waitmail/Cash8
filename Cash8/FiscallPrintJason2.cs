@@ -202,6 +202,66 @@ namespace Cash8
 
 
         /// <summary>
+        /// Печать нефискальных документов
+        /// </summary>
+        public class NonFiscallDocument
+        {
+            public string type { get; set; }
+            public List<ItemNonFiscal> items { get; set; }
+            public bool printFooter { get; set; }
+        }
+
+        public class ItemNonFiscal
+        {
+            public string type { get; set; }
+            public string text { get; set; }
+            public string alignment { get; set; }
+            public string barcode { get; set; }
+            public string barcodeType { get; set; }
+            public int? scale { get; set; }
+        }
+
+        /// <summary>
+        /// Служебное внесение, выдача(Инкассация)
+        /// </summary>
+        /// <returns></returns>
+        public static RootObject print_not_fiscal_document(NonFiscallDocument nonFiscallDocument)
+        {
+            string status = "";
+            RootObject result = null;
+            string nonFiscall = JsonConvert.SerializeObject(nonFiscallDocument, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            string json = MainStaticClass.shablon.Replace("body", nonFiscall);
+            guid = Guid.NewGuid().ToString();
+            string replace = "\"uuid\": \"" + guid + "\"";
+            json = json.Replace("uuid", replace);
+            if (POST(MainStaticClass.url, json) == "Created")
+            {
+                int count = 0;
+                while (1 == 1)
+                {
+                    count++;
+                    Thread.Sleep(1000);
+                    result = GET(MainStaticClass.url, guid);
+                    status = result.results[0].status;
+                    if ((status != "ready") && (status != "error"))
+                    {
+                        if (count > 28)
+                        {
+                            break;
+                        }
+                    }
+                    else if ((status == "ready") || (status == "error"))
+                    {
+                        break;
+                    }
+                }
+            }
+
+            return result;
+        }
+
+
+        /// <summary>
         /// Служебное внесение, выдача(Инкассация)
         /// </summary>
         /// <returns></returns>
@@ -531,6 +591,7 @@ namespace Cash8
             public List<PostItem> postItems { get; set; }
             public ClientInfo clientInfo { get; set; }
             public bool validateMarkingCodes { get; set; }
+            public bool electronically { get; set; }
         }
 
 

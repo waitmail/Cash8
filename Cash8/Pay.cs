@@ -1312,15 +1312,18 @@ namespace Cash8
                                     status = false;
                                 }
                             }
-                            else if(field.Id=="13")
+                            else if (field.Id == "13")
                             {
                                 answerTerminal.code_authorization = field.Text.Trim();
                             }
-                            else if(field.Id == "14")
+                            else if (field.Id == "14")
                             {
                                 answerTerminal.number_reference = field.Text.Trim();
                             }
-
+                            else if (field.Id == "90")
+                            {                                
+                                cc.recharge_note = field.Text.Trim();
+                            }
                         }
                     }
                 }

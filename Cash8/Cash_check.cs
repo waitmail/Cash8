@@ -89,7 +89,9 @@ namespace Cash8
         public string sale_code_authorization_terminal = "";
         public DateTime sale_date;
         public int print_to_button = 0;
-        
+        public string recharge_note="";//здесь будет присвоена иформация об оплате по карте когда терминал без печтчающего устройства.
+
+
 
         System.Windows.Forms.Timer timer = null;
 
@@ -2541,7 +2543,7 @@ namespace Cash8
                         foreach (ListViewItem _lvi_ in listView1.Items)
                         {
                             //if (_lvi_.SubItems[0].Text == reader.GetInt64(0).ToString())
-                            if (_lvi_.SubItems[0].Text == barcode)
+                            if (_lvi_.SubItems[14].Text == barcode)
                             {
                                 find_sertificate = true;
                                 break;
@@ -3430,13 +3432,13 @@ namespace Cash8
 
                 foreach (ListViewItem lvi in listView1.Items)
                 {
-                    if (lvi.SubItems[14].Text.Trim().Length > 1)
+                    if (lvi.SubItems[14].Text.Trim().Length > 13)
                     {
-                        _checkBox_to_print_repeatedly_ = 1;
+                        _checkBox_to_print_repeatedly_p_ = 1;//Здесь путаница, печатать не маркировку 
                     }
                     else
                     {
-                        _checkBox_to_print_repeatedly_p_ = 1;
+                        _checkBox_to_print_repeatedly_ = 1; //Здесь путаница, печатать маркировку 
                     }
                     if ((_checkBox_to_print_repeatedly_ == 1) && (_checkBox_to_print_repeatedly_p_ == 1))
                     {
@@ -3604,9 +3606,15 @@ namespace Cash8
             cash.SelectionStart = 0;
             //Здесь получаем признак документ новый или нет
 
+            if (MainStaticClass.GetVersionFn == 1)
+            {
+                checkBox_print_check.Visible = false;
+            }
+            checkBox_print_check.Checked = true;
 
             if (itsnew)
             {
+                
                 checkBox_to_print_repeatedly.Visible = false;
                 label9.Visible = false;
                 label10.Visible = false;
@@ -3633,6 +3641,7 @@ namespace Cash8
             }
             else
             {
+                checkBox_print_check.Enabled = false;                
                 //Документ не новый поэтому запретим в нем ввод и изменение                
                 last_tovar.Enabled = false;
                 txtB_email_telephone.Enabled = false;
@@ -3671,11 +3680,7 @@ namespace Cash8
                     this.client_barcode.Enabled = false;
                     to_open_the_written_down_document();
                     get_old_document_Discount();
-
                     check_type.Enabled = false;
-
-
-
                     itsnew = true;
                 }
             }
@@ -5706,24 +5711,30 @@ namespace Cash8
                     }
                 }
             }
-
-            if (answerCheckImcWorkState != null)
+            try
             {
-                if (answerCheckImcWorkState.results[0].errorCode == 0)
+                if (answerCheckImcWorkState != null)
                 {
-                    if (count_km == answerCheckImcWorkState.results[0].result.fm.checkingCount)//количество кодов маркировки в чеке и в буфере ФР одинаковое
+                    if (answerCheckImcWorkState.results[0].errorCode == 0)
                     {
-                        result = true;
+                        if (count_km == answerCheckImcWorkState.results[0].result.fm.checkingCount)//количество кодов маркировки в чеке и в буфере ФР одинаковое
+                        {
+                            result = true;
+                        }
+                        else
+                        {
+                            MessageBox.Show("В чеке " + count_km.ToString() + " код(а) маркировки,а в буфере ФР " + answerCheckImcWorkState.results[0].result.fm.checkingCount.ToString());
+                        }
                     }
                     else
                     {
-                        MessageBox.Show("В чеке " + count_km.ToString() + " код(а) маркировки,а в буфере ФР " + answerCheckImcWorkState.results[0].result.fm.checkingCount.ToString());
+                        MessageBox.Show("Неопознанная ошибка, код ошибки " + answerCheckImcWorkState.results[0].errorCode.ToString());
                     }
                 }
-                else
-                {
-                    MessageBox.Show("Неопознанная ошибка, код ошибки " + answerCheckImcWorkState.results[0].errorCode.ToString());
-                }
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
 
             return result;
@@ -5755,6 +5766,8 @@ namespace Cash8
                 //}
 
                 closing = false;
+
+                print_terminal_check();
 
                 FiscallPrintJason.Check check = new FiscallPrintJason.Check();
                 check.type = "sell";
@@ -6783,6 +6796,26 @@ namespace Cash8
             return result;
         }
 
+        private void print_terminal_check()
+        {
+            if (recharge_note != "")
+            {
+                FiscallPrintJason2.NonFiscallDocument nonFiscallDocument = new FiscallPrintJason2.NonFiscallDocument();
+                nonFiscallDocument.type = "nonFiscal";
+                nonFiscallDocument.printFooter = false;
+
+                FiscallPrintJason2.ItemNonFiscal itemNonFiscal = new FiscallPrintJason2.ItemNonFiscal();
+                nonFiscallDocument.items = new List<FiscallPrintJason2.ItemNonFiscal>();
+
+                itemNonFiscal.type = "text";
+                itemNonFiscal.text = recharge_note.Replace("0xDF^^","");
+                itemNonFiscal.alignment = "center";
+                nonFiscallDocument.items.Add(itemNonFiscal);
+                FiscallPrintJason2.print_not_fiscal_document(nonFiscallDocument);
+                recharge_note = "";
+            }
+        }
+
 
         /// <summary>
         /// Печать чеа по ффд 1.2
@@ -6813,8 +6846,34 @@ namespace Cash8
 
             closing = false;
 
+            print_terminal_check();
+
+            //if (recharge_note != "")
+            //{
+            //    FiscallPrintJason2.NonFiscallDocument nonFiscallDocument = new FiscallPrintJason2.NonFiscallDocument();
+            //    nonFiscallDocument.type = "nonFiscal";
+            //    nonFiscallDocument.printFooter = false;
+
+            //    FiscallPrintJason2.ItemNonFiscal itemNonFiscal   = new FiscallPrintJason2.ItemNonFiscal();
+            //    nonFiscallDocument.items = new List<FiscallPrintJason2.ItemNonFiscal>();
+
+            //    itemNonFiscal.type = "text";
+            //    itemNonFiscal.text = recharge_note;
+            //    itemNonFiscal.alignment = "center";
+            //    nonFiscallDocument.items.Add(itemNonFiscal);
+            //    FiscallPrintJason2.print_not_fiscal_document(nonFiscallDocument);
+            //}
+
             FiscallPrintJason2.Check check = new FiscallPrintJason2.Check();
+            FiscallPrintJason2.PostItem pi = new FiscallPrintJason2.PostItem();
+            check.postItems = new List<FiscallPrintJason2.PostItem>();
+                                   
             check.type = "sell";
+
+            if (!checkBox_print_check.Checked)
+            {
+                check.electronically = true;
+            }
 
             check.taxationType = (MainStaticClass.SystemTaxation == 1 ? "osn" : "usnIncomeOutcome");
 
@@ -6996,8 +7055,8 @@ namespace Cash8
 
                 //вывести информацию об ндс
 
-                FiscallPrintJason2.PostItem pi = new FiscallPrintJason2.PostItem();
-                check.postItems = new List<FiscallPrintJason2.PostItem>();
+                //FiscallPrintJason2.PostItem pi = new FiscallPrintJason2.PostItem();
+                //check.postItems = new List<FiscallPrintJason2.PostItem>();
                 int length = 0;
                 if (Discount != 0)
                 {
@@ -7235,6 +7294,8 @@ namespace Cash8
         {
             bool error = false;
 
+            print_terminal_check();
+
             if (variant == 0)
             {
                 if (to_print_certainly == 1)
@@ -7297,7 +7358,9 @@ namespace Cash8
 
             FiscallPrintJason2.Check check = new FiscallPrintJason2.Check();
             check.type = "sell";
-                        
+            
+
+
             if (variant == 0)
             {
                 check.taxationType = "patent";                
@@ -8067,6 +8130,7 @@ namespace Cash8
                 MessageBox.Show("В константах не опрелена система налогобложения, печать чеков невозможна");
                 return;
             }
+                   
 
             string output = calculation_of_the_sum_of_the_document().ToString();
             if (itsnew)
@@ -8077,7 +8141,7 @@ namespace Cash8
                 }
             }
 
-            bool error = false;
+            //bool error = false;
 
             if (to_print_certainly == 1)
             {
@@ -8350,7 +8414,7 @@ namespace Cash8
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message);
-                    error = true;
+                    //error = true;
                 }
                 finally
                 {
@@ -8370,6 +8434,347 @@ namespace Cash8
             this.Close();
 
         }
+
+        //private void fiscall_print_disburse_2_3(string cash_money, string non_cash_money,int variant, double[] result_variant_1)
+        //{
+
+        //    if (MainStaticClass.SystemTaxation == 0)
+        //    {
+        //        MessageBox.Show("В константах не опрелена система налогобложения, печать чеков невозможна");
+        //        return;
+        //    }
+
+        //    string output = calculation_of_the_sum_of_the_document().ToString();
+        //    if (itsnew)
+        //    {
+        //        if (!write_new_document(output, output, "0", "0", true, cash_money, non_cash_money, "0", "0"))
+        //        {
+        //            return;
+        //        }
+        //    }
+
+        //    bool error = false;
+
+        //    if (to_print_certainly == 1)
+        //    {
+        //        MainStaticClass.delete_document_wil_be_printed(numdoc.ToString());
+        //    }
+
+        //    if (MainStaticClass.get_document_wil_be_printed(numdoc.ToString()) != 0)
+        //    {
+        //        MessageBox.Show("Этот чек уже был успешно отправлен на печать");
+        //        return;
+        //    }
+
+        //    if (MainStaticClass.Use_Fiscall_Print)
+        //    {
+        //        //fptrsharp.Fptr fiscal = null;
+        //        closing = false;
+
+        //        FiscallPrintJason2.Check check = new FiscallPrintJason2.Check();
+        //        check.type = "sellReturn";
+        //        //check.taxationType = (MainStaticClass.SystemTaxation == 1 ? "osn" : "usnIncomeOutcome");
+        //        if (variant == 0)
+        //        {
+        //            check.taxationType = "patent";
+        //        }
+        //        else if (variant == 1)
+        //        {
+        //            check.taxationType = "usnIncomeOutcome";
+        //        }
+        //        else
+        //        {
+        //            MessageBox.Show("В печать не передан вариант печати, печать невозможна");
+        //            return;
+        //        }
+
+        //        check.ignoreNonFiscalPrintErrors = false;
+        //        check.validateMarkingCodes = false;
+        //        check.@operator = new FiscallPrintJason.Operator();
+        //        check.@operator.name = MainStaticClass.Cash_Operator;
+        //        check.@operator.vatin = MainStaticClass.cash_operator_inn;
+        //        check.items = new List<Cash8.FiscallPrintJason2.Item>();
+
+        //        FiscallPrintJason2.PostItem pi = new FiscallPrintJason2.PostItem();
+        //        check.postItems = new List<FiscallPrintJason2.PostItem>();
+
+        //        try
+        //        {
+        //            //Cash8.Work_FPTK22 fptk22 = new Work_FPTK22(1);
+        //            //fiscal = fptk22.get_FPTK22;
+        //            int nomer_naloga = 0;
+        //            string tax_type = "";
+        //            foreach (ListViewItem lvi in listView1.Items)
+        //            {
+        //                if (Convert.ToDouble(lvi.SubItems[7].Text) != 0)
+        //                {
+        //                    if (variant == 0)
+        //                    {
+        //                        if (lvi.SubItems[14].Text.Trim().Length > 13)
+        //                        {
+        //                            continue;
+        //                        }
+        //                    }
+        //                    else if (variant == 1)
+        //                    {
+        //                        if (lvi.SubItems[14].Text.Trim().Length < 14)
+        //                        {
+        //                            continue;
+        //                        }
+        //                    }
+        //                    //fiscal.Return(false, 2, 1, lvi.SubItems[0].Text.Trim() + " " + lvi.SubItems[1].Text.Trim(), Convert.ToDouble(lvi.SubItems[3].Text), Convert.ToDouble(lvi.SubItems[5].Text), 0, true);
+        //                    //int stavka_nds = get_tovar_nds(lvi.SubItems[0].Text.Trim());
+        //                    //int nomer_naloga = 0;
+        //                    //if (!MainStaticClass.Use_Envd)
+        //                    //{
+        //                    int stavka_nds = get_tovar_nds(lvi.SubItems[0].Text.Trim());
+        //                    //int nomer_naloga = 0;
+        //                    if (MainStaticClass.SystemTaxation == 1)
+        //                    {
+        //                        if (stavka_nds == 0)
+        //                        {
+        //                            nomer_naloga = 1;
+        //                            tax_type = "vat0";
+        //                        }
+        //                        else if (stavka_nds == 10)
+        //                        {
+        //                            nomer_naloga = 2;
+        //                            tax_type = "vat10";
+        //                        }
+        //                        else if (stavka_nds == 18)
+        //                        {
+        //                            nomer_naloga = 3;
+        //                            tax_type = "vat20";
+        //                        }
+        //                        else if (stavka_nds == 20)
+        //                        {
+        //                            nomer_naloga = 3;
+        //                            tax_type = "vat20";
+        //                        }
+        //                        else
+        //                        {
+        //                            MessageBox.Show("Неизвестная ставка ндс");
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        nomer_naloga = 4;
+        //                        tax_type = "none";
+        //                    }
+        //                    //}
+        //                    //else
+        //                    //{
+        //                    //    nomer_naloga = 4;
+        //                    //    tax_type = "none";
+        //                    //}
+
+        //                    FiscallPrintJason2.Item item = new FiscallPrintJason2.Item();
+        //                    item.name = lvi.SubItems[0].Text.Trim() + " " + lvi.SubItems[1].Text.Trim();// "Первая Позиция";
+        //                    item.price = Convert.ToDouble(lvi.SubItems[5].Text);// 1;
+        //                    item.quantity = Convert.ToDouble(lvi.SubItems[3].Text);
+        //                    item.type = "position";
+        //                    item.amount = Convert.ToDouble(lvi.SubItems[7].Text);
+        //                    item.tax = new FiscallPrintJason2.Tax();
+        //                    item.tax.type = tax_type;//ндс
+        //                    item.measurementUnit = "piece";
+        //                    if (lvi.SubItems[14].Text.Trim().Length <= 13)//Код маркировки не заполнен
+        //                    {
+        //                        item.paymentObject = "commodityWithoutMarking";
+        //                    }
+        //                    else//иначе передаем код маркировки 
+        //                    {
+        //                        item.paymentObject = "commodityWithMarking";
+        //                        FiscallPrintJason2.ImcParams imcParams = new FiscallPrintJason2.ImcParams();
+        //                        imcParams.imcType = "auto";
+        //                        byte[] textAsBytes = Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim());
+        //                        string mark_str = Convert.ToBase64String(textAsBytes);
+        //                        imcParams.imc = mark_str;
+        //                        imcParams.itemEstimatedStatus = "itemPieceSold";
+        //                        imcParams.imcModeProcessing = 0;
+        //                        item.imcParams = imcParams;
+        //                    }
+
+        //                    check.items.Add(item);
+        //                }
+        //            }
+
+
+        //            check.clientInfo = new FiscallPrintJason2.ClientInfo();
+        //            if (txtB_email_telephone.Text.Trim().Length > 0)
+        //            {
+        //                check.clientInfo.emailOrPhone = txtB_email_telephone.Text;
+        //            }
+
+        //            if ((txtB_inn.Text.Trim().Length > 0) && (txtB_name.Text.Trim().Length > 0))
+        //            {
+        //                check.clientInfo.vatin = txtB_inn.Text;
+        //                check.clientInfo.name = txtB_name.Text;
+        //            }
+
+
+
+        //            //double[] get_result_payment = get_cash_on_type_payment();
+        //            double[] get_result_payment = get_cash_on_type_payment_3(variant,);
+        //            check.payments = new List<FiscallPrintJason2.Payment>();
+        //            if (get_result_payment[0] != 0)//Наличные
+        //            {
+        //                FiscallPrintJason2.Payment payment = new FiscallPrintJason2.Payment();
+        //                payment.type = "cash";
+        //                payment.sum = Convert.ToDouble(get_result_payment[0]);
+        //                check.payments.Add(payment);
+        //                //fiscal.Payment(Convert.ToDouble(result[0]), 0, out remainder, out change);
+        //            }
+        //            if (get_result_payment[1] != 0)
+        //            {
+        //                FiscallPrintJason2.Payment payment = new FiscallPrintJason2.Payment();
+        //                payment.type = "electronically";
+        //                payment.sum = Convert.ToDouble(get_result_payment[1]);
+        //                check.payments.Add(payment);
+        //                //fiscal.Payment(Convert.ToDouble(result[1]), 3, out remainder, out change);
+        //            }
+        //            if (get_result_payment[2] != 0)
+        //            {
+        //                FiscallPrintJason2.Payment payment = new FiscallPrintJason2.Payment();
+        //                payment.type = "prepaid";
+        //                payment.sum = Convert.ToDouble(get_result_payment[2]);
+        //                check.payments.Add(payment);
+        //                //fiscal.Payment(false, Convert.ToDouble(result[2]), 4, out remainder, out change);
+        //            }
+
+
+        //            if (MainStaticClass.GetWorkSchema == 2)
+        //            {
+        //                if (client.Tag != null)
+        //                {
+        //                    //здесь блок по бонусам
+        //                    pi = new FiscallPrintJason2.PostItem();
+        //                    pi.type = "text";
+        //                    pi.text = "Перерасчет БОНУСОВ";
+        //                    pi.alignment = "left";
+        //                    check.postItems.Add(pi);
+
+        //                    pi = new FiscallPrintJason2.PostItem();
+        //                    pi.type = "text";
+        //                    pi.text = "ПОСЛЕ ВОЗВРАТА  ТОВАРА";
+        //                    pi.alignment = "left";
+        //                    check.postItems.Add(pi);
+
+        //                    pi = new FiscallPrintJason2.PostItem();
+        //                    pi.type = "text";
+        //                    pi.text = "СПИСАНО " + bonuses_it_is_written_off.ToString();
+        //                    pi.alignment = "left";
+        //                    check.postItems.Add(pi);
+
+        //                    pi = new FiscallPrintJason2.PostItem();
+        //                    pi.type = "text";
+        //                    pi.text = "СОСТОЯНИЕ СЧЕТА БОНУСОВ";
+        //                    pi.alignment = "left";
+        //                    check.postItems.Add(pi);
+
+        //                    pi = new FiscallPrintJason2.PostItem();
+        //                    pi.type = "text";
+        //                    pi.text = "ORANGE CARD";
+        //                    pi.alignment = "left";
+        //                    check.postItems.Add(pi);
+
+        //                    pi = new FiscallPrintJason2.PostItem();
+        //                    pi.type = "text";
+        //                    pi.text = "КАРТА #: " + client.Tag.ToString();
+        //                    pi.alignment = "left";
+        //                    check.postItems.Add(pi);
+
+        //                    pi = new FiscallPrintJason2.PostItem();
+        //                    pi.type = "text";
+        //                    pi.text = "PRN: " + id_transaction;
+        //                    pi.alignment = "left";
+        //                    check.postItems.Add(pi);
+
+        //                    pi = new FiscallPrintJason2.PostItem();
+        //                    pi.type = "text";
+        //                    pi.text = "БАЛАНС: " + bonus_total_centr.ToString();
+        //                    pi.alignment = "left";
+        //                    check.postItems.Add(pi);
+
+        //                    pi = new FiscallPrintJason2.PostItem();
+        //                    pi.type = "text";
+        //                    pi.text = "СПИСАНО -" + bonuses_it_is_written_off.ToString();
+        //                    pi.alignment = "left";
+        //                    check.postItems.Add(pi);
+
+        //                    pi = new FiscallPrintJason2.PostItem();
+        //                    pi.type = "text";
+        //                    pi.text = "ДОСТУПНО " + (bonus_total_centr - bonuses_it_is_written_off).ToString();
+        //                    pi.alignment = "left";
+        //                    check.postItems.Add(pi);
+        //                }
+
+        //            }
+
+        //            //if (result[2] != 0)
+        //            //{
+        //            //    fiscal.Payment(Convert.ToDouble(result[2]), 4, out remainder, out change);
+        //            //}
+        //            pi = new FiscallPrintJason2.PostItem();
+        //            pi.type = "text";
+        //            //pi.text = MainStaticClass.Nick_Shop + "-" + comment.Text.Trim();
+        //            pi.text = MainStaticClass.Nick_Shop + "-" + MainStaticClass.CashDeskNumber.ToString() + "-" + numdoc.ToString() + " (" + comment.Text.Trim() + ")";// +" кассир " + this.cashier;
+        //            pi.alignment = "left";
+        //            check.postItems.Add(pi);
+
+
+        //            //Оплата клиенту
+        //            //fiscal.CloseCheck(false, type_pay.SelectedIndex);
+        //            check.total = get_result_payment[0] + get_result_payment[1] + get_result_payment[2];
+
+        //            try
+        //            {
+        //                Cash8.FiscallPrintJason2.RootObject result = FiscallPrintJason2.check_print("sellReturn", check, numdoc.ToString(), 0);
+
+        //                if (result.results[0].status == "ready")//Задание выполнено успешно 
+        //                {
+        //                    its_print();
+        //                }
+        //                else
+        //                {
+        //                    MessageBox.Show(" ФРЕГ Ошибка !!! " + result.results[0].status + " | " + result.results[0].errorDescription);
+        //                    MainStaticClass.write_event_in_log(" ФРЕГ  Ошибка !!! " + result.results[0].status + " | " + result.results[0].errorDescription, " Печать чека возврата ", numdoc.ToString());
+        //                }
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                MessageBox.Show(ex.Message);
+        //            }
+
+        //        }
+
+        //        //catch (fptrsharp.FptrException ex)
+        //        //{
+        //        //    MessageBox.Show(ex.Message);
+        //        //    error = true;
+        //        //}
+        //        catch (Exception ex)
+        //        {
+        //            MessageBox.Show(ex.Message);
+        //            error = true;
+        //        }
+        //        finally
+        //        {
+        //            //if (fiscal != null)
+        //            //{
+        //            //    fiscal.Dispose();
+        //            //}
+        //        }
+        //    }
+        //    //else
+        //    //{
+        //    //    //string s = this.calculation_of_the_sum_of_the_document().ToString();
+        //    //    text_print(output, output, "0", "0", "0", "0");
+        //    //}
+
+
+        //    this.Close();
+
+        //}
 
         private void fiscall_print_disburse(string cash_money, string non_cash_money)
         {
@@ -9181,6 +9586,7 @@ namespace Cash8
 
         private void pay_Click(object sender, EventArgs e)
         {
+            recharge_note = "";
             print_to_button = 1;
             if (listView1.Items.Count == 0)
             {
@@ -9226,6 +9632,36 @@ namespace Cash8
             }
             else if (MainStaticClass.SystemTaxation == 3)
             {
+                if (check_type.SelectedIndex==1)//Комбинированный тип налогообложения необходимо проверить чтобы не было вместе маркированного и не маркированного товара
+                {
+                    int marker = 0;
+                    int not_marker = 0;
+                    bool error = false;
+                    foreach (ListViewItem lvi in listView1.Items)
+                    {
+                        if (Convert.ToDouble(lvi.SubItems[7].Text) != 0)
+                        {
+                            if (lvi.SubItems[14].Text.Trim().Length <= 13)//Код маркировки не заполнен
+                            {
+                                not_marker++;
+                            }
+                            else
+                            {
+                                marker++;
+                            }
+                        }
+                        if ((marker != 0) && (not_marker != 0))
+                        {
+                            error = true;
+                            break;
+                        }
+                    }
+                    if (error)
+                    {
+                        MessageBox.Show("При данном типе налогообложения необходимо возвращать товар раздельно т.е. маркированный товар одним чеком, а не маркированный товар другим чеком.");
+                        return;
+                    }
+                }
 
             }
 

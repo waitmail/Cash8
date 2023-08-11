@@ -27,6 +27,7 @@ namespace Cash8
         public int call_type = 0;
         public int count = 0;
         public int num_doc = 0; //номер акционного документа по которму выдается подарок
+        public int mode = 0;//Это для акционных подарков когда перебирается осносноая dt тогда нужна другая dt,эта переменная показывает в какую dt вствлять строки
         System.Windows.Forms.Timer input_barcode_timer = null;
 
         public Input_action_barcode()
@@ -179,7 +180,7 @@ namespace Cash8
                     }
                     else
                     {
-                        caller2.find_barcode_or_code_in_tovar_action_dt(this.input_barcode.Text, count, true, num_doc);
+                        caller2.find_barcode_or_code_in_tovar_action_dt(this.input_barcode.Text, count, true, num_doc,mode);
                     }
                     
                     this.Close();

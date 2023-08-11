@@ -90,6 +90,7 @@
             this.btn_cancel_check = new System.Windows.Forms.Button();
             this.txtB_total_sum = new System.Windows.Forms.TextBox();
             this.txtB_num_doc = new System.Windows.Forms.TextBox();
+            this.checkBox_print_check = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel_return.SuspendLayout();
@@ -680,7 +681,7 @@
             this.checkBox_club.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.checkBox_club.AutoSize = true;
             this.checkBox_club.CheckAlign = System.Drawing.ContentAlignment.TopRight;
-            this.checkBox_club.Location = new System.Drawing.Point(570, 561);
+            this.checkBox_club.Location = new System.Drawing.Point(623, 11);
             this.checkBox_club.Name = "checkBox_club";
             this.checkBox_club.Size = new System.Drawing.Size(50, 17);
             this.checkBox_club.TabIndex = 71;
@@ -691,7 +692,7 @@
             // 
             this.checkBox_viza_d.AutoSize = true;
             this.checkBox_viza_d.Enabled = false;
-            this.checkBox_viza_d.Location = new System.Drawing.Point(461, 561);
+            this.checkBox_viza_d.Location = new System.Drawing.Point(534, 12);
             this.checkBox_viza_d.Name = "checkBox_viza_d";
             this.checkBox_viza_d.Size = new System.Drawing.Size(63, 17);
             this.checkBox_viza_d.TabIndex = 72;
@@ -761,11 +762,25 @@
             this.txtB_num_doc.TabIndex = 77;
             this.txtB_num_doc.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
+            // checkBox_print_check
+            // 
+            this.checkBox_print_check.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.checkBox_print_check.AutoSize = true;
+            this.checkBox_print_check.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.checkBox_print_check.Location = new System.Drawing.Point(471, 564);
+            this.checkBox_print_check.Name = "checkBox_print_check";
+            this.checkBox_print_check.Size = new System.Drawing.Size(149, 28);
+            this.checkBox_print_check.TabIndex = 78;
+            this.checkBox_print_check.Text = "Печатать чек";
+            this.checkBox_print_check.UseVisualStyleBackColor = true;
+            this.checkBox_print_check.Visible = false;
+            // 
             // Cash_check
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 600);
+            this.Controls.Add(this.checkBox_print_check);
             this.Controls.Add(this.txtB_num_doc);
             this.Controls.Add(this.btn_cancel_check);
             this.Controls.Add(this.btn_del_position);
@@ -895,5 +910,6 @@
         private System.Windows.Forms.Button btn_cancel_check;
         private System.Windows.Forms.TextBox txtB_total_sum;
         private System.Windows.Forms.TextBox txtB_num_doc;
+        private System.Windows.Forms.CheckBox checkBox_print_check;
     }
 }
