@@ -524,7 +524,7 @@ namespace Cash8
 
                 if (!MainStaticClass.service_is_worker())
                 {
-                    MessageBox.Show("Веб сервис недоступен");
+                    //MessageBox.Show("Веб сервис недоступен");
                     return;
                 }
                 Cash8.DS.DS ds = MainStaticClass.get_ds();

@@ -218,6 +218,7 @@
     <Compile Include="ProcessingOfActions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WortWithMarkingV3.cs" />
     <Compile Include="СheckKmArray.cs" />
     <EmbeddedResource Include="Cash_check.resx">
       <DependentUpon>Cash_check.cs</DependentUpon>

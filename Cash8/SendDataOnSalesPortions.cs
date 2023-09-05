@@ -66,14 +66,18 @@ namespace Cash8
                     //" sales_assistant,"+
                     " autor, " +
                     " comment, " +
-                    " its_print, " +
+                    " CASE WHEN its_print = true AND its_print_p = true THEN true else false end AS its_print , " +
                     " id_transaction,"+
                     " id_transaction_sale," +
                     " remainder, "+
                     " bonuses_it_is_counted ,"+
                     " id_sale, "+
                     " viza_d, "+
-                    " system_taxation" + 
+                    " system_taxation," +
+                    " cash_money1, " +
+                    " non_cash_money1, " +
+                    " sertificate_money1," +
+                    " guid"+
                     " FROM checks_header WHERE document_number in  (" + document_number_list.ToString() + ")";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();                                
@@ -119,6 +123,11 @@ namespace Cash8
                         salesPortionsHeader.VizaD = "0";
                     }
                     salesPortionsHeader.SystemTaxation = reader["system_taxation"].ToString();
+                    salesPortionsHeader.Sum_cash1 = reader["cash_money1"].ToString().Replace(",", ".");
+                    salesPortionsHeader.Sum_terminal1 = reader["non_cash_money1"].ToString().Replace(",", ".");
+                    salesPortionsHeader.Sum_certificate1 = reader["sertificate_money1"].ToString().Replace(",", ".");
+                    salesPortionsHeader.Guid = reader["guid"].ToString();
+
                     salesPortions.ListSalesPortionsHeader.Add(salesPortionsHeader);
                     //Конец Новое заполнение                 
                 }
@@ -162,7 +171,7 @@ namespace Cash8
                 string query = "SELECT checks_header.document_number,checks_header.cash_desk_number,checks_table.tovar_code,checks_table.quantity, checks_table.price," +
                     " checks_table.price_at_a_discount,checks_table.sum,checks_table.sum_at_a_discount,checks_table.action_num_doc," +
                     " checks_table.action_num_doc1, checks_table.action_num_doc2,checks_table.characteristic,checks_header.date_time_start,checks_table.numstr, "+
-                    " checks_table.bonus_standard,checks_table.bonus_promotion,checks_table.promotion_b_mover,checks_table.item_marker " +
+                    " checks_table.bonus_standard,checks_table.bonus_promotion,checks_table.promotion_b_mover,checks_table.item_marker,checks_header.guid " +
                     " FROM checks_header " +
                     " LEFT JOIN checks_table ON checks_header.document_number = checks_table.document_number " +
                     " WHERE checks_table.document_number in (" + document_number_list.ToString() + ")";
@@ -192,6 +201,8 @@ namespace Cash8
                     salesPortionsTable.Bonus_prom = (reader["bonus_promotion"].ToString() == "" ? "0" : reader["bonus_promotion"].ToString().Replace(",", "."));
                     salesPortionsTable.Promotion_b_mover = (reader["promotion_b_mover"].ToString() == "" ? "0" : reader["promotion_b_mover"].ToString().Replace(",", "."));
                     salesPortionsTable.MarkingCode = reader["item_marker"].ToString();
+                    salesPortionsTable.Guid = reader["guid"].ToString();
+
                     salesPortions.ListSalesPortionsTable.Add(salesPortionsTable);
                     //Конец Новой заполнение
                 }
@@ -223,7 +234,7 @@ namespace Cash8
             }         
         }
         
-        private void get_data_on_salaes()
+        private void get_data_on_sales()
         {            
             getdata_h();
             getdata_t();                        
@@ -582,6 +593,9 @@ namespace Cash8
             public string  Sum_cash { get; set; }
             public string Sum_terminal { get; set; }
             public string Sum_certificate { get; set; }
+            public string Sum_cash1 { get; set; }
+            public string Sum_terminal1 { get; set; }
+            public string Sum_certificate1 { get; set; }
             public string Date_time_start { get; set; }
             //public string Sales_assistant { get; set; }            
             public string Comment { get; set; }
@@ -595,7 +609,7 @@ namespace Cash8
             public string NumOrder { get; set; }
             public string VizaD { get; set; }
             public string SystemTaxation { get; set; }
-
+            public string Guid { get; set; }
         }
         
         public class SalesPortionsTable
@@ -619,8 +633,8 @@ namespace Cash8
             public string Bonus_prom { get; set; }
             public string Promotion_b_mover { get; set; }
             public string MarkingCode { get; set; }
+            public string Guid { get; set; }
 
-            
         }
 
        public void send_sales_data_Click(object sender, EventArgs e)
@@ -671,7 +685,7 @@ namespace Cash8
             salesPortions.Shop = nick_shop;
             salesPortions.Guid = code_shop;
             salesPortions.Version = MainStaticClass.version().Replace(".","");
-            get_data_on_salaes();
+            get_data_on_sales();
             if (were_mistakes)//Произошли какие то ошибки при выгрузке
             {
                 return;

@@ -58,6 +58,7 @@
             this.checkBox_self_service_kiosk = new System.Windows.Forms.CheckBox();
             this.groupBox_acquiring_terminal = new System.Windows.Forms.GroupBox();
             this.checkBox_one_monitors_connected = new System.Windows.Forms.CheckBox();
+            this.checkBox_version2_marking = new System.Windows.Forms.CheckBox();
             this.groupBox_acquiring_terminal.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -129,7 +130,7 @@
             // path_for_web_service
             // 
             this.path_for_web_service.Enabled = false;
-            this.path_for_web_service.Location = new System.Drawing.Point(209, 216);
+            this.path_for_web_service.Location = new System.Drawing.Point(209, 247);
             this.path_for_web_service.MaxLength = 100;
             this.path_for_web_service.Name = "path_for_web_service";
             this.path_for_web_service.Size = new System.Drawing.Size(264, 20);
@@ -138,7 +139,7 @@
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(12, 219);
+            this.label15.Location = new System.Drawing.Point(12, 250);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(152, 13);
             this.label15.TabIndex = 41;
@@ -212,14 +213,14 @@
             "ОСН",
             "УСН",
             " УСН + ПАТЕНТ"});
-            this.comboBox_system_taxation.Location = new System.Drawing.Point(209, 175);
+            this.comboBox_system_taxation.Location = new System.Drawing.Point(209, 206);
             this.comboBox_system_taxation.Name = "comboBox_system_taxation";
             this.comboBox_system_taxation.Size = new System.Drawing.Size(264, 21);
             this.comboBox_system_taxation.TabIndex = 63;
             // 
             // lbl_system_taxation
             // 
-            this.lbl_system_taxation.Location = new System.Drawing.Point(8, 165);
+            this.lbl_system_taxation.Location = new System.Drawing.Point(8, 196);
             this.lbl_system_taxation.Name = "lbl_system_taxation";
             this.lbl_system_taxation.Size = new System.Drawing.Size(100, 31);
             this.lbl_system_taxation.TabIndex = 64;
@@ -246,7 +247,7 @@
             // 
             // label4
             // 
-            this.label4.Location = new System.Drawing.Point(8, 139);
+            this.label4.Location = new System.Drawing.Point(8, 170);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(78, 25);
             this.label4.TabIndex = 68;
@@ -254,7 +255,7 @@
             // 
             // txtB_version_fn
             // 
-            this.txtB_version_fn.Location = new System.Drawing.Point(209, 140);
+            this.txtB_version_fn.Location = new System.Drawing.Point(209, 171);
             this.txtB_version_fn.MaxLength = 1;
             this.txtB_version_fn.Name = "txtB_version_fn";
             this.txtB_version_fn.Size = new System.Drawing.Size(100, 20);
@@ -333,11 +334,22 @@
             this.checkBox_one_monitors_connected.Text = "Подключен один монитор";
             this.checkBox_one_monitors_connected.UseVisualStyleBackColor = true;
             // 
+            // checkBox_version2_marking
+            // 
+            this.checkBox_version2_marking.AutoSize = true;
+            this.checkBox_version2_marking.Location = new System.Drawing.Point(209, 137);
+            this.checkBox_version2_marking.Name = "checkBox_version2_marking";
+            this.checkBox_version2_marking.Size = new System.Drawing.Size(137, 17);
+            this.checkBox_version2_marking.TabIndex = 79;
+            this.checkBox_version2_marking.Text = "Версия маркировки 2";
+            this.checkBox_version2_marking.UseVisualStyleBackColor = true;
+            // 
             // Constants
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(781, 359);
+            this.Controls.Add(this.checkBox_version2_marking);
             this.Controls.Add(this.checkBox_one_monitors_connected);
             this.Controls.Add(this.checkBox_self_service_kiosk);
             this.Controls.Add(this.txtB_ip_address_acquiring_terminal);
@@ -410,5 +422,6 @@
         private System.Windows.Forms.CheckBox checkBox_self_service_kiosk;
         private System.Windows.Forms.GroupBox groupBox_acquiring_terminal;
         private System.Windows.Forms.CheckBox checkBox_one_monitors_connected;
+        private System.Windows.Forms.CheckBox checkBox_version2_marking;
     }
 }

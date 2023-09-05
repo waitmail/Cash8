@@ -1033,8 +1033,13 @@ namespace Cash8
             queries.Add("CREATE UNIQUE INDEX code_client_num_doc ON public.action_clients USING btree (code_client, num_doc); ALTER TABLE public.action_clients CLUSTER ON code_client_num_doc;");
             queries.Add("ALTER TABLE public.tovar ADD COLUMN its_excise smallint NOT NULL DEFAULT 0;COMMENT ON COLUMN public.tovar.its_excise IS '0 - обычный товар 1 - подакцизный товар';");
             queries.Add("UPDATE public.constants SET enable_stock_processing_in_memory=true");
-
-
+            queries.Add("ALTER TABLE public.constants ADD COLUMN version2_marking boolean;UPDATE public.constants	SET  version2_marking=false");
+            queries.Add("ALTER TABLE public.checks_header ADD COLUMN cash_money1 numeric(10,2) DEFAULT 0");
+            queries.Add("ALTER TABLE public.checks_header ADD COLUMN non_cash_money1 numeric(10,2) DEFAULT 0");
+            queries.Add("ALTER TABLE public.checks_header    ADD COLUMN sertificate_money1 numeric(10,2) DEFAULT 0");
+            queries.Add("ALTER TABLE public.checks_header    ADD COLUMN guid character varying(36) COLLATE pg_catalog.default NOT NULL DEFAULT ''::character varying");
+            queries.Add("ALTER TABLE public.checks_table    ADD COLUMN guid character varying(36) COLLATE pg_catalog.default NOT NULL DEFAULT ''::character varying");
+            
             foreach (string str in queries)
             {
                 append_column(str);

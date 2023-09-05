@@ -84,7 +84,7 @@ namespace Cash8
         private static int system_taxation = 0;
         private static DateTime last_send_last_successful_sending;
         private static DateTime last_write_check;
-        private static DateTime min_date_work = new DateTime(2021, 11, 30);
+        private static DateTime min_date_work = new DateTime(2022, 12, 31);
         private static bool use_old_processiing_actions = true;
         private static int work_schema = 0;
         private static int version_fn = 0;
@@ -109,6 +109,7 @@ namespace Cash8
         private static string id_acquirer_terminal = "00000000";
         private static string ip_address_acquiring_terminal = "000000000000000";
         private static int one_monitors_connected = -1;
+        private static int version2_marking =-1;
         //private static int version_fn = 0;
         //private static int sno = -1;//это система налогообложения
 
@@ -148,6 +149,51 @@ namespace Cash8
         //        return sno;
         //    }
         //}
+        public static int Version2Marking
+        {
+            get
+            {
+                if (version2_marking == -1)
+                {
+
+                    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+                    try
+                    {
+                        conn.Open();
+                        string query = "SELECT version2_marking FROM constants";
+                        NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                        object result_query = command.ExecuteScalar();
+                        if (Convert.ToBoolean(result_query) == false)
+                        {
+                            version2_marking = 0;
+                        }
+                        else
+                        {
+                            version2_marking = 1;
+                        }
+                    }
+                    catch (NpgsqlException ex)
+                    {
+                        version2_marking = 0;
+                        MessageBox.Show("Ошибка при чтении флага по работе с маркировкой по 2 схеме" + ex.Message);
+                    }
+                    catch (Exception ex)
+                    {
+                        version2_marking = 0;
+                        MessageBox.Show("Ошибка при чтении флага по работе с маркировкой по 2 схеме" + ex.Message);
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                }
+                return version2_marking;
+            }
+        }
+
 
         public static int OneMonitorsConnected
         {
