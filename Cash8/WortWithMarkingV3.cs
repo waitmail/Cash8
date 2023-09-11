@@ -224,9 +224,16 @@ namespace Cash8
                             break;
                         }
                     }
-                    else if ((status == "ready") || (status == "error"))
+                    else if (status == "ready")
                     {
-                        break;
+                        if (result.results[0].result.ready)
+                        {
+                            break;
+                        }
+                    }
+                    else if (status == "error")
+                    {
+                        break;                        
                     }
                 }
             }
@@ -428,22 +435,32 @@ namespace Cash8
                 int count = 0;
                 while (1 == 1)
                 {
-                    count++;
-                    Thread.Sleep(1000);
+                    if (count > 0)
+                    {
+                        Thread.Sleep(500);
+                    }
+                    
                     root = GetOfflineValidation(url, guid);
-                    status = root.results[0].status;
-                    //status = "9";
+                    status = root.results[0].status;                    
                     if ((status != "ready") && (status != "error"))
                     {
-                        if (count > 14)
+                        if (count > 10)
                         {
                             break;
                         }
                     }
-                    else if ((status == "ready") || (status == "error"))
+                    else if (status == "ready")
+                    {
+                        if ((root.results[0].result.ready) || (count > 10))
+                        {
+                            break;
+                        }
+                    }
+                    else if (status == "error")
                     {
                         break;
                     }
+                    count++;
                 }
             }
             return root;

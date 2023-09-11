@@ -48,6 +48,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.listView1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.listView1.HideSelection = false;
             this.listView1.Location = new System.Drawing.Point(12, 59);
             this.listView1.Name = "listView1";
             this.listView1.Size = new System.Drawing.Size(996, 509);
@@ -104,12 +105,14 @@
             // 
             // txtB_not_unloaded_docs
             // 
-            this.txtB_not_unloaded_docs.BackColor = System.Drawing.Color.Gainsboro;
+            this.txtB_not_unloaded_docs.BackColor = System.Drawing.Color.White;
             this.txtB_not_unloaded_docs.Enabled = false;
+            this.txtB_not_unloaded_docs.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.txtB_not_unloaded_docs.ForeColor = System.Drawing.SystemColors.MenuText;
             this.txtB_not_unloaded_docs.Location = new System.Drawing.Point(20, 4);
             this.txtB_not_unloaded_docs.MaxLength = 100;
             this.txtB_not_unloaded_docs.Name = "txtB_not_unloaded_docs";
-            this.txtB_not_unloaded_docs.Size = new System.Drawing.Size(523, 20);
+            this.txtB_not_unloaded_docs.Size = new System.Drawing.Size(523, 21);
             this.txtB_not_unloaded_docs.TabIndex = 17;
             // 
             // txtB_cashier

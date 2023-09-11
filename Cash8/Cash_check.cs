@@ -2808,20 +2808,20 @@ namespace Cash8
                                                     mark_str = mark_str.Insert(31, GS1);
                                                 }
 
-                                                if (lvi.SubItems[14].Text.Trim().Length == 30)
+                                                if (mark_str.Length == 30)
                                                 {
                                                     //lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(24, GS1);
                                                     mark_str = mark_str.Insert(24, GS1);
                                                 }
 
-                                                if (lvi.SubItems[14].Text.Trim().Length == 32)
+                                                if (mark_str.Length == 32)
                                                 {
                                                     //lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(26, GS1);                                                    
                                                     mark_str = mark_str.Insert(26, GS1);
                                                 }
 
-                                                byte[] textAsBytes = Encoding.Default.GetBytes(mark_str);                                                
-                                                
+                                                byte[] textAsBytes = Encoding.Default.GetBytes(mark_str);                                              
+
                                                 //*******************************************************************************************************************************
                                                 //string imc = this.qr_code;
                                                 string imc = Convert.ToBase64String(textAsBytes);
@@ -2844,64 +2844,80 @@ namespace Cash8
                                                 else
                                                 { 
                                                     root = markingV3.getMarkingCodeValidationStatus();
-                                                    if (root.results[0].result.driverError != null)
+                                                    if (root.results[0].result != null)
                                                     {
-                                                        if (root.results[0].result.driverError.code != 0)
+                                                        if (root.results[0].result.driverError != null)
                                                         {
-                                                            markingV3.cancelMarkingCodeValidation();//прерываем валидацию
-                                                            code_marking_error = root.results[0].result.driverError.code;
-                                                            if ((code_marking_error != 421) && (code_marking_error != 402))
+                                                            if (root.results[0].result.driverError.code != 0)
                                                             {
                                                                 markingV3.cancelMarkingCodeValidation();//прерываем валидацию
-                                                                MessageBox.Show(root.results[0].result.driverError.description, "Ошибка при начале проверки кода маркировки");
-                                                                error = true;//не прошли проверку товар не добавляем в чек
-                                                            }
-                                                            else//это будет ниже при добавлении товара в чек и по этим кодам ошибок добавление в буфер как проверенного
-                                                            {
+                                                                code_marking_error = root.results[0].result.driverError.code;
+                                                                if ((code_marking_error != 421) && (code_marking_error != 402))
+                                                                {
+                                                                    markingV3.cancelMarkingCodeValidation();//прерываем валидацию
+                                                                    MessageBox.Show(root.results[0].result.driverError.description, "Ошибка при начале проверки кода маркировки");
+                                                                    error = true;//не прошли проверку товар не добавляем в чек
+                                                                }
+                                                                else//это будет ниже при добавлении товара в чек и по этим кодам ошибок добавление в буфер как проверенного
+                                                                {
 
+                                                                }
+                                                            }
+                                                            else//проверяем статус и если все хорошо отправляем принять 
+                                                            {
+                                                                //if (root.results[0].result.ready)
+                                                                //{
+                                                                if (root.results[0].result.onlineValidation.itemInfoCheckResult.imcCheckFlag &&
+                                                                    root.results[0].result.onlineValidation.itemInfoCheckResult.imcCheckResult &&
+                                                                    root.results[0].result.onlineValidation.itemInfoCheckResult.imcStatusInfo &&
+                                                                    root.results[0].result.onlineValidation.itemInfoCheckResult.imcEstimatedStatusCorrect)
+                                                                {
+                                                                    //Все признаки успех, значит M+
+                                                                    markingV3.acceptMarkingCode();
+                                                                    MainStaticClass.write_event_in_log("acceptMarkingCode  " + lvi.SubItems[0].Text, "Документ чек", numdoc.ToString());
+                                                                }
+                                                                else// сообщим детально об ошибке 
+                                                                {
+                                                                    if (!root.results[0].result.onlineValidation.itemInfoCheckResult.imcCheckFlag)
+                                                                    {
+                                                                        MessageBox.Show("Код маркировки не был проверен ФН и(или) ОИСМП");
+                                                                    }
+                                                                    if (!root.results[0].result.onlineValidation.itemInfoCheckResult.imcCheckResult)
+                                                                    {
+                                                                        MessageBox.Show("Результат проверки КП КМ отрицательный или код маркировки не был проверен");
+                                                                    }
+                                                                    if (!root.results[0].result.onlineValidation.itemInfoCheckResult.imcStatusInfo)
+                                                                    {
+                                                                        MessageBox.Show("Сведения о статусе товара от ОИСМП не получены");
+                                                                    }
+                                                                    if (!root.results[0].result.onlineValidation.itemInfoCheckResult.imcEstimatedStatusCorrect)
+                                                                    {
+                                                                        MessageBox.Show("От ОИСМП получены сведения, что планируемый статус товара некорректен или сведения о статусе товара от ОИСМП не получены");
+                                                                    }
+
+                                                                    error = true;
+                                                                    markingV3.cancelMarkingCodeValidation();//прерываем валидацию
+                                                                }
+                                                                //}
+                                                                //else
+                                                                //{
+                                                                //    error = true;
+                                                                //    markingV3.cancelMarkingCodeValidation();//прерываем валидацию
+                                                                //}
                                                             }
                                                         }
-                                                        else//проверяем статус и если все хорошо отправляем принять 
+                                                        else
                                                         {
-                                                            if (root.results[0].result.onlineValidation.itemInfoCheckResult.imcCheckFlag &&
-                                                                root.results[0].result.onlineValidation.itemInfoCheckResult.imcCheckResult &&
-                                                                root.results[0].result.onlineValidation.itemInfoCheckResult.imcStatusInfo &&
-                                                                root.results[0].result.onlineValidation.itemInfoCheckResult.imcEstimatedStatusCorrect)
-                                                            {
-                                                                //Все признаки успех, значит M+
-                                                                markingV3.acceptMarkingCode();
-                                                                MainStaticClass.write_event_in_log("acceptMarkingCode  " + lvi.SubItems[0].Text, "Документ чек", numdoc.ToString());
-                                                            }
-                                                            else// сообщим детально об ошибке 
-                                                            {
-                                                                if (!root.results[0].result.onlineValidation.itemInfoCheckResult.imcCheckFlag)
-                                                                {
-                                                                    MessageBox.Show("Код маркировки не был проверен ФН и(или) ОИСМП");
-                                                                }
-                                                                if (!root.results[0].result.onlineValidation.itemInfoCheckResult.imcCheckResult)
-                                                                {
-                                                                    MessageBox.Show("Результат проверки КП КМ отрицательный или код маркировки не был проверен");
-                                                                }
-                                                                if (!root.results[0].result.onlineValidation.itemInfoCheckResult.imcStatusInfo)
-                                                                {
-                                                                    MessageBox.Show("Сведения о статусе товара от ОИСМП не получены");
-                                                                }
-                                                                if (!root.results[0].result.onlineValidation.itemInfoCheckResult.imcEstimatedStatusCorrect)
-                                                                {
-                                                                    MessageBox.Show("От ОИСМП получены сведения, что планируемый статус товара некорректен или сведения о статусе товара от ОИСМП не получены");
-                                                                }
-
-                                                                error = true;
-                                                                markingV3.cancelMarkingCodeValidation();//прерываем валидацию
-                                                            }
+                                                            MainStaticClass.write_event_in_log("root.results[0].result.driverError == null  " + lvi.SubItems[0].Text, "Документ чек", numdoc.ToString());
+                                                            markingV3.cancelMarkingCodeValidation();//прерываем валидацию
+                                                            code_marking_error = 421;
                                                         }
                                                     }
                                                     else
                                                     {
-                                                        MainStaticClass.write_event_in_log("root.results[0].result.driverError == null  "+ lvi.SubItems[0].Text, "Документ чек", numdoc.ToString());
-                                                        markingV3.cancelMarkingCodeValidation();//прерываем валидацию
-                                                        code_marking_error = 421;
+                                                        error = true;
                                                     }
+                                                   
                                                 }
                                             }
                                             if (mark_str != "")
@@ -5430,140 +5446,54 @@ namespace Cash8
         {
             bool result = true;
             AddingKmArrayToTableTested addingKmArrayToTableTestedKm = new AddingKmArrayToTableTested();
-            addingKmArrayToTableTestedKm.type = "addMarksToBuffer";
-            //addingKmArrayToTableTestedKm.timeout = 6000;
-            addingKmArrayToTableTestedKm.@params = new List<AddingKmArrayToTableTested.Param>();
-            //var num_strt_km = new Dictionary<int, int>();
-            int num = 0;
-            foreach (ListViewItem lvi in listView1.Items)
+            addingKmArrayToTableTestedKm.type = "addMarksToBuffer";            
+            addingKmArrayToTableTestedKm.@params = new List<AddingKmArrayToTableTested.Param>();            
+            
+            ListViewItem lvi = listView1.Items[num_pos];
+            
+            MainStaticClass.write_event_in_log(" Принудительно добавляем лог маркировки " + num_pos.ToString(), "Документ чек", numdoc.ToString());            
+            AddingKmArrayToTableTested.Param param = new AddingKmArrayToTableTested.Param();
+            param.imcType = "auto";
+
+            string GS1 = Char.ConvertFromUtf32(29);
+            if ((lvi.SubItems[14].Text.Trim().Length == 83) || (lvi.SubItems[14].Text.Trim().Length == 127) || (lvi.SubItems[14].Text.Trim().Length == 115))
             {
-                if (lvi.SubItems[14].Text.Trim().Length > 13)
-                {
-                    if (num_pos != num)
-                    {
-                        num++;
-                        continue;
-                    }
-                    num++;
-                    //num_strt_km.Add(num_strt_km.Count, lvi.Index + 1);
-                    AddingKmArrayToTableTested.Param param = new AddingKmArrayToTableTested.Param();
-                    param.imcType = "auto";
-                    
-                    string GS1 = Char.ConvertFromUtf32(29);
-                    if ((lvi.SubItems[14].Text.Trim().Length == 83) || (lvi.SubItems[14].Text.Trim().Length == 127) || (lvi.SubItems[14].Text.Trim().Length == 115))
-                    {
-                        lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
-                        lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(38, GS1);
-                    }
-
-                    if (lvi.SubItems[14].Text.Trim().Length == 37 && lvi.SubItems[14].Text.Substring(16, 2) == "21")
-                    {
-                        lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
-                    }
-
-                    if (lvi.SubItems[14].Text.Trim().Length == 30)
-                    {
-                        lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(24, GS1);
-                    }
-
-                    if (lvi.SubItems[14].Text.Trim().Length == 32)
-                    {
-                        lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(26, GS1);
-                    }
-
-                    byte[] textAsBytes = Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim());
-                    string mark_str = Convert.ToBase64String(textAsBytes);
-                    param.imc = mark_str;
-                    param.itemEstimatedStatus = "itemPieceSold";
-                    param.imcModeProcessing = 0;
-                    addingKmArrayToTableTestedKm.@params.Add(param);                  
-                }
-                
+                lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
+                lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(38, GS1);
             }
 
-            //MessageBox.Show("1");
+            if (lvi.SubItems[14].Text.Trim().Length == 37 && lvi.SubItems[14].Text.Substring(16, 2) == "21")
+            {
+                lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
+            }
+
+            if (lvi.SubItems[14].Text.Trim().Length == 30)
+            {
+                lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(24, GS1);
+            }
+
+            if (lvi.SubItems[14].Text.Trim().Length == 32)
+            {
+                lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(26, GS1);
+            }
+
+            byte[] textAsBytes = Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim());
+            string mark_str = Convert.ToBase64String(textAsBytes);
+            param.imc = mark_str;
+            param.itemEstimatedStatus = "itemPieceSold";
+            param.imcModeProcessing = 0;
+            addingKmArrayToTableTestedKm.@params.Add(param);
+            
             try
             {
                 AnswerAddingKmArrayToTableTested answerAddingKmArrayToTableTested = Tested_Km(addingKmArrayToTableTestedKm);
-                //if (answerAddingKmArrayToTableTested.results[0].status != "ready")
-                //{
-                //    MessageBox.Show("Не удалось получить корректный ответ от ФР в течении 24 секунд, можете попробовать еще раз.");
-                //}
-                //if (answerAddingKmArrayToTableTested.results[0].errorCode == 0)
-                //{
-                //    //MessageBox.Show("2");
-                //    if (answerAddingKmArrayToTableTested.results[0].errorCode == 0)
-                //    {
-                //        //MessageBox.Show("3");
-                //        if (answerAddingKmArrayToTableTested.results[0].result[0].onlineValidation != null)
-                //        {
-                //            //MessageBox.Show("4");
-                //            if (answerAddingKmArrayToTableTested.results[0].result[0].driverError.code == 0)
-                //            {
-                //                //MessageBox.Show("5");
-                //                int i = 0;
-                //                while (i < answerAddingKmArrayToTableTested.results[0].result.Count)
-                //                {   //Успешная проверка это когда в секции "itemInfoCheckResult" реквизит "imcCheckResult" имеет значение true
-                //                    if (!answerAddingKmArrayToTableTested.results[0].result[i].onlineValidation.itemInfoCheckResult.imcCheckResult)
-                //                    {
-                //                        if (answerAddingKmArrayToTableTested.results[0].result[i].onlineValidation.markOperatorResponseResult != "correct")
-                //                        {
-                //                            if (answerAddingKmArrayToTableTested.results[0].result[i].onlineValidation.markOperatorResponseResult == "incorrect")
-                //                            {
-                //                                //MessageBox.Show("Запрос имеет некорректный формат markOperatorResponseResult = " + answerAddingKmArrayToTableTested.results[0].result[0].onlineValidation.markOperatorResponseResult.ToString());
-                //                                MessageBox.Show("Запрос имеет некорректный формат в строке = " + num_strt_km[i].ToString());
-                //                                result = false;
-                //                            }
-                //                            if (answerAddingKmArrayToTableTested.results[0].result[i].onlineValidation.markOperatorResponseResult == "unrecognized")
-                //                            {
-                //                                //MessageBox.Show("КМ имеет некорретный формат markOperatorResponseResult = " + answerAddingKmArrayToTableTested.results[0].result[0].onlineValidation.markOperatorResponseResult.ToString());
-                //                                MessageBox.Show("КМ имеет некорретный формат в строке = " + num_strt_km[i].ToString());
-                //                                //listView1.Items[num_strt_km[i]-1].SubItems[14].Text = change_case_in_line(listView1.Items[num_strt_km[i]-1].SubItems[14].Text);
-                //                                result = false;//попробовать вызвать еще раз с км с измененным регистром
-                //                            }
-                //                        }
-                //                    }
-                //                    i++;
-                //                }
-                //            }
-                //            else
-                //            {
-                //                string description = "";
-                //                if (answerAddingKmArrayToTableTested.results[0].result[0].driverError.error != null)
-                //                {
-                //                    description += answerAddingKmArrayToTableTested.results[0].result[0].driverError.error;
-                //                }
-                //                if (answerAddingKmArrayToTableTested.results[0].result[0].driverError.description != null)
-                //                {
-                //                    description += answerAddingKmArrayToTableTested.results[0].result[0].driverError.description;
-                //                }
-
-                //                MessageBox.Show("Ошибка при проверке кодов маркировки код ошибки " + answerAddingKmArrayToTableTested.results[0].result[0].driverError.code.ToString() + " " + description);
-                //            }
-                //        }
-                //        else
-                //        {
-                //            MessageBox.Show("Ошибка при проверке кодов маркировки код ошибки " + answerAddingKmArrayToTableTested.results[0].result[0].driverError.code + " " + answerAddingKmArrayToTableTested.results[0].result[0].driverError.description);
-                //            result = false;
-                //        }
-                //    }
-                //    else
-                //    {
-                //        MessageBox.Show(" Ошибка при проверке кодов маркировки код ошибки " + answerAddingKmArrayToTableTested.results[0].errorCode.ToString() + " " + answerAddingKmArrayToTableTested.results[0].errorDescription.ToString());
-                //        result = false;
-                //    }
-                //}
-                //else
-                //{
-                //    MessageBox.Show(" Ошибка при проверке кодов маркировки код ошибки " + answerAddingKmArrayToTableTested.results[0].errorCode.ToString() + " " + answerAddingKmArrayToTableTested.results[0].errorDescription.ToString());
-                //    result = false;
-                //}
+                
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
                 result = false;
-                MainStaticClass.write_event_in_log(ex.Message+ "km_adding_to_buffer", "Документ чек", numdoc.ToString());
+                MainStaticClass.write_event_in_log(ex.Message + "km_adding_to_buffer", "Документ чек", numdoc.ToString());
             }
             return result;
         }
@@ -5928,9 +5858,7 @@ namespace Cash8
                 {
                     result += c.ToString();
                 }
-            }
-
-
+            }            
 
             return result;
         }
@@ -9857,7 +9785,7 @@ namespace Cash8
             {
                 if ((MainStaticClass.SystemTaxation != 3)|| (check_type.SelectedIndex==1))
                 {
-                    if ((MainStaticClass.Version2Marking == 0)||(this.check_type.SelectedIndex==1))//старый механизм работы с макрировкой, для возвратов так же пока старая схема
+                    if ((MainStaticClass.Version2Marking == 0)||(this.check_type.SelectedIndex==1)||!itsnew)//старый механизм работы с макрировкой, для возвратов так же пока старая схема
                     {
                         //System.IO.File.AppendAllText(Application.StartupPath.Replace("\\", "/") + "/" + "json.txt", DateTime.Now.ToString() + " clearMarkingBuffer \r\n");
                         clearMarkingCodeValidationResult();
