@@ -331,7 +331,7 @@ namespace Cash8
             //}
             changeVisibleAfterWrite();
 
-            Cash8.MainStaticClass.loadConfig(Application.StartupPath + "/Setting.gaa");
+            //Cash8.MainStaticClass.loadConfig(Application.StartupPath + "/Setting.gaa");
             if (fileSettinConnect == true)//файл с параметрами есть заполнить реквизиты
             {
                 StringReader stReader = Cash8.MainStaticClass.DecryptData(Application.StartupPath + "/Setting.gaa");

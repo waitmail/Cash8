@@ -2971,7 +2971,8 @@ namespace Cash8
                             listView1.Items.Add(lvi);
                             if ((code_marking_error == 402) || (code_marking_error == 421))//это говорит о том что включена новая схема маркировки и мы имеет проблемы с интернетом
                             {
-                                km_adding_to_buffer(listView1.Items.Count - 1);//принудительно добавляем в буфер последнюю строку с маркировкой 
+                                //km_adding_to_buffer(listView1.Items.Count - 1);//принудительно добавляем в буфер последнюю строку с маркировкой 
+                                km_adding_to_buffer_index(listView1.Items.Count - 1);
                             }
                         }
                         else
@@ -2980,6 +2981,8 @@ namespace Cash8
                             MainStaticClass.write_event_in_log("Отказ от ввода qr кода, товар не добавлен", "Документ чек", numdoc.ToString());
                             last_tovar.Text = barcode;
                             Tovar_Not_Found t_n_f = new Tovar_Not_Found();
+                            t_n_f.textBox1.Text="Код маркировки не прошел проверку";
+                            t_n_f.textBox1.Font = new Font("Microsoft Sans Serif", 22);
                             t_n_f.ShowDialog();
                             t_n_f.Dispose();
                             return;
@@ -5449,9 +5452,85 @@ namespace Cash8
             addingKmArrayToTableTestedKm.type = "addMarksToBuffer";            
             addingKmArrayToTableTestedKm.@params = new List<AddingKmArrayToTableTested.Param>();            
             
-            ListViewItem lvi = listView1.Items[num_pos];
+            //ListViewItem lvi = listView1.Items[num_pos];
             
             MainStaticClass.write_event_in_log(" Принудительно добавляем лог маркировки " + num_pos.ToString(), "Документ чек", numdoc.ToString());            
+
+            
+            int num = 0;
+            foreach (ListViewItem lvi in listView1.Items)
+            {
+                if (lvi.SubItems[14].Text.Trim().Length > 13)
+                {
+                    if (num_pos != num)
+                    {
+                        num++;
+                        continue;
+                    }
+                    num++;
+
+                    AddingKmArrayToTableTested.Param param = new AddingKmArrayToTableTested.Param();
+                    param.imcType = "auto";
+
+                    string GS1 = Char.ConvertFromUtf32(29);
+                    if ((lvi.SubItems[14].Text.Trim().Length == 83) || (lvi.SubItems[14].Text.Trim().Length == 127) || (lvi.SubItems[14].Text.Trim().Length == 115))
+                    {
+                        lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
+                        lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(38, GS1);
+                    }
+
+                    if (lvi.SubItems[14].Text.Trim().Length == 37 && lvi.SubItems[14].Text.Substring(16, 2) == "21")
+                    {
+                        lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
+                    }
+
+                    if (lvi.SubItems[14].Text.Trim().Length == 30)
+                    {
+                        lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(24, GS1);
+                    }
+
+                    if (lvi.SubItems[14].Text.Trim().Length == 32)
+                    {
+                        lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(26, GS1);
+                    }
+
+                    byte[] textAsBytes = Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim());
+                    string mark_str = Convert.ToBase64String(textAsBytes);
+                    param.imc = mark_str;
+                    param.itemEstimatedStatus = "itemPieceSold";
+                    param.imcModeProcessing = 0;
+                    addingKmArrayToTableTestedKm.@params.Add(param);
+                }
+            }
+            
+            try
+            {
+                AnswerAddingKmArrayToTableTested answerAddingKmArrayToTableTested = Tested_Km(addingKmArrayToTableTestedKm);
+                
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                result = false;
+                MainStaticClass.write_event_in_log(ex.Message + "km_adding_to_buffer", "Документ чек", numdoc.ToString());
+            }
+            return result;
+        }
+
+        //Регистрация кодов марикровки перед печатью чека
+        /// <summary>
+        /// Проверка кодов маркировки + добавление кодов в буфер
+        /// </summary>
+        private bool km_adding_to_buffer_index(int num_pos)
+        {
+            bool result = true;
+            AddingKmArrayToTableTested addingKmArrayToTableTestedKm = new AddingKmArrayToTableTested();
+            addingKmArrayToTableTestedKm.type = "addMarksToBuffer";
+            addingKmArrayToTableTestedKm.@params = new List<AddingKmArrayToTableTested.Param>();
+
+            ListViewItem lvi = listView1.Items[num_pos];
+
+            MainStaticClass.write_event_in_log(" Принудительно добавляем лог маркировки " + num_pos.ToString(), "Документ чек", numdoc.ToString());
             AddingKmArrayToTableTested.Param param = new AddingKmArrayToTableTested.Param();
             param.imcType = "auto";
 
@@ -5483,11 +5562,11 @@ namespace Cash8
             param.itemEstimatedStatus = "itemPieceSold";
             param.imcModeProcessing = 0;
             addingKmArrayToTableTestedKm.@params.Add(param);
-            
+
             try
             {
                 AnswerAddingKmArrayToTableTested answerAddingKmArrayToTableTested = Tested_Km(addingKmArrayToTableTestedKm);
-                
+
             }
             catch (Exception ex)
             {

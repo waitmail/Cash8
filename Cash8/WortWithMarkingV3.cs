@@ -130,7 +130,7 @@ namespace Cash8
         private static Root GetOfflineValidation(string Url, string Data)
         {
             System.Net.WebRequest req = System.Net.WebRequest.Create(Url + "/" + Data);
-            req.Timeout = 10000;
+            req.Timeout = 1000;
             System.Net.WebResponse resp = req.GetResponse();
             //HttpWebResponse myHttpWebResponse = (HttpWebResponse)req.GetResponse();
 
@@ -163,7 +163,7 @@ namespace Cash8
             {
                 System.Net.WebRequest req = System.Net.WebRequest.Create(Url);
                 req.Method = "POST";
-                req.Timeout = 5000;
+                req.Timeout = 1000;
                 req.ContentType = "application/json";
                 byte[] sentData = Encoding.UTF8.GetBytes(Data);
                 req.ContentLength = sentData.Length;
