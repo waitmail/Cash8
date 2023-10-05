@@ -706,11 +706,11 @@
             this.checkBox_to_print_repeatedly_p.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.checkBox_to_print_repeatedly_p.AutoSize = true;
             this.checkBox_to_print_repeatedly_p.Enabled = false;
-            this.checkBox_to_print_repeatedly_p.Location = new System.Drawing.Point(261, 566);
+            this.checkBox_to_print_repeatedly_p.Location = new System.Drawing.Point(260, 566);
             this.checkBox_to_print_repeatedly_p.Name = "checkBox_to_print_repeatedly_p";
-            this.checkBox_to_print_repeatedly_p.Size = new System.Drawing.Size(163, 17);
+            this.checkBox_to_print_repeatedly_p.Size = new System.Drawing.Size(113, 17);
             this.checkBox_to_print_repeatedly_p.TabIndex = 73;
-            this.checkBox_to_print_repeatedly_p.Text = "Нап. повторно маркировку";
+            this.checkBox_to_print_repeatedly_p.Text = "Нап. маркировку";
             this.checkBox_to_print_repeatedly_p.UseVisualStyleBackColor = true;
             this.checkBox_to_print_repeatedly_p.Visible = false;
             this.checkBox_to_print_repeatedly_p.CheckedChanged += new System.EventHandler(this.checkBox_to_print_repeatedly_p_CheckedChanged);

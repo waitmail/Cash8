@@ -217,6 +217,7 @@
             this.comboBox_system_taxation.Name = "comboBox_system_taxation";
             this.comboBox_system_taxation.Size = new System.Drawing.Size(264, 21);
             this.comboBox_system_taxation.TabIndex = 63;
+            this.comboBox_system_taxation.SelectedIndexChanged += new System.EventHandler(this.comboBox_system_taxation_SelectedIndexChanged);
             // 
             // lbl_system_taxation
             // 
@@ -264,6 +265,7 @@
             // checkBox_enable_stock_processing_in_memory
             // 
             this.checkBox_enable_stock_processing_in_memory.AutoSize = true;
+            this.checkBox_enable_stock_processing_in_memory.Enabled = false;
             this.checkBox_enable_stock_processing_in_memory.Location = new System.Drawing.Point(209, 78);
             this.checkBox_enable_stock_processing_in_memory.Name = "checkBox_enable_stock_processing_in_memory";
             this.checkBox_enable_stock_processing_in_memory.Size = new System.Drawing.Size(212, 17);

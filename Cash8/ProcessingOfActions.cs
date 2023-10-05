@@ -1427,7 +1427,7 @@ namespace Cash8
                     row["bonus_reg"] = 0;
                     row["bonus_action"] = 0;
                     row["bonus_action_b"] = 0;
-                    row["marking"] = "";
+                    row["marking"] = "0";
                     if (mode == 0)
                     {
                         dt.Rows.Add(row);
@@ -2371,7 +2371,7 @@ namespace Cash8
                         row["bonus_reg"] = 0;
                         row["bonus_action"] = 0;
                         row["bonus_action_b"] = 0;
-                        row["marking"] = "";
+                        row["marking"] = "0";
                         dt.Rows.Add(row);
                         //SendDataToCustomerScreen(1, 0);
                     }
@@ -2421,7 +2421,7 @@ namespace Cash8
                 NpgsqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    if ((Convert.ToInt16(reader["tip"]) == 1) || (Convert.ToInt16(reader["tip"]) == 2) || (Convert.ToInt16(reader["tip"]) == 3) || (Convert.ToInt16(reader["tip"]) == 4) || (Convert.ToInt16(reader["tip"]) == 5) || (Convert.ToInt16(reader["tip"]) == 8))
+                    if ((Convert.ToInt16(reader["tip"]) == 1) || (Convert.ToInt16(reader["tip"]) == 2) || (Convert.ToInt16(reader["tip"]) == 3) || (Convert.ToInt16(reader["tip"]) == 4) || (Convert.ToInt16(reader["tip"]) == 5) || (Convert.ToInt16(reader["tip"]) == 6) || (Convert.ToInt16(reader["tip"]) == 8))
                     {
                         //if (Convert.ToInt16(reader["marker"]) == 1)//запрашивать подарок
                         //{
@@ -2565,7 +2565,7 @@ namespace Cash8
                                 row["bonus_reg"] = 0;
                                 row["bonus_action"] = 0;
                                 row["bonus_action_b"] = 0;
-                                row["marking"] = "";
+                                row["marking"] = "0";
                                 dt.Rows.Add(row);
                                 multiplication_factor--;
                             }
@@ -2594,7 +2594,7 @@ namespace Cash8
                                 row["bonus_reg"] = 0;
                                 row["bonus_action"] = 0;
                                 row["bonus_action_b"] = 0;
-                                row["marking"] = "";
+                                row["marking"] = "0";
                                 dt.Rows.Add(row);
                             }
                         }
@@ -2623,7 +2623,7 @@ namespace Cash8
                             row["bonus_reg"] = 0;
                             row["bonus_action"] = 0;
                             row["bonus_action_b"] = 0;
-                            row["marking"] = "";
+                            row["marking"] = "0";
                             dt.Rows.Add(row);
                         }
                         num_records++;
@@ -2811,6 +2811,7 @@ namespace Cash8
                 }
                 marked_action_tovar_dt(num_doc);
             }
+            roll_up_dt();
         }
 
         /*новый тип акции (7). для фиксирования выданных подарков по акции (6)
@@ -3033,7 +3034,7 @@ namespace Cash8
                             row["bonus_reg"] = 0;
                             row["bonus_action"] = 0;
                             row["bonus_action_b"] = 0;
-                            row["marking"] = "";
+                            row["marking"] = "0";
                             dt.Rows.Add(row);
                             multiplication_factor--;
 
@@ -3085,7 +3086,7 @@ namespace Cash8
                             row["bonus_reg"] = 0;
                             row["bonus_action"] = 0;
                             row["bonus_action_b"] = 0;
-                            row["marking"] = "";
+                            row["marking"] = "0";
                             dt.Rows.Add(row);
                             multiplication_factor--;
                         }
@@ -3283,7 +3284,7 @@ namespace Cash8
                     row["bonus_reg"] = 0;
                     row["bonus_action"] = 0;
                     row["bonus_action_b"] = 0;
-                    row["marking"] = reader[12].ToString();
+                    row["marking"] = reader[12].ToString().Replace("vasya2021", "'");
 
                     dt.Rows.Add(row);                    
                 }

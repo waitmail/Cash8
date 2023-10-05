@@ -212,9 +212,7 @@ namespace Cash8
             {
                 int count = 0;
                 while (1 == 1)
-                {
-                    count++;
-                    Thread.Sleep(1000);
+                {                    
                     result = GetOfflineValidation(url, guid);
                     status = result.results[0].status;
                     if ((status != "ready") && (status != "error"))
@@ -235,6 +233,8 @@ namespace Cash8
                     {
                         break;                        
                     }
+                    count++;
+                    Thread.Sleep(500);
                 }
             }
 
@@ -292,8 +292,7 @@ namespace Cash8
                 int count = 0;
                 while (1 == 1)
                 {
-                    count++;
-                    Thread.Sleep(1000);
+                    
                     root = GetOfflineValidation(url, guid);
                     status = root.results[0].status;
                     if ((status != "ready") && (status != "error"))
@@ -307,6 +306,8 @@ namespace Cash8
                     {
                         break;
                     }
+                    count++;
+                    Thread.Sleep(1000);
                 }
             }
             return root;
@@ -327,8 +328,7 @@ namespace Cash8
                 int count = 0;
                 while (1 == 1)
                 {
-                    count++;
-                    Thread.Sleep(1000);
+                    
                     root = GetOfflineValidation(url, guid);
                     status = root.results[0].status;
                     //status = "9";
@@ -343,6 +343,8 @@ namespace Cash8
                     {
                         break;
                     }
+                    count++;
+                    Thread.Sleep(1000);
                 }
             }
             return root;
@@ -362,15 +364,12 @@ namespace Cash8
             {
                 int count = 0;
                 while (1 == 1)
-                {
-                    count++;
-                    Thread.Sleep(1000);
+                {                                        
                     root = GetOfflineValidation(url, guid);
-                    status = root.results[0].status;
-                    //status = "9";
+                    status = root.results[0].status;                    
                     if ((status != "ready") && (status != "error"))
                     {
-                        if (count > 14)
+                        if (count > 5)
                         {
                             break;
                         }
@@ -379,46 +378,49 @@ namespace Cash8
                     {
                         break;
                     }
+                    count++;
+                    Thread.Sleep(100);                
                 }
             }
             return root;
         }
 
-        public Root declineMarkingCode()
-        {
-            string status = "";
-            Root root = null;
-            DeclineMarkingCode declineMarkingCode = new DeclineMarkingCode();
-            string сheck_validation = JsonConvert.SerializeObject(declineMarkingCode, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-            string json = shablon.Replace("body", сheck_validation);
-            string guid = Guid.NewGuid().ToString();
-            string replace = "\"uuid\": \"" + guid + "\"";
-            json = json.Replace("uuid", replace);
-            if (POST(url, json) == "Created")
-            {
-                int count = 0;
-                while (1 == 1)
-                {
-                    count++;
-                    Thread.Sleep(1000);
-                    root = GetOfflineValidation(url, guid);
-                    status = root.results[0].status;
-                    //status = "9";
-                    if ((status != "ready") && (status != "error"))
-                    {
-                        if (count > 14)
-                        {
-                            break;
-                        }
-                    }
-                    else if ((status == "ready") || (status == "error"))
-                    {
-                        break;
-                    }
-                }
-            }
-            return root;
-        }
+        //public Root declineMarkingCode()
+        //{
+        //    string status = "";
+        //    Root root = null;
+        //    DeclineMarkingCode declineMarkingCode = new DeclineMarkingCode();
+        //    string сheck_validation = JsonConvert.SerializeObject(declineMarkingCode, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+        //    string json = shablon.Replace("body", сheck_validation);
+        //    string guid = Guid.NewGuid().ToString();
+        //    string replace = "\"uuid\": \"" + guid + "\"";
+        //    json = json.Replace("uuid", replace);
+        //    if (POST(url, json) == "Created")
+        //    {
+        //        int count = 0;
+        //        while (1 == 1)
+        //        {
+                    
+        //            root = GetOfflineValidation(url, guid);
+        //            status = root.results[0].status;
+        //            //status = "9";
+        //            if ((status != "ready") && (status != "error"))
+        //            {
+        //                if (count > 14)
+        //                {
+        //                    break;
+        //                }
+        //            }
+        //            else if ((status == "ready") || (status == "error"))
+        //            {
+        //                break;
+        //            }
+        //            count++;
+        //            Thread.Sleep(1000);
+        //        }
+        //    }
+        //    return root;
+        //}
 
         public Root getMarkingCodeValidationStatus()
         {
@@ -434,12 +436,7 @@ namespace Cash8
             {
                 int count = 0;
                 while (1 == 1)
-                {
-                    if (count > 0)
-                    {
-                        Thread.Sleep(500);
-                    }
-                    
+                {                    
                     root = GetOfflineValidation(url, guid);
                     status = root.results[0].status;                    
                     if ((status != "ready") && (status != "error"))
@@ -461,6 +458,7 @@ namespace Cash8
                         break;
                     }
                     count++;
+                    Thread.Sleep(500);
                 }
             }
             return root;

@@ -359,5 +359,15 @@ namespace Cash8
                 return false.ToString();
             }
         }
+
+        private void comboBox_system_taxation_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBox_system_taxation.SelectedIndex == 3)
+            {
+                checkBox_version2_marking.Checked = true;
+                checkBox_enable_stock_processing_in_memory.Checked = true;
+                txtB_version_fn.Text = "2";
+            }
+        }
     }
 }

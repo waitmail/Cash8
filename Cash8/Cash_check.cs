@@ -2833,7 +2833,7 @@ namespace Cash8
                                                     //MessageBox.Show(root.results[0].errorDescription, "Ошибка при начале проверки кода маркировки");
                                                     if ((code_marking_error != 421) && (code_marking_error != 402))
                                                     {                                                        
-                                                        MessageBox.Show(root.results[0].errorDescription, "Ошибка при начале проверки кода маркировки");
+                                                        MessageBox.Show("beginMarkingCodeValidation "+root.results[0].errorDescription+" "+ code_marking_error, "Ошибка при начале проверки кода маркировки");
                                                         error = true;//не прошли проверку товар не добавляем в чек
                                                     }
                                                     else
@@ -2852,16 +2852,19 @@ namespace Cash8
                                                             {
                                                                 markingV3.cancelMarkingCodeValidation();//прерываем валидацию
                                                                 code_marking_error = root.results[0].result.driverError.code;
+                                                                //if (code_marking_error != 0)
+                                                                //{
                                                                 if ((code_marking_error != 421) && (code_marking_error != 402))
                                                                 {
-                                                                    markingV3.cancelMarkingCodeValidation();//прерываем валидацию
-                                                                    MessageBox.Show(root.results[0].result.driverError.description, "Ошибка при начале проверки кода маркировки");
+                                                                    //markingV3.cancelMarkingCodeValidation();//прерываем валидацию
+                                                                    MessageBox.Show("getMarkingCodeValidationStatus " + root.results[0].result.driverError.description, "Ошибка при начале проверки кода маркировки");
                                                                     error = true;//не прошли проверку товар не добавляем в чек
                                                                 }
                                                                 else//это будет ниже при добавлении товара в чек и по этим кодам ошибок добавление в буфер как проверенного
                                                                 {
-
+                                                                    //getMarkingCodeValidationStatus
                                                                 }
+                                                                //}
                                                             }
                                                             else//проверяем статус и если все хорошо отправляем принять 
                                                             {
@@ -2983,6 +2986,7 @@ namespace Cash8
                             Tovar_Not_Found t_n_f = new Tovar_Not_Found();
                             t_n_f.textBox1.Text="Код маркировки не прошел проверку";
                             t_n_f.textBox1.Font = new Font("Microsoft Sans Serif", 22);
+                            t_n_f.label1.Text = " Код ошибки code_marking_error = " + code_marking_error.ToString();
                             t_n_f.ShowDialog();
                             t_n_f.Dispose();
                             return;
@@ -5646,7 +5650,7 @@ namespace Cash8
                         lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(26, GS1);
                     }
 
-                    byte[] textAsBytes = Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim());
+                    byte[] textAsBytes = Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'"));
                     string mark_str = Convert.ToBase64String(textAsBytes);
                     param.imc = mark_str;
                     param.itemEstimatedStatus = "itemPieceSold";
@@ -7020,7 +7024,7 @@ namespace Cash8
                                 item.paymentObject = "commodityWithMarking";
                                 FiscallPrintJason2.ImcParams imcParams = new FiscallPrintJason2.ImcParams();
                                 imcParams.imcType = "auto";
-                                byte[] textAsBytes = Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim());
+                                byte[] textAsBytes = Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'"));
                                 string mark_str = Convert.ToBase64String(textAsBytes);
                                 imcParams.imc = mark_str;
                                 imcParams.itemEstimatedStatus = "itemPieceSold";
@@ -7516,8 +7520,8 @@ namespace Cash8
                 //if (MainStaticClass.SystemTaxation != 3)
                 //{
                 //System.IO.File.AppendAllText(Application.StartupPath.Replace("\\", "/") + "/" + "json.txt", DateTime.Now.ToString() + " clearMarkingBuffer \r\n");
-                if (MainStaticClass.Version2Marking == 0)
-                {
+                if ((MainStaticClass.Version2Marking == 0) || (this.check_type.SelectedIndex == 1) || !itsnew)//старый механизм работы с макрировкой, для возвратов так же пока старая схема
+                {                    
                     clearMarkingCodeValidationResult();
 
                     int count_km = 0;
