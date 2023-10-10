@@ -1047,7 +1047,9 @@ namespace Cash8
             queries.Add("ALTER TABLE public.checks_header    ADD COLUMN sertificate_money1 numeric(10,2) DEFAULT 0");
             queries.Add("ALTER TABLE public.checks_header    ADD COLUMN guid character varying(36) COLLATE pg_catalog.default NOT NULL DEFAULT ''::character varying");
             queries.Add("ALTER TABLE public.checks_table    ADD COLUMN guid character varying(36) COLLATE pg_catalog.default NOT NULL DEFAULT ''::character varying");
-            
+            queries.Add("ALTER TABLE public.clients ADD COLUMN notify_security smallint DEFAULT 0;");
+
+
             foreach (string str in queries)
             {
                 append_column(str);

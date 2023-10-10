@@ -2987,30 +2987,7 @@ namespace Cash8
 
                             }
                             _sum_ -= 1;
-
-                            //ListViewItem lvi = new ListViewItem(reader[0].ToString());
-                            //lvi.Tag = reader.GetInt64(0).ToString();          //Внутренний код товара
-                            //lvi.SubItems.Add(reader[1].ToString().Trim());    //Наименование
-                            //lvi.SubItems.Add("");                             //Характеристика
-                            //lvi.SubItems.Add(reader[4].ToString().Trim());    //Количество
-                            //lvi.SubItems.Add(reader.GetDecimal(2).ToString());//Цена
-                            //lvi.SubItems.Add(Math.Round(reader.GetDecimal(2) - reader.GetDecimal(2) * persent / 100, 2).ToString());//Цена со скидкой            
-                            ////lvi.SubItems.Add(reader.GetDecimal(3).ToString());//Цена со скидкой
-                            //lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString());//Сумма без скидки
-                            //lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)).ToString());//Сумма со скидкой
-                            //lvi.SubItems.Add(num_doc.ToString()); //Номер акционного документа скидка
-                            //lvi.SubItems.Add("0"); //Номер акционного документа подарок
-                            //lvi.SubItems.Add("0"); //Номер акционного документа дополнительное поле пометка что участвовало в акции, но скидка может быть
-
-                            //lvi.SubItems[10].Text = num_doc.ToString();
-                            ////*****************************************************************************
-                            //lvi.SubItems[11].Text = "0";
-                            //lvi.SubItems[12].Text = "0";
-                            //lvi.SubItems[13].Text = "0";
-                            //lvi.SubItems[14].Text = "0";
-                            ////*****************************************************************************
-                            //listView1.Items.Add(lvi);
-                            //SendDataToCustomerScreen(1, 0);
+                            
                             DataRow row = dt.NewRow();
                             row["tovar_code"] = reader[0].ToString();
                             row["tovar_name"] = reader[1].ToString().Trim();
@@ -3040,29 +3017,7 @@ namespace Cash8
 
                         }
                         else
-                        {
-                            //ListViewItem lvi = new ListViewItem(reader[0].ToString());
-                            //lvi.Tag = reader.GetInt64(0).ToString();          //Внутренний код товара
-                            //lvi.SubItems.Add(reader[1].ToString().Trim());    //Наименование
-                            //lvi.SubItems.Add("");    //Наименование
-                            //lvi.SubItems.Add(reader[4].ToString().Trim());    //Количество
-                            //lvi.SubItems.Add(reader.GetDecimal(2).ToString());//Цена                            
-                            //lvi.SubItems.Add(reader.GetDecimal(3).ToString());//Цена со скидкой
-                            //lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString());//Сумма без скидки
-                            //lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)).ToString());//Сумма со скидкой
-                            //lvi.SubItems.Add("0"); //Номер акционного документа скидка
-                            //lvi.SubItems.Add("0"); //Номер акционного документа подарок
-                            //lvi.SubItems.Add("0"); //Номер акционного документа дополнительное поле пометка что участвовало в акции, но скидка может быть
-
-                            //lvi.SubItems[10].Text = num_doc.ToString();
-                            ////*****************************************************************************
-                            //lvi.SubItems[11].Text = "0";
-                            //lvi.SubItems[12].Text = "0";
-                            //lvi.SubItems[13].Text = "0";
-                            //lvi.SubItems[14].Text = "0";
-                            ////*****************************************************************************
-                            //listView1.Items.Add(lvi);
-                            //SendDataToCustomerScreen(1, 0);
+                        {                            
                             DataRow row = dt.NewRow();
                             row["tovar_code"] = reader[0].ToString();
                             row["tovar_name"] = reader[1].ToString().Trim();

@@ -275,7 +275,8 @@ namespace Cash8
                         " its_work=" + str1[5] + "," +
                         " phone=" + str1[7] + "," +
                         " attribute=" + str1[8] + "," +
-                        " bonus_is_on=" + str1[9] +
+                        " bonus_is_on=" + str1[9] + "," +
+                        " notify_security=" + str1[10] +
                         " WHERE code=" + str1[0] + ";";
 
                     local_last_date_download_bonus_clients = str1[6];
@@ -285,7 +286,7 @@ namespace Cash8
                     rowsaffected = command.ExecuteNonQuery();
                     if (rowsaffected == 0)
                     {
-                        query = "INSERT INTO clients(code,name, sum, date_of_birth,discount_types_code,its_work,phone,attribute,bonus_is_on)VALUES(" +
+                        query = "INSERT INTO clients(code,name, sum, date_of_birth,discount_types_code,its_work,phone,attribute,bonus_is_on,notify_security)VALUES(" +
                             str1[0] + "," +
                             str1[1] + "," +
                             str1[2] + "," +
@@ -294,7 +295,8 @@ namespace Cash8
                             str1[5] + "," +
                             str1[7] + "," +
                             str1[8] + "," +
-                            str1[9] + ")";
+                            str1[9] + "," +
+                            str1[10]+")";
                         command = new NpgsqlCommand(query, conn);
                         command.Transaction = tran;
                         command.ExecuteNonQuery();
@@ -777,7 +779,7 @@ namespace Cash8
                 {
                     foreach (ActionHeader actionHeader in loadPacketData.ListActionHeader)
                     {
-                        queries.Add("INSERT INTO action_header(date_started,date_end,num_doc,tip,barcode,persent,sum,comment,code_tovar,marker,action_by_discount,time_start,time_end," +
+                        queries.Add("INSERT INTO action_header(date_started,date_end,num_doc,tip,barcode,persent,sum,comment,code_tovar,marker,action_by_discount,time_start,time_end," +                        
                         " bonus_promotion, with_old_promotion, monday, tuesday, wednesday, thursday, friday, saturday, sunday, promo_code, sum_bonus,execution_order,gift_price,kind)VALUES ('" +
                         actionHeader.DateStarted + "','" +
                         actionHeader.DateEnd + "'," +
