@@ -391,8 +391,13 @@ namespace Cash8
             //total_seconnds = 0;
             NpgsqlConnection conn = null;
             NpgsqlCommand command = null;
-            short tip_action;// = 0;
             Int64 count_minutes = Convert.ToInt64((DateTime.Now - DateTime.Now.Date).TotalMinutes);
+            short tip_action;// = 0;            
+            decimal persent = 0;
+            Int32 num_doc = 0;
+            string comment = "";
+            short marker = 0;
+            decimal sum = 0;
             try
             {
                 conn = MainStaticClass.NpgsqlConn();
@@ -413,8 +418,13 @@ namespace Cash8
                     {
                         continue;
                     }
-
-                    tip_action = reader.GetInt16(0);
+                                        
+                    tip_action = Convert.ToInt16(reader["tip"]);
+                    persent = Convert.ToDecimal(reader["persent"]);
+                    num_doc = Convert.ToInt32(reader["num_doc"]);
+                    comment = reader["comment"].ToString();
+                    marker = Convert.ToInt16(reader["marker"]);
+                    sum = Convert.ToDecimal(reader["sum"]);
                     /* Обработать акцию по типу 1
                     * первый тип это скидка на конкретный товар
                     * если есть процент скидки то дается скидка 
@@ -422,15 +432,20 @@ namespace Cash8
                     if (tip_action == 1)
                     {
                         //start_action = DateTime.Now;
-                        if (reader.GetDecimal(2) != 0)
+                        if (persent != 0)
                         {
-                            action_1_dt(reader.GetInt32(1), reader.GetDecimal(2));//Дать скидку на эту позицию                                                 
+                            //action_1_dt(reader.GetInt32(1), reader.GetDecimal(2));//Дать скидку на эту позицию                                                 
+                            //action_1_dt(Convert.ToInt32(reader["num_doc"]), Convert.ToDecimal(reader["persent"]));//Дать скидку на эту позицию                                                 
+                            action_1_dt(num_doc, persent);//Дать скидку на эту позицию                                                 
                         }
                         else
                         {
                             if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
                             {
-                                action_1_dt(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7), reader.GetInt64(4)); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
+                                //action_1_dt(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7), reader.GetInt64(4)); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
+                                //action_1_dt(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7)); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
+                                //action_1_dt(Convert.ToInt32(reader["num_doc"]), reader["comment"].ToString(), Convert.ToInt16(reader["marker"])); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
+                                action_1_dt(num_doc, comment, marker); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
                             }
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
@@ -439,15 +454,20 @@ namespace Cash8
                     {
                         //start_action = DateTime.Now;
 
-                        if (reader.GetDecimal(2) != 0)
+                        if (persent != 0)
                         {
-                            action_2_dt(reader.GetInt32(1), reader.GetDecimal(2));//Дать скидку на эту позицию                                                 
+                            //action_2_dt(reader.GetInt32(1), reader.GetDecimal(2));//Дать скидку на эту позицию                                                 
+                            //action_2_dt(Convert.ToInt32(reader["num_doc"]), Convert.ToDecimal(reader["persent"]));
+                            action_2_dt(num_doc, persent);
                         }
                         else
                         {
                             if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
                             {
-                                action_2_dt(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7), reader.GetInt64(4)); //Сообщить о подарке                           
+                                //action_2_dt(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7), reader.GetInt64(4)); //Сообщить о подарке                           
+                                //action_2_dt(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7)); //Сообщить о подарке 
+                                //action_2_dt(Convert.ToInt32(reader["num_doc"]), reader["comment"].ToString(), Convert.ToInt16(reader["marker"])); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
+                                action_2_dt(num_doc, comment, marker); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
                             }
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
@@ -458,15 +478,19 @@ namespace Cash8
                         //start_action = DateTime.Now;
 
                         //action_2(reader.GetInt32(1));
-                        if (reader.GetDecimal(2) != 0)
+                        if (persent != 0)
                         {
-                            action_3_dt(reader.GetInt32(1), reader.GetDecimal(2), reader.GetDecimal(5));//Дать скидку на все позиции из списка позицию                                                 
+                            //action_3_dt(reader.GetInt32(1), reader.GetDecimal(2), reader.GetDecimal(5));//Дать скидку на все позиции из списка позицию                                                 
+                            //action_3_dt(Convert.ToInt32(reader["num_doc"]), Convert.ToDecimal(reader["persent"]), Convert.ToDecimal(reader["sum"]));//Дать скидку на все позиции из списка позицию                                                 
+                            action_3_dt(num_doc, persent, sum);//Дать скидку на все позиции из списка позицию                                                 
                         }
                         else
                         {
                             if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
                             {
-                                action_3_dt(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt16(7)); //Сообщить о подарке                           
+                                //action_3_dt(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt16(7)); //Сообщить о подарке                           
+                                //action_3_dt(Convert.ToInt32(reader["num_doc"]), reader["comment"].ToString(), Convert.ToDecimal(reader["sum"]), Convert.ToInt16(reader["marker"])); //Сообщить о подарке                           
+                                action_3_dt(num_doc, comment, sum, marker); //Сообщить о подарке                           
                             }
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
@@ -476,15 +500,19 @@ namespace Cash8
                     {
                         //start_action = DateTime.Now;
 
-                        if (reader.GetDecimal(2) != 0)
+                        if (persent != 0)
                         {
-                            action_4_dt(reader.GetInt32(1), reader.GetDecimal(2), reader.GetDecimal(5));//Дать скидку на все позиции из списка позицию                                                 
+                            //action_4_dt(reader.GetInt32(1), reader.GetDecimal(2), reader.GetDecimal(5));//Дать скидку на все позиции из списка позицию                                                 
+                            //action_4_dt(Convert.ToInt32(reader["num_doc"]), Convert.ToDecimal(reader["persent"]), Convert.ToDecimal(reader["sum"]));//Дать скидку на все позиции из списка позицию                                                 
+                            action_4_dt(num_doc, persent, sum);//Дать скидку на все позиции из списка позицию                                                 
                         }
                         else
                         {
                             //if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
                             //{
-                                action_4(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt64(4));
+                                //action_4(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt64(4));
+                                //action_4(Convert.ToInt32(reader["num_doc"]), reader["comment"].ToString(), Convert.ToDecimal(reader["sum"]));
+                            action_4(num_doc, comment, sum);
                             //}
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
@@ -494,25 +522,31 @@ namespace Cash8
                         //start_action = DateTime.Now;
                         if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
                         {
-                            action_6(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt16(7));
+                            //action_6(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt16(7));
+                            //action_6(Convert.ToInt32(reader["num_doc"]), reader["comment"].ToString(), Convert.ToDecimal(reader["sum"]), Convert.ToInt16(reader["marker"]));
+                            action_6(num_doc, comment, sum, marker);
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
                     }
                     else if (tip_action == 8)
                     {
                         //start_action = DateTime.Now;
-                        if (reader.GetDecimal(2) != 0)
+                        if (persent != 0)
                         {
                             if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
                             {
-                                action_8_dt(reader.GetInt32(1), reader.GetDecimal(2), reader.GetDecimal(5));//Дать скидку на все позиции из списка позицию                                                 
+                                //action_8_dt(reader.GetInt32(1), reader.GetDecimal(2), reader.GetDecimal(5));//Дать скидку на все позиции из списка позицию                                                 
+                                //action_8_dt(Convert.ToInt32(reader["num_doc"]), Convert.ToDecimal(reader["persent"]), Convert.ToDecimal(reader["sum"]));//Дать скидку на все позиции из списка позицию                                                 
+                                action_8_dt(num_doc, persent, sum);//Дать скидку на все позиции из списка позицию                                                 
                             }
                         }
                         else
                         {
                             if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
                             {
-                                action_8_dt(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt64(4), reader.GetInt16(7));
+                                //action_8_dt(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt64(4), reader.GetInt16(7));
+                                //action_8_dt(Convert.ToInt32(reader["num_doc"]), reader["comment"].ToString(), Convert.ToDecimal(reader["sum"]), Convert.ToInt16(reader["marker"]));
+                                action_8_dt(num_doc, comment, sum, marker);
                             }
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
@@ -526,9 +560,13 @@ namespace Cash8
                             continue;
                         }
 
-                        if (reader.GetDecimal(2) != 0)
+                        //if (reader.GetDecimal(2) != 0)
+                            if (persent != 0)
+                                
                         {
-                            action_1_dt(reader.GetInt32(1), reader.GetDecimal(2));//Дать скидку на эту позицию                                                 
+                            //action_1_dt(reader.GetInt32(1), reader.GetDecimal(2));//Дать скидку на эту позицию                                                 
+                            //action_1_dt(Convert.ToInt32(reader["num_doc"]), Convert.ToDecimal(reader["persent"]));
+                            action_1_dt(num_doc, persent);
                         }
                         else
                         {
@@ -538,10 +576,10 @@ namespace Cash8
                     }
                     else if (tip_action == 10)
                     {
-                        if (reader.GetDecimal(5) <= calculation_of_the_sum_of_the_document_dt())
+                        if (sum <= calculation_of_the_sum_of_the_document_dt())
                         {
                             //MessageBox.Show(reader[3].ToString());
-                            action_num_doc = Convert.ToInt32(reader[1].ToString());
+                            action_num_doc = num_doc; Convert.ToInt32(reader[1].ToString());
                         }
                     }
                     else
@@ -565,11 +603,11 @@ namespace Cash8
 
                     while (reader.Read())
                     {
-                        if (reader.GetDecimal(5) <= action_10_dt(reader.GetInt32(1)))
+                        if (Convert.ToDecimal(reader["sum"]) <= action_10_dt(Convert.ToInt32(reader["num_doc"])))
                         {
-                            int multiplicity = (int)(calculation_of_the_sum_of_the_document_dt() / action_10_dt(reader.GetInt32(1)));
-                            MessageBox.Show("Крастность " + multiplicity.ToString() + " " + reader[3].ToString());
-                            action_num_doc = Convert.ToInt32(reader[1].ToString());
+                            int multiplicity = (int)(calculation_of_the_sum_of_the_document_dt() / action_10_dt(Convert.ToInt32(reader["num_doc"])));
+                            MessageBox.Show("Крастность " + multiplicity.ToString() + " " + reader["comment"].ToString());
+                            action_num_doc = Convert.ToInt32(reader["num_doc"]);
                         }
                     }
 
@@ -602,9 +640,6 @@ namespace Cash8
             //MessageBox.Show(total_seconnds.ToString());
         }
         
-
-
-
         /// <summary>
         /// Это сработка акций по группе клиентов
         /// 
@@ -621,6 +656,11 @@ namespace Cash8
             NpgsqlConnection conn = null;
             NpgsqlCommand command = null;
             short tip_action;// = 0;
+            decimal persent = 0;
+            Int32 num_doc = 0;
+            string comment = "";
+            short marker = 0;
+            decimal sum = 0;
             Int64 count_minutes = Convert.ToInt64((DateTime.Now - DateTime.Now.Date).TotalMinutes);
             try
             {
@@ -644,7 +684,13 @@ namespace Cash8
                         continue;
                     }
 
-                    tip_action = reader.GetInt16(0);
+                    //tip_action = reader.GetInt16(0);
+                    tip_action = Convert.ToInt16(reader["tip"]);                    
+                    persent = Convert.ToDecimal(reader["persent"]);
+                    num_doc = Convert.ToInt32(reader["num_doc"]);
+                    comment = reader["comment"].ToString();
+                    marker = Convert.ToInt16(reader["marker"]);
+                    sum = Convert.ToDecimal(reader["sum"]);
                     /* Обработать акцию по типу 1
                     * первый тип это скидка на конкретный товар
                     * если есть процент скидки то дается скидка 
@@ -654,13 +700,18 @@ namespace Cash8
                         //start_action = DateTime.Now;
                         if (reader.GetDecimal(2) != 0)
                         {
-                            action_1_dt(reader.GetInt32(1), reader.GetDecimal(2));//Дать скидку на эту позицию                                                 
+                            //action_1_dt(reader.GetInt32(1), reader.GetDecimal(2));//Дать скидку на эту позицию
+                            //action_1_dt(Convert.ToInt32(reader["num_doc"]), Convert.ToDecimal(reader["persent"]));//Дать скидку на эту позицию                                                 
+                            action_1_dt(num_doc, persent);//Дать скидку на эту позицию                                                 
                         }
                         else
                         {
                             if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
                             {
-                                action_1_dt(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7), reader.GetInt64(4)); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
+                                //action_1_dt(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7), reader.GetInt64(4)); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
+                                //action_1_dt(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7)); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
+                                //action_1_dt(Convert.ToInt32(reader["num_doc"]), reader["comment"].ToString(), Convert.ToInt16(reader["marker"])); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
+                                action_1_dt(num_doc, comment, marker); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
                             }
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
@@ -671,13 +722,18 @@ namespace Cash8
 
                         if (reader.GetDecimal(2) != 0)
                         {
-                            action_2_dt(reader.GetInt32(1), reader.GetDecimal(2));//Дать скидку на эту позицию                                                 
+                            //action_2_dt(reader.GetInt32(1), reader.GetDecimal(2));//Дать скидку на эту позицию                                                 
+                            //action_2_dt(Convert.ToInt32(reader["num_doc"]), Convert.ToDecimal(reader["persent"]));
+                            action_2_dt(num_doc, persent);
                         }
                         else
                         {
                             if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
                             {
-                                action_2_dt(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7), reader.GetInt64(4)); //Сообщить о подарке                           
+                                //action_2_dt(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7), reader.GetInt64(4)); //Сообщить о подарке                           
+                                //action_2_dt(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7)); //Сообщить о подарке                           
+                                //action_2_dt(Convert.ToInt32(reader["num_doc"]), reader["comment"].ToString(), Convert.ToInt16(reader["marker"])); //Сообщить о подарке, а так же добавить товар в подарок                          
+                                action_2_dt(num_doc, comment, marker); //Сообщить о подарке, а так же добавить товар в подарок                          
                             }
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
@@ -690,13 +746,17 @@ namespace Cash8
                         //action_2(reader.GetInt32(1));
                         if (reader.GetDecimal(2) != 0)
                         {
-                            action_3_dt(reader.GetInt32(1), reader.GetDecimal(2), reader.GetDecimal(5));//Дать скидку на все позиции из списка позицию                                                 
+                            //action_3_dt(reader.GetInt32(1), reader.GetDecimal(2), reader.GetDecimal(5));//Дать скидку на все позиции из списка позицию                                                 
+                            //action_3_dt(Convert.ToInt32(reader["num_doc"]), Convert.ToDecimal(reader["persent"]), Convert.ToDecimal(reader["sum"]));//Дать скидку на все позиции из списка позицию                                                 
+                            action_3_dt(num_doc, persent, sum);//Дать скидку на все позиции из списка позицию                                                 
                         }
                         else
                         {
                             if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
                             {
-                                action_3_dt(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt16(7)); //Сообщить о подарке                           
+                                //action_3_dt(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt16(7)); //Сообщить о подарке                           
+                                //action_3_dt(Convert.ToInt32(reader["num_doc"]), reader["comment"].ToString(), Convert.ToDecimal(reader["sum"]), Convert.ToInt16(reader["marker"])); //Сообщить о подарке                           
+                                action_3_dt(num_doc, comment, sum, marker); //Сообщить о подарке                           
                             }
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
@@ -708,71 +768,20 @@ namespace Cash8
 
                         if (reader.GetDecimal(2) != 0)
                         {
-                            action_4_dt(reader.GetInt32(1), reader.GetDecimal(2), reader.GetDecimal(5));//Дать скидку на все позиции из списка позицию                                                 
+                            //action_4_dt(reader.GetInt32(1), reader.GetDecimal(2), reader.GetDecimal(5));//Дать скидку на все позиции из списка позицию                                                 
+                            //action_4_dt(Convert.ToInt32(reader["num_doc"]), Convert.ToDecimal(reader["persent"]), Convert.ToDecimal(reader["sum"]));//Дать скидку на все позиции из списка позицию                                                 
+                            action_4_dt(num_doc, persent, sum);//Дать скидку на все позиции из списка позицию                                                 
                         }
                         else
                         {
                             //if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
                             //{
-                            action_4(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt64(4));
+                            //action_4(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt64(4));
+                            //action_4(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5));
+                            //action_4(Convert.ToInt32(reader["num_doc"]), reader["comment"].ToString(), Convert.ToDecimal(reader["sum"]));
+                            action_4(num_doc, comment, sum);
                             //}
-                        }
-                        //write_time_execution(reader[1].ToString(), tip_action.ToString());
-                    }
-                    else if (tip_action == 6)
-                    {           //Номер документа  //Сообщение о подарке //Сумма в данном случае шаг акции
-                        ////start_action = DateTime.Now;
-                        //if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
-                        //{
-                        //    action_6(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt16(7));
-                        //}
-                        ////write_time_execution(reader[1].ToString(), tip_action.ToString());
-                    }
-                    else if (tip_action == 8)
-                    {
-                        ////start_action = DateTime.Now;
-                        //if (reader.GetDecimal(2) != 0)
-                        //{
-                        //    if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
-                        //    {
-                        //        action_8_dt(reader.GetInt32(1), reader.GetDecimal(2), reader.GetDecimal(5));//Дать скидку на все позиции из списка позицию                                                 
-                        //    }
-                        //}
-                        //else
-                        //{
-                        //    if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
-                        //    {
-                        //        action_8_dt(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt64(4), reader.GetInt16(7));
-                        //    }
-                        //}
-                        ////write_time_execution(reader[1].ToString(), tip_action.ToString());
-                    }
-                    else if (tip_action == 9)//Акция работает в день рождения владельца дисконтной карты
-                    {
-                        ////start_action = DateTime.Now;
-                        //if (!actions_birthday())
-                        //{
-                        //    //write_time_execution("проверка на день рождения", tip_action.ToString());
-                        //    continue;
-                        //}
-
-                        //if (reader.GetDecimal(2) != 0)
-                        //{
-                        //    action_1_dt(reader.GetInt32(1), reader.GetDecimal(2));//Дать скидку на эту позицию                                                 
-                        //}
-                        //else
-                        //{
-                        //    //action_1_dt(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7), reader.GetInt32(4)); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
-                        //}
-                        ////write_time_execution(reader[1].ToString(), tip_action.ToString());
-                    }
-                    else if (tip_action == 10)
-                    {
-                        //if (reader.GetDecimal(5) <= calculation_of_the_sum_of_the_document_dt())
-                        //{
-                        //    //MessageBox.Show(reader[3].ToString());
-                        //    action_num_doc = Convert.ToInt32(reader[1].ToString());
-                        //}
+                        }                    
                     }
                     else
                     {
@@ -780,37 +789,9 @@ namespace Cash8
                     }
                 }
                 reader.Close();
-
-                //if (show_messages)
-                //{
-                //    query = "SELECT tip,num_doc,persent,comment,code_tovar,sum,barcode,marker,execution_order FROM action_header " +
-                //     " WHERE '" + DateTime.Now.Date.ToString("yyy-MM-dd") + "' between date_started AND date_end " +
-                //     " AND " + count_minutes.ToString() + " between time_start AND time_end AND bonus_promotion=0 " +
-                //     " AND barcode='' AND tip=10 AND num_doc in(" +//AND tip<>10 
-                //     " SELECT DISTINCT action_table.num_doc FROM checks_table_temp " +
-                //     " LEFT JOIN action_table ON checks_table_temp.tovar = action_table.code_tovar) order by execution_order asc, tip asc";//date_started asc,, tip desc
-
-                //    command = new NpgsqlCommand(query, conn);
-                //    reader = command.ExecuteReader();
-
-                //    while (reader.Read())
-                //    {
-                //        if (reader.GetDecimal(5) <= action_10_dt(reader.GetInt32(1)))
-                //        {
-                //            int multiplicity = (int)(calculation_of_the_sum_of_the_document_dt() / action_10_dt(reader.GetInt32(1)));
-                //            MessageBox.Show("Крастность " + multiplicity.ToString() + " " + reader[3].ToString());
-                //            action_num_doc = Convert.ToInt32(reader[1].ToString());
-                //        }
-                //    }
-
-                //    reader.Close();
-                //}
+                                
                 conn.Close();
-                command.Dispose();
-                //if (show_messages)
-                //{
-                //    checked_action_10_dt();//Отдельная проверка поскольку может не быть товарной части, а все акции выше проверяются именно на вхождение товаров документа в таб части акционных документов
-                //}
+                command.Dispose();                
 
             }
             catch (NpgsqlException ex)
@@ -954,6 +935,12 @@ namespace Cash8
             NpgsqlConnection conn = null;
             NpgsqlCommand command = null;
             short tip_action;// = 0;
+            decimal persent = 0;
+            Int32 num_doc = 0;
+            string comment = "";
+            short marker = 0;
+            decimal sum = 0;
+
             Int64 count_minutes = Convert.ToInt64((DateTime.Now - DateTime.Now.Date).TotalMinutes);
             try
             {
@@ -972,7 +959,12 @@ namespace Cash8
                     //    continue;
                     //}
 
-                    tip_action = reader.GetInt16(0);
+                    tip_action = Convert.ToInt16(reader["tip"]);
+                    persent = Convert.ToDecimal(reader["persent"]);
+                    num_doc = Convert.ToInt32(reader["num_doc"]);
+                    comment = reader["comment"].ToString();
+                    marker = Convert.ToInt16(reader["marker"]);
+                    sum = Convert.ToDecimal(reader["sum"]);
                     /* Обработать акцию по типу 1
                     * первый тип это скидка на конкретный товар
                     * если есть процент скидки то дается скидка 
@@ -982,13 +974,18 @@ namespace Cash8
                         //start_action = DateTime.Now;
                         if (reader.GetDecimal(2) != 0)
                         {
-                            action_1_dt(reader.GetInt32(1), reader.GetDecimal(2));//Дать скидку на эту позицию                                                 
+                            //action_1_dt(reader.GetInt32(1), reader.GetDecimal(2));//Дать скидку на эту позицию                                                 
+                            //action_1_dt(Convert.ToInt32(reader["num_doc"]), Convert.ToDecimal(reader["persent"]));//Дать скидку на эту позицию                                                 
+                            action_1_dt(num_doc, persent);//Дать скидку на эту позицию                                                 
                         }
                         else
                         {
                             if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
                             {
-                                action_1_dt(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7), reader.GetInt32(4)); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
+                                //action_1_dt(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7), reader.GetInt32(4)); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
+                                //action_1_dt(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7)); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
+                                //action_1_dt(Convert.ToInt32(reader["num_doc"]), reader["comment"].ToString(), Convert.ToInt16(reader["marker"])); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
+                                action_1_dt(num_doc, comment, marker); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
                             }
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
@@ -999,13 +996,18 @@ namespace Cash8
 
                         if (reader.GetDecimal(2) != 0)
                         {
-                            action_2_dt(reader.GetInt32(1), reader.GetDecimal(2));//Дать скидку на эту позицию                                                 
+                            //action_2_dt(reader.GetInt32(1), reader.GetDecimal(2));//Дать скидку на эту позицию                                                 
+                            //action_2_dt(Convert.ToInt32(reader["num_doc"]), Convert.ToDecimal(reader["persent"]));
+                            action_2_dt(num_doc, persent);
                         }
                         else
                         {
                             if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
                             {
-                                action_2_dt(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7), reader.GetInt32(4)); //Сообщить о подарке                           
+                                //action_2_dt(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7), reader.GetInt32(4)); //Сообщить о подарке                           
+                                //action_2_dt(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7)); //Сообщить о подарке                           
+                                //action_2_dt(Convert.ToInt32(reader["num_doc"]), reader["comment"].ToString(), Convert.ToInt16(reader["marker"])); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
+                                action_2_dt(num_doc, comment, marker); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
                             }
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
@@ -1018,13 +1020,17 @@ namespace Cash8
                         //action_2(reader.GetInt32(1));
                         if (reader.GetDecimal(2) != 0)
                         {
-                            action_3_dt(reader.GetInt32(1), reader.GetDecimal(2), reader.GetDecimal(5));//Дать скидку на все позиции из списка позицию                                                 
+                            //action_3_dt(reader.GetInt32(1), reader.GetDecimal(2), reader.GetDecimal(5));//Дать скидку на все позиции из списка позицию                                                 
+                            //action_3_dt(Convert.ToInt32(reader["num_doc"]), Convert.ToDecimal(reader["persent"]), Convert.ToDecimal(reader["sum"]));//Дать скидку на все позиции из списка позицию                                                 
+                            action_3_dt(num_doc, persent, sum);//Дать скидку на все позиции из списка позицию                                                 
                         }
                         else
                         {
                             if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
                             {
-                                action_3_dt(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt16(7)); //Сообщить о подарке                           
+                                //action_3_dt(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt16(7)); //Сообщить о подарке                           
+                                //action_3_dt(Convert.ToInt32(reader["num_doc"]), reader["comment"].ToString(), Convert.ToDecimal(reader["sum"]), Convert.ToInt16(reader["marker"])); //Сообщить о подарке                           
+                                action_3_dt(num_doc, comment, sum, marker); //Сообщить о подарке                           
                             }
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
@@ -1036,104 +1042,34 @@ namespace Cash8
 
                         if (reader.GetDecimal(2) != 0)
                         {
-                            action_4_dt(reader.GetInt32(1), reader.GetDecimal(2), reader.GetDecimal(5));//Дать скидку на все позиции из списка позицию                                                 
+                            //action_4_dt(reader.GetInt32(1), reader.GetDecimal(2), reader.GetDecimal(5));//Дать скидку на все позиции из списка позицию                                                 
+                            //action_4_dt(Convert.ToInt32(reader["num_doc"]), Convert.ToDecimal(reader["persent"]), Convert.ToDecimal(reader["sum"]));//Дать скидку на все позиции из списка позицию                                                 
+                            action_4_dt(num_doc, persent, sum);//Дать скидку на все позиции из списка позицию                                                 
                         }
                         else
                         {
                             //if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
                             //{
-                            action_4(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt64(4));
+                            //action_4(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt64(4));
+                            //action_4(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5));
+                            //action_4(Convert.ToInt32(reader["num_doc"]), reader["comment"].ToString(), Convert.ToDecimal(reader["sum"]));
+                            action_4(num_doc, comment, sum);
                             //}
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
                     }
                     else if (tip_action == 5)
                     {
-                        action_5_dt(reader.GetInt32(1), reader.GetDecimal(5));
-                    }
-                    else if (tip_action == 7)
-                    {
-                        action_7(reader.GetInt32(1), reader.GetInt32(4));
-                    }
-                    //else if (tip_action == 6)
-                    //{           //Номер документа  //Сообщение о подарке //Сумма в данном случае шаг акции
-                    //    //start_action = DateTime.Now;
-                    //    //action_6(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt16(7));
-                    //    //write_time_execution(reader[1].ToString(), tip_action.ToString());
-                    //}
-                    //else if (tip_action == 8)
-                    //{
-                    //    //start_action = DateTime.Now;
-                    //    if (reader.GetDecimal(2) != 0)
-                    //    {
-                    //        //action_8(reader.GetInt32(1), reader.GetDecimal(2), reader.GetDecimal(5));//Дать скидку на все позиции из списка позицию                                                 
-                    //    }
-                    //    else
-                    //    {
-                    //        //action_8(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt32(4), reader.GetInt16(7));
-                    //    }
-                    //    //write_time_execution(reader[1].ToString(), tip_action.ToString());
-                    //}
-                    //else if (tip_action == 9)//Акция работает в день рождения владельца дисконтной карты
-                    //{
-                    //    //start_action = DateTime.Now;
-                    //    if (!actions_birthday())
-                    //    {
-                    //        //write_time_execution("проверка на день рождения", tip_action.ToString());
-                    //        continue;
-                    //    }
-
-                    //    if (reader.GetDecimal(2) != 0)
-                    //    {
-                    //        action_1_dt(reader.GetInt32(1), reader.GetDecimal(2));//Дать скидку на эту позицию                                                 
-                    //    }
-                    //    else
-                    //    {
-                    //        //action_1_dt(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7), reader.GetInt32(4)); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
-                    //    }
-                    //    //write_time_execution(reader[1].ToString(), tip_action.ToString());
-                    //}
-                    //else if (tip_action == 10)
-                    //{
-                    //    if (reader.GetDecimal(5) <= calculation_of_the_sum_of_the_document_dt())
-                    //    {
-                    //        //MessageBox.Show(reader[3].ToString());
-                    //        action_num_doc = Convert.ToInt32(reader[1].ToString());
-                    //    }
-                    //}
+                        //action_5_dt(reader.GetInt32(1), reader.GetDecimal(5));
+                        //action_5_dt(Convert.ToInt32(reader["num_doc"]), Convert.ToDecimal(reader["sum"]));
+                        action_5_dt(num_doc, sum);
+                    }                    
                     else
                     {
                         MessageBox.Show("Неопознанный тип акции в документе  № " + reader[1].ToString(), " Обработка акций ");
                     }
                 }
                 reader.Close();
-
-                //query = "SELECT tip,num_doc,persent,comment,code_tovar,sum,barcode,marker,execution_order FROM action_header " +
-                // " WHERE '" + DateTime.Now.Date.ToString("yyy-MM-dd") + "' between date_started AND date_end " +
-                // " AND " + count_minutes.ToString() + " between time_start AND time_end AND bonus_promotion=0 " +
-                // " AND barcode='' AND tip=10 AND num_doc in(" +//AND tip<>10 
-                // " SELECT DISTINCT action_table.num_doc FROM checks_table_temp " +
-                // " LEFT JOIN action_table ON checks_table_temp.tovar = action_table.code_tovar) order by execution_order asc, tip asc";//date_started asc,, tip desc
-
-                //command = new NpgsqlCommand(query, conn);
-                //reader = command.ExecuteReader();
-
-                //while (reader.Read())
-                //{
-                //    if (reader.GetDecimal(5) <= action_10_dt(reader.GetInt32(1)))
-                //    {
-                //        int multiplicity = (int)(calculation_of_the_sum_of_the_document_dt() / action_10_dt(reader.GetInt32(1)));
-                //        MessageBox.Show("Крастность " + multiplicity.ToString() + " " + reader[3].ToString());
-                //        action_num_doc = Convert.ToInt32(reader[1].ToString());
-                //    }
-                //}
-
-                //reader.Close();
-                //conn.Close();
-                //command.Dispose();
-
-                //checked_action_10_dt();//Отдельная проверка поскольку может не быть товарной части, а все акции выше проверяются именно на вхождение товаров документа в таб части акционных документов
-
             }
             catch (NpgsqlException ex)
             {
@@ -1484,9 +1420,10 @@ namespace Cash8
         /// <param name="comment"></param>
         /// <param name="marker"></param>
         /// <param name="code_tovar"></param>
-        private void action_1_dt(int num_doc, string comment, int marker, long code_tovar)
-        {
-            NpgsqlConnection conn = null;
+        //private void action_1_dt(int num_doc, string comment, int marker, long code_tovar)        
+        private void action_1_dt(int num_doc, string comment, int marker)
+            {
+                NpgsqlConnection conn = null;
             NpgsqlCommand command = null;
             Int16 result = 0;
             try
@@ -1517,13 +1454,13 @@ namespace Cash8
                         {
                             dr = show_query_window_barcode(2, 1, num_doc,1);
                         }
-                        if (dr != DialogResult.Cancel)
-                        {
-                            if (code_tovar != 0)
-                            {
-                                find_barcode_or_code_in_tovar_dt(code_tovar.ToString());
-                            }
-                        }
+                        //if (dr != DialogResult.Cancel)
+                        //{
+                        //    if (code_tovar != 0)
+                        //    {
+                        //        find_barcode_or_code_in_tovar_dt(code_tovar.ToString());
+                        //    }
+                        //}
                     }
                 }
                 foreach (DataRow row in dt_copy.Rows)
@@ -1870,7 +1807,8 @@ namespace Cash8
        * Списки товаров могут быть абсолютно одинаковыми, а могут и отличатся
        * 
        */
-        private void action_2_dt(int num_doc, string comment, int marker, long code_tovar)
+        //private void action_2_dt(int num_doc, string comment, int marker, long code_tovar)
+        private void action_2_dt(int num_doc, string comment, int marker)
         {
             /*В этой переменной запомнится позиция которая первой входит в первый список акции
             * на него будет дана скидка, необходимо скопировать эту позицию в конец списка 
@@ -1979,10 +1917,10 @@ namespace Cash8
                         dr = show_query_window_barcode(2, min_quantity, num_doc,0);
                     }
 
-                    if (dr != DialogResult.Cancel)
-                    {
-                        find_barcode_or_code_in_tovar_dt(code_tovar.ToString());
-                    }
+                    //if (dr != DialogResult.Cancel)
+                    //{
+                    //    find_barcode_or_code_in_tovar_dt(code_tovar.ToString());
+                    //}
 
                     /*акция сработала
                     * надо отметить все товарные позиции 
@@ -2457,7 +2395,8 @@ namespace Cash8
         * самый дешевый товар из документа дается в подарок кратное число единиц 
         * и еще добавляется некий товар из акционного документа         
         */
-        private void action_4(int num_doc, string comment, decimal sum, long code_tovar)
+        //private void action_4(int num_doc, string comment, decimal sum, long code_tovar)
+        private void action_4(int num_doc, string comment, decimal sum)
         {
             if (!create_temp_tovar_table_4()) //Создать временную таблицу для акционного товара
             {
@@ -2984,7 +2923,6 @@ namespace Cash8
                             {
                                 _sum_ = sum;
                                 multiplication_factor--;
-
                             }
                             _sum_ -= 1;
                             
@@ -3087,7 +3025,7 @@ namespace Cash8
         /// <param name="num_doc"></param>
         /// <param name="persent"></param>
         /// <param name="sum"></param>
-        private void action_8_dt(int num_doc, string comment, decimal sum, long code_tovar, Int32 marker)
+        private void action_8_dt(int num_doc, string comment, decimal sum, Int32 marker)
         {
 
             if (!create_temp_tovar_table_4())

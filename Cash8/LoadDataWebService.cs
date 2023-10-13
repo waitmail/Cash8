@@ -430,7 +430,7 @@ namespace Cash8
             public string Persent { get; set; }
             public string sum { get; set; }
             public string Comment { get; set; }
-            public string CodeTovar { get; set; }
+            //public string CodeTovar { get; set; }
             public string Marker { get; set; }
             public string ActionByDiscount { get; set; }
             public string TimeStart { get; set; }
@@ -779,7 +779,7 @@ namespace Cash8
                 {
                     foreach (ActionHeader actionHeader in loadPacketData.ListActionHeader)
                     {
-                        queries.Add("INSERT INTO action_header(date_started,date_end,num_doc,tip,barcode,persent,sum,comment,code_tovar,marker,action_by_discount,time_start,time_end," +                        
+                        queries.Add("INSERT INTO action_header(date_started,date_end,num_doc,tip,barcode,persent,sum,comment,marker,action_by_discount,time_start,time_end," +                        
                         " bonus_promotion, with_old_promotion, monday, tuesday, wednesday, thursday, friday, saturday, sunday, promo_code, sum_bonus,execution_order,gift_price,kind)VALUES ('" +
                         actionHeader.DateStarted + "','" +
                         actionHeader.DateEnd + "'," +
@@ -789,7 +789,7 @@ namespace Cash8
                         actionHeader.Persent + "," +
                         actionHeader.sum + ",'" +
                         actionHeader.Comment + "'," +
-                        actionHeader.CodeTovar + "," +
+                        //actionHeader.CodeTovar + "," +
                         actionHeader.Marker + "," +
                         actionHeader.ActionByDiscount + "," +
                         actionHeader.TimeStart + "," +
@@ -1088,7 +1088,7 @@ namespace Cash8
 
                         foreach (ActionHeader actionHeader in loadPacketData.ListActionHeader)
                         {
-                            queries.Add("INSERT INTO action_header(date_started,date_end,num_doc,tip,barcode,persent,sum,comment,code_tovar,marker,action_by_discount,time_start,time_end," +
+                            queries.Add("INSERT INTO action_header(date_started,date_end,num_doc,tip,barcode,persent,sum,comment,marker,action_by_discount,time_start,time_end," +
                             " bonus_promotion, with_old_promotion, monday, tuesday, wednesday, thursday, friday, saturday, sunday, promo_code, sum_bonus,execution_order)VALUES ('" +
                             actionHeader.DateStarted + "','" +
                             actionHeader.DateEnd + "'," +
@@ -1098,7 +1098,7 @@ namespace Cash8
                             actionHeader.Persent + "," +
                             actionHeader.sum + ",'" +
                             actionHeader.Comment + "'," +
-                            actionHeader.CodeTovar + "," +
+                            //actionHeader.CodeTovar + "," +
                             actionHeader.Marker + "," +
                             actionHeader.ActionByDiscount + "," +
                             actionHeader.TimeStart + "," +

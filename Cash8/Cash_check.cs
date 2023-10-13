@@ -2444,7 +2444,7 @@ namespace Cash8
          * стандартное добавление товара
          */
         public void find_barcode_or_code_in_tovar(string barcode)
-        {
+        {           
             //Повторная проверка если документ не новый или уже вызвано окно оплаты подбор товара не работает
             if (!itsnew)
             {

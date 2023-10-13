@@ -1157,7 +1157,7 @@ namespace Cash8
                 }
                 
                 //Получить сумму наличных
-                //если это возврат и если сумма безнала меньше 1 тогда копейки прибаквить к наличным
+                //если это возврат и если сумма безнала меньше 1 тогда копейки прибавить к наличным
                 string sum_cash_pay = (Convert.ToDecimal(cash_sum.Text) - Convert.ToDecimal(remainder.Text)).ToString().Replace(",", ".");
                 string non_sum_cash_pay = (get_non_cash_sum(1)).ToString().Replace(",", ".");
                 cc.print_to_button = 0;                                          
