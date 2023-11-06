@@ -110,6 +110,7 @@ namespace Cash8
         private static string ip_address_acquiring_terminal = "000000000000000";
         private static int one_monitors_connected = -1;
         private static int version2_marking =-1;
+        private static int authorization_required = -1;
         //private static int version_fn = 0;
         //private static int sno = -1;//это система налогообложения
 
@@ -149,6 +150,63 @@ namespace Cash8
         //        return sno;
         //    }
         //}
+
+        public static void set_basic_auth(System.Net.WebRequest req)
+        {
+            if (AuthorizationRequired == 1)
+            {
+                string authInfo = "admin:AdminRetail0123456789";
+                authInfo = Convert.ToBase64String(Encoding.Default.GetBytes(authInfo));
+                req.Headers["Authorization"] = "Basic " + authInfo;
+            }
+        }
+
+
+        public static int AuthorizationRequired
+        {
+            get
+            {
+                if (authorization_required == -1)
+                {
+
+                    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+                    try
+                    {
+                        conn.Open();
+                        string query = "SELECT webservice_authorize FROM constants";
+                        NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                        object result_query = command.ExecuteScalar();
+                        if (Convert.ToBoolean(result_query) == false)
+                        {
+                            authorization_required = 0;
+                        }
+                        else
+                        {
+                            authorization_required = 1;
+                        }
+                    }
+                    catch (NpgsqlException ex)
+                    {
+                        authorization_required = 0;
+                        MessageBox.Show(" Ошибка при чтении флага по работе веб сервиса с авторизацией " + ex.Message);
+                    }
+                    catch (Exception ex)
+                    {
+                        authorization_required = 0;
+                        MessageBox.Show(" Ошибка при чтении флага по работе веб сервиса с авторизацией " + ex.Message);
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                }
+                return authorization_required;
+            }
+        }
+
         public static int Version2Marking
         {
             get
@@ -1483,6 +1541,39 @@ namespace Cash8
             return string_get_device_info;
         }
 
+        private static string get_registration_info()
+        {
+            string string_get_registration_info = string.Empty;
+
+            try
+            {
+                Cash8.FiscallPrintJason.RootObject result = FiscallPrintJason.execute_operator_type("getRegistrationInfo");
+                if (result != null)
+                {
+                    if (result.results[0].status == "ready")//Задание выполнено успешно 
+                    {
+                        string_get_registration_info = JsonConvert.SerializeObject(result.results[0].result, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                        //string_get_registration_info = result.results[0].result.organization.vatin;
+                        //string_get_device_info = result.results[0].result.deviceInfo.ToString();
+                    }
+                    else
+                    {
+                        MessageBox.Show(" Ошибка !!! " + result.results[0].status + " | " + result.results[0].errorDescription);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Общая ошибка");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("get_registration_info" + ex.Message);
+            }
+
+            return string_get_registration_info;
+        }
+
         public class ResultGetData
         {
             public string Successfully { get; set; }
@@ -1506,7 +1597,15 @@ namespace Cash8
             resultGetData.NumCash = MainStaticClass.CashDeskNumber.ToString();
             resultGetData.OSVersion = Environment.OSVersion.VersionString;
             //Запросим информацию про фискальный регистратор
-            resultGetData.DeviceInfo = get_device_info();
+            resultGetData.DeviceInfo = "["+get_device_info()+ ","+ get_registration_info()+"]";
+            //string vatin = get_registration_info();
+            //if (vatin.Trim() != "")
+            //{
+            //    vatin = "vatin=" + vatin;
+            //}
+            //resultGetData.DeviceInfo += vatin;
+
+
             string data = JsonConvert.SerializeObject(resultGetData, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             data_encrypt = CryptorEngine.Encrypt(data, true, key);
             using (Cash8.DS.DS ds = MainStaticClass.get_ds())

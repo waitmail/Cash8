@@ -2267,16 +2267,7 @@ namespace Cash8
 
             return result;
         }
-
-
-        /// <summary>
-        /// Добавить подарок в чек
-        /// </summary>
-        private void add_gift_to_the_check()
-        {
-
-        }
-
+               
         /*Поиск товара по штрихкоду
          * и добвление его в табличную часть
          * это подарочный товар
@@ -5955,8 +5946,9 @@ namespace Cash8
         private static AnswerAddingKmArrayToTableTested GET_AnswerAddingKmArrayToTableTested(string Url, string Data)
         {
             System.Net.WebRequest req = System.Net.WebRequest.Create(Url + "/" + Data);
-
             req.Timeout = 480000;
+            MainStaticClass.set_basic_auth(req);
+
             System.Net.WebResponse resp = req.GetResponse();
             //HttpWebResponse myHttpWebResponse = (HttpWebResponse)req.GetResponse();
 
@@ -9960,115 +9952,115 @@ namespace Cash8
          * по введенному шрихкоду
          * 
         */
-        private void to_define_the_action(string barcode)
-        {
-            total_seconnds = 0;
-            NpgsqlConnection conn = null;
-            NpgsqlCommand command = null;
-            short tip_action;// = 0;
-            bool action_by_discount = false;
-            try
-            {
-                conn = MainStaticClass.NpgsqlConn();
-                conn.Open();
-                string query = "SELECT tip,num_doc,persent,comment,code_tovar,sum,barcode,marker,action_by_discount FROM action_header WHERE '" + DateTime.Now.Date.ToString("yyy-MM-dd") + "' between date_started AND date_end AND barcode='" + barcode + "' AND kind=1";
-                command = new NpgsqlCommand(query, conn);
-                NpgsqlDataReader reader = command.ExecuteReader();
+        //private void to_define_the_action(string barcode)
+        //{
+        //    total_seconnds = 0;
+        //    NpgsqlConnection conn = null;
+        //    NpgsqlCommand command = null;
+        //    short tip_action;// = 0;
+        //    bool action_by_discount = false;
+        //    try
+        //    {
+        //        conn = MainStaticClass.NpgsqlConn();
+        //        conn.Open();
+        //        string query = "SELECT tip,num_doc,persent,comment,code_tovar,sum,barcode,marker,action_by_discount FROM action_header WHERE '" + DateTime.Now.Date.ToString("yyy-MM-dd") + "' between date_started AND date_end AND barcode='" + barcode + "' AND kind=1";
+        //        command = new NpgsqlCommand(query, conn);
+        //        NpgsqlDataReader reader = command.ExecuteReader();
 
-                while (reader.Read())
-                {
-                    tip_action = reader.GetInt16(0);
+        //        while (reader.Read())
+        //        {
+        //            tip_action = reader.GetInt16(0);
 
-                    //Проверка акции по дисконту
-                    action_by_discount = reader.GetBoolean(8);
-                    if (action_by_discount)
-                    {
-                        if (client.Tag == null)
-                        {
-                            continue;
-                        }
-                    }
+        //            //Проверка акции по дисконту
+        //            action_by_discount = reader.GetBoolean(8);
+        //            if (action_by_discount)
+        //            {
+        //                if (client.Tag == null)
+        //                {
+        //                    continue;
+        //                }
+        //            }
 
-                    /* Обработать акцию по типу 1
-                    * первый тип это скидка на конкретный товар
-                    * если есть процент скидки то дается скидка 
-                    * иначе выдается сообщение о подарке*/
-                    if (tip_action == 1)
-                    {
-                        if (reader.GetDecimal(2) != 0)
-                        {
-                            action_1(reader.GetInt32(1), reader.GetDecimal(2));//Дать скидку на эту позицию                                                 
-                        }
-                        else
-                        {
-                            action_1(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7), reader.GetInt32(4)); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
-                        }
-                    }
-                    else if (tip_action == 2)
-                    {
-                        if (reader.GetDecimal(2) != 0)
-                        {
-                            action_2(reader.GetInt32(1), reader.GetDecimal(2));//Дать скидку на эту позицию                                                 
-                        }
-                        else
-                        {
-                            action_2(reader.GetInt32(1), reader.GetString(3), reader.GetInt32(7), reader.GetInt16(4)); //Сообщить о подарке                           
-                        }
+        //            /* Обработать акцию по типу 1
+        //            * первый тип это скидка на конкретный товар
+        //            * если есть процент скидки то дается скидка 
+        //            * иначе выдается сообщение о подарке*/
+        //            if (tip_action == 1)
+        //            {
+        //                if (reader.GetDecimal(2) != 0)
+        //                {
+        //                    action_1(reader.GetInt32(1), reader.GetDecimal(2));//Дать скидку на эту позицию                                                 
+        //                }
+        //                else
+        //                {
+        //                    action_1(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7), reader.GetInt32(4)); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
+        //                }
+        //            }
+        //            else if (tip_action == 2)
+        //            {
+        //                if (reader.GetDecimal(2) != 0)
+        //                {
+        //                    action_2(reader.GetInt32(1), reader.GetDecimal(2));//Дать скидку на эту позицию                                                 
+        //                }
+        //                else
+        //                {
+        //                    action_2(reader.GetInt32(1), reader.GetString(3), reader.GetInt32(7), reader.GetInt16(4)); //Сообщить о подарке                           
+        //                }
 
-                    }
-                    else if (tip_action == 3)
-                    {
-                        //action_2(reader.GetInt32(1));
-                        if (reader.GetDecimal(2) != 0)
-                        {
-                            action_3(reader.GetInt32(1), reader.GetDecimal(2), reader.GetDecimal(5));//Дать скидку на все позиции из списка позицию                                                 
-                        }
-                        else
-                        {
-                            action_3(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt16(7)); //Сообщить о подарке                           
-                        }
-                    }
-                    else if (tip_action == 4)
-                    {
-                        if (reader.GetDecimal(2) != 0)
-                        {
-                            action_4(reader.GetInt32(1), reader.GetDecimal(2), reader.GetDecimal(5));
-                        }
-                        else
-                        {
-                            action_4(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt64(4));
-                        }
-                    }
-                    else if (tip_action == 5)//Этот тип акции работает только по предъявлению купона, то есть по штрихкоду
-                    {
-                        action_5(reader.GetInt32(1), reader.GetDecimal(5));
-                    }
-                    else if (tip_action == 7)
-                    {
-                        action_7(reader.GetInt32(1), reader.GetInt32(4));
-                    }
-                }
-                reader.Close();
-                //conn.Close();
-            }
-            catch (NpgsqlException ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ошибка при обработке акций по шрихкоду");
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                    // conn.Dispose();
-                }
-            }
-            //MessageBox.Show(total_seconnds.ToString());
-        }
+        //            }
+        //            else if (tip_action == 3)
+        //            {
+        //                //action_2(reader.GetInt32(1));
+        //                if (reader.GetDecimal(2) != 0)
+        //                {
+        //                    action_3(reader.GetInt32(1), reader.GetDecimal(2), reader.GetDecimal(5));//Дать скидку на все позиции из списка позицию                                                 
+        //                }
+        //                else
+        //                {
+        //                    action_3(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt16(7)); //Сообщить о подарке                           
+        //                }
+        //            }
+        //            else if (tip_action == 4)
+        //            {
+        //                if (reader.GetDecimal(2) != 0)
+        //                {
+        //                    action_4(reader.GetInt32(1), reader.GetDecimal(2), reader.GetDecimal(5));
+        //                }
+        //                else
+        //                {
+        //                    action_4(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt64(4));
+        //                }
+        //            }
+        //            else if (tip_action == 5)//Этот тип акции работает только по предъявлению купона, то есть по штрихкоду
+        //            {
+        //                action_5(reader.GetInt32(1), reader.GetDecimal(5));
+        //            }
+        //            else if (tip_action == 7)
+        //            {
+        //                action_7(reader.GetInt32(1), reader.GetInt32(4));
+        //            }
+        //        }
+        //        reader.Close();
+        //        //conn.Close();
+        //    }
+        //    catch (NpgsqlException ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message, "ошибка при обработке акций по шрихкоду");
+        //    }
+        //    finally
+        //    {
+        //        if (conn.State == ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //            // conn.Dispose();
+        //        }
+        //    }
+        //    //MessageBox.Show(total_seconnds.ToString());
+        //}
                
         private bool actions_birthday()
         {
@@ -10330,232 +10322,232 @@ namespace Cash8
         /*
          * Определить есть ли акции в данный период
          */
-        private void to_define_the_action()
-        {
-            if (!check_and_create_checks_table_temp())
-            {
-                return;
-            }
+        //private void to_define_the_action()
+        //{
+        //    if (!check_and_create_checks_table_temp())
+        //    {
+        //        return;
+        //    }
 
-            //if (!check_tovar_in_action())
-            //{
-            //    return;
-            //}
+        //    //if (!check_tovar_in_action())
+        //    //{
+        //    //    return;
+        //    //}
 
-            total_seconnds = 0;
-            NpgsqlConnection conn = null;
-            NpgsqlCommand command = null;
-            short tip_action;// = 0;
-            Int64 count_minutes = Convert.ToInt64((DateTime.Now - DateTime.Now.Date).TotalMinutes);
-            try
-            {
-                conn = MainStaticClass.NpgsqlConn();
-                conn.Open();
-                string query = "SELECT tip,num_doc,persent,comment,code_tovar,sum,barcode,marker,execution_order FROM action_header " +
-                    " WHERE '" + DateTime.Now.Date.ToString("yyy-MM-dd") + "' between date_started AND date_end " +
-                    " AND " + count_minutes.ToString() + " between time_start AND time_end AND bonus_promotion=0 " +
-                    " AND barcode='' AND kind=0 AND tip<>10 AND num_doc in(" +//AND tip<>10 
-                    " SELECT DISTINCT action_table.num_doc FROM checks_table_temp " +
-                    " LEFT JOIN action_table ON checks_table_temp.tovar = action_table.code_tovar) order by execution_order asc, tip asc";//date_started asc,, tip desc
+        //    total_seconnds = 0;
+        //    NpgsqlConnection conn = null;
+        //    NpgsqlCommand command = null;
+        //    short tip_action;// = 0;
+        //    Int64 count_minutes = Convert.ToInt64((DateTime.Now - DateTime.Now.Date).TotalMinutes);
+        //    try
+        //    {
+        //        conn = MainStaticClass.NpgsqlConn();
+        //        conn.Open();
+        //        string query = "SELECT tip,num_doc,persent,comment,code_tovar,sum,barcode,marker,execution_order FROM action_header " +
+        //            " WHERE '" + DateTime.Now.Date.ToString("yyy-MM-dd") + "' between date_started AND date_end " +
+        //            " AND " + count_minutes.ToString() + " between time_start AND time_end AND bonus_promotion=0 " +
+        //            " AND barcode='' AND kind=0 AND tip<>10 AND num_doc in(" +//AND tip<>10 
+        //            " SELECT DISTINCT action_table.num_doc FROM checks_table_temp " +
+        //            " LEFT JOIN action_table ON checks_table_temp.tovar = action_table.code_tovar) order by execution_order asc, tip asc";//date_started asc,, tip desc
 
-                command = new NpgsqlCommand(query, conn);
-                NpgsqlDataReader reader = command.ExecuteReader();
+        //        command = new NpgsqlCommand(query, conn);
+        //        NpgsqlDataReader reader = command.ExecuteReader();
 
-                while (reader.Read())
-                {
-                    //listView1.Focus();
-                    if (reader.GetString(6).Trim().Length != 0)
-                    {
-                        continue;
-                    }
+        //        while (reader.Read())
+        //        {
+        //            //listView1.Focus();
+        //            if (reader.GetString(6).Trim().Length != 0)
+        //            {
+        //                continue;
+        //            }
 
-                    //if (!check_tovar_in_action(reader[1].ToString()))
-                    //{
-                    //    continue;
-                    //}
+        //            //if (!check_tovar_in_action(reader[1].ToString()))
+        //            //{
+        //            //    continue;
+        //            //}
 
-                    tip_action = reader.GetInt16(0);
-                    /* Обработать акцию по типу 1
-                    * первый тип это скидка на конкретный товар
-                    * если есть процент скидки то дается скидка 
-                    * иначе выдается сообщение о подарке*/
-                    if (tip_action == 1)
-                    {
-                        //start_action = DateTime.Now;
-                        if (reader.GetDecimal(2) != 0)
-                        {
-                            action_1(reader.GetInt32(1), reader.GetDecimal(2));//Дать скидку на эту позицию                                                 
-                        }
-                        else
-                        {
-                            action_1(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7), reader.GetInt64(4)); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
-                        }
-                        //write_time_execution(reader[1].ToString(), tip_action.ToString());
-                    }
-                    else if (tip_action == 2)
-                    {
-                        //start_action = DateTime.Now;
+        //            tip_action = reader.GetInt16(0);
+        //            /* Обработать акцию по типу 1
+        //            * первый тип это скидка на конкретный товар
+        //            * если есть процент скидки то дается скидка 
+        //            * иначе выдается сообщение о подарке*/
+        //            if (tip_action == 1)
+        //            {
+        //                //start_action = DateTime.Now;
+        //                if (reader.GetDecimal(2) != 0)
+        //                {
+        //                    action_1(reader.GetInt32(1), reader.GetDecimal(2));//Дать скидку на эту позицию                                                 
+        //                }
+        //                else
+        //                {
+        //                    action_1(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7), reader.GetInt64(4)); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
+        //                }
+        //                //write_time_execution(reader[1].ToString(), tip_action.ToString());
+        //            }
+        //            else if (tip_action == 2)
+        //            {
+        //                //start_action = DateTime.Now;
 
-                        if (reader.GetDecimal(2) != 0)
-                        {
-                            action_2(reader.GetInt32(1), reader.GetDecimal(2));//Дать скидку на эту позицию                                                 
-                        }
-                        else
-                        {
-                            action_2(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7), reader.GetInt64(4)); //Сообщить о подарке                           
-                        }
-                        //write_time_execution(reader[1].ToString(), tip_action.ToString());
+        //                if (reader.GetDecimal(2) != 0)
+        //                {
+        //                    action_2(reader.GetInt32(1), reader.GetDecimal(2));//Дать скидку на эту позицию                                                 
+        //                }
+        //                else
+        //                {
+        //                    action_2(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7), reader.GetInt64(4)); //Сообщить о подарке                           
+        //                }
+        //                //write_time_execution(reader[1].ToString(), tip_action.ToString());
 
-                    }
-                    else if (tip_action == 3)
-                    {
-                        //start_action = DateTime.Now;
+        //            }
+        //            else if (tip_action == 3)
+        //            {
+        //                //start_action = DateTime.Now;
 
-                        //action_2(reader.GetInt32(1));
-                        if (reader.GetDecimal(2) != 0)
-                        {
-                            action_3(reader.GetInt32(1), reader.GetDecimal(2), reader.GetDecimal(5));//Дать скидку на все позиции из списка позицию                                                 
-                        }
-                        else
-                        {
-                            action_3(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt16(7)); //Сообщить о подарке                           
-                        }
-                        //write_time_execution(reader[1].ToString(), tip_action.ToString());
+        //                //action_2(reader.GetInt32(1));
+        //                if (reader.GetDecimal(2) != 0)
+        //                {
+        //                    action_3(reader.GetInt32(1), reader.GetDecimal(2), reader.GetDecimal(5));//Дать скидку на все позиции из списка позицию                                                 
+        //                }
+        //                else
+        //                {
+        //                    action_3(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt16(7)); //Сообщить о подарке                           
+        //                }
+        //                //write_time_execution(reader[1].ToString(), tip_action.ToString());
 
-                    }
-                    else if (tip_action == 4)
-                    {
-                        //start_action = DateTime.Now;
+        //            }
+        //            else if (tip_action == 4)
+        //            {
+        //                //start_action = DateTime.Now;
 
-                        if (reader.GetDecimal(2) != 0)
-                        {
-                            action_4(reader.GetInt32(1), reader.GetDecimal(2), reader.GetDecimal(5));//Дать скидку на все позиции из списка позицию                                                 
-                        }
-                        else
-                        {
-                            action_4(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt64(4));
-                        }
-                        //write_time_execution(reader[1].ToString(), tip_action.ToString());
-                    }
-                    else if (tip_action == 6)
-                    {           //Номер документа  //Сообщение о подарке //Сумма в данном случае шаг акции
-                        //start_action = DateTime.Now;
-                        action_6(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt16(7));
-                        //write_time_execution(reader[1].ToString(), tip_action.ToString());
-                    }
-                    else if (tip_action == 8)
-                    {
-                        //start_action = DateTime.Now;
-                        if (reader.GetDecimal(2) != 0)
-                        {
-                            action_8(reader.GetInt32(1), reader.GetDecimal(2), reader.GetDecimal(5));//Дать скидку на все позиции из списка позицию                                                 
-                        }
-                        else
-                        {
-                            action_8(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt64(4), reader.GetInt16(7));
-                        }
-                        //write_time_execution(reader[1].ToString(), tip_action.ToString());
-                    }
-                    else if (tip_action == 9)//Акция работает в день рождения владельца дисконтной карты
-                    {
-                        //start_action = DateTime.Now;
-                        if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema==3))
-                        {
-                            if (!actions_birthday())
-                            {
-                                //write_time_execution("проверка на день рождения", tip_action.ToString());
-                                continue;
-                            }
-                        }
-                        else if (MainStaticClass.GetWorkSchema == 2)//Для кулуба супермама будет дана скидка
-                        {
-                            if (checkBox_club.CheckState != CheckState.Checked)
-                            {
-                                continue;
-                            }
-                        }
+        //                if (reader.GetDecimal(2) != 0)
+        //                {
+        //                    action_4(reader.GetInt32(1), reader.GetDecimal(2), reader.GetDecimal(5));//Дать скидку на все позиции из списка позицию                                                 
+        //                }
+        //                else
+        //                {
+        //                    action_4(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt64(4));
+        //                }
+        //                //write_time_execution(reader[1].ToString(), tip_action.ToString());
+        //            }
+        //            else if (tip_action == 6)
+        //            {           //Номер документа  //Сообщение о подарке //Сумма в данном случае шаг акции
+        //                //start_action = DateTime.Now;
+        //                action_6(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt16(7));
+        //                //write_time_execution(reader[1].ToString(), tip_action.ToString());
+        //            }
+        //            else if (tip_action == 8)
+        //            {
+        //                //start_action = DateTime.Now;
+        //                if (reader.GetDecimal(2) != 0)
+        //                {
+        //                    action_8(reader.GetInt32(1), reader.GetDecimal(2), reader.GetDecimal(5));//Дать скидку на все позиции из списка позицию                                                 
+        //                }
+        //                else
+        //                {
+        //                    action_8(reader.GetInt32(1), reader.GetString(3), reader.GetDecimal(5), reader.GetInt64(4), reader.GetInt16(7));
+        //                }
+        //                //write_time_execution(reader[1].ToString(), tip_action.ToString());
+        //            }
+        //            else if (tip_action == 9)//Акция работает в день рождения владельца дисконтной карты
+        //            {
+        //                //start_action = DateTime.Now;
+        //                if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema==3))
+        //                {
+        //                    if (!actions_birthday())
+        //                    {
+        //                        //write_time_execution("проверка на день рождения", tip_action.ToString());
+        //                        continue;
+        //                    }
+        //                }
+        //                else if (MainStaticClass.GetWorkSchema == 2)//Для кулуба супермама будет дана скидка
+        //                {
+        //                    if (checkBox_club.CheckState != CheckState.Checked)
+        //                    {
+        //                        continue;
+        //                    }
+        //                }
 
-                        if (reader.GetDecimal(2) != 0)
-                        {
-                            action_1(reader.GetInt32(1), reader.GetDecimal(2));//Дать скидку на эту позицию                                                 
-                        }
-                        else
-                        {
-                            action_1(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7), reader.GetInt64(4)); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
-                        }
-                        //write_time_execution(reader[1].ToString(), tip_action.ToString());
-                    }
-                    //else if (tip_action == 10)
-                    //{
+        //                if (reader.GetDecimal(2) != 0)
+        //                {
+        //                    action_1(reader.GetInt32(1), reader.GetDecimal(2));//Дать скидку на эту позицию                                                 
+        //                }
+        //                else
+        //                {
+        //                    action_1(reader.GetInt32(1), reader.GetString(3), reader.GetInt16(7), reader.GetInt64(4)); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
+        //                }
+        //                //write_time_execution(reader[1].ToString(), tip_action.ToString());
+        //            }
+        //            //else if (tip_action == 10)
+        //            //{
 
-                    //    //    //gaa
-                    //    //    //Если список заполнен то сумма должна накапливаться по вхождению позиции номенклатуры 
+        //            //    //    //gaa
+        //            //    //    //Если список заполнен то сумма должна накапливаться по вхождению позиции номенклатуры 
 
-                    //    //    //если список пустой то сумма насчитывается на весь документ
-                    //    //if (reader.GetDecimal(5) <= calculation_of_the_sum_of_the_document())
-                    //    if (reader.GetDecimal(5) <= action_10(reader.GetInt32(1)))
-                    //    {
-                    //        MessageBox.Show(reader[3].ToString());
-                    //        action_num_doc = Convert.ToInt32(reader[1].ToString());
-                    //    }
-                    //}
-                    else
-                    {
-                        MessageBox.Show("Неопознанный тип акции в документе  № " + reader[1].ToString(), " Обработка акций ");
-                    }
-                }
-                reader.Close();
-                command.Dispose();
+        //            //    //    //если список пустой то сумма насчитывается на весь документ
+        //            //    //if (reader.GetDecimal(5) <= calculation_of_the_sum_of_the_document())
+        //            //    if (reader.GetDecimal(5) <= action_10(reader.GetInt32(1)))
+        //            //    {
+        //            //        MessageBox.Show(reader[3].ToString());
+        //            //        action_num_doc = Convert.ToInt32(reader[1].ToString());
+        //            //    }
+        //            //}
+        //            else
+        //            {
+        //                MessageBox.Show("Неопознанный тип акции в документе  № " + reader[1].ToString(), " Обработка акций ");
+        //            }
+        //        }
+        //        reader.Close();
+        //        command.Dispose();
 
-                //10 тип для товаров вынесен отдельно, а затем проверка на акцию без товаров
+        //        //10 тип для товаров вынесен отдельно, а затем проверка на акцию без товаров
 
-                query = "SELECT tip,num_doc,persent,comment,code_tovar,sum,barcode,marker,execution_order FROM action_header " +
-                  " WHERE '" + DateTime.Now.Date.ToString("yyy-MM-dd") + "' between date_started AND date_end " +
-                  " AND " + count_minutes.ToString() + " between time_start AND time_end AND bonus_promotion=0 " +
-                  " AND barcode='' AND tip=10 AND num_doc in(" +//AND tip<>10 
-                  " SELECT DISTINCT action_table.num_doc FROM checks_table_temp " +
-                  " LEFT JOIN action_table ON checks_table_temp.tovar = action_table.code_tovar) order by execution_order asc, tip asc";//date_started asc,, tip desc
+        //        query = "SELECT tip,num_doc,persent,comment,code_tovar,sum,barcode,marker,execution_order FROM action_header " +
+        //          " WHERE '" + DateTime.Now.Date.ToString("yyy-MM-dd") + "' between date_started AND date_end " +
+        //          " AND " + count_minutes.ToString() + " between time_start AND time_end AND bonus_promotion=0 " +
+        //          " AND barcode='' AND tip=10 AND num_doc in(" +//AND tip<>10 
+        //          " SELECT DISTINCT action_table.num_doc FROM checks_table_temp " +
+        //          " LEFT JOIN action_table ON checks_table_temp.tovar = action_table.code_tovar) order by execution_order asc, tip asc";//date_started asc,, tip desc
 
-                command = new NpgsqlCommand(query, conn);
-                reader = command.ExecuteReader();
+        //        command = new NpgsqlCommand(query, conn);
+        //        reader = command.ExecuteReader();
 
-                while (reader.Read())
-                {
-                    if (reader.GetDecimal(5) <= action_10(reader.GetInt32(1)))
-                    {
-                        int multiplicity = (int)(calculation_of_the_sum_of_the_document() / action_10(reader.GetInt32(1)));
-                        MessageBox.Show("Крастность " + multiplicity.ToString() + " " + reader[3].ToString());
-                        action_num_doc = Convert.ToInt32(reader[1].ToString());
-                    }
-                }
+        //        while (reader.Read())
+        //        {
+        //            if (reader.GetDecimal(5) <= action_10(reader.GetInt32(1)))
+        //            {
+        //                int multiplicity = (int)(calculation_of_the_sum_of_the_document() / action_10(reader.GetInt32(1)));
+        //                MessageBox.Show("Крастность " + multiplicity.ToString() + " " + reader[3].ToString());
+        //                action_num_doc = Convert.ToInt32(reader[1].ToString());
+        //            }
+        //        }
 
-                reader.Close();
-                conn.Close();
-                command.Dispose();
+        //        reader.Close();
+        //        conn.Close();
+        //        command.Dispose();
 
-                checked_action_10();//Отдельная проверка поскольку может не быть товарной части, а все акции выше проверяются именно на вхождение товаров документа в таб части акционных документов
-                //После сработки всех акций проверка и подсказка по сработке дальнейших акций
-                load_list1_action2();
+        //        checked_action_10();//Отдельная проверка поскольку может не быть товарной части, а все акции выше проверяются именно на вхождение товаров документа в таб части акционных документов
+        //        //После сработки всех акций проверка и подсказка по сработке дальнейших акций
+        //        load_list1_action2();
 
-            }
-            catch (NpgsqlException ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ошибка при обработке акций");
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                    // conn.Dispose();
-                }
-            }
-            //MessageBox.Show(total_seconnds.ToString());
-        }
+        //    }
+        //    catch (NpgsqlException ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message, "ошибка при обработке акций");
+        //    }
+        //    finally
+        //    {
+        //        if (conn.State == ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //            // conn.Dispose();
+        //        }
+        //    }
+        //    //MessageBox.Show(total_seconnds.ToString());
+        //}
 
 
         /// <summary>
@@ -10606,57 +10598,57 @@ namespace Cash8
 
 
 
-        private void checked_action_10()
-        {
+        //private void checked_action_10()
+        //{
 
-            NpgsqlConnection conn = null;
-            NpgsqlCommand command = null;
-            Int64 count_minutes = Convert.ToInt64((DateTime.Now - DateTime.Now.Date).TotalMinutes);
-            try
-            {
-                conn = MainStaticClass.NpgsqlConn();
-                conn.Open();
+        //    NpgsqlConnection conn = null;
+        //    NpgsqlCommand command = null;
+        //    Int64 count_minutes = Convert.ToInt64((DateTime.Now - DateTime.Now.Date).TotalMinutes);
+        //    try
+        //    {
+        //        conn = MainStaticClass.NpgsqlConn();
+        //        conn.Open();
 
-                string query = "SELECT tip,num_doc,persent,comment,code_tovar,sum,barcode,marker FROM action_header " +
-                    " WHERE '" + DateTime.Now.Date.ToString("yyy-MM-dd") + "' between date_started AND date_end " +
-                    " AND " + count_minutes.ToString() + " between time_start AND time_end and tip = 10";
-                command = new NpgsqlCommand(query, conn);
-                NpgsqlDataReader reader = command.ExecuteReader();
-                while (reader.Read())
-                {
-                    if (checked_action_table_rows(Convert.ToInt32(reader[1].ToString())))
-                    {
-                        continue;
-                    }
+        //        string query = "SELECT tip,num_doc,persent,comment,code_tovar,sum,barcode,marker FROM action_header " +
+        //            " WHERE '" + DateTime.Now.Date.ToString("yyy-MM-dd") + "' between date_started AND date_end " +
+        //            " AND " + count_minutes.ToString() + " between time_start AND time_end and tip = 10";
+        //        command = new NpgsqlCommand(query, conn);
+        //        NpgsqlDataReader reader = command.ExecuteReader();
+        //        while (reader.Read())
+        //        {
+        //            if (checked_action_table_rows(Convert.ToInt32(reader[1].ToString())))
+        //            {
+        //                continue;
+        //            }
 
-                    if (reader.GetDecimal(5) <= calculation_of_the_sum_of_the_document())// action_10(Convert.ToInt32(reader["num_doc"]))
-                    {
-                        int multiplicity = (int)(calculation_of_the_sum_of_the_document() / reader.GetDecimal(5));
-                        MessageBox.Show("Кратность " + multiplicity.ToString() + " " + reader[3].ToString());
-                        action_num_doc = Convert.ToInt32(reader[1].ToString());
-                    }
-                }
-                reader.Close();
-                conn.Close();
-                command.Dispose();
+        //            if (reader.GetDecimal(5) <= calculation_of_the_sum_of_the_document())// action_10(Convert.ToInt32(reader["num_doc"]))
+        //            {
+        //                int multiplicity = (int)(calculation_of_the_sum_of_the_document() / reader.GetDecimal(5));
+        //                MessageBox.Show("Кратность " + multiplicity.ToString() + " " + reader[3].ToString());
+        //                action_num_doc = Convert.ToInt32(reader[1].ToString());
+        //            }
+        //        }
+        //        reader.Close();
+        //        conn.Close();
+        //        command.Dispose();
 
-            }
-            catch (NpgsqlException ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                }
-            }
-        }
+        //    }
+        //    catch (NpgsqlException ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //    finally
+        //    {
+        //        if (conn.State == ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //        }
+        //    }
+        //}
 
 
         /// <summary>
@@ -10667,54 +10659,54 @@ namespace Cash8
         /// </summary>
         /// <param name="num_doc"></param>
         /// <returns></returns>
-        private Decimal action_10(int num_doc)
-        {
-            NpgsqlConnection conn = null;
-            NpgsqlCommand command = null;
-            Decimal result = 0;
-            //bool is_found = false;
+        //private Decimal action_10(int num_doc)
+        //{
+        //    NpgsqlConnection conn = null;
+        //    NpgsqlCommand command = null;
+        //    Decimal result = 0;
+        //    //bool is_found = false;
 
-            try
-            {
-                conn = MainStaticClass.NpgsqlConn();
-                conn.Open();
-                string query = "";
-                foreach (ListViewItem lvi in listView1.Items)
-                {
-                    query = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + lvi.Tag.ToString() + " AND num_doc=" + num_doc.ToString();
-                    command = new NpgsqlCommand(query, conn);
-                    if (Convert.ToInt16(command.ExecuteScalar()) == 1)//вхождение найдено 
-                    {
-                        result += Convert.ToDecimal(lvi.SubItems[7].Text);
-                        //is_found = true;
-                    }
-                }
-                conn.Close();
-                command.Dispose();
-            }
-            catch (NpgsqlException ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                }
-            }
+        //    try
+        //    {
+        //        conn = MainStaticClass.NpgsqlConn();
+        //        conn.Open();
+        //        string query = "";
+        //        foreach (ListViewItem lvi in listView1.Items)
+        //        {
+        //            query = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + lvi.Tag.ToString() + " AND num_doc=" + num_doc.ToString();
+        //            command = new NpgsqlCommand(query, conn);
+        //            if (Convert.ToInt16(command.ExecuteScalar()) == 1)//вхождение найдено 
+        //            {
+        //                result += Convert.ToDecimal(lvi.SubItems[7].Text);
+        //                //is_found = true;
+        //            }
+        //        }
+        //        conn.Close();
+        //        command.Dispose();
+        //    }
+        //    catch (NpgsqlException ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //    finally
+        //    {
+        //        if (conn.State == ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //        }
+        //    }
 
-            //if (is_found)
-            //{
-            //    result = calculation_of_the_sum_of_the_document(); 
-            //}
+        //    //if (is_found)
+        //    //{
+        //    //    result = calculation_of_the_sum_of_the_document(); 
+        //    //}
 
-            return result;
-        }
+        //    return result;
+        //}
 
 
 
@@ -10726,94 +10718,94 @@ namespace Cash8
          * 
          * здесь сообщение о подарке
          */
-        private void action_1(int num_doc, string comment, int marker, long code_tovar)
-        {
-            NpgsqlConnection conn = null;
-            NpgsqlCommand command = null;
-            Int16 result = 0;
-            bool the_action_has_worked = false;//Признак того что акция сработала
-            try
-            {
-                conn = MainStaticClass.NpgsqlConn();
-                conn.Open();
-                //Поскольку документ не записан еще найти строки которые могут участвовать в акции можно только последовательным перебором 
-                string query = "";
-                foreach (ListViewItem lvi in listView1.Items)
-                {
-                    if (Convert.ToInt32(lvi.SubItems[10].Text.Trim()) > 0)//Этот товар уже участвовал в акции значит его пропускаем
-                    {
-                        continue;
-                    }
-                    query = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + lvi.Tag.ToString() + " AND num_doc=" + num_doc.ToString();
-                    command = new NpgsqlCommand(query, conn);
-                    result = Convert.ToInt16(command.ExecuteScalar());
-                    if (result > 0)
-                    {
-                        have_action = true;//Признак того что в документе есть сработка по акции
+        //private void action_1(int num_doc, string comment, int marker, long code_tovar)
+        //{
+        //    NpgsqlConnection conn = null;
+        //    NpgsqlCommand command = null;
+        //    Int16 result = 0;
+        //    bool the_action_has_worked = false;//Признак того что акция сработала
+        //    try
+        //    {
+        //        conn = MainStaticClass.NpgsqlConn();
+        //        conn.Open();
+        //        //Поскольку документ не записан еще найти строки которые могут участвовать в акции можно только последовательным перебором 
+        //        string query = "";
+        //        foreach (ListViewItem lvi in listView1.Items)
+        //        {
+        //            if (Convert.ToInt32(lvi.SubItems[10].Text.Trim()) > 0)//Этот товар уже участвовал в акции значит его пропускаем
+        //            {
+        //                continue;
+        //            }
+        //            query = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + lvi.Tag.ToString() + " AND num_doc=" + num_doc.ToString();
+        //            command = new NpgsqlCommand(query, conn);
+        //            result = Convert.ToInt16(command.ExecuteScalar());
+        //            if (result > 0)
+        //            {
+        //                have_action = true;//Признак того что в документе есть сработка по акции
 
-                        the_action_has_worked = true;
-                        lvi.SubItems[9].Text = num_doc.ToString();//Тип акции 
-                        //lvi.SubItems[5].Text = "0";
-                        //lvi.SubItems[6].Text = "0";
-                        MessageBox.Show("Сработала акция, НЕОБХОДИМО выдать подарок " + comment);
-                        DialogResult dr = DialogResult.Cancel;
-                        if (marker == 1)
-                        {
-                            dr = show_query_window_barcode(2, 1, num_doc);
-                        }
-                        //Добавить товар по акции если там есть код товара
-                        //query = "SELECT code_tovar FROM action_header WHERE num_doc=" + num_doc.ToString();
-                        //command = new NpgsqlCommand(query, conn);
-                        //object code_tovar = command.ExecuteScalar();
-                        //if (!System.DBNull.Value.Equals(code_tovar))
-                        //{
+        //                the_action_has_worked = true;
+        //                lvi.SubItems[9].Text = num_doc.ToString();//Тип акции 
+        //                //lvi.SubItems[5].Text = "0";
+        //                //lvi.SubItems[6].Text = "0";
+        //                MessageBox.Show("Сработала акция, НЕОБХОДИМО выдать подарок " + comment);
+        //                DialogResult dr = DialogResult.Cancel;
+        //                if (marker == 1)
+        //                {
+        //                    dr = show_query_window_barcode(2, 1, num_doc);
+        //                }
+        //                //Добавить товар по акции если там есть код товара
+        //                //query = "SELECT code_tovar FROM action_header WHERE num_doc=" + num_doc.ToString();
+        //                //command = new NpgsqlCommand(query, conn);
+        //                //object code_tovar = command.ExecuteScalar();
+        //                //if (!System.DBNull.Value.Equals(code_tovar))
+        //                //{
 
-                        //10.09.2020 Непонятно зачем здесь такая проверка  
-                        if (dr != DialogResult.Cancel)
-                        {
-                            if (code_tovar != 0)
-                            {
-                                find_barcode_or_code_in_tovar(code_tovar.ToString());
-                                //здесь необходимо изменить цену
+        //                //10.09.2020 Непонятно зачем здесь такая проверка  
+        //                if (dr != DialogResult.Cancel)
+        //                {
+        //                    if (code_tovar != 0)
+        //                    {
+        //                        find_barcode_or_code_in_tovar(code_tovar.ToString());
+        //                        //здесь необходимо изменить цену
 
-                                listView1.Items[listView1.Items.Count - 1].SubItems[8].Text = num_doc.ToString(); //Номер акционного документа 
-                                listView1.Items[listView1.Items.Count - 1].SubItems[9].Text = num_doc.ToString(); //Номер акционного документа 
-                                listView1.Items[listView1.Items.Count - 1].SubItems[10].Text = num_doc.ToString(); //Номер акционного документа 
-                            }
-                        }
+        //                        listView1.Items[listView1.Items.Count - 1].SubItems[8].Text = num_doc.ToString(); //Номер акционного документа 
+        //                        listView1.Items[listView1.Items.Count - 1].SubItems[9].Text = num_doc.ToString(); //Номер акционного документа 
+        //                        listView1.Items[listView1.Items.Count - 1].SubItems[10].Text = num_doc.ToString(); //Номер акционного документа 
+        //                    }
+        //                }
 
-                        //break;
-                    }
-                }
+        //                //break;
+        //            }
+        //        }
 
-                /*акция сработала
-                 * надо отметить все товарные позиции 
-                 * чтобы они не участвовали в других акциях 
-                 */
+        //        /*акция сработала
+        //         * надо отметить все товарные позиции 
+        //         * чтобы они не участвовали в других акциях 
+        //         */
 
-                if (the_action_has_worked)
-                {
-                    marked_action_tovar(num_doc);
-                }
-                conn.Close();
-            }
-            catch (NpgsqlException ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ошибка при обработке 1 типа акций");
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                    //// conn.Dispose();
-                }
-            }
-        }
+        //        if (the_action_has_worked)
+        //        {
+        //            marked_action_tovar(num_doc);
+        //        }
+        //        conn.Close();
+        //    }
+        //    catch (NpgsqlException ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message, "ошибка при обработке 1 типа акций");
+        //    }
+        //    finally
+        //    {
+        //        if (conn.State == ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //            //// conn.Dispose();
+        //        }
+        //    }
+        //}
 
 
         ///*
@@ -10824,70 +10816,70 @@ namespace Cash8
         // * 
         // * Здесь скидка
         // */
-        private void action_1(int num_doc, decimal persent)
-        {
-            NpgsqlConnection conn = null;
-            NpgsqlCommand command = null;
-            try
-            {
-                conn = MainStaticClass.NpgsqlConn();
-                conn.Open();
-                //Поскольку документ не записан еще найти строки которые могут участвовать в акции можно только последовательным перебором 
-                string query = "";
-                foreach (ListViewItem lvi in listView1.Items)
-                {
-                    if (Convert.ToInt32(lvi.SubItems[10].Text.Trim()) > 0)//Этот товар уже участвовал в акции значит его пропускаем
-                    {
-                        continue;
-                    }
+        //private void action_1(int num_doc, decimal persent)
+        //{
+        //    NpgsqlConnection conn = null;
+        //    NpgsqlCommand command = null;
+        //    try
+        //    {
+        //        conn = MainStaticClass.NpgsqlConn();
+        //        conn.Open();
+        //        //Поскольку документ не записан еще найти строки которые могут участвовать в акции можно только последовательным перебором 
+        //        string query = "";
+        //        foreach (ListViewItem lvi in listView1.Items)
+        //        {
+        //            if (Convert.ToInt32(lvi.SubItems[10].Text.Trim()) > 0)//Этот товар уже участвовал в акции значит его пропускаем
+        //            {
+        //                continue;
+        //            }
 
-                    query = "SELECT price FROM action_table WHERE code_tovar=" + lvi.Tag.ToString() + " AND num_doc=" + num_doc.ToString();
-                    command = new NpgsqlCommand(query, conn);
-                    object result_query = command.ExecuteScalar();
-                    command.Dispose();
-                    if (result_query != null)
-                    {
-                        if (Convert.ToDecimal(result_query) == 0)
-                        {
-                            have_action = true;//Признак того что в документе есть сработка по акции
-                            lvi.SubItems[5].Text = (Math.Round(Convert.ToDecimal(lvi.SubItems[4].Text) - Convert.ToDecimal(lvi.SubItems[4].Text) * persent / 100, 2)).ToString();//Цена со скидкой            
-                            lvi.SubItems[6].Text = ((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString());
-                            lvi.SubItems[7].Text = ((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)).ToString());
-                            lvi.SubItems[8].Text = num_doc.ToString(); //Номер акционного документа
-                            lvi.SubItems[10].Text = num_doc.ToString();//Тип акции                  
-                        }
-                        else
-                        {
-                            have_action = true;
-                            lvi.SubItems[5].Text = (result_query.ToString()).ToString();//Цена из табличной части документа акции
-                            lvi.SubItems[6].Text = ((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString());
-                            lvi.SubItems[7].Text = ((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)).ToString());
-                            lvi.SubItems[8].Text = num_doc.ToString(); //Номер акционного документа
-                            lvi.SubItems[10].Text = num_doc.ToString();//Тип акции                        
-                        }
-                    }
-                }
-                conn.Close();
-            }
-            catch (NpgsqlException ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ошибка при обработке 1 типа акций");
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                    // conn.Dispose();
-                }
-            }
+        //            query = "SELECT price FROM action_table WHERE code_tovar=" + lvi.Tag.ToString() + " AND num_doc=" + num_doc.ToString();
+        //            command = new NpgsqlCommand(query, conn);
+        //            object result_query = command.ExecuteScalar();
+        //            command.Dispose();
+        //            if (result_query != null)
+        //            {
+        //                if (Convert.ToDecimal(result_query) == 0)
+        //                {
+        //                    have_action = true;//Признак того что в документе есть сработка по акции
+        //                    lvi.SubItems[5].Text = (Math.Round(Convert.ToDecimal(lvi.SubItems[4].Text) - Convert.ToDecimal(lvi.SubItems[4].Text) * persent / 100, 2)).ToString();//Цена со скидкой            
+        //                    lvi.SubItems[6].Text = ((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString());
+        //                    lvi.SubItems[7].Text = ((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)).ToString());
+        //                    lvi.SubItems[8].Text = num_doc.ToString(); //Номер акционного документа
+        //                    lvi.SubItems[10].Text = num_doc.ToString();//Тип акции                  
+        //                }
+        //                else
+        //                {
+        //                    have_action = true;
+        //                    lvi.SubItems[5].Text = (result_query.ToString()).ToString();//Цена из табличной части документа акции
+        //                    lvi.SubItems[6].Text = ((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString());
+        //                    lvi.SubItems[7].Text = ((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)).ToString());
+        //                    lvi.SubItems[8].Text = num_doc.ToString(); //Номер акционного документа
+        //                    lvi.SubItems[10].Text = num_doc.ToString();//Тип акции                        
+        //                }
+        //            }
+        //        }
+        //        conn.Close();
+        //    }
+        //    catch (NpgsqlException ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message, "ошибка при обработке 1 типа акций");
+        //    }
+        //    finally
+        //    {
+        //        if (conn.State == ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //            // conn.Dispose();
+        //        }
+        //    }
 
 
-        }
+        //}
 
         /*
          * Обработать акцию по 2 типу
@@ -10897,206 +10889,206 @@ namespace Cash8
          * Здесь дается скидка на кратное количество позиций из 1-го списка
          */
 
-        private void action_2(int num_doc, decimal persent)
-        {
-            /*В этой переменной запомнится позиция которая первой входит в первый список акции
-            * на него будет дана скидка, необходимо скопировать эту позицию в конец списка 
-            * и дать не на него скидку
-            */
-            int first_string_actions = 1000000;
-            //int num_list=0;
+        //private void action_2(int num_doc, decimal persent)
+        //{
+        //    /*В этой переменной запомнится позиция которая первой входит в первый список акции
+        //    * на него будет дана скидка, необходимо скопировать эту позицию в конец списка 
+        //    * и дать не на него скидку
+        //    */
+        //    int first_string_actions = 1000000;
+        //    //int num_list=0;
 
-            NpgsqlConnection conn = null;
-            NpgsqlCommand command = null;
-            //object result = null;
-            int quantity_of_pieces = 0;//Количество штук товара в строке
-            int min_quantity = 1000000000;
-            int num_list = 0;
-            int num_pos = 0;
-            ArrayList ar = new ArrayList();
+        //    NpgsqlConnection conn = null;
+        //    NpgsqlCommand command = null;
+        //    //object result = null;
+        //    int quantity_of_pieces = 0;//Количество штук товара в строке
+        //    int min_quantity = 1000000000;
+        //    int num_list = 0;
+        //    int num_pos = 0;
+        //    ArrayList ar = new ArrayList();
 
-            //Int16 result = 0;
+        //    //Int16 result = 0;
 
-            try
-            {
-                conn = MainStaticClass.NpgsqlConn();
-                conn.Open();
+        //    try
+        //    {
+        //        conn = MainStaticClass.NpgsqlConn();
+        //        conn.Open();
 
-                //Поскольку документ не записан еще найти строки которые могут участвовать в акции можно только последовательным перебором 
+        //        //Поскольку документ не записан еще найти строки которые могут участвовать в акции можно только последовательным перебором 
 
-                string query = "SELECT COUNT(*) from(SELECT DISTINCT num_list FROM action_table where num_doc=" + num_doc + ") as foo";
-                command = new NpgsqlCommand(query, conn);
-                int[] action_list = new int[Convert.ToInt16(command.ExecuteScalar())];
-                int x = 0;
-                while (x < action_list.Length)
-                {
-                    action_list[x] = 0;
-                    x++;
-                }
+        //        string query = "SELECT COUNT(*) from(SELECT DISTINCT num_list FROM action_table where num_doc=" + num_doc + ") as foo";
+        //        command = new NpgsqlCommand(query, conn);
+        //        int[] action_list = new int[Convert.ToInt16(command.ExecuteScalar())];
+        //        int x = 0;
+        //        while (x < action_list.Length)
+        //        {
+        //            action_list[x] = 0;
+        //            x++;
+        //        }
 
-                //ListViewItem lvi = null;
-                foreach (ListViewItem lvi in listView1.Items)
-                {
-                    if (Convert.ToInt32(lvi.SubItems[10].Text.Trim()) > 0)//Этот товар уже участвовал в акции значит его пропускаем
-                    {
-                        continue;
-                    }
-                    quantity_of_pieces = Convert.ToInt16(lvi.SubItems[3].Text);
-                    while (quantity_of_pieces > 0)
-                    {
-                        query = "SELECT num_list FROM action_table WHERE code_tovar=" + lvi.Tag.ToString() + " AND num_doc=" + num_doc.ToString();
-                        command = new NpgsqlCommand(query, conn);
-                        NpgsqlDataReader reader = command.ExecuteReader();
-                        min_quantity = 1000000000;
-                        num_list = 0;
-                        int marker_min_amount = 1000000;
-                        while (reader.Read())
-                        {
-                            min_quantity = Math.Min(min_quantity, action_list[reader.GetInt32(0) - 1]);
-                            if (min_quantity < marker_min_amount)
-                            {
-                                num_list = reader.GetInt32(0);
-                                marker_min_amount = min_quantity;
-                            }
-                            if ((first_string_actions == 1000000) && (reader.GetInt32(0) == 1))
-                            {
-                                first_string_actions = lvi.Index; //Запомним номер строки товара на который будем давать скидку
-                            }
-                        }
-                        if (num_list != 0)
-                        {
-                            action_list[num_list - 1] += 1;
-                            num_pos = lvi.Index;
-                        }
-                        if (num_list == 1)
-                        {
-                            ar.Add(lvi.Tag.ToString());
-                        }
-                        quantity_of_pieces--;
-                    }
-                }
-                //                conn.Close();
-                bool the_action_has_worked = false;
-                x = 0;
-                min_quantity = 1000000000;
+        //        //ListViewItem lvi = null;
+        //        foreach (ListViewItem lvi in listView1.Items)
+        //        {
+        //            if (Convert.ToInt32(lvi.SubItems[10].Text.Trim()) > 0)//Этот товар уже участвовал в акции значит его пропускаем
+        //            {
+        //                continue;
+        //            }
+        //            quantity_of_pieces = Convert.ToInt16(lvi.SubItems[3].Text);
+        //            while (quantity_of_pieces > 0)
+        //            {
+        //                query = "SELECT num_list FROM action_table WHERE code_tovar=" + lvi.Tag.ToString() + " AND num_doc=" + num_doc.ToString();
+        //                command = new NpgsqlCommand(query, conn);
+        //                NpgsqlDataReader reader = command.ExecuteReader();
+        //                min_quantity = 1000000000;
+        //                num_list = 0;
+        //                int marker_min_amount = 1000000;
+        //                while (reader.Read())
+        //                {
+        //                    min_quantity = Math.Min(min_quantity, action_list[reader.GetInt32(0) - 1]);
+        //                    if (min_quantity < marker_min_amount)
+        //                    {
+        //                        num_list = reader.GetInt32(0);
+        //                        marker_min_amount = min_quantity;
+        //                    }
+        //                    if ((first_string_actions == 1000000) && (reader.GetInt32(0) == 1))
+        //                    {
+        //                        first_string_actions = lvi.Index; //Запомним номер строки товара на который будем давать скидку
+        //                    }
+        //                }
+        //                if (num_list != 0)
+        //                {
+        //                    action_list[num_list - 1] += 1;
+        //                    num_pos = lvi.Index;
+        //                }
+        //                if (num_list == 1)
+        //                {
+        //                    ar.Add(lvi.Tag.ToString());
+        //                }
+        //                quantity_of_pieces--;
+        //            }
+        //        }
+        //        //                conn.Close();
+        //        bool the_action_has_worked = false;
+        //        x = 0;
+        //        min_quantity = 1000000000;
 
-                while (x < action_list.Length)
-                {
-                    if (action_list[x] == 0)
-                    {
-                        the_action_has_worked = false;
-                        break;
-                    }
-                    else
-                    {
-                        //Здесь надо получить кратность подарка
-                        min_quantity = Math.Min(min_quantity, action_list[x]);
-                        the_action_has_worked = true;
-                    }
-                    x++;
-                }
-                if (the_action_has_worked)
-                {
-                    //if (MainStaticClass.GetWorkSchema == 2)
-                    //{
-                    //    load_list1_action2(num_doc.ToString());
-                    //    //if (listView2.Items.Count > 0)
-                    //    //{
-                    //    //    panel2.BringToFront();
-                    //    //    panel2.Visible = true;
-                    //    //}
-                    //    //MessageBox.Show("1");
-                    //    //Для Евы необходимо вытащить содержимое первого списка 
-                    //    //MessageBox.Show("Сработала акция, НЕОБХОДИМО выдать подарок количестве " + min_quantity.ToString() + " шт. " + comment);
-                    //}
-                    foreach (ListViewItem lvi in listView1.Items)
-                    {
+        //        while (x < action_list.Length)
+        //        {
+        //            if (action_list[x] == 0)
+        //            {
+        //                the_action_has_worked = false;
+        //                break;
+        //            }
+        //            else
+        //            {
+        //                //Здесь надо получить кратность подарка
+        //                min_quantity = Math.Min(min_quantity, action_list[x]);
+        //                the_action_has_worked = true;
+        //            }
+        //            x++;
+        //        }
+        //        if (the_action_has_worked)
+        //        {
+        //            //if (MainStaticClass.GetWorkSchema == 2)
+        //            //{
+        //            //    load_list1_action2(num_doc.ToString());
+        //            //    //if (listView2.Items.Count > 0)
+        //            //    //{
+        //            //    //    panel2.BringToFront();
+        //            //    //    panel2.Visible = true;
+        //            //    //}
+        //            //    //MessageBox.Show("1");
+        //            //    //Для Евы необходимо вытащить содержимое первого списка 
+        //            //    //MessageBox.Show("Сработала акция, НЕОБХОДИМО выдать подарок количестве " + min_quantity.ToString() + " шт. " + comment);
+        //            //}
+        //            foreach (ListViewItem lvi in listView1.Items)
+        //            {
 
-                        if (min_quantity > 0)
-                        {
-                            have_action = true;//Признак того что в документе есть сработка по акции
+        //                if (min_quantity > 0)
+        //                {
+        //                    have_action = true;//Признак того что в документе есть сработка по акции
 
-                            //Сначала получим количество,если больше кратного количества наборов то копируем строку,
-                            //а в исходной уменьшаем количество на количества наборов и пересчитываем суммы
-                            //
-                            if (ar.IndexOf(lvi.Tag.ToString(), 0) == -1)
-                            {
-                                continue;
-                            }
-                            //ListViewItem lvi = listView1.Items[first_string_actions];
-                            quantity_of_pieces = Convert.ToInt16(lvi.SubItems[3].Text);
-                            //int quantity_action_pieces = Math.Min(quantity_of_pieces, min_quantity);
-                            if (quantity_of_pieces <= min_quantity)
-                            {
-                                lvi.SubItems[5].Text = (Math.Round(Convert.ToDecimal(lvi.SubItems[4].Text) - Convert.ToDecimal(lvi.SubItems[4].Text) * persent / 100, 2)).ToString();//Цена со скидкой            
-                                lvi.SubItems[6].Text = ((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString());
-                                lvi.SubItems[7].Text = ((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)).ToString());
-                                lvi.SubItems[8].Text = num_doc.ToString(); //Номер акционного документа 
-                                min_quantity = min_quantity - quantity_of_pieces;
-                            }
-                            if ((quantity_of_pieces > min_quantity) && (min_quantity > 0))
-                            {
-                                lvi.SubItems[3].Text = (Convert.ToInt32(lvi.SubItems[3].Text) - min_quantity).ToString();
-                                calculate_on_string(lvi);
-                                //Добавляем строку с акционным товаром 
-                                ListViewItem lvi_new = new ListViewItem(lvi.Tag.ToString());
-                                lvi_new.Tag = lvi.Tag;
-                                x = 0;
-                                while (x < lvi.SubItems.Count - 1)
-                                {
-                                    lvi_new.SubItems.Add(lvi.SubItems[x + 1].Text);
-                                    x++;
-                                }
+        //                    //Сначала получим количество,если больше кратного количества наборов то копируем строку,
+        //                    //а в исходной уменьшаем количество на количества наборов и пересчитываем суммы
+        //                    //
+        //                    if (ar.IndexOf(lvi.Tag.ToString(), 0) == -1)
+        //                    {
+        //                        continue;
+        //                    }
+        //                    //ListViewItem lvi = listView1.Items[first_string_actions];
+        //                    quantity_of_pieces = Convert.ToInt16(lvi.SubItems[3].Text);
+        //                    //int quantity_action_pieces = Math.Min(quantity_of_pieces, min_quantity);
+        //                    if (quantity_of_pieces <= min_quantity)
+        //                    {
+        //                        lvi.SubItems[5].Text = (Math.Round(Convert.ToDecimal(lvi.SubItems[4].Text) - Convert.ToDecimal(lvi.SubItems[4].Text) * persent / 100, 2)).ToString();//Цена со скидкой            
+        //                        lvi.SubItems[6].Text = ((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString());
+        //                        lvi.SubItems[7].Text = ((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)).ToString());
+        //                        lvi.SubItems[8].Text = num_doc.ToString(); //Номер акционного документа 
+        //                        min_quantity = min_quantity - quantity_of_pieces;
+        //                    }
+        //                    if ((quantity_of_pieces > min_quantity) && (min_quantity > 0))
+        //                    {
+        //                        lvi.SubItems[3].Text = (Convert.ToInt32(lvi.SubItems[3].Text) - min_quantity).ToString();
+        //                        calculate_on_string(lvi);
+        //                        //Добавляем строку с акционным товаром 
+        //                        ListViewItem lvi_new = new ListViewItem(lvi.Tag.ToString());
+        //                        lvi_new.Tag = lvi.Tag;
+        //                        x = 0;
+        //                        while (x < lvi.SubItems.Count - 1)
+        //                        {
+        //                            lvi_new.SubItems.Add(lvi.SubItems[x + 1].Text);
+        //                            x++;
+        //                        }
 
-                                lvi_new.SubItems[2].Text = lvi.SubItems[2].Text;
-                                lvi_new.SubItems[2].Tag = lvi.SubItems[2].Tag;
-                                lvi_new.SubItems[3].Text = min_quantity.ToString();
-                                lvi_new.SubItems[5].Text = (Math.Round(Convert.ToDecimal(lvi.SubItems[4].Text) - Convert.ToDecimal(lvi.SubItems[4].Text) * persent / 100, 2)).ToString();//Цена со скидкой            
-                                lvi_new.SubItems[6].Text = ((Convert.ToDecimal(lvi_new.SubItems[3].Text) * Convert.ToDecimal(lvi_new.SubItems[4].Text)).ToString());
-                                lvi_new.SubItems[7].Text = ((Convert.ToDecimal(lvi_new.SubItems[3].Text) * Convert.ToDecimal(lvi_new.SubItems[5].Text)).ToString());
-                                lvi_new.SubItems[8].Text = num_doc.ToString(); //Номер акционного документа
-                                lvi_new.SubItems[10].Text = num_doc.ToString(); //Номер акционного документа
-                                //*****************************************************************************
-                                lvi_new.SubItems[11].Text = "0";
-                                lvi_new.SubItems[12].Text = "0";
-                                lvi_new.SubItems[13].Text = "0";
-                                lvi_new.SubItems[14].Text = "0";
-                                //*****************************************************************************
-                                listView1.Items.Add(lvi_new);
-                                SendDataToCustomerScreen(1, 0,1);
-                                min_quantity = 0;
-                            }
-                        }
-                    }
+        //                        lvi_new.SubItems[2].Text = lvi.SubItems[2].Text;
+        //                        lvi_new.SubItems[2].Tag = lvi.SubItems[2].Tag;
+        //                        lvi_new.SubItems[3].Text = min_quantity.ToString();
+        //                        lvi_new.SubItems[5].Text = (Math.Round(Convert.ToDecimal(lvi.SubItems[4].Text) - Convert.ToDecimal(lvi.SubItems[4].Text) * persent / 100, 2)).ToString();//Цена со скидкой            
+        //                        lvi_new.SubItems[6].Text = ((Convert.ToDecimal(lvi_new.SubItems[3].Text) * Convert.ToDecimal(lvi_new.SubItems[4].Text)).ToString());
+        //                        lvi_new.SubItems[7].Text = ((Convert.ToDecimal(lvi_new.SubItems[3].Text) * Convert.ToDecimal(lvi_new.SubItems[5].Text)).ToString());
+        //                        lvi_new.SubItems[8].Text = num_doc.ToString(); //Номер акционного документа
+        //                        lvi_new.SubItems[10].Text = num_doc.ToString(); //Номер акционного документа
+        //                        //*****************************************************************************
+        //                        lvi_new.SubItems[11].Text = "0";
+        //                        lvi_new.SubItems[12].Text = "0";
+        //                        lvi_new.SubItems[13].Text = "0";
+        //                        lvi_new.SubItems[14].Text = "0";
+        //                        //*****************************************************************************
+        //                        listView1.Items.Add(lvi_new);
+        //                        SendDataToCustomerScreen(1, 0,1);
+        //                        min_quantity = 0;
+        //                    }
+        //                }
+        //            }
 
-                    /*акция сработала
-                 * надо отметить все товарные позиции 
-                 * чтобы они не участвовали в других акциях 
-                 */
-                    if (the_action_has_worked)
-                    {
-                        marked_action_tovar(num_doc);
-                    }
-                }
-            }
-            catch (NpgsqlException ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ошибка при обработке 2 типа акций");
-            }
+        //            /*акция сработала
+        //         * надо отметить все товарные позиции 
+        //         * чтобы они не участвовали в других акциях 
+        //         */
+        //            if (the_action_has_worked)
+        //            {
+        //                marked_action_tovar(num_doc);
+        //            }
+        //        }
+        //    }
+        //    catch (NpgsqlException ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message, "ошибка при обработке 2 типа акций");
+        //    }
 
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                    // conn.Dispose();
-                }
-            }
-        }
+        //    finally
+        //    {
+        //        if (conn.State == ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //            // conn.Dispose();
+        //        }
+        //    }
+        //}
             
         /// <summary>
         /// вывести сообщение по 1 списку в акции 2 типа 
@@ -11208,270 +11200,270 @@ namespace Cash8
        * Списки товаров могут быть абсолютно одинаковыми, а могут и отличатся
        * 
        */
-        private void action_2(int num_doc, string comment, int marker, long code_tovar)
-        {
-            NpgsqlConnection conn = null;
-            NpgsqlCommand command = null;
-            //object result = null;
-            int quantity_of_pieces = 0;//Количество штук товара в строке
-            int min_quantity = 1000000000;
-            int num_list = 0;
-            int num_pos = 0;
-            //Int16 result = 0;
-            try
-            {
-                conn = MainStaticClass.NpgsqlConn();
-                conn.Open();
-                //Поскольку документ не записан еще найти строки которые могут участвовать в акции можно только последовательным перебором 
+        //private void action_2(int num_doc, string comment, int marker, long code_tovar)
+        //{
+        //    NpgsqlConnection conn = null;
+        //    NpgsqlCommand command = null;
+        //    //object result = null;
+        //    int quantity_of_pieces = 0;//Количество штук товара в строке
+        //    int min_quantity = 1000000000;
+        //    int num_list = 0;
+        //    int num_pos = 0;
+        //    //Int16 result = 0;
+        //    try
+        //    {
+        //        conn = MainStaticClass.NpgsqlConn();
+        //        conn.Open();
+        //        //Поскольку документ не записан еще найти строки которые могут участвовать в акции можно только последовательным перебором 
 
-                string query = "SELECT COUNT(*) from(SELECT DISTINCT num_list FROM action_table where num_doc=" + num_doc + ") as foo";
-                command = new NpgsqlCommand(query, conn);
-                int[] action_list = new int[Convert.ToInt16(command.ExecuteScalar())];
-                int x = 0;
-                while (x < action_list.Length)
-                {
-                    action_list[x] = 0;
-                    x++;
-                }
+        //        string query = "SELECT COUNT(*) from(SELECT DISTINCT num_list FROM action_table where num_doc=" + num_doc + ") as foo";
+        //        command = new NpgsqlCommand(query, conn);
+        //        int[] action_list = new int[Convert.ToInt16(command.ExecuteScalar())];
+        //        int x = 0;
+        //        while (x < action_list.Length)
+        //        {
+        //            action_list[x] = 0;
+        //            x++;
+        //        }
 
-                foreach (ListViewItem lvi in listView1.Items)
-                {
-                    if (Convert.ToInt32(lvi.SubItems[10].Text.Trim()) > 0)//Этот товар уже участвовал в акции значит его пропускаем
-                    {
-                        continue;
-                    }
-                    quantity_of_pieces = Convert.ToInt16(lvi.SubItems[3].Text);
-                    while (quantity_of_pieces > 0)
-                    {
-                        query = "SELECT num_list FROM action_table WHERE code_tovar=" + lvi.Tag.ToString() + " AND num_doc=" + num_doc.ToString();
-                        command = new NpgsqlCommand(query, conn);
-                        NpgsqlDataReader reader = command.ExecuteReader();
-                        min_quantity = 1000000000;
-                        num_list = 0;
-                        int marker_min_amount = 1000000;
-                        while (reader.Read())
-                        {
-                            min_quantity = Math.Min(min_quantity, action_list[reader.GetInt32(0) - 1]);
-                            if (min_quantity < marker_min_amount)
-                            {
-                                num_list = reader.GetInt32(0);
-                                marker_min_amount = min_quantity;
-                            }
-                        }
-                        if (num_list != 0)
-                        {
-                            action_list[num_list - 1] += 1;
-                            num_pos = lvi.Index;
-                        }
-                        quantity_of_pieces--;
-                    }
-                }
-                //                conn.Close();
-                bool the_action_has_worked = false;
-                x = 0;
-                min_quantity = 1000000000;
+        //        foreach (ListViewItem lvi in listView1.Items)
+        //        {
+        //            if (Convert.ToInt32(lvi.SubItems[10].Text.Trim()) > 0)//Этот товар уже участвовал в акции значит его пропускаем
+        //            {
+        //                continue;
+        //            }
+        //            quantity_of_pieces = Convert.ToInt16(lvi.SubItems[3].Text);
+        //            while (quantity_of_pieces > 0)
+        //            {
+        //                query = "SELECT num_list FROM action_table WHERE code_tovar=" + lvi.Tag.ToString() + " AND num_doc=" + num_doc.ToString();
+        //                command = new NpgsqlCommand(query, conn);
+        //                NpgsqlDataReader reader = command.ExecuteReader();
+        //                min_quantity = 1000000000;
+        //                num_list = 0;
+        //                int marker_min_amount = 1000000;
+        //                while (reader.Read())
+        //                {
+        //                    min_quantity = Math.Min(min_quantity, action_list[reader.GetInt32(0) - 1]);
+        //                    if (min_quantity < marker_min_amount)
+        //                    {
+        //                        num_list = reader.GetInt32(0);
+        //                        marker_min_amount = min_quantity;
+        //                    }
+        //                }
+        //                if (num_list != 0)
+        //                {
+        //                    action_list[num_list - 1] += 1;
+        //                    num_pos = lvi.Index;
+        //                }
+        //                quantity_of_pieces--;
+        //            }
+        //        }
+        //        //                conn.Close();
+        //        bool the_action_has_worked = false;
+        //        x = 0;
+        //        min_quantity = 1000000000;
 
-                while (x < action_list.Length)
-                {
-                    if (action_list[x] == 0)
-                    {
-                        the_action_has_worked = false;
-                        break;
-                    }
-                    else
-                    {
-                        //Здесь надо получить кратность подарка
-                        min_quantity = Math.Min(min_quantity, action_list[x]);
-                        the_action_has_worked = true;
-                    }
-                    x++;
-                }
-                if (the_action_has_worked)
-                {
-                    have_action = true;//Признак того что в документе есть сработка по акции
+        //        while (x < action_list.Length)
+        //        {
+        //            if (action_list[x] == 0)
+        //            {
+        //                the_action_has_worked = false;
+        //                break;
+        //            }
+        //            else
+        //            {
+        //                //Здесь надо получить кратность подарка
+        //                min_quantity = Math.Min(min_quantity, action_list[x]);
+        //                the_action_has_worked = true;
+        //            }
+        //            x++;
+        //        }
+        //        if (the_action_has_worked)
+        //        {
+        //            have_action = true;//Признак того что в документе есть сработка по акции
 
-                    listView1.Items[num_pos].SubItems[9].Text = num_doc.ToString();
-                    MessageBox.Show("Сработала акция, НЕОБХОДИМО выдать подарок количестве " + min_quantity.ToString() + " шт. " + comment);
-                    DialogResult dr = DialogResult.Cancel;
-                    if (marker == 1)
-                    {
-                        dr = show_query_window_barcode(2, min_quantity, num_doc);
-                    }
+        //            listView1.Items[num_pos].SubItems[9].Text = num_doc.ToString();
+        //            MessageBox.Show("Сработала акция, НЕОБХОДИМО выдать подарок количестве " + min_quantity.ToString() + " шт. " + comment);
+        //            DialogResult dr = DialogResult.Cancel;
+        //            if (marker == 1)
+        //            {
+        //                dr = show_query_window_barcode(2, min_quantity, num_doc);
+        //            }
 
-                    if (dr != DialogResult.Cancel)
-                    {
-                        find_barcode_or_code_in_tovar(code_tovar.ToString());
-                    }
+        //            if (dr != DialogResult.Cancel)
+        //            {
+        //                find_barcode_or_code_in_tovar(code_tovar.ToString());
+        //            }
 
-                    /*акция сработала
-                    * надо отметить все товарные позиции 
-                    * чтобы они не участвовали в других акциях 
-                    */
+        //            /*акция сработала
+        //            * надо отметить все товарные позиции 
+        //            * чтобы они не участвовали в других акциях 
+        //            */
 
-                    if (the_action_has_worked)
-                    {
-                        marked_action_tovar(num_doc);
-                    }
+        //            if (the_action_has_worked)
+        //            {
+        //                marked_action_tovar(num_doc);
+        //            }
 
-                }
-            }
-            catch (NpgsqlException ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ошибка при обработке 2 типа акций");
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                    // conn.Dispose();
-                }
-            }
-        }
+        //        }
+        //    }
+        //    catch (NpgsqlException ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message, "ошибка при обработке 2 типа акций");
+        //    }
+        //    finally
+        //    {
+        //        if (conn.State == ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //            // conn.Dispose();
+        //        }
+        //    }
+        //}
 
         /*Эта акция срабатывает когда сумма без скидки в документе >= сумме акции
         * тогда дается скидка на те позиции которые перечисляются в условии акции
         */
-        private void action_3(int num_doc, decimal persent, decimal sum)
-        {
-            NpgsqlConnection conn = null;
-            NpgsqlCommand command = null;
-            decimal sum_on_doc = 0;//сумма документа без скидок 
-            try
-            {
-                conn = MainStaticClass.NpgsqlConn();
-                conn.Open();
+        //private void action_3(int num_doc, decimal persent, decimal sum)
+        //{
+        //    NpgsqlConnection conn = null;
+        //    NpgsqlCommand command = null;
+        //    decimal sum_on_doc = 0;//сумма документа без скидок 
+        //    try
+        //    {
+        //        conn = MainStaticClass.NpgsqlConn();
+        //        conn.Open();
 
-                foreach (ListViewItem lvi in listView1.Items)
-                {
-                    if (Convert.ToInt32(lvi.SubItems[10].Text.Trim()) > 0)//Этот товар уже участвовал в акции значит его пропускаем
-                    {
-                        continue;
-                    }
-                    string query = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + lvi.Tag.ToString() + " AND num_doc=" + num_doc.ToString();
-                    command = new NpgsqlCommand(query, conn);
-                    if (Convert.ToInt16(command.ExecuteScalar()) != 0)
-                    {
-                        sum_on_doc += Convert.ToDecimal(lvi.SubItems[6].Text);
-                    }
-                }
-                //Сумма документа без скидки больше или равна той что в условии ации
-                //значит акция сработала
-                if (sum_on_doc >= sum)
-                {
-                    have_action = true;//Признак того что в документе есть сработка по акции
+        //        foreach (ListViewItem lvi in listView1.Items)
+        //        {
+        //            if (Convert.ToInt32(lvi.SubItems[10].Text.Trim()) > 0)//Этот товар уже участвовал в акции значит его пропускаем
+        //            {
+        //                continue;
+        //            }
+        //            string query = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + lvi.Tag.ToString() + " AND num_doc=" + num_doc.ToString();
+        //            command = new NpgsqlCommand(query, conn);
+        //            if (Convert.ToInt16(command.ExecuteScalar()) != 0)
+        //            {
+        //                sum_on_doc += Convert.ToDecimal(lvi.SubItems[6].Text);
+        //            }
+        //        }
+        //        //Сумма документа без скидки больше или равна той что в условии ации
+        //        //значит акция сработала
+        //        if (sum_on_doc >= sum)
+        //        {
+        //            have_action = true;//Признак того что в документе есть сработка по акции
 
-                    foreach (ListViewItem lvi in listView1.Items)
-                    {
-                        string query = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + lvi.Tag.ToString() + " AND num_doc=" + num_doc.ToString();
-                        command = new NpgsqlCommand(query, conn);
-                        if (Convert.ToInt16(command.ExecuteScalar()) != 0)
-                        {
-                            lvi.SubItems[5].Text = (Math.Round(Convert.ToDecimal(lvi.SubItems[4].Text) - Convert.ToDecimal(lvi.SubItems[4].Text) * persent / 100, 2)).ToString();//Цена со скидкой            
-                            lvi.SubItems[6].Text = ((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString());
-                            lvi.SubItems[7].Text = ((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)).ToString());
-                            lvi.SubItems[8].Text = num_doc.ToString();
-                            lvi.SubItems[10].Text = num_doc.ToString();
-                        }
-                    }
+        //            foreach (ListViewItem lvi in listView1.Items)
+        //            {
+        //                string query = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + lvi.Tag.ToString() + " AND num_doc=" + num_doc.ToString();
+        //                command = new NpgsqlCommand(query, conn);
+        //                if (Convert.ToInt16(command.ExecuteScalar()) != 0)
+        //                {
+        //                    lvi.SubItems[5].Text = (Math.Round(Convert.ToDecimal(lvi.SubItems[4].Text) - Convert.ToDecimal(lvi.SubItems[4].Text) * persent / 100, 2)).ToString();//Цена со скидкой            
+        //                    lvi.SubItems[6].Text = ((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString());
+        //                    lvi.SubItems[7].Text = ((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)).ToString());
+        //                    lvi.SubItems[8].Text = num_doc.ToString();
+        //                    lvi.SubItems[10].Text = num_doc.ToString();
+        //                }
+        //            }
 
-                }
-                //                conn.Close();           
-            }
-            catch (NpgsqlException ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ошибка при обработке 3 типа акций");
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                    // conn.Dispose();
-                }
-            }
+        //        }
+        //        //                conn.Close();           
+        //    }
+        //    catch (NpgsqlException ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message, "ошибка при обработке 3 типа акций");
+        //    }
+        //    finally
+        //    {
+        //        if (conn.State == ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //            // conn.Dispose();
+        //        }
+        //    }
 
-        }
+        //}
 
         /*Эта акция срабатывает когда сумма без скидки в документе >= сумме акции
          * тогда выдается сообщение о подарке
          */
-        private void action_3(int num_doc, string comment, decimal sum, int marker)
-        {
+        //private void action_3(int num_doc, string comment, decimal sum, int marker)
+        //{
 
-            NpgsqlConnection conn = null;
-            NpgsqlCommand command = null;
-            decimal sum_on_doc = 0;//сумма документа без скидок 
-            int index = 0;
-            try
-            {
-                conn = MainStaticClass.NpgsqlConn();
-                conn.Open();
+        //    NpgsqlConnection conn = null;
+        //    NpgsqlCommand command = null;
+        //    decimal sum_on_doc = 0;//сумма документа без скидок 
+        //    int index = 0;
+        //    try
+        //    {
+        //        conn = MainStaticClass.NpgsqlConn();
+        //        conn.Open();
 
-                foreach (ListViewItem lvi in listView1.Items)
-                {
-                    if (Convert.ToInt32(lvi.SubItems[10].Text.Trim()) > 0)//Этот товар уже участвовал в акции значит его пропускаем
-                    {
-                        continue;
-                    }
-                    string query = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + lvi.Tag.ToString() + " AND num_doc=" + num_doc.ToString();
-                    command = new NpgsqlCommand(query, conn);
-                    if (Convert.ToInt16(command.ExecuteScalar()) != 0)
-                    {
-                        sum_on_doc += Convert.ToDecimal(lvi.SubItems[6].Text);
-                        index = lvi.Index;
-                    }
-                }
-                //Сумма документа без скидки больше или равна той что в условии ации
-                //значит акция сработала
-                if (sum_on_doc >= sum)
-                {
-                    have_action = true;//Признак того что в документе есть сработка по акции
+        //        foreach (ListViewItem lvi in listView1.Items)
+        //        {
+        //            if (Convert.ToInt32(lvi.SubItems[10].Text.Trim()) > 0)//Этот товар уже участвовал в акции значит его пропускаем
+        //            {
+        //                continue;
+        //            }
+        //            string query = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + lvi.Tag.ToString() + " AND num_doc=" + num_doc.ToString();
+        //            command = new NpgsqlCommand(query, conn);
+        //            if (Convert.ToInt16(command.ExecuteScalar()) != 0)
+        //            {
+        //                sum_on_doc += Convert.ToDecimal(lvi.SubItems[6].Text);
+        //                index = lvi.Index;
+        //            }
+        //        }
+        //        //Сумма документа без скидки больше или равна той что в условии ации
+        //        //значит акция сработала
+        //        if (sum_on_doc >= sum)
+        //        {
+        //            have_action = true;//Признак того что в документе есть сработка по акции
 
-                    //action_num_doc = num_doc;
-                    listView1.Items[index].SubItems[9].Text = num_doc.ToString();//Тип акции                    
-                    MessageBox.Show(comment, " АКЦИЯ !!!");
-                    DialogResult dr = DialogResult.Cancel;
-                    if (marker == 1)
-                    {
-                        dr = show_query_window_barcode(2, 1, num_doc);
-                    }
+        //            //action_num_doc = num_doc;
+        //            listView1.Items[index].SubItems[9].Text = num_doc.ToString();//Тип акции                    
+        //            MessageBox.Show(comment, " АКЦИЯ !!!");
+        //            DialogResult dr = DialogResult.Cancel;
+        //            if (marker == 1)
+        //            {
+        //                dr = show_query_window_barcode(2, 1, num_doc);
+        //            }
 
-                    /*акция сработала
-                    * надо отметить все товарные позиции 
-                    * чтобы они не участвовали в других акциях 
-                    */
-                    marked_action_tovar(num_doc);
+        //            /*акция сработала
+        //            * надо отметить все товарные позиции 
+        //            * чтобы они не участвовали в других акциях 
+        //            */
+        //            marked_action_tovar(num_doc);
 
 
-                }
-                //                conn.Close();
-            }
-            catch (NpgsqlException ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ошибка при обработке 3 типа акций");
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                    // conn.Dispose();
-                }
-            }
-        }
+        //        }
+        //        //                conn.Close();
+        //    }
+        //    catch (NpgsqlException ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message, "ошибка при обработке 3 типа акций");
+        //    }
+        //    finally
+        //    {
+        //        if (conn.State == ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //            // conn.Dispose();
+        //        }
+        //    }
+        //}
 
         private bool create_temp_tovar_table()
         {
@@ -11523,55 +11515,55 @@ namespace Cash8
             return result;
         }
 
-        private bool create_temp_tovar_table_4()
-        {
-            bool result = true;
+        //private bool create_temp_tovar_table_4()
+        //{
+        //    bool result = true;
 
-            NpgsqlConnection conn = null;
-            NpgsqlCommand command = null;
+        //    NpgsqlConnection conn = null;
+        //    NpgsqlCommand command = null;
 
-            try
-            {
-                conn = MainStaticClass.NpgsqlConn();
-                conn.Open();
+        //    try
+        //    {
+        //        conn = MainStaticClass.NpgsqlConn();
+        //        conn.Open();
 
-                string query = "select COUNT(*) from information_schema.tables 		where table_schema='public' 	and table_name='tovar_action'	";
-                command = new NpgsqlCommand(query, conn);
+        //        string query = "select COUNT(*) from information_schema.tables 		where table_schema='public' 	and table_name='tovar_action'	";
+        //        command = new NpgsqlCommand(query, conn);
 
-                if (Convert.ToInt16(command.ExecuteScalar()) == 0)
-                {
-                    query = "CREATE TABLE tovar_action(  code bigint NOT NULL,  retail_price numeric(10,2) NOT NULL,  quantity integer, retail_price_discount numeric(10,2) ,characteristic_name character varying(100),characteristic_guid character varying(36) )WITH (  OIDS=FALSE);ALTER TABLE tovar_action  OWNER TO postgres;";
-                }
-                else
-                {
-                    query = "DROP TABLE tovar_action;CREATE TABLE tovar_action(  code bigint NOT NULL,  retail_price numeric(10,2) NOT NULL,  quantity integer, retail_price_discount numeric(10,2) ,characteristic_name character varying(100),characteristic_guid character varying(36) )WITH (  OIDS=FALSE);ALTER TABLE tovar_action  OWNER TO postgres;";
-                }
-                command = new NpgsqlCommand(query, conn);
-                command.ExecuteNonQuery();
-                //                conn.Close();
-                command.Dispose();
-            }
-            catch (NpgsqlException ex)
-            {
-                MessageBox.Show(ex.Message, " Ошибка при создании временной таблицы ");
-                result = false;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, " Ошибка при создании временной таблицы ");
-                result = false;
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                    // conn.Dispose();
-                }
-            }
+        //        if (Convert.ToInt16(command.ExecuteScalar()) == 0)
+        //        {
+        //            query = "CREATE TABLE tovar_action(  code bigint NOT NULL,  retail_price numeric(10,2) NOT NULL,  quantity integer, retail_price_discount numeric(10,2) ,characteristic_name character varying(100),characteristic_guid character varying(36) )WITH (  OIDS=FALSE);ALTER TABLE tovar_action  OWNER TO postgres;";
+        //        }
+        //        else
+        //        {
+        //            query = "DROP TABLE tovar_action;CREATE TABLE tovar_action(  code bigint NOT NULL,  retail_price numeric(10,2) NOT NULL,  quantity integer, retail_price_discount numeric(10,2) ,characteristic_name character varying(100),characteristic_guid character varying(36) )WITH (  OIDS=FALSE);ALTER TABLE tovar_action  OWNER TO postgres;";
+        //        }
+        //        command = new NpgsqlCommand(query, conn);
+        //        command.ExecuteNonQuery();
+        //        //                conn.Close();
+        //        command.Dispose();
+        //    }
+        //    catch (NpgsqlException ex)
+        //    {
+        //        MessageBox.Show(ex.Message, " Ошибка при создании временной таблицы ");
+        //        result = false;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message, " Ошибка при создании временной таблицы ");
+        //        result = false;
+        //    }
+        //    finally
+        //    {
+        //        if (conn.State == ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //            // conn.Dispose();
+        //        }
+        //    }
 
-            return result;
-        }
+        //    return result;
+        //}
 
 
         private void copy_list_view(ListView listview_source, ListView listview_destination)
@@ -11634,194 +11626,194 @@ namespace Cash8
          * на самый дешевый товар из участвующих в акции 
          * 
          */
-        private void action_4(int num_doc, decimal persent, decimal sum)
-        {
+        //private void action_4(int num_doc, decimal persent, decimal sum)
+        //{
 
-            if (!create_temp_tovar_table_4())
-            {
-                return;
-            }
+        //    if (!create_temp_tovar_table_4())
+        //    {
+        //        return;
+        //    }
 
-            NpgsqlConnection conn = null;
-            NpgsqlCommand command = null;
-            decimal quantity_on_doc = 0;//количество позиций в документе            
-            ListView clon = new ListView();
-            StringBuilder query = new StringBuilder();
-            try
-            {
-                conn = MainStaticClass.NpgsqlConn();
-                conn.Open();
-                string query_string = "";
+        //    NpgsqlConnection conn = null;
+        //    NpgsqlCommand command = null;
+        //    decimal quantity_on_doc = 0;//количество позиций в документе            
+        //    ListView clon = new ListView();
+        //    StringBuilder query = new StringBuilder();
+        //    try
+        //    {
+        //        conn = MainStaticClass.NpgsqlConn();
+        //        conn.Open();
+        //        string query_string = "";
 
-                foreach (ListViewItem lvi in listView1.Items)
-                {
-                    if (Convert.ToInt32(lvi.SubItems[10].Text.Trim()) > 0)//Этот товар уже участвовал в акции значит его пропускаем
-                    {
-                        //clon.Items.Add((ListViewItem)lvi.Clone());
-                        copy_list_view_item(lvi, clon);
-                        continue;
-                    }
-                    query_string = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + lvi.Tag.ToString() + " AND num_doc=" + num_doc.ToString();
-                    command = new NpgsqlCommand(query_string, conn);
+        //        foreach (ListViewItem lvi in listView1.Items)
+        //        {
+        //            if (Convert.ToInt32(lvi.SubItems[10].Text.Trim()) > 0)//Этот товар уже участвовал в акции значит его пропускаем
+        //            {
+        //                //clon.Items.Add((ListViewItem)lvi.Clone());
+        //                copy_list_view_item(lvi, clon);
+        //                continue;
+        //            }
+        //            query_string = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + lvi.Tag.ToString() + " AND num_doc=" + num_doc.ToString();
+        //            command = new NpgsqlCommand(query_string, conn);
 
-                    if (Convert.ToInt16(command.ExecuteScalar()) != 0)
-                    {
+        //            if (Convert.ToInt16(command.ExecuteScalar()) != 0)
+        //            {
 
-                        for (int i = 0; i < Convert.ToInt32(lvi.SubItems[3].Text); i++)
-                        {
-                            query.Append("INSERT INTO tovar_action(code, retail_price, quantity,characteristic_name,characteristic_guid)VALUES(" +
-                               lvi.SubItems[0].Text + "," +
-                               lvi.SubItems[4].Text.Replace(",", ".") + "," +
-                               "1,'" +
-                               lvi.SubItems[2].Text + "','" +
-                               (lvi.SubItems[2].Tag == null ? "" : lvi.SubItems[2].Tag.ToString()) + "');");
-                        }
-                        quantity_on_doc += Convert.ToDecimal(lvi.SubItems[3].Text);
-                        //listView1.Items.Remove(lvi);
-                    }
-                    else
-                    {
-                        //clon.Items.Add((ListViewItem)lvi.Clone());
-                        copy_list_view_item(lvi, clon);
-                    }
-                }
+        //                for (int i = 0; i < Convert.ToInt32(lvi.SubItems[3].Text); i++)
+        //                {
+        //                    query.Append("INSERT INTO tovar_action(code, retail_price, quantity,characteristic_name,characteristic_guid)VALUES(" +
+        //                       lvi.SubItems[0].Text + "," +
+        //                       lvi.SubItems[4].Text.Replace(",", ".") + "," +
+        //                       "1,'" +
+        //                       lvi.SubItems[2].Text + "','" +
+        //                       (lvi.SubItems[2].Tag == null ? "" : lvi.SubItems[2].Tag.ToString()) + "');");
+        //                }
+        //                quantity_on_doc += Convert.ToDecimal(lvi.SubItems[3].Text);
+        //                //listView1.Items.Remove(lvi);
+        //            }
+        //            else
+        //            {
+        //                //clon.Items.Add((ListViewItem)lvi.Clone());
+        //                copy_list_view_item(lvi, clon);
+        //            }
+        //        }
 
 
-                if (quantity_on_doc >= sum)//Есть вхождение в акцию
-                {
-                    have_action = true;//Признак того что в документе есть сработка по акции
+        //        if (quantity_on_doc >= sum)//Есть вхождение в акцию
+        //        {
+        //            have_action = true;//Признак того что в документе есть сработка по акции
 
-                    listView1.Items.Clear();
-                    foreach (ListViewItem lvi in clon.Items)
-                    {
-                        listView1.Items.Add((ListViewItem)lvi.Clone());
-                    }
+        //            listView1.Items.Clear();
+        //            foreach (ListViewItem lvi in clon.Items)
+        //            {
+        //                listView1.Items.Add((ListViewItem)lvi.Clone());
+        //            }
 
-                    command = new NpgsqlCommand(query.ToString(), conn);//устанавливаем акционные позиции во временную таблицу
-                    command.ExecuteNonQuery();
-                    query.Append("DELETE FROM tovar_action;");//Очищаем таблицу акционных товаров 
-                    //иначе результат задваивается ранее эта строка была закомментирована и при 2 товарах по 1 шт. учавствующих в акции
-                    //работала неверно
+        //            command = new NpgsqlCommand(query.ToString(), conn);//устанавливаем акционные позиции во временную таблицу
+        //            command.ExecuteNonQuery();
+        //            query.Append("DELETE FROM tovar_action;");//Очищаем таблицу акционных товаров 
+        //            //иначе результат задваивается ранее эта строка была закомментирована и при 2 товарах по 1 шт. учавствующих в акции
+        //            //работала неверно
 
-                    int multiplication_factor = (int)(quantity_on_doc / sum);
-                    query_string = " SELECT code, retail_price, quantity,characteristic_name,characteristic_guid FROM tovar_action ORDER BY retail_price desc";//запросим товары отсортированные по цене, теперь еще и с характеристиками
-                    command = new NpgsqlCommand(query_string, conn);
-                    NpgsqlDataReader reader = command.ExecuteReader();
+        //            int multiplication_factor = (int)(quantity_on_doc / sum);
+        //            query_string = " SELECT code, retail_price, quantity,characteristic_name,characteristic_guid FROM tovar_action ORDER BY retail_price desc";//запросим товары отсортированные по цене, теперь еще и с характеристиками
+        //            command = new NpgsqlCommand(query_string, conn);
+        //            NpgsqlDataReader reader = command.ExecuteReader();
 
-                    Decimal sum_on_string = sum;
+        //            Decimal sum_on_string = sum;
 
-                    int num_records = 1;
+        //            int num_records = 1;
 
-                    while (reader.Read())
-                    {
-                        if (multiplication_factor > 0)
-                        {
-                            if ((decimal)num_records / sum == Math.Round(num_records / sum, 0, MidpointRounding.AwayFromZero))//(sum_on_string == sum) && 
-                            {
-                                query.Append("INSERT INTO tovar_action(code, retail_price, quantity,characteristic_name,characteristic_guid,retail_price_discount)VALUES(" +
-                                  reader[0].ToString() + "," +
-                                  reader[1].ToString().Replace(",", ".") + "," + //Цена
-                                  "1,'" +
-                                  reader[3].ToString() + "','" +
-                                  reader[4].ToString() + "'," +
-                                  (Math.Round(Convert.ToDecimal(reader[1].ToString()) - Convert.ToDecimal(reader[1].ToString()) * persent / 100, 2)).ToString().Replace(",", ".") + //Цена со скидкой            
-                                  ");");
-                                multiplication_factor--;
-                            }
-                            else
-                            {
-                                query.Append("INSERT INTO tovar_action(code, retail_price, quantity,characteristic_name,characteristic_guid,retail_price_discount)VALUES(" +
-                                                         reader[0].ToString() + "," +
-                                                         reader[1].ToString().Replace(",", ".") + "," +
-                                                         "1,'" +
-                                                        reader[3].ToString() + "','" +
-                                                        reader[4].ToString() + "'," +
-                                                        reader[1].ToString().Replace(",", ".") + ");");
-                            }
+        //            while (reader.Read())
+        //            {
+        //                if (multiplication_factor > 0)
+        //                {
+        //                    if ((decimal)num_records / sum == Math.Round(num_records / sum, 0, MidpointRounding.AwayFromZero))//(sum_on_string == sum) && 
+        //                    {
+        //                        query.Append("INSERT INTO tovar_action(code, retail_price, quantity,characteristic_name,characteristic_guid,retail_price_discount)VALUES(" +
+        //                          reader[0].ToString() + "," +
+        //                          reader[1].ToString().Replace(",", ".") + "," + //Цена
+        //                          "1,'" +
+        //                          reader[3].ToString() + "','" +
+        //                          reader[4].ToString() + "'," +
+        //                          (Math.Round(Convert.ToDecimal(reader[1].ToString()) - Convert.ToDecimal(reader[1].ToString()) * persent / 100, 2)).ToString().Replace(",", ".") + //Цена со скидкой            
+        //                          ");");
+        //                        multiplication_factor--;
+        //                    }
+        //                    else
+        //                    {
+        //                        query.Append("INSERT INTO tovar_action(code, retail_price, quantity,characteristic_name,characteristic_guid,retail_price_discount)VALUES(" +
+        //                                                 reader[0].ToString() + "," +
+        //                                                 reader[1].ToString().Replace(",", ".") + "," +
+        //                                                 "1,'" +
+        //                                                reader[3].ToString() + "','" +
+        //                                                reader[4].ToString() + "'," +
+        //                                                reader[1].ToString().Replace(",", ".") + ");");
+        //                    }
 
-                        }
-                        else
-                        {
-                            query.Append("INSERT INTO tovar_action(code, retail_price, quantity,characteristic_name,characteristic_guid,retail_price_discount)VALUES(" +
-                                                        reader[0].ToString() + "," +
-                                                        reader[1].ToString().Replace(",", ".") + "," +
-                                                        "1,'" +
-                                                       reader[3].ToString() + "','" +
-                                                       reader[4].ToString() + "'," +
-                                                       reader[1].ToString().Replace(",", ".") + ");");
-                        }
-                        num_records++;
-                    }
+        //                }
+        //                else
+        //                {
+        //                    query.Append("INSERT INTO tovar_action(code, retail_price, quantity,characteristic_name,characteristic_guid,retail_price_discount)VALUES(" +
+        //                                                reader[0].ToString() + "," +
+        //                                                reader[1].ToString().Replace(",", ".") + "," +
+        //                                                "1,'" +
+        //                                               reader[3].ToString() + "','" +
+        //                                               reader[4].ToString() + "'," +
+        //                                               reader[1].ToString().Replace(",", ".") + ");");
+        //                }
+        //                num_records++;
+        //            }
 
-                    command = new NpgsqlCommand(query.ToString(), conn);
-                    command.ExecuteNonQuery();
+        //            command = new NpgsqlCommand(query.ToString(), conn);
+        //            command.ExecuteNonQuery();
 
-                    query_string = " SELECT tovar_action.code,tovar.name, tovar_action.retail_price,tovar_action.retail_price_discount ," +
-                    " SUM(quantity),characteristic_name,characteristic_guid FROM tovar_action " +
-                    " LEFT JOIN tovar ON tovar_action.code=tovar.code " +
-                    " GROUP BY tovar_action.code,tovar.name, tovar.retail_price,tovar_action.retail_price,characteristic_name,characteristic_guid," +
-                    " retail_price_discount";
+        //            query_string = " SELECT tovar_action.code,tovar.name, tovar_action.retail_price,tovar_action.retail_price_discount ," +
+        //            " SUM(quantity),characteristic_name,characteristic_guid FROM tovar_action " +
+        //            " LEFT JOIN tovar ON tovar_action.code=tovar.code " +
+        //            " GROUP BY tovar_action.code,tovar.name, tovar.retail_price,tovar_action.retail_price,characteristic_name,characteristic_guid," +
+        //            " retail_price_discount";
 
-                    command = new NpgsqlCommand(query_string, conn);
-                    reader = command.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        ListViewItem lvi = new ListViewItem(reader[0].ToString());
-                        lvi.Tag = reader.GetInt64(0).ToString();          //Внутренний код товара
-                        lvi.SubItems.Add(reader[1].ToString().Trim());    //Наименование
-                        lvi.SubItems.Add(reader[5].ToString());           //Характеристика
-                        lvi.SubItems[2].Tag = reader[6].ToString();       //guid Характеристики
-                        lvi.SubItems.Add(reader[4].ToString().Trim());    //Количество
-                        lvi.SubItems.Add(reader.GetDecimal(2).ToString());//Цена
-                        lvi.SubItems.Add(reader.GetDecimal(3).ToString());//Цена со скидкой
-                        lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString());//Сумма без скидки
-                        lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)).ToString());//Сумма со скидкой
-                        lvi.SubItems.Add("0"); //Номер акционного документа скидка
-                        lvi.SubItems.Add("0"); //Номер акционного документа подарок
-                        lvi.SubItems.Add("0"); //Номер акционного документа дополнительное поле пометка что участвовало в акции, но скидка может быть
-                        if (Convert.ToDecimal(lvi.SubItems[4].Text) != Convert.ToDecimal(lvi.SubItems[5].Text))
-                        {
-                            lvi.SubItems[8].Text = num_doc.ToString();
-                        }
-                        lvi.SubItems[10].Text = num_doc.ToString();
-                        //*****************************************************************************
-                        lvi.SubItems.Add("0");// lvi.SubItems[11].Text = "0";
-                        lvi.SubItems.Add("0");// lvi.SubItems[12].Text = "0";
-                        lvi.SubItems.Add("0");// lvi.SubItems[13].Text = "0";
-                        lvi.SubItems.Add("0");//lvi.SubItems[14].Text = "0";
-                        //*****************************************************************************
-                        listView1.Items.Add(lvi);
-                        SendDataToCustomerScreen(1, 0,1);
-                    }
+        //            command = new NpgsqlCommand(query_string, conn);
+        //            reader = command.ExecuteReader();
+        //            while (reader.Read())
+        //            {
+        //                ListViewItem lvi = new ListViewItem(reader[0].ToString());
+        //                lvi.Tag = reader.GetInt64(0).ToString();          //Внутренний код товара
+        //                lvi.SubItems.Add(reader[1].ToString().Trim());    //Наименование
+        //                lvi.SubItems.Add(reader[5].ToString());           //Характеристика
+        //                lvi.SubItems[2].Tag = reader[6].ToString();       //guid Характеристики
+        //                lvi.SubItems.Add(reader[4].ToString().Trim());    //Количество
+        //                lvi.SubItems.Add(reader.GetDecimal(2).ToString());//Цена
+        //                lvi.SubItems.Add(reader.GetDecimal(3).ToString());//Цена со скидкой
+        //                lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString());//Сумма без скидки
+        //                lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)).ToString());//Сумма со скидкой
+        //                lvi.SubItems.Add("0"); //Номер акционного документа скидка
+        //                lvi.SubItems.Add("0"); //Номер акционного документа подарок
+        //                lvi.SubItems.Add("0"); //Номер акционного документа дополнительное поле пометка что участвовало в акции, но скидка может быть
+        //                if (Convert.ToDecimal(lvi.SubItems[4].Text) != Convert.ToDecimal(lvi.SubItems[5].Text))
+        //                {
+        //                    lvi.SubItems[8].Text = num_doc.ToString();
+        //                }
+        //                lvi.SubItems[10].Text = num_doc.ToString();
+        //                //*****************************************************************************
+        //                lvi.SubItems.Add("0");// lvi.SubItems[11].Text = "0";
+        //                lvi.SubItems.Add("0");// lvi.SubItems[12].Text = "0";
+        //                lvi.SubItems.Add("0");// lvi.SubItems[13].Text = "0";
+        //                lvi.SubItems.Add("0");//lvi.SubItems[14].Text = "0";
+        //                //*****************************************************************************
+        //                listView1.Items.Add(lvi);
+        //                SendDataToCustomerScreen(1, 0,1);
+        //            }
 
-                    /*акция сработала
-             * надо отметить все товарные позиции 
-             * чтобы они не участвовали в других акциях 
-             */
+        //            /*акция сработала
+        //     * надо отметить все товарные позиции 
+        //     * чтобы они не участвовали в других акциях 
+        //     */
 
-                    marked_action_tovar(num_doc);
+        //            marked_action_tovar(num_doc);
 
-                }
+        //        }
 
-                //                conn.Close();
-            }
-            catch (NpgsqlException ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, " Ошибка при обработке 4 типа акций ");
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                    // conn.Dispose();
-                }
-            }
-        }
+        //        //                conn.Close();
+        //    }
+        //    catch (NpgsqlException ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message, " Ошибка при обработке 4 типа акций ");
+        //    }
+        //    finally
+        //    {
+        //        if (conn.State == ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //            // conn.Dispose();
+        //        }
+        //    }
+        //}
 
 
         /*Эта акция срабатывает когда количество товаров в документе >= сумме(количество) товаров в акции
@@ -11830,241 +11822,241 @@ namespace Cash8
         * и еще добавляется некий товар из акционного документа 
         * 
         */
-        private void action_4(int num_doc, string comment, decimal sum, long code_tovar)
-        {
-            if (!create_temp_tovar_table()) //Создать временную таблицу для акционного товара
-            {
-                return;
-            }
+        //private void action_4(int num_doc, string comment, decimal sum, long code_tovar)
+        //{
+        //    if (!create_temp_tovar_table()) //Создать временную таблицу для акционного товара
+        //    {
+        //        return;
+        //    }
 
-            NpgsqlConnection conn = null;
-            NpgsqlCommand command = null;
-            decimal quantity_on_doc = 0;//количество позиций в документе            
-            ListView clon = new ListView();
-            StringBuilder query = new StringBuilder();
-            try
-            {
-                conn = MainStaticClass.NpgsqlConn();
-                conn.Open();
-                string query_string = "";
+        //    NpgsqlConnection conn = null;
+        //    NpgsqlCommand command = null;
+        //    decimal quantity_on_doc = 0;//количество позиций в документе            
+        //    ListView clon = new ListView();
+        //    StringBuilder query = new StringBuilder();
+        //    try
+        //    {
+        //        conn = MainStaticClass.NpgsqlConn();
+        //        conn.Open();
+        //        string query_string = "";
 
 
-                foreach (ListViewItem lvi in listView1.Items)
-                {
-                    if (Convert.ToInt32(lvi.SubItems[10].Text.Trim()) > 0)//Этот товар уже участвовал в акции значит его пропускаем
-                    {
-                        //clon.Items.Add((ListViewItem)lvi.Clone());
-                        copy_list_view_item(lvi, clon);
-                        continue;
-                    }
-                    query_string = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + lvi.Tag.ToString() + " AND num_doc=" + num_doc.ToString();
-                    command = new NpgsqlCommand(query_string, conn);
+        //        foreach (ListViewItem lvi in listView1.Items)
+        //        {
+        //            if (Convert.ToInt32(lvi.SubItems[10].Text.Trim()) > 0)//Этот товар уже участвовал в акции значит его пропускаем
+        //            {
+        //                //clon.Items.Add((ListViewItem)lvi.Clone());
+        //                copy_list_view_item(lvi, clon);
+        //                continue;
+        //            }
+        //            query_string = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + lvi.Tag.ToString() + " AND num_doc=" + num_doc.ToString();
+        //            command = new NpgsqlCommand(query_string, conn);
 
-                    if (Convert.ToInt16(command.ExecuteScalar()) != 0)//Это говорит о том что товар учавствует в этой акции
-                    {
-                        for (int i = 0; i < Convert.ToInt32(lvi.SubItems[3].Text); i++)
-                        {
-                            query.Append("INSERT INTO tovar_action(code, retail_price, quantity,characteristic_name,characteristic_guid)VALUES(" +
-                               lvi.SubItems[0].Text + "," +
-                               lvi.SubItems[4].Text.Replace(",", ".") + "," +
-                               "1,'" +
-                               lvi.SubItems[2].Text + "','" +
-                               (lvi.SubItems[2].Tag == null ? "" : lvi.SubItems[2].Tag.ToString()) + "');");
-                        }
-                        quantity_on_doc += Convert.ToDecimal(lvi.SubItems[3].Text);
-                    }
-                    else
-                    {
-                        //clon.Items.Add((ListViewItem)lvi.Clone());
-                        copy_list_view_item(lvi, clon);
-                    }
-                }
+        //            if (Convert.ToInt16(command.ExecuteScalar()) != 0)//Это говорит о том что товар учавствует в этой акции
+        //            {
+        //                for (int i = 0; i < Convert.ToInt32(lvi.SubItems[3].Text); i++)
+        //                {
+        //                    query.Append("INSERT INTO tovar_action(code, retail_price, quantity,characteristic_name,characteristic_guid)VALUES(" +
+        //                       lvi.SubItems[0].Text + "," +
+        //                       lvi.SubItems[4].Text.Replace(",", ".") + "," +
+        //                       "1,'" +
+        //                       lvi.SubItems[2].Text + "','" +
+        //                       (lvi.SubItems[2].Tag == null ? "" : lvi.SubItems[2].Tag.ToString()) + "');");
+        //                }
+        //                quantity_on_doc += Convert.ToDecimal(lvi.SubItems[3].Text);
+        //            }
+        //            else
+        //            {
+        //                //clon.Items.Add((ListViewItem)lvi.Clone());
+        //                copy_list_view_item(lvi, clon);
+        //            }
+        //        }
 
-                if (quantity_on_doc >= sum)//Есть вхождение в акцию
-                {
-                    //MessageBox.Show(comment, " АКЦИЯ !!!");
-                    have_action = true;//Признак того что в документе есть сработка по акции
+        //        if (quantity_on_doc >= sum)//Есть вхождение в акцию
+        //        {
+        //            //MessageBox.Show(comment, " АКЦИЯ !!!");
+        //            have_action = true;//Признак того что в документе есть сработка по акции
 
-                    listView1.Items.Clear();//Очищаем многострочную часть документа
-                    foreach (ListViewItem lvi in clon.Items)//Заполняем теми позициями которые точно не участвую в акции, либо ои участвовали в других акциях
-                    {
-                        listView1.Items.Add((ListViewItem)lvi.Clone());
-                    }
+        //            listView1.Items.Clear();//Очищаем многострочную часть документа
+        //            foreach (ListViewItem lvi in clon.Items)//Заполняем теми позициями которые точно не участвую в акции, либо ои участвовали в других акциях
+        //            {
+        //                listView1.Items.Add((ListViewItem)lvi.Clone());
+        //            }
 
-                    command = new NpgsqlCommand(query.ToString(), conn);//устанавливаем акционные позиции во временную таблицу
-                    command.ExecuteNonQuery();
+        //            command = new NpgsqlCommand(query.ToString(), conn);//устанавливаем акционные позиции во временную таблицу
+        //            command.ExecuteNonQuery();
 
-                    int multiplication_factor = (int)(quantity_on_doc / sum);
-                    query_string = " SELECT tovar_action.code,tovar.name, tovar_action.retail_price,tovar_action.retail_price,tovar_action.quantity,tovar_action.characteristic_name,tovar_action.characteristic_guid " +
-                        " FROM tovar_action LEFT JOIN tovar ON tovar_action.code=tovar.code " +
-                        //" LEFT JOIN characteristic ON tovar_action.characteristic_guid = characteristic.guid " +
-                        " order by tovar_action.retail_price desc ";
+        //            int multiplication_factor = (int)(quantity_on_doc / sum);
+        //            query_string = " SELECT tovar_action.code,tovar.name, tovar_action.retail_price,tovar_action.retail_price,tovar_action.quantity,tovar_action.characteristic_name,tovar_action.characteristic_guid " +
+        //                " FROM tovar_action LEFT JOIN tovar ON tovar_action.code=tovar.code " +
+        //                //" LEFT JOIN characteristic ON tovar_action.characteristic_guid = characteristic.guid " +
+        //                " order by tovar_action.retail_price desc ";
 
-                    //query_string = " SELECT tovar_action.code,tovar.name, tovar_action.retail_price,tovar_action.retail_price,SUM(tovar_action.quantity) AS quantity,tovar_action.characteristic_name,tovar_action.characteristic_guid " +
-                    // " FROM tovar_action LEFT JOIN tovar ON tovar_action.code=tovar.code " +
-                    // //" LEFT JOIN characteristic ON tovar_action.characteristic_guid = characteristic.guid " +
-                    // " GROUP BY tovar_action.code,tovar.name, tovar_action.retail_price,tovar_action.retail_price,tovar_action.characteristic_name,tovar_action.characteristic_guid " +
-                    // "order by tovar_action.retail_price desc ";
-                    command = new NpgsqlCommand(query_string, conn);
-                    NpgsqlDataReader reader = command.ExecuteReader();
+        //            //query_string = " SELECT tovar_action.code,tovar.name, tovar_action.retail_price,tovar_action.retail_price,SUM(tovar_action.quantity) AS quantity,tovar_action.characteristic_name,tovar_action.characteristic_guid " +
+        //            // " FROM tovar_action LEFT JOIN tovar ON tovar_action.code=tovar.code " +
+        //            // //" LEFT JOIN characteristic ON tovar_action.characteristic_guid = characteristic.guid " +
+        //            // " GROUP BY tovar_action.code,tovar.name, tovar_action.retail_price,tovar_action.retail_price,tovar_action.characteristic_name,tovar_action.characteristic_guid " +
+        //            // "order by tovar_action.retail_price desc ";
+        //            command = new NpgsqlCommand(query_string, conn);
+        //            NpgsqlDataReader reader = command.ExecuteReader();
 
-                    //DateTime new_date = new DateTime(2019, 01, 01);//Дата с которой работа с подарками идет по новому 
+        //            //DateTime new_date = new DateTime(2019, 01, 01);//Дата с которой работа с подарками идет по новому 
 
-                    int num_records = 1;
-                    while (reader.Read())
-                    {
-                        if (multiplication_factor > 0)//Это количество позиций которые будут выданы в качестве подарка
-                        {
-                            if ((decimal)num_records / sum == Math.Round(num_records / sum, 0, MidpointRounding.AwayFromZero))
-                            {
-                                ListViewItem lvi = new ListViewItem(reader[0].ToString());
-                                lvi.Tag = reader.GetInt64(0).ToString();          //Внутренний код товара
-                                lvi.SubItems.Add(reader[1].ToString().Trim());    //Наименование
-                                lvi.SubItems.Add(reader[5].ToString());    //Характеристика
-                                lvi.SubItems[2].Tag = reader[6].ToString();
-                                lvi.SubItems.Add("1");
-                                lvi.SubItems.Add(reader.GetDecimal(2).ToString());//Цена без скидки                                                                                  
-                                string price = get_price_action(num_doc);
-                                lvi.SubItems.Add(price.ToString());//Цена со скидкой должна быть получена из подарка
-                                lvi.SubItems.Add(reader.GetDecimal(2).ToString());//Сумма без скидки
-                                lvi.SubItems.Add(price.ToString());//Сумма со скидкой должна быть получена из подарка
-                                lvi.SubItems.Add("0"); //Номер акционного документа скидка
-                                lvi.SubItems.Add(num_doc.ToString()); //Номер акционного документа подарок
-                                lvi.SubItems.Add("0"); //Номер акционного документа дополнительное поле пометка что участвовало в акции, но скидка может быть                                
-                                lvi.SubItems[10].Text = num_doc.ToString();
-                                //}
-                                //*****************************************************************************
-                                lvi.SubItems.Add("0");
-                                lvi.SubItems.Add("0");
-                                lvi.SubItems.Add("0");
-                                lvi.SubItems.Add("0");
-                                //*****************************************************************************
-                                listView1.Items.Add(lvi);
-                                SendDataToCustomerScreen(1, 0, 1);
-                                multiplication_factor--;
-                            }
-                            else
-                            {
-                                ListViewItem lvi = new ListViewItem(reader[0].ToString());
-                                lvi.Tag = reader.GetInt64(0).ToString();          //Внутренний код товара
-                                lvi.SubItems.Add(reader[1].ToString().Trim());    //Наименование
-                                lvi.SubItems.Add(reader[5].ToString());           //Характеристика
-                                lvi.SubItems[2].Tag = reader[6].ToString();       //guid Характеристики
-                                //lvi.SubItems.Add("1");    //Количество
-                                lvi.SubItems.Add(reader[4].ToString());
-                                lvi.SubItems.Add(reader.GetDecimal(2).ToString());//Цена
-                                lvi.SubItems.Add(reader.GetDecimal(3).ToString());//Цена со скидкой
-                                lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString());//Сумма без скидки
-                                lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)).ToString());//Сумма со скидкой
-                                lvi.SubItems.Add("0"); //Номер акционного документа скидка
-                                lvi.SubItems.Add("0"); //Номер акционного документа подарок
-                                lvi.SubItems.Add("0"); //Номер акционного документа дополнительное поле пометка что участвовало в акции, но скидка может быть                                
-                                lvi.SubItems[10].Text = num_doc.ToString();
-                                //*****************************************************************************
-                                lvi.SubItems.Add("0");
-                                lvi.SubItems.Add("0");
-                                lvi.SubItems.Add("0");
-                                lvi.SubItems.Add("0");
-                                //*****************************************************************************
-                                listView1.Items.Add(lvi);
-                                SendDataToCustomerScreen(1, 0, 1);
-                            }
-                        }
-                        else
-                        {
-                            ListViewItem lvi = new ListViewItem(reader[0].ToString());
-                            lvi.Tag = reader.GetInt64(0).ToString();          //Внутренний код товара
-                            lvi.SubItems.Add(reader[1].ToString().Trim());    //Наименование
-                            lvi.SubItems.Add(reader[5].ToString());           //Характеристика
-                            lvi.SubItems[2].Tag = reader[6].ToString();       //guid Характеристики                            
-                            //lvi.SubItems.Add("1");    //Количество
-                            lvi.SubItems.Add(reader[4].ToString());
-                            lvi.SubItems.Add(reader.GetDecimal(2).ToString());//Цена
-                            lvi.SubItems.Add(reader.GetDecimal(3).ToString());//Цена со скидкой
-                            lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString());//Сумма без скидки
-                            lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)).ToString());//Сумма со скидкой
-                            lvi.SubItems.Add("0"); //Номер акционного документа скидка
-                            lvi.SubItems.Add("0"); //Номер акционного документа подарок
-                            lvi.SubItems.Add("0"); //Номер акционного документа дополнительное поле пометка что участвовало в акции, но скидка может быть                            
-                            lvi.SubItems[10].Text = num_doc.ToString();
-                            //*****************************************************************************
-                            lvi.SubItems.Add("0");
-                            lvi.SubItems.Add("0");
-                            lvi.SubItems.Add("0");
-                            lvi.SubItems.Add("0");
-                            //*****************************************************************************
-                            listView1.Items.Add(lvi);
-                            SendDataToCustomerScreen(1, 0, 1);
-                        }
-                        num_records++;
-                    }
-                    /*акция сработала
-             * надо отметить все товарные позиции 
-             * чтобы они не участвовали в других акциях 
-             */
-                    marked_action_tovar(num_doc);
-                }
-                //                conn.Close();
-                //Теперь надо свернуть табличную часть если много позиций, тогда чек не может распечататься 
-                //ListView clon2 = new ListView();
-                //foreach (ListViewItem lvi in listView1.Items)
-                //{
-                //    copy_list_view_item(lvi, clon2);
-                //}
-                //listView1.Items.Clear();
-                //foreach (ListViewItem lvi2 in clon2.Items)
-                //{
-                //    ListViewItem lvi = new ListViewItem(lvi2.SubItems[0].Text);
-                //    lvi.Tag = lvi2.SubItems[0].Text;          //Внутренний код товара
-                //    lvi.SubItems.Add(lvi2.SubItems[1].Text);    //Наименование
-                //    lvi.SubItems.Add(lvi2.SubItems[2].Text);    //Характеристика
-                //    lvi.SubItems[2].Tag = lvi2.SubItems[2].Tag.ToString();
-                //    lvi.SubItems.Add("1");
-                //    lvi.SubItems.Add(lvi2.SubItems[4].Text);//Цена без скидки                                                                                  
-                //    lvi.SubItems.Add(lvi2.SubItems[5].Text);//Цена со скидкой
-                //    lvi.SubItems.Add(lvi2.SubItems[6].Text);//Сумма без скидки
-                //    lvi.SubItems.Add(lvi2.SubItems[7].Text);//Сумма со скидкой
-                //    lvi.SubItems.Add(lvi2.SubItems[8].Text);//Цена со скидкой
-                //    lvi.SubItems.Add(lvi2.SubItems[9].Text);//Сумма без скидки
-                //    lvi.SubItems.Add(lvi2.SubItems[10].Text);//Сумма со скидкой
+        //            int num_records = 1;
+        //            while (reader.Read())
+        //            {
+        //                if (multiplication_factor > 0)//Это количество позиций которые будут выданы в качестве подарка
+        //                {
+        //                    if ((decimal)num_records / sum == Math.Round(num_records / sum, 0, MidpointRounding.AwayFromZero))
+        //                    {
+        //                        ListViewItem lvi = new ListViewItem(reader[0].ToString());
+        //                        lvi.Tag = reader.GetInt64(0).ToString();          //Внутренний код товара
+        //                        lvi.SubItems.Add(reader[1].ToString().Trim());    //Наименование
+        //                        lvi.SubItems.Add(reader[5].ToString());    //Характеристика
+        //                        lvi.SubItems[2].Tag = reader[6].ToString();
+        //                        lvi.SubItems.Add("1");
+        //                        lvi.SubItems.Add(reader.GetDecimal(2).ToString());//Цена без скидки                                                                                  
+        //                        string price = get_price_action(num_doc);
+        //                        lvi.SubItems.Add(price.ToString());//Цена со скидкой должна быть получена из подарка
+        //                        lvi.SubItems.Add(reader.GetDecimal(2).ToString());//Сумма без скидки
+        //                        lvi.SubItems.Add(price.ToString());//Сумма со скидкой должна быть получена из подарка
+        //                        lvi.SubItems.Add("0"); //Номер акционного документа скидка
+        //                        lvi.SubItems.Add(num_doc.ToString()); //Номер акционного документа подарок
+        //                        lvi.SubItems.Add("0"); //Номер акционного документа дополнительное поле пометка что участвовало в акции, но скидка может быть                                
+        //                        lvi.SubItems[10].Text = num_doc.ToString();
+        //                        //}
+        //                        //*****************************************************************************
+        //                        lvi.SubItems.Add("0");
+        //                        lvi.SubItems.Add("0");
+        //                        lvi.SubItems.Add("0");
+        //                        lvi.SubItems.Add("0");
+        //                        //*****************************************************************************
+        //                        listView1.Items.Add(lvi);
+        //                        SendDataToCustomerScreen(1, 0, 1);
+        //                        multiplication_factor--;
+        //                    }
+        //                    else
+        //                    {
+        //                        ListViewItem lvi = new ListViewItem(reader[0].ToString());
+        //                        lvi.Tag = reader.GetInt64(0).ToString();          //Внутренний код товара
+        //                        lvi.SubItems.Add(reader[1].ToString().Trim());    //Наименование
+        //                        lvi.SubItems.Add(reader[5].ToString());           //Характеристика
+        //                        lvi.SubItems[2].Tag = reader[6].ToString();       //guid Характеристики
+        //                        //lvi.SubItems.Add("1");    //Количество
+        //                        lvi.SubItems.Add(reader[4].ToString());
+        //                        lvi.SubItems.Add(reader.GetDecimal(2).ToString());//Цена
+        //                        lvi.SubItems.Add(reader.GetDecimal(3).ToString());//Цена со скидкой
+        //                        lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString());//Сумма без скидки
+        //                        lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)).ToString());//Сумма со скидкой
+        //                        lvi.SubItems.Add("0"); //Номер акционного документа скидка
+        //                        lvi.SubItems.Add("0"); //Номер акционного документа подарок
+        //                        lvi.SubItems.Add("0"); //Номер акционного документа дополнительное поле пометка что участвовало в акции, но скидка может быть                                
+        //                        lvi.SubItems[10].Text = num_doc.ToString();
+        //                        //*****************************************************************************
+        //                        lvi.SubItems.Add("0");
+        //                        lvi.SubItems.Add("0");
+        //                        lvi.SubItems.Add("0");
+        //                        lvi.SubItems.Add("0");
+        //                        //*****************************************************************************
+        //                        listView1.Items.Add(lvi);
+        //                        SendDataToCustomerScreen(1, 0, 1);
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    ListViewItem lvi = new ListViewItem(reader[0].ToString());
+        //                    lvi.Tag = reader.GetInt64(0).ToString();          //Внутренний код товара
+        //                    lvi.SubItems.Add(reader[1].ToString().Trim());    //Наименование
+        //                    lvi.SubItems.Add(reader[5].ToString());           //Характеристика
+        //                    lvi.SubItems[2].Tag = reader[6].ToString();       //guid Характеристики                            
+        //                    //lvi.SubItems.Add("1");    //Количество
+        //                    lvi.SubItems.Add(reader[4].ToString());
+        //                    lvi.SubItems.Add(reader.GetDecimal(2).ToString());//Цена
+        //                    lvi.SubItems.Add(reader.GetDecimal(3).ToString());//Цена со скидкой
+        //                    lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString());//Сумма без скидки
+        //                    lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)).ToString());//Сумма со скидкой
+        //                    lvi.SubItems.Add("0"); //Номер акционного документа скидка
+        //                    lvi.SubItems.Add("0"); //Номер акционного документа подарок
+        //                    lvi.SubItems.Add("0"); //Номер акционного документа дополнительное поле пометка что участвовало в акции, но скидка может быть                            
+        //                    lvi.SubItems[10].Text = num_doc.ToString();
+        //                    //*****************************************************************************
+        //                    lvi.SubItems.Add("0");
+        //                    lvi.SubItems.Add("0");
+        //                    lvi.SubItems.Add("0");
+        //                    lvi.SubItems.Add("0");
+        //                    //*****************************************************************************
+        //                    listView1.Items.Add(lvi);
+        //                    SendDataToCustomerScreen(1, 0, 1);
+        //                }
+        //                num_records++;
+        //            }
+        //            /*акция сработала
+        //     * надо отметить все товарные позиции 
+        //     * чтобы они не участвовали в других акциях 
+        //     */
+        //            marked_action_tovar(num_doc);
+        //        }
+        //        //                conn.Close();
+        //        //Теперь надо свернуть табличную часть если много позиций, тогда чек не может распечататься 
+        //        //ListView clon2 = new ListView();
+        //        //foreach (ListViewItem lvi in listView1.Items)
+        //        //{
+        //        //    copy_list_view_item(lvi, clon2);
+        //        //}
+        //        //listView1.Items.Clear();
+        //        //foreach (ListViewItem lvi2 in clon2.Items)
+        //        //{
+        //        //    ListViewItem lvi = new ListViewItem(lvi2.SubItems[0].Text);
+        //        //    lvi.Tag = lvi2.SubItems[0].Text;          //Внутренний код товара
+        //        //    lvi.SubItems.Add(lvi2.SubItems[1].Text);    //Наименование
+        //        //    lvi.SubItems.Add(lvi2.SubItems[2].Text);    //Характеристика
+        //        //    lvi.SubItems[2].Tag = lvi2.SubItems[2].Tag.ToString();
+        //        //    lvi.SubItems.Add("1");
+        //        //    lvi.SubItems.Add(lvi2.SubItems[4].Text);//Цена без скидки                                                                                  
+        //        //    lvi.SubItems.Add(lvi2.SubItems[5].Text);//Цена со скидкой
+        //        //    lvi.SubItems.Add(lvi2.SubItems[6].Text);//Сумма без скидки
+        //        //    lvi.SubItems.Add(lvi2.SubItems[7].Text);//Сумма со скидкой
+        //        //    lvi.SubItems.Add(lvi2.SubItems[8].Text);//Цена со скидкой
+        //        //    lvi.SubItems.Add(lvi2.SubItems[9].Text);//Сумма без скидки
+        //        //    lvi.SubItems.Add(lvi2.SubItems[10].Text);//Сумма со скидкой
 
-                //    //string price = get_price_action(num_doc);
-                //    //lvi.SubItems.Add(price.ToString());//Цена со скидкой должна быть получена из подарка
-                //    lvi.SubItems.Add(reader.GetDecimal(2).ToString());//Сумма без скидки
-                //    lvi.SubItems.Add(price.ToString());//Сумма со скидкой должна быть получена из подарка
-                //    lvi.SubItems.Add("0"); //Номер акционного документа скидка
-                //    lvi.SubItems.Add(num_doc.ToString()); //Номер акционного документа подарок
-                //    lvi.SubItems.Add("0"); //Номер акционного документа дополнительное поле пометка что участвовало в акции, но скидка может быть                                
-                //    lvi.SubItems[10].Text = num_doc.ToString();
-                //    //}
-                //    //*****************************************************************************
-                //    lvi.SubItems.Add("0");
-                //    lvi.SubItems.Add("0");
-                //    lvi.SubItems.Add("0");
-                //    lvi.SubItems.Add("0");
-                //    //*****************************************************************************
-                //    listView1.Items.Add(lvi);
-                //    SendDataToCustomerScreen(1, 0, 1);
-                //}                
-                roll_up_listview();
-            }
-            catch (NpgsqlException ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ошибка при обработке 4 типа акций");
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                    // conn.Dispose();
-                }
-            }
-        }
+        //        //    //string price = get_price_action(num_doc);
+        //        //    //lvi.SubItems.Add(price.ToString());//Цена со скидкой должна быть получена из подарка
+        //        //    lvi.SubItems.Add(reader.GetDecimal(2).ToString());//Сумма без скидки
+        //        //    lvi.SubItems.Add(price.ToString());//Сумма со скидкой должна быть получена из подарка
+        //        //    lvi.SubItems.Add("0"); //Номер акционного документа скидка
+        //        //    lvi.SubItems.Add(num_doc.ToString()); //Номер акционного документа подарок
+        //        //    lvi.SubItems.Add("0"); //Номер акционного документа дополнительное поле пометка что участвовало в акции, но скидка может быть                                
+        //        //    lvi.SubItems[10].Text = num_doc.ToString();
+        //        //    //}
+        //        //    //*****************************************************************************
+        //        //    lvi.SubItems.Add("0");
+        //        //    lvi.SubItems.Add("0");
+        //        //    lvi.SubItems.Add("0");
+        //        //    lvi.SubItems.Add("0");
+        //        //    //*****************************************************************************
+        //        //    listView1.Items.Add(lvi);
+        //        //    SendDataToCustomerScreen(1, 0, 1);
+        //        //}                
+        //        roll_up_listview();
+        //    }
+        //    catch (NpgsqlException ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message, "ошибка при обработке 4 типа акций");
+        //    }
+        //    finally
+        //    {
+        //        if (conn.State == ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //            // conn.Dispose();
+        //        }
+        //    }
+        //}
 
 
         private void roll_up_listview()
@@ -12333,81 +12325,81 @@ namespace Cash8
          * в одном чеке может использоваться только один акционный купон!!!
          * имеется ввиду что сколько раз не предъявляй купон скидка не накапливается
          */
-        private void action_5(int num_doc, decimal sum)
-        {
-            // 1 сНачала надо проверить сработку акции
-            //bool the_action_has_worked = false;
-            NpgsqlConnection conn = null;
-            NpgsqlCommand command = null;
-            Int16 result = 0;
-            try
-            {
-                conn = MainStaticClass.NpgsqlConn();
-                conn.Open();
-                //Поскольку документ не записан еще найти строки которые могут участвовать в акции можно только последовательным перебором 
-                string query = "";
-                foreach (ListViewItem lvi in listView1.Items)
-                {
-                    if (Convert.ToInt32(lvi.SubItems[10].Text.Trim()) > 0)//Этот товар уже участвовал в акции значит его пропускаем
-                    {
-                        continue;
-                    }
-                    query = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + lvi.Tag.ToString() + " AND num_doc=" + num_doc.ToString();
-                    command = new NpgsqlCommand(query, conn);
-                    result = Convert.ToInt16(command.ExecuteScalar());
+        //private void action_5(int num_doc, decimal sum)
+        //{
+        //    // 1 сНачала надо проверить сработку акции
+        //    //bool the_action_has_worked = false;
+        //    NpgsqlConnection conn = null;
+        //    NpgsqlCommand command = null;
+        //    Int16 result = 0;
+        //    try
+        //    {
+        //        conn = MainStaticClass.NpgsqlConn();
+        //        conn.Open();
+        //        //Поскольку документ не записан еще найти строки которые могут участвовать в акции можно только последовательным перебором 
+        //        string query = "";
+        //        foreach (ListViewItem lvi in listView1.Items)
+        //        {
+        //            if (Convert.ToInt32(lvi.SubItems[10].Text.Trim()) > 0)//Этот товар уже участвовал в акции значит его пропускаем
+        //            {
+        //                continue;
+        //            }
+        //            query = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + lvi.Tag.ToString() + " AND num_doc=" + num_doc.ToString();
+        //            command = new NpgsqlCommand(query, conn);
+        //            result = Convert.ToInt16(command.ExecuteScalar());
 
-                    if (result == 1)//Сработала акция
-                    {
-                        have_action = true;//Признак того что в документе есть сработка по акции
+        //            if (result == 1)//Сработала акция
+        //            {
+        //                have_action = true;//Признак того что в документе есть сработка по акции
 
-                        decimal the_sum_without_a_discount = Convert.ToDecimal(lvi.SubItems[6].Text);
-                        if (sum >= the_sum_without_a_discount)
-                        {
-                            sum = sum - the_sum_without_a_discount;
-                            lvi.SubItems[5].Text = (Convert.ToDecimal(1 / 100)).ToString();
-                            lvi.SubItems[6].Text = ((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)).ToString());
-                            lvi.SubItems[7].Text = lvi.SubItems[6].Text;// Convert.ToDecimal(the_sum_without_a_discount - sum).ToString();//Сумма со скидкой
-                            lvi.SubItems[8].Text = num_doc.ToString(); //Номер акционного документа
-                            lvi.SubItems[10].Text = num_doc.ToString(); //Номер акционного документа
-                        }
-                        else
-                        {
-                            //Здесь сначала получаем сумму путем вычитания оставшейся суммы скидки 
-                            //от суммы без скидки, а только затем получаем цену со скидкой
-                            lvi.SubItems[7].Text = Convert.ToDecimal(the_sum_without_a_discount - sum).ToString();//Сумма со скидкой
-                            lvi.SubItems[5].Text = Math.Round(Convert.ToDecimal(lvi.SubItems[7].Text) / Convert.ToDecimal(lvi.SubItems[3].Text), 2).ToString();
-                            lvi.SubItems[8].Text = num_doc.ToString(); //Номер акционного документа
-                            lvi.SubItems[10].Text = num_doc.ToString(); //Номер акционного документа
-                            sum = 0; break; //Поскольку сумма скидки закончилась прерываем цикл
-                        }
-                    }
-                }
-                //                conn.Close();
-                /*Помечаем позиции которые 
-                 * остались не помеченными 
-                 * при сработке акции
-                 * 
-                 */
-                marked_action_tovar(num_doc);
+        //                decimal the_sum_without_a_discount = Convert.ToDecimal(lvi.SubItems[6].Text);
+        //                if (sum >= the_sum_without_a_discount)
+        //                {
+        //                    sum = sum - the_sum_without_a_discount;
+        //                    lvi.SubItems[5].Text = (Convert.ToDecimal(1 / 100)).ToString();
+        //                    lvi.SubItems[6].Text = ((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)).ToString());
+        //                    lvi.SubItems[7].Text = lvi.SubItems[6].Text;// Convert.ToDecimal(the_sum_without_a_discount - sum).ToString();//Сумма со скидкой
+        //                    lvi.SubItems[8].Text = num_doc.ToString(); //Номер акционного документа
+        //                    lvi.SubItems[10].Text = num_doc.ToString(); //Номер акционного документа
+        //                }
+        //                else
+        //                {
+        //                    //Здесь сначала получаем сумму путем вычитания оставшейся суммы скидки 
+        //                    //от суммы без скидки, а только затем получаем цену со скидкой
+        //                    lvi.SubItems[7].Text = Convert.ToDecimal(the_sum_without_a_discount - sum).ToString();//Сумма со скидкой
+        //                    lvi.SubItems[5].Text = Math.Round(Convert.ToDecimal(lvi.SubItems[7].Text) / Convert.ToDecimal(lvi.SubItems[3].Text), 2).ToString();
+        //                    lvi.SubItems[8].Text = num_doc.ToString(); //Номер акционного документа
+        //                    lvi.SubItems[10].Text = num_doc.ToString(); //Номер акционного документа
+        //                    sum = 0; break; //Поскольку сумма скидки закончилась прерываем цикл
+        //                }
+        //            }
+        //        }
+        //        //                conn.Close();
+        //        /*Помечаем позиции которые 
+        //         * остались не помеченными 
+        //         * при сработке акции
+        //         * 
+        //         */
+        //        marked_action_tovar(num_doc);
 
-            }
-            catch (NpgsqlException ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ошибка при обработке 5 типа акций");
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                    // conn.Dispose();
-                }
-            }
-        }
+        //    }
+        //    catch (NpgsqlException ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message, "ошибка при обработке 5 типа акций");
+        //    }
+        //    finally
+        //    {
+        //        if (conn.State == ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //            // conn.Dispose();
+        //        }
+        //    }
+        //}
 
         /*новый тип акции (6): за каждые ***грн. внутри чека (товаров из определённого списка) выдаётся сообщение типа 
          * "акция такая-то сработала *** раз, выдайте *** подарков" 
@@ -12416,73 +12408,73 @@ namespace Cash8
          * состав может быть разный, контролировать будет кассир)
          * 
          */
-        private void action_6(int num_doc, string comment, decimal sum, Int32 marker)
-        {
-            NpgsqlConnection conn = null;
-            NpgsqlCommand command = null;
-            Int16 result = 0;
-            decimal action_sum_of_this_document = 0;
-            try
-            {
-                conn = MainStaticClass.NpgsqlConn();
-                conn.Open();
-                //Поскольку документ не записан еще найти строки которые могут участвовать в акции можно только последовательным перебором 
-                string query = "";
-                foreach (ListViewItem lvi in listView1.Items)
-                {
-                    if (Convert.ToInt32(lvi.SubItems[10].Text.Trim()) > 0)//Этот товар уже участвовал в акции значит его пропускаем
-                    {
-                        continue;
-                    }
-                    query = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + lvi.Tag.ToString() + " AND num_doc=" + num_doc.ToString();
-                    command = new NpgsqlCommand(query, conn);
-                    result = Convert.ToInt16(command.ExecuteScalar());
-                    if (result == 1)//Акция сработала
-                    {
-                        have_action = true;//Признак того что в документе есть сработка по акции
+        //private void action_6(int num_doc, string comment, decimal sum, Int32 marker)
+        //{
+        //    NpgsqlConnection conn = null;
+        //    NpgsqlCommand command = null;
+        //    Int16 result = 0;
+        //    decimal action_sum_of_this_document = 0;
+        //    try
+        //    {
+        //        conn = MainStaticClass.NpgsqlConn();
+        //        conn.Open();
+        //        //Поскольку документ не записан еще найти строки которые могут участвовать в акции можно только последовательным перебором 
+        //        string query = "";
+        //        foreach (ListViewItem lvi in listView1.Items)
+        //        {
+        //            if (Convert.ToInt32(lvi.SubItems[10].Text.Trim()) > 0)//Этот товар уже участвовал в акции значит его пропускаем
+        //            {
+        //                continue;
+        //            }
+        //            query = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + lvi.Tag.ToString() + " AND num_doc=" + num_doc.ToString();
+        //            command = new NpgsqlCommand(query, conn);
+        //            result = Convert.ToInt16(command.ExecuteScalar());
+        //            if (result == 1)//Акция сработала
+        //            {
+        //                have_action = true;//Признак того что в документе есть сработка по акции
 
-                        action_sum_of_this_document += Convert.ToDecimal(lvi.SubItems[6].Text);
-                    }
-                }
-                //                conn.Close();
-            }
-            catch (NpgsqlException ex)
-            {
-                MessageBox.Show(ex.Message, "Ошибка при работе с базой данных");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ошибка при обработке 6 типа акций");
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                    // conn.Dispose();
-                }
-            }
+        //                action_sum_of_this_document += Convert.ToDecimal(lvi.SubItems[6].Text);
+        //            }
+        //        }
+        //        //                conn.Close();
+        //    }
+        //    catch (NpgsqlException ex)
+        //    {
+        //        MessageBox.Show(ex.Message, "Ошибка при работе с базой данных");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message, "ошибка при обработке 6 типа акций");
+        //    }
+        //    finally
+        //    {
+        //        if (conn.State == ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //            // conn.Dispose();
+        //        }
+        //    }
 
-            int quantity_of_gifts = (int)(action_sum_of_this_document / sum);
-            //decimal quantity_of_gifts = Math.Round(action_sum_of_this_document / sum,0);
+        //    int quantity_of_gifts = (int)(action_sum_of_this_document / sum);
+        //    //decimal quantity_of_gifts = Math.Round(action_sum_of_this_document / sum,0);
 
-            if (quantity_of_gifts > 0)//значит акция сработала
-            {
-                MessageBox.Show(comment + " количество подарков = " + quantity_of_gifts.ToString() + " шт. ", " АКЦИЯ !!!");
-                /*акция сработала
-             * надо отметить все товарные позиции 
-             * чтобы они не участвовали в других акциях 
-             */
-                if (marker == 1)
-                {
-                    for (int i = 0; i < quantity_of_gifts; i++)
-                    {
-                        show_query_window_barcode(2, 1, num_doc);
-                    }
-                }
-                marked_action_tovar(num_doc);
-            }
-        }
+        //    if (quantity_of_gifts > 0)//значит акция сработала
+        //    {
+        //        MessageBox.Show(comment + " количество подарков = " + quantity_of_gifts.ToString() + " шт. ", " АКЦИЯ !!!");
+        //        /*акция сработала
+        //     * надо отметить все товарные позиции 
+        //     * чтобы они не участвовали в других акциях 
+        //     */
+        //        if (marker == 1)
+        //        {
+        //            for (int i = 0; i < quantity_of_gifts; i++)
+        //            {
+        //                show_query_window_barcode(2, 1, num_doc);
+        //            }
+        //        }
+        //        marked_action_tovar(num_doc);
+        //    }
+        //}
 
         /*новый тип акции (7). для фиксирования выданных подарков по акции (6)
          * человек приносит купон и выбирает определённые товары с полки (согласно условиям акции),
@@ -12492,63 +12484,63 @@ namespace Cash8
          * подарков было такое, которое позволяет купон со стикерами, если вдруг в чеке будут обычные товары, то их цена не должна меняться 
          * или можно выдать предупреждение, что для этого типа акции наличие в чеке не акционных товаров недопустимо.
          */
-        private void action_7(int num_doc, long code_tovar)
-        {
-            NpgsqlConnection conn = null;
-            NpgsqlCommand command = null;
-            int gift = 0;
-            Int16 result = 0;
-            try
-            {
-                conn = MainStaticClass.NpgsqlConn();
-                conn.Open();
-                //Поскольку документ не записан еще найти строки которые могут участвовать в акции можно только последовательным перебором 
-                string query = "";
-                foreach (ListViewItem lvi in listView1.Items)
-                {
-                    //if (lvi.SubItems[9].Text.Trim().Length > 0)//Этот товар уже участвовал в акции значит его пропускаем
-                    //{
-                    //    continue;
-                    //}
-                    query = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + lvi.Tag.ToString() + " AND num_doc=" + num_doc.ToString();
-                    command = new NpgsqlCommand(query, conn);
-                    result = Convert.ToInt16(command.ExecuteScalar());
-                    if (result > 0)
-                    {
-                        have_action = true;//Признак того что в документе есть сработка по акции
+        //private void action_7(int num_doc, long code_tovar)
+        //{
+        //    NpgsqlConnection conn = null;
+        //    NpgsqlCommand command = null;
+        //    int gift = 0;
+        //    Int16 result = 0;
+        //    try
+        //    {
+        //        conn = MainStaticClass.NpgsqlConn();
+        //        conn.Open();
+        //        //Поскольку документ не записан еще найти строки которые могут участвовать в акции можно только последовательным перебором 
+        //        string query = "";
+        //        foreach (ListViewItem lvi in listView1.Items)
+        //        {
+        //            //if (lvi.SubItems[9].Text.Trim().Length > 0)//Этот товар уже участвовал в акции значит его пропускаем
+        //            //{
+        //            //    continue;
+        //            //}
+        //            query = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + lvi.Tag.ToString() + " AND num_doc=" + num_doc.ToString();
+        //            command = new NpgsqlCommand(query, conn);
+        //            result = Convert.ToInt16(command.ExecuteScalar());
+        //            if (result > 0)
+        //            {
+        //                have_action = true;//Признак того что в документе есть сработка по акции
 
-                        //lvi.SubItems[4].Text = ((decimal)1 / 100).ToString();
-                        lvi.SubItems[6].Text = "0";
-                        lvi.SubItems[7].Text = "0"; //((Convert.ToDecimal(lvi.SubItems[2].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString());
-                        lvi.SubItems[8].Text = num_doc.ToString(); //Номер акционного документа
-                        lvi.SubItems[10].Text = num_doc.ToString(); //Номер акционного документа
-                        gift += Convert.ToInt32(lvi.SubItems[3].Text);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Обнаружен неакционный товар " + lvi.SubItems[0].Text);
-                    }
-                }
-                find_barcode_or_code_in_tovar_action(code_tovar.ToString(), gift, false, num_doc);
-                //                conn.Close();
-            }
-            catch (NpgsqlException ex)
-            {
-                MessageBox.Show(ex.Message, "Ошибка при работе с базой данных");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ошибка при обработке 7 типа акций");
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                    // conn.Dispose();
-                }
-            }
-        }
+        //                //lvi.SubItems[4].Text = ((decimal)1 / 100).ToString();
+        //                lvi.SubItems[6].Text = "0";
+        //                lvi.SubItems[7].Text = "0"; //((Convert.ToDecimal(lvi.SubItems[2].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString());
+        //                lvi.SubItems[8].Text = num_doc.ToString(); //Номер акционного документа
+        //                lvi.SubItems[10].Text = num_doc.ToString(); //Номер акционного документа
+        //                gift += Convert.ToInt32(lvi.SubItems[3].Text);
+        //            }
+        //            else
+        //            {
+        //                MessageBox.Show("Обнаружен неакционный товар " + lvi.SubItems[0].Text);
+        //            }
+        //        }
+        //        find_barcode_or_code_in_tovar_action(code_tovar.ToString(), gift, false, num_doc);
+        //        //                conn.Close();
+        //    }
+        //    catch (NpgsqlException ex)
+        //    {
+        //        MessageBox.Show(ex.Message, "Ошибка при работе с базой данных");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message, "ошибка при обработке 7 типа акций");
+        //    }
+        //    finally
+        //    {
+        //        if (conn.State == ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //            // conn.Dispose();
+        //        }
+        //    }
+        //}
 
 
         /// <summary>
@@ -12563,185 +12555,185 @@ namespace Cash8
         /// <param name="num_doc"></param>
         /// <param name="persent"></param>
         /// <param name="sum"></param>
-        private void action_8(int num_doc, decimal persent, decimal sum)
-        {
+        //private void action_8(int num_doc, decimal persent, decimal sum)
+        //{
 
 
-            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
-            NpgsqlCommand command = null;
-            string query_string = "";
-            StringBuilder query = new StringBuilder();
-            decimal quantity_on_doc = 0;
+        //    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+        //    NpgsqlCommand command = null;
+        //    string query_string = "";
+        //    StringBuilder query = new StringBuilder();
+        //    decimal quantity_on_doc = 0;
 
-            if (!create_temp_tovar_table())
-            {
-                return;
-            }
-
-
-
-            try
-            {
-
-                conn.Open();
-                ListView clon = new ListView();
-                //int total_quantity = 0;
-                foreach (ListViewItem lvi in listView1.Items)
-                {
-                    if (Convert.ToInt32(lvi.SubItems[10].Text.Trim()) > 0)//Этот товар уже участвовал в акции значит его пропускаем
-                    {
-                        //clon.Items.Add((ListViewItem)lvi.Clone());
-                        copy_list_view_item(lvi, clon);
-                        continue;
-                    }
-                    query_string = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + lvi.Tag.ToString() + " AND num_doc=" + num_doc.ToString();
-                    command = new NpgsqlCommand(query_string, conn);
-
-                    if (Convert.ToInt16(command.ExecuteScalar()) != 0)
-                    {
-
-                        for (int i = 0; i < Convert.ToInt32(lvi.SubItems[3].Text); i++)
-                        {
-                            query.Append("INSERT INTO tovar_action(code, retail_price, quantity)VALUES(" +
-                               lvi.SubItems[0].Text + "," +
-                               lvi.SubItems[4].Text.Replace(",", ".") + "," +
-                               "1);");
-                        }
-                        quantity_on_doc += Convert.ToDecimal(lvi.SubItems[3].Text);
-                    }
-                    else
-                    {
-                        //clon.Items.Add((ListViewItem)lvi.Clone());
-                        copy_list_view_item(lvi, clon);
-                    }
-                }
+        //    if (!create_temp_tovar_table())
+        //    {
+        //        return;
+        //    }
 
 
-                if (quantity_on_doc >= sum)//Есть вхождение в акцию
-                {
 
-                    have_action = true;//Признак того что в документе есть сработка по акции
+        //    try
+        //    {
 
-                    listView1.Items.Clear();
-                    foreach (ListViewItem lvi in clon.Items)
-                    {
-                        listView1.Items.Add((ListViewItem)lvi.Clone());
-                    }
-                    command = new NpgsqlCommand(query.ToString(), conn);//устанавливаем акционные позиции во временную таблицу
-                    command.ExecuteNonQuery();
-                    //query = new StringBuilder();
-                    query.Append("DELETE FROM tovar_action;");//Очищаем таблицу акционных товаров 
-                    //иначе результат задваивается ранее эта строка была закомментирована и при 2 товарах по 1 шт. учавстсующих в акции
-                    //работала неверно
+        //        conn.Open();
+        //        ListView clon = new ListView();
+        //        //int total_quantity = 0;
+        //        foreach (ListViewItem lvi in listView1.Items)
+        //        {
+        //            if (Convert.ToInt32(lvi.SubItems[10].Text.Trim()) > 0)//Этот товар уже участвовал в акции значит его пропускаем
+        //            {
+        //                //clon.Items.Add((ListViewItem)lvi.Clone());
+        //                copy_list_view_item(lvi, clon);
+        //                continue;
+        //            }
+        //            query_string = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + lvi.Tag.ToString() + " AND num_doc=" + num_doc.ToString();
+        //            command = new NpgsqlCommand(query_string, conn);
 
-                    int multiplication_factor = (int)(quantity_on_doc / sum);
-                    //query_string = " SELECT code, retail_price, quantity FROM tovar_action ORDER BY retail_price ";//запросим товары отсортированные по цене
-                    query_string = " SELECT tovar_action.code,tovar.name, tovar.retail_price,tovar_action.retail_price, quantity FROM tovar_action LEFT JOIN tovar ON tovar_action.code=tovar.code ";//запросим товары отсортированные по цене
-                    command = new NpgsqlCommand(query_string, conn);
-                    NpgsqlDataReader reader = command.ExecuteReader();
-                    decimal _sum_ = sum;
-                    while (reader.Read())
-                    {
-                        if ((multiplication_factor > 0) || (_sum_ > 0))
-                        {
-                            if ((_sum_ == 0) && (multiplication_factor > 0))
-                            {
-                                _sum_ = sum;
-                                multiplication_factor--;
+        //            if (Convert.ToInt16(command.ExecuteScalar()) != 0)
+        //            {
 
-                            }
-                            _sum_ -= 1;
+        //                for (int i = 0; i < Convert.ToInt32(lvi.SubItems[3].Text); i++)
+        //                {
+        //                    query.Append("INSERT INTO tovar_action(code, retail_price, quantity)VALUES(" +
+        //                       lvi.SubItems[0].Text + "," +
+        //                       lvi.SubItems[4].Text.Replace(",", ".") + "," +
+        //                       "1);");
+        //                }
+        //                quantity_on_doc += Convert.ToDecimal(lvi.SubItems[3].Text);
+        //            }
+        //            else
+        //            {
+        //                //clon.Items.Add((ListViewItem)lvi.Clone());
+        //                copy_list_view_item(lvi, clon);
+        //            }
+        //        }
 
-                            ListViewItem lvi = new ListViewItem(reader[0].ToString());
-                            lvi.Tag = reader.GetInt64(0).ToString();          //Внутренний код товара
-                            lvi.SubItems.Add(reader[1].ToString().Trim());    //Наименование
-                            lvi.SubItems.Add("");                             //Характеристика
-                            lvi.SubItems[2].Tag = "";
-                            lvi.SubItems.Add(reader[4].ToString().Trim());    //Количество
-                            lvi.SubItems.Add(reader.GetDecimal(2).ToString());//Цена
-                            lvi.SubItems.Add(Math.Round(reader.GetDecimal(2) - reader.GetDecimal(2) * persent / 100, 2).ToString());//Цена со скидкой            
-                            //lvi.SubItems.Add(reader.GetDecimal(3).ToString());//Цена со скидкой
-                            lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString());//Сумма без скидки
-                            lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)).ToString());//Сумма со скидкой
-                            lvi.SubItems.Add(num_doc.ToString()); //Номер акционного документа скидка
-                            lvi.SubItems.Add("0"); //Номер акционного документа подарок
-                            lvi.SubItems.Add("0"); //Номер акционного документа дополнительное поле пометка что участвовало в акции, но скидка может быть
 
-                            lvi.SubItems[10].Text = num_doc.ToString();
-                            //*****************************************************************************
-                            //lvi.SubItems[11].Text = "0";
-                            //lvi.SubItems[12].Text = "0";
-                            //lvi.SubItems[13].Text = "0";
-                            //lvi.SubItems[14].Text = "0";
-                            lvi.SubItems.Add("0");
-                            lvi.SubItems.Add("0");
-                            lvi.SubItems.Add("0");
-                            lvi.SubItems.Add("0");
-                            //*****************************************************************************
-                            listView1.Items.Add(lvi);
-                            SendDataToCustomerScreen(1, 0,1);
+        //        if (quantity_on_doc >= sum)//Есть вхождение в акцию
+        //        {
 
-                        }
-                        else
-                        {
-                            ListViewItem lvi = new ListViewItem(reader[0].ToString());
-                            lvi.Tag = reader.GetInt64(0).ToString();          //Внутренний код товара
-                            lvi.SubItems.Add(reader[1].ToString().Trim());    //Наименование
-                            lvi.SubItems.Add("");    //Характеристика
-                            lvi.SubItems[2].Tag = "";
-                            lvi.SubItems.Add(reader[4].ToString().Trim());    //Количество
-                            lvi.SubItems.Add(reader.GetDecimal(2).ToString());//Цена                            
-                            lvi.SubItems.Add(reader.GetDecimal(3).ToString());//Цена со скидкой
-                            lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString());//Сумма без скидки
-                            lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)).ToString());//Сумма со скидкой
-                            lvi.SubItems.Add("0"); //Номер акционного документа скидка
-                            lvi.SubItems.Add("0"); //Номер акционного документа подарок
-                            lvi.SubItems.Add("0"); //Номер акционного документа дополнительное поле пометка что участвовало в акции, но скидка может быть
+        //            have_action = true;//Признак того что в документе есть сработка по акции
 
-                            lvi.SubItems[10].Text = num_doc.ToString();
-                            //*****************************************************************************
-                            //lvi.SubItems[11].Text = "0";
-                            //lvi.SubItems[12].Text = "0";
-                            //lvi.SubItems[13].Text = "0";
-                            //lvi.SubItems[14].Text = "0";
-                            lvi.SubItems.Add("0");
-                            lvi.SubItems.Add("0");
-                            lvi.SubItems.Add("0");
-                            lvi.SubItems.Add("0");
-                            //*****************************************************************************
-                            listView1.Items.Add(lvi);
-                            SendDataToCustomerScreen(1, 0,1);
-                        }
+        //            listView1.Items.Clear();
+        //            foreach (ListViewItem lvi in clon.Items)
+        //            {
+        //                listView1.Items.Add((ListViewItem)lvi.Clone());
+        //            }
+        //            command = new NpgsqlCommand(query.ToString(), conn);//устанавливаем акционные позиции во временную таблицу
+        //            command.ExecuteNonQuery();
+        //            //query = new StringBuilder();
+        //            query.Append("DELETE FROM tovar_action;");//Очищаем таблицу акционных товаров 
+        //            //иначе результат задваивается ранее эта строка была закомментирована и при 2 товарах по 1 шт. учавстсующих в акции
+        //            //работала неверно
 
-                    }
+        //            int multiplication_factor = (int)(quantity_on_doc / sum);
+        //            //query_string = " SELECT code, retail_price, quantity FROM tovar_action ORDER BY retail_price ";//запросим товары отсортированные по цене
+        //            query_string = " SELECT tovar_action.code,tovar.name, tovar.retail_price,tovar_action.retail_price, quantity FROM tovar_action LEFT JOIN tovar ON tovar_action.code=tovar.code ";//запросим товары отсортированные по цене
+        //            command = new NpgsqlCommand(query_string, conn);
+        //            NpgsqlDataReader reader = command.ExecuteReader();
+        //            decimal _sum_ = sum;
+        //            while (reader.Read())
+        //            {
+        //                if ((multiplication_factor > 0) || (_sum_ > 0))
+        //                {
+        //                    if ((_sum_ == 0) && (multiplication_factor > 0))
+        //                    {
+        //                        _sum_ = sum;
+        //                        multiplication_factor--;
 
-                    /*акция сработала
-             * надо отметить все товарные позиции 
-             * чтобы они не участвовали в других акциях 
-             */
+        //                    }
+        //                    _sum_ -= 1;
 
-                    marked_action_tovar(num_doc);
-                }
+        //                    ListViewItem lvi = new ListViewItem(reader[0].ToString());
+        //                    lvi.Tag = reader.GetInt64(0).ToString();          //Внутренний код товара
+        //                    lvi.SubItems.Add(reader[1].ToString().Trim());    //Наименование
+        //                    lvi.SubItems.Add("");                             //Характеристика
+        //                    lvi.SubItems[2].Tag = "";
+        //                    lvi.SubItems.Add(reader[4].ToString().Trim());    //Количество
+        //                    lvi.SubItems.Add(reader.GetDecimal(2).ToString());//Цена
+        //                    lvi.SubItems.Add(Math.Round(reader.GetDecimal(2) - reader.GetDecimal(2) * persent / 100, 2).ToString());//Цена со скидкой            
+        //                    //lvi.SubItems.Add(reader.GetDecimal(3).ToString());//Цена со скидкой
+        //                    lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString());//Сумма без скидки
+        //                    lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)).ToString());//Сумма со скидкой
+        //                    lvi.SubItems.Add(num_doc.ToString()); //Номер акционного документа скидка
+        //                    lvi.SubItems.Add("0"); //Номер акционного документа подарок
+        //                    lvi.SubItems.Add("0"); //Номер акционного документа дополнительное поле пометка что участвовало в акции, но скидка может быть
 
-                roll_up_listview();
-            }
-            catch (NpgsqlException ex)
-            {
-                MessageBox.Show(ex.Message, " 8 акция ");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, " 8 акция ");
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                    // conn.Dispose();
-                }
-            }
-        }
+        //                    lvi.SubItems[10].Text = num_doc.ToString();
+        //                    //*****************************************************************************
+        //                    //lvi.SubItems[11].Text = "0";
+        //                    //lvi.SubItems[12].Text = "0";
+        //                    //lvi.SubItems[13].Text = "0";
+        //                    //lvi.SubItems[14].Text = "0";
+        //                    lvi.SubItems.Add("0");
+        //                    lvi.SubItems.Add("0");
+        //                    lvi.SubItems.Add("0");
+        //                    lvi.SubItems.Add("0");
+        //                    //*****************************************************************************
+        //                    listView1.Items.Add(lvi);
+        //                    SendDataToCustomerScreen(1, 0,1);
+
+        //                }
+        //                else
+        //                {
+        //                    ListViewItem lvi = new ListViewItem(reader[0].ToString());
+        //                    lvi.Tag = reader.GetInt64(0).ToString();          //Внутренний код товара
+        //                    lvi.SubItems.Add(reader[1].ToString().Trim());    //Наименование
+        //                    lvi.SubItems.Add("");    //Характеристика
+        //                    lvi.SubItems[2].Tag = "";
+        //                    lvi.SubItems.Add(reader[4].ToString().Trim());    //Количество
+        //                    lvi.SubItems.Add(reader.GetDecimal(2).ToString());//Цена                            
+        //                    lvi.SubItems.Add(reader.GetDecimal(3).ToString());//Цена со скидкой
+        //                    lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString());//Сумма без скидки
+        //                    lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)).ToString());//Сумма со скидкой
+        //                    lvi.SubItems.Add("0"); //Номер акционного документа скидка
+        //                    lvi.SubItems.Add("0"); //Номер акционного документа подарок
+        //                    lvi.SubItems.Add("0"); //Номер акционного документа дополнительное поле пометка что участвовало в акции, но скидка может быть
+
+        //                    lvi.SubItems[10].Text = num_doc.ToString();
+        //                    //*****************************************************************************
+        //                    //lvi.SubItems[11].Text = "0";
+        //                    //lvi.SubItems[12].Text = "0";
+        //                    //lvi.SubItems[13].Text = "0";
+        //                    //lvi.SubItems[14].Text = "0";
+        //                    lvi.SubItems.Add("0");
+        //                    lvi.SubItems.Add("0");
+        //                    lvi.SubItems.Add("0");
+        //                    lvi.SubItems.Add("0");
+        //                    //*****************************************************************************
+        //                    listView1.Items.Add(lvi);
+        //                    SendDataToCustomerScreen(1, 0,1);
+        //                }
+
+        //            }
+
+        //            /*акция сработала
+        //     * надо отметить все товарные позиции 
+        //     * чтобы они не участвовали в других акциях 
+        //     */
+
+        //            marked_action_tovar(num_doc);
+        //        }
+
+        //        roll_up_listview();
+        //    }
+        //    catch (NpgsqlException ex)
+        //    {
+        //        MessageBox.Show(ex.Message, " 8 акция ");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message, " 8 акция ");
+        //    }
+        //    finally
+        //    {
+        //        if (conn.State == ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //            // conn.Dispose();
+        //        }
+        //    }
+        //}
 
 
         /// <summary>
@@ -12760,129 +12752,129 @@ namespace Cash8
         /// <param name="num_doc"></param>
         /// <param name="persent"></param>
         /// <param name="sum"></param>
-        private void action_8(int num_doc, string comment, decimal sum, long code_tovar, Int32 marker)
-        {
+        //private void action_8(int num_doc, string comment, decimal sum, long code_tovar, Int32 marker)
+        //{
 
 
-            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
-            NpgsqlCommand command = null;
-            string query_string = "";
-            //StringBuilder query = new StringBuilder();
-            decimal quantity_on_doc = 0;
+        //    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+        //    NpgsqlCommand command = null;
+        //    string query_string = "";
+        //    //StringBuilder query = new StringBuilder();
+        //    decimal quantity_on_doc = 0;
 
-            if (!create_temp_tovar_table())
-            {
-                return;
-            }
+        //    if (!create_temp_tovar_table())
+        //    {
+        //        return;
+        //    }
 
-            try
-            {
+        //    try
+        //    {
 
-                conn.Open();
-                //ListView clon = new ListView();
-                //int total_quantity = 0;
-                foreach (ListViewItem lvi in listView1.Items)
-                {
-                    if (Convert.ToInt32(lvi.SubItems[10].Text.Trim()) > 0)//Этот товар уже участвовал в акции значит его пропускаем
-                    {
-                        continue;
-                    }
-                    query_string = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + lvi.Tag.ToString() + " AND num_doc=" + num_doc.ToString();
-                    command = new NpgsqlCommand(query_string, conn);
+        //        conn.Open();
+        //        //ListView clon = new ListView();
+        //        //int total_quantity = 0;
+        //        foreach (ListViewItem lvi in listView1.Items)
+        //        {
+        //            if (Convert.ToInt32(lvi.SubItems[10].Text.Trim()) > 0)//Этот товар уже участвовал в акции значит его пропускаем
+        //            {
+        //                continue;
+        //            }
+        //            query_string = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + lvi.Tag.ToString() + " AND num_doc=" + num_doc.ToString();
+        //            command = new NpgsqlCommand(query_string, conn);
 
-                    if (Convert.ToInt16(command.ExecuteScalar()) != 0)
-                    {
-                        quantity_on_doc += Convert.ToDecimal(lvi.SubItems[3].Text);
-                    }
-                }
-
-
-                if (quantity_on_doc >= sum)//Есть вхождение в акцию
-                {
-
-                    have_action = true;//Признак того что в документе есть сработка по акции
-
-                    int multiplication_factor = (int)(quantity_on_doc / sum);
+        //            if (Convert.ToInt16(command.ExecuteScalar()) != 0)
+        //            {
+        //                quantity_on_doc += Convert.ToDecimal(lvi.SubItems[3].Text);
+        //            }
+        //        }
 
 
-                    MessageBox.Show(comment.Trim() + " количество подарков = " + multiplication_factor.ToString() + " шт. ", " АКЦИЯ !!!");
+        //        if (quantity_on_doc >= sum)//Есть вхождение в акцию
+        //        {
 
-                    if (marker == 1)
-                    {
-                        for (int i = 0; i < multiplication_factor; i++)
-                        {
-                            show_query_window_barcode(2, 1, num_doc);
-                        }
-                    }
+        //            have_action = true;//Признак того что в документе есть сработка по акции
 
-                    marked_action_tovar(num_doc);
+        //            int multiplication_factor = (int)(quantity_on_doc / sum);
 
-                }
-            }
-            catch (NpgsqlException ex)
-            {
-                MessageBox.Show(ex.Message, " 8 акция ");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, " 8 акция ");
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                    // conn.Dispose();
-                }
-            }
-        }
+
+        //            MessageBox.Show(comment.Trim() + " количество подарков = " + multiplication_factor.ToString() + " шт. ", " АКЦИЯ !!!");
+
+        //            if (marker == 1)
+        //            {
+        //                for (int i = 0; i < multiplication_factor; i++)
+        //                {
+        //                    show_query_window_barcode(2, 1, num_doc);
+        //                }
+        //            }
+
+        //            marked_action_tovar(num_doc);
+
+        //        }
+        //    }
+        //    catch (NpgsqlException ex)
+        //    {
+        //        MessageBox.Show(ex.Message, " 8 акция ");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message, " 8 акция ");
+        //    }
+        //    finally
+        //    {
+        //        if (conn.State == ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //            // conn.Dispose();
+        //        }
+        //    }
+        //}
 
 
         /*Пометка товарных позиций которые участвовали в акции
          * для того чтобы они не участвоствовали в следующих акциях
          */
-        private void marked_action_tovar(int num_doc)
-        {
-            NpgsqlConnection conn = null;
-            NpgsqlCommand command = null;
-            try
-            {
-                conn = MainStaticClass.NpgsqlConn();
-                conn.Open();
-                foreach (ListViewItem lvi in listView1.Items)
-                {
-                    if (Convert.ToInt32(lvi.SubItems[10].Text.Trim()) > 0)//Этот товар уже участвовал в акции значит его пропускаем
-                    {
-                        continue;
-                    }
-                    string query = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + lvi.Tag.ToString() + " AND num_doc=" + num_doc.ToString();
-                    command = new NpgsqlCommand(query, conn);
-                    Int16 result = Convert.ToInt16(command.ExecuteScalar());
-                    if (result == 1)
-                    {
-                        lvi.SubItems[10].Text = num_doc.ToString();
-                    }
-                }
-                //                conn.Close();
-            }
-            catch (NpgsqlException ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "пометка товарных позиций участвующих в акции");
-            }
+        //private void marked_action_tovar(int num_doc)
+        //{
+        //    NpgsqlConnection conn = null;
+        //    NpgsqlCommand command = null;
+        //    try
+        //    {
+        //        conn = MainStaticClass.NpgsqlConn();
+        //        conn.Open();
+        //        foreach (ListViewItem lvi in listView1.Items)
+        //        {
+        //            if (Convert.ToInt32(lvi.SubItems[10].Text.Trim()) > 0)//Этот товар уже участвовал в акции значит его пропускаем
+        //            {
+        //                continue;
+        //            }
+        //            string query = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + lvi.Tag.ToString() + " AND num_doc=" + num_doc.ToString();
+        //            command = new NpgsqlCommand(query, conn);
+        //            Int16 result = Convert.ToInt16(command.ExecuteScalar());
+        //            if (result == 1)
+        //            {
+        //                lvi.SubItems[10].Text = num_doc.ToString();
+        //            }
+        //        }
+        //        //                conn.Close();
+        //    }
+        //    catch (NpgsqlException ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message, "пометка товарных позиций участвующих в акции");
+        //    }
 
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                    // conn.Dispose();
-                }
-            }
-        }
+        //    finally
+        //    {
+        //        if (conn.State == ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //            // conn.Dispose();
+        //        }
+        //    }
+        //}
 
 
         /*Пометка товарных позиций которые участвовали в акции
@@ -13393,19 +13385,19 @@ namespace Cash8
                 }
 
                 MainStaticClass.write_event_in_log(" Попытка обработать акции по штрихкодам ", "Документ чек", numdoc.ToString());
-                if (MainStaticClass.EnableStockProcessingInMemory <= 0)
-                {
-                    //Акции по штрихкодам
-                    foreach (string barcode in action_barcode_list)
-                    {
-                        to_define_the_action(barcode);
-                    }
-                    //Теперь все остальные акции
-                    MainStaticClass.write_event_in_log(" Попытка обработать все остальные акции ", "Документ чек", numdoc.ToString());                    
-                    to_define_the_action();//Обработка на дисконтные акции 
-                }
-                else
-                {                    
+                //if (MainStaticClass.EnableStockProcessingInMemory <= 0)
+                //{
+                //    //Акции по штрихкодам
+                //    foreach (string barcode in action_barcode_list)
+                //    {
+                //        to_define_the_action(barcode);
+                //    }
+                //    //Теперь все остальные акции
+                //    MainStaticClass.write_event_in_log(" Попытка обработать все остальные акции ", "Документ чек", numdoc.ToString());                    
+                //    to_define_the_action();//Обработка на дисконтные акции 
+                //}
+                //else
+                //{                    
                     //Акции по штрихкодам                    
                     DataTable dataTable = to_define_the_action_dt(true);//Обработка на дисконтные акции с использованием datatable 
                     
@@ -13433,7 +13425,7 @@ namespace Cash8
 
                         listView1.Items.Add(lvi);
                     }
-                }
+                //}
 
                 //Теперь необходимо пересчитать все суммы по документу
 

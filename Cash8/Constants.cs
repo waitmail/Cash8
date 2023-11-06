@@ -103,8 +103,8 @@ namespace Cash8
                 string query = "SELECT nick_shop,cash_desk_number,use_debug,code_shop,"+
                     " path_for_web_service,currency,unloading_period,last_date_download_bonus_clients,"+
                     " envd,pass_promo,print_m,system_taxation,work_schema,version_fn,enable_stock_processing_in_memory," +
-                    " id_acquirer_terminal,ip_address_acquiring_terminal,self_service_kiosk,one_monitors_connected,version2_marking " +
-                    " FROM constants";
+                    " id_acquirer_terminal,ip_address_acquiring_terminal,self_service_kiosk,one_monitors_connected,version2_marking, " +
+                    " webservice_authorize FROM constants";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
@@ -133,6 +133,7 @@ namespace Cash8
                     this.checkBox_self_service_kiosk.CheckState = (reader["self_service_kiosk"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
                     this.checkBox_one_monitors_connected.CheckState = (reader["one_monitors_connected"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
                     this.checkBox_version2_marking.CheckState = (reader["version2_marking"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
+                    this.checkBox_webservice_authorize.CheckState = (reader["webservice_authorize"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
                 }
                 reader.Close();
                 //if (nick_shop.Text.Trim() != "A01")
@@ -267,7 +268,8 @@ namespace Cash8
             string self_service_kiosk = (checkBox_self_service_kiosk.CheckState == CheckState.Unchecked ? "false" : "true");
             string one_monitors_connected = (checkBox_one_monitors_connected.CheckState == CheckState.Unchecked ? "false" : "true");
             string version2_marking = (checkBox_version2_marking.CheckState == CheckState.Unchecked ? "false" : "true");
-            
+            string webservice_authorize = (checkBox_webservice_authorize.CheckState == CheckState.Unchecked ? "false" : "true");
+
 
             try
             {
@@ -291,8 +293,10 @@ namespace Cash8
                     "ip_address_acquiring_terminal='" + txtB_ip_address_acquiring_terminal.Text.ToString().Trim() + "'," +
                     "self_service_kiosk=" + self_service_kiosk+","+
                     "one_monitors_connected="+ one_monitors_connected+","+
-                    "version2_marking="+ version2_marking;                    
-       
+                    "version2_marking="+ version2_marking+","+
+                    "webservice_authorize=" + webservice_authorize;
+
+
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 int resul_update = command.ExecuteNonQuery();
                 if (resul_update == 0)
@@ -314,7 +318,8 @@ namespace Cash8
                         "ip_address_acquiring_terminal,"+
                         "self_service_kiosk,"+
                         "one_monitors_connected,"+
-                        "version2_marking) VALUES(" +
+                        "version2_marking,"+
+                        "webservice_authorize) VALUES(" +
                         cash_desk_number.Text + ",'" +
                         nick_shop.Text + "'," +
                         get_use_debug() + ",'" +                        
@@ -331,7 +336,8 @@ namespace Cash8
                         txtB_ip_address_acquiring_terminal.ToString().Trim()+"','"+
                         self_service_kiosk+","+
                         one_monitors_connected+","+
-                        version2_marking+")";
+                        version2_marking+","+
+                        webservice_authorize+")";
 
                     command = new NpgsqlCommand(query, conn);
                     command.ExecuteNonQuery();

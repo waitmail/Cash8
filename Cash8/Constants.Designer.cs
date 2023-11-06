@@ -59,6 +59,7 @@
             this.groupBox_acquiring_terminal = new System.Windows.Forms.GroupBox();
             this.checkBox_one_monitors_connected = new System.Windows.Forms.CheckBox();
             this.checkBox_version2_marking = new System.Windows.Forms.CheckBox();
+            this.checkBox_webservice_authorize = new System.Windows.Forms.CheckBox();
             this.groupBox_acquiring_terminal.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -346,11 +347,22 @@
             this.checkBox_version2_marking.Text = "Версия маркировки 2";
             this.checkBox_version2_marking.UseVisualStyleBackColor = true;
             // 
+            // checkBox_webservice_authorize
+            // 
+            this.checkBox_webservice_authorize.AutoSize = true;
+            this.checkBox_webservice_authorize.Location = new System.Drawing.Point(11, 137);
+            this.checkBox_webservice_authorize.Name = "checkBox_webservice_authorize";
+            this.checkBox_webservice_authorize.Size = new System.Drawing.Size(167, 17);
+            this.checkBox_webservice_authorize.TabIndex = 80;
+            this.checkBox_webservice_authorize.Text = "Веб сервис с авторизацией";
+            this.checkBox_webservice_authorize.UseVisualStyleBackColor = true;
+            // 
             // Constants
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(781, 359);
+            this.Controls.Add(this.checkBox_webservice_authorize);
             this.Controls.Add(this.checkBox_version2_marking);
             this.Controls.Add(this.checkBox_one_monitors_connected);
             this.Controls.Add(this.checkBox_self_service_kiosk);
@@ -425,5 +437,6 @@
         private System.Windows.Forms.GroupBox groupBox_acquiring_terminal;
         private System.Windows.Forms.CheckBox checkBox_one_monitors_connected;
         private System.Windows.Forms.CheckBox checkBox_version2_marking;
+        private System.Windows.Forms.CheckBox checkBox_webservice_authorize;
     }
 }

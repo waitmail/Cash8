@@ -56,18 +56,53 @@ namespace Cash8
             return proxyObject;
         }
 
+
+    //    string url = MainStaticClass.GetStartUrl + "/v3/buyerInfo/";
+    //    byte[] body = Encoding.UTF8.GetBytes(json);
+    //    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+    //    request.Timeout = 20000;
+    //        var authString = MainStaticClass.GetAuthStringProcessing;
+    //    request.Headers.Add("Authorization", "Basic " + authString);
+    //        request.Method = "POST";
+    //        request.ContentType = "application/json; charset=utf-8";
+    //        request.ContentLength = body.Length;
+
+    //        try
+    //        {
+    //            using (Stream stream = request.GetRequestStream())
+    //            {
+    //                stream.Write(body, 0, body.Length);
+    //                stream.Close();
+    //            }
+
+
+    //            using (HttpWebResponse response = (HttpWebResponse) request.GetResponse())
+    //            {
+    //                byte[] buf = new byte[10000];
+    //int count = -1;
+    //String read = "";
+    //                do
+    //                {
+    //                    count = response.GetResponseStream().Read(buf, 0, buf.Length);
+    //read += Encoding.UTF8.GetString(buf, 0, count);
+    //                } while (response.GetResponseStream().CanRead && count != 0);
+    //                //string answer = JsonConvert.DeserializeObject(read.Replace("{}", @"""""")).ToString();//read.Replace("{}","\"\"")
+    //                buyerInfoResponce = JsonConvert.DeserializeObject<BuyerInfoResponce>(read.Replace("{}", @""""""), new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+    //            }
+
         //Внесение средств
         public static string POST(string Url, string Data)
         {
             string Out = String.Empty;
             try
             {
-                System.Net.WebRequest req = System.Net.WebRequest.Create(Url);                
+                System.Net.WebRequest req = System.Net.WebRequest.Create(Url);
                 req.Method = "POST";
                 req.Timeout = 5000;
                 req.ContentType = "application/json";
                 byte[] sentData = Encoding.UTF8.GetBytes(Data);
                 req.ContentLength = sentData.Length;
+                MainStaticClass.set_basic_auth(req);
                 System.IO.Stream sendStream = req.GetRequestStream();
                 sendStream.Write(sentData, 0, sentData.Length);
                 sendStream.Close();
@@ -99,19 +134,17 @@ namespace Cash8
         private static RootObject GET(string Url, string Data)
         {
             System.Net.WebRequest req = System.Net.WebRequest.Create(Url + "/" + Data);
-            req.Timeout = 10000;                        
-            System.Net.WebResponse resp = req.GetResponse();
-            //HttpWebResponse myHttpWebResponse = (HttpWebResponse)req.GetResponse();
+            MainStaticClass.set_basic_auth(req);
+            req.Timeout = 10000;
+            MainStaticClass.set_basic_auth(req);
+            System.Net.WebResponse resp = req.GetResponse();         
 
             System.IO.Stream stream = resp.GetResponseStream();
 
             System.IO.StreamReader sr = new System.IO.StreamReader(stream);
             string Out = sr.ReadToEnd();
             sr.Close();
-            
-            //Newtonsoft.Json.Linq.JObject obj = Newtonsoft.Json.Linq.JObject.Parse(Out);
-            //var obj = JsonConvert.DeserializeObject(Out) as System.Collections.Generic.ICollection<Results>; 
-                        
+                                    
             var results = JsonConvert.DeserializeObject<RootObject>(Out);
             //Thread.Sleep(1000);
             req = null;
@@ -310,6 +343,11 @@ namespace Cash8
             public ShiftStatus shiftStatus { get; set; }
             public DeviceInfo deviceInfo { get; set; }
             public FnInfo fnInfo { get; set; }
+
+            public Organization organization { get; set; }
+            public Device device { get; set; }
+            public Ofd2 ofd { get; set; }
+            public Ism ism { get; set; }
         }
 
         public class Result
@@ -334,6 +372,65 @@ namespace Cash8
         }
 
         #endregion
+
+
+
+        public class Device
+        {
+            public string paymentsAddress { get; set; }
+            public string fnsUrl { get; set; }
+            public string registrationNumber { get; set; }
+            public bool offlineMode { get; set; }
+            public bool machineInstallation { get; set; }
+            public bool bso { get; set; }
+            public bool encryption { get; set; }
+            public bool autoMode { get; set; }
+            public string machineNumber { get; set; }
+            public bool internet { get; set; }
+            public bool service { get; set; }
+            public bool gambling { get; set; }
+            public bool lottery { get; set; }
+            public bool excise { get; set; }
+            public string defaultTaxationType { get; set; }
+            public string ofdChannel { get; set; }
+            public string ffdVersion { get; set; }
+            public bool insurance { get; set; }
+            public bool marking { get; set; }
+            public bool pawnShop { get; set; }
+        }
+
+        public class Ism
+        {
+            public string host { get; set; }
+            public int port { get; set; }
+        }
+
+        public class Ofd2
+        {
+            public string name { get; set; }
+            public string vatin { get; set; }
+            public string host { get; set; }
+            public int port { get; set; }
+            public string dns { get; set; }
+        }
+
+        public class Organization
+        {
+            public string name { get; set; }
+            public string vatin { get; set; }
+            public string email { get; set; }
+            public List<string> taxationTypes { get; set; }
+            public List<string> agents { get; set; }
+            public string address { get; set; }
+        }
+
+        //public class RootGetRegistrationInfo
+        //{
+        //    public Organization organization { get; set; }
+        //    public Device device { get; set; }
+        //    public Ofd2 ofd { get; set; }
+        //    public Ism ism { get; set; }
+        //}
 
 
         /// <summary>
@@ -390,7 +487,7 @@ namespace Cash8
             req.Method = "DELETE";
             req.Timeout = 100000;
             req.ContentType = "application/json";
-
+            MainStaticClass.set_basic_auth(req);
             HttpWebResponse myHttpWebResponse = (HttpWebResponse)req.GetResponse();
 
             if (myHttpWebResponse.StatusCode == System.Net.HttpStatusCode.OK)

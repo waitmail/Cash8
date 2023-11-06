@@ -276,7 +276,8 @@ namespace Cash8
                         " phone=" + str1[7] + "," +
                         " attribute=" + str1[8] + "," +
                         " bonus_is_on=" + str1[9] + "," +
-                        " notify_security=" + str1[10] +
+                        " reason_for_blocking='"+str1[10]+"',"+
+                        " notify_security=" + str1[11] +
                         " WHERE code=" + str1[0] + ";";
 
                     local_last_date_download_bonus_clients = str1[6];
@@ -286,7 +287,7 @@ namespace Cash8
                     rowsaffected = command.ExecuteNonQuery();
                     if (rowsaffected == 0)
                     {
-                        query = "INSERT INTO clients(code,name, sum, date_of_birth,discount_types_code,its_work,phone,attribute,bonus_is_on,notify_security)VALUES(" +
+                        query = "INSERT INTO clients(code,name, sum, date_of_birth,discount_types_code,its_work,phone,attribute,bonus_is_on,reason_for_blocking,notify_security)VALUES(" +
                             str1[0] + "," +
                             str1[1] + "," +
                             str1[2] + "," +
@@ -296,7 +297,8 @@ namespace Cash8
                             str1[7] + "," +
                             str1[8] + "," +
                             str1[9] + "," +
-                            str1[10]+")";
+                            str1[10]+ "," +
+                            str1[11]+")";
                         command = new NpgsqlCommand(query, conn);
                         command.Transaction = tran;
                         command.ExecuteNonQuery();
@@ -572,6 +574,7 @@ namespace Cash8
             public string NickShop { get; set; }
             public string CodeShop { get; set; }
             public string LastDateDownloadTovar { get; set; }
+            public string NumCash { get; set; }
 
             void IDisposable.Dispose()
             {
@@ -671,6 +674,7 @@ namespace Cash8
                 queryPacketData.NickShop = nick_shop;
                 queryPacketData.CodeShop = code_shop;
                 queryPacketData.LastDateDownloadTovar = last_date_download_tovars().ToString("dd-MM-yyyy");
+                queryPacketData.NumCash = MainStaticClass.CashDeskNumber.ToString();
                 queryPacketData.Version = MainStaticClass.version().Replace(".", "");
                 string data = JsonConvert.SerializeObject(queryPacketData, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
                 data_encrypt = CryptorEngine.Encrypt(data, true, key);
@@ -727,10 +731,10 @@ namespace Cash8
                     loadPacketData.ListTovar = null;
                 }
 
-                queries.Add("UPDATE tovar SET its_deleted=1");
-                queries.Add("INSERT INTO tovar SELECT F.code, F.name, F.retail_price, F.its_deleted, F.nds, F.its_certificate, F.percent_bonus, F.tnved,F.its_marked,F.its_excise FROM(SELECT tovar2.code AS code, tovar.code AS code2, tovar2.name, tovar2.retail_price, tovar2.its_deleted, tovar2.nds, tovar2.its_certificate, tovar2.percent_bonus, tovar2.tnved,tovar2.its_marked,tovar2.its_excise  FROM tovar2 left join tovar on tovar2.code = tovar.code)AS F WHERE code2 ISNULL");
-                queries.Add("UPDATE tovar SET name = tovar2.name,retail_price = tovar2.retail_price, its_deleted=tovar2.its_deleted,nds=tovar2.nds,its_certificate = tovar2.its_certificate,percent_bonus = tovar2.percent_bonus,tnved = tovar2.tnved,its_marked = tovar2.its_marked,its_excise=tovar2.its_excise FROM tovar2 where tovar.code=tovar2.code");
-                queries.Add("DELETE FROM barcode");
+                queries.Add("UPDATE tovar SET its_deleted=1,retail_price=0;");
+                queries.Add("INSERT INTO tovar SELECT F.code, F.name, F.retail_price, F.its_deleted, F.nds, F.its_certificate, F.percent_bonus, F.tnved,F.its_marked,F.its_excise FROM(SELECT tovar2.code AS code, tovar.code AS code2, tovar2.name, tovar2.retail_price, tovar2.its_deleted, tovar2.nds, tovar2.its_certificate, tovar2.percent_bonus, tovar2.tnved,tovar2.its_marked,tovar2.its_excise  FROM tovar2 left join tovar on tovar2.code = tovar.code)AS F WHERE code2 ISNULL;");
+                queries.Add("UPDATE tovar SET name = tovar2.name,retail_price = tovar2.retail_price, its_deleted=tovar2.its_deleted,nds=tovar2.nds,its_certificate = tovar2.its_certificate,percent_bonus = tovar2.percent_bonus,tnved = tovar2.tnved,its_marked = tovar2.its_marked,its_excise=tovar2.its_excise FROM tovar2 where tovar.code=tovar2.code;");
+                queries.Add("DELETE FROM barcode;");
                 if (loadPacketData.ListBarcode.Count > 0)
                 {
                     foreach (Barcode barcode in loadPacketData.ListBarcode)

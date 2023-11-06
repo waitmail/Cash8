@@ -29,6 +29,7 @@ namespace Cash8
                 req.Method = "POST";
                 req.Timeout = 5000;
                 req.ContentType = "application/json";
+                MainStaticClass.set_basic_auth(req);
                 byte[] sentData = Encoding.UTF8.GetBytes(Data);
                 req.ContentLength = sentData.Length;
                 System.IO.Stream sendStream = req.GetRequestStream();
@@ -63,9 +64,9 @@ namespace Cash8
         {
             System.Net.WebRequest req = System.Net.WebRequest.Create(Url + "/" + Data);
             req.Timeout = 10000;
-            System.Net.WebResponse resp = req.GetResponse();
-            //HttpWebResponse myHttpWebResponse = (HttpWebResponse)req.GetResponse();
-
+            MainStaticClass.set_basic_auth(req);
+            System.Net.WebResponse resp = req.GetResponse();           
+            
             System.IO.Stream stream = resp.GetResponseStream();
 
             System.IO.StreamReader sr = new System.IO.StreamReader(stream);
@@ -314,7 +315,7 @@ namespace Cash8
             req.Method = "DELETE";
             req.Timeout = 10000;
             req.ContentType = "application/json";
-
+            MainStaticClass.set_basic_auth(req);
             HttpWebResponse myHttpWebResponse = (HttpWebResponse)req.GetResponse();
 
             if (myHttpWebResponse.StatusCode == System.Net.HttpStatusCode.OK)

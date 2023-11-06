@@ -872,9 +872,7 @@ namespace Cash8
                 timer_send_data.Start();
                 timer_send_data.Elapsed += new System.Timers.ElapsedEventHandler(timer_send_data_Elapsed);
                 //timer_send_data_Elapsed(null, null);//при старте сделать выгрузку               при отсутствмм связи программа вешается
-
                 
-
                 //Thread t2 = new Thread(load_bonus_cards);
                 //t2.IsBackground = true;
                 //t2.Start();               
@@ -942,7 +940,7 @@ namespace Cash8
 
             this.menuStrip.Items.Clear();
             MainStaticClass.Main.start_interface_switching();
-            change_schema_2_to_3();
+            //change_schema_2_to_3();
             //change_clients_for_schema1();
         }
 
