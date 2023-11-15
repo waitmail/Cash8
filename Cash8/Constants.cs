@@ -295,8 +295,7 @@ namespace Cash8
                     "one_monitors_connected="+ one_monitors_connected+","+
                     "version2_marking="+ version2_marking+","+
                     "webservice_authorize=" + webservice_authorize;
-
-
+                
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 int resul_update = command.ExecuteNonQuery();
                 if (resul_update == 0)

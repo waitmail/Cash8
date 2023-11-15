@@ -22,9 +22,9 @@ namespace Cash8
         public bool code_it_is_confirmed = false;//При списании бонусов, присланный код полтвержден клиентом  
         private bool complete = false;
         //private string reference_number = "";
-        private string str_command_sale = @"<?xml version=""1.0"" encoding=""UTF-8""?><request><field id = ""00"" >sum</field><field id=""04"">643</field><field id = ""25"" >1</field><field id=""27"">id_terminal</field></request>";
-        string str_command_return_sale = @"<?xml version=""1.0"" encoding=""UTF-8""?><request><field id = ""00"" >sum</field><field id=""04"">643</field><field id=""13"">code_authorization</field><field id=""14"">number_reference</field><field id = ""25"" >29</field><field id=""27"">id_terminal</field></request>";
-        string str_command_cancel_sale = @"<?xml version=""1.0"" encoding=""UTF-8""?><request><field id = ""00"" >sum</field><field id=""04"">643</field><field id = ""25"" >4</field><field id=""27"">id_terminal</field></request>";
+        private string str_command_sale = @"<?xml version=""1.0"" encoding=""UTF-8""?><request><field id = ""00"">sum</field><field id=""04"">643</field><field id = ""25"" >1</field><field id=""27"">id_terminal</field></request>";
+        string str_command_return_sale = @"<?xml version=""1.0"" encoding=""UTF-8""?><request><field id = ""00"">sum</field><field id=""04"">643</field><field id=""13"">sale_code_authorization_terminal</field><field id=""14"">number_reference</field><field id = ""25"" >29</field><field id=""27"">id_terminal</field></request>";
+        string str_command_cancel_sale = @"<?xml version=""1.0"" encoding=""UTF-8""?><request><field id = ""00"">sum</field><field id=""01"">sale_non_cash_money</field><field id=""04"">643</field><field id = ""25"">4</field><field id=""27"">id_terminal</field><field id=""13"">sale_code_authorization_terminal</field><field id=""14"">number_reference</field></request>";        
         //string str_command_cancel_sale = @"<?xml version=""1.0"" encoding=""UTF-8""?><request><field id = ""00"" >sum</field><field id=""04"">643</field><field id=""14"">number_reference</field><field id = ""25"" >4</field><field id=""27"">id_terminal</field></request>";
 
         public Cash_check cc = null;
@@ -1200,7 +1200,7 @@ namespace Cash8
                     {
                         string _str_command_return_sale_ = str_command_return_sale.Replace("sum", money);
                         _str_command_return_sale_ = _str_command_return_sale_.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
-                        _str_command_return_sale_ = _str_command_return_sale_.Replace("code_authorization_terminal", cc.sale_code_authorization_terminal);
+                        _str_command_return_sale_ = _str_command_return_sale_.Replace("sale_code_authorization_terminal", cc.sale_code_authorization_terminal);
                         _str_command_return_sale_ = _str_command_return_sale_.Replace("number_reference", cc.sale_id_transaction_terminal);
                         send_command_acquiring_terminal(url, _str_command_return_sale_, ref complete, ref answerTerminal);
                     }
@@ -1208,8 +1208,17 @@ namespace Cash8
                     {
                         string _str_command_return_sale_ = str_command_cancel_sale.Replace("sum", money);
                         _str_command_return_sale_ = _str_command_return_sale_.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
-                        _str_command_return_sale_ = _str_command_return_sale_.Replace("code_authorization_terminal", cc.sale_code_authorization_terminal);
+                        _str_command_return_sale_ = _str_command_return_sale_.Replace("sale_code_authorization_terminal", cc.sale_code_authorization_terminal);
                         _str_command_return_sale_ = _str_command_return_sale_.Replace("number_reference", cc.sale_id_transaction_terminal);
+                        if (money.Trim() != (cc.sale_non_cash_money * 100).ToString().Trim())//Это частичная отмена.
+                        {
+                            _str_command_return_sale_ = _str_command_return_sale_.Replace("sale_non_cash_money", (cc.sale_non_cash_money * 100).ToString());
+                        }
+                        else
+                        {
+                            _str_command_return_sale_ = _str_command_return_sale_.Replace(@"<field id=""01"">sale_non_cash_money</field>", "");
+                        }
+
                         send_command_acquiring_terminal(url, _str_command_return_sale_, ref complete, ref answerTerminal);
                     }
                     if (!complete)//ответ от терминала не удовлетворительный
@@ -1323,6 +1332,11 @@ namespace Cash8
                             else if (field.Id == "90")
                             {                                
                                 cc.recharge_note = field.Text.Trim();
+                                int num_pos = cc.recharge_note.IndexOf("(КАССИР)");
+                                if (num_pos > 0)
+                                {
+                                    cc.recharge_note = cc.recharge_note.Substring(0,num_pos+8);
+                                }
                             }
                         }
                     }

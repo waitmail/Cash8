@@ -65,6 +65,9 @@ namespace Cash8
             if ((MainStaticClass.IpAddressAcquiringTerminal.Trim() != "") && (MainStaticClass.IdAcquirerTerminal.Trim() != ""))
             {
                 btn_reconciliation_of_totals.Enabled = true;
+                btn_query_summary_report.Enabled = true;
+                btn_query_full_report.Enabled = true;
+
             }            
 
         }
@@ -506,6 +509,73 @@ namespace Cash8
         {
             string url = "http://" + MainStaticClass.IpAddressAcquiringTerminal;
             string _str_command_ = @"<?xml version=""1.0"" encoding=""utf-8""?><request><field id=""25"">59</field><field id=""27"">id_terminal</field></request>";
+            _str_command_ = _str_command_.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
+            recharge_note = "";
+            AnswerTerminal answerTerminal = new AnswerTerminal();
+            send_command_acquiring_terminal(url, _str_command_, ref complete, ref answerTerminal);
+            if (complete)//ответ от терминала не удовлетворительный
+            {
+                if (recharge_note != "")
+                {
+                    FiscallPrintJason2.NonFiscallDocument nonFiscallDocument = new FiscallPrintJason2.NonFiscallDocument();
+                    nonFiscallDocument.type = "nonFiscal";
+                    nonFiscallDocument.printFooter = false;
+
+                    FiscallPrintJason2.ItemNonFiscal itemNonFiscal = new FiscallPrintJason2.ItemNonFiscal();
+                    nonFiscallDocument.items = new List<FiscallPrintJason2.ItemNonFiscal>();
+
+                    itemNonFiscal.type = "text";
+                    itemNonFiscal.text = recharge_note.Replace("0xDF^^", "");
+                    itemNonFiscal.alignment = "center";
+                    nonFiscallDocument.items.Add(itemNonFiscal);
+                    FiscallPrintJason2.print_not_fiscal_document(nonFiscallDocument);
+                    recharge_note = "";
+                }
+            }
+            else
+            {
+
+            }
+        }
+
+        private void btn_query_summary_report_Click(object sender, EventArgs e)
+        {
+            string url = "http://" + MainStaticClass.IpAddressAcquiringTerminal;
+            string _str_command_ = @"<?xml version=""1.0"" encoding=""utf-8""?><request><field id=""25"">63</field><field id=""27"">id_terminal</field><field id=""65"">20</field></request>";
+            _str_command_ = _str_command_.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
+            recharge_note = "";
+            AnswerTerminal answerTerminal = new AnswerTerminal();
+            send_command_acquiring_terminal(url, _str_command_, ref complete, ref answerTerminal);
+            if (complete)//ответ от терминала не удовлетворительный
+            {
+                if (recharge_note != "")
+                {
+                    FiscallPrintJason2.NonFiscallDocument nonFiscallDocument = new FiscallPrintJason2.NonFiscallDocument();
+                    nonFiscallDocument.type = "nonFiscal";
+                    nonFiscallDocument.printFooter = false;
+
+                    FiscallPrintJason2.ItemNonFiscal itemNonFiscal = new FiscallPrintJason2.ItemNonFiscal();
+                    nonFiscallDocument.items = new List<FiscallPrintJason2.ItemNonFiscal>();
+
+                    itemNonFiscal.type = "text";
+                    itemNonFiscal.text = recharge_note.Replace("0xDF^^", "");
+                    itemNonFiscal.alignment = "center";
+                    nonFiscallDocument.items.Add(itemNonFiscal);
+                    FiscallPrintJason2.print_not_fiscal_document(nonFiscallDocument);
+                    recharge_note = "";
+                }
+            }
+            else
+            {
+
+            }
+
+        }
+
+        private void btn_query_full_report_Click(object sender, EventArgs e)
+        {
+            string url = "http://" + MainStaticClass.IpAddressAcquiringTerminal;
+            string _str_command_ = @"<?xml version=""1.0"" encoding=""utf-8""?><request><field id=""25"">63</field><field id=""27"">id_terminal</field><field id=""65"">21</field></request>";
             _str_command_ = _str_command_.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
             recharge_note = "";
             AnswerTerminal answerTerminal = new AnswerTerminal();

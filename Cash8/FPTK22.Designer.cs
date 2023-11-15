@@ -50,9 +50,13 @@
             this.x_report = new System.Windows.Forms.Button();
             this.txtB_fn_info = new System.Windows.Forms.TextBox();
             this.btn_reconciliation_of_totals = new System.Windows.Forms.Button();
+            this.btn_query_summary_report = new System.Windows.Forms.Button();
+            this.btn_query_full_report = new System.Windows.Forms.Button();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.groupBox5.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox4
@@ -262,30 +266,65 @@
             // 
             this.txtB_fn_info.Enabled = false;
             this.txtB_fn_info.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.txtB_fn_info.Location = new System.Drawing.Point(445, 208);
+            this.txtB_fn_info.Location = new System.Drawing.Point(606, 208);
             this.txtB_fn_info.Multiline = true;
             this.txtB_fn_info.Name = "txtB_fn_info";
-            this.txtB_fn_info.Size = new System.Drawing.Size(430, 128);
+            this.txtB_fn_info.Size = new System.Drawing.Size(269, 128);
             this.txtB_fn_info.TabIndex = 21;
             // 
             // btn_reconciliation_of_totals
             // 
             this.btn_reconciliation_of_totals.Enabled = false;
             this.btn_reconciliation_of_totals.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btn_reconciliation_of_totals.Location = new System.Drawing.Point(26, 208);
+            this.btn_reconciliation_of_totals.Location = new System.Drawing.Point(14, 95);
             this.btn_reconciliation_of_totals.Name = "btn_reconciliation_of_totals";
-            this.btn_reconciliation_of_totals.Size = new System.Drawing.Size(211, 58);
+            this.btn_reconciliation_of_totals.Size = new System.Drawing.Size(152, 58);
             this.btn_reconciliation_of_totals.TabIndex = 22;
-            this.btn_reconciliation_of_totals.Text = "Сверка итогов\r\n(Банк. терминал)";
+            this.btn_reconciliation_of_totals.Text = "Сверка итогов\r\n";
             this.btn_reconciliation_of_totals.UseVisualStyleBackColor = true;
             this.btn_reconciliation_of_totals.Click += new System.EventHandler(this.btn_reconciliation_of_totals_Click);
+            // 
+            // btn_query_summary_report
+            // 
+            this.btn_query_summary_report.Enabled = false;
+            this.btn_query_summary_report.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btn_query_summary_report.Location = new System.Drawing.Point(14, 19);
+            this.btn_query_summary_report.Name = "btn_query_summary_report";
+            this.btn_query_summary_report.Size = new System.Drawing.Size(149, 58);
+            this.btn_query_summary_report.TabIndex = 23;
+            this.btn_query_summary_report.Text = "Запрос краткого отчета";
+            this.btn_query_summary_report.UseVisualStyleBackColor = true;
+            this.btn_query_summary_report.Click += new System.EventHandler(this.btn_query_summary_report_Click);
+            // 
+            // btn_query_full_report
+            // 
+            this.btn_query_full_report.Enabled = false;
+            this.btn_query_full_report.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btn_query_full_report.Location = new System.Drawing.Point(189, 19);
+            this.btn_query_full_report.Name = "btn_query_full_report";
+            this.btn_query_full_report.Size = new System.Drawing.Size(154, 58);
+            this.btn_query_full_report.TabIndex = 24;
+            this.btn_query_full_report.Text = "Запро полного отчета";
+            this.btn_query_full_report.UseVisualStyleBackColor = true;
+            this.btn_query_full_report.Click += new System.EventHandler(this.btn_query_full_report_Click);
+            // 
+            // groupBox5
+            // 
+            this.groupBox5.Controls.Add(this.btn_reconciliation_of_totals);
+            this.groupBox5.Controls.Add(this.btn_query_summary_report);
+            this.groupBox5.Controls.Add(this.btn_query_full_report);
+            this.groupBox5.Location = new System.Drawing.Point(12, 208);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(359, 173);
+            this.groupBox5.TabIndex = 25;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "Банковский терминал";
             // 
             // FPTK22
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(893, 366);
-            this.Controls.Add(this.btn_reconciliation_of_totals);
+            this.ClientSize = new System.Drawing.Size(893, 405);
             this.Controls.Add(this.txtB_fn_info);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.print_last_check);
@@ -296,6 +335,7 @@
             this.Controls.Add(this.avans);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.groupBox5);
             this.Name = "FPTK22";
             this.Text = "Фискальный регистратор";
             this.groupBox4.ResumeLayout(false);
@@ -303,6 +343,7 @@
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.groupBox2.ResumeLayout(false);
+            this.groupBox5.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -332,5 +373,8 @@
         private System.Windows.Forms.Button btn_send_fiscal;
         private System.Windows.Forms.TextBox txtB_fn_info;
         private System.Windows.Forms.Button btn_reconciliation_of_totals;
+        private System.Windows.Forms.Button btn_query_summary_report;
+        private System.Windows.Forms.Button btn_query_full_report;
+        private System.Windows.Forms.GroupBox groupBox5;
     }
 }

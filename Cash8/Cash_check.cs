@@ -91,6 +91,7 @@ namespace Cash8
         public int print_to_button = 0;
         public string recharge_note="";//здесь будет присвоена иформация об оплате по карте когда терминал без печтчающего устройства.
         private string guid = "";
+        public double sale_non_cash_money = 0;
 
 
 
@@ -5592,29 +5593,7 @@ namespace Cash8
                 {
                     num_strt_km.Add(num_strt_km.Count, lvi.Index + 1);
                     AddingKmArrayToTableTested.Param param = new AddingKmArrayToTableTested.Param();
-                    param.imcType = "auto";
-
-                    //string GS1 = Char.ConvertFromUtf32(29);
-                    //MessageBox.Show(lvi.SubItems[14].Text);
-                    //MessageBox.Show(lvi.SubItems[14].Text.Length.ToString());
-                    //int i = 30;
-                    //while (i < 35)
-                    //{
-                    //    MessageBox.Show(i.ToString() + " " + lvi.SubItems[14].Text.Substring(i, 1));
-                    //    byte[] asciiBytes = Encoding.ASCII.GetBytes(lvi.SubItems[14].Text.Substring(i, 1));
-                    //    MessageBox.Show(i.ToString() + "размер " + asciiBytes.Length.ToString() + " asciiBytes код " + asciiBytes[0].ToString());
-                    //    i++;
-                    //}
-
-                    //char gs2 = '\u001d';
-                    //if (lvi.SubItems[14].Text.IndexOf(gs2) == -1)
-                    //{
-                    //    MessageBox.Show("gs2" + " не найден");
-                    //    lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
-                    //    lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(38, GS1);
-                    //}
-
-                    //string km = lvi.SubItems[14].Text.Trim().Replace("'", "vasya2021")
+                    param.imcType = "auto";                  
 
                     string GS1 = Char.ConvertFromUtf32(29);
                     if ((lvi.SubItems[14].Text.Trim().Length == 83)  ||
@@ -5661,45 +5640,29 @@ namespace Cash8
 
                 int x = 0;
                 while (x < answerAddingKmArrayToTableTested.results[0].result.Count)
-                {
-                    //if (answerAddingKmArrayToTableTested.results[0].errorCode == 0)
-                    //{
-                    //MessageBox.Show("2");
-                    //if (answerAddingKmArrayToTableTested.results[0].errorCode == 0)
-                    //{
-                    //MessageBox.Show("3");
+                {                   
                     if (answerAddingKmArrayToTableTested.results[0].result[x].onlineValidation != null)
-                    {
-                        //MessageBox.Show("4");
+                    {                        
                         if (answerAddingKmArrayToTableTested.results[0].result[x].driverError.code == 0)
                         {
-                            //MessageBox.Show("5");
-                            int i = 0;
-                            while (i < answerAddingKmArrayToTableTested.results[0].result.Count)
-                            {   //Успешная проверка это когда в секции "itemInfoCheckResult" реквизит "imcCheckResult" имеет значение true
-                                if (!answerAddingKmArrayToTableTested.results[0].result[i].onlineValidation.itemInfoCheckResult.imcCheckResult)
+                            if (!answerAddingKmArrayToTableTested.results[0].result[x].onlineValidation.itemInfoCheckResult.imcCheckResult)
                                 {
-                                    if (answerAddingKmArrayToTableTested.results[0].result[i].onlineValidation.markOperatorResponseResult != "correct")
+                                    if (answerAddingKmArrayToTableTested.results[0].result[x].onlineValidation.markOperatorResponseResult != "correct")
                                     {
-                                        if (answerAddingKmArrayToTableTested.results[0].result[i].onlineValidation.markOperatorResponseResult == "incorrect")
+                                        if (answerAddingKmArrayToTableTested.results[0].result[x].onlineValidation.markOperatorResponseResult == "incorrect")
                                         {
-                                            //MessageBox.Show("Запрос имеет некорректный формат markOperatorResponseResult = " + answerAddingKmArrayToTableTested.results[0].result[0].onlineValidation.markOperatorResponseResult.ToString());
-                                            MessageBox.Show("Запрос имеет некорректный формат в строке = " + num_strt_km[i].ToString());
-                                            MainStaticClass.write_event_in_log("Запрос имеет некорректный формат в строке = " + num_strt_km[i].ToString(), "Документ чек", numdoc.ToString());
+                                            MessageBox.Show("Запрос имеет некорректный формат(incorrect) в строке = " + num_strt_km[x].ToString());
+                                            MainStaticClass.write_event_in_log("Запрос имеет некорректный формат(incorrect) в строке = " + num_strt_km[x].ToString(), "Документ чек", numdoc.ToString());
                                             result = -1;
                                         }
-                                        if (answerAddingKmArrayToTableTested.results[0].result[i].onlineValidation.markOperatorResponseResult == "unrecognized")
+                                        if (answerAddingKmArrayToTableTested.results[0].result[x].onlineValidation.markOperatorResponseResult == "unrecognized")
                                         {
-                                            //MessageBox.Show("КМ имеет некорретный формат markOperatorResponseResult = " + answerAddingKmArrayToTableTested.results[0].result[0].onlineValidation.markOperatorResponseResult.ToString());
-                                            MessageBox.Show("КМ имеет некорретный формат в строке = " + num_strt_km[i].ToString());
-                                            MainStaticClass.write_event_in_log("КМ имеет некорретный формат в строке = " + num_strt_km[i].ToString(), "Документ чек", numdoc.ToString());
-                                            //listView1.Items[num_strt_km[i]-1].SubItems[14].Text = change_case_in_line(listView1.Items[num_strt_km[i]-1].SubItems[14].Text);
+                                            MessageBox.Show("КМ имеет некорретный формат(unrecognized) в строке = " + num_strt_km[x].ToString());
+                                            MainStaticClass.write_event_in_log("КМ имеет некорретный формат(unrecognized) в строке = " + num_strt_km[x].ToString(), "Документ чек", numdoc.ToString());
                                             result = -1;//попробовать вызвать еще раз с км с измененным регистром
                                         }
                                     }
-                                }
-                                i++;
-                            }
+                                }                              
                         }
                         else
                         {
@@ -5712,10 +5675,7 @@ namespace Cash8
                             if (answerAddingKmArrayToTableTested.results[0].result[x].driverError.description != null)
                             {
                                 description += answerAddingKmArrayToTableTested.results[0].result[x].driverError.description;
-                            }
-
-                            
-                            //result;
+                            }                            
 
                             if ((result == 421) || (result == 402))
                             {
@@ -5740,21 +5700,8 @@ namespace Cash8
                         {
                             MessageBox.Show("Ошибка при проверке кодов маркировки код ошибки " + answerAddingKmArrayToTableTested.results[0].result[x].driverError.code + " " + answerAddingKmArrayToTableTested.results[0].result[x].driverError.description);
                             MainStaticClass.write_event_in_log("Ошибка при проверке кодов маркировки код ошибки " + answerAddingKmArrayToTableTested.results[0].result[x].driverError.code + " " + answerAddingKmArrayToTableTested.results[0].result[x].driverError.description, "Документ чек", numdoc.ToString());
-                        }
-                        //return result;//result = -1;
-                    }
-                    //    }
-                    //    else
-                    //    {
-                    //        MessageBox.Show(" Ошибка при проверке кодов маркировки код ошибки " + answerAddingKmArrayToTableTested.results[0].errorCode.ToString() + " " + answerAddingKmArrayToTableTested.results[0].errorDescription.ToString());
-                    //        result = -1;
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    MessageBox.Show(" Ошибка при проверке кодов маркировки код ошибки " + answerAddingKmArrayToTableTested.results[0].errorCode.ToString() + " " + answerAddingKmArrayToTableTested.results[0].errorDescription.ToString());
-                    //    result = -1;
-                    //}
+                        }                        
+                    }                 
                     x++;
                 }
             }
@@ -8009,6 +7956,7 @@ namespace Cash8
 
         private void fiscall_print_disburse_1(string cash_money, string non_cash_money)
         {
+            print_terminal_check();
 
             if (MainStaticClass.SystemTaxation == 0)
             {
@@ -8313,6 +8261,7 @@ namespace Cash8
 
         private void fiscall_print_disburse_2(string cash_money, string non_cash_money)
         {
+            print_terminal_check();
 
             if (MainStaticClass.SystemTaxation == 0)
             {
@@ -14320,7 +14269,7 @@ namespace Cash8
                         listView1.Items.Add(lvi);
                     }
 
-                    query = "SELECT id_transaction_terminal,code_authorization_terminal,date_time_write FROM  checks_header WHERE document_number=" + txtB_num_sales.Text;
+                    query = "SELECT id_transaction_terminal,code_authorization_terminal,date_time_write,non_cash_money FROM  checks_header WHERE document_number=" + txtB_num_sales.Text;
                     command = new NpgsqlCommand(query, conn);
                     reader = command.ExecuteReader();
                     while (reader.Read())
@@ -14328,6 +14277,8 @@ namespace Cash8
                         sale_id_transaction_terminal = reader["id_transaction_terminal"].ToString();
                         sale_code_authorization_terminal = reader["code_authorization_terminal"].ToString();
                         sale_date = Convert.ToDateTime(reader["date_time_write"]);
+                        sale_non_cash_money = Convert.ToDouble(reader["non_cash_money"]);
+
                     }
 
                     reader.Close();
