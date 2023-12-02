@@ -397,6 +397,7 @@ namespace Cash8
             public List<ActionClients> ListActionClients { get; set; }
             public bool PacketIsFull { get; set; }//true если пакет заполннен до конца
             public bool Exchange { get; set; }//true если идет обмен
+            public string Exception { get; set; }//true если идет обмен
 
             void IDisposable.Dispose()
             {
@@ -685,7 +686,7 @@ namespace Cash8
             {                
                 if (!loadPacketData.PacketIsFull)
                 {
-                    MessageBox.Show("Неудачная попытка получения данных");
+                    MessageBox.Show(loadPacketData.Exception+"\r\n Неудачная попытка получения данных");
                     return;
                 }                
                 if (loadPacketData.Exchange)
@@ -693,6 +694,7 @@ namespace Cash8
                     MessageBox.Show("Пакет данных получен во время обновления данных на сервере, загрузка прервана");
                     return;
                 }                
+
                 queries.Add("Delete from action_table");
                 queries.Add("Delete from action_header");
                 queries.Add("Delete from advertisement");

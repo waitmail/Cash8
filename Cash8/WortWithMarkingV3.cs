@@ -131,6 +131,7 @@ namespace Cash8
         {
             System.Net.WebRequest req = System.Net.WebRequest.Create(Url + "/" + Data);
             req.Timeout = 1000;
+            MainStaticClass.set_basic_auth(req);
             System.Net.WebResponse resp = req.GetResponse();
             //HttpWebResponse myHttpWebResponse = (HttpWebResponse)req.GetResponse();
 
@@ -165,6 +166,7 @@ namespace Cash8
                 req.Method = "POST";
                 req.Timeout = 1000;
                 req.ContentType = "application/json";
+                MainStaticClass.set_basic_auth(req);
                 byte[] sentData = Encoding.UTF8.GetBytes(Data);
                 req.ContentLength = sentData.Length;
                 System.IO.Stream sendStream = req.GetRequestStream();

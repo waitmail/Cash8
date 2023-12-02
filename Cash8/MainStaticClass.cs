@@ -111,6 +111,7 @@ namespace Cash8
         private static int one_monitors_connected = -1;
         private static int version2_marking =-1;
         private static int authorization_required = -1;
+        private static int this_new_database = 0;
         //private static int version_fn = 0;
         //private static int sno = -1;//это система налогообложения
 
@@ -150,6 +151,18 @@ namespace Cash8
         //        return sno;
         //    }
         //}
+
+        public static int ThisNewDatabase
+        {
+            get {
+                return this_new_database;
+            }
+            set
+            {
+                this_new_database = value;
+            }
+
+        }
 
         public static void set_basic_auth(System.Net.WebRequest req)
         {
@@ -205,6 +218,48 @@ namespace Cash8
                 }
                 return authorization_required;
             }
+        }
+
+        public static bool exist_table_name(string table_name)
+        {
+            bool exists = true;
+            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+            int conn_open = 0;
+            try
+            {
+                conn.Open();
+                conn_open = 1;
+                string query = "select case when exists((select * from information_schema.tables where table_name = '" + table_name + "')) then 1 else 0 end";
+                NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                exists = (int)command.ExecuteScalar() == 1;
+                conn.Close();
+            }
+            catch (NpgsqlException ex)
+            {
+                MessageBox.Show("Ошибка при чтении наличия таблицы в текущей бд " + ex.Message);
+                if (conn_open == 1)
+                {
+                    exists = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ошибка при чтении наличия таблицы в текущей бд " + ex.Message);
+                if (conn_open == 1)
+                {
+                    exists = false;
+                }
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                    conn.Dispose();
+                }
+            }
+
+            return exists;
         }
 
         public static int Version2Marking

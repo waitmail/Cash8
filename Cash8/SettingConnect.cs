@@ -931,6 +931,7 @@ namespace Cash8
                 if (conn.State == ConnectionState.Open)
                 {
                     conn.Close();
+                    conn.Dispose();
                 }
             }
         }
@@ -983,87 +984,87 @@ namespace Cash8
         public void add_field_Click(object sender, EventArgs e)
         {            
             List<string> queries = new List<string>();
-            //queries.Add("CREATE TABLE failed_input_phone(client_code character varying(10),  datetime_input timestamp without time zone)WITH (OIDS=FALSE);ALTER TABLE failed_input_phone  OWNER TO postgres");
-            //queries.Add("ALTER TABLE tovar DROP COLUMN purchase_price");
-            //queries.Add("ALTER TABLE tovar DROP COLUMN opt_price");
-            //queries.Add("DROP TABLE public.date_sync; CREATE TABLE public.date_sync (tovar timestamp without time zone,    client date)WITH(    OIDS = FALSE)");
-            //queries.Add("ALTER TABLE action_header ADD COLUMN execution_order smallint");
-            //queries.Add("ALTER TABLE action_table ADD COLUMN price numeric(10, 2)");
-            //queries.Add("UPDATE constants SET use_debug = false");
-            //queries.Add("ALTER TABLE constants ADD COLUMN pass_promo character varying(100)");
-            ////queries.Add("CREATE TABLE bonus_cards(code character varying(10), pin character varying(11))WITH(OIDS = FALSE); ALTER TABLE bonus_cards OWNER TO postgres;");
-            //queries.Add("ALTER TABLE constants ADD COLUMN threshold integer;COMMENT ON COLUMN constants.threshold IS 'Порог срабатывания по выдаче бонусной карты';UPDATE public.constants	SET threshold=0;");
-            //queries.Add("ALTER TABLE constants ADD COLUMN last_date_download_bonus_cards timestamp without time zone;COMMENT ON COLUMN constants.last_date_download_bonus_cards IS 'Дата последнего удачного получения данных бонусных карт';UPDATE constants   SET last_date_download_bonus_cards='01-01-2000';");
-            //queries.Add("ALTER TABLE checks_header ADD COLUMN sent_to_processing_center smallint;  ALTER TABLE checks_header ALTER COLUMN sent_to_processing_center SET DEFAULT 0;");
-            //queries.Add("ALTER TABLE public.checks_header ADD COLUMN id_transaction character varying(10) COLLATE pg_catalog.default; COMMENT ON COLUMN public.checks_header.id_transaction IS 'Номер транзакции в процессинговом центре бонусной программы';");
-            //queries.Add("ALTER TABLE public.checks_header ADD COLUMN id_transaction_sale character varying(10) COLLATE pg_catalog.default;COMMENT ON COLUMN public.checks_header.id_transaction_sale IS 'Колонка ид транзакции документа продажи на основании которого вводится возврат'; ");
-            //queries.Add("ALTER TABLE checks_header ADD COLUMN clientInfo_vatin character varying(12);COMMENT ON COLUMN checks_header.clientInfo_vatin IS 'Инн покупателя при возврате';");
-            //queries.Add("ALTER TABLE checks_header ADD COLUMN clientInfo_name character varying(200);COMMENT ON COLUMN checks_header.clientInfo_name IS 'Наименования покупателя при возврате';");
-            ////queries.Add("ALTER TABLE public.checks_header ADD COLUMN cardTrack2 character varying(36) COLLATE pg_catalog.default; COMMENT ON COLUMN public.checks_header.cardTrack2    IS 'Номер бонусной карты'");
-            ////queries.Add("ALTER TABLE public.checks_header ADD COLUMN phone character varying(12) COLLATE pg_catalog.default; COMMENT ON COLUMN public.checks_header.phone IS 'Номер телефона бонусной карты'");
-            //queries.Add("ALTER TABLE checks_header ALTER COLUMN client TYPE character varying(36)");
-            //queries.Add("ALTER TABLE public.tovar    ADD COLUMN its_marked smallint;UPDATE public.tovar SET its_marked=0;");
-            //queries.Add("ALTER TABLE public.checks_table    ADD COLUMN item_marker character varying(100)");
-            //queries.Add("ALTER TABLE public.checks_header   ADD COLUMN id_sale bigint");
-            //queries.Add("ALTER TABLE public.constants    ADD COLUMN print_m boolean;UPDATE public.constants	SET print_m=true;");
-            //queries.Add("CREATE TABLE public.client_with_changed_status_to_send(client character varying(10) COLLATE pg_catalog.default NOT NULL,date_change timestamp without time zone NOT NULL,new_phone_number character varying(10) COLLATE pg_catalog.default,   CONSTRAINT client_with_changed_status_to_send_pkey PRIMARY KEY (client) )WITH(    OIDS = FALSE)TABLESPACE pg_default;        ALTER TABLE public.client_with_changed_status_to_send OWNER to postgres");
-            //queries.Add("ALTER TABLE action_header ADD COLUMN gift_price numeric(10, 2); ALTER TABLE action_header ALTER COLUMN gift_price SET NOT NULL;");
-            //queries.Add("ALTER TABLE action_header ADD COLUMN gift_price numeric(10, 2);UPDATE public.action_header SET gift_price=0; ALTER TABLE action_header ALTER COLUMN gift_price SET NOT NULL;");
-            ////queries.Add("ALTER TABLE constants ADD COLUMN usn_income_out_come boolean; UPDATE public.constants SET usn_income_out_come=false;");
-            //queries.Add("ALTER TABLE checks_table ALTER COLUMN item_marker TYPE character varying(200)");
-            //queries.Add("CREATE TABLE deleted_items(num_doc bigint NOT NULL,num_cash smallint NOT NULL,date_time_start timestamp without time zone NOT NULL,date_time_action timestamp without time zone NOT NULL,tovar integer NOT NULL,quantity integer NOT NULL,type_of_operation smallint NOT NULL)WITH(    OIDS = FALSE)TABLESPACE pg_default;        ALTER TABLE public.deleted_items            OWNER to postgres");
-            //queries.Add("ALTER TABLE public.constants ADD COLUMN system_taxation smallint NOT NULL DEFAULT 0;");
-            //queries.Add("ALTER TABLE public.constants ADD COLUMN work_schema smallint NOT NULL DEFAULT 1; COMMENT ON COLUMN public.constants.work_schema IS 'Варианты работы программы 1-ЧД 2-ЕВА';");
-            //queries.Add("ALTER TABLE public.constants ADD COLUMN login_promo character varying(100) COLLATE pg_catalog.default;");
-            //queries.Add("ALTER TABLE clients ALTER COLUMN code TYPE varchar(13)");
-            //queries.Add("ALTER TABLE tovar ALTER COLUMN code TYPE bigint");
-            //queries.Add("ALTER TABLE sertificates ALTER COLUMN code TYPE bigint");
-            //queries.Add("ALTER TABLE sertificates ALTER COLUMN code_tovar TYPE bigint");
-            //queries.Add("ALTER TABLE checks_table ALTER COLUMN tovar_code TYPE bigint");
-            //queries.Add("ALTER TABLE barcode ALTER COLUMN tovar_code TYPE bigint");
-            //queries.Add("ALTER TABLE action_table ALTER COLUMN code_tovar TYPE bigint");
-            //queries.Add("ALTER TABLE action_header ALTER COLUMN code_tovar TYPE bigint");
-            //queries.Add("ALTER TABLE public.constants ADD COLUMN version_fn smallint; UPDATE public.constants SET version_fn=2");
-            //queries.Add("ALTER TABLE public.checks_header ADD COLUMN requisite smallint;");
-            //queries.Add("ALTER TABLE deleted_items ALTER COLUMN tovar TYPE bigint");
-            //queries.Add("ALTER TABLE public.checks_header ADD COLUMN viza_d smallint;");
-            //queries.Add("CREATE UNIQUE INDEX _clients_code_  ON clients  USING btree(code COLLATE pg_catalog.default);");
-            //queries.Add("CREATE TABLE public.roll_up_temp(code_tovar bigint,name_tovar character varying(200) COLLATE pg_catalog.default,    characteristic_guid character varying(36) COLLATE pg_catalog.default," +
-            //    "characteristic_name character varying(200) COLLATE pg_catalog.default,quantity integer,price numeric(10,2),price_at_a_discount numeric(10,2),sum numeric(10,2),sum_at_a_discount numeric(10,2)," +
-            //    "action_num_doc integer,action_num_doc1 integer,action_num_doc2 integer,item_marker character varying(200) COLLATE pg_catalog.default)WITH(OIDS = FALSE)TABLESPACE pg_default;" +
-            //    "ALTER TABLE public.roll_up_temp OWNER to postgres;");
-            //queries.Add("ALTER TABLE public.constants ADD COLUMN Enable_stock_processing_in_memory boolean;UPDATE public.constants	SET Enable_stock_processing_in_memory=false;");
-            //queries.Add("ALTER TABLE public.constants ADD COLUMN id_acquirer_terminal character varying(8) COLLATE pg_catalog.default;UPDATE public.constants	SET id_acquirer_terminal=''");
-            //queries.Add("ALTER TABLE public.constants ADD COLUMN ip_address_acquiring_terminal character varying(21) COLLATE pg_catalog.default;UPDATE public.constants	SET ip_address_acquiring_terminal=''");
-            //queries.Add("ALTER TABLE public.constants ADD COLUMN self_service_kiosk boolean;COMMENT ON COLUMN public.constants.self_service_kiosk IS 'Это киоск самообслуживания'; UPDATE public.constants	SET self_service_kiosk=false");
-            //queries.Add("ALTER TABLE public.constants ADD COLUMN one_monitors_connected boolean;UPDATE public.constants	SET one_monitors_connected=false");
-            //queries.Add("ALTER TABLE public.checks_header ADD COLUMN id_transaction_terminal character varying(18) COLLATE pg_catalog.default;");
-            //queries.Add("ALTER TABLE public.checks_header ADD COLUMN system_taxation smallint DEFAULT 0; COMMENT ON COLUMN public.checks_header.system_taxation IS 'Система налогообложения';");
-            //queries.Add("ALTER TABLE public.checks_header ADD COLUMN code_authorization_terminal character varying(8) COLLATE pg_catalog.default;COMMENT ON COLUMN public.checks_header.code_authorization_terminal IS 'Это служебное поле в ответе от терминала при оплате, его необходимо указывать при возврате ';");
-            //queries.Add("ALTER TABLE public.checks_header ADD COLUMN its_print_p boolean;COMMENT ON COLUMN public.checks_header.its_print_p IS 'Признако того что чек был нормально рапечатан на фискальном принтере по налогообложению патент.';");
-            //queries.Add("ALTER TABLE public.document_wil_be_printed ADD COLUMN tax_type smallint; COMMENT ON COLUMN public.document_wil_be_printed.tax_type IS 'Реквизит добавлен для 3 типа налогообложения';");
-            //queries.Add("DROP INDEX public.document_wil_be_printed_document_number_idx;");
-            //queries.Add("CREATE INDEX document_wil_be_printed_document_number_idx2    ON public.document_wil_be_printed USING btree    (document_number ASC NULLS LAST, tax_type ASC NULLS LAST)    TABLESPACE pg_default;");
-            //queries.Add("ALTER TABLE public.action_header ADD COLUMN kind smallint NOT NULL DEFAULT 0;");
-            //queries.Add("CREATE UNIQUE INDEX code_client_num_doc ON public.action_clients USING btree (code_client, num_doc); ALTER TABLE public.action_clients CLUSTER ON code_client_num_doc;");
-            //queries.Add("ALTER TABLE public.tovar ADD COLUMN its_excise smallint NOT NULL DEFAULT 0;COMMENT ON COLUMN public.tovar.its_excise IS '0 - обычный товар 1 - подакцизный товар';");
-            //queries.Add("UPDATE public.constants SET enable_stock_processing_in_memory=true");
-            //queries.Add("ALTER TABLE public.constants ADD COLUMN version2_marking boolean  DEFAULT true");
-            //queries.Add("ALTER TABLE public.checks_header ADD COLUMN cash_money1 numeric(10,2) DEFAULT 0");
-            //queries.Add("ALTER TABLE public.checks_header ADD COLUMN non_cash_money1 numeric(10,2) DEFAULT 0");
-            //queries.Add("ALTER TABLE public.checks_header    ADD COLUMN sertificate_money1 numeric(10,2) DEFAULT 0");
-            //queries.Add("ALTER TABLE public.checks_header    ADD COLUMN guid character varying(36) COLLATE pg_catalog.default NOT NULL DEFAULT ''::character varying");
-            //queries.Add("ALTER TABLE public.checks_table    ADD COLUMN guid character varying(36) COLLATE pg_catalog.default NOT NULL DEFAULT ''::character varying");
-            //queries.Add("ALTER TABLE public.clients ADD COLUMN notify_security smallint DEFAULT 0;");
-            //queries.Add("ALTER TABLE public.clients ADD COLUMN reason_for_blocking character varying(500) COLLATE pg_catalog.default;");
-            //queries.Add("ALTER TABLE public.constants ADD COLUMN webservice_authorize boolean  DEFAULT false;");
-            
+            queries.Add("CREATE TABLE failed_input_phone(client_code character varying(10),  datetime_input timestamp without time zone)WITH (OIDS=FALSE);ALTER TABLE failed_input_phone  OWNER TO postgres");
+            queries.Add("ALTER TABLE tovar DROP COLUMN purchase_price");
+            queries.Add("ALTER TABLE tovar DROP COLUMN opt_price");
+            queries.Add("DROP TABLE public.date_sync; CREATE TABLE public.date_sync (tovar timestamp without time zone,    client date)WITH(    OIDS = FALSE)");
+            queries.Add("ALTER TABLE action_header ADD COLUMN execution_order smallint");
+            queries.Add("ALTER TABLE action_table ADD COLUMN price numeric(10, 2)");
+            queries.Add("UPDATE constants SET use_debug = false");
+            queries.Add("ALTER TABLE constants ADD COLUMN pass_promo character varying(100)");
+            //queries.Add("CREATE TABLE bonus_cards(code character varying(10), pin character varying(11))WITH(OIDS = FALSE); ALTER TABLE bonus_cards OWNER TO postgres;");
+            queries.Add("ALTER TABLE constants ADD COLUMN threshold integer;COMMENT ON COLUMN constants.threshold IS 'Порог срабатывания по выдаче бонусной карты';UPDATE public.constants	SET threshold=0;");
+            queries.Add("ALTER TABLE constants ADD COLUMN last_date_download_bonus_cards timestamp without time zone;COMMENT ON COLUMN constants.last_date_download_bonus_cards IS 'Дата последнего удачного получения данных бонусных карт';UPDATE constants   SET last_date_download_bonus_cards='01-01-2000';");
+            queries.Add("ALTER TABLE checks_header ADD COLUMN sent_to_processing_center smallint;  ALTER TABLE checks_header ALTER COLUMN sent_to_processing_center SET DEFAULT 0;");
+            queries.Add("ALTER TABLE public.checks_header ADD COLUMN id_transaction character varying(10) COLLATE pg_catalog.default; COMMENT ON COLUMN public.checks_header.id_transaction IS 'Номер транзакции в процессинговом центре бонусной программы';");
+            queries.Add("ALTER TABLE public.checks_header ADD COLUMN id_transaction_sale character varying(10) COLLATE pg_catalog.default;COMMENT ON COLUMN public.checks_header.id_transaction_sale IS 'Колонка ид транзакции документа продажи на основании которого вводится возврат'; ");
+            queries.Add("ALTER TABLE checks_header ADD COLUMN clientInfo_vatin character varying(12);COMMENT ON COLUMN checks_header.clientInfo_vatin IS 'Инн покупателя при возврате';");
+            queries.Add("ALTER TABLE checks_header ADD COLUMN clientInfo_name character varying(200);COMMENT ON COLUMN checks_header.clientInfo_name IS 'Наименования покупателя при возврате';");
+            //queries.Add("ALTER TABLE public.checks_header ADD COLUMN cardTrack2 character varying(36) COLLATE pg_catalog.default; COMMENT ON COLUMN public.checks_header.cardTrack2    IS 'Номер бонусной карты'");
+            //queries.Add("ALTER TABLE public.checks_header ADD COLUMN phone character varying(12) COLLATE pg_catalog.default; COMMENT ON COLUMN public.checks_header.phone IS 'Номер телефона бонусной карты'");
+            queries.Add("ALTER TABLE checks_header ALTER COLUMN client TYPE character varying(36)");
+            queries.Add("ALTER TABLE public.tovar    ADD COLUMN its_marked smallint;UPDATE public.tovar SET its_marked=0;");
+            queries.Add("ALTER TABLE public.checks_table    ADD COLUMN item_marker character varying(100)");
+            queries.Add("ALTER TABLE public.checks_header   ADD COLUMN id_sale bigint");
+            queries.Add("ALTER TABLE public.constants    ADD COLUMN print_m boolean;UPDATE public.constants	SET print_m=true;");
+            queries.Add("CREATE TABLE public.client_with_changed_status_to_send(client character varying(10) COLLATE pg_catalog.default NOT NULL,date_change timestamp without time zone NOT NULL,new_phone_number character varying(10) COLLATE pg_catalog.default,   CONSTRAINT client_with_changed_status_to_send_pkey PRIMARY KEY (client) )WITH(    OIDS = FALSE)TABLESPACE pg_default;        ALTER TABLE public.client_with_changed_status_to_send OWNER to postgres");
+            queries.Add("ALTER TABLE action_header ADD COLUMN gift_price numeric(10, 2); ALTER TABLE action_header ALTER COLUMN gift_price SET NOT NULL;");
+            queries.Add("ALTER TABLE action_header ADD COLUMN gift_price numeric(10, 2);UPDATE public.action_header SET gift_price=0; ALTER TABLE action_header ALTER COLUMN gift_price SET NOT NULL;");
+            //queries.Add("ALTER TABLE constants ADD COLUMN usn_income_out_come boolean; UPDATE public.constants SET usn_income_out_come=false;");
+            queries.Add("ALTER TABLE checks_table ALTER COLUMN item_marker TYPE character varying(200)");
+            queries.Add("CREATE TABLE deleted_items(num_doc bigint NOT NULL,num_cash smallint NOT NULL,date_time_start timestamp without time zone NOT NULL,date_time_action timestamp without time zone NOT NULL,tovar integer NOT NULL,quantity integer NOT NULL,type_of_operation smallint NOT NULL)WITH(    OIDS = FALSE)TABLESPACE pg_default;        ALTER TABLE public.deleted_items            OWNER to postgres");
+            queries.Add("ALTER TABLE public.constants ADD COLUMN system_taxation smallint NOT NULL DEFAULT 0;");
+            queries.Add("ALTER TABLE public.constants ADD COLUMN work_schema smallint NOT NULL DEFAULT 1; COMMENT ON COLUMN public.constants.work_schema IS 'Варианты работы программы 1-ЧД 2-ЕВА';");
+            queries.Add("ALTER TABLE public.constants ADD COLUMN login_promo character varying(100) COLLATE pg_catalog.default;");
+            queries.Add("ALTER TABLE clients ALTER COLUMN code TYPE varchar(13)");
+            queries.Add("ALTER TABLE tovar ALTER COLUMN code TYPE bigint");
+            queries.Add("ALTER TABLE sertificates ALTER COLUMN code TYPE bigint");
+            queries.Add("ALTER TABLE sertificates ALTER COLUMN code_tovar TYPE bigint");
+            queries.Add("ALTER TABLE checks_table ALTER COLUMN tovar_code TYPE bigint");
+            queries.Add("ALTER TABLE barcode ALTER COLUMN tovar_code TYPE bigint");
+            queries.Add("ALTER TABLE action_table ALTER COLUMN code_tovar TYPE bigint");
+            queries.Add("ALTER TABLE action_header ALTER COLUMN code_tovar TYPE bigint");
+            queries.Add("ALTER TABLE public.constants ADD COLUMN version_fn smallint; UPDATE public.constants SET version_fn=2");
+            queries.Add("ALTER TABLE public.checks_header ADD COLUMN requisite smallint;");
+            queries.Add("ALTER TABLE deleted_items ALTER COLUMN tovar TYPE bigint");
+            queries.Add("ALTER TABLE public.checks_header ADD COLUMN viza_d smallint;");
+            queries.Add("CREATE UNIQUE INDEX _clients_code_  ON clients  USING btree(code COLLATE pg_catalog.default);");
+            queries.Add("CREATE TABLE public.roll_up_temp(code_tovar bigint,name_tovar character varying(200) COLLATE pg_catalog.default,    characteristic_guid character varying(36) COLLATE pg_catalog.default," +
+                "characteristic_name character varying(200) COLLATE pg_catalog.default,quantity integer,price numeric(10,2),price_at_a_discount numeric(10,2),sum numeric(10,2),sum_at_a_discount numeric(10,2)," +
+                "action_num_doc integer,action_num_doc1 integer,action_num_doc2 integer,item_marker character varying(200) COLLATE pg_catalog.default)WITH(OIDS = FALSE)TABLESPACE pg_default;" +
+                "ALTER TABLE public.roll_up_temp OWNER to postgres;");
+            queries.Add("ALTER TABLE public.constants ADD COLUMN Enable_stock_processing_in_memory boolean;UPDATE public.constants	SET Enable_stock_processing_in_memory=false;");
+            queries.Add("ALTER TABLE public.constants ADD COLUMN id_acquirer_terminal character varying(8) COLLATE pg_catalog.default;UPDATE public.constants	SET id_acquirer_terminal=''");
+            queries.Add("ALTER TABLE public.constants ADD COLUMN ip_address_acquiring_terminal character varying(21) COLLATE pg_catalog.default;UPDATE public.constants	SET ip_address_acquiring_terminal=''");
+            queries.Add("ALTER TABLE public.constants ADD COLUMN self_service_kiosk boolean;COMMENT ON COLUMN public.constants.self_service_kiosk IS 'Это киоск самообслуживания'; UPDATE public.constants	SET self_service_kiosk=false");
+            queries.Add("ALTER TABLE public.constants ADD COLUMN one_monitors_connected boolean;UPDATE public.constants	SET one_monitors_connected=false");
+            queries.Add("ALTER TABLE public.checks_header ADD COLUMN id_transaction_terminal character varying(18) COLLATE pg_catalog.default;");
+            queries.Add("ALTER TABLE public.checks_header ADD COLUMN system_taxation smallint DEFAULT 0; COMMENT ON COLUMN public.checks_header.system_taxation IS 'Система налогообложения';");
+            queries.Add("ALTER TABLE public.checks_header ADD COLUMN code_authorization_terminal character varying(8) COLLATE pg_catalog.default;COMMENT ON COLUMN public.checks_header.code_authorization_terminal IS 'Это служебное поле в ответе от терминала при оплате, его необходимо указывать при возврате ';");
+            queries.Add("ALTER TABLE public.checks_header ADD COLUMN its_print_p boolean;COMMENT ON COLUMN public.checks_header.its_print_p IS 'Признако того что чек был нормально рапечатан на фискальном принтере по налогообложению патент.';");
+            queries.Add("ALTER TABLE public.document_wil_be_printed ADD COLUMN tax_type smallint; COMMENT ON COLUMN public.document_wil_be_printed.tax_type IS 'Реквизит добавлен для 3 типа налогообложения';");
+            queries.Add("DROP INDEX public.document_wil_be_printed_document_number_idx;");
+            queries.Add("CREATE INDEX document_wil_be_printed_document_number_idx2    ON public.document_wil_be_printed USING btree    (document_number ASC NULLS LAST, tax_type ASC NULLS LAST)    TABLESPACE pg_default;");
+            queries.Add("ALTER TABLE public.action_header ADD COLUMN kind smallint NOT NULL DEFAULT 0;");
+            queries.Add("CREATE UNIQUE INDEX code_client_num_doc ON public.action_clients USING btree (code_client, num_doc); ALTER TABLE public.action_clients CLUSTER ON code_client_num_doc;");
+            queries.Add("ALTER TABLE public.tovar ADD COLUMN its_excise smallint NOT NULL DEFAULT 0;COMMENT ON COLUMN public.tovar.its_excise IS '0 - обычный товар 1 - подакцизный товар';");
+            queries.Add("UPDATE public.constants SET enable_stock_processing_in_memory=true");
+            queries.Add("ALTER TABLE public.constants ADD COLUMN version2_marking boolean  DEFAULT true");
+            queries.Add("ALTER TABLE public.checks_header ADD COLUMN cash_money1 numeric(10,2) DEFAULT 0");
+            queries.Add("ALTER TABLE public.checks_header ADD COLUMN non_cash_money1 numeric(10,2) DEFAULT 0");
+            queries.Add("ALTER TABLE public.checks_header    ADD COLUMN sertificate_money1 numeric(10,2) DEFAULT 0");
+            queries.Add("ALTER TABLE public.checks_header    ADD COLUMN guid character varying(36) COLLATE pg_catalog.default NOT NULL DEFAULT ''::character varying");
+            queries.Add("ALTER TABLE public.checks_table    ADD COLUMN guid character varying(36) COLLATE pg_catalog.default NOT NULL DEFAULT ''::character varying");
+            queries.Add("ALTER TABLE public.clients ADD COLUMN notify_security smallint DEFAULT 0;");
+            queries.Add("ALTER TABLE public.clients ADD COLUMN reason_for_blocking character varying(500) COLLATE pg_catalog.default;");
+            queries.Add("ALTER TABLE public.constants ADD COLUMN webservice_authorize boolean  DEFAULT false;");
+
             foreach (string str in queries)
             {
                 append_column(str);
             }
 
-            check_and_correct();
+            //check_and_correct();
             check_and_correct_date_sync();
             //if (MainStaticClass.CashDeskNumber != 9)
             //{

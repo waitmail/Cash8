@@ -5989,9 +5989,9 @@ namespace Cash8
         {
             System.Net.WebRequest req = System.Net.WebRequest.Create(Url + "/" + Data);
             req.Timeout = 10000;
+            MainStaticClass.set_basic_auth(req);
             System.Net.WebResponse resp = req.GetResponse();
-            //HttpWebResponse myHttpWebResponse = (HttpWebResponse)req.GetResponse();
-
+            //HttpWebResponse myHttpWebResponse = (HttpWebResponse)req.GetResponse();            
             System.IO.Stream stream = resp.GetResponseStream();
 
             System.IO.StreamReader sr = new System.IO.StreamReader(stream);

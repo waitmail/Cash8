@@ -825,25 +825,25 @@ namespace Cash8
                 }
             }
 
-        }      
+        }
 
 
         private void Main_Load(object sender, System.EventArgs e)
-        {           
+        {
 
-            if (File.Exists(Application.StartupPath + "/UpdateNpgsql/Npgsql.dll"))
-            {
-                if (File.ReadAllBytes(Application.StartupPath + "/UpdateNpgsql/Npgsql.dll").Length > 0)
-                {
-                    FileVersionInfo myFileVersionInfo = FileVersionInfo.GetVersionInfo(Application.StartupPath + "/Npgsql.dll");
-                    int cash_version = int.Parse(myFileVersionInfo.FileVersion.Replace(".", ""));
-                    if (cash_version == 20100)//Старая версия Npgsql 
-                    {
-                        File.Copy(Application.StartupPath + "/UpdateNpgsql/Npgsql.dll", Application.StartupPath + "/Npgsql.dll", true);
-                    }
-                }
-            }
-            
+            //if (File.Exists(Application.StartupPath + "/UpdateNpgsql/Npgsql.dll"))
+            //{
+            //    if (File.ReadAllBytes(Application.StartupPath + "/UpdateNpgsql/Npgsql.dll").Length > 0)
+            //    {
+            //        FileVersionInfo myFileVersionInfo = FileVersionInfo.GetVersionInfo(Application.StartupPath + "/Npgsql.dll");
+            //        int cash_version = int.Parse(myFileVersionInfo.FileVersion.Replace(".", ""));
+            //        if (cash_version == 20100)//Старая версия Npgsql 
+            //        {
+            //            File.Copy(Application.StartupPath + "/UpdateNpgsql/Npgsql.dll", Application.StartupPath + "/Npgsql.dll", true);
+            //        }
+            //    }
+            //}
+
             MainStaticClass.Main = this;
             this.IsMdiContainer = true;
             MainStaticClass.Last_Send_Last_Successful_Sending = DateTime.Now;
@@ -853,95 +853,104 @@ namespace Cash8
 
             if (File.Exists(Application.StartupPath + "/Setting.gaa") == false)
             {
-                MessageBox.Show("Не обнаружен файл " + " Setting.gaa " + " с параметрами для программы " + Application.StartupPath);
+                MessageBox.Show("Не обнаружен файл " + " Setting.gaa " + " с параметрами для программы " + Application.StartupPath+ " дальнейшая работа невозможна ");
+                return;
             }
             else
             {
                 Cash8.MainStaticClass.loadConfig(Application.StartupPath + "/Setting.gaa");
+            }
+            
+            if (MainStaticClass.exist_table_name("constants"))
+            {
                 Text += "   " + Cash8.MainStaticClass.CashDeskNumber;
                 Text += " | " + Cash8.MainStaticClass.Nick_Shop;
                 Text += " | " + Cash8.MainStaticClass.version();
-                check_add_field();//gaa
-            }            
-            update_unloading_period();
-            int result = MainStaticClass.get_unloading_interval();
-            if (result != 0)
-            {
-                timer_send_data.Interval = result * 60000;
-                //MessageBox.Show(timer_send_data.Interval.ToString());
-                timer_send_data.Start();
-                timer_send_data.Elapsed += new System.Timers.ElapsedEventHandler(timer_send_data_Elapsed);
-                //timer_send_data_Elapsed(null, null);//при старте сделать выгрузку               при отсутствмм связи программа вешается
-                
-                //Thread t2 = new Thread(load_bonus_cards);
-                //t2.IsBackground = true;
-                //t2.Start();               
+                check_add_field();
+                update_unloading_period();
+                int result = MainStaticClass.get_unloading_interval();
+                if (result != 0)
+                {
+                    timer_send_data.Interval = result * 60000;
+                    //MessageBox.Show(timer_send_data.Interval.ToString());
+                    timer_send_data.Start();
+                    timer_send_data.Elapsed += new System.Timers.ElapsedEventHandler(timer_send_data_Elapsed);
+                    //timer_send_data_Elapsed(null, null);//при старте сделать выгрузку               при отсутствмм связи программа вешается
+
+                    //Thread t2 = new Thread(load_bonus_cards);
+                    //t2.IsBackground = true;
+                    //t2.Start();               
+                }
+
+                LoadProgramFromInternet lpfi = new LoadProgramFromInternet();
+                lpfi.show_phone = true;
+                lpfi.check_new_version_programm();
+                bool new_version_of_the_program_exist = lpfi.new_version_of_the_program;
+                lpfi.Dispose();
+
+                if (new_version_of_the_program_exist)
+                {
+                    обновлениеПрограммыToolStripMenuItem_Click(null, null);
+                }
+
+                if (MainStaticClass.GetWorkSchema != 2)
+                {
+                    Thread t = new Thread(load_bonus_clients);
+                    t.IsBackground = true;
+                    t.Start();
+                }
+
+                if (MainStaticClass.GetWorkSchema == 1)//Это условие будет работать только для ЧД
+                {
+                    //Thread t = new Thread(load_bonus_clients);
+                    //t.IsBackground = true;
+                    //t.Start();
+
+                    UploadPhoneClients();
+                    UploadChangeStatusClients();
+                    check_failed_input_phone();
+                }
+
+                MainStaticClass.delete_old_checks(MainStaticClass.GetMinDateWork);
+                get_users();
+                //MainStaticClass.Use_Envd = check_envd();
+                //if (DateTime.Now > new DateTime(2021, 1, 1) && (MainStaticClass.Use_Envd))
+                //{
+                //    MessageBox.Show("Схема ЕНВД в 1 января 2021 года не работает, необходимо это исправить");
+                //    Constants constants = new Constants();
+                //    constants.ShowDialog();                
+                //    this.Close();
+                //    return;
+                //}
+
+                MainStaticClass.SystemTaxation = check_system_taxation();
+                MainStaticClass.delete_all_events_in_log(MainStaticClass.GetMinDateWork);
+                if (MainStaticClass.Use_Fiscall_Print)
+                {
+                    getShiftStatus();
+                }
+
+                //if (MainStaticClass.PassPromo == "")//Пароля нет надо его запросить
+                //{
+                get_login_and_pass_on_bonus_programm();
+                //}            
+                //check_and_update_npgsql();
+                UploadDeletedItems();//передача удаленных строк и строк с изменением количества вниз
+
+                //if (MainStaticClass.Nick_Shop == "A01")//Для отладки нового механизма пока что сделаю такую заплатку
+                //{
+                //    MainStaticClass.UseOldProcessiingActions = false;
+                //}
+
             }
-            
-            LoadProgramFromInternet lpfi = new LoadProgramFromInternet();
-            lpfi.show_phone = true;
-            lpfi.check_new_version_programm();            
-            bool new_version_of_the_program_exist = lpfi.new_version_of_the_program;
-            lpfi.Dispose();
-            
-            if (new_version_of_the_program_exist)
+            else
             {
-                обновлениеПрограммыToolStripMenuItem_Click(null, null);
+                MessageBox.Show("В этой бд нет таблицы constatnts,необходимо создать таблицы бд");
             }
-
-            if (MainStaticClass.GetWorkSchema != 2)
-            {
-                Thread t = new Thread(load_bonus_clients);
-                t.IsBackground = true;
-                t.Start();
-            }
-
-            if (MainStaticClass.GetWorkSchema == 1)//Это условие будет работать только для ЧД
-            {
-                //Thread t = new Thread(load_bonus_clients);
-                //t.IsBackground = true;
-                //t.Start();
-
-                UploadPhoneClients();
-                UploadChangeStatusClients();
-                check_failed_input_phone();
-            }
-
-            MainStaticClass.delete_old_checks(MainStaticClass.GetMinDateWork);
-            get_users();
-            //MainStaticClass.Use_Envd = check_envd();
-            //if (DateTime.Now > new DateTime(2021, 1, 1) && (MainStaticClass.Use_Envd))
-            //{
-            //    MessageBox.Show("Схема ЕНВД в 1 января 2021 года не работает, необходимо это исправить");
-            //    Constants constants = new Constants();
-            //    constants.ShowDialog();                
-            //    this.Close();
-            //    return;
-            //}
-
-            MainStaticClass.SystemTaxation = check_system_taxation();
-            MainStaticClass.delete_all_events_in_log(MainStaticClass.GetMinDateWork);
-            if (MainStaticClass.Use_Fiscall_Print)
-            {
-                getShiftStatus();
-            }
-            
-            //if (MainStaticClass.PassPromo == "")//Пароля нет надо его запросить
-            //{
-            get_login_and_pass_on_bonus_programm();
-            //}            
-            //check_and_update_npgsql();
-            UploadDeletedItems();//передача удаленных строк и строк с изменением количества вниз
-
-            //if (MainStaticClass.Nick_Shop == "A01")//Для отладки нового механизма пока что сделаю такую заплатку
-            //{
-            //    MainStaticClass.UseOldProcessiingActions = false;
-            //}
-
             this.menuStrip.Items.Clear();
             MainStaticClass.Main.start_interface_switching();
             //change_schema_2_to_3();
-            //change_clients_for_schema1();
+            //change_clients_for_schema1();           
         }
 
         /// <summary>
