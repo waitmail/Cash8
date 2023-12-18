@@ -576,11 +576,10 @@ namespace Cash8
 
 
 
-       
+
 
         public class Check
-        {
-           
+        {            
             public string type { get; set; }
             public string taxationType { get; set; }
             public bool ignoreNonFiscalPrintErrors { get; set; }
@@ -626,7 +625,7 @@ namespace Cash8
         //    return result;
         //}
 
-        public static RootObject check_print(string type, Check check, string num_doc,int variant)
+        public static RootObject check_print(string type, Check check, string num_doc,int variant,string print_guid)
         {
             string status = "";
             RootObject result = null;
@@ -640,7 +639,9 @@ namespace Cash8
             System.IO.File.AppendAllText(Application.StartupPath.Replace("\\", "/") + "/" + "json.txt", DateTime.Now.ToString() + " print\r\n ");
             System.IO.File.AppendAllText(Application.StartupPath.Replace("\\", "/") + "/" + "json.txt", json+"\r\n");
 
-            guid = Guid.NewGuid().ToString();
+            //guid = Guid.NewGuid().ToString();
+            //string replace = "\"uuid\": \"" + check.guid.Trim() + "\"";
+            guid = print_guid;
             string replace = "\"uuid\": \"" + guid + "\"";
             json = json.Replace("uuid", replace);
             //MainStaticClass.write_last_sell_guid(guid,num_doc);

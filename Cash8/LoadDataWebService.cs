@@ -432,6 +432,7 @@ namespace Cash8
             public string Barcode { get; set; }
             public string Persent { get; set; }
             public string sum { get; set; }
+            public string sum1 { get; set; }
             public string Comment { get; set; }
             //public string CodeTovar { get; set; }
             public string Marker { get; set; }
@@ -786,7 +787,7 @@ namespace Cash8
                     foreach (ActionHeader actionHeader in loadPacketData.ListActionHeader)
                     {
                         queries.Add("INSERT INTO action_header(date_started,date_end,num_doc,tip,barcode,persent,sum,comment,marker,action_by_discount,time_start,time_end," +                        
-                        " bonus_promotion, with_old_promotion, monday, tuesday, wednesday, thursday, friday, saturday, sunday, promo_code, sum_bonus,execution_order,gift_price,kind)VALUES ('" +
+                        " bonus_promotion, with_old_promotion, monday, tuesday, wednesday, thursday, friday, saturday, sunday, promo_code, sum_bonus,execution_order,gift_price,kind,sum1)VALUES ('" +
                         actionHeader.DateStarted + "','" +
                         actionHeader.DateEnd + "'," +
                         actionHeader.NumDoc + "," +
@@ -813,7 +814,8 @@ namespace Cash8
                         actionHeader.SumBonus +","+
                         actionHeader.ExecutionOrder + ","+
                         actionHeader.GiftPrice+","+
-                        actionHeader.Kind+ ")");
+                        actionHeader.Kind+ ","+
+                        actionHeader.sum1+")");
                     }
                     if (loadPacketData.ListActionTable.Count > 0)
                     {

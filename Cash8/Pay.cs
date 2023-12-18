@@ -1086,7 +1086,7 @@ namespace Cash8
                     {
                         if (Convert.ToDecimal(non_cash_sum.Text) == 0)
                         {
-                            cc.distribute(total - (int)total, total);//распределение без бонусов , здесь нет клиента нет бонусов
+                            cc.distribute(Math.Round(total - (int)total,2,MidpointRounding.ToEven), total);//распределение без бонусов , здесь нет клиента нет бонусов
                         }
                     }
                 }
