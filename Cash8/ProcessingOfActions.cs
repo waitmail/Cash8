@@ -3049,18 +3049,11 @@ namespace Cash8
         private void action_12_dt(int num_doc, decimal persent, decimal sum,decimal sum1)
         {
             NpgsqlConnection conn = null;
-            NpgsqlCommand command = null;
-            //NpgsqlTransaction tran = null;
-            //double result = 0;
-            //double persent = 0;//процент скидки на товары из 1-го списка при выполнении условий т.е. 2список\1список>=1
-            //double threshold1 = 0;//порго сработки акции для 1 списка
-            //double threshold2 = 0;//порго сработки акции для 2 списка
+            NpgsqlCommand command = null;            
             decimal fact1 = 0;//фактическая сумма в чеке по товарам из 1-го списка
             decimal fact2 = 0;//фактическая сумма в чеке по товарам из 2-го списка
             int count_list = 0;//количество списков в условии акций
-            //List<Int64> tovar_code1 = new List<Int64>();
-            //List<Int64> tovar_code2 = new List<Int64>();
-
+            
             DataTable table_list1 = new DataTable();
 
             DataColumn tovar_code = new DataColumn();
@@ -3088,12 +3081,11 @@ namespace Cash8
             try
             {
                 conn = MainStaticClass.NpgsqlConn();
-                conn.Open();
-                //tran = conn.BeginTransaction();
-
-                //Поскольку документ не записан еще найти строки которые могут участвовать в акции можно только последовательным перебором 
+                conn.Open();                
+                
                 string query = "DROP TABLE IF EXISTS table12;CREATE TEMP TABLE table12(tovar_code bigint,sum_at_a_discount numeric(12, 2));";
 
+                //Поскольку документ не записан еще найти строки которые могут участвовать в акции можно только последовательным перебором 
                 foreach (DataRow row in dt.Rows)
                 {
                     if (Convert.ToInt32(row["action2"]) > 0)//Этот товар уже участвовал в акции значит его пропускаем
@@ -3103,8 +3095,7 @@ namespace Cash8
                     query += "INSERT INTO table12(tovar_code,sum_at_a_discount)VALUES(" + row["tovar_code"].ToString() + "," + row["sum_at_discount"].ToString().Replace(",", ".") + ");";
                 }
 
-                command = new NpgsqlCommand(query, conn);
-                //command.Transaction = tran;
+                command = new NpgsqlCommand(query, conn);                
                 command.ExecuteNonQuery();
 
                 query = " SELECT MAX(num_list)AS count_list FROM action_table WHERE num_doc =" + num_doc + ";" +
@@ -3296,7 +3287,21 @@ namespace Cash8
                 conn = MainStaticClass.NpgsqlConn();
                 conn.Open();
                 trans = conn.BeginTransaction();
-                query = "DELETE FROM roll_up_temp ";
+                query = "DROP TABLE IF EXISTS roll_up_temp;"+
+                    " CREATE TEMP TABLE roll_up_temp "+
+                    " (code_tovar bigint,"+
+                    " name_tovar character varying(200) COLLATE pg_catalog.default,"+
+                    " characteristic_guid character varying(36) COLLATE pg_catalog.default,"+
+                    " characteristic_name character varying(200) COLLATE pg_catalog.default,"+
+                    " quantity integer,"+
+                    " price numeric(10, 2),"+
+                    " price_at_a_discount numeric(10,2),"+
+                    " sum numeric(10,2),"+
+                    " sum_at_a_discount numeric(10,2),"+
+                    " action_num_doc integer,"+
+                    " action_num_doc1 integer,"+
+                    " action_num_doc2 integer,"+
+                    " item_marker character varying(200) COLLATE pg_catalog.default);";
                 command = new NpgsqlCommand(query, conn);
                 command.Transaction = trans;
                 command.ExecuteNonQuery();
@@ -3336,7 +3341,7 @@ namespace Cash8
                 }
                 query = "SELECT code_tovar, name_tovar, characteristic_guid, characteristic_name, SUM(quantity) AS quantity, price," +
                     " price_at_a_discount, SUM(sum), SUM(sum_at_a_discount), action_num_doc, action_num_doc1, action_num_doc2, item_marker" +
-                    " FROM public.roll_up_temp    GROUP BY code_tovar, name_tovar, characteristic_guid, characteristic_name, price," +
+                    " FROM roll_up_temp    GROUP BY code_tovar, name_tovar, characteristic_guid, characteristic_name, price," +
                     " price_at_a_discount, action_num_doc, action_num_doc1, action_num_doc2, item_marker;";
                 command = new NpgsqlCommand(query, conn);
                 command.Transaction = trans;
