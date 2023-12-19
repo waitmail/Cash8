@@ -638,10 +638,13 @@ namespace Cash8
             string json = MainStaticClass.shablon.Replace("body", _check_);
             System.IO.File.AppendAllText(Application.StartupPath.Replace("\\", "/") + "/" + "json.txt", DateTime.Now.ToString() + " print\r\n ");
             System.IO.File.AppendAllText(Application.StartupPath.Replace("\\", "/") + "/" + "json.txt", json+"\r\n");
-
-            //guid = Guid.NewGuid().ToString();
-            //string replace = "\"uuid\": \"" + check.guid.Trim() + "\"";
             guid = print_guid;
+            if (MainStaticClass.StaticGuidInPrint == 0)
+            {
+                guid = Guid.NewGuid().ToString();
+            }
+            //string replace = "\"uuid\": \"" + check.guid.Trim() + "\"";
+            
             string replace = "\"uuid\": \"" + guid + "\"";
             json = json.Replace("uuid", replace);
             //MainStaticClass.write_last_sell_guid(guid,num_doc);

@@ -60,6 +60,7 @@
             this.checkBox_one_monitors_connected = new System.Windows.Forms.CheckBox();
             this.checkBox_version2_marking = new System.Windows.Forms.CheckBox();
             this.checkBox_webservice_authorize = new System.Windows.Forms.CheckBox();
+            this.checkBox_static_guid_in_print = new System.Windows.Forms.CheckBox();
             this.groupBox_acquiring_terminal.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -357,11 +358,22 @@
             this.checkBox_webservice_authorize.Text = "Веб сервис с авторизацией";
             this.checkBox_webservice_authorize.UseVisualStyleBackColor = true;
             // 
+            // checkBox_static_guid_in_print
+            // 
+            this.checkBox_static_guid_in_print.AutoSize = true;
+            this.checkBox_static_guid_in_print.Location = new System.Drawing.Point(209, 42);
+            this.checkBox_static_guid_in_print.Name = "checkBox_static_guid_in_print";
+            this.checkBox_static_guid_in_print.Size = new System.Drawing.Size(231, 17);
+            this.checkBox_static_guid_in_print.TabIndex = 81;
+            this.checkBox_static_guid_in_print.Text = "Статический uuid(документа) при печати";
+            this.checkBox_static_guid_in_print.UseVisualStyleBackColor = true;
+            // 
             // Constants
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(781, 359);
+            this.Controls.Add(this.checkBox_static_guid_in_print);
             this.Controls.Add(this.checkBox_webservice_authorize);
             this.Controls.Add(this.checkBox_version2_marking);
             this.Controls.Add(this.checkBox_one_monitors_connected);
@@ -438,5 +450,6 @@
         private System.Windows.Forms.CheckBox checkBox_one_monitors_connected;
         private System.Windows.Forms.CheckBox checkBox_version2_marking;
         private System.Windows.Forms.CheckBox checkBox_webservice_authorize;
+        private System.Windows.Forms.CheckBox checkBox_static_guid_in_print;
     }
 }

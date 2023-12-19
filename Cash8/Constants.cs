@@ -269,6 +269,7 @@ namespace Cash8
             string one_monitors_connected = (checkBox_one_monitors_connected.CheckState == CheckState.Unchecked ? "false" : "true");
             string version2_marking = (checkBox_version2_marking.CheckState == CheckState.Unchecked ? "false" : "true");
             string webservice_authorize = (checkBox_webservice_authorize.CheckState == CheckState.Unchecked ? "false" : "true");
+            string static_guid_in_print = (checkBox_static_guid_in_print.CheckState == CheckState.Unchecked ? "false" : "true");
 
 
             try
@@ -294,8 +295,9 @@ namespace Cash8
                     "self_service_kiosk=" + self_service_kiosk+","+
                     "one_monitors_connected="+ one_monitors_connected+","+
                     "version2_marking="+ version2_marking+","+
-                    "webservice_authorize=" + webservice_authorize;
-                
+                    "webservice_authorize=" + webservice_authorize+","+
+                    "static_guid_in_print=" + static_guid_in_print;
+
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 int resul_update = command.ExecuteNonQuery();
                 if (resul_update == 0)
@@ -318,7 +320,8 @@ namespace Cash8
                         "self_service_kiosk,"+
                         "one_monitors_connected,"+
                         "version2_marking,"+
-                        "webservice_authorize) VALUES(" +
+                        "webservice_authorize,"+
+                        "static_guid_in_print) VALUES(" +
                         cash_desk_number.Text + ",'" +
                         nick_shop.Text + "'," +
                         get_use_debug() + ",'" +                        
@@ -336,7 +339,8 @@ namespace Cash8
                         self_service_kiosk+","+
                         one_monitors_connected+","+
                         version2_marking+","+
-                        webservice_authorize+")";
+                        webservice_authorize+","+
+                        static_guid_in_print+")";
 
                     command = new NpgsqlCommand(query, conn);
                     command.ExecuteNonQuery();

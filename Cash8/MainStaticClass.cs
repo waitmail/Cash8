@@ -111,6 +111,8 @@ namespace Cash8
         private static int one_monitors_connected = -1;
         private static int version2_marking =-1;
         private static int authorization_required = -1;
+        private static int static_guid_in_print = -1;
+
         private static int this_new_database = 0;
         //private static int version_fn = 0;
         //private static int sno = -1;//это система налогообложения
@@ -304,6 +306,50 @@ namespace Cash8
                     }
                 }
                 return version2_marking;
+            }
+        }
+        public static int StaticGuidInPrint
+        {
+            get
+            {
+                if (static_guid_in_print == -1)
+                {
+
+                    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+                    try
+                    {
+                        conn.Open();
+                        string query = "SELECT static_guid_in_print FROM constants";
+                        NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                        object result_query = command.ExecuteScalar();
+                        if (Convert.ToBoolean(result_query) == false)
+                        {
+                            static_guid_in_print = 0;
+                        }
+                        else
+                        {
+                            static_guid_in_print = 1;
+                        }
+                    }
+                    catch (NpgsqlException ex)
+                    {
+                        static_guid_in_print = 0;
+                        MessageBox.Show("Ошибка при чтении флага по печати старая/новая схема " + ex.Message);
+                    }
+                    catch (Exception ex)
+                    {
+                        static_guid_in_print = 0;
+                        MessageBox.Show("Ошибка при чтении флага по печати старая/новая схема " + ex.Message);
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                }
+                return static_guid_in_print;
             }
         }
 

@@ -947,7 +947,7 @@ namespace Cash8
                                " checks_header.sertificate_money,checks_header.non_cash_money,checks_header.cash_money,checks_header.bonuses_it_is_counted, " +
                                " checks_header.bonuses_it_is_written_off, " +
                                " checks_table.bonus_standard,checks_table.bonus_promotion,checks_table.promotion_b_mover,checks_table.item_marker,checks_header.requisite," +
-                               "checks_header.its_deleted,checks_header.system_taxation,checks_header.guid,checks_header.guid1 " +
+                               "checks_header.its_deleted,checks_header.system_taxation,checks_header.guid AS checks_header_guid,checks_header.guid1 AS checks_header_guid " +
                                " FROM checks_header left join checks_table ON checks_header.document_number=checks_table.document_number " +
                                " left join clients ON checks_header.client  = clients.code " +
                                " left join tovar ON checks_table.tovar_code = tovar.code " +
@@ -961,8 +961,8 @@ namespace Cash8
                 {
                     if (!header_fill)//заполнить шапку
                     {
-                        this.guid = reader["guid"].ToString();
-                        this.guid1 = reader["guid1"].ToString();
+                        this.guid = reader["checks_header_guid"].ToString();
+                        this.guid1 = reader["checks_header_guid"].ToString();
                         this.client.Tag = reader["client"].ToString();//Комментарий
                         this.comment.Text = reader["comment"].ToString();//Комментарий
                         this.p_sum_doc = Convert.ToDecimal(reader["cash"]).ToString();//Сумма документа                    
