@@ -2824,7 +2824,6 @@ namespace Cash8
 
                 if (quantity_on_doc >= sum)//Есть вхождение в акцию
                 {
-
                     have_action = true;//Признак того что в документе есть сработка по акции                    
                     dt.Rows.Clear();
                     foreach (DataRow row2 in dt2.Rows)
@@ -2833,18 +2832,16 @@ namespace Cash8
                         row.ItemArray = row2.ItemArray;
                         dt.Rows.Add(row);
                     }
-
-                    //have_action = true;//Признак того что в документе есть сработка по акции
-                    
+                    //have_action = true;//Признак того что в документе есть сработка по акции                    
                     
                     command = new NpgsqlCommand(query.ToString(), conn);//устанавливаем акционные позиции во временную таблицу
                     command.ExecuteNonQuery();
                     //query = new StringBuilder();
-                    query.Append("DELETE FROM tovar_action;");//Очищаем таблицу акционных товаров 
+                    //query.Append("DELETE FROM tovar_action;");//Очищаем таблицу акционных товаров 
                     //иначе результат задваивается ранее эта строка была закомментирована и при 2 товарах по 1 шт. учавстсующих в акции
                     //работала неверно
 
-                    int multiplication_factor = (int)(quantity_on_doc / sum);
+                    //int multiplication_factor = (int)(quantity_on_doc / sum)-1;
                     //query_string = " SELECT code, retail_price, quantity FROM tovar_action ORDER BY retail_price ";//запросим товары отсортированные по цене
                     query_string = " SELECT tovar_action.code,tovar.name, tovar.retail_price,tovar_action.retail_price, quantity FROM tovar_action LEFT JOIN tovar ON tovar_action.code=tovar.code ";//запросим товары отсортированные по цене
                     command = new NpgsqlCommand(query_string, conn);
@@ -2853,72 +2850,72 @@ namespace Cash8
                     while (reader.Read())
                     {
 
-                        if ((multiplication_factor > 0) || (_sum_ > 0))
-                        {
-                            if ((_sum_ == 0) && (multiplication_factor > 0))
-                            {
-                                _sum_ = sum;
-                                multiplication_factor--;
-                            }
-                            _sum_ -= 1;
-                            
-                            DataRow row = dt.NewRow();
-                            row["tovar_code"] = reader[0].ToString();
-                            row["tovar_name"] = reader[1].ToString().Trim();
-                            row["characteristic_name"] = "";// reader[5].ToString();
-                            row["characteristic_code"] = "";// reader[6].ToString();
-                            row["quantity"] = reader[4].ToString().Trim();
-                            row["price"] = reader.GetDecimal(2).ToString();
-                            row["price_at_discount"] = Math.Round(reader.GetDecimal(2) - reader.GetDecimal(2) * persent / 100, 2).ToString();// get_price_action(num_doc);
-                            row["sum_full"] = (Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price"])).ToString();
-                            row["sum_at_discount"] = (Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price_at_discount"])).ToString();
-                            if (Convert.ToDecimal(row["price"]) != Convert.ToDecimal(row["price_at_discount"]))
-                            {
-                                row["action"] = num_doc.ToString();
-                            }
-                            else
-                            {
-                                row["action"] = "0";
-                            }
-                            row["gift"] = "0";
-                            row["action2"] = num_doc.ToString();
-                            row["bonus_reg"] = 0;
-                            row["bonus_action"] = 0;
-                            row["bonus_action_b"] = 0;
-                            row["marking"] = "0";
-                            dt.Rows.Add(row);
-                            multiplication_factor--;
+                        //if ((multiplication_factor > 0) || (_sum_ > 0))
+                        //{
+                        //    if ((_sum_ == 0) && (multiplication_factor > 0))
+                        //    {
+                        //        _sum_ = sum;
+                        //        multiplication_factor--;
+                        //    }
+                        //    _sum_ -= 1;
 
+                        DataRow row = dt.NewRow();
+                        row["tovar_code"] = reader[0].ToString();
+                        row["tovar_name"] = reader[1].ToString().Trim();
+                        row["characteristic_name"] = "";// reader[5].ToString();
+                        row["characteristic_code"] = "";// reader[6].ToString();
+                        row["quantity"] = reader[4].ToString().Trim();
+                        row["price"] = reader.GetDecimal(2).ToString();
+                        row["price_at_discount"] = Math.Round(reader.GetDecimal(2) - reader.GetDecimal(2) * persent / 100, 2).ToString();// get_price_action(num_doc);
+                        row["sum_full"] = (Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price"])).ToString();
+                        row["sum_at_discount"] = (Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price_at_discount"])).ToString();
+                        if (Convert.ToDecimal(row["price"]) != Convert.ToDecimal(row["price_at_discount"]))
+                        {
+                            row["action"] = num_doc.ToString();
                         }
                         else
-                        {                            
-                            DataRow row = dt.NewRow();
-                            row["tovar_code"] = reader[0].ToString();
-                            row["tovar_name"] = reader[1].ToString().Trim();
-                            row["characteristic_name"] = "";// reader[5].ToString();
-                            row["characteristic_code"] = "";// reader[6].ToString();
-                            row["quantity"] = reader[4].ToString().Trim();
-                            row["price"] = reader.GetDecimal(2).ToString();
-                            row["price_at_discount"] = reader.GetDecimal(2).ToString();
-                            row["sum_full"] = (Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price"])).ToString();
-                            row["sum_at_discount"] = (Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price_at_discount"])).ToString();
-                            if (Convert.ToDecimal(row["price"]) != Convert.ToDecimal(row["price_at_discount"]))
-                            {
-                                row["action"] = num_doc.ToString();
-                            }
-                            else
-                            {
-                                row["action"] = "0";
-                            }
-                            row["gift"] = "0";
-                            row["action2"] = num_doc.ToString();
-                            row["bonus_reg"] = 0;
-                            row["bonus_action"] = 0;
-                            row["bonus_action_b"] = 0;
-                            row["marking"] = "0";
-                            dt.Rows.Add(row);
-                            multiplication_factor--;
+                        {
+                            row["action"] = "0";
                         }
+                        row["gift"] = "0";
+                        row["action2"] = num_doc.ToString();
+                        row["bonus_reg"] = 0;
+                        row["bonus_action"] = 0;
+                        row["bonus_action_b"] = 0;
+                        row["marking"] = "0";
+                        dt.Rows.Add(row);
+                        //multiplication_factor--;
+
+                        //}
+                        //else
+                        //{
+                        //    DataRow row = dt.NewRow();
+                        //    row["tovar_code"] = reader[0].ToString();
+                        //    row["tovar_name"] = reader[1].ToString().Trim();
+                        //    row["characteristic_name"] = "";// reader[5].ToString();
+                        //    row["characteristic_code"] = "";// reader[6].ToString();
+                        //    row["quantity"] = reader[4].ToString().Trim();
+                        //    row["price"] = reader.GetDecimal(2).ToString();
+                        //    row["price_at_discount"] = reader.GetDecimal(2).ToString();
+                        //    row["sum_full"] = (Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price"])).ToString();
+                        //    row["sum_at_discount"] = (Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price_at_discount"])).ToString();
+                        //    if (Convert.ToDecimal(row["price"]) != Convert.ToDecimal(row["price_at_discount"]))
+                        //    {
+                        //        row["action"] = num_doc.ToString();
+                        //    }
+                        //    else
+                        //    {
+                        //        row["action"] = "0";
+                        //    }
+                        //    row["gift"] = "0";
+                        //    row["action2"] = num_doc.ToString();
+                        //    row["bonus_reg"] = 0;
+                        //    row["bonus_action"] = 0;
+                        //    row["bonus_action_b"] = 0;
+                        //    row["marking"] = "0";
+                        //    dt.Rows.Add(row);
+                        //    multiplication_factor--;
+                        //}
                     }
                     /*акция сработала
              * надо отметить все товарные позиции 
@@ -2943,6 +2940,7 @@ namespace Cash8
                     // conn.Dispose();
                 }
             }
+            roll_up_dt();
         }
 
         /// <summary>
