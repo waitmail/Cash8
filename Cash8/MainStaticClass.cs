@@ -14,12 +14,10 @@ using System.Net.Sockets;
 using System.Diagnostics;
 using System.Net.NetworkInformation;
 using Newtonsoft.Json;
+using Atol.Drivers10.Fptr;
 
 namespace Cash8
 {
-
-
-
 
     class MainStaticClass
     {
@@ -112,6 +110,8 @@ namespace Cash8
         private static int version2_marking =-1;
         private static int authorization_required = -1;
         private static int static_guid_in_print = -1;
+        private static int printing_using_libraries = -1;
+        private static IFptr _fptr=null;
 
         private static int this_new_database = 0;
         //private static int version_fn = 0;
@@ -176,6 +176,66 @@ namespace Cash8
             }
         }
 
+        /// <summary>
+        /// Экземпляр объекта печати 
+        /// </summary>
+        public static IFptr FPTR
+        {
+            get
+            {
+                if (_fptr == null)
+                {
+                    _fptr = new Fptr();                   
+                }
+
+                return _fptr;
+            }
+        }
+
+        public static int PrintingUsingLibraries
+        {
+            get
+            {
+                if (printing_using_libraries == -1)
+                {
+
+                    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+                    try
+                    {
+                        conn.Open();
+                        string query = "SELECT printing_using_libraries FROM constants";
+                        NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                        object result_query = command.ExecuteScalar();
+                        if (Convert.ToBoolean(result_query) == false)
+                        {
+                            printing_using_libraries = 0;
+                        }
+                        else
+                        {
+                            printing_using_libraries = 1;
+                        }
+                    }
+                    catch (NpgsqlException ex)
+                    {
+                        printing_using_libraries = 0;
+                        MessageBox.Show(" Ошибка при чтении флага печати с помощью библиотек " + ex.Message);
+                    }
+                    catch (Exception ex)
+                    {
+                        printing_using_libraries = 0;
+                        MessageBox.Show(" Ошибка при чтении флага печати с помощью библиотек " + ex.Message);
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                }
+                return printing_using_libraries;
+            }
+        }
 
         public static int AuthorizationRequired
         {

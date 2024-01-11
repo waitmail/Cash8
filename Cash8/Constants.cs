@@ -104,7 +104,7 @@ namespace Cash8
                     " path_for_web_service,currency,unloading_period,last_date_download_bonus_clients,"+
                     " envd,pass_promo,print_m,system_taxation,work_schema,version_fn,enable_stock_processing_in_memory," +
                     " id_acquirer_terminal,ip_address_acquiring_terminal,self_service_kiosk,one_monitors_connected,version2_marking, " +
-                    " webservice_authorize FROM constants";
+                    " webservice_authorize,printing_using_libraries FROM constants";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
@@ -134,6 +134,7 @@ namespace Cash8
                     this.checkBox_one_monitors_connected.CheckState = (reader["one_monitors_connected"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
                     this.checkBox_version2_marking.CheckState = (reader["version2_marking"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
                     this.checkBox_webservice_authorize.CheckState = (reader["webservice_authorize"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
+                    this.checkBox_printing_using_libraries.CheckState = (reader["printing_using_libraries"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);                   
                 }
                 reader.Close();
                 //if (nick_shop.Text.Trim() != "A01")
@@ -270,6 +271,7 @@ namespace Cash8
             string version2_marking = (checkBox_version2_marking.CheckState == CheckState.Unchecked ? "false" : "true");
             string webservice_authorize = (checkBox_webservice_authorize.CheckState == CheckState.Unchecked ? "false" : "true");
             string static_guid_in_print = (checkBox_static_guid_in_print.CheckState == CheckState.Unchecked ? "false" : "true");
+            string printing_using_libraries = (checkBox_printing_using_libraries.CheckState == CheckState.Unchecked ? "false" : "true");
 
 
             try
@@ -287,16 +289,17 @@ namespace Cash8
                     "print_m ='" + print_m + "'," +
                     "last_date_download_bonus_clients ='" + txtB_last_date_download_bonus_clients.Text + "'," +
                     "system_taxation = '" + comboBox_system_taxation.SelectedIndex.ToString() + "'," +
-                    "work_schema = '" + txtB_work_schema.Text+"',"+
-                    "version_fn = "+txtB_version_fn.Text+","+
-                    "enable_stock_processing_in_memory="+ enable_stock_processing_in_memory+","+
-                    "id_acquirer_terminal='"+txtB_id_acquiring_terminal.Text.ToString()+"',"+
+                    "work_schema = '" + txtB_work_schema.Text + "'," +
+                    "version_fn = " + txtB_version_fn.Text + "," +
+                    "enable_stock_processing_in_memory=" + enable_stock_processing_in_memory + "," +
+                    "id_acquirer_terminal='" + txtB_id_acquiring_terminal.Text.ToString() + "'," +
                     "ip_address_acquiring_terminal='" + txtB_ip_address_acquiring_terminal.Text.ToString().Trim() + "'," +
-                    "self_service_kiosk=" + self_service_kiosk+","+
-                    "one_monitors_connected="+ one_monitors_connected+","+
-                    "version2_marking="+ version2_marking+","+
-                    "webservice_authorize=" + webservice_authorize+","+
-                    "static_guid_in_print=" + static_guid_in_print;
+                    "self_service_kiosk=" + self_service_kiosk + "," +
+                    "one_monitors_connected=" + one_monitors_connected + "," +
+                    "version2_marking=" + version2_marking + "," +
+                    "webservice_authorize=" + webservice_authorize + "," +
+                    "static_guid_in_print=" + static_guid_in_print + "," +
+                    "printing_using_libraries=" + printing_using_libraries+";";
 
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 int resul_update = command.ExecuteNonQuery();
@@ -321,7 +324,8 @@ namespace Cash8
                         "one_monitors_connected,"+
                         "version2_marking,"+
                         "webservice_authorize,"+
-                        "static_guid_in_print) VALUES(" +
+                        "static_guid_in_print," +
+                        "printing_using_libraries) VALUES(" +
                         cash_desk_number.Text + ",'" +
                         nick_shop.Text + "'," +
                         get_use_debug() + ",'" +                        
@@ -340,7 +344,8 @@ namespace Cash8
                         one_monitors_connected+","+
                         version2_marking+","+
                         webservice_authorize+","+
-                        static_guid_in_print+")";
+                        static_guid_in_print+","+
+                        printing_using_libraries + ")";
 
                     command = new NpgsqlCommand(query, conn);
                     command.ExecuteNonQuery();

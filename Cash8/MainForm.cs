@@ -233,39 +233,52 @@ namespace Cash8
 
 
         private void getShiftStatus()
-        {            
-            try
+        {
+            if (MainStaticClass.PrintingUsingLibraries == 0)
             {
-                Cash8.FiscallPrintJason.RootObject result = FiscallPrintJason.execute_operator_type("getShiftStatus");
-                if (result != null)
+                try
                 {
-                    if (result.results[0].status == "ready")//Задание выполнено успешно 
+                    Cash8.FiscallPrintJason.RootObject result = FiscallPrintJason.execute_operator_type("getShiftStatus");
+                    if (result != null)
                     {
-                        if (result.results[0].result.shiftStatus.state != "closed")
+                        if (result.results[0].status == "ready")//Задание выполнено успешно 
                         {
-                            if ((DateTime.Now - result.results[0].result.shiftStatus.expiredTime).TotalHours > 0)
+                            if (result.results[0].result.shiftStatus.state != "closed")
                             {
-                                MessageBox.Show(" Период открытой смены превысил 24 часа !!!\r\n СНИМИТЕ Z-ОТЧЁТ. ЕСЛИ СОМНЕВАЕТЕСЬ В ЧЁМ-ТО, ТО ВСЁ РАВНО СНИМИТЕ Z-ОТЧЁТ");
+                                if ((DateTime.Now - result.results[0].result.shiftStatus.expiredTime).TotalHours > 0)
+                                {
+                                    MessageBox.Show(" Период открытой смены превысил 24 часа !!!\r\n СНИМИТЕ Z-ОТЧЁТ. ЕСЛИ СОМНЕВАЕТЕСЬ В ЧЁМ-ТО, ТО ВСЁ РАВНО СНИМИТЕ Z-ОТЧЁТ");
+                                }
                             }
+                        }
+                        else
+                        {
+                            MessageBox.Show(" Ошибка !!! " + result.results[0].status + " | " + result.results[0].errorDescription);
                         }
                     }
                     else
                     {
-                        MessageBox.Show(" Ошибка !!! " + result.results[0].status + " | " + result.results[0].errorDescription);
+                        MessageBox.Show("Общая ошибка");
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    MessageBox.Show("Общая ошибка");
+                    MessageBox.Show("getShiftStatus" + ex.Message);
                 }
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show("getShiftStatus" + ex.Message);
-            }
-            
+                PrintingUsingLibraries printing = new PrintingUsingLibraries();
+                printing.getShiftStatus();
+            }           
  
         }
+
+        //private void getShiftStatusLibraries()
+        //{
+        //    PrintingUsingLibraries printing = new PrintingUsingLibraries();
+        //    printing.getShiftStatus();         
+        //}
 
         private void UploadTempCodeClients()
         {
@@ -941,7 +954,6 @@ namespace Cash8
                 //{
                 //    MainStaticClass.UseOldProcessiingActions = false;
                 //}
-
             }
             else
             {
@@ -950,7 +962,11 @@ namespace Cash8
             this.menuStrip.Items.Clear();
             MainStaticClass.Main.start_interface_switching();
             //change_schema_2_to_3();
-            //change_clients_for_schema1();           
+            //change_clients_for_schema1();   
+            if (MainStaticClass.PrintingUsingLibraries == 1)
+            {
+
+            }
         }
 
         /// <summary>

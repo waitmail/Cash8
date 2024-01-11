@@ -75,57 +75,64 @@ namespace Cash8
 
         private void get_fiscall_info()
         {
-            try
+            if (MainStaticClass.PrintingUsingLibraries == 0)
             {
-                Cash8.FiscallPrintJason.RootObject result = FiscallPrintJason.execute_operator_type("getFnInfo");
-                if (result != null)
+                try
                 {
-                    if (result.results[0].status == "ready")//Задание выполнено успешно 
+                    Cash8.FiscallPrintJason.RootObject result = FiscallPrintJason.execute_operator_type("getFnInfo");
+                    if (result != null)
                     {
-                        //sum_incass.Text = result.results[0].result.counters.cashSum.ToString();
-                        if (result.results[0].result.fnInfo.validityDate.Date > DateTime.Today.Date)
+                        if (result.results[0].status == "ready")//Задание выполнено успешно 
                         {
-                            (result.results[0].result.fnInfo.validityDate.Date - DateTime.Today.Date).TotalDays.ToString();
-                        }
-                        string fn_info = "Ресурс ФН " + (result.results[0].result.fnInfo.validityDate.Date - DateTime.Today.Date).TotalDays.ToString() + " дней ";
-                        if (result.results[0].result.fnInfo.warnings.needReplacement)
-                        {
-                            fn_info += "\r\n" + "Требуется срочная замена ФН !!!";
-                        }
-                        if (result.results[0].result.fnInfo.warnings.ofdTimeout)
-                        {
-                            fn_info += "\r\n" + "Превышено время ожидания ответа от ОФД !!!";
-                        }
-                        if (result.results[0].result.fnInfo.warnings.memoryOverflow)
-                        {
-                            fn_info += "\r\n" + "Память ФН переполнена !!!";
-                        }
-                        if (result.results[0].result.fnInfo.warnings.resourceExhausted)
-                        {
-                            fn_info += "\r\n" + "Исчерпан ресурс ФН !!!";
-                        }
-                        if (result.results[0].result.fnInfo.warnings.criticalError)
-                        {
-                            fn_info += "\r\n" + "Критическая ошибка ФН !!!";
-                        }
+                            //sum_incass.Text = result.results[0].result.counters.cashSum.ToString();
+                            if (result.results[0].result.fnInfo.validityDate.Date > DateTime.Today.Date)
+                            {
+                                (result.results[0].result.fnInfo.validityDate.Date - DateTime.Today.Date).TotalDays.ToString();
+                            }
+                            string fn_info = "Ресурс ФН " + (result.results[0].result.fnInfo.validityDate.Date - DateTime.Today.Date).TotalDays.ToString() + " дней ";
+                            if (result.results[0].result.fnInfo.warnings.needReplacement)
+                            {
+                                fn_info += "\r\n" + "Требуется срочная замена ФН !!!";
+                            }
+                            if (result.results[0].result.fnInfo.warnings.ofdTimeout)
+                            {
+                                fn_info += "\r\n" + "Превышено время ожидания ответа от ОФД !!!";
+                            }
+                            if (result.results[0].result.fnInfo.warnings.memoryOverflow)
+                            {
+                                fn_info += "\r\n" + "Память ФН переполнена !!!";
+                            }
+                            if (result.results[0].result.fnInfo.warnings.resourceExhausted)
+                            {
+                                fn_info += "\r\n" + "Исчерпан ресурс ФН !!!";
+                            }
+                            if (result.results[0].result.fnInfo.warnings.criticalError)
+                            {
+                                fn_info += "\r\n" + "Критическая ошибка ФН !!!";
+                            }
 
-                        txtB_fn_info.Text = fn_info;
+                            txtB_fn_info.Text = fn_info;
+                        }
+                        else
+                        {
+                            MessageBox.Show(" Ошибка !!! " + result.results[0].status + " | " + result.results[0].errorDescription);
+                        }
                     }
                     else
                     {
-                        MessageBox.Show(" Ошибка !!! " + result.results[0].status + " | " + result.results[0].errorDescription);
+                        MessageBox.Show("Общая ошибка");
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    MessageBox.Show("Общая ошибка");
+                    MessageBox.Show("get_fiscall_info" + ex.Message);
                 }
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show("get_fiscall_info" + ex.Message);
+                PrintingUsingLibraries printing = new PrintingUsingLibraries();
+                txtB_fn_info.Text = printing.getFiscallInfo();               
             }
-
         }
 
         void incass_KeyPress(object sender, KeyPressEventArgs e)
@@ -153,39 +160,47 @@ namespace Cash8
         private void avans_Click(object sender, EventArgs e)
         {
             avans.Enabled = false;
-            if (sum_avans.Text.Trim().Length == 0)
+            if (MainStaticClass.PrintingUsingLibraries == 0)
             {
-                MessageBox.Show(" Сумма внесения не заполнена ");
-                return;
-            }
-
-            if (Convert.ToDouble(sum_avans.Text) == 0)
-            {
-                MessageBox.Show(" Сумма внесения должна быть больше нуля ");
-                return;
-            }
-            try
-            {
-                Cash8.FiscallPrintJason.RootObject result = FiscallPrintJason.cashe_in_out("cashIn", Convert.ToDouble(sum_avans.Text));
-                if (result != null)
+                if (sum_avans.Text.Trim().Length == 0)
                 {
-                    if (result.results[0].status == "ready")//Задание выполнено успешно 
+                    MessageBox.Show(" Сумма внесения не заполнена ");
+                    return;
+                }
+
+                if (Convert.ToDouble(sum_avans.Text) == 0)
+                {
+                    MessageBox.Show(" Сумма внесения должна быть больше нуля ");
+                    return;
+                }
+                try
+                {
+                    Cash8.FiscallPrintJason.RootObject result = FiscallPrintJason.cashe_in_out("cashIn", Convert.ToDouble(sum_avans.Text));
+                    if (result != null)
                     {
-                        sum_incass.Text = result.results[0].result.counters.cashSum.ToString();
+                        if (result.results[0].status == "ready")//Задание выполнено успешно 
+                        {
+                            sum_incass.Text = result.results[0].result.counters.cashSum.ToString();
+                        }
+                        else
+                        {
+                            MessageBox.Show(" Ошибка !!! " + result.results[0].status + " | " + result.results[0].errorDescription);
+                        }
                     }
                     else
                     {
-                        MessageBox.Show(" Ошибка !!! " + result.results[0].status + " | " + result.results[0].errorDescription);
+                        MessageBox.Show("Общая ошибка");
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    MessageBox.Show("Общая ошибка");
+                    MessageBox.Show("avans_Click" + ex.Message);
                 }
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show("avans_Click" + ex.Message);
+                PrintingUsingLibraries printing = new PrintingUsingLibraries();
+                printing.cashIncome(Convert.ToDouble(sum_avans.Text));
             }
             avans.Enabled = true;
         }
@@ -193,83 +208,107 @@ namespace Cash8
         private void incass_Click(object sender, EventArgs e)
         {
             incass.Enabled = false;
-            try
+            if (MainStaticClass.PrintingUsingLibraries == 0)
             {
-                Cash8.FiscallPrintJason.RootObject result = FiscallPrintJason.cashe_in_out("cashOut", Convert.ToDouble(sum_incass.Text));
-                if (result != null)
+                try
                 {
-                    if (result.results[0].status == "ready")//Задание выполнено успешно 
+                    Cash8.FiscallPrintJason.RootObject result = FiscallPrintJason.cashe_in_out("cashOut", Convert.ToDouble(sum_incass.Text));
+                    if (result != null)
                     {
-                        sum_incass.Text = result.results[0].result.counters.cashSum.ToString();
+                        if (result.results[0].status == "ready")//Задание выполнено успешно 
+                        {
+                            sum_incass.Text = result.results[0].result.counters.cashSum.ToString();
+                        }
+                        else
+                        {
+                            MessageBox.Show(" Ошибка !!! " + result.results[0].status + " | " + result.results[0].errorDescription);
+                        }
                     }
                     else
                     {
-                        MessageBox.Show(" Ошибка !!! " + result.results[0].status + " | " + result.results[0].errorDescription);
+                        MessageBox.Show("Общая ошибка");
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    MessageBox.Show("Общая ошибка");
+                    MessageBox.Show("incass_Click" + ex.Message);
                 }
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show("incass_Click" + ex.Message);
+                PrintingUsingLibraries printing = new PrintingUsingLibraries();
+                printing.cashOutcome(Convert.ToDouble(sum_incass.Text));
             }
             incass.Enabled = true;
         }
 
         private void x_report_Click(object sender, EventArgs e)
         {
-            try
+            if (MainStaticClass.PrintingUsingLibraries == 0)
             {
-                Cash8.FiscallPrintJason.RootObject result = FiscallPrintJason.execute_operator_type("reportX");
-                if (result != null)
+                try
                 {
-                    if (result.results[0].status == "ready")//Задание выполнено успешно 
+                    Cash8.FiscallPrintJason.RootObject result = FiscallPrintJason.execute_operator_type("reportX");
+                    if (result != null)
                     {
-                        //sum_incass.Text = result.results[0].result.counters.cashSum.ToString();
+                        if (result.results[0].status == "ready")//Задание выполнено успешно 
+                        {
+                            //sum_incass.Text = result.results[0].result.counters.cashSum.ToString();
+                        }
+                        else
+                        {
+                            MessageBox.Show(" Ошибка !!! " + result.results[0].status + " | " + result.results[0].errorDescription);
+                        }
                     }
                     else
                     {
-                        MessageBox.Show(" Ошибка !!! " + result.results[0].status + " | " + result.results[0].errorDescription);
+                        MessageBox.Show("Общая Ошибка");
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    MessageBox.Show("Общая Ошибка");
+                    MessageBox.Show("x_report_Click" + ex.Message);
                 }
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show("x_report_Click" + ex.Message);
+                PrintingUsingLibraries printing = new PrintingUsingLibraries();
+                printing.reportX();
             }
         }
 
         private void z_report_Click(object sender, EventArgs e)
         {
-            try
+            if (MainStaticClass.PrintingUsingLibraries == 0)
             {
-                Cash8.FiscallPrintJason.RootObject result = FiscallPrintJason.execute_operator_type("closeShift");
-                if (result != null)
+                try
                 {
-                    if (result.results[0].status == "ready")//Задание выполнено успешно 
+                    Cash8.FiscallPrintJason.RootObject result = FiscallPrintJason.execute_operator_type("closeShift");
+                    if (result != null)
                     {
-                        //sum_incass.Text = result.results[0].result.counters.cashSum.ToString();
+                        if (result.results[0].status == "ready")//Задание выполнено успешно 
+                        {
+                            //sum_incass.Text = result.results[0].result.counters.cashSum.ToString();
+                        }
+                        else
+                        {
+                            MessageBox.Show(" Ошибка !!! " + result.results[0].status + " | " + result.results[0].errorDescription);
+                        }
                     }
                     else
                     {
-                        MessageBox.Show(" Ошибка !!! " + result.results[0].status + " | " + result.results[0].errorDescription);
+                        MessageBox.Show("Общая ошибка");
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    MessageBox.Show("Общая ошибка");
+                    MessageBox.Show("z_report_Click" + ex.Message);
                 }
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show("z_report_Click" + ex.Message);
+                PrintingUsingLibraries printing = new PrintingUsingLibraries();
+                printing.reportZ();
             }
         }
 
@@ -315,29 +354,36 @@ namespace Cash8
 
         private void get_summ_in_cashe_Click(object sender, EventArgs e)
         {
-
-            try
+            if (MainStaticClass.PrintingUsingLibraries == 0)
             {
-                Cash8.FiscallPrintJason.RootObject result = FiscallPrintJason.execute_operator_type("getCashDrawerStatus");
-                if (result != null)
+                try
                 {
-                    if (result.results[0].status == "ready")//Задание выполнено успешно 
+                    Cash8.FiscallPrintJason.RootObject result = FiscallPrintJason.execute_operator_type("getCashDrawerStatus");
+                    if (result != null)
                     {
-                        sum_incass.Text = result.results[0].result.counters.cashSum.ToString();
+                        if (result.results[0].status == "ready")//Задание выполнено успешно 
+                        {
+                            sum_incass.Text = result.results[0].result.counters.cashSum.ToString();
+                        }
+                        else
+                        {
+                            MessageBox.Show(" Ошибка !!! " + result.results[0].status + " | " + result.results[0].errorDescription);
+                        }
                     }
                     else
                     {
-                        MessageBox.Show(" Ошибка !!! " + result.results[0].status + " | " + result.results[0].errorDescription);
+                        MessageBox.Show("Общая ошибка");
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    MessageBox.Show("Общая ошибка");
+                    MessageBox.Show("get_summ_in_cashe_Click" + ex.Message);
                 }
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show("get_summ_in_cashe_Click" + ex.Message);
+                PrintingUsingLibraries printing = new PrintingUsingLibraries();
+                sum_incass.Text = printing.getCasheSumm();
             }
         }
 
@@ -363,29 +409,37 @@ namespace Cash8
 
         private void btn_ofd_exchange_status_Click(object sender, EventArgs e)
         {
-            txtB_ofd_exchange_status.BackColor = Color.Green;
-            Cash8.FiscallPrintJason.RootObject result = MainStaticClass.get_ofd_exchange_status();
-            if (result != null)
+            if (MainStaticClass.PrintingUsingLibraries == 0)
             {
-                if (result.results[0].result != null)
+                txtB_ofd_exchange_status.BackColor = Color.Green;
+                Cash8.FiscallPrintJason.RootObject result = MainStaticClass.get_ofd_exchange_status();
+                if (result != null)
                 {
-
-                    if (result.results[0].result.status.notSentCount > 0)
+                    if (result.results[0].result != null)
                     {
-                        if ((DateTime.Now - result.results[0].result.status.notSentFirstDocDateTime).Days > 3)
+
+                        if (result.results[0].result.status.notSentCount > 0)
                         {
-                            txtB_ofd_exchange_status.Text = "Не отправлено документов " + result.results[0].result.status.notSentCount.ToString().Trim() + "\r\n" +
-                            " начиная с даты " + result.results[0].result.status.notSentFirstDocDateTime.ToString("yyyy-MM-dd HH:mm:ss");
-                            txtB_ofd_exchange_status.BackColor = Color.Gold;
+                            if ((DateTime.Now - result.results[0].result.status.notSentFirstDocDateTime).Days > 3)
+                            {
+                                txtB_ofd_exchange_status.Text = "Не отправлено документов " + result.results[0].result.status.notSentCount.ToString().Trim() + "\r\n" +
+                                " начиная с даты " + result.results[0].result.status.notSentFirstDocDateTime.ToString("yyyy-MM-dd HH:mm:ss");
+                                txtB_ofd_exchange_status.BackColor = Color.Gold;
+                            }
+                            else
+                            {
+                                txtB_ofd_exchange_status.Text = "Не отправлено документов " + result.results[0].result.status.notSentCount.ToString().Trim();
+                            }
                         }
                         else
                         {
-                            txtB_ofd_exchange_status.Text = "Не отправлено документов " + result.results[0].result.status.notSentCount.ToString().Trim();
+                            txtB_ofd_exchange_status.Text = "Все отправлено";
                         }
                     }
                     else
                     {
-                        txtB_ofd_exchange_status.Text = "Все отправлено";
+                        txtB_ofd_exchange_status.Text = "Нет связи";
+                        txtB_ofd_exchange_status.BackColor = Color.Gold;
                     }
                 }
                 else
@@ -396,8 +450,8 @@ namespace Cash8
             }
             else
             {
-                txtB_ofd_exchange_status.Text = "Нет связи";
-                txtB_ofd_exchange_status.BackColor = Color.Gold;
+                PrintingUsingLibraries printing = new PrintingUsingLibraries();
+                txtB_ofd_exchange_status.Text = printing.ofdExchangeStatus();
             }
         }
 

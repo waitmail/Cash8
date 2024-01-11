@@ -61,6 +61,7 @@
             this.checkBox_version2_marking = new System.Windows.Forms.CheckBox();
             this.checkBox_webservice_authorize = new System.Windows.Forms.CheckBox();
             this.checkBox_static_guid_in_print = new System.Windows.Forms.CheckBox();
+            this.checkBox_printing_using_libraries = new System.Windows.Forms.CheckBox();
             this.groupBox_acquiring_terminal.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -252,16 +253,16 @@
             // 
             this.label4.Location = new System.Drawing.Point(8, 170);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(78, 25);
+            this.label4.Size = new System.Drawing.Size(100, 25);
             this.label4.TabIndex = 68;
             this.label4.Text = "Версия ФН";
             // 
             // txtB_version_fn
             // 
-            this.txtB_version_fn.Location = new System.Drawing.Point(209, 171);
+            this.txtB_version_fn.Location = new System.Drawing.Point(209, 175);
             this.txtB_version_fn.MaxLength = 1;
             this.txtB_version_fn.Name = "txtB_version_fn";
-            this.txtB_version_fn.Size = new System.Drawing.Size(100, 20);
+            this.txtB_version_fn.Size = new System.Drawing.Size(42, 20);
             this.txtB_version_fn.TabIndex = 69;
             // 
             // checkBox_enable_stock_processing_in_memory
@@ -368,11 +369,22 @@
             this.checkBox_static_guid_in_print.Text = "Статический uuid(документа) при печати";
             this.checkBox_static_guid_in_print.UseVisualStyleBackColor = true;
             // 
+            // checkBox_printing_using_libraries
+            // 
+            this.checkBox_printing_using_libraries.AutoSize = true;
+            this.checkBox_printing_using_libraries.Location = new System.Drawing.Point(257, 178);
+            this.checkBox_printing_using_libraries.Name = "checkBox_printing_using_libraries";
+            this.checkBox_printing_using_libraries.Size = new System.Drawing.Size(216, 17);
+            this.checkBox_printing_using_libraries.TabIndex = 82;
+            this.checkBox_printing_using_libraries.Text = "Печать с использованием библиотек";
+            this.checkBox_printing_using_libraries.UseVisualStyleBackColor = true;
+            // 
             // Constants
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(781, 359);
+            this.Controls.Add(this.checkBox_printing_using_libraries);
             this.Controls.Add(this.checkBox_static_guid_in_print);
             this.Controls.Add(this.checkBox_webservice_authorize);
             this.Controls.Add(this.checkBox_version2_marking);
@@ -451,5 +463,6 @@
         private System.Windows.Forms.CheckBox checkBox_version2_marking;
         private System.Windows.Forms.CheckBox checkBox_webservice_authorize;
         private System.Windows.Forms.CheckBox checkBox_static_guid_in_print;
+        private System.Windows.Forms.CheckBox checkBox_printing_using_libraries;
     }
 }

@@ -243,6 +243,7 @@ namespace Cash8
             {                
                 return;
             }
+            
 
             if (result_web_query.Length > 10)
             {

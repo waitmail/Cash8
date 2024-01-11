@@ -147,6 +147,7 @@
             // 
             // annul_check
             // 
+            this.annul_check.Enabled = false;
             this.annul_check.Location = new System.Drawing.Point(267, 166);
             this.annul_check.Name = "annul_check";
             this.annul_check.Size = new System.Drawing.Size(163, 23);
