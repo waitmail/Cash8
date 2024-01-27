@@ -62,6 +62,8 @@
             this.checkBox_webservice_authorize = new System.Windows.Forms.CheckBox();
             this.checkBox_static_guid_in_print = new System.Windows.Forms.CheckBox();
             this.checkBox_printing_using_libraries = new System.Windows.Forms.CheckBox();
+            this.comboBox_fn_port = new System.Windows.Forms.ComboBox();
+            this.btn_trst_connection = new System.Windows.Forms.Button();
             this.groupBox_acquiring_terminal.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -84,7 +86,7 @@
             // 
             // write
             // 
-            this.write.Location = new System.Drawing.Point(239, 324);
+            this.write.Location = new System.Drawing.Point(244, 391);
             this.write.Name = "write";
             this.write.Size = new System.Drawing.Size(87, 23);
             this.write.TabIndex = 2;
@@ -94,7 +96,7 @@
             // 
             // _close_
             // 
-            this._close_.Location = new System.Drawing.Point(360, 324);
+            this._close_.Location = new System.Drawing.Point(365, 391);
             this._close_.Name = "_close_";
             this._close_.Size = new System.Drawing.Size(75, 23);
             this._close_.TabIndex = 3;
@@ -133,7 +135,7 @@
             // path_for_web_service
             // 
             this.path_for_web_service.Enabled = false;
-            this.path_for_web_service.Location = new System.Drawing.Point(209, 247);
+            this.path_for_web_service.Location = new System.Drawing.Point(209, 292);
             this.path_for_web_service.MaxLength = 100;
             this.path_for_web_service.Name = "path_for_web_service";
             this.path_for_web_service.Size = new System.Drawing.Size(264, 20);
@@ -142,11 +144,11 @@
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(12, 250);
+            this.label15.Location = new System.Drawing.Point(12, 295);
             this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(152, 13);
+            this.label15.Size = new System.Drawing.Size(102, 13);
             this.label15.TabIndex = 41;
-            this.label15.Text = "Путь к вебсервису дисконта";
+            this.label15.Text = "Путь к вебсервису";
             // 
             // currency
             // 
@@ -210,13 +212,14 @@
             // 
             // comboBox_system_taxation
             // 
+            this.comboBox_system_taxation.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_system_taxation.FormattingEnabled = true;
             this.comboBox_system_taxation.Items.AddRange(new object[] {
             "Не выбрано",
             "ОСН",
             "УСН",
             " УСН + ПАТЕНТ"});
-            this.comboBox_system_taxation.Location = new System.Drawing.Point(209, 206);
+            this.comboBox_system_taxation.Location = new System.Drawing.Point(209, 251);
             this.comboBox_system_taxation.Name = "comboBox_system_taxation";
             this.comboBox_system_taxation.Size = new System.Drawing.Size(264, 21);
             this.comboBox_system_taxation.TabIndex = 63;
@@ -224,7 +227,7 @@
             // 
             // lbl_system_taxation
             // 
-            this.lbl_system_taxation.Location = new System.Drawing.Point(8, 196);
+            this.lbl_system_taxation.Location = new System.Drawing.Point(8, 241);
             this.lbl_system_taxation.Name = "lbl_system_taxation";
             this.lbl_system_taxation.Size = new System.Drawing.Size(100, 31);
             this.lbl_system_taxation.TabIndex = 64;
@@ -372,18 +375,39 @@
             // checkBox_printing_using_libraries
             // 
             this.checkBox_printing_using_libraries.AutoSize = true;
-            this.checkBox_printing_using_libraries.Location = new System.Drawing.Point(257, 178);
+            this.checkBox_printing_using_libraries.Location = new System.Drawing.Point(11, 211);
             this.checkBox_printing_using_libraries.Name = "checkBox_printing_using_libraries";
-            this.checkBox_printing_using_libraries.Size = new System.Drawing.Size(216, 17);
+            this.checkBox_printing_using_libraries.Size = new System.Drawing.Size(125, 17);
             this.checkBox_printing_using_libraries.TabIndex = 82;
-            this.checkBox_printing_using_libraries.Text = "Печать с использованием библиотек";
+            this.checkBox_printing_using_libraries.Text = "Печать ФН прямая";
             this.checkBox_printing_using_libraries.UseVisualStyleBackColor = true;
+            // 
+            // comboBox_fn_port
+            // 
+            this.comboBox_fn_port.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox_fn_port.FormattingEnabled = true;
+            this.comboBox_fn_port.Location = new System.Drawing.Point(209, 211);
+            this.comboBox_fn_port.Name = "comboBox_fn_port";
+            this.comboBox_fn_port.Size = new System.Drawing.Size(127, 21);
+            this.comboBox_fn_port.TabIndex = 83;
+            // 
+            // btn_trst_connection
+            // 
+            this.btn_trst_connection.Location = new System.Drawing.Point(344, 211);
+            this.btn_trst_connection.Name = "btn_trst_connection";
+            this.btn_trst_connection.Size = new System.Drawing.Size(129, 23);
+            this.btn_trst_connection.TabIndex = 84;
+            this.btn_trst_connection.Text = "Проверка соединения";
+            this.btn_trst_connection.UseVisualStyleBackColor = true;
+            this.btn_trst_connection.Click += new System.EventHandler(this.btn_trst_connection_Click);
             // 
             // Constants
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(781, 359);
+            this.ClientSize = new System.Drawing.Size(781, 443);
+            this.Controls.Add(this.btn_trst_connection);
+            this.Controls.Add(this.comboBox_fn_port);
             this.Controls.Add(this.checkBox_printing_using_libraries);
             this.Controls.Add(this.checkBox_static_guid_in_print);
             this.Controls.Add(this.checkBox_webservice_authorize);
@@ -464,5 +488,7 @@
         private System.Windows.Forms.CheckBox checkBox_webservice_authorize;
         private System.Windows.Forms.CheckBox checkBox_static_guid_in_print;
         private System.Windows.Forms.CheckBox checkBox_printing_using_libraries;
+        private System.Windows.Forms.ComboBox comboBox_fn_port;
+        private System.Windows.Forms.Button btn_trst_connection;
     }
 }

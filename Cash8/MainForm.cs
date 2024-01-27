@@ -954,6 +954,21 @@ namespace Cash8
                 //{
                 //    MainStaticClass.UseOldProcessiingActions = false;
                 //}
+
+                if (MainStaticClass.CashDeskNumber != 9)
+                {
+                    bool restart = false; bool error = false;
+
+                    MainStaticClass.check_version_fn(ref restart,ref error);
+                    if (!error)
+                    {
+                        if (restart)
+                        {
+                            MessageBox.Show("У вас неверно была установлена версия ФН, необходим перезапуск программы");                            
+                            this.Close();
+                        }
+                    }
+                }
             }
             else
             {
@@ -1474,6 +1489,15 @@ namespace Cash8
             timer_send_data_Elapsed(null, null);
             UploadPhoneClients();
             //UploadDeletedItems();
+            if (MainStaticClass.PrintingUsingLibraries == 1)
+            {
+                Atol.Drivers10.Fptr.IFptr fptr = MainStaticClass.FPTR;
+                if (fptr.isOpened())
+                {
+                    fptr.close();
+                }
+                fptr.destroy();
+            }
         }
 
 

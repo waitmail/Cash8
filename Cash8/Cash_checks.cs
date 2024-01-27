@@ -193,6 +193,20 @@ namespace Cash8
                     MessageBox.Show(" У ВАС УСТАНОВЛЕНА НЕПРАВИЛЬНАЯ ДАТА НА КОМПЬЮТЕРЕ !!! ДАЛЬНЕЙШАЯ РАБОТА С ЧЕКАМИ НЕВОЗМОЖНА !!!");
                     return;
                 }
+                if (MainStaticClass.CashDeskNumber != 9)
+                {
+                    bool restart = false; bool errors = false;
+                    MainStaticClass.check_version_fn(ref restart, ref errors);
+                    if (errors)
+                    {
+                        return;
+                    }
+                    if (restart)
+                    {
+                        MessageBox.Show("У вас неверно была установлена версия ФН,НЕОБХОДИМ ПЕРЕЗАПУСК КАССОВОЙ ПРОГРАММЫ !!!");
+                        this.Close();
+                    }
+                }
                 //Проверка на заполненность обяз реквизитов
                 if (all_is_filled())
                 {
@@ -479,8 +493,20 @@ namespace Cash8
                     lvi.SubItems.Add(reader.GetDateTime(1).ToString("yyyy-MM-dd HH:mm:ss"));
                     lvi.SubItems.Add(reader[2].ToString());
                     lvi.SubItems.Add(reader.GetDecimal(3).ToString());
-                    lvi.SubItems.Add(reader.GetDecimal(4).ToString());                                        
-                    lvi.SubItems.Add((reader["check_type"].ToString()=="0" ? "Продажа" : "Возврат"));
+                    lvi.SubItems.Add(reader.GetDecimal(4).ToString());
+                    if (reader["check_type"].ToString() == "0")
+                    {
+                        lvi.SubItems.Add("Продажа");
+                    }
+                    else if (reader["check_type"].ToString() == "1")
+                    {
+                        lvi.SubItems.Add("Возврат");
+                    }
+                    else if (reader["check_type"].ToString() == "2")
+                    {
+                        lvi.SubItems.Add("Коррекция прихода");
+                    }
+
                     lvi.SubItems.Add(reader.GetString(5));
 
                     if (MainStaticClass.Use_Fiscall_Print)

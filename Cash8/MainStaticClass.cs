@@ -15,6 +15,7 @@ using System.Diagnostics;
 using System.Net.NetworkInformation;
 using Newtonsoft.Json;
 using Atol.Drivers10.Fptr;
+using AtolConstants = Atol.Drivers10.Fptr.Constants;
 
 namespace Cash8
 {
@@ -55,7 +56,7 @@ namespace Cash8
         private static string code_shop = "";
         private static string cash_operator = "";
         //private static string cash_operator_nick = "";//Пока не используется Фио кассира 
-        public static string cash_operator_inn { get; set; }
+        private static string cash_operator_inn { get; set; }
 
         private static string cash_operator_client_code = "";
         private static bool result_fiscal_print;
@@ -86,6 +87,8 @@ namespace Cash8
         private static bool use_old_processiing_actions = true;
         private static int work_schema = 0;
         private static int version_fn = 0;
+        private static string version_fn_real = "";
+        private static string fn_sreial_port = "";
 
         //private static bool use_text_print;
         //private static int width_of_symbols;
@@ -114,6 +117,260 @@ namespace Cash8
         private static IFptr _fptr=null;
 
         private static int this_new_database = 0;
+
+
+        public static string FnSreialPort
+        {
+            get
+            {
+                if (fn_sreial_port == "")
+                {
+                    NpgsqlConnection conn = null;
+                    NpgsqlCommand command = null;
+                    conn = MainStaticClass.NpgsqlConn();
+                    try
+                    {
+                        conn.Open();
+                        string query = "SELECT fn_sreial_port FROM constants";
+                        command = new NpgsqlCommand(query, conn);
+                        command = new NpgsqlCommand(query, conn);
+                        fn_sreial_port = command.ExecuteScalar().ToString();
+                    }
+                    catch (NpgsqlException ex)
+                    {
+                        MessageBox.Show("Ошибка при чтении fn_sreial_port" + ex.ToString());
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Ошибка при чтении fn_sreial_port" + ex.ToString());
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+
+                }
+                return fn_sreial_port ;
+            }
+        }
+
+
+        public static void its_print(string num_doc)
+        {
+            NpgsqlConnection conn = null;
+            NpgsqlCommand command = null;
+            NpgsqlTransaction trans = null;
+            try
+            {
+                conn = MainStaticClass.NpgsqlConn();
+                conn.Open();
+                trans = conn.BeginTransaction();
+                string query = " UPDATE checks_header   SET its_print=true WHERE document_number=" + num_doc.ToString() + ";" + "UPDATE checks_header SET is_sent = 0 WHERE document_number = " + num_doc.ToString();//date_time_start='" + date_time_start.Text.Replace("Чек", "") + "'"; ;
+                command = new NpgsqlCommand(query, conn);
+                command.Transaction = trans;
+                command.ExecuteNonQuery();
+
+                query = " UPDATE checks_header   SET its_print_p=true WHERE document_number=" + num_doc.ToString() + ";" + "UPDATE checks_header SET is_sent = 0 WHERE document_number = " + num_doc.ToString(); //date_time_start='" + date_time_start.Text.Replace("Чек", "") + "'"; ;
+                command = new NpgsqlCommand(query, conn);
+                command.Transaction = trans;
+                command.ExecuteNonQuery();
+
+                query = " DELETE FROM document_wil_be_printed WHERE document_number=" + num_doc.ToString() + " AND tax_type=" + MainStaticClass.SystemTaxation.ToString();
+                command = new NpgsqlCommand(query, conn);
+                command.Transaction = trans;
+                command.ExecuteNonQuery();
+                trans.Commit();
+                conn.Close();
+                command.Dispose();
+                trans.Dispose();
+            }
+            catch (NpgsqlException ex)
+            {
+                if (trans != null)
+                {
+                    trans.Rollback();
+                }
+                MessageBox.Show("Ошибка при установке флага распечатан " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                if (trans != null)
+                {
+                    trans.Rollback();
+                }
+                MessageBox.Show("Ошибка при установке флага распечатан " + ex.Message);
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+                conn.Dispose();
+            }
+        }
+
+
+        /// <summary>
+        /// Получение сумм по типам оплаты
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public static double[] get_cash_on_type_payment(string numdoc)
+        {
+            double[] result = new double[3];
+            result[0] = 0;
+            result[1] = 0;
+            result[2] = 0;
+            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+            try
+            {
+                conn.Open();
+                string query = "SELECT cash_money, non_cash_money, sertificate_money  FROM checks_header WHERE document_number=" + numdoc;
+                NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                NpgsqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    result[0] = Convert.ToDouble(reader.GetDecimal(0));
+                    result[1] = Convert.ToDouble(reader.GetDecimal(1));
+                    result[2] = Convert.ToDouble(reader.GetDecimal(2));
+                }
+                reader.Close();
+                command.Dispose();
+                conn.Close();
+            }
+            catch (NpgsqlException ex)
+            {
+                MessageBox.Show("Произошли ошибки при получении сумм по типам оплаты" + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Произошли ошибки при получении сумм по типам оплаты" + ex.Message);
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return result;
+        }
+
+
+        /// <summary>
+        /// проверка на подакцизный товар
+        /// </summary>
+        /// <param name="code_tovar"></param>
+        /// <returns></returns>
+        public static int its_excise(string code_tovar)
+        {
+            int result = 0;
+
+            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+            try
+            {
+                conn.Open();
+                string query = "SELECT its_excise FROM tovar WHERE code=" + code_tovar;
+                NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                result = Convert.ToInt16(command.ExecuteScalar());
+                conn.Close();
+            }
+            catch (NpgsqlException ex)
+            {
+                MessageBox.Show("Ошибка при чтении свойства подакцизный товар " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ошибка при чтении свойства подакцизный товар " + ex.Message);
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+                conn.Dispose();
+            }
+
+            return result;
+        }
+
+
+        public static bool its_certificate(string code)
+        {
+            bool result = false;
+            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+
+            try
+            {
+                conn.Open();
+                string query = "SELECT COUNT(*) AS qty FROM sertificates where code_tovar = " + code;
+                NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                if (Convert.ToInt32(command.ExecuteScalar()) > 0)
+                {
+                    result = true;
+                }
+                command.Dispose();
+                conn.Close();
+
+            }
+            catch (NpgsqlException ex)
+            {
+                MessageBox.Show("Ошибка при проверке на сертификат " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ошибка при проверке на сертификат " + ex.Message);
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+
+            return result;
+        }
+        public static int get_tovar_nds(string code)
+        {
+            int result = 0;
+
+            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+            try
+            {
+                conn.Open();
+                string query = "SELECT nds  FROM tovar WHERE code=" + code;
+                NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                result = Convert.ToInt32(command.ExecuteScalar());
+                conn.Close();
+            }
+            catch (NpgsqlException ex)
+            {
+                MessageBox.Show("Ошибка при получении значения ставки ндс " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ошибка при получении значения ставки ндс " + ex.Message);
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return result;
+        }
+
+
         //private static int version_fn = 0;
         //private static int sno = -1;//это система налогообложения
 
@@ -156,12 +413,25 @@ namespace Cash8
 
         public static int ThisNewDatabase
         {
-            get {
+            get
+            {
                 return this_new_database;
             }
             set
             {
                 this_new_database = value;
+            }
+
+        }
+
+        public static string CashOperatorInn
+        {
+            get {
+                return cash_operator_inn;
+            }
+            set
+            {
+                cash_operator_inn = value;
             }
 
         }
@@ -185,11 +455,18 @@ namespace Cash8
             {
                 if (_fptr == null)
                 {
-                    _fptr = new Fptr();                   
+                    //_fptr = new Fptr(Application.StartupPath+ "/fptr10.dll");
+                    _fptr = new Fptr();
+                    setConnectSetting(_fptr);
+                    _fptr.open();
                 }
 
                 return _fptr;
             }
+            //set
+            //{
+            //    _fptr = value;
+            //}
         }
 
         public static int PrintingUsingLibraries
@@ -1674,62 +1951,216 @@ namespace Cash8
         {
             string string_get_device_info = string.Empty;
 
-            try
+            if (MainStaticClass.printing_using_libraries == 0)
             {
-                Cash8.FiscallPrintJason.RootObject result = FiscallPrintJason.execute_operator_type("getDeviceInfo");
-                if (result != null)
+                try
                 {
-                    if (result.results[0].status == "ready")//Задание выполнено успешно 
+                    Cash8.FiscallPrintJason.RootObject result = FiscallPrintJason.execute_operator_type("getDeviceInfo");
+                    if (result != null)
                     {
-                        string_get_device_info = JsonConvert.SerializeObject(result.results[0].result.deviceInfo, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                        //string_get_device_info = result.results[0].result.deviceInfo.ToString();
+                        if (result.results[0].status == "ready")//Задание выполнено успешно 
+                        {
+                            string_get_device_info = JsonConvert.SerializeObject(result.results[0].result.deviceInfo, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                            //string_get_device_info = result.results[0].result.deviceInfo.ToString();
+                        }
+                        else
+                        {
+                            MessageBox.Show(" Ошибка !!! " + result.results[0].status + " | " + result.results[0].errorDescription);
+                        }
                     }
                     else
                     {
-                        MessageBox.Show(" Ошибка !!! " + result.results[0].status + " | " + result.results[0].errorDescription);
+                        MessageBox.Show("Общая ошибка");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("getDeviceInfo" + ex.Message);
+                }
+            }
+            else
+            {                
+                IFptr fptr = MainStaticClass.FPTR;
+                //setConnectSetting(fptr);
+                if (!fptr.isOpened())
+                {
+                    fptr.open();
+                }
+                fptr.setParam(AtolConstants.LIBFPTR_PARAM_DATA_TYPE, AtolConstants.LIBFPTR_DT_CACHE_REQUISITES);
+                fptr.queryData();
+                string_get_device_info = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_FFD_VERSION).ToString();
+                //fptr.close();
+            }
+
+            return string_get_device_info;
+
+        }
+
+        private static void update_version_fn(string _version_fn)
+        {
+            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+            try
+            {
+                conn.Open();
+                string query = "UPDATE constants SET version_fn=" + _version_fn;
+                NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                command.ExecuteNonQuery();
+                conn.Close();
+                command.Dispose();
+            }
+            catch (NpgsqlException ex)
+            {
+                MessageBox.Show(" Ошибка при обновлении версии фн "+ex.Message);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(" Ошибка при обновлении версии фн " + ex.Message);
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Проверяет и корректирует установленную версию ФН в программе
+        /// </summary>
+        public static void check_version_fn(ref bool restart, ref bool error)//,
+        {
+            string _version_fn_real = MainStaticClass.GetVersionFnReal;            
+            double _version_fn = Convert.ToDouble(MainStaticClass.GetVersionFn);
+            //MessageBox.Show(_version_fn_real);
+            if ((_version_fn_real == "0")||(_version_fn_real == ""))
+            {
+                error = true;
+                MessageBox.Show("Не удалось проверить версию ФН, ПРИ ВКЛЮЧЧЕНИИ КАССОВОЙ ПРОГРАММЫ ФИСКАЛЬНЫЙ РЕГИСТРАТОР ДОЛЖЕН БЫТЬ ВКЛЮЧЕН !!!");
+                return;
+            }
+            if ((_version_fn_real == "1.2") && (_version_fn != 2))
+            {
+                update_version_fn("2");
+                restart = true;
+            }
+            else if ((_version_fn_real != "1.2") && (_version_fn != 1))
+            {
+                update_version_fn("1");
+                restart = true;
+            }           
+        }
+        
+        /// <summary>
+        /// Получение реальной версии фн
+        /// </summary>
+        /// <returns></returns>
+        public static string GetVersionFnReal
+        {
+            get
+            {
+                if (MainStaticClass.printing_using_libraries == 0)
+                {
+                    if (version_fn_real == "")
+                    {
+                        try
+                        {
+                            Cash8.FiscallPrintJason.RootObject result = FiscallPrintJason.execute_operator_type("getRegistrationInfo");
+                            if (result != null)
+                            {
+                                if (result.results[0].status == "ready")//Задание выполнено успешно 
+                                {
+                                    version_fn_real = result.results[0].result.device.ffdVersion;
+                                }
+                                else
+                                {
+                                    MessageBox.Show(" Ошибка !!! " + result.results[0].status + " | " + result.results[0].errorDescription);
+                                }
+                            }
+                            else
+                            {
+                                MessageBox.Show("Общая ошибка");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("get_registration_info" + ex.Message);
+                        }
                     }
                 }
                 else
                 {
-                    MessageBox.Show("Общая ошибка");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("getDeviceInfo" + ex.Message);
-            }
+                    IFptr fptr = MainStaticClass.FPTR;
+                    //setConnectSetting(fptr);
+                    if (!fptr.isOpened())
+                    {
+                        fptr.open();
+                    }
 
-            return string_get_device_info;
+                    fptr.setParam(AtolConstants.LIBFPTR_PARAM_FN_DATA_TYPE, AtolConstants.LIBFPTR_FNDT_FFD_VERSIONS);
+                    fptr.fnQueryData();
+                    version_fn_real = (Convert.ToDouble(fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_DEVICE_FFD_VERSION))/100).ToString().Replace(",",".");
+                    //fptr.close();
+                }
+
+                return version_fn_real;
+            }           
         }
+
+        private static void setConnectSetting(IFptr fptr)
+        {
+            fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_MODEL, AtolConstants.LIBFPTR_MODEL_ATOL_AUTO.ToString());
+            fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_PORT, AtolConstants.LIBFPTR_PORT_COM.ToString());
+            fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_COM_FILE, MainStaticClass.FnSreialPort);
+            fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_BAUDRATE, AtolConstants.LIBFPTR_PORT_BR_115200.ToString());
+            fptr.applySingleSettings();
+        }
+
 
         private static string get_registration_info()
         {
             string string_get_registration_info = string.Empty;
-
-            try
+            if (MainStaticClass.printing_using_libraries == 0)
             {
-                Cash8.FiscallPrintJason.RootObject result = FiscallPrintJason.execute_operator_type("getRegistrationInfo");
-                if (result != null)
+                try
                 {
-                    if (result.results[0].status == "ready")//Задание выполнено успешно 
+                    Cash8.FiscallPrintJason.RootObject result = FiscallPrintJason.execute_operator_type("getRegistrationInfo");
+                    if (result != null)
                     {
-                        string_get_registration_info = JsonConvert.SerializeObject(result.results[0].result, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                        //string_get_registration_info = result.results[0].result.organization.vatin;
-                        //string_get_device_info = result.results[0].result.deviceInfo.ToString();
+                        if (result.results[0].status == "ready")//Задание выполнено успешно 
+                        {
+                            string_get_registration_info = JsonConvert.SerializeObject(result.results[0].result, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                            //string_get_registration_info = result.results[0].result.organization.vatin;
+                            //string_get_device_info = result.results[0].result.deviceInfo.ToString();
+                        }
+                        else
+                        {
+                            MessageBox.Show(" Ошибка !!! " + result.results[0].status + " | " + result.results[0].errorDescription);
+                        }
                     }
                     else
                     {
-                        MessageBox.Show(" Ошибка !!! " + result.results[0].status + " | " + result.results[0].errorDescription);
+                        MessageBox.Show("Общая ошибка");
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    MessageBox.Show("Общая ошибка");
+                    MessageBox.Show("get_registration_info" + ex.Message);
                 }
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show("get_registration_info" + ex.Message);
+                IFptr fptr = MainStaticClass.FPTR;
+                //setConnectSetting(fptr);
+                if (!fptr.isOpened())
+                {
+                    fptr.open();
+                }
+                fptr.setParam(AtolConstants.LIBFPTR_PARAM_DATA_TYPE, AtolConstants.LIBFPTR_DT_CACHE_REQUISITES);
+                fptr.queryData();
+                string_get_registration_info = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_FFD_VERSION).ToString();
+
             }
 
             return string_get_registration_info;
@@ -1745,6 +2176,123 @@ namespace Cash8
             public string DeviceInfo { get; set; }
         }
 
+#region DeviceInfo
+        public class Device
+        {
+            public string registrationNumber { get; set; }
+            public string defaultTaxationType { get; set; }
+            public string ofdChannel { get; set; }
+            public string ffdVersion { get; set; }
+            public bool marking { get; set; }
+        }
+
+        public class Organization
+        {
+            public string name { get; set; }
+            public string vatin { get; set; }
+            public List<string> taxationTypes { get; set; }
+            public string address { get; set; }
+        }
+
+        public class DeviseInfo
+        {
+            public string configurationVersion { get; set; }
+            public string fnFfdVersion { get; set; }
+            public string serial { get; set; }
+            public string firmwareVersion { get; set; }
+            public string ffdVersion { get; set; }
+            public Organization organization { get; set; }
+            public Device device { get; set; }
+        }
+
+        private static string get_device_info_printing_libraries()
+        {
+            string result = "";
+
+            IFptr fptr = MainStaticClass.FPTR;
+            if (!fptr.isOpened())
+            {
+                fptr.open();
+            }
+                        
+
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_DATA_TYPE, AtolConstants.LIBFPTR_DT_UNIT_VERSION);
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_UNIT_TYPE, AtolConstants.LIBFPTR_UT_CONFIGURATION);
+            fptr.queryData();
+
+            string configurationVersion = fptr.getParamString(AtolConstants.LIBFPTR_PARAM_UNIT_VERSION);
+            //string releaseVersion = fptr.getParamString(AtolConstants.LIBFPTR_PARAM_UNIT_RELEASE_VERSION);
+
+
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_DATA_TYPE, AtolConstants.LIBFPTR_DT_SERIAL_NUMBER);
+            fptr.queryData();
+
+            string serialNumber = fptr.getParamString(AtolConstants.LIBFPTR_PARAM_SERIAL_NUMBER);
+
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_DATA_TYPE, AtolConstants.LIBFPTR_DT_MODEL_INFO);
+            fptr.queryData();
+                        
+            string firmwareVersion = fptr.getParamString(AtolConstants.LIBFPTR_PARAM_UNIT_VERSION);
+
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_FN_DATA_TYPE, AtolConstants.LIBFPTR_FNDT_REG_INFO);
+            fptr.fnQueryData();
+
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_FN_DATA_TYPE, AtolConstants.LIBFPTR_FNDT_FFD_VERSIONS);
+            fptr.fnQueryData();
+
+            uint deviceFfdVersion = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_DEVICE_FFD_VERSION);
+            uint fnFfdVersion = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_FN_FFD_VERSION);
+
+            string organizationAddress = fptr.getParamString(1009);
+            string organizationVATIN = fptr.getParamString(1018);
+            string organizationName = fptr.getParamString(1048);
+            uint taxationTypes = fptr.getParamInt(1062);            
+            uint ffdVersion = fptr.getParamInt(1209);
+            string registrationNumber = fptr.getParamString(1037);
+
+            bool marking = fptr.getParamBool(AtolConstants.LIBFPTR_PARAM_TRADE_MARKED_PRODUCTS);
+            //string ofdChannel= fptr.getParamString(AtolConstantsLIBFPTR_SETTING_OFD_CHANNEL).ToString();
+
+
+            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_FN_DATA_TYPE, AtolConstants.LIBFPTR_FNDT_REG_INFO);
+            //fptr.fnQueryData();
+
+            //uint taxationTypes = fptr.getParamInt(1062);
+
+            DeviseInfo deviseInfo = new DeviseInfo();
+            deviseInfo.configurationVersion = configurationVersion;
+            deviseInfo.fnFfdVersion = deviceFfdVersion.ToString();
+            deviseInfo.serial = serialNumber;
+            deviseInfo.serial = firmwareVersion;
+            deviseInfo.ffdVersion = (Convert.ToDouble(ffdVersion)/100).ToString().Replace(",",".");
+
+            Organization organization = new Organization();
+            organization.name    = organizationName;
+            organization.address = organizationAddress;
+            organization.vatin   = organizationVATIN;
+            MessageBox.Show(taxationTypes.ToString());
+            List<string> tT = new List<string>();
+            tT.Add(taxationTypes.ToString());            
+            organization.taxationTypes=tT;
+
+            deviseInfo.organization = organization;
+
+            Device device = new Device();
+            device.defaultTaxationType = "";
+            device.ffdVersion = (Convert.ToDouble(ffdVersion) / 100).ToString().Replace(",", ".");
+            device.marking = marking;
+            device.ofdChannel = fptr.getSingleSetting(AtolConstants.LIBFPTR_SETTING_OFD_CHANNEL); 
+            device.registrationNumber = registrationNumber;
+
+            deviseInfo.device = device;
+
+            result = JsonConvert.SerializeObject(deviseInfo, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+
+            return result;
+        }
+#endregion
+
+
         public static bool SendResultGetData()
         {
             bool result = true;
@@ -1758,7 +2306,14 @@ namespace Cash8
             resultGetData.NumCash = MainStaticClass.CashDeskNumber.ToString();
             resultGetData.OSVersion = Environment.OSVersion.VersionString;
             //Запросим информацию про фискальный регистратор
-            resultGetData.DeviceInfo = "["+get_device_info()+ ","+ get_registration_info()+"]";
+            if (MainStaticClass.printing_using_libraries == 0)
+            {
+                resultGetData.DeviceInfo = "[" + get_device_info() + "," + get_registration_info() + "]";
+            }
+            else
+            {
+                resultGetData.DeviceInfo = get_device_info_printing_libraries();
+            }
             //string vatin = get_registration_info();
             //if (vatin.Trim() != "")
             //{

@@ -72,7 +72,7 @@
             this.groupBox4.Size = new System.Drawing.Size(443, 337);
             this.groupBox4.TabIndex = 20;
             this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Проверки";
+            this.groupBox4.Text = "Проверки";            
             // 
             // txtB_ofd_utility_status
             // 

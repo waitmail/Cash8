@@ -8,6 +8,8 @@ using System.Windows.Forms;
 using System.IO.Ports;
 using Npgsql;
 using System.Drawing.Printing;
+using Atol.Drivers10.Fptr;
+using AtolConstants = Atol.Drivers10.Fptr.Constants;
 
 namespace Cash8
 {
@@ -94,7 +96,15 @@ namespace Cash8
 
 
         private void Constants_Load(object sender, EventArgs e)
-        {           
+        {
+
+            //comboBox_fn_port
+            comboBox_fn_port.Items.Clear();
+            string[] sreial_ports = SerialPort.GetPortNames();
+            foreach (string s in sreial_ports)
+            {
+                comboBox_fn_port.Items.Add(s);
+            }
             NpgsqlConnection conn = null;
             try
             {
@@ -104,7 +114,7 @@ namespace Cash8
                     " path_for_web_service,currency,unloading_period,last_date_download_bonus_clients,"+
                     " envd,pass_promo,print_m,system_taxation,work_schema,version_fn,enable_stock_processing_in_memory," +
                     " id_acquirer_terminal,ip_address_acquiring_terminal,self_service_kiosk,one_monitors_connected,version2_marking, " +
-                    " webservice_authorize,printing_using_libraries FROM constants";
+                    " webservice_authorize,printing_using_libraries,fn_sreial_port FROM constants";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
@@ -134,7 +144,9 @@ namespace Cash8
                     this.checkBox_one_monitors_connected.CheckState = (reader["one_monitors_connected"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
                     this.checkBox_version2_marking.CheckState = (reader["version2_marking"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
                     this.checkBox_webservice_authorize.CheckState = (reader["webservice_authorize"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
-                    this.checkBox_printing_using_libraries.CheckState = (reader["printing_using_libraries"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);                   
+                    this.checkBox_printing_using_libraries.CheckState = (reader["printing_using_libraries"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
+                    int index = comboBox_fn_port.Items.IndexOf(reader["fn_sreial_port"].ToString());
+                    this.comboBox_fn_port.SelectedIndex = index;
                 }
                 reader.Close();
                 //if (nick_shop.Text.Trim() != "A01")
@@ -299,7 +311,8 @@ namespace Cash8
                     "version2_marking=" + version2_marking + "," +
                     "webservice_authorize=" + webservice_authorize + "," +
                     "static_guid_in_print=" + static_guid_in_print + "," +
-                    "printing_using_libraries=" + printing_using_libraries+";";
+                    "printing_using_libraries=" + printing_using_libraries + "," +
+                    "fn_sreial_port = '"+(comboBox_fn_port.Items.Count == 0 ? "" : (comboBox_fn_port.SelectedIndex == -1 ? "" : comboBox_fn_port.SelectedItem.ToString()))+"';";
 
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 int resul_update = command.ExecuteNonQuery();
@@ -325,7 +338,8 @@ namespace Cash8
                         "version2_marking,"+
                         "webservice_authorize,"+
                         "static_guid_in_print," +
-                        "printing_using_libraries) VALUES(" +
+                        "printing_using_libraries,"+
+                        "fn_sreial_port) VALUES(" +
                         cash_desk_number.Text + ",'" +
                         nick_shop.Text + "'," +
                         get_use_debug() + ",'" +                        
@@ -345,7 +359,8 @@ namespace Cash8
                         version2_marking+","+
                         webservice_authorize+","+
                         static_guid_in_print+","+
-                        printing_using_libraries + ")";
+                        printing_using_libraries + ",'"+
+                        comboBox_fn_port.SelectedItem.ToString()+"')";
 
                     command = new NpgsqlCommand(query, conn);
                     command.ExecuteNonQuery();
@@ -382,6 +397,31 @@ namespace Cash8
                 checkBox_enable_stock_processing_in_memory.Checked = true;
                 txtB_version_fn.Text = "2";
             }
+        }
+
+        private void btn_trst_connection_Click(object sender, EventArgs e)
+        {
+            IFptr fptr = MainStaticClass.FPTR;
+            //fptr = MainStaticClass.FPTR;
+            //fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_MODEL, AtolConstants.LIBFPTR_MODEL_ATOL_AUTO.ToString());
+            //fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_PORT, AtolConstants.LIBFPTR_PORT_COM.ToString());
+            ////fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_PORT, AtolConstants.LIBFPTR_PORT_USB.ToString());
+            //fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_COM_FILE, comboBox_fn_port.SelectedItem.ToString());
+            //fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_BAUDRATE, AtolConstants.LIBFPTR_PORT_BR_115200.ToString());
+            //fptr.applySingleSettings();
+            if (!fptr.isOpened())
+            {
+                fptr.open();
+            }
+            if (fptr.printText() < 0)
+            {
+                MessageBox.Show(fptr.errorCode() + " " + fptr.errorDescription());
+            }
+            else
+            {
+                MessageBox.Show("Соединение успешно установлено!");
+            }
+            //fptr.close();
         }
     }
 }

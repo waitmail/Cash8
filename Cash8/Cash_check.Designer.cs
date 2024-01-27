@@ -859,7 +859,6 @@
         private System.Windows.Forms.Button pay;
         private System.Windows.Forms.TextBox last_tovar;
         private System.Windows.Forms.TextBox date_time_start;
-        private System.Windows.Forms.TextBox user;
         private System.Windows.Forms.Label status_com_scaner;
         private System.Windows.Forms.Label label4;
         public System.Windows.Forms.TextBox inputbarcode;
@@ -911,5 +910,6 @@
         private System.Windows.Forms.TextBox txtB_total_sum;
         private System.Windows.Forms.TextBox txtB_num_doc;
         private System.Windows.Forms.CheckBox checkBox_print_check;
+        public System.Windows.Forms.TextBox user;
     }
 }

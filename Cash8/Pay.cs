@@ -1146,6 +1146,7 @@ namespace Cash8
                     if (!complete)//ответ от терминала не удовлетворительный
                     {
                         calculate();
+                        cc.recharge_note = "";
                         MessageBox.Show(" Неудачная попытка получения оплаты ");
                         return;
                     }
@@ -1327,7 +1328,7 @@ namespace Cash8
                             }
                             else if (field.Id == "14")
                             {
-                                answerTerminal.number_reference = field.Text.Trim();
+                                answerTerminal.number_reference = field.Text.Trim();                                
                             }
                             else if (field.Id == "90")
                             {                                
@@ -1336,6 +1337,12 @@ namespace Cash8
                                 if (num_pos > 0)
                                 {
                                     cc.recharge_note = cc.recharge_note.Substring(0,num_pos+8);
+                                    //if ((answerTerminal.code_authorization == "sbpnspk")&&(answerTerminal.number_reference==""))//Оплата по сбп и не вернулся номер транзакции
+                                    //{
+                                    //    int num_pos1 = cc.recharge_note.IndexOf("TRN:");
+                                    //    int num_pos2 = cc.recharge_note.IndexOf("Статус:");
+                                    //    answerTerminal.number_reference = cc.recharge_note.Substring(num_pos1 + 4, num_pos2 - (num_pos1 + 4)).Replace("\r\n", "").Trim();
+                                    //}
                                 }
                             }
                         }

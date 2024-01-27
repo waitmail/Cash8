@@ -329,12 +329,11 @@ namespace Cash8
                 //}
             }
             catch (NpgsqlException ex)
-            {
-                MessageBox.Show(query);
-                string error = ex.Message;
+            {                
                 if (show_message)
                 {
-                    MessageBox.Show(error, "Ошибка при импорте данных");
+                    MessageBox.Show(query);
+                    MessageBox.Show(ex.Message, "Ошибка при импорте данных ");
                 }
                 if (tran != null)
                 {
@@ -346,7 +345,7 @@ namespace Cash8
                 if (show_message)
                 {
                     MessageBox.Show(query);
-                    MessageBox.Show(ex.Message, "Ошибка при импорте данных");
+                    MessageBox.Show(ex.Message, "Ошибка при импорте данных "+ex.Message);
                 }
                 if (tran != null)
                 {

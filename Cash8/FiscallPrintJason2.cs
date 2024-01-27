@@ -273,7 +273,7 @@ namespace Cash8
             CachInOut cash_in_out = new CachInOut();
             cash_in_out.@operator = new Cash8.FiscallPrintJason.Operator();
             cash_in_out.@operator.name = MainStaticClass.Cash_Operator;// "name";//необходимо переопределить
-            cash_in_out.@operator.vatin = MainStaticClass.cash_operator_inn;// "123654789507";//необходимо переопределить
+            cash_in_out.@operator.vatin = MainStaticClass.CashOperatorInn;// "123654789507";//необходимо переопределить
             cash_in_out.type = type;
             cash_in_out.cashSum = cashSum;
             string cash_in = JsonConvert.SerializeObject(cash_in_out, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
@@ -390,7 +390,7 @@ namespace Cash8
             Operator_type cds = new Cash8.FiscallPrintJason2.Operator_type();
             cds.@operator = new Cash8.FiscallPrintJason.Operator();
             cds.@operator.name = MainStaticClass.Cash_Operator;//"name";//необходимо переопределить
-            cds.@operator.vatin = MainStaticClass.cash_operator_inn;// "123654789507";//необходимо переопределить
+            cds.@operator.vatin = MainStaticClass.CashOperatorInn;// "123654789507";//необходимо переопределить
             cds.type = type;
             string c_d_s = JsonConvert.SerializeObject(cds, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             string json = MainStaticClass.shablon.Replace("body", c_d_s);
@@ -632,7 +632,7 @@ namespace Cash8
             //Check check = new Check();
             check.@operator = new FiscallPrintJason.Operator();
             check.@operator.name = MainStaticClass.Cash_Operator;// "name";//необходимо переопределить
-            check.@operator.vatin = MainStaticClass.cash_operator_inn;// "123654789507";//необходимо переопределить
+            check.@operator.vatin = MainStaticClass.CashOperatorInn;// "123654789507";//необходимо переопределить
             check.type = type;
             string _check_ = JsonConvert.SerializeObject(check, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             string json = MainStaticClass.shablon.Replace("body", _check_);

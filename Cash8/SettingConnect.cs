@@ -1060,13 +1060,14 @@ namespace Cash8
             //queries.Add("ALTER TABLE public.checks_header    ADD COLUMN guid character varying(36) COLLATE pg_catalog.default NOT NULL DEFAULT ''::character varying");
             //queries.Add("ALTER TABLE public.checks_table    ADD COLUMN guid character varying(36) COLLATE pg_catalog.default NOT NULL DEFAULT ''::character varying");
             //queries.Add("ALTER TABLE public.clients ADD COLUMN notify_security smallint DEFAULT 0;");
-            //queries.Add("ALTER TABLE public.clients ADD COLUMN reason_for_blocking character varying(500) COLLATE pg_catalog.default;");
-            //queries.Add("ALTER TABLE public.constants ADD COLUMN webservice_authorize boolean  DEFAULT false;");
 
+            queries.Add("ALTER TABLE public.clients ADD COLUMN reason_for_blocking character varying(500) COLLATE pg_catalog.default;");
+            queries.Add("ALTER TABLE public.constants ADD COLUMN webservice_authorize boolean  DEFAULT false;");
             queries.Add("ALTER TABLE public.action_header ADD COLUMN sum1 numeric(12,2); COMMENT ON COLUMN public.action_header.sum1 IS 'Для 12 типа акций сумма по 2 списку';");
             queries.Add("ALTER TABLE public.checks_header ADD COLUMN guid1 character varying(36) COLLATE pg_catalog.default;COMMENT ON COLUMN public.checks_header.guid1 IS 'Для печати чека по патенту';");
             queries.Add("ALTER TABLE public.constants ADD COLUMN static_guid_in_print boolean NOT NULL DEFAULT false;");
             queries.Add("ALTER TABLE public.constants ADD COLUMN printing_using_libraries boolean DEFAULT false;COMMENT ON COLUMN public.constants.printing_using_libraries IS 'Печать с использованием библиотек';");
+            queries.Add("ALTER TABLE public.constants ADD COLUMN fn_sreial_port character varying(20) COLLATE pg_catalog.default;");
 
             foreach (string str in queries)
             {

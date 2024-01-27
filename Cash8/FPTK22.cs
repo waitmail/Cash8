@@ -67,9 +67,7 @@ namespace Cash8
                 btn_reconciliation_of_totals.Enabled = true;
                 btn_query_summary_report.Enabled = true;
                 btn_query_full_report.Enabled = true;
-
             }            
-
         }
 
 
@@ -201,6 +199,7 @@ namespace Cash8
             {
                 PrintingUsingLibraries printing = new PrintingUsingLibraries();
                 printing.cashIncome(Convert.ToDouble(sum_avans.Text));
+                get_summ_in_cashe_Click(null, null);
             }
             avans.Enabled = true;
         }
@@ -238,6 +237,7 @@ namespace Cash8
             {
                 PrintingUsingLibraries printing = new PrintingUsingLibraries();
                 printing.cashOutcome(Convert.ToDouble(sum_incass.Text));
+                get_summ_in_cashe_Click(null, null);
             }
             incass.Enabled = true;
         }
@@ -658,5 +658,6 @@ namespace Cash8
 
             }
         }
+       
     }
 }

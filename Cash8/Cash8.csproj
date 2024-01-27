@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Cash8</RootNamespace>
     <AssemblyName>Cash8</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
@@ -215,6 +215,12 @@
       <DependentUpon>MyMessageBox.cs</DependentUpon>
     </Compile>
     <Compile Include="NonFiscallDocument.cs" />
+    <Compile Include="ParametersReceiptCorrection.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ParametersReceiptCorrection.Designer.cs">
+      <DependentUpon>ParametersReceiptCorrection.cs</DependentUpon>
+    </Compile>
     <Compile Include="Pay.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -287,6 +293,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MyMessageBox.resx">
       <DependentUpon>MyMessageBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ParametersReceiptCorrection.resx">
+      <DependentUpon>ParametersReceiptCorrection.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Pay.resx">
       <DependentUpon>Pay.cs</DependentUpon>

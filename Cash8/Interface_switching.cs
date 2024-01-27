@@ -294,7 +294,7 @@ namespace Cash8
                     {
                         MainStaticClass.Cash_Operator = reader["name"].ToString().Trim();
                         MainStaticClass.Cash_Operator_Client_Code = reader["code"].ToString();
-                        MainStaticClass.cash_operator_inn = reader["inn"].ToString();
+                        MainStaticClass.CashOperatorInn = reader["inn"].ToString();
                     }
                 }                
                 conn.Close();
