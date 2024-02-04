@@ -190,6 +190,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel2.BackColor = System.Drawing.Color.ForestGreen;
+            this.panel2.Controls.Add(this.panel_return);
             this.panel2.Controls.Add(this.listView2);
             this.panel2.Controls.Add(this.select_tovar);
             this.panel2.Location = new System.Drawing.Point(16, 34);
@@ -313,7 +314,7 @@
             this.panel_return.Controls.Add(this.return_kop);
             this.panel_return.Controls.Add(this.return_rouble);
             this.panel_return.Controls.Add(this.return_quantity);
-            this.panel_return.Location = new System.Drawing.Point(21, 282);
+            this.panel_return.Location = new System.Drawing.Point(201, 83);
             this.panel_return.Name = "panel_return";
             this.panel_return.Size = new System.Drawing.Size(432, 88);
             this.panel_return.TabIndex = 42;
@@ -399,7 +400,6 @@
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.panel_return);
             this.tabPage1.Controls.Add(this.panel2);
             this.tabPage1.Controls.Add(this.panel1);
             this.tabPage1.Controls.Add(this.listView1);
@@ -706,11 +706,12 @@
             this.checkBox_to_print_repeatedly_p.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.checkBox_to_print_repeatedly_p.AutoSize = true;
             this.checkBox_to_print_repeatedly_p.Enabled = false;
-            this.checkBox_to_print_repeatedly_p.Location = new System.Drawing.Point(260, 566);
+            this.checkBox_to_print_repeatedly_p.Location = new System.Drawing.Point(261, 566);
             this.checkBox_to_print_repeatedly_p.Name = "checkBox_to_print_repeatedly_p";
-            this.checkBox_to_print_repeatedly_p.Size = new System.Drawing.Size(113, 17);
+            this.checkBox_to_print_repeatedly_p.Size = new System.Drawing.Size(149, 17);
             this.checkBox_to_print_repeatedly_p.TabIndex = 73;
-            this.checkBox_to_print_repeatedly_p.Text = "Нап. маркировку";
+            this.checkBox_to_print_repeatedly_p.Text = "Напечатать маркировку";
+            this.checkBox_to_print_repeatedly_p.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_to_print_repeatedly_p.UseVisualStyleBackColor = true;
             this.checkBox_to_print_repeatedly_p.Visible = false;
             this.checkBox_to_print_repeatedly_p.CheckedChanged += new System.EventHandler(this.checkBox_to_print_repeatedly_p_CheckedChanged);
@@ -878,14 +879,10 @@
         public System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.TabPage tabPage2;
         public System.Windows.Forms.ListView listView_sertificates;
-        private System.Windows.Forms.TextBox txtB_sertificate_money;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.TextBox txtB_non_cash_money;
         private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.TextBox txtB_cash_money;
         public System.Windows.Forms.ComboBox check_type;
-        private System.Windows.Forms.TextBox txtB_email_telephone;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.TextBox txtB_client_phone;
         private System.Windows.Forms.Label label_client_barcode;
@@ -896,10 +893,7 @@
         private System.Windows.Forms.TextBox txtB_bonus_money;
         private System.Windows.Forms.CheckBox checkBox_to_print_repeatedly;
         private System.Windows.Forms.Label lbl_inn;
-        private System.Windows.Forms.TextBox txtB_inn;
         private System.Windows.Forms.Button btn_get_name;
-        private System.Windows.Forms.TextBox txtB_name;
-        private System.Windows.Forms.TextBox txtB_num_sales;
         private System.Windows.Forms.Button btn_fill_on_sales;
         private System.Windows.Forms.TextBox cash;
         private System.Windows.Forms.CheckBox checkBox_club;
@@ -911,5 +905,12 @@
         private System.Windows.Forms.TextBox txtB_num_doc;
         private System.Windows.Forms.CheckBox checkBox_print_check;
         public System.Windows.Forms.TextBox user;
+        public System.Windows.Forms.TextBox txtB_email_telephone;
+        public System.Windows.Forms.TextBox txtB_inn;
+        public System.Windows.Forms.TextBox txtB_name;
+        public System.Windows.Forms.TextBox txtB_num_sales;
+        public System.Windows.Forms.TextBox txtB_sertificate_money;
+        public System.Windows.Forms.TextBox txtB_non_cash_money;
+        public System.Windows.Forms.TextBox txtB_cash_money;
     }
 }

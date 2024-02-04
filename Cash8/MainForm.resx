@@ -112,84 +112,35 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="menuStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  <metadata name="menuStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>0, 0</value>
   </metadata>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="menuStrip.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 0</value>
-  </data>
-  <data name="menuStrip.Size" type="System.Drawing.Size, System.Drawing">
-    <value>553, 24</value>
-  </data>
-  <assembly alias="mscorlib" name="mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="menuStrip.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;menuStrip.Name" xml:space="preserve">
-    <value>menuStrip</value>
-  </data>
-  <data name="&gt;&gt;menuStrip.Type" xml:space="preserve">
-    <value>System.Windows.Forms.MenuStrip, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;menuStrip.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;menuStrip.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="справочникиToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>94, 20</value>
-  </data>
-  <data name="справочникиToolStripMenuItem.Text" xml:space="preserve">
-    <value>Справочники</value>
-  </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="номенклатураToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>193, 22</value>
-  </data>
-  <data name="номенклатураToolStripMenuItem.Text" xml:space="preserve">
-    <value>Номенклатура</value>
   </data>
   <data name="штрихкодыToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>193, 22</value>
   </data>
-  <data name="штрихкодыToolStripMenuItem.Text" xml:space="preserve">
-    <value>Штрихкоды</value>
-  </data>
   <data name="контрагентыToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>193, 22</value>
-  </data>
-  <data name="контрагентыToolStripMenuItem.Text" xml:space="preserve">
-    <value>Контрагенты</value>
   </data>
   <data name="пользователиToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>193, 22</value>
   </data>
-  <data name="пользователиToolStripMenuItem.Text" xml:space="preserve">
-    <value>Пользователи</value>
-  </data>
   <data name="праваToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>193, 22</value>
-  </data>
-  <data name="праваToolStripMenuItem.Text" xml:space="preserve">
-    <value>Права</value>
   </data>
   <data name="типыДисконтаToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>193, 22</value>
   </data>
-  <data name="типыДисконтаToolStripMenuItem.Text" xml:space="preserve">
-    <value>Типы Дисконта</value>
-  </data>
   <data name="быстрыеТоварыToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>193, 22</value>
-  </data>
-  <data name="быстрыеТоварыToolStripMenuItem.Text" xml:space="preserve">
-    <value>Быстрые товары</value>
   </data>
   <data name="константыToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>193, 22</value>
@@ -199,9 +150,6 @@
   </data>
   <data name="закрытиеДняToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>193, 22</value>
-  </data>
-  <data name="закрытиеДняToolStripMenuItem.Text" xml:space="preserve">
-    <value>Закрытие дня</value>
   </data>
   <data name="фискальныйПринтерToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>193, 22</value>
@@ -215,23 +163,80 @@
   <data name="выходToolStripMenuItem.Text" xml:space="preserve">
     <value>Выход</value>
   </data>
+  <data name="справочникиToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>94, 20</value>
+  </data>
+  <data name="справочникиToolStripMenuItem.Text" xml:space="preserve">
+    <value>Справочники</value>
+  </data>
+  <data name="кассовыеЧекиToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>180, 22</value>
+  </data>
+  <data name="кассовыеЧекиToolStripMenuItem.Text" xml:space="preserve">
+    <value>Кассовые чеки</value>
+  </data>
+  <data name="акцииToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>180, 22</value>
+  </data>
+  <data name="акцииToolStripMenuItem.Text" xml:space="preserve">
+    <value>Акции</value>
+  </data>
   <data name="журналыToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>72, 20</value>
   </data>
   <data name="журналыToolStripMenuItem.Text" xml:space="preserve">
     <value>Журналы</value>
   </data>
-  <data name="кассовыеЧекиToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>156, 22</value>
+  <data name="параметрыБазыДанныхToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>252, 22</value>
   </data>
-  <data name="кассовыеЧекиToolStripMenuItem.Text" xml:space="preserve">
-    <value>Кассовые чеки</value>
+  <data name="параметрыБазыДанныхToolStripMenuItem.Text" xml:space="preserve">
+    <value>Параметры базы данных</value>
   </data>
-  <data name="акцииToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>156, 22</value>
+  <data name="загрузкаДанныхToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>252, 22</value>
   </data>
-  <data name="акцииToolStripMenuItem.Text" xml:space="preserve">
-    <value>Акции</value>
+  <data name="загрузкаДанныхToolStripMenuItem.Text" xml:space="preserve">
+    <value>Загрузка данных из файлов</value>
+  </data>
+  <data name="корректировочныеЧекиToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>252, 22</value>
+  </data>
+  <data name="корректировочныеЧекиToolStripMenuItem.Text" xml:space="preserve">
+    <value>Корректировочные Чеки</value>
+  </data>
+  <data name="выгрузкаДанныхПоБонусамToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>252, 22</value>
+  </data>
+  <data name="выгрузкаДанныхПоБонусамToolStripMenuItem.Text" xml:space="preserve">
+    <value>Выгрузка данных по бонусам</value>
+  </data>
+  <data name="выгрузкаПродажToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>252, 22</value>
+  </data>
+  <data name="загрузкаДанныхЧерезИнтернетToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>252, 22</value>
+  </data>
+  <data name="загрузкаДанныхЧерезИнтернетToolStripMenuItem.Text" xml:space="preserve">
+    <value>Загрузка данных через интернет</value>
+  </data>
+  <data name="обновлениеПрограммыToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>252, 22</value>
+  </data>
+  <data name="обновлениеПрограммыToolStripMenuItem.Text" xml:space="preserve">
+    <value>Обновление программы</value>
+  </data>
+  <data name="текущаяДатаToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>252, 22</value>
+  </data>
+  <data name="текущаяДатаToolStripMenuItem.Text" xml:space="preserve">
+    <value>Текущая дата</value>
+  </data>
+  <data name="оПрограммеToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>252, 22</value>
+  </data>
+  <data name="оПрограммеToolStripMenuItem.Text" xml:space="preserve">
+    <value>О программе</value>
   </data>
   <data name="служебныеToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>84, 20</value>
@@ -239,61 +244,29 @@
   <data name="служебныеToolStripMenuItem.Text" xml:space="preserve">
     <value>Служебные</value>
   </data>
-  <data name="параметрыБазыДанныхToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>255, 22</value>
+  <data name="menuStrip.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 0</value>
   </data>
-  <data name="параметрыБазыДанныхToolStripMenuItem.Text" xml:space="preserve">
-    <value>Параметры базы данных</value>
+  <data name="menuStrip.Size" type="System.Drawing.Size, System.Drawing">
+    <value>553, 24</value>
   </data>
-  <data name="загрузкаДанныхToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>255, 22</value>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="menuStrip.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
   </data>
-  <data name="загрузкаДанныхToolStripMenuItem.Text" xml:space="preserve">
-    <value>Загрузка данных из файлов</value>
+  <data name="&gt;&gt;menuStrip.Name" xml:space="preserve">
+    <value>menuStrip</value>
   </data>
-  <data name="выгрузкаДанныхToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>255, 22</value>
+  <data name="&gt;&gt;menuStrip.Type" xml:space="preserve">
+    <value>System.Windows.Forms.MenuStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="выгрузкаДанныхToolStripMenuItem.Text" xml:space="preserve">
-    <value>Выгрузка данных в файл</value>
+  <data name="&gt;&gt;menuStrip.Parent" xml:space="preserve">
+    <value>$this</value>
   </data>
-  <data name="выгрузкаДанныхПоБонусамToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>255, 22</value>
+  <data name="&gt;&gt;menuStrip.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
-  <data name="выгрузкаДанныхПоБонусамToolStripMenuItem.Text" xml:space="preserve">
-    <value>Выгрузка данных по бонусам</value>
-  </data>
-  <data name="выгрузкаПродажToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>255, 22</value>
-  </data>
-  <data name="выгрузкаПродажToolStripMenuItem.Text" xml:space="preserve">
-    <value>Выгрузка данных через интернет</value>
-  </data>
-  <data name="загрузкаДанныхЧерезИнтернетToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>255, 22</value>
-  </data>
-  <data name="загрузкаДанныхЧерезИнтернетToolStripMenuItem.Text" xml:space="preserve">
-    <value>Загрузка данных через интернет</value>
-  </data>
-  <data name="обновлениеПрограммыToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>255, 22</value>
-  </data>
-  <data name="обновлениеПрограммыToolStripMenuItem.Text" xml:space="preserve">
-    <value>Обновление программы</value>
-  </data>
-  <data name="текущаяДатаToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>255, 22</value>
-  </data>
-  <data name="текущаяДатаToolStripMenuItem.Text" xml:space="preserve">
-    <value>Текущая дата</value>
-  </data>
-  <data name="оПрограммеToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>255, 22</value>
-  </data>
-  <data name="оПрограммеToolStripMenuItem.Text" xml:space="preserve">
-    <value>О программе</value>
-  </data>
-  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
   <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
@@ -306,156 +279,156 @@
     <value>справочникиToolStripMenuItem</value>
   </data>
   <data name="&gt;&gt;справочникиToolStripMenuItem.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;номенклатураToolStripMenuItem.Name" xml:space="preserve">
     <value>номенклатураToolStripMenuItem</value>
   </data>
   <data name="&gt;&gt;номенклатураToolStripMenuItem.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;штрихкодыToolStripMenuItem.Name" xml:space="preserve">
     <value>штрихкодыToolStripMenuItem</value>
   </data>
   <data name="&gt;&gt;штрихкодыToolStripMenuItem.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;контрагентыToolStripMenuItem.Name" xml:space="preserve">
     <value>контрагентыToolStripMenuItem</value>
   </data>
   <data name="&gt;&gt;контрагентыToolStripMenuItem.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;пользователиToolStripMenuItem.Name" xml:space="preserve">
     <value>пользователиToolStripMenuItem</value>
   </data>
   <data name="&gt;&gt;пользователиToolStripMenuItem.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;праваToolStripMenuItem.Name" xml:space="preserve">
     <value>праваToolStripMenuItem</value>
   </data>
   <data name="&gt;&gt;праваToolStripMenuItem.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;типыДисконтаToolStripMenuItem.Name" xml:space="preserve">
     <value>типыДисконтаToolStripMenuItem</value>
   </data>
   <data name="&gt;&gt;типыДисконтаToolStripMenuItem.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;быстрыеТоварыToolStripMenuItem.Name" xml:space="preserve">
     <value>быстрыеТоварыToolStripMenuItem</value>
   </data>
   <data name="&gt;&gt;быстрыеТоварыToolStripMenuItem.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;константыToolStripMenuItem.Name" xml:space="preserve">
     <value>константыToolStripMenuItem</value>
   </data>
   <data name="&gt;&gt;константыToolStripMenuItem.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;закрытиеДняToolStripMenuItem.Name" xml:space="preserve">
     <value>закрытиеДняToolStripMenuItem</value>
   </data>
   <data name="&gt;&gt;закрытиеДняToolStripMenuItem.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;фискальныйПринтерToolStripMenuItem.Name" xml:space="preserve">
     <value>фискальныйПринтерToolStripMenuItem</value>
   </data>
   <data name="&gt;&gt;фискальныйПринтерToolStripMenuItem.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;выходToolStripMenuItem.Name" xml:space="preserve">
     <value>выходToolStripMenuItem</value>
   </data>
   <data name="&gt;&gt;выходToolStripMenuItem.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;журналыToolStripMenuItem.Name" xml:space="preserve">
     <value>журналыToolStripMenuItem</value>
   </data>
   <data name="&gt;&gt;журналыToolStripMenuItem.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;кассовыеЧекиToolStripMenuItem.Name" xml:space="preserve">
     <value>кассовыеЧекиToolStripMenuItem</value>
   </data>
   <data name="&gt;&gt;кассовыеЧекиToolStripMenuItem.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;акцииToolStripMenuItem.Name" xml:space="preserve">
     <value>акцииToolStripMenuItem</value>
   </data>
   <data name="&gt;&gt;акцииToolStripMenuItem.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;служебныеToolStripMenuItem.Name" xml:space="preserve">
     <value>служебныеToolStripMenuItem</value>
   </data>
   <data name="&gt;&gt;служебныеToolStripMenuItem.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;параметрыБазыДанныхToolStripMenuItem.Name" xml:space="preserve">
     <value>параметрыБазыДанныхToolStripMenuItem</value>
   </data>
   <data name="&gt;&gt;параметрыБазыДанныхToolStripMenuItem.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;загрузкаДанныхToolStripMenuItem.Name" xml:space="preserve">
     <value>загрузкаДанныхToolStripMenuItem</value>
   </data>
   <data name="&gt;&gt;загрузкаДанныхToolStripMenuItem.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;выгрузкаДанныхToolStripMenuItem.Name" xml:space="preserve">
-    <value>выгрузкаДанныхToolStripMenuItem</value>
+  <data name="&gt;&gt;корректировочныеЧекиToolStripMenuItem.Name" xml:space="preserve">
+    <value>корректировочныеЧекиToolStripMenuItem</value>
   </data>
-  <data name="&gt;&gt;выгрузкаДанныхToolStripMenuItem.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;корректировочныеЧекиToolStripMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;выгрузкаДанныхПоБонусамToolStripMenuItem.Name" xml:space="preserve">
     <value>выгрузкаДанныхПоБонусамToolStripMenuItem</value>
   </data>
   <data name="&gt;&gt;выгрузкаДанныхПоБонусамToolStripMenuItem.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;выгрузкаПродажToolStripMenuItem.Name" xml:space="preserve">
     <value>выгрузкаПродажToolStripMenuItem</value>
   </data>
   <data name="&gt;&gt;выгрузкаПродажToolStripMenuItem.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;загрузкаДанныхЧерезИнтернетToolStripMenuItem.Name" xml:space="preserve">
     <value>загрузкаДанныхЧерезИнтернетToolStripMenuItem</value>
   </data>
   <data name="&gt;&gt;загрузкаДанныхЧерезИнтернетToolStripMenuItem.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;обновлениеПрограммыToolStripMenuItem.Name" xml:space="preserve">
     <value>обновлениеПрограммыToolStripMenuItem</value>
   </data>
   <data name="&gt;&gt;обновлениеПрограммыToolStripMenuItem.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;текущаяДатаToolStripMenuItem.Name" xml:space="preserve">
     <value>текущаяДатаToolStripMenuItem</value>
   </data>
   <data name="&gt;&gt;текущаяДатаToolStripMenuItem.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;оПрограммеToolStripMenuItem.Name" xml:space="preserve">
     <value>оПрограммеToolStripMenuItem</value>
   </data>
   <data name="&gt;&gt;оПрограммеToolStripMenuItem.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>Main</value>
   </data>
   <data name="&gt;&gt;$this.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Form, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>

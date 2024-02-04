@@ -1068,6 +1068,7 @@ namespace Cash8
             queries.Add("ALTER TABLE public.constants ADD COLUMN static_guid_in_print boolean NOT NULL DEFAULT false;");
             queries.Add("ALTER TABLE public.constants ADD COLUMN printing_using_libraries boolean DEFAULT false;COMMENT ON COLUMN public.constants.printing_using_libraries IS 'Печать с использованием библиотек';");
             queries.Add("ALTER TABLE public.constants ADD COLUMN fn_sreial_port character varying(20) COLLATE pg_catalog.default;");
+            queries.Add("ALTER TABLE public.deleted_items ADD COLUMN guid character varying(36) COLLATE pg_catalog.default;");
 
             foreach (string str in queries)
             {

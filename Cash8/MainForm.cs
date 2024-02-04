@@ -486,6 +486,7 @@ namespace Cash8
             public string tovar { get; set; }
             public string quantity { get; set; }
             public string type_of_operation { get; set; }
+            public string guid { get; set; }
         }
 
         public class DeletedItems : IDisposable
@@ -493,6 +494,7 @@ namespace Cash8
             public string Version { get; set; }
             public string NickShop { get; set; }
             public string CodeShop { get; set; }
+            public string Guid { get; set; }
             public List<DeletedItem> ListDeletedItem { get; set; }
 
             void IDisposable.Dispose()
@@ -525,6 +527,7 @@ namespace Cash8
                     deletedItem.tovar = reader["tovar"].ToString();
                     deletedItem.quantity = reader["quantity"].ToString();
                     deletedItem.type_of_operation = reader["type_of_operation"].ToString();
+                    //deletedItem.guid = 
                     deletedItems.ListDeletedItem.Add(deletedItem);
                 }
                 reader.Close();
@@ -876,6 +879,7 @@ namespace Cash8
             
             if (MainStaticClass.exist_table_name("constants"))
             {
+                MainStaticClass.write_event_in_log(" Старт программы ", "проверка таблицы констант", "0");
                 Text += "   " + Cash8.MainStaticClass.CashDeskNumber;
                 Text += " | " + Cash8.MainStaticClass.Nick_Shop;
                 Text += " | " + Cash8.MainStaticClass.version();
@@ -894,12 +898,13 @@ namespace Cash8
                     //t2.IsBackground = true;
                     //t2.Start();               
                 }
-
+                MainStaticClass.write_event_in_log("Перед проверкой обновления в интернет", " Старт программы ", "0");
                 LoadProgramFromInternet lpfi = new LoadProgramFromInternet();
                 lpfi.show_phone = true;
                 lpfi.check_new_version_programm();
                 bool new_version_of_the_program_exist = lpfi.new_version_of_the_program;
                 lpfi.Dispose();
+                MainStaticClass.write_event_in_log("Проверка обновления в интернет завершена", " Старт программы ", "0");
 
                 if (new_version_of_the_program_exist)
                 {
@@ -924,8 +929,10 @@ namespace Cash8
                     check_failed_input_phone();
                 }
 
-                MainStaticClass.delete_old_checks(MainStaticClass.GetMinDateWork);
+                
+                MainStaticClass.write_event_in_log("Перед получением данных по пользователям"," Старт программы ", "0");
                 get_users();
+                MainStaticClass.write_event_in_log( "После получения данных по пользователям", " Старт программы ", "0");
                 //MainStaticClass.Use_Envd = check_envd();
                 //if (DateTime.Now > new DateTime(2021, 1, 1) && (MainStaticClass.Use_Envd))
                 //{
@@ -937,7 +944,10 @@ namespace Cash8
                 //}
 
                 MainStaticClass.SystemTaxation = check_system_taxation();
+
+                MainStaticClass.delete_old_checks(MainStaticClass.GetMinDateWork);
                 MainStaticClass.delete_all_events_in_log(MainStaticClass.GetMinDateWork);
+
                 if (MainStaticClass.Use_Fiscall_Print)
                 {
                     getShiftStatus();
@@ -945,10 +955,12 @@ namespace Cash8
 
                 //if (MainStaticClass.PassPromo == "")//Пароля нет надо его запросить
                 //{
-                get_login_and_pass_on_bonus_programm();
+                //get_login_and_pass_on_bonus_programm();//Пока не работаем по бонусам со сторонними поставщиками
                 //}            
                 //check_and_update_npgsql();
+                MainStaticClass.write_event_in_log( "Перед передача удаленных строк и строк с изменением количества вниз", " Старт программы ", "0");
                 UploadDeletedItems();//передача удаленных строк и строк с изменением количества вниз
+                MainStaticClass.write_event_in_log("После передача удаленных строк и строк с изменением количества вниз", " Старт программы ", "0");
 
                 //if (MainStaticClass.Nick_Shop == "A01")//Для отладки нового механизма пока что сделаю такую заплатку
                 //{
@@ -978,9 +990,13 @@ namespace Cash8
             MainStaticClass.Main.start_interface_switching();
             //change_schema_2_to_3();
             //change_clients_for_schema1();   
-            if (MainStaticClass.PrintingUsingLibraries == 1)
-            {
+            //if (MainStaticClass.PrintingUsingLibraries == 1)
+            //{
 
+            //}
+            if (MainStaticClass.GetVersionFn == 2)
+            {
+                MainStaticClass.Version2Marking = 1;
             }
         }
 
@@ -1614,7 +1630,7 @@ namespace Cash8
             this.служебныеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.параметрыБазыДанныхToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.загрузкаДанныхToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.выгрузкаДанныхToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.корректировочныеЧекиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.выгрузкаДанныхПоБонусамToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.выгрузкаПродажToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.загрузкаДанныхЧерезИнтернетToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -1743,6 +1759,7 @@ namespace Cash8
             //this.выгрузкаДанныхToolStripMenuItem,
             this.выгрузкаДанныхПоБонусамToolStripMenuItem,
             //this.выгрузкаПродажToolStripMenuItem,
+            this.корректировочныеЧекиToolStripMenuItem,
             this.загрузкаДанныхЧерезИнтернетToolStripMenuItem,
             this.обновлениеПрограммыToolStripMenuItem,
             this.оПрограммеToolStripMenuItem});
@@ -1775,9 +1792,9 @@ namespace Cash8
             // 
             // выгрузкаПродажToolStripMenuItem
             // 
-            //this.выгрузкаПродажToolStripMenuItem.Name = "выгрузкаПродажToolStripMenuItem";
-            //resources.ApplyResources(this.выгрузкаПродажToolStripMenuItem, "выгрузкаПродажToolStripMenuItem");
-            //this.выгрузкаПродажToolStripMenuItem.Click += new System.EventHandler(this.выгрузкаПродажToolStripMenuItem_Click);
+            this.корректировочныеЧекиToolStripMenuItem.Name = "корректировочныеЧекиToolStripMenuItem";
+            resources.ApplyResources(this.корректировочныеЧекиToolStripMenuItem, "корректировочныеЧекиToolStripMenuItem");
+            this.корректировочныеЧекиToolStripMenuItem.Click += КорректировочныеЧекиToolStripMenuItem_Click;// new System.EventHandler(this.выгрузкаПродажToolStripMenuItem_Click);
             // 
             // загрузкаДанныхЧерезИнтернетToolStripMenuItem
             // 
@@ -1812,6 +1829,12 @@ namespace Cash8
             this.ResumeLayout(false);
             this.PerformLayout();
 
+        }
+
+        private void КорректировочныеЧекиToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CorrectionChecks checks = new CorrectionChecks();
+            checks.Show();
         }
 
         private void выходToolStripMenuItem_Click(object sender, EventArgs e)

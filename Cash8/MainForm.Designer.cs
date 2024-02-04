@@ -51,7 +51,7 @@
             this.служебныеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.параметрыБазыДанныхToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.загрузкаДанныхToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.выгрузкаДанныхToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.корректировочныеЧекиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.выгрузкаДанныхПоБонусамToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.выгрузкаПродажToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.загрузкаДанныхЧерезИнтернетToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -89,45 +89,38 @@
             // 
             // номенклатураToolStripMenuItem
             // 
-            //this.номенклатураToolStripMenuItem.Name = "номенклатураToolStripMenuItem";
-            //resources.ApplyResources(this.номенклатураToolStripMenuItem, "номенклатураToolStripMenuItem");
-            //this.номенклатураToolStripMenuItem.Click += new System.EventHandler(this.номенклатураToolStripMenuItem_Click);
+            this.номенклатураToolStripMenuItem.Name = "номенклатураToolStripMenuItem";
+            resources.ApplyResources(this.номенклатураToolStripMenuItem, "номенклатураToolStripMenuItem");
             // 
             // штрихкодыToolStripMenuItem
             // 
-            //this.штрихкодыToolStripMenuItem.Name = "штрихкодыToolStripMenuItem";
-            //resources.ApplyResources(this.штрихкодыToolStripMenuItem, "штрихкодыToolStripMenuItem");
-            //this.штрихкодыToolStripMenuItem.Click += new System.EventHandler(this.штрихкодыToolStripMenuItem_Click);
+            this.штрихкодыToolStripMenuItem.Name = "штрихкодыToolStripMenuItem";
+            resources.ApplyResources(this.штрихкодыToolStripMenuItem, "штрихкодыToolStripMenuItem");
             // 
             // контрагентыToolStripMenuItem
             // 
-            //this.контрагентыToolStripMenuItem.Name = "контрагентыToolStripMenuItem";
-            //resources.ApplyResources(this.контрагентыToolStripMenuItem, "контрагентыToolStripMenuItem");
-            //this.контрагентыToolStripMenuItem.Click += new System.EventHandler(this.контрагентыToolStripMenuItem_Click);
+            this.контрагентыToolStripMenuItem.Name = "контрагентыToolStripMenuItem";
+            resources.ApplyResources(this.контрагентыToolStripMenuItem, "контрагентыToolStripMenuItem");
             // 
             // пользователиToolStripMenuItem
             // 
-            //this.пользователиToolStripMenuItem.Name = "пользователиToolStripMenuItem";
-            //resources.ApplyResources(this.пользователиToolStripMenuItem, "пользователиToolStripMenuItem");
-            //this.пользователиToolStripMenuItem.Click += new System.EventHandler(this.пользователиToolStripMenuItem_Click);
+            this.пользователиToolStripMenuItem.Name = "пользователиToolStripMenuItem";
+            resources.ApplyResources(this.пользователиToolStripMenuItem, "пользователиToolStripMenuItem");
             // 
             // праваToolStripMenuItem
             // 
-            //this.праваToolStripMenuItem.Name = "праваToolStripMenuItem";
-            //resources.ApplyResources(this.праваToolStripMenuItem, "праваToolStripMenuItem");
-            //this.праваToolStripMenuItem.Click += new System.EventHandler(this.праваToolStripMenuItem_Click);
+            this.праваToolStripMenuItem.Name = "праваToolStripMenuItem";
+            resources.ApplyResources(this.праваToolStripMenuItem, "праваToolStripMenuItem");
             // 
             // типыДисконтаToolStripMenuItem
             // 
-            //this.типыДисконтаToolStripMenuItem.Name = "типыДисконтаToolStripMenuItem";
-            //resources.ApplyResources(this.типыДисконтаToolStripMenuItem, "типыДисконтаToolStripMenuItem");
-            //this.типыДисконтаToolStripMenuItem.Click += new System.EventHandler(this.типыДисконтаToolStripMenuItem_Click);
+            this.типыДисконтаToolStripMenuItem.Name = "типыДисконтаToolStripMenuItem";
+            resources.ApplyResources(this.типыДисконтаToolStripMenuItem, "типыДисконтаToolStripMenuItem");
             // 
             // быстрыеТоварыToolStripMenuItem
             // 
-            //this.быстрыеТоварыToolStripMenuItem.Name = "быстрыеТоварыToolStripMenuItem";
-            //resources.ApplyResources(this.быстрыеТоварыToolStripMenuItem, "быстрыеТоварыToolStripMenuItem");
-            //this.быстрыеТоварыToolStripMenuItem.Click += new System.EventHandler(this.быстрыеТоварыToolStripMenuItem_Click);
+            this.быстрыеТоварыToolStripMenuItem.Name = "быстрыеТоварыToolStripMenuItem";
+            resources.ApplyResources(this.быстрыеТоварыToolStripMenuItem, "быстрыеТоварыToolStripMenuItem");
             // 
             // константыToolStripMenuItem
             // 
@@ -137,9 +130,8 @@
             // 
             // закрытиеДняToolStripMenuItem
             // 
-            //this.закрытиеДняToolStripMenuItem.Name = "закрытиеДняToolStripMenuItem";
-            //resources.ApplyResources(this.закрытиеДняToolStripMenuItem, "закрытиеДняToolStripMenuItem");
-            //this.закрытиеДняToolStripMenuItem.Click += new System.EventHandler(this.закрытиеДняToolStripMenuItem_Click);
+            this.закрытиеДняToolStripMenuItem.Name = "закрытиеДняToolStripMenuItem";
+            resources.ApplyResources(this.закрытиеДняToolStripMenuItem, "закрытиеДняToolStripMenuItem");
             // 
             // фискальныйПринтерToolStripMenuItem
             // 
@@ -178,7 +170,7 @@
             this.служебныеToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.параметрыБазыДанныхToolStripMenuItem,
             this.загрузкаДанныхToolStripMenuItem,
-            this.выгрузкаДанныхToolStripMenuItem,
+            this.корректировочныеЧекиToolStripMenuItem,
             this.выгрузкаДанныхПоБонусамToolStripMenuItem,
             this.выгрузкаПродажToolStripMenuItem,
             this.загрузкаДанныхЧерезИнтернетToolStripMenuItem,
@@ -200,11 +192,10 @@
             resources.ApplyResources(this.загрузкаДанныхToolStripMenuItem, "загрузкаДанныхToolStripMenuItem");
             this.загрузкаДанныхToolStripMenuItem.Click += new System.EventHandler(this.загрузкаДанныхToolStripMenuItem_Click);
             // 
-            // выгрузкаДанныхToolStripMenuItem
+            // корректировочныеЧекиToolStripMenuItem
             // 
-            //this.выгрузкаДанныхToolStripMenuItem.Name = "выгрузкаДанныхToolStripMenuItem";
-            //resources.ApplyResources(this.выгрузкаДанныхToolStripMenuItem, "выгрузкаДанныхToolStripMenuItem");
-            //this.выгрузкаДанныхToolStripMenuItem.Click += new System.EventHandler(this.выгрузкаДанныхToolStripMenuItem_Click);
+            this.корректировочныеЧекиToolStripMenuItem.Name = "корректировочныеЧекиToolStripMenuItem";
+            resources.ApplyResources(this.корректировочныеЧекиToolStripMenuItem, "корректировочныеЧекиToolStripMenuItem");
             // 
             // выгрузкаДанныхПоБонусамToolStripMenuItem
             // 
@@ -214,9 +205,8 @@
             // 
             // выгрузкаПродажToolStripMenuItem
             // 
-            //this.выгрузкаПродажToolStripMenuItem.Name = "выгрузкаПродажToolStripMenuItem";
-            //resources.ApplyResources(this.выгрузкаПродажToolStripMenuItem, "выгрузкаПродажToolStripMenuItem");
-            //this.выгрузкаПродажToolStripMenuItem.Click += new System.EventHandler(this.выгрузкаПродажToolStripMenuItem_Click);
+            this.выгрузкаПродажToolStripMenuItem.Name = "выгрузкаПродажToolStripMenuItem";
+            resources.ApplyResources(this.выгрузкаПродажToolStripMenuItem, "выгрузкаПродажToolStripMenuItem");
             // 
             // загрузкаДанныхЧерезИнтернетToolStripMenuItem
             // 
@@ -278,7 +268,7 @@
         private System.Windows.Forms.ToolStripMenuItem быстрыеТоварыToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem константыToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem выходToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem выгрузкаДанныхToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem корректировочныеЧекиToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem акцииToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem закрытиеДняToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem фискальныйПринтерToolStripMenuItem;

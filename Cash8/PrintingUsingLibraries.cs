@@ -393,10 +393,20 @@ namespace Cash8
                 }
                 fptr.setParam(1174, correctionInfo);
             }
+                        
+            if (check.txtB_email_telephone.Text.Trim().Length > 0)
+            {                
+                fptr.setParam(1008, check.txtB_email_telephone.Text);
+            }
 
-            //fptr.setParam(1008, "+79161234567");
-            //fptr.openReceipt();
-            //fptr.cancelReceipt();
+            if ((check.txtB_inn.Text.Trim().Length > 0) && (check.txtB_name.Text.Trim().Length > 0))
+            {               
+                fptr.setParam(1228, check.txtB_inn.Text);
+                fptr.setParam(1227, check.txtB_name.Text);             
+            }
+
+            
+
             if (fptr.openReceipt() != 0)
             {
                 MessageBox.Show(string.Format("Ошибка при открытии чека.\nОшибка {0}: {1}", fptr.errorCode(), fptr.errorDescription()),
@@ -475,6 +485,8 @@ namespace Cash8
             // Регистрация итога (отбрасываем копейки)
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_SUM, (double)check.calculation_of_the_sum_of_the_document());
             fptr.receiptTotal();
+
+           
 
             double[] get_result_payment = MainStaticClass.get_cash_on_type_payment(check.numdoc.ToString());
             if (get_result_payment[0] != 0)//Наличные
@@ -806,10 +818,18 @@ namespace Cash8
             {
                 fptr.setParam(AtolConstants.LIBFPTR_PARAM_RECEIPT_TYPE, AtolConstants.LIBFPTR_RT_SELL_RETURN);
             }
+                       
 
-            //fptr.setParam(1008, "+79161234567");
-            //fptr.openReceipt();
-            //fptr.cancelReceipt();          
+            if (check.txtB_email_telephone.Text.Trim().Length > 0)
+            {
+                fptr.setParam(1008, check.txtB_email_telephone.Text);
+            }
+
+            if ((check.txtB_inn.Text.Trim().Length > 0) && (check.txtB_name.Text.Trim().Length > 0))
+            {
+                fptr.setParam(1228, check.txtB_inn.Text);
+                fptr.setParam(1227, check.txtB_name.Text);
+            }
 
 
             if (fptr.openReceipt() != 0)
@@ -842,38 +862,9 @@ namespace Cash8
                 fptr.setParam(AtolConstants.LIBFPTR_PARAM_PRICE, lvi.SubItems[5].Text.Replace(",", "."));
                 fptr.setParam(AtolConstants.LIBFPTR_PARAM_MEASUREMENT_UNIT, AtolConstants.LIBFPTR_IU_PIECE);
                 fptr.setParam(AtolConstants.LIBFPTR_PARAM_QUANTITY, lvi.SubItems[3].Text);
-                //int stavka_nds = MainStaticClass.get_tovar_nds(lvi.SubItems[0].Text.Trim());
-                //nomer_naloga = 0;
-                //MainStaticClass.use
-                //if (stavka_nds == 0)
-                //{
-                //    fptr.setParam(AtolConstants.LIBFPTR_PARAM_TAX_TYPE, AtolConstants.LIBFPTR_TAX_VAT0);
-                //}
-                //else if (stavka_nds == 10)
-                //{
-                //    fptr.setParam(AtolConstants.LIBFPTR_PARAM_TAX_TYPE, AtolConstants.LIBFPTR_TAX_VAT10);
-                //}
-                //else if (stavka_nds == 18)
-                //{
-                //    fptr.setParam(AtolConstants.LIBFPTR_PARAM_TAX_TYPE, AtolConstants.LIBFPTR_TAX_VAT20);
-                //}
-                //else if (stavka_nds == 20)
-                //{
-                //    fptr.setParam(AtolConstants.LIBFPTR_PARAM_TAX_TYPE, AtolConstants.LIBFPTR_TAX_VAT20);
-                //}
-                //else
-                //{
-                //    MessageBox.Show("Неизвестная ставка ндс");
-                //}
-
+               
                 fptr.setParam(AtolConstants.LIBFPTR_PARAM_TAX_TYPE, AtolConstants.LIBFPTR_TAX_NO);
-
-                //if (MainStaticClass.its_certificate(lvi.SubItems[0].Text.Trim()))
-                //{
-                //    fptr.setParam(AtolConstants.LIBFPTR_PARAM_TAX_TYPE, AtolConstants.LIBFPTR_TAX_VAT120);
-                //}
-
-
+                
                 if (MainStaticClass.its_excise(lvi.SubItems[0].Text.Trim()) == 0)
                 {
                     if (lvi.SubItems[14].Text.Trim().Length <= 13)//код маркировки не заполнен
@@ -1009,7 +1000,7 @@ namespace Cash8
         }      
 
 
-        public bool check_marking_code(string mark)
+        public bool check_marking_code(string mark,string num_doc)
         {
             bool result = true;
             IFptr fptr = MainStaticClass.FPTR;
@@ -1044,16 +1035,26 @@ namespace Cash8
             }
             uint validationResult = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_RESULT);
 
-            uint validationError = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_ERROR);
+            uint validationError = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_ERROR);            
             if ((validationError != 0) && (validationError != 402) && (validationError != 421))
-            //if (validationError != 0)
             {
                 result = false;
-                MessageBox.Show("Код ошибки = "+ validationError+"; "+fptr.getParamString(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_ERROR_DESCRIPTION),"Проверка кода маркировки");
-            }            
+                string error_decription = "Код ошибки = " + validationError + "; " + fptr.getParamString(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_ERROR_DESCRIPTION);
+                if (error_decription.Trim().Length > 200)
+                {
+                    error_decription = error_decription.Trim().Substring(0, 199);
+                }
+                MessageBox.Show("Код ошибки = " + validationError + "; " + fptr.getParamString(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_ERROR_DESCRIPTION), "Проверка кода маркировки");
+                MainStaticClass.write_event_in_log(error_decription, " Проверка маркировки " + mark, num_doc);
+                fptr.declineMarkingCode();
+            }
+            else
+            {
+                // Подтверждаем реализацию товара с указанным КМ
+                fptr.acceptMarkingCode();
+            }
 
-            // Подтверждаем реализацию товара с указанным КМ
-            fptr.acceptMarkingCode();
+            
             //fptr.close();
             return result;
         }

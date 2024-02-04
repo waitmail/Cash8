@@ -19,10 +19,14 @@ namespace Cash8
 
         private void ParametersReceiptCorrection_Load(object sender, EventArgs e)
         {
-            if (MainStaticClass.Nick_Shop == "A90")
+            //if (MainStaticClass.Nick_Shop == "A90")
+            //{
+            //    txtB_tax_order.Text = "2.15-15/00373 от 12.01.2024";
+            //}
+            if (MainStaticClass.Nick_Shop == "A23")
             {
-                txtB_tax_order.Text = "2.15-15/00373 от 12.01.2024";
-            }           
+                txtB_tax_order.Text = "№14 / 001 от 24.01.2024";
+            }
         }
 
         private void btn_Ok_Click(object sender, EventArgs e)

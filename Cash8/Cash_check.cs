@@ -240,14 +240,16 @@ namespace Cash8
                     "date_time_action," +
                     "tovar," +
                     "quantity," +
-                    "type_of_operation)	VALUES(" +
+                    "type_of_operation,"+
+                    "guid)	VALUES(" +
                     numdoc.ToString() + "," +
                     num_cash.Tag.ToString() + ",'" +
                      date_time_start.Text.Replace("Чек", "").Trim() + "','" +
                     DateTime.Now.ToString("yyy-MM-dd HH:mm:ss") + "'," +
                     tovar.ToString() + "," +
                     quantity.ToString() + "," +
-                    type_of_operation + ");";
+                    type_of_operation +",'"+ 
+                    guid+"');";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 command.ExecuteNonQuery();
                 command.Dispose();
@@ -2827,14 +2829,14 @@ namespace Cash8
                                                     WortWithMarkingV3 markingV3 = new WortWithMarkingV3();
                                                     WortWithMarkingV3.Root root = markingV3.beginMarkingCodeValidation("auto", imc, "itemPieceSold", 1, "piece", 0, false);
                                                     if (root.results[0].errorCode != 0)
-                                                    {
-                                                        markingV3.cancelMarkingCodeValidation();//прерываем валидацию
+                                                    {                                                        
                                                         code_marking_error = root.results[0].errorCode;
                                                         //MessageBox.Show(root.results[0].errorDescription, "Ошибка при начале проверки кода маркировки");
                                                         if ((code_marking_error != 421) && (code_marking_error != 402))
                                                         {
                                                             MessageBox.Show("beginMarkingCodeValidation " + root.results[0].errorDescription + " " + code_marking_error, "Ошибка при начале проверки кода маркировки");
                                                             error = true;//не прошли проверку товар не добавляем в чек
+                                                            markingV3.cancelMarkingCodeValidation();//прерываем валидацию
                                                         }
                                                         else
                                                         {
@@ -2859,6 +2861,7 @@ namespace Cash8
                                                                         //markingV3.cancelMarkingCodeValidation();//прерываем валидацию
                                                                         MessageBox.Show("getMarkingCodeValidationStatus " + root.results[0].result.driverError.description, "Ошибка при начале проверки кода маркировки");
                                                                         error = true;//не прошли проверку товар не добавляем в чек
+                                                                        markingV3.cancelMarkingCodeValidation();
                                                                     }
                                                                     else//это будет ниже при добавлении товара в чек и по этим кодам ошибок добавление в буфер как проверенного
                                                                     {
@@ -2919,6 +2922,7 @@ namespace Cash8
                                                         else
                                                         {
                                                             error = true;
+                                                            markingV3.cancelMarkingCodeValidation();//прерываем валидацию
                                                         }
 
                                                     }
@@ -2926,7 +2930,7 @@ namespace Cash8
                                                 else
                                                 {
                                                     PrintingUsingLibraries printing = new PrintingUsingLibraries();
-                                                    if (!printing.check_marking_code(imc))
+                                                    if (!printing.check_marking_code(imc,this.numdoc.ToString()))
                                                     {
                                                         error = true;
                                                     }
@@ -2981,10 +2985,13 @@ namespace Cash8
                         {
                             MainStaticClass.write_event_in_log("Товар добавлен " + barcode, "Документ чек", numdoc.ToString());
                             listView1.Items.Add(lvi);
-                            if ((code_marking_error == 402) || (code_marking_error == 421))//это говорит о том что включена новая схема маркировки и мы имеет проблемы с интернетом
-                            {
-                                //km_adding_to_buffer(listView1.Items.Count - 1);//принудительно добавляем в буфер последнюю строку с маркировкой 
-                                km_adding_to_buffer_index(listView1.Items.Count - 1);
+                            if (MainStaticClass.PrintingUsingLibraries == 0)
+                            {                                
+                                if ((code_marking_error == 402) || (code_marking_error == 421))//это говорит о том что включена новая схема маркировки и мы имеет проблемы с интернетом
+                                {
+                                    //km_adding_to_buffer(listView1.Items.Count - 1);//принудительно добавляем в буфер последнюю строку с маркировкой 
+                                    km_adding_to_buffer_index(listView1.Items.Count - 1);
+                                }
                             }
                         }
                         else
@@ -3653,7 +3660,7 @@ namespace Cash8
         }
 
 
-        private void Cash_check_Load(object sender, System.EventArgs e)
+        public void Cash_check_Load(object sender, System.EventArgs e)
         {
             //System.IO.File.Delete(Application.StartupPath.Replace("\\", "/") + "/" + "json.txt");
 
@@ -3866,7 +3873,10 @@ namespace Cash8
                     //this.inventory.Enabled = false;
                     //this.comment.Enabled = false;
                     to_open_the_written_down_document();
-                    enable_print();
+                    if (MainStaticClass.Code_right_of_user == 1)
+                    {
+                        enable_print();
+                    }
                     if (MainStaticClass.Code_right_of_user != 1)
                     {
                         this.pay.Enabled = false;
@@ -7891,7 +7901,7 @@ namespace Cash8
                 //its_print();
             }
 
-            MainStaticClass.delete_events_in_log(numdoc.ToString());
+            //MainStaticClass.delete_events_in_log(numdoc.ToString());
             //this.Close();
 
         }
@@ -14330,7 +14340,7 @@ namespace Cash8
         //}
 
 
-        private void fill_on_sales()
+        public void fill_on_sales()
         {
 
             id_sale = Convert.ToInt32(txtB_num_sales.Text);
@@ -14365,15 +14375,16 @@ namespace Cash8
                     }
                     else if (check_type.SelectedIndex == 2)
                     {
-
-                        ParametersReceiptCorrection parameters = new ParametersReceiptCorrection();
-                        DialogResult result = parameters.ShowDialog();
-                        tax_order = "";
-                        if (result == DialogResult.Cancel)
+                        if (tax_order == "")
                         {
-                            return;
+                            ParametersReceiptCorrection parameters = new ParametersReceiptCorrection();
+                            DialogResult result = parameters.ShowDialog();                            
+                            if (result == DialogResult.Cancel)
+                            {
+                                return;
+                            }
+                            tax_order = parameters.txtB_tax_order.Text.Trim();
                         }
-                        tax_order = parameters.txtB_tax_order.Text.Trim();
 
                         query = " SELECT dt.tovar_code, dt.name,SUM(dt.quantity)AS quantity, dt.price, dt.price_at_a_discount, SUM(dt.sum) AS sum," +
                                        "  SUM(dt.sum_at_a_discount) AS sum_at_a_discount, dt.id_transaction,dt.client,dt.item_marker" +
@@ -14428,9 +14439,9 @@ namespace Cash8
                         lvi.SubItems.Add("0");//Бонус
                         lvi.SubItems.Add(reader["item_marker"].ToString().Replace("vasya2021", "'"));//Маркер                    
                         listView1.Items.Add(lvi);
-                    }
+                    }                   
 
-                    query = "SELECT id_transaction_terminal,code_authorization_terminal,date_time_write,non_cash_money FROM  checks_header WHERE document_number=" + txtB_num_sales.Text;
+                    query = "SELECT id_transaction_terminal,code_authorization_terminal,date_time_write,cash_money,non_cash_money,sertificate_money FROM  checks_header WHERE document_number=" + txtB_num_sales.Text;
                     command = new NpgsqlCommand(query, conn);
                     reader = command.ExecuteReader();
                     while (reader.Read())
@@ -14439,6 +14450,10 @@ namespace Cash8
                         sale_code_authorization_terminal = reader["code_authorization_terminal"].ToString();
                         sale_date = Convert.ToDateTime(reader["date_time_write"]);
                         sale_non_cash_money = Convert.ToDouble(reader["non_cash_money"]);
+
+                        txtB_sertificate_money.Text= reader["sertificate_money"].ToString().Replace(",", ".");
+                        txtB_non_cash_money.Text = reader["non_cash_money"].ToString().Replace(",", ".");
+                        txtB_cash_money.Text= reader["cash_money"].ToString().Replace(",", ".");
 
                     }
 

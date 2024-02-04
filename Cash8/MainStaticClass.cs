@@ -83,7 +83,7 @@ namespace Cash8
         private static int system_taxation = 0;
         private static DateTime last_send_last_successful_sending;
         private static DateTime last_write_check;
-        private static DateTime min_date_work = new DateTime(2022, 12, 31);
+        private static DateTime min_date_work = new DateTime(2023, 09, 01);
         private static bool use_old_processiing_actions = true;
         private static int work_schema = 0;
         private static int version_fn = 0;
@@ -643,6 +643,10 @@ namespace Cash8
                     }
                 }
                 return version2_marking;
+            }
+            set
+            {
+                version2_marking = 1;
             }
         }
         public static int StaticGuidInPrint
@@ -1349,12 +1353,12 @@ namespace Cash8
                 object result_query = command.ExecuteScalar();
                 if (result_query.ToString() != "")
                 {
-                    query = "DELETE FROM checks_header where document_number<=" + Convert.ToInt64(result_query).ToString()+ " AND is_sent=1";
+                    query = "DELETE FROM checks_header where document_number<" + Convert.ToInt64(result_query).ToString()+ " AND is_sent=1";
                     command = new NpgsqlCommand(query, conn);
                     command.ExecuteNonQuery();
                     //query = "DELETE FROM checks_table LEFT JOIN checks_header ON checks_table.document_number = checks_header.document_number  where document_number<=" + Convert.ToInt64(result_query).ToString()+ " AND is_sent = 1";
                     //query = "DELETE FROM checks_table ct  USING checks_header ch Where ct.document_number = ch.document_number  AND ct.document_number <=" + Convert.ToInt64(result_query).ToString() + " AND ch.is_sent = 1";
-                    query = "DELETE FROM checks_table Where document_number <=" + Convert.ToInt64(result_query).ToString();
+                    query = "DELETE FROM checks_table Where document_number <" + Convert.ToInt64(result_query).ToString();
                     command = new NpgsqlCommand(query, conn);
                     command.ExecuteNonQuery();
                 }
@@ -2112,7 +2116,10 @@ namespace Cash8
         {
             fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_MODEL, AtolConstants.LIBFPTR_MODEL_ATOL_AUTO.ToString());
             fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_PORT, AtolConstants.LIBFPTR_PORT_COM.ToString());
+            //fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_PORT, AtolConstants.LIBFPTR_PORT_TCPIP.ToString());
             fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_COM_FILE, MainStaticClass.FnSreialPort);
+            //fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_IPADDRESS, "10.21.200.46");
+            //fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_IPPORT, "5555");            
             fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_BAUDRATE, AtolConstants.LIBFPTR_PORT_BR_115200.ToString());
             fptr.applySingleSettings();
         }
@@ -2243,6 +2250,9 @@ namespace Cash8
             uint deviceFfdVersion = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_DEVICE_FFD_VERSION);
             uint fnFfdVersion = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_FN_FFD_VERSION);
 
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_FN_DATA_TYPE, AtolConstants.LIBFPTR_FNDT_REG_INFO);
+            fptr.fnQueryData();
+
             string organizationAddress = fptr.getParamString(1009);
             string organizationVATIN = fptr.getParamString(1018);
             string organizationName = fptr.getParamString(1048);
@@ -2251,26 +2261,19 @@ namespace Cash8
             string registrationNumber = fptr.getParamString(1037);
 
             bool marking = fptr.getParamBool(AtolConstants.LIBFPTR_PARAM_TRADE_MARKED_PRODUCTS);
-            //string ofdChannel= fptr.getParamString(AtolConstantsLIBFPTR_SETTING_OFD_CHANNEL).ToString();
-
-
-            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_FN_DATA_TYPE, AtolConstants.LIBFPTR_FNDT_REG_INFO);
-            //fptr.fnQueryData();
-
-            //uint taxationTypes = fptr.getParamInt(1062);
-
+            
             DeviseInfo deviseInfo = new DeviseInfo();
             deviseInfo.configurationVersion = configurationVersion;
             deviseInfo.fnFfdVersion = deviceFfdVersion.ToString();
             deviseInfo.serial = serialNumber;
-            deviseInfo.serial = firmwareVersion;
+            deviseInfo.firmwareVersion = firmwareVersion;
             deviseInfo.ffdVersion = (Convert.ToDouble(ffdVersion)/100).ToString().Replace(",",".");
 
             Organization organization = new Organization();
             organization.name    = organizationName;
             organization.address = organizationAddress;
             organization.vatin   = organizationVATIN;
-            MessageBox.Show(taxationTypes.ToString());
+            //MessageBox.Show(taxationTypes.ToString());
             List<string> tT = new List<string>();
             tT.Add(taxationTypes.ToString());            
             organization.taxationTypes=tT;
@@ -3143,7 +3146,7 @@ namespace Cash8
             {
                 conn = MainStaticClass.NpgsqlConn();
                 conn.Open();
-                string query = "DELETE FROM logs WHERE time_event <= '" + date.ToString("yyyy.MM.dd") + "'";
+                string query = "DELETE FROM logs WHERE time_event < '" + date.ToString("yyyy.MM.dd") + "'";
                 command = new NpgsqlCommand(query, conn);
                 command.ExecuteNonQuery();
                 conn.Close();
