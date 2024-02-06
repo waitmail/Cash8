@@ -1290,7 +1290,8 @@ namespace Cash8
             {
                 System.Net.WebRequest req = System.Net.WebRequest.Create(Url);
                 req.Method = "POST";
-                req.Timeout = 60000;
+                req.Timeout = 600000;
+                //req.Timeout = 0;
                 req.ContentType = "text/xml;charset = windows-1251";
                 //req.ContentType = "text/xml;charset = UTF-8";                
                 byte[] sentData = Encoding.GetEncoding("Windows-1251").GetBytes(Data);

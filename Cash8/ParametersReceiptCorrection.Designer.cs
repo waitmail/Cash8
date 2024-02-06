@@ -98,6 +98,7 @@
             this.txtB_password.PasswordChar = '*';
             this.txtB_password.Size = new System.Drawing.Size(147, 29);
             this.txtB_password.TabIndex = 5;
+            this.txtB_password.TextChanged += new System.EventHandler(this.txtB_password_TextChanged);
             // 
             // btn_enable
             // 
@@ -118,6 +119,7 @@
             this.label3.Size = new System.Drawing.Size(157, 24);
             this.label3.TabIndex = 7;
             this.label3.Text = "Введите пароль";
+            this.label3.Click += new System.EventHandler(this.label3_Click);
             // 
             // ParametersReceiptCorrection
             // 

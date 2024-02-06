@@ -61,7 +61,7 @@ namespace Cash8
             DataColumn modified = new DataColumn();
             modified.DataType = typeof(bool);
             modified.ColumnName = "modified"; //listView1.Columns.Add("Код", 100, HorizontalAlignment.Left);                       
-            modified.ReadOnly = true;
+            //modified.ReadOnly = true;
             dt.Columns.Add(modified);           
 
         }
@@ -74,6 +74,7 @@ namespace Cash8
         public void loaddocuments()
         {
             //listView1.Items.Clear();
+            dt.Rows.Clear();
             NpgsqlConnection conn = null;
             try
             {
@@ -93,7 +94,7 @@ namespace Cash8
                     "checks_header.check_type,checks_header.document_number,checks_header.its_print_p  " +
                     " FROM checks_header left join clients ON checks_header.client=clients.code " +
                     " WHERE checks_header.date_time_write BETWEEN '" + dateTimePicker1.Value.ToString("yyy-MM-dd") + " 00:00:00" + "' and '" + dateTimePicker1.Value.AddDays(1).ToString("yyy-MM-dd") + " 00:00:00" 
-                    + "' AND its_deleted=0 order by checks_header.date_time_write  ";
+                    + "' AND its_deleted=0 AND check_type = 0 order by checks_header.date_time_write  ";
                 //if (checkBox_show_3_last_checks.CheckState == CheckState.Checked)
                 //{
                 //    myQuery += " desc limit 3 ";
@@ -190,7 +191,26 @@ namespace Cash8
                 if (Convert.ToBoolean(row["correction"]))
                 {
                     create_check(row["document_number"].ToString());
+                    row["correction"] = false;
+                    row["modified"] = true;
                 }
+            }
+        }
+
+        private void btn_enable_Click(object sender, EventArgs e)
+        {
+            if (txtB_password.Text.Trim() == "123698745")
+            {
+                btn_print.Enabled       = true;
+                txtB_tax_order.Enabled  = true;
+                dataGridView1.Enabled   = true;
+                dateTimePicker1.Enabled = true;
+                btn_fill_checks.Enabled = true;
+            }
+            else
+            {
+                MessageBox.Show("Вы ввели неправильный пароль ", "Ошибка при вводе пароля");
+                txtB_password.Text = "";
             }
         }
     }

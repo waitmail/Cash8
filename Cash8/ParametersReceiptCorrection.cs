@@ -52,5 +52,15 @@ namespace Cash8
                 txtB_password.Text = "";
             }
         }
+
+        private void txtB_password_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

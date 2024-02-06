@@ -514,7 +514,7 @@ namespace Cash8
             try
             {
                 conn.Open();
-                string query = "SELECT num_doc, num_cash, date_time_start, date_time_action, tovar, quantity, type_of_operation FROM deleted_items;";
+                string query = "SELECT num_doc, num_cash, date_time_start, date_time_action, tovar, quantity, type_of_operation,guid FROM deleted_items;";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
@@ -527,7 +527,7 @@ namespace Cash8
                     deletedItem.tovar = reader["tovar"].ToString();
                     deletedItem.quantity = reader["quantity"].ToString();
                     deletedItem.type_of_operation = reader["type_of_operation"].ToString();
-                    //deletedItem.guid = 
+                    deletedItem.guid = reader["guid"].ToString();
                     deletedItems.ListDeletedItem.Add(deletedItem);
                 }
                 reader.Close();
@@ -1833,7 +1833,10 @@ namespace Cash8
 
         private void КорректировочныеЧекиToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            CorrectionChecks checks = new CorrectionChecks();
+            CorrectionChecks checks = new CorrectionChecks();            
+            //checks.FormBorderStyle = FormBorderStyle.None;
+            checks.WindowState = FormWindowState.Maximized;
+            checks.MdiParent = MainStaticClass.Main;
             checks.Show();
         }
 
