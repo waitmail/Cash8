@@ -159,6 +159,7 @@ namespace Cash8
         {
             Cash_check cash_Check = new Cash_check();
             cash_Check.Cash_check_Load(null, null);
+            cash_Check.external_fix = true;
             //cash_Check.check_type.Items.Add("Продажа");
             //cash_Check.check_type.Items.Add("Возврат");
             //cash_Check.check_type.Items.Add("КоррекцияПродажи");            
@@ -211,6 +212,22 @@ namespace Cash8
             {
                 MessageBox.Show("Вы ввели неправильный пароль ", "Ошибка при вводе пароля");
                 txtB_password.Text = "";
+            }
+        }
+
+        private void btn_check_all_Click(object sender, EventArgs e)
+        {
+            foreach (DataRow row in dt.Rows)
+            {
+                row["correction"] = true;
+            }
+        }
+
+        private void btn_uncheck_all_Click(object sender, EventArgs e)
+        {
+            foreach (DataRow row in dt.Rows)
+            {
+                row["correction"] = false;
             }
         }
     }

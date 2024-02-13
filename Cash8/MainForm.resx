@@ -170,13 +170,13 @@
     <value>Справочники</value>
   </data>
   <data name="кассовыеЧекиToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>180, 22</value>
+    <value>156, 22</value>
   </data>
   <data name="кассовыеЧекиToolStripMenuItem.Text" xml:space="preserve">
     <value>Кассовые чеки</value>
   </data>
   <data name="акцииToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>180, 22</value>
+    <value>156, 22</value>
   </data>
   <data name="акцииToolStripMenuItem.Text" xml:space="preserve">
     <value>Акции</value>

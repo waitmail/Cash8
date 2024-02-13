@@ -38,6 +38,8 @@
             this.label3 = new System.Windows.Forms.Label();
             this.btn_enable = new System.Windows.Forms.Button();
             this.txtB_password = new System.Windows.Forms.TextBox();
+            this.btn_check_all = new System.Windows.Forms.Button();
+            this.btn_uncheck_all = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -50,7 +52,6 @@
             this.txtB_tax_order.Name = "txtB_tax_order";
             this.txtB_tax_order.Size = new System.Drawing.Size(457, 29);
             this.txtB_tax_order.TabIndex = 0;
-            this.txtB_tax_order.Text = "№14 / 001 от 24.01.2024";
             // 
             // label1
             // 
@@ -149,11 +150,33 @@
             this.txtB_password.Size = new System.Drawing.Size(434, 29);
             this.txtB_password.TabIndex = 8;
             // 
+            // btn_check_all
+            // 
+            this.btn_check_all.Location = new System.Drawing.Point(431, 113);
+            this.btn_check_all.Name = "btn_check_all";
+            this.btn_check_all.Size = new System.Drawing.Size(114, 23);
+            this.btn_check_all.TabIndex = 11;
+            this.btn_check_all.Text = "Отметить все";
+            this.btn_check_all.UseVisualStyleBackColor = true;
+            this.btn_check_all.Click += new System.EventHandler(this.btn_check_all_Click);
+            // 
+            // btn_uncheck_all
+            // 
+            this.btn_uncheck_all.Location = new System.Drawing.Point(552, 112);
+            this.btn_uncheck_all.Name = "btn_uncheck_all";
+            this.btn_uncheck_all.Size = new System.Drawing.Size(159, 23);
+            this.btn_uncheck_all.TabIndex = 12;
+            this.btn_uncheck_all.Text = "Убрать все отметки";
+            this.btn_uncheck_all.UseVisualStyleBackColor = true;
+            this.btn_uncheck_all.Click += new System.EventHandler(this.btn_uncheck_all_Click);
+            // 
             // CorrectionChecks
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 501);
+            this.Controls.Add(this.btn_uncheck_all);
+            this.Controls.Add(this.btn_check_all);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.btn_enable);
             this.Controls.Add(this.txtB_password);
@@ -184,5 +207,7 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button btn_enable;
         private System.Windows.Forms.TextBox txtB_password;
+        private System.Windows.Forms.Button btn_check_all;
+        private System.Windows.Forms.Button btn_uncheck_all;
     }
 }

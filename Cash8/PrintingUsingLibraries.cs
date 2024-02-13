@@ -1031,7 +1031,9 @@ namespace Cash8
             {
                 fptr.getMarkingCodeValidationStatus();
                 if (fptr.getParamBool(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_VALIDATION_READY))
+                {
                     break;
+                }
             }
             uint validationResult = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_RESULT);
 
@@ -1053,7 +1055,6 @@ namespace Cash8
                 // Подтверждаем реализацию товара с указанным КМ
                 fptr.acceptMarkingCode();
             }
-
             
             //fptr.close();
             return result;

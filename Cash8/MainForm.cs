@@ -1940,12 +1940,13 @@ namespace Cash8
             MessageBox.Show(DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss"));
         }
 
+     
         //private void загрузкаДанныхПоИнтернетуToolStripMenuItem_Click(object sender, EventArgs e)
         //{
         //    UnloadDataToTrassir udtr = new UnloadDataToTrassir();
         //    udtr.ShowDialog();
         //}
-        
+
         //private void InitializeComponent()
         //{
         //    System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));

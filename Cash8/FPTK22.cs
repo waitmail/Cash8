@@ -8,6 +8,8 @@ using System.IO;
 using System.Text;
 using System.Xml.Serialization;
 using System.Collections.Generic;
+using Atol.Drivers10.Fptr;
+using AtolConstants = Atol.Drivers10.Fptr.Constants;
 
 
 
@@ -571,19 +573,38 @@ namespace Cash8
             {
                 if (recharge_note != "")
                 {
-                    FiscallPrintJason2.NonFiscallDocument nonFiscallDocument = new FiscallPrintJason2.NonFiscallDocument();
-                    nonFiscallDocument.type = "nonFiscal";
-                    nonFiscallDocument.printFooter = false;
+                    if (MainStaticClass.PrintingUsingLibraries == 0)
+                    {
+                        FiscallPrintJason2.NonFiscallDocument nonFiscallDocument = new FiscallPrintJason2.NonFiscallDocument();
+                        nonFiscallDocument.type = "nonFiscal";
+                        nonFiscallDocument.printFooter = false;
 
-                    FiscallPrintJason2.ItemNonFiscal itemNonFiscal = new FiscallPrintJason2.ItemNonFiscal();
-                    nonFiscallDocument.items = new List<FiscallPrintJason2.ItemNonFiscal>();
+                        FiscallPrintJason2.ItemNonFiscal itemNonFiscal = new FiscallPrintJason2.ItemNonFiscal();
+                        nonFiscallDocument.items = new List<FiscallPrintJason2.ItemNonFiscal>();
 
-                    itemNonFiscal.type = "text";
-                    itemNonFiscal.text = recharge_note.Replace("0xDF^^", "");
-                    itemNonFiscal.alignment = "center";
-                    nonFiscallDocument.items.Add(itemNonFiscal);
-                    FiscallPrintJason2.print_not_fiscal_document(nonFiscallDocument);
-                    recharge_note = "";
+                        itemNonFiscal.type = "text";
+                        itemNonFiscal.text = recharge_note.Replace("0xDF^^", "");
+                        itemNonFiscal.alignment = "center";
+                        nonFiscallDocument.items.Add(itemNonFiscal);
+                        FiscallPrintJason2.print_not_fiscal_document(nonFiscallDocument);
+                        recharge_note = "";
+                    }
+                    else
+                    {
+                        IFptr fptr = MainStaticClass.FPTR;
+                        if (!fptr.isOpened())
+                        {
+                            fptr.open();
+                        }
+                        fptr.beginNonfiscalDocument();
+                        string s = recharge_note.Replace("0xDF^^", "");
+                        fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
+                        fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, s);
+                        fptr.printText();
+                        fptr.endNonfiscalDocument();
+                        recharge_note = "";
+
+                    }
                 }
             }
             else
@@ -603,20 +624,38 @@ namespace Cash8
             if (complete)//ответ от терминала не удовлетворительный
             {
                 if (recharge_note != "")
-                {
-                    FiscallPrintJason2.NonFiscallDocument nonFiscallDocument = new FiscallPrintJason2.NonFiscallDocument();
-                    nonFiscallDocument.type = "nonFiscal";
-                    nonFiscallDocument.printFooter = false;
+                {if (MainStaticClass.PrintingUsingLibraries == 0)
+                    {
+                        FiscallPrintJason2.NonFiscallDocument nonFiscallDocument = new FiscallPrintJason2.NonFiscallDocument();
+                        nonFiscallDocument.type = "nonFiscal";
+                        nonFiscallDocument.printFooter = false;
 
-                    FiscallPrintJason2.ItemNonFiscal itemNonFiscal = new FiscallPrintJason2.ItemNonFiscal();
-                    nonFiscallDocument.items = new List<FiscallPrintJason2.ItemNonFiscal>();
+                        FiscallPrintJason2.ItemNonFiscal itemNonFiscal = new FiscallPrintJason2.ItemNonFiscal();
+                        nonFiscallDocument.items = new List<FiscallPrintJason2.ItemNonFiscal>();
 
-                    itemNonFiscal.type = "text";
-                    itemNonFiscal.text = recharge_note.Replace("0xDF^^", "");
-                    itemNonFiscal.alignment = "center";
-                    nonFiscallDocument.items.Add(itemNonFiscal);
-                    FiscallPrintJason2.print_not_fiscal_document(nonFiscallDocument);
-                    recharge_note = "";
+                        itemNonFiscal.type = "text";
+                        itemNonFiscal.text = recharge_note.Replace("0xDF^^", "");
+                        itemNonFiscal.alignment = "center";
+                        nonFiscallDocument.items.Add(itemNonFiscal);
+                        FiscallPrintJason2.print_not_fiscal_document(nonFiscallDocument);
+                        recharge_note = "";
+                    }
+                    else
+                    {
+                        IFptr fptr = MainStaticClass.FPTR;
+                        if (!fptr.isOpened())
+                        {
+                            fptr.open();
+                        }
+                        fptr.beginNonfiscalDocument();
+                        string s = recharge_note.Replace("0xDF^^", "");
+                        fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
+                        fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, s);
+                        fptr.printText();
+                        fptr.endNonfiscalDocument();
+                        recharge_note = "";
+
+                    }
                 }
             }
             else
@@ -638,23 +677,41 @@ namespace Cash8
             {
                 if (recharge_note != "")
                 {
-                    FiscallPrintJason2.NonFiscallDocument nonFiscallDocument = new FiscallPrintJason2.NonFiscallDocument();
-                    nonFiscallDocument.type = "nonFiscal";
-                    nonFiscallDocument.printFooter = false;
+                    if (MainStaticClass.PrintingUsingLibraries == 0)
+                    {
+                        FiscallPrintJason2.NonFiscallDocument nonFiscallDocument = new FiscallPrintJason2.NonFiscallDocument();
+                        nonFiscallDocument.type = "nonFiscal";
+                        nonFiscallDocument.printFooter = false;
 
-                    FiscallPrintJason2.ItemNonFiscal itemNonFiscal = new FiscallPrintJason2.ItemNonFiscal();
-                    nonFiscallDocument.items = new List<FiscallPrintJason2.ItemNonFiscal>();
+                        FiscallPrintJason2.ItemNonFiscal itemNonFiscal = new FiscallPrintJason2.ItemNonFiscal();
+                        nonFiscallDocument.items = new List<FiscallPrintJason2.ItemNonFiscal>();
 
-                    itemNonFiscal.type = "text";
-                    itemNonFiscal.text = recharge_note.Replace("0xDF^^", "");
-                    itemNonFiscal.alignment = "center";
-                    nonFiscallDocument.items.Add(itemNonFiscal);
-                    FiscallPrintJason2.print_not_fiscal_document(nonFiscallDocument);
-                    recharge_note = "";
+                        itemNonFiscal.type = "text";
+                        itemNonFiscal.text = recharge_note.Replace("0xDF^^", "");
+                        itemNonFiscal.alignment = "center";
+                        nonFiscallDocument.items.Add(itemNonFiscal);
+                        FiscallPrintJason2.print_not_fiscal_document(nonFiscallDocument);
+                        recharge_note = "";
+                    }
+                    else
+                    {
+                        IFptr fptr = MainStaticClass.FPTR;
+                        if (!fptr.isOpened())
+                        {
+                            fptr.open();
+                        }
+                        fptr.beginNonfiscalDocument();
+                        string s = recharge_note.Replace("0xDF^^", "");
+                        fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
+                        fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, s);
+                        fptr.printText();
+                        fptr.endNonfiscalDocument();
+                        recharge_note = "";
+                    }
                 }
             }
             else
-            {
+            {                
 
             }
         }

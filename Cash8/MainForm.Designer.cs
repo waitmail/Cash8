@@ -196,6 +196,7 @@
             // 
             this.корректировочныеЧекиToolStripMenuItem.Name = "корректировочныеЧекиToolStripMenuItem";
             resources.ApplyResources(this.корректировочныеЧекиToolStripMenuItem, "корректировочныеЧекиToolStripMenuItem");
+            //this.корректировочныеЧекиToolStripMenuItem.Click += new System.EventHandler(this.корректировочныеЧекиToolStripMenuItem_Click_1);
             // 
             // выгрузкаДанныхПоБонусамToolStripMenuItem
             // 
