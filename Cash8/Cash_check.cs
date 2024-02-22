@@ -90,7 +90,7 @@ namespace Cash8
         public DateTime sale_date;
         public int print_to_button = 0;
         public string recharge_note="";//здесь будет присвоена иформация об оплате по карте когда терминал без печтчающего устройства.
-        private string guid = "";
+        public string guid = "";
         private string guid1 = "";
         public string tax_order = "";
         public bool external_fix = false;//Истина если корректировочный чек делается из вне
@@ -128,10 +128,10 @@ namespace Cash8
             {
                 return;
             }
-            if (MainStaticClass.OneMonitorsConnected == 1)
-            {
-                return;
-            }
+            //if (MainStaticClass.OneMonitorsConnected == 1)
+            //{
+            //    return;
+            //}
             try
             {
                 //if ((MainStaticClass.UseOldProcessiingActions) || (!itsnew))
@@ -160,6 +160,9 @@ namespace Cash8
                     customerScreen.show_price = 1;
                     customerScreen.ListCheckPositions = new List<CheckPosition>();
                     DataTable dataTable = to_define_the_action_dt(false);
+                    this.txtB_total_sum.Text = Convert.ToDouble(dataTable.Compute("Sum(sum_at_discount)", null)).ToString("F2");
+                    
+
                     foreach (DataRow row in dataTable.Rows)
                     {
                         CheckPosition checkPosition = new CheckPosition();
@@ -225,7 +228,7 @@ namespace Cash8
 
         private void Cash_check_Paint(object sender, PaintEventArgs e)
         {
-            txtB_total_sum.Text = "Сумма: "+calculation_of_the_sum_of_the_document().ToString("F2");
+            //txtB_total_sum.Text = "Сумма: "+calculation_of_the_sum_of_the_document().ToString("F2");           
         }
 
         private void insert_incident_record(string tovar, string quantity, string type_of_operation)
@@ -3030,9 +3033,9 @@ namespace Cash8
                     }
                     else
                     {
-                        if (check_marker_code(lvi.SubItems[1].Tag.ToString()) > 0)
+                        if (check_marker_code(lvi.Tag.ToString().Trim()) > 0)
                         {
-                            MessageBox.Show("У этого товара невозможно увеличить количество в строке","Ошибки при считывании маркированного товара");
+                            MessageBox.Show("У этого товара невозможно увеличить количество в строке", "Ошибки при считывании маркированного товара");
                             return;
                         }
                         lvi.SubItems[3].Text = (Convert.ToInt64(lvi.SubItems[3].Text) + 1).ToString();
@@ -3046,7 +3049,10 @@ namespace Cash8
                     calculation_of_the_sum_of_the_document();
                     //listView1.Select();
                     //listView1.Items[this.listView1.Items.Count - 1].Selected = true;
-
+                    var items = listView1.Items;
+                    var last = items[items.Count - 1];
+                    last.EnsureVisible();
+                    inputbarcode.Focus();
                     //this.last_tovar.Text = listView1.Items[this.listView1.Items.Count - 1].SubItems[1].Text;
                     //this.last_cena.Text = listView1.Items[this.listView1.Items.Count - 1].SubItems[3].Text;
                 }
@@ -3951,7 +3957,7 @@ namespace Cash8
             {
                 btn_del_position.Visible = false;
                 btn_cancel_check.Visible = false;
-                txtB_total_sum.Visible = false;
+                //txtB_total_sum.Visible = false;
             }
             else
             {
@@ -9521,9 +9527,12 @@ namespace Cash8
                 this.panel1.Location = new System.Drawing.Point(this.tabControl1.Location.X +
                     this.listView1.Bounds.Location.X +
                     this.listView1.Columns[0].Width +
-                    this.listView1.Columns[1].Width,
+                    this.listView1.Columns[1].Width+
+                    this.listView1.Columns[2].Width+
+                    this.listView1.Columns[3].Width,
                     //20+                   
                     this.listView1.Bounds.Location.Y + this.listView1.SelectedIndices[0] * this.listView1.SelectedItems[0].Bounds.Height);
+                    //this.listView1.Bounds.Location.Y + this.listView1.SelectedItems[0].Bounds.Height);//пока убрал
 
                 this.enter_quantity.Text = this.listView1.SelectedItems[0].SubItems[3].Text;
                 this.panel1.BringToFront();
@@ -13645,7 +13654,10 @@ namespace Cash8
             {
                 this.Close();
             }
+            this.Focus();            
+            this.Update();
             inputbarcode.Focus();
+            SendKeys.Send(Keys.Enter.ToString());
             pay_form = new Pay();
 
 

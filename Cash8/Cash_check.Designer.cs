@@ -37,6 +37,14 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.enter_quantity = new System.Windows.Forms.TextBox();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.panel_return = new System.Windows.Forms.Panel();
+            this.return_enter = new System.Windows.Forms.Button();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.return_kop = new System.Windows.Forms.TextBox();
+            this.return_rouble = new System.Windows.Forms.TextBox();
+            this.return_quantity = new System.Windows.Forms.TextBox();
             this.listView2 = new System.Windows.Forms.ListView();
             this.select_tovar = new System.Windows.Forms.TextBox();
             this.pay = new System.Windows.Forms.Button();
@@ -47,14 +55,6 @@
             this.status_com_scaner = new System.Windows.Forms.Label();
             this.check_type = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.panel_return = new System.Windows.Forms.Panel();
-            this.return_enter = new System.Windows.Forms.Button();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.return_kop = new System.Windows.Forms.TextBox();
-            this.return_rouble = new System.Windows.Forms.TextBox();
-            this.return_quantity = new System.Windows.Forms.TextBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.listView1 = new System.Windows.Forms.ListView();
@@ -105,7 +105,7 @@
             this.comment.Location = new System.Drawing.Point(81, 567);
             this.comment.MaxLength = 50;
             this.comment.Name = "comment";
-            this.comment.Size = new System.Drawing.Size(165, 20);
+            this.comment.Size = new System.Drawing.Size(192, 20);
             this.comment.TabIndex = 3;
             this.comment.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -198,6 +198,86 @@
             this.panel2.Size = new System.Drawing.Size(745, 243);
             this.panel2.TabIndex = 23;
             this.panel2.Visible = false;
+            // 
+            // panel_return
+            // 
+            this.panel_return.Controls.Add(this.return_enter);
+            this.panel_return.Controls.Add(this.label7);
+            this.panel_return.Controls.Add(this.label6);
+            this.panel_return.Controls.Add(this.label5);
+            this.panel_return.Controls.Add(this.return_kop);
+            this.panel_return.Controls.Add(this.return_rouble);
+            this.panel_return.Controls.Add(this.return_quantity);
+            this.panel_return.Location = new System.Drawing.Point(201, 83);
+            this.panel_return.Name = "panel_return";
+            this.panel_return.Size = new System.Drawing.Size(432, 88);
+            this.panel_return.TabIndex = 42;
+            this.panel_return.Visible = false;
+            // 
+            // return_enter
+            // 
+            this.return_enter.Location = new System.Drawing.Point(170, 59);
+            this.return_enter.Name = "return_enter";
+            this.return_enter.Size = new System.Drawing.Size(89, 23);
+            this.return_enter.TabIndex = 6;
+            this.return_enter.Text = "Ввод";
+            this.return_enter.UseVisualStyleBackColor = true;
+            this.return_enter.Click += new System.EventHandler(this.return_enter_Click);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(21, 31);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(66, 13);
+            this.label7.TabIndex = 5;
+            this.label7.Text = "Количество";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(198, 31);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(33, 13);
+            this.label6.TabIndex = 4;
+            this.label6.Text = "Цена";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label5.Location = new System.Drawing.Point(335, 24);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(15, 24);
+            this.label5.TabIndex = 3;
+            this.label5.Text = ".";
+            // 
+            // return_kop
+            // 
+            this.return_kop.Enabled = false;
+            this.return_kop.Location = new System.Drawing.Point(345, 27);
+            this.return_kop.MaxLength = 2;
+            this.return_kop.Name = "return_kop";
+            this.return_kop.Size = new System.Drawing.Size(57, 20);
+            this.return_kop.TabIndex = 2;
+            this.return_kop.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // return_rouble
+            // 
+            this.return_rouble.Enabled = false;
+            this.return_rouble.Location = new System.Drawing.Point(237, 27);
+            this.return_rouble.MaxLength = 12;
+            this.return_rouble.Name = "return_rouble";
+            this.return_rouble.Size = new System.Drawing.Size(100, 20);
+            this.return_rouble.TabIndex = 1;
+            // 
+            // return_quantity
+            // 
+            this.return_quantity.Location = new System.Drawing.Point(93, 29);
+            this.return_quantity.MaxLength = 10;
+            this.return_quantity.Name = "return_quantity";
+            this.return_quantity.Size = new System.Drawing.Size(100, 20);
+            this.return_quantity.TabIndex = 0;
             // 
             // listView2
             // 
@@ -304,86 +384,6 @@
             this.label4.Size = new System.Drawing.Size(52, 13);
             this.label4.TabIndex = 40;
             this.label4.Text = "Тип чека";
-            // 
-            // panel_return
-            // 
-            this.panel_return.Controls.Add(this.return_enter);
-            this.panel_return.Controls.Add(this.label7);
-            this.panel_return.Controls.Add(this.label6);
-            this.panel_return.Controls.Add(this.label5);
-            this.panel_return.Controls.Add(this.return_kop);
-            this.panel_return.Controls.Add(this.return_rouble);
-            this.panel_return.Controls.Add(this.return_quantity);
-            this.panel_return.Location = new System.Drawing.Point(201, 83);
-            this.panel_return.Name = "panel_return";
-            this.panel_return.Size = new System.Drawing.Size(432, 88);
-            this.panel_return.TabIndex = 42;
-            this.panel_return.Visible = false;
-            // 
-            // return_enter
-            // 
-            this.return_enter.Location = new System.Drawing.Point(170, 59);
-            this.return_enter.Name = "return_enter";
-            this.return_enter.Size = new System.Drawing.Size(89, 23);
-            this.return_enter.TabIndex = 6;
-            this.return_enter.Text = "Ввод";
-            this.return_enter.UseVisualStyleBackColor = true;
-            this.return_enter.Click += new System.EventHandler(this.return_enter_Click);
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(21, 31);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(66, 13);
-            this.label7.TabIndex = 5;
-            this.label7.Text = "Количество";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(198, 31);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(33, 13);
-            this.label6.TabIndex = 4;
-            this.label6.Text = "Цена";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label5.Location = new System.Drawing.Point(335, 24);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(15, 24);
-            this.label5.TabIndex = 3;
-            this.label5.Text = ".";
-            // 
-            // return_kop
-            // 
-            this.return_kop.Enabled = false;
-            this.return_kop.Location = new System.Drawing.Point(345, 27);
-            this.return_kop.MaxLength = 2;
-            this.return_kop.Name = "return_kop";
-            this.return_kop.Size = new System.Drawing.Size(57, 20);
-            this.return_kop.TabIndex = 2;
-            this.return_kop.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // return_rouble
-            // 
-            this.return_rouble.Enabled = false;
-            this.return_rouble.Location = new System.Drawing.Point(237, 27);
-            this.return_rouble.MaxLength = 12;
-            this.return_rouble.Name = "return_rouble";
-            this.return_rouble.Size = new System.Drawing.Size(100, 20);
-            this.return_rouble.TabIndex = 1;
-            // 
-            // return_quantity
-            // 
-            this.return_quantity.Location = new System.Drawing.Point(93, 29);
-            this.return_quantity.MaxLength = 10;
-            this.return_quantity.Name = "return_quantity";
-            this.return_quantity.Size = new System.Drawing.Size(100, 20);
-            this.return_quantity.TabIndex = 0;
             // 
             // tabControl1
             // 
@@ -595,7 +595,7 @@
             this.checkBox_to_print_repeatedly.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.checkBox_to_print_repeatedly.AutoSize = true;
             this.checkBox_to_print_repeatedly.Enabled = false;
-            this.checkBox_to_print_repeatedly.Location = new System.Drawing.Point(261, 544);
+            this.checkBox_to_print_repeatedly.Location = new System.Drawing.Point(278, 544);
             this.checkBox_to_print_repeatedly.Name = "checkBox_to_print_repeatedly";
             this.checkBox_to_print_repeatedly.Size = new System.Drawing.Size(135, 17);
             this.checkBox_to_print_repeatedly.TabIndex = 64;
@@ -706,7 +706,7 @@
             this.checkBox_to_print_repeatedly_p.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.checkBox_to_print_repeatedly_p.AutoSize = true;
             this.checkBox_to_print_repeatedly_p.Enabled = false;
-            this.checkBox_to_print_repeatedly_p.Location = new System.Drawing.Point(261, 566);
+            this.checkBox_to_print_repeatedly_p.Location = new System.Drawing.Point(278, 566);
             this.checkBox_to_print_repeatedly_p.Name = "checkBox_to_print_repeatedly_p";
             this.checkBox_to_print_repeatedly_p.Size = new System.Drawing.Size(149, 17);
             this.checkBox_to_print_repeatedly_p.TabIndex = 73;
@@ -747,11 +747,10 @@
             this.txtB_total_sum.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.txtB_total_sum.ForeColor = System.Drawing.Color.Blue;
             this.txtB_total_sum.Location = new System.Drawing.Point(436, 542);
-            this.txtB_total_sum.Multiline = true;
             this.txtB_total_sum.Name = "txtB_total_sum";
-            this.txtB_total_sum.Size = new System.Drawing.Size(197, 46);
+            this.txtB_total_sum.Size = new System.Drawing.Size(197, 31);
             this.txtB_total_sum.TabIndex = 76;
-            this.txtB_total_sum.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtB_total_sum.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // txtB_num_doc
             // 

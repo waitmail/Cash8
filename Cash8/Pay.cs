@@ -24,9 +24,9 @@ namespace Cash8
         //private string reference_number = "";
         private string str_command_sale = @"<?xml version=""1.0"" encoding=""UTF-8""?><request><field id = ""00"">sum</field><field id=""04"">643</field><field id = ""25"" >1</field><field id=""27"">id_terminal</field></request>";
         string str_command_return_sale = @"<?xml version=""1.0"" encoding=""UTF-8""?><request><field id = ""00"">sum</field><field id=""04"">643</field><field id=""13"">sale_code_authorization_terminal</field><field id=""14"">number_reference</field><field id = ""25"" >29</field><field id=""27"">id_terminal</field></request>";
-        string str_command_cancel_sale = @"<?xml version=""1.0"" encoding=""UTF-8""?><request><field id = ""00"">sum</field><field id=""01"">sale_non_cash_money</field><field id=""04"">643</field><field id = ""25"">4</field><field id=""27"">id_terminal</field><field id=""13"">sale_code_authorization_terminal</field><field id=""14"">number_reference</field></request>";        
+        string str_command_cancel_sale = @"<?xml version=""1.0"" encoding=""UTF-8""?><request><field id = ""00"">sum</field><field id=""01"">sale_non_cash_money</field><field id=""04"">643</field><field id = ""25"">4</field><field id=""27"">id_terminal</field><field id=""13"">sale_code_authorization_terminal</field><field id=""14"">number_reference</field></request>";
         //string str_command_cancel_sale = @"<?xml version=""1.0"" encoding=""UTF-8""?><request><field id = ""00"" >sum</field><field id=""04"">643</field><field id=""14"">number_reference</field><field id = ""25"" >4</field><field id=""27"">id_terminal</field></request>";
-
+        string str_command_sale_sbp = @"<?xml version=""1.0"" encoding=""UTF-8""?><request><field id = ""00"">sum</field><field id=""04"">643</field><field id=""14"">guid</field><field id = ""25"" >1</field><field id=""27"">id_terminal</field><field id=""53"">""115""</field></request>";
         public Cash_check cc = null;
           
 
@@ -884,6 +884,10 @@ namespace Cash8
                     }
                 }
             }
+            if (MainStaticClass.Nick_Shop == "A01")
+            {
+                checkBox_payment_by_sbp.Visible = true;
+            }
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -1136,24 +1140,51 @@ namespace Cash8
                 //параметры подключение терминала заполнены и сумма по карте к оплате заполнена
                 if ((MainStaticClass.IpAddressAcquiringTerminal.Trim() != "") && (MainStaticClass.IdAcquirerTerminal.Trim() != "") && (Convert.ToDouble(non_cash_sum.Text) > 0))
                 {
-                    string url = "http://" + MainStaticClass.IpAddressAcquiringTerminal;
-                    string money = ((Convert.ToDouble(this.non_cash_sum.Text.Trim()) + Convert.ToDouble(non_cash_sum_kop.Text) / 100) * 100).ToString();
-                    string _str_command_sale_ = str_command_sale.Replace("sum", money);
-                    _str_command_sale_ = _str_command_sale_.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
-                    //MessageBox.Show(_str_command_sale_);
-                    AnswerTerminal answerTerminal = new AnswerTerminal();
-                    send_command_acquiring_terminal(url, _str_command_sale_, ref complete, ref answerTerminal);
-                    if (!complete)//ответ от терминала не удовлетворительный
+                    if (checkBox_payment_by_sbp.CheckState != CheckState.Checked)
                     {
-                        calculate();
-                        cc.recharge_note = "";
-                        MessageBox.Show(" Неудачная попытка получения оплаты ");
-                        return;
+                        string url = "http://" + MainStaticClass.IpAddressAcquiringTerminal;
+                        string money = ((Convert.ToDouble(this.non_cash_sum.Text.Trim()) + Convert.ToDouble(non_cash_sum_kop.Text) / 100) * 100).ToString();
+                        string _str_command_sale_ = str_command_sale.Replace("sum", money);
+                        _str_command_sale_ = _str_command_sale_.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
+                        //MessageBox.Show(_str_command_sale_);
+                        AnswerTerminal answerTerminal = new AnswerTerminal();
+                        send_command_acquiring_terminal(url, _str_command_sale_, ref complete, ref answerTerminal);
+                        if (!complete)//ответ от терминала не удовлетворительный
+                        {
+                            calculate();
+                            cc.recharge_note = "";
+                            MessageBox.Show(" Неудачная попытка получения оплаты ");
+                            return;
+                        }
+                        else
+                        {
+                            cc.code_authorization_terminal = answerTerminal.code_authorization;     //13 поле
+                            cc.id_transaction_terminal = answerTerminal.number_reference;  //14 поле
+                        }
                     }
                     else
                     {
-                        cc.code_authorization_terminal = answerTerminal.code_authorization;     //13 поле
-                        cc.id_transaction_terminal = answerTerminal.number_reference;  //14 поле
+                        string url = "http://" + MainStaticClass.IpAddressAcquiringTerminal;
+                        string money = ((Convert.ToDouble(this.non_cash_sum.Text.Trim()) + Convert.ToDouble(non_cash_sum_kop.Text) / 100) * 100).ToString();
+                        string _str_command_sale_ = str_command_sale_sbp.Replace("sum", money);
+                        _str_command_sale_ = _str_command_sale_.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
+                        _str_command_sale_ = _str_command_sale_.Replace("guid", cc.guid);
+                        ////MessageBox.Show(_str_command_sale_);
+                        AnswerTerminal answerTerminal = new AnswerTerminal();
+                        send_command_acquiring_terminal(url, _str_command_sale_, ref complete, ref answerTerminal);
+                        if (!complete)//ответ от терминала не удовлетворительный, значит операция в обработке необходим дополнительный запрос
+                        {
+                            //calculate();
+                            //cc.recharge_note = "";
+                            //MessageBox.Show(" Неудачная попытка получения оплаты ");
+                            //return;
+                        }
+                        else
+                        {
+                            //cc.code_authorization_terminal = answerTerminal.code_authorization;     //13 поле
+                            //cc.id_transaction_terminal = answerTerminal.number_reference;  //14 поле
+                        }
+
                     }
                 }
                 

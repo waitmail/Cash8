@@ -413,7 +413,7 @@ namespace Cash8
         {
             if (MainStaticClass.PrintingUsingLibraries == 0)
             {
-                txtB_ofd_exchange_status.BackColor = Color.Green;
+                //txtB_ofd_exchange_status.BackColor = Color.Green;
                 Cash8.FiscallPrintJason.RootObject result = MainStaticClass.get_ofd_exchange_status();
                 if (result != null)
                 {
