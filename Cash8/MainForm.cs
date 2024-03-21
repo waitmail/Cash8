@@ -975,12 +975,12 @@ namespace Cash8
                     }
                     bool restart = false; bool error = false;
 
-                    MainStaticClass.check_version_fn(ref restart,ref error);
+                    MainStaticClass.check_version_fn(ref restart, ref error);
                     if (!error)
                     {
                         if (restart)
                         {
-                            MessageBox.Show("У вас неверно была установлена версия ФН, необходим перезапуск программы");                            
+                            MessageBox.Show("У вас неверно была установлена версия ФН, необходим перезапуск программы");
                             this.Close();
                         }
                     }
@@ -992,18 +992,15 @@ namespace Cash8
             }
             this.menuStrip.Items.Clear();
             MainStaticClass.Main.start_interface_switching();
-            //change_schema_2_to_3();
-            //change_clients_for_schema1();   
-            //if (MainStaticClass.PrintingUsingLibraries == 1)
-            //{
-
-            //}
+            
             if (MainStaticClass.GetVersionFn == 2)
             {
                 MainStaticClass.Version2Marking = 1;
             }
-
-           
+            else
+            {
+                MainStaticClass.Version2Marking = 0;
+            }           
         }
 
         /// <summary>

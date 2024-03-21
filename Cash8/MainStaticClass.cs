@@ -764,7 +764,7 @@ namespace Cash8
             }
             set
             {
-                version2_marking = 1;
+                version2_marking = value;
             }
         }
 
@@ -3599,6 +3599,10 @@ namespace Cash8
             NpgsqlCommand command = null;
             try
             {
+                if (description.Length > 200)
+                {
+                    description = description.Substring(0, 200);
+                }
                 conn = MainStaticClass.NpgsqlConn();
                 conn.Open();
                 string query = "INSERT INTO logs(time_event,description,metadata,document_number) VALUES('" + DateTime.Now.ToString("yyy-MM-dd HH:mm:ss") + "','" + description + "','" + metadata + "','" + document_number + "')";

@@ -169,6 +169,7 @@ namespace Cash8
                     customerScreen.show_price = 1;
                     customerScreen.ListCheckPositions = new List<CheckPosition>();
                     DataTable dataTable = to_define_the_action_dt(false);
+                    this.txtB_total_sum.Text = Convert.ToDouble(dataTable.Compute("Sum(sum_at_discount)", (string)null)).ToString("F2");
                     foreach (DataRow row in dataTable.Rows)
                     {
                         CheckPosition checkPosition = new CheckPosition();
@@ -229,13 +230,13 @@ namespace Cash8
             this.checkBox_to_print_repeatedly.CheckStateChanged += new EventHandler(checkBox_to_print_repeatedly_CheckStateChanged);
             txtB_inn.KeyPress += new KeyPressEventHandler(TxtB_inn_KeyPress);
             comment.KeyPress += new KeyPressEventHandler(Comment_KeyPress);
-            this.Paint += Cash_check_Paint;
+            //this.Paint += Cash_check_Paint;
         }
 
-        private void Cash_check_Paint(object sender, PaintEventArgs e)
-        {
-            txtB_total_sum.Text = "Сумма: "+calculation_of_the_sum_of_the_document().ToString("F2");
-        }
+        //private void Cash_check_Paint(object sender, PaintEventArgs e)
+        //{
+        //    txtB_total_sum.Text = "Сумма: "+calculation_of_the_sum_of_the_document().ToString("F2");
+        //}
 
         private void insert_incident_record(string tovar, string quantity, string type_of_operation)
         {
@@ -2452,7 +2453,7 @@ namespace Cash8
          * стандартное добавление товара
          */
         public void find_barcode_or_code_in_tovar(string barcode)
-        {           
+        {
             //Повторная проверка если документ не новый или уже вызвано окно оплаты подбор товара не работает
             if (!itsnew)
             {
@@ -2484,7 +2485,7 @@ namespace Cash8
                 return;
             }
 
-            MainStaticClass.write_event_in_log("Попытка добавить новый товар в чек "+ barcode, "Документ чек", numdoc.ToString());
+            MainStaticClass.write_event_in_log("Попытка добавить новый товар в чек " + barcode, "Документ чек", numdoc.ToString());
 
             NpgsqlConnection conn = null;
 
@@ -2594,7 +2595,7 @@ namespace Cash8
 
                 //Проверка по сертификату
                 if (its_certificate == 1)
-                {                    
+                {
                     Cash8.DS.DS ds = MainStaticClass.get_ds();
                     ds.Timeout = 60000;
                     //Получить параметр для запроса на сервер 
@@ -2611,14 +2612,14 @@ namespace Cash8
                         return;
                     }
                     string count_day = CryptorEngine.get_count_day();
-                    string key = nick_shop.Trim() + count_day.Trim() + code_shop.Trim();                    
+                    string key = nick_shop.Trim() + count_day.Trim() + code_shop.Trim();
                     //string sertificate_code = get_tovar_code(barcode);
                     string sertificate_code = barcode;
                     string encrypt_data = CryptorEngine.Encrypt(sertificate_code, true, key);
                     string status = "";
                     try
                     {
-                        status = ds.GetStatusSertificat(MainStaticClass.Nick_Shop, encrypt_data,MainStaticClass.GetWorkSchema.ToString());
+                        status = ds.GetStatusSertificat(MainStaticClass.Nick_Shop, encrypt_data, MainStaticClass.GetWorkSchema.ToString());
                     }
                     catch (Exception ex)
                     {
@@ -2666,18 +2667,18 @@ namespace Cash8
                             return;
                         }
                     }
-                }               
-                
+                }
+
                 //Подсчет суммы по документу
                 if (listView2.Items.Count == 1)//1 товар найден
                 {
                     ListViewItem lvi = null;
-                    if ((its_marked == 0) && (its_certificate==0) && ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema==3)))
+                    if ((its_marked == 0) && (its_certificate == 0) && ((MainStaticClass.GetWorkSchema == 1) || (MainStaticClass.GetWorkSchema == 3)))
                     {
                         lvi = exist_tovar_in_listView(listView1, Convert.ToInt64(select_tovar.Tag), listView2.Items[0].Tag);
                     }
                     if (lvi == null)
-                    {                        
+                    {
                         //select_tovar.Tag.ToString()
                         lvi = new ListViewItem(select_tovar.Tag.ToString());
                         lvi.Tag = select_tovar.Tag.ToString();
@@ -2703,7 +2704,7 @@ namespace Cash8
                         else
                         {
                             lvi.SubItems.Add(Math.Round(Convert.ToDecimal(lvi.SubItems[4].Text), 2).ToString());//Цена со скидкой 
-                        }                        
+                        }
                         lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString());//Сумма
                         lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)).ToString()); //Сумма со скидкой                        
                         lvi.SubItems.Add("0"); //Номер акционного документа скидка
@@ -2720,10 +2721,10 @@ namespace Cash8
                         {
                             lvi.SubItems.Add(barcode);//Это сертификат и при продаже мы добавляем его штрихкод 
                         }
-                                              //listView1.Items.Add(lvi);
-                                              //listView1.Select();
-                                              //listView1.Items[this.listView1.Items.Count - 1].Selected = true;
-                                              //update_record_last_tovar(listView1.Items[this.listView1.Items.Count - 1].SubItems[1].Text, listView1.Items[this.listView1.Items.Count - 1].SubItems[3].Text);
+                        //listView1.Items.Add(lvi);
+                        //listView1.Select();
+                        //listView1.Items[this.listView1.Items.Count - 1].Selected = true;
+                        //update_record_last_tovar(listView1.Items[this.listView1.Items.Count - 1].SubItems[1].Text, listView1.Items[this.listView1.Items.Count - 1].SubItems[3].Text);
                         bool error = false;
                         int code_marking_error = 0;
                         if (check_marker_code(select_tovar.Tag.ToString()) > 0)
@@ -2789,7 +2790,7 @@ namespace Cash8
                                                     error = true;
                                                     MessageBox.Show("Считан не верный qr код");
                                                     MainStaticClass.write_event_in_log("HTTP не верный qr код  " + barcode, "Документ чек", numdoc.ToString());
-                                                }                                               
+                                                }
                                             }
                                             ////Теперь перед добавление в чек qr код мы его проверим в кассовом аппарате 
                                             //if (!error)
@@ -2798,8 +2799,9 @@ namespace Cash8
                                             //}
                                             //перед тем как добавить qr код в чек необходимо его проверить
                                             string mark_str = "";
-                                            //if (MainStaticClass.Version2Marking == 1)
-                                            //{
+                                            string mark_str_cdn = "";
+                                            if (MainStaticClass.Version2Marking == 1)
+                                            {
                                                 WortWithMarkingV3 markingV3 = new WortWithMarkingV3();
                                                 mark_str = this.qr_code.Trim();
                                                 //*******************************************************************************************************************************
@@ -2828,30 +2830,30 @@ namespace Cash8
                                                     mark_str = mark_str.Insert(26, GS1);
                                                 }
 
-                                            foreach (ListViewItem listViewItem4 in this.listView1.Items)
-                                            {
-                                                if (listViewItem4.SubItems[14].Text == mark_str)
-                                                {                                                    
-                                                    MessageBox.Show("Номенклатура с введенным кодом маркировки который вы пытались добавить уже существует в чеке. \r\n Номенклатура не будет добавлена.");
-                                                    return;
-                                                }
-                                            }
-
-                                            if (MainStaticClass.CashDeskNumber != 9 && MainStaticClass.EnableCdnMarkers == 1 && MainStaticClass.CDN_Token != "")
-                                            {
-                                                CDN cdn = new CDN();
-                                                List<string> codes = new List<string>();
-                                                string mark_str_cdn = mark_str.Replace("\u001D", "\\u001d");
-                                                codes.Add("mark_str_cdn");
-                                                if (!cdn.check_marker_code(codes, mark_str, ref this.cdn_markers_date_time, this.numdoc))
+                                                foreach (ListViewItem listViewItem4 in this.listView1.Items)
                                                 {
-                                                    return;
+                                                    if (listViewItem4.SubItems[14].Text == mark_str)
+                                                    {
+                                                        MessageBox.Show("Номенклатура с введенным кодом маркировки который вы пытались добавить уже существует в чеке. \r\n Номенклатура не будет добавлена.");
+                                                        return;
+                                                    }
                                                 }
-                                            }
 
-                                            if (MainStaticClass.Version2Marking == 1)
-                                            {
-                                                byte[] textAsBytes = Encoding.Default.GetBytes(mark_str);                                              
+                                                if (MainStaticClass.CashDeskNumber != 9 && MainStaticClass.EnableCdnMarkers == 1 && MainStaticClass.CDN_Token != "")
+                                                {
+                                                    CDN cdn = new CDN();
+                                                    List<string> codes = new List<string>();
+                                                    mark_str_cdn = mark_str.Replace("\u001D", "\\u001d");
+                                                    codes.Add("mark_str_cdn");
+                                                    if (!cdn.check_marker_code(codes, mark_str, ref this.cdn_markers_date_time, this.numdoc))
+                                                    {
+                                                        return;
+                                                    }
+                                                }
+
+                                                //if (MainStaticClass.Version2Marking == 1)
+                                                //{
+                                                byte[] textAsBytes = Encoding.Default.GetBytes(mark_str);
 
                                                 //*******************************************************************************************************************************
                                                 //string imc = this.qr_code;
@@ -2863,17 +2865,17 @@ namespace Cash8
                                                     code_marking_error = root.results[0].errorCode;
                                                     //MessageBox.Show(root.results[0].errorDescription, "Ошибка при начале проверки кода маркировки");
                                                     if ((code_marking_error != 421) && (code_marking_error != 402))
-                                                    {                                                        
-                                                        MessageBox.Show("beginMarkingCodeValidation "+root.results[0].errorDescription+" "+ code_marking_error, "Ошибка при начале проверки кода маркировки");
+                                                    {
+                                                        MessageBox.Show("beginMarkingCodeValidation " + root.results[0].errorDescription + " " + code_marking_error, "Ошибка при начале проверки кода маркировки");
                                                         error = true;//не прошли проверку товар не добавляем в чек
                                                     }
                                                     else
                                                     {
-                                                        
+
                                                     }
                                                 }
                                                 else
-                                                { 
+                                                {
                                                     root = markingV3.getMarkingCodeValidationStatus();
                                                     if (root.results[0].result != null)
                                                     {
@@ -2951,27 +2953,27 @@ namespace Cash8
                                                     {
                                                         error = true;
                                                     }
-                                                   
+
                                                 }
                                             }
                                             if (mark_str != "")
                                             {
                                                 lvi.SubItems[14].Text = mark_str;//добавим в чек qr код                                        
                                             }
+                                            else
+                                            {
+                                                lvi.SubItems[14].Text = this.qr_code;//добавим в чек qr код                                        
+                                            }
+                                            //}
                                             //else
                                             //{
-                                            //    lvi.SubItems[14].Text = this.qr_code;//добавим в чек qr код                                        
+                                            //    MessageBox.Show("Введен неверный код маркировки, попробуйте еще раз. Номенклатура не будет добавлена.");
+                                            //    error = true;
+                                            //    //Не добавляем позицию в чек
                                             //}
-                                                                                 //}
-                                                                                 //else
-                                                                                 //{
-                                                                                 //    MessageBox.Show("Введен неверный код маркировки, попробуйте еще раз. Номенклатура не будет добавлена.");
-                                                                                 //    error = true;
-                                                                                 //    //Не добавляем позицию в чек
-                                                                                 //}
                                             this.qr_code = "";//обнулим переменную
                                         }
-                                    }                                
+                                    }
                                 }
                                 else
                                 {
@@ -2999,7 +3001,7 @@ namespace Cash8
                         //    this.qr_code = "";
                         //}
                         //if ((!error) || (MainStaticClass.CashDeskNumber == 9))//Если с qr кодом все хорошо тогда добавляем позицию иначе не добавляем, но в 9 кассу добавляем всегда 
-                        if ((!error)||((code_marking_error==402)||(code_marking_error==421)))//Если с qr кодом все хорошо тогда добавляем позицию иначе не добавляем 
+                        if ((!error) || ((code_marking_error == 402) || (code_marking_error == 421)))//Если с qr кодом все хорошо тогда добавляем позицию иначе не добавляем 
                         {
                             MainStaticClass.write_event_in_log("Товар добавлен " + barcode, "Документ чек", numdoc.ToString());
                             listView1.Items.Add(lvi);
@@ -3015,15 +3017,15 @@ namespace Cash8
                             MainStaticClass.write_event_in_log("Отказ от ввода qr кода, товар не добавлен", "Документ чек", numdoc.ToString());
                             last_tovar.Text = barcode;
                             Tovar_Not_Found t_n_f = new Tovar_Not_Found();
-                            t_n_f.textBox1.Text="Код маркировки не прошел проверку";
+                            t_n_f.textBox1.Text = "Код маркировки не прошел проверку";
                             t_n_f.textBox1.Font = new Font("Microsoft Sans Serif", 22);
                             t_n_f.label1.Text = " Код ошибки code_marking_error = " + code_marking_error.ToString();
                             t_n_f.ShowDialog();
                             t_n_f.Dispose();
                             return;
                         }
-                        SendDataToCustomerScreen(1, 0,1);                        
-                        if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema==3))
+                        SendDataToCustomerScreen(1, 0, 1);
+                        if ((MainStaticClass.GetWorkSchema == 1) || (MainStaticClass.GetWorkSchema == 3))
                         {
                             listView1.Select();
                             listView1.Items[this.listView1.Items.Count - 1].Selected = true;
@@ -3033,7 +3035,7 @@ namespace Cash8
                         {
                             //inputbarcode.Focus();
                         }
-                        
+
                         update_record_last_tovar(listView1.Items[this.listView1.Items.Count - 1].SubItems[1].Text, listView1.Items[this.listView1.Items.Count - 1].SubItems[3].Text);
 
                         //if (MainStaticClass.Use_Trassir > 0)
@@ -3702,6 +3704,10 @@ namespace Cash8
 
             this.check_type.Items.Add("Продажа");
             this.check_type.Items.Add("Возврат");
+            if (MainStaticClass.Code_right_of_user == 1 && MainStaticClass.PrintingUsingLibraries == 1)
+            {
+                this.check_type.Items.Add("КоррекцияПродажи");                
+            }
 
 
             this.WindowState = FormWindowState.Maximized;
@@ -3953,7 +3959,7 @@ namespace Cash8
             {
                 btn_del_position.Visible = false;
                 btn_cancel_check.Visible = false;
-                txtB_total_sum.Visible = false;
+                //txtB_total_sum.Visible = false;
             }
             else
             {
@@ -9883,7 +9889,9 @@ namespace Cash8
             {
                 if ((MainStaticClass.SystemTaxation != 3)|| (check_type.SelectedIndex==1))
                 {
-                    if ((MainStaticClass.Version2Marking == 0)||(this.check_type.SelectedIndex==1)||!itsnew)//старый механизм работы с макрировкой, для возвратов так же пока старая схема
+                    //if ((MainStaticClass.Version2Marking == 0)||(this.check_type.SelectedIndex==1)||!itsnew)//старый механизм работы с макрировкой, для возвратов так же пока старая схема
+                    if (MainStaticClass.GetVersionFn == 2 && (MainStaticClass.SystemTaxation != 3 || this.check_type.SelectedIndex == 1) 
+                        && (MainStaticClass.Version2Marking == 0 || this.check_type.SelectedIndex == 1 || !this.itsnew) && MainStaticClass.PrintingUsingLibraries == 0)
                     {
                         //System.IO.File.AppendAllText(Application.StartupPath.Replace("\\", "/") + "/" + "json.txt", DateTime.Now.ToString() + " clearMarkingBuffer \r\n");
                         clearMarkingCodeValidationResult();

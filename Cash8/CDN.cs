@@ -280,11 +280,8 @@ namespace Cash8
                     MessageBox.Show("Список CDN серверов пустой");
                     return result_check;
                 }
-                //MessageBox.Show(cdn_list.hosts[0].host, "check_marker_code");
-                //MessageBox.Show(Application.StartupPath);
-                //File.WriteAllText("Application.StartupPath/cdn.txt",cdn_list.hosts[0].host);
-                //string url = cdn_list.hosts[0].host + codes_url;
-                string url = "https://cdn01.crpt.ru"+ codes_url;
+                
+                string url = "https://cdn01.crpt.ru"+ codes_url;//gaa 
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                 request.Method = "POST";
 
@@ -380,9 +377,8 @@ namespace Cash8
                 }
             }
             catch (Exception ex)
-            {
-                //MessageBox.Show("Ошибка при проверке кода маркировки ");
-                MainStaticClass.write_event_in_log("Ошибка при проверке кода маркировки check_marker_code " + mark_str+"  "+ex.Message , "Документ чек", numdoc.ToString());
+            {                
+                MainStaticClass.write_event_in_log("Ошибка при проверке кода маркировки check_marker_code " + mark_str + "  " + ex.Message, "Документ чек", numdoc.ToString());
             }
 
             return result_check;

@@ -192,7 +192,7 @@ namespace Cash8
                 {
                     MessageBox.Show(" У ВАС УСТАНОВЛЕНА НЕПРАВИЛЬНАЯ ДАТА НА КОМПЬЮТЕРЕ !!! ДАЛЬНЕЙШАЯ РАБОТА С ЧЕКАМИ НЕВОЗМОЖНА !!!");
                     return;
-                }                
+                }
                 if (MainStaticClass.CashDeskNumber != 9)
                 {
                     bool restart = false; bool errors = false;
