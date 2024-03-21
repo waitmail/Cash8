@@ -37,6 +37,8 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.enter_quantity = new System.Windows.Forms.TextBox();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.listView2 = new System.Windows.Forms.ListView();
+            this.select_tovar = new System.Windows.Forms.TextBox();
             this.panel_return = new System.Windows.Forms.Panel();
             this.return_enter = new System.Windows.Forms.Button();
             this.label7 = new System.Windows.Forms.Label();
@@ -45,8 +47,6 @@
             this.return_kop = new System.Windows.Forms.TextBox();
             this.return_rouble = new System.Windows.Forms.TextBox();
             this.return_quantity = new System.Windows.Forms.TextBox();
-            this.listView2 = new System.Windows.Forms.ListView();
-            this.select_tovar = new System.Windows.Forms.TextBox();
             this.pay = new System.Windows.Forms.Button();
             this.last_tovar = new System.Windows.Forms.TextBox();
             this.date_time_start = new System.Windows.Forms.TextBox();
@@ -91,6 +91,7 @@
             this.txtB_total_sum = new System.Windows.Forms.TextBox();
             this.txtB_num_doc = new System.Windows.Forms.TextBox();
             this.checkBox_print_check = new System.Windows.Forms.CheckBox();
+            this.checkBox_payment_by_sbp = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel_return.SuspendLayout();
@@ -190,7 +191,6 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel2.BackColor = System.Drawing.Color.ForestGreen;
-            this.panel2.Controls.Add(this.panel_return);
             this.panel2.Controls.Add(this.listView2);
             this.panel2.Controls.Add(this.select_tovar);
             this.panel2.Location = new System.Drawing.Point(16, 34);
@@ -198,6 +198,30 @@
             this.panel2.Size = new System.Drawing.Size(745, 243);
             this.panel2.TabIndex = 23;
             this.panel2.Visible = false;
+            // 
+            // listView2
+            // 
+            this.listView2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.listView2.HideSelection = false;
+            this.listView2.Location = new System.Drawing.Point(22, 53);
+            this.listView2.MultiSelect = false;
+            this.listView2.Name = "listView2";
+            this.listView2.Size = new System.Drawing.Size(698, 147);
+            this.listView2.TabIndex = 0;
+            this.listView2.UseCompatibleStateImageBehavior = false;
+            this.listView2.Visible = false;
+            this.listView2.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.listView2_KeyPress);
+            // 
+            // select_tovar
+            // 
+            this.select_tovar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.select_tovar.Enabled = false;
+            this.select_tovar.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.select_tovar.Location = new System.Drawing.Point(22, 18);
+            this.select_tovar.Name = "select_tovar";
+            this.select_tovar.Size = new System.Drawing.Size(698, 29);
+            this.select_tovar.TabIndex = 1;
             // 
             // panel_return
             // 
@@ -208,7 +232,7 @@
             this.panel_return.Controls.Add(this.return_kop);
             this.panel_return.Controls.Add(this.return_rouble);
             this.panel_return.Controls.Add(this.return_quantity);
-            this.panel_return.Location = new System.Drawing.Point(201, 83);
+            this.panel_return.Location = new System.Drawing.Point(185, 60);
             this.panel_return.Name = "panel_return";
             this.panel_return.Size = new System.Drawing.Size(432, 88);
             this.panel_return.TabIndex = 42;
@@ -255,7 +279,7 @@
             // return_kop
             // 
             this.return_kop.Enabled = false;
-            this.return_kop.Location = new System.Drawing.Point(345, 27);
+            this.return_kop.Location = new System.Drawing.Point(352, 27);
             this.return_kop.MaxLength = 2;
             this.return_kop.Name = "return_kop";
             this.return_kop.Size = new System.Drawing.Size(57, 20);
@@ -278,30 +302,6 @@
             this.return_quantity.Name = "return_quantity";
             this.return_quantity.Size = new System.Drawing.Size(100, 20);
             this.return_quantity.TabIndex = 0;
-            // 
-            // listView2
-            // 
-            this.listView2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.listView2.HideSelection = false;
-            this.listView2.Location = new System.Drawing.Point(22, 53);
-            this.listView2.MultiSelect = false;
-            this.listView2.Name = "listView2";
-            this.listView2.Size = new System.Drawing.Size(698, 147);
-            this.listView2.TabIndex = 0;
-            this.listView2.UseCompatibleStateImageBehavior = false;
-            this.listView2.Visible = false;
-            this.listView2.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.listView2_KeyPress);
-            // 
-            // select_tovar
-            // 
-            this.select_tovar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.select_tovar.Enabled = false;
-            this.select_tovar.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.select_tovar.Location = new System.Drawing.Point(22, 18);
-            this.select_tovar.Name = "select_tovar";
-            this.select_tovar.Size = new System.Drawing.Size(698, 29);
-            this.select_tovar.TabIndex = 1;
             // 
             // pay
             // 
@@ -486,7 +486,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(276, 133);
+            this.label11.Location = new System.Drawing.Point(330, 133);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(58, 13);
             this.label11.TabIndex = 51;
@@ -495,7 +495,7 @@
             // txtB_cash_money
             // 
             this.txtB_cash_money.Enabled = false;
-            this.txtB_cash_money.Location = new System.Drawing.Point(334, 129);
+            this.txtB_cash_money.Location = new System.Drawing.Point(388, 129);
             this.txtB_cash_money.Name = "txtB_cash_money";
             this.txtB_cash_money.Size = new System.Drawing.Size(53, 20);
             this.txtB_cash_money.TabIndex = 52;
@@ -576,7 +576,7 @@
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(390, 134);
+            this.label13.Location = new System.Drawing.Point(444, 134);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(45, 13);
             this.label13.TabIndex = 62;
@@ -585,7 +585,7 @@
             // txtB_bonus_money
             // 
             this.txtB_bonus_money.Enabled = false;
-            this.txtB_bonus_money.Location = new System.Drawing.Point(436, 129);
+            this.txtB_bonus_money.Location = new System.Drawing.Point(490, 129);
             this.txtB_bonus_money.Name = "txtB_bonus_money";
             this.txtB_bonus_money.Size = new System.Drawing.Size(50, 20);
             this.txtB_bonus_money.TabIndex = 63;
@@ -756,10 +756,11 @@
             // 
             this.txtB_num_doc.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtB_num_doc.Enabled = false;
-            this.txtB_num_doc.Location = new System.Drawing.Point(497, 130);
+            this.txtB_num_doc.Location = new System.Drawing.Point(545, 130);
             this.txtB_num_doc.Name = "txtB_num_doc";
-            this.txtB_num_doc.Size = new System.Drawing.Size(100, 20);
+            this.txtB_num_doc.Size = new System.Drawing.Size(52, 20);
             this.txtB_num_doc.TabIndex = 77;
+            this.txtB_num_doc.Text = "21111199";
             this.txtB_num_doc.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // checkBox_print_check
@@ -775,11 +776,25 @@
             this.checkBox_print_check.UseVisualStyleBackColor = true;
             this.checkBox_print_check.Visible = false;
             // 
+            // checkBox_payment_by_sbp
+            // 
+            this.checkBox_payment_by_sbp.AutoSize = true;
+            this.checkBox_payment_by_sbp.Enabled = false;
+            this.checkBox_payment_by_sbp.Location = new System.Drawing.Point(278, 132);
+            this.checkBox_payment_by_sbp.Name = "checkBox_payment_by_sbp";
+            this.checkBox_payment_by_sbp.Size = new System.Drawing.Size(48, 17);
+            this.checkBox_payment_by_sbp.TabIndex = 79;
+            this.checkBox_payment_by_sbp.Text = "СБП";
+            this.checkBox_payment_by_sbp.UseVisualStyleBackColor = true;
+            this.checkBox_payment_by_sbp.Visible = false;
+            // 
             // Cash_check
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 600);
+            this.Controls.Add(this.panel_return);
+            this.Controls.Add(this.checkBox_payment_by_sbp);
             this.Controls.Add(this.checkBox_print_check);
             this.Controls.Add(this.txtB_num_doc);
             this.Controls.Add(this.btn_cancel_check);
@@ -911,5 +926,6 @@
         public System.Windows.Forms.TextBox txtB_sertificate_money;
         public System.Windows.Forms.TextBox txtB_non_cash_money;
         public System.Windows.Forms.TextBox txtB_cash_money;
+        public System.Windows.Forms.CheckBox checkBox_payment_by_sbp;
     }
 }

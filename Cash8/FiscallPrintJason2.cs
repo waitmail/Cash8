@@ -246,7 +246,7 @@ namespace Cash8
                     status = result.results[0].status;
                     if ((status != "ready") && (status != "error"))
                     {
-                        if (count > 56)
+                        if (count > 82)
                         {
                             break;
                         }
@@ -661,7 +661,7 @@ namespace Cash8
                     status = result.results[0].status;
                     if ((status != "ready")&& (status != "error"))
                     {
-                        if (count > 56)
+                        if (count > 82)
                         {
                             break;
                         }

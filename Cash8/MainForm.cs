@@ -690,23 +690,23 @@ namespace Cash8
                 sdsp.Dispose();
                 UploadDeletedItems();
 
-                if (MainStaticClass.PassPromo != "")
-                {
-                    if (MainStaticClass.GetWorkSchema == 1)
-                    {
-                        //SentDataOnBonus sentDataOnBonus = new SentDataOnBonus();
-                        //sentDataOnBonus.run_in_the_background = true;
-                        //sentDataOnBonus.sent_Click(null, null);
-                        //sentDataOnBonus.Dispose();
-                    }
-                    else if (MainStaticClass.GetWorkSchema == 2)
-                    {
-                        SentDataOnBonusEva sentDataOnBonusEva = new SentDataOnBonusEva();
-                        sentDataOnBonusEva.run_in_the_background = true;
-                        sentDataOnBonusEva.sent_Click(null, null);
-                        sentDataOnBonusEva.Dispose();
-                    }
-                }
+                //if (MainStaticClass.PassPromo != "")
+                //{
+                //    if (MainStaticClass.GetWorkSchema == 1)
+                //    {
+                //        //SentDataOnBonus sentDataOnBonus = new SentDataOnBonus();
+                //        //sentDataOnBonus.run_in_the_background = true;
+                //        //sentDataOnBonus.sent_Click(null, null);
+                //        //sentDataOnBonus.Dispose();
+                //    }
+                //    else if (MainStaticClass.GetWorkSchema == 2)
+                //    {
+                //        SentDataOnBonusEva sentDataOnBonusEva = new SentDataOnBonusEva();
+                //        sentDataOnBonusEva.run_in_the_background = true;
+                //        sentDataOnBonusEva.sent_Click(null, null);
+                //        sentDataOnBonusEva.Dispose();
+                //    }
+                //}
             }
         }
 
@@ -969,6 +969,10 @@ namespace Cash8
 
                 if (MainStaticClass.CashDeskNumber != 9)
                 {
+                    if (MainStaticClass.SystemTaxation == 0)
+                    {
+                        MessageBox.Show("В константах не определена система налогобложения, создание и печать чеков невозможна");
+                    }
                     bool restart = false; bool error = false;
 
                     MainStaticClass.check_version_fn(ref restart,ref error);
@@ -998,6 +1002,8 @@ namespace Cash8
             {
                 MainStaticClass.Version2Marking = 1;
             }
+
+           
         }
 
         /// <summary>

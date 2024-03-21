@@ -107,6 +107,7 @@
     <Compile Include="Cash_checks.Designer.cs">
       <DependentUpon>Cash_checks.cs</DependentUpon>
     </Compile>
+    <Compile Include="CDN.cs" />
     <Compile Include="ChangeBonusCard.cs">
       <SubType>Form</SubType>
     </Compile>

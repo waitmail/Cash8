@@ -113,7 +113,7 @@ namespace Cash8
                 string query = "SELECT nick_shop,cash_desk_number,use_debug,code_shop,"+
                     " path_for_web_service,currency,unloading_period,last_date_download_bonus_clients,"+
                     " envd,pass_promo,print_m,system_taxation,work_schema,version_fn,enable_stock_processing_in_memory," +
-                    " id_acquirer_terminal,ip_address_acquiring_terminal,self_service_kiosk,one_monitors_connected,version2_marking, " +
+                    " id_acquirer_terminal,ip_address_acquiring_terminal,self_service_kiosk,enable_cdn_markers, " +
                     " webservice_authorize,printing_using_libraries,fn_sreial_port FROM constants";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();
@@ -137,12 +137,12 @@ namespace Cash8
                     this.comboBox_system_taxation.SelectedIndex = Convert.ToInt16(reader["system_taxation"]);
                     this.txtB_work_schema.Text = reader["work_schema"].ToString();
                     this.txtB_version_fn.Text = reader["version_fn"].ToString();
-                    this.checkBox_enable_stock_processing_in_memory.CheckState= (reader["enable_stock_processing_in_memory"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
+                    //this.checkBox_enable_cdn_markers.CheckState= (reader["enable_stock_processing_in_memory"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
                     this.txtB_id_acquiring_terminal.Text= reader["id_acquirer_terminal"].ToString();
                     this.txtB_ip_address_acquiring_terminal.Text= reader["ip_address_acquiring_terminal"].ToString();
                     this.checkBox_self_service_kiosk.CheckState = (reader["self_service_kiosk"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
-                    this.checkBox_one_monitors_connected.CheckState = (reader["one_monitors_connected"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
-                    this.checkBox_version2_marking.CheckState = (reader["version2_marking"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
+                    this.checkBox_enable_cdn_markers.CheckState = (reader["enable_cdn_markers"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
+                    //this.checkBox_version2_marking.CheckState = (reader["version2_marking"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
                     this.checkBox_webservice_authorize.CheckState = (reader["webservice_authorize"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
                     this.checkBox_printing_using_libraries.CheckState = (reader["printing_using_libraries"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
                     int index = comboBox_fn_port.Items.IndexOf(reader["fn_sreial_port"].ToString());
@@ -277,10 +277,10 @@ namespace Cash8
             }
                         
             string print_m = (checkBox_print_m.CheckState == CheckState.Unchecked ? "false" : "true");
-            string enable_stock_processing_in_memory = (checkBox_enable_stock_processing_in_memory.CheckState == CheckState.Unchecked ? "false" : "true");
+            //string enable_stock_processing_in_memory = (checkBox_enable_cdn_markers.CheckState == CheckState.Unchecked ? "false" : "true");
             string self_service_kiosk = (checkBox_self_service_kiosk.CheckState == CheckState.Unchecked ? "false" : "true");
-            string one_monitors_connected = (checkBox_one_monitors_connected.CheckState == CheckState.Unchecked ? "false" : "true");
-            string version2_marking = (checkBox_version2_marking.CheckState == CheckState.Unchecked ? "false" : "true");
+            string enable_cdn_markers = (checkBox_enable_cdn_markers.CheckState == CheckState.Unchecked ? "false" : "true");
+            //string version2_marking = (checkBox_version2_marking.CheckState == CheckState.Unchecked ? "false" : "true");
             string webservice_authorize = (checkBox_webservice_authorize.CheckState == CheckState.Unchecked ? "false" : "true");
             string static_guid_in_print = (checkBox_static_guid_in_print.CheckState == CheckState.Unchecked ? "false" : "true");
             string printing_using_libraries = (checkBox_printing_using_libraries.CheckState == CheckState.Unchecked ? "false" : "true");
@@ -303,12 +303,12 @@ namespace Cash8
                     "system_taxation = '" + comboBox_system_taxation.SelectedIndex.ToString() + "'," +
                     "work_schema = '" + txtB_work_schema.Text + "'," +
                     "version_fn = " + txtB_version_fn.Text + "," +
-                    "enable_stock_processing_in_memory=" + enable_stock_processing_in_memory + "," +
+                    //"enable_stock_processing_in_memory=" + enable_stock_processing_in_memory + "," +
                     "id_acquirer_terminal='" + txtB_id_acquiring_terminal.Text.ToString() + "'," +
                     "ip_address_acquiring_terminal='" + txtB_ip_address_acquiring_terminal.Text.ToString().Trim() + "'," +
                     "self_service_kiosk=" + self_service_kiosk + "," +
-                    "one_monitors_connected=" + one_monitors_connected + "," +
-                    "version2_marking=" + version2_marking + "," +
+                    "enable_cdn_markers=" + enable_cdn_markers + "," +
+                    //"version2_marking=" + version2_marking + "," +
                     "webservice_authorize=" + webservice_authorize + "," +
                     "static_guid_in_print=" + static_guid_in_print + "," +
                     "printing_using_libraries=" + printing_using_libraries + "," +
@@ -330,13 +330,13 @@ namespace Cash8
                         "system_taxation,"+
                         "work_schema,"+
                         "version_fn,"+
-                        "enable_stock_processing_in_memory,"+
+                        //"enable_stock_processing_in_memory,"+
                         "id_acquirer_terminal,"+
                         "ip_address_acquiring_terminal,"+
                         "self_service_kiosk,"+
-                        "one_monitors_connected,"+
-                        "version2_marking,"+
-                        "webservice_authorize,"+
+                        "enable_cdn_markers,"+
+                        //"version2_marking,"+
+                        "webservice_authorize," +
                         "static_guid_in_print," +
                         "printing_using_libraries,"+
                         "fn_sreial_port) VALUES(" +
@@ -351,13 +351,13 @@ namespace Cash8
                         comboBox_system_taxation.SelectedIndex.ToString()+ "','"+
                         txtB_work_schema.Text+"','"+
                         txtB_version_fn.Text+"','"+
-                        enable_stock_processing_in_memory+"','"+
+                        //enable_stock_processing_in_memory+"','"+
                         txtB_id_acquiring_terminal.Text.ToString()+"','"+
                         txtB_ip_address_acquiring_terminal.ToString().Trim()+"','"+
                         self_service_kiosk+","+
-                        one_monitors_connected+","+
-                        version2_marking+","+
-                        webservice_authorize+","+
+                        enable_cdn_markers+","+
+                        //version2_marking+","+
+                        webservice_authorize + ","+
                         static_guid_in_print+","+
                         printing_using_libraries + ",'"+
                         comboBox_fn_port.SelectedItem.ToString()+"')";
@@ -393,8 +393,8 @@ namespace Cash8
         {
             if (comboBox_system_taxation.SelectedIndex == 3)
             {
-                checkBox_version2_marking.Checked = true;
-                checkBox_enable_stock_processing_in_memory.Checked = true;
+                //checkBox_version2_marking.Checked = true;
+                //checkBox_enable_stock_processing_in_memory.Checked = true;
                 txtB_version_fn.Text = "2";
             }
         }

@@ -77,7 +77,8 @@ namespace Cash8
                     " cash_money1, " +
                     " non_cash_money1, " +
                     " sertificate_money1," +
-                    " guid"+
+                    " guid,"+
+                    "payment_by_sbp "+
                     " FROM checks_header WHERE document_number in  (" + document_number_list.ToString() + ")";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();                                
@@ -127,6 +128,7 @@ namespace Cash8
                     salesPortionsHeader.Sum_terminal1 = reader["non_cash_money1"].ToString().Replace(",", ".");
                     salesPortionsHeader.Sum_certificate1 = reader["sertificate_money1"].ToString().Replace(",", ".");
                     salesPortionsHeader.Guid = reader["guid"].ToString();
+                    salesPortionsHeader.SBP = (Convert.ToBoolean(reader["payment_by_sbp"]) == true ? 1 : 0).ToString();
 
                     salesPortions.ListSalesPortionsHeader.Add(salesPortionsHeader);
                     //Конец Новое заполнение                 
@@ -138,7 +140,7 @@ namespace Cash8
             {
                 if (show_messages)
                 {
-                    MessageBox.Show(ex.Message);
+                    MessageBox.Show(" getdata_h "+ex.Message);
                 }
                 were_mistakes = true;
             }
@@ -146,7 +148,7 @@ namespace Cash8
             {
                 if (show_messages)
                 {
-                    MessageBox.Show(ex.Message);
+                    MessageBox.Show(" getdata_h "+ex.Message);
                 }
                 were_mistakes = true;
             }
@@ -213,7 +215,7 @@ namespace Cash8
             {
                 if (show_messages)
                 {
-                    MessageBox.Show(ex.Message);
+                    MessageBox.Show(" getdata_t "+ex.Message);
                 }
                 were_mistakes = true;
             }
@@ -221,7 +223,7 @@ namespace Cash8
             {
                 if (show_messages)
                 {
-                    MessageBox.Show(ex.Message);
+                    MessageBox.Show(" getdata_t "+ex.Message);
                 }
                 were_mistakes = true;
             }
@@ -502,12 +504,13 @@ namespace Cash8
             }
             catch (NpgsqlException ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(" get_not_sent_sertificates "+ex.Message);
                 result = "-1";
 
             }
             catch (Exception ex)
             {
+                MessageBox.Show(" get_not_sent_sertificates " + ex.Message);
                 result = "-1";
             }
             finally
@@ -610,7 +613,8 @@ namespace Cash8
             public string VizaD { get; set; }
             public string SystemTaxation { get; set; }
             public string Guid { get; set; }
-        }
+            public string SBP { get; set; }
+    }
         
         public class SalesPortionsTable
         {

@@ -105,19 +105,137 @@ namespace Cash8
         private static string barcode = "";
 
         public static bool continue_to_read_the_data_from_a_port = false;
-        private static int enable_stock_processing_in_memory=-1;
+        //private static int enable_stock_processing_in_memory=-1;
         private static int self_service_kiosk = -1;
         private static string id_acquirer_terminal = "00000000";
         private static string ip_address_acquiring_terminal = "000000000000000";
-        private static int one_monitors_connected = -1;
+        private static int enable_cdn_markers = -1;
         private static int version2_marking =-1;
         private static int authorization_required = -1;
         private static int static_guid_in_print = -1;
         private static int printing_using_libraries = -1;
         private static IFptr _fptr=null;
-
+        private static string cdn_token = "";
         private static int this_new_database = 0;
+        public static Cash8.CDN.CDN_List CDN_list = null;
+        private static string fiscal_drive_number="";//номер фискального регистратора 
 
+        public static Cash8.CDN.CDN_List CDN_List
+        {
+            get
+            {
+                if (CDN_list == null)
+                {
+                    CDN cdn = new CDN();
+                    CDN_list = cdn.get_cdn_list();
+                }
+                else
+                {
+                    if ((CDN_list.createDateTime - DateTime.Now).Hours > 6)//Обновление списка если прошло уже больше 6-ти часов 
+                    {
+                        CDN cdn = new CDN();
+                        CDN_list = cdn.get_cdn_list();
+                    }
+                    else
+                    {
+                        if ((CDN_list.createDateTime - DateTime.Now).Hours > 0)//прошел 1 час опросим доступность серверов
+                        {
+                            CDN cdn = new CDN();
+                            CDN_list = cdn.get_cdn_list(CDN_list);
+                        }
+                    }
+                }
+                return CDN_list;
+            }
+        }
+        
+        public static string FiscalDriveNumber
+        {
+            get
+            {
+                if (fiscal_drive_number == "")
+                {
+                    if (MainStaticClass.PrintingUsingLibraries == 1)
+                    {
+                        IFptr fptr = MainStaticClass.FPTR;                        
+                        if (!fptr.isOpened())
+                        {
+                            fptr.open();
+                        }
+
+                        fptr.setParam(AtolConstants.LIBFPTR_PARAM_FN_DATA_TYPE, AtolConstants.LIBFPTR_FNDT_REG_INFO);
+                        fptr.fnQueryData();
+                                                
+                        fiscal_drive_number = fptr.getParamString(1037);                        
+                    }
+                    else
+                    {
+                        try
+                        {
+                            Cash8.FiscallPrintJason.RootObject result = FiscallPrintJason.execute_operator_type("getRegistrationInfo");
+                            if (result != null)
+                            {
+                                if (result.results[0].status == "ready")//Задание выполнено успешно 
+                                {                                    
+                                    fiscal_drive_number = result.results[0].result.device.registrationNumber;
+                                }
+                                else
+                                {
+                                    MessageBox.Show(" Ошибка при получении номера фискального регистратора FiscalDriveNumber" + result.results[0].status + " | " + result.results[0].errorDescription);
+                                }
+                            }
+                            else
+                            {
+                                MessageBox.Show("Общая ошибка");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("Ошибка при получении номера фискального регистратора FiscalDriveNumber" + ex.Message);
+                        }
+
+                    }
+                }
+                return fiscal_drive_number;
+            }
+        }
+               
+        public static string CDN_Token
+        {
+            get
+            {
+                if (cdn_token == "")
+                {
+                    NpgsqlConnection conn = null;
+                    NpgsqlCommand command = null;
+                    conn = MainStaticClass.NpgsqlConn();
+                    try
+                    {
+                        conn.Open();
+                        string query = "SELECT cdn_token FROM constants";
+                        command = new NpgsqlCommand(query, conn);
+                        cdn_token = command.ExecuteScalar().ToString().Trim();
+                    }
+                    catch (NpgsqlException ex)
+                    {
+                        MessageBox.Show("Ошибка при чтении cdn_token" + ex.ToString());
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Ошибка при чтении cdn_token" + ex.ToString());
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+
+                }
+                return cdn_token;
+            }
+        }
 
         public static string FnSreialPort
         {
@@ -131,8 +249,7 @@ namespace Cash8
                     try
                     {
                         conn.Open();
-                        string query = "SELECT fn_sreial_port FROM constants";
-                        command = new NpgsqlCommand(query, conn);
+                        string query = "SELECT fn_sreial_port FROM constants";                        
                         command = new NpgsqlCommand(query, conn);
                         fn_sreial_port = command.ExecuteScalar().ToString();
                     }
@@ -608,39 +725,40 @@ namespace Cash8
                 if (version2_marking == -1)
                 {
 
-                    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
-                    try
-                    {
-                        conn.Open();
-                        string query = "SELECT version2_marking FROM constants";
-                        NpgsqlCommand command = new NpgsqlCommand(query, conn);
-                        object result_query = command.ExecuteScalar();
-                        if (Convert.ToBoolean(result_query) == false)
-                        {
-                            version2_marking = 0;
-                        }
-                        else
-                        {
-                            version2_marking = 1;
-                        }
-                    }
-                    catch (NpgsqlException ex)
-                    {
-                        version2_marking = 0;
-                        MessageBox.Show("Ошибка при чтении флага по работе с маркировкой по 2 схеме" + ex.Message);
-                    }
-                    catch (Exception ex)
-                    {
-                        version2_marking = 0;
-                        MessageBox.Show("Ошибка при чтении флага по работе с маркировкой по 2 схеме" + ex.Message);
-                    }
-                    finally
-                    {
-                        if (conn.State == ConnectionState.Open)
-                        {
-                            conn.Close();
-                        }
-                    }
+                    //NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+                    //try
+                    //{
+                    //    conn.Open();
+                    //    string query = "SELECT version2_marking FROM constants";
+                    //    NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                    //    object result_query = command.ExecuteScalar();
+                    //    if (Convert.ToBoolean(result_query) == false)
+                    //    {
+                    //        version2_marking = 0;
+                    //    }
+                    //    else
+                    //    {
+                    //        version2_marking = 1;
+                    //    }
+                    //}
+                    //catch (NpgsqlException ex)
+                    //{
+                    //    version2_marking = 0;
+                    //    MessageBox.Show("Ошибка при чтении флага по работе с маркировкой по 2 схеме" + ex.Message);
+                    //}
+                    //catch (Exception ex)
+                    //{
+                    //    version2_marking = 0;
+                    //    MessageBox.Show("Ошибка при чтении флага по работе с маркировкой по 2 схеме" + ex.Message);
+                    //}
+                    //finally
+                    //{
+                    //    if (conn.State == ConnectionState.Open)
+                    //    {
+                    //        conn.Close();
+                    //    }
+                    //}
+                    version2_marking = 1;
                 }
                 return version2_marking;
             }
@@ -649,6 +767,7 @@ namespace Cash8
                 version2_marking = 1;
             }
         }
+
         public static int StaticGuidInPrint
         {
             get
@@ -695,38 +814,38 @@ namespace Cash8
         }
 
 
-        public static int OneMonitorsConnected
+        public static int EnableCdnMarkers
         {
             get
             {
-                if (one_monitors_connected == -1)
+                if (enable_cdn_markers == -1)
                 {
 
                     NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
                     try
                     {
                         conn.Open();
-                        string query = "SELECT one_monitors_connected FROM constants";
+                        string query = "SELECT enable_cdn_markers FROM constants";
                         NpgsqlCommand command = new NpgsqlCommand(query, conn);
                         object result_query = command.ExecuteScalar();
                         if (Convert.ToBoolean(result_query) == false)
                         {
-                            one_monitors_connected = 0;
+                            enable_cdn_markers = 0;
                         }
                         else
                         {
-                            one_monitors_connected = 1;
+                            enable_cdn_markers = 1;
                         }
                     }
                     catch (NpgsqlException ex)
                     {
-                        one_monitors_connected = 0;
-                        MessageBox.Show("Ошибка при чтении флага о том что подключен один монитор" + ex.Message);
+                        enable_cdn_markers = 0;
+                        MessageBox.Show("Ошибка при чтении флага о том что разрешена работа с CDN серверами " + ex.Message);
                     }
                     catch (Exception ex)
                     {
-                        one_monitors_connected = 0;
-                        MessageBox.Show("Ошибка при чтении флага о том что подключен один монитор" + ex.Message);
+                        enable_cdn_markers = 0;
+                        MessageBox.Show("Ошибка при чтении флага о том что разрешена работа с CDN серверами " + ex.Message);
                     }
                     finally
                     {
@@ -736,7 +855,7 @@ namespace Cash8
                         }
                     }
                 }
-                return one_monitors_connected;
+                return enable_cdn_markers;
             }
         }
 
@@ -883,56 +1002,56 @@ namespace Cash8
 
 
 
-        /// <summary>
-        /// Флаг возвращает истина если 
-        /// действует старый алгоритм по обработке акций 
-        /// и ложь если уже включен новый 
-        /// алгоритм с использованием DataTable
-        /// </summary>
-        public static int EnableStockProcessingInMemory
-        {
-            get
-            {
-                if (enable_stock_processing_in_memory == -1)
-                {
-                    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
-                    try
-                    {
-                        conn.Open();
-                        string query = "SELECT enable_stock_processing_in_memory FROM constants";
-                        NpgsqlCommand command = new NpgsqlCommand(query, conn);
-                        object result_query = command.ExecuteScalar();
-                        if (Convert.ToBoolean(result_query) == false)
-                        {
-                            enable_stock_processing_in_memory = 0;
-                        }
-                        else
-                        {
-                            enable_stock_processing_in_memory = 1;
-                        }
-                    }
-                    catch (NpgsqlException ex)
-                    {
-                        enable_stock_processing_in_memory = 0;
-                        MessageBox.Show("Ошибка при чтении версии обработки акций" + ex.Message);
-                    }
-                    catch (Exception ex)
-                    {
-                        enable_stock_processing_in_memory = 0;
-                        MessageBox.Show("Ошибка при чтении версии обработки акций" + ex.Message);
-                    }
-                    finally
-                    {
-                        if (conn.State == ConnectionState.Open)
-                        {
-                            conn.Close();
-                        }
-                    }
-                }
+        ///// <summary>
+        ///// Флаг возвращает истина если 
+        ///// действует старый алгоритм по обработке акций 
+        ///// и ложь если уже включен новый 
+        ///// алгоритм с использованием DataTable
+        ///// </summary>
+        //public static int EnableStockProcessingInMemory
+        //{
+        //    get
+        //    {
+        //        if (enable_stock_processing_in_memory == -1)
+        //        {
+        //            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+        //            try
+        //            {
+        //                conn.Open();
+        //                string query = "SELECT enable_stock_processing_in_memory FROM constants";
+        //                NpgsqlCommand command = new NpgsqlCommand(query, conn);
+        //                object result_query = command.ExecuteScalar();
+        //                if (Convert.ToBoolean(result_query) == false)
+        //                {
+        //                    enable_stock_processing_in_memory = 0;
+        //                }
+        //                else
+        //                {
+        //                    enable_stock_processing_in_memory = 1;
+        //                }
+        //            }
+        //            catch (NpgsqlException ex)
+        //            {
+        //                enable_stock_processing_in_memory = 0;
+        //                MessageBox.Show("Ошибка при чтении версии обработки акций" + ex.Message);
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                enable_stock_processing_in_memory = 0;
+        //                MessageBox.Show("Ошибка при чтении версии обработки акций" + ex.Message);
+        //            }
+        //            finally
+        //            {
+        //                if (conn.State == ConnectionState.Open)
+        //                {
+        //                    conn.Close();
+        //                }
+        //            }
+        //        }
 
-                return enable_stock_processing_in_memory;
-            }
-        }
+        //        return enable_stock_processing_in_memory;
+        //    }
+        //}
                 
 
 

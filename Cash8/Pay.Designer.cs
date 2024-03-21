@@ -36,6 +36,7 @@
             this.button1 = new System.Windows.Forms.Button();
             this.button_pay = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.checkBox_payment_by_sbp = new System.Windows.Forms.CheckBox();
             this.label9 = new System.Windows.Forms.Label();
             this.non_cash_sum_kop = new System.Windows.Forms.TextBox();
             this.non_cash_sum = new System.Windows.Forms.TextBox();
@@ -50,7 +51,6 @@
             this.pay_bonus_many = new System.Windows.Forms.TextBox();
             this.pay_bonus = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.checkBox_payment_by_sbp = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -186,6 +186,19 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(800, 600);
             this.panel1.TabIndex = 0;
+            // 
+            // checkBox_payment_by_sbp
+            // 
+            this.checkBox_payment_by_sbp.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.checkBox_payment_by_sbp.Font = new System.Drawing.Font("Microsoft Sans Serif", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.checkBox_payment_by_sbp.Location = new System.Drawing.Point(338, 351);
+            this.checkBox_payment_by_sbp.Name = "checkBox_payment_by_sbp";
+            this.checkBox_payment_by_sbp.Size = new System.Drawing.Size(96, 43);
+            this.checkBox_payment_by_sbp.TabIndex = 19;
+            this.checkBox_payment_by_sbp.Text = "СБП";
+            this.checkBox_payment_by_sbp.UseVisualStyleBackColor = true;
+            this.checkBox_payment_by_sbp.Visible = false;
+            this.checkBox_payment_by_sbp.CheckedChanged += new System.EventHandler(this.checkBox_payment_by_sbp_CheckedChanged);
             // 
             // label9
             // 
@@ -382,18 +395,6 @@
             this.label6.Text = "БОНУСЫ";
             this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.label6.Visible = false;
-            // 
-            // checkBox_payment_by_sbp
-            // 
-            this.checkBox_payment_by_sbp.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.checkBox_payment_by_sbp.Font = new System.Drawing.Font("Microsoft Sans Serif", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.checkBox_payment_by_sbp.Location = new System.Drawing.Point(338, 351);
-            this.checkBox_payment_by_sbp.Name = "checkBox_payment_by_sbp";
-            this.checkBox_payment_by_sbp.Size = new System.Drawing.Size(96, 43);
-            this.checkBox_payment_by_sbp.TabIndex = 19;
-            this.checkBox_payment_by_sbp.Text = "СБП";
-            this.checkBox_payment_by_sbp.UseVisualStyleBackColor = true;
-            this.checkBox_payment_by_sbp.Visible = false;
             // 
             // Pay
             // 

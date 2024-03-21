@@ -68,7 +68,7 @@ namespace Cash8
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(" all_is_filled "+ex.Message);
             }
             
             return result;
@@ -124,11 +124,11 @@ namespace Cash8
             }
             catch (NpgsqlException ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("get_num_doc_on_date_time_write "+ex.Message);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("get_num_doc_on_date_time_write "+ex.Message);
             }
             finally
             {
@@ -160,11 +160,11 @@ namespace Cash8
             }
             catch (NpgsqlException ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("this_check_the_last "+ex.Message);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(" this_check_the_last "+ex.Message);
             }
             finally
             {
@@ -192,7 +192,7 @@ namespace Cash8
                 {
                     MessageBox.Show(" У ВАС УСТАНОВЛЕНА НЕПРАВИЛЬНАЯ ДАТА НА КОМПЬЮТЕРЕ !!! ДАЛЬНЕЙШАЯ РАБОТА С ЧЕКАМИ НЕВОЗМОЖНА !!!");
                     return;
-                }
+                }                
                 if (MainStaticClass.CashDeskNumber != 9)
                 {
                     bool restart = false; bool errors = false;
@@ -205,6 +205,11 @@ namespace Cash8
                     {
                         MessageBox.Show("У вас неверно была установлена версия ФН,НЕОБХОДИМ ПЕРЕЗАПУСК КАССОВОЙ ПРОГРАММЫ !!!");
                         this.Close();
+                    }
+                    if (MainStaticClass.SystemTaxation == 0)
+                    {
+                        MessageBox.Show("У вас не заполнена система налогообложения! Создание и печать чеков невозможна!");
+                        return;
                     }
                 }
                 //Проверка на заполненность обяз реквизитов
@@ -548,7 +553,7 @@ namespace Cash8
             }
             catch (NpgsqlException ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(" loaddocuments "+ex.Message);
             }
             finally
             {
@@ -625,12 +630,12 @@ namespace Cash8
             }
             catch (NpgsqlException ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(" Ошибка при получении номера "+ex.Message);
                 number = "Ошибка при получении номера";
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("Ошибка при получении номера "+ex.Message);
                 number = "Ошибка при получении номера";
             }
             finally
@@ -737,7 +742,8 @@ namespace Cash8
 
         private void btn_update_status_send_Click(object sender, EventArgs e)
         {
-            //timer_Elapsed(null, null);
+            MainStaticClass.Last_Write_Check = DateTime.Now;
+           //timer_Elapsed(null, null);
             get_status_send_document();
         }
 

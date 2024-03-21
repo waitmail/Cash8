@@ -208,7 +208,7 @@ namespace Cash8
             bool result = true;
 
             Cash8.DS.DS ds = MainStaticClass.get_ds();
-            ds.Timeout = 60000;
+            ds.Timeout = 5000;
             //if (MainStaticClass.GetWorkSchema == 2)
             //{
             //    ds.Url = "http://10.21.200.21/DiscountSystem/Ds.asmx"; //"http://localhost:50520/DS.asmx";

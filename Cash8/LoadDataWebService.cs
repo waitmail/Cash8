@@ -397,6 +397,7 @@ namespace Cash8
             public bool PacketIsFull { get; set; }//true если пакет заполннен до конца
             public bool Exchange { get; set; }//true если идет обмен
             public string Exception { get; set; }//true если идет обмен
+            public string TokenMark { get; set; }
 
             void IDisposable.Dispose()
             {
@@ -699,6 +700,7 @@ namespace Cash8
                 queries.Add("Delete from action_header");
                 queries.Add("Delete from advertisement");
                 queries.Add("UPDATE constants SET threshold="+loadPacketData.Threshold.ToString());
+                queries.Add("UPDATE constants SET cdn_token='" + loadPacketData.TokenMark.ToString()+"'");                
 
 
                 if (loadPacketData.ListPromoText != null)

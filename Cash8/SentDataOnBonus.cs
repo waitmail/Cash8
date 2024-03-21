@@ -901,11 +901,56 @@ namespace Cash8
         }
         #endregion
        
-
-
         private void _close__Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void btn_check_marker_Click(object sender, EventArgs e)
+        {
+            ////CDN cdn = new CDN();
+            ////List<string> list_of_strings = new List<string>();
+            ////list_of_strings.Add("01048657365749062155esJWe\u001d93dGVz");
+            ////if (!cdn.check_marker_code(list_of_strings))
+            ////{
+            ////    MessageBox.Show("Неудача");
+            ////}
+            ////else
+            ////{
+            ////    MessageBox.Show("Успешная проверка кода маркировки");
+            ////}
+
+            //if (answer_check_mark != null)
+            //{
+            //    if (!answer_check_mark.codes[0].found) 
+            //    {
+            //        MessageBox.Show("Код маркировки "+ answer_check_mark.codes[0].gtin+" не найден в ГИС МТ");
+            //    }
+            //    if (!answer_check_mark.codes[0].utilised)
+            //    {
+            //        MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + " эмитирован, но нет информации о его нанесении.");
+            //    }
+            //    if (!answer_check_mark.codes[0].verified)
+            //    {
+            //        MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + "  не пройдена криптографическая проверка.");
+            //    }
+            //    if (answer_check_mark.codes[0].sold)
+            //    {
+            //        MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + "  уже выведен из оборота.");
+            //    }
+            //    if (answer_check_mark.codes[0].isBlocked)
+            //    {
+            //        MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + "  заблокирован по решению ОГВ.");
+            //    }
+            //    if ((!answer_check_mark.codes[0].realizable)&&(!answer_check_mark.codes[0].sold))
+            //    {
+            //        MessageBox.Show("Для кода маркировки " + answer_check_mark.codes[0].gtin + " нет информации о вводе в оборот.");
+            //    }
+            //    if (answer_check_mark.codes[0].expireDate>=DateTime.Now)
+            //    {
+            //        MessageBox.Show("У товара с кодом маркировки " + answer_check_mark.codes[0].gtin + "  истек срок годности.");
+            //    }
+            //}
         }
     }
 }

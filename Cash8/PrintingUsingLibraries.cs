@@ -417,7 +417,7 @@ namespace Cash8
 
             foreach (ListViewItem lvi in check.listView1.Items)
             {
-                fptr.setParam(AtolConstants.LIBFPTR_PARAM_COMMODITY_NAME, lvi.SubItems[1].Text.Trim());
+                fptr.setParam(AtolConstants.LIBFPTR_PARAM_COMMODITY_NAME, lvi.SubItems[0].Text.Trim() + " " + lvi.SubItems[1].Text.Trim());
                 fptr.setParam(AtolConstants.LIBFPTR_PARAM_PRICE, lvi.SubItems[5].Text.Replace(",", "."));
                 fptr.setParam(AtolConstants.LIBFPTR_PARAM_MEASUREMENT_UNIT, AtolConstants.LIBFPTR_IU_PIECE);
                 fptr.setParam(AtolConstants.LIBFPTR_PARAM_QUANTITY, lvi.SubItems[3].Text);
@@ -563,6 +563,8 @@ namespace Cash8
             {
                 // Документ не закрылся. Требуется его отменить (если это чек) и сформировать заново
                 fptr.cancelReceipt();
+                MessageBox.Show(String.Format("Не удалось напечатать документ (Ошибка \"{0}\"). Устраните неполадку и повторите.", fptr.errorDescription()));
+                error = true;               
                 //fptr.close();
                 return;
             }
@@ -655,14 +657,24 @@ namespace Cash8
         {
             bool error = false;
 
+            //if (check.itsnew)
+            //{
+            //    if (variant == 0)
+            //    {
+            //        if (!check.write_new_document(output, output, "0", "0", true, cash_money, non_cash_money, "0", "0"))
+            //        {
+            //            return;
+            //        }
+            //    }
+            //}
             //***************************************************************************          
 
-            if (MainStaticClass.SystemTaxation == 0)
-            {
-                MessageBox.Show("В константах не опрелена система налогобложения, печать чеков невозможна");
-                return;
-            }
-                        
+            //if (MainStaticClass.SystemTaxation == 0)
+            //{
+            //    MessageBox.Show("В константах не опрелена система налогобложения, печать чеков невозможна");
+            //    return;
+            //}
+
             IFptr fptr = MainStaticClass.FPTR;
             //setConnectSetting(fptr);
             if (!fptr.isOpened())
@@ -858,7 +870,7 @@ namespace Cash8
                     }
                 }
 
-                fptr.setParam(AtolConstants.LIBFPTR_PARAM_COMMODITY_NAME, lvi.SubItems[1].Text.Trim());
+                fptr.setParam(AtolConstants.LIBFPTR_PARAM_COMMODITY_NAME, lvi.SubItems[0].Text.Trim() + " " + lvi.SubItems[1].Text.Trim());
                 fptr.setParam(AtolConstants.LIBFPTR_PARAM_PRICE, lvi.SubItems[5].Text.Replace(",", "."));
                 fptr.setParam(AtolConstants.LIBFPTR_PARAM_MEASUREMENT_UNIT, AtolConstants.LIBFPTR_IU_PIECE);
                 fptr.setParam(AtolConstants.LIBFPTR_PARAM_QUANTITY, lvi.SubItems[3].Text);

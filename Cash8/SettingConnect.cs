@@ -1069,7 +1069,11 @@ namespace Cash8
             queries.Add("ALTER TABLE public.constants ADD COLUMN printing_using_libraries boolean DEFAULT false;COMMENT ON COLUMN public.constants.printing_using_libraries IS 'Печать с использованием библиотек';");
             queries.Add("ALTER TABLE public.constants ADD COLUMN fn_sreial_port character varying(20) COLLATE pg_catalog.default;");
             queries.Add("ALTER TABLE public.deleted_items ADD COLUMN guid character varying(36) COLLATE pg_catalog.default;");
-            queries.Add("ALTER TABLE public.checks_header ADD COLUMN payment_by_sbp boolean boolean NOT NULL DEFAULT false;");
+            queries.Add("ALTER TABLE public.checks_header ADD COLUMN payment_by_sbp boolean NOT NULL DEFAULT false;");
+            queries.Add("ALTER TABLE checks_header ALTER COLUMN id_transaction_terminal TYPE varchar(32);");
+            queries.Add("ALTER TABLE  public.constants ALTER COLUMN cdn_token TYPE character varying(36);");
+            queries.Add("ALTER TABLE public.constants ADD COLUMN cdn_token character varying(36) COLLATE pg_catalog.default;");
+            queries.Add("ALTER TABLE public.constants ADD COLUMN enable_cdn_markers boolean DEFAULT false;");
 
             foreach (string str in queries)
             {

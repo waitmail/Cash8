@@ -50,15 +50,13 @@
             this.txtB_work_schema = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.txtB_version_fn = new System.Windows.Forms.TextBox();
-            this.checkBox_enable_stock_processing_in_memory = new System.Windows.Forms.CheckBox();
+            this.checkBox_enable_cdn_markers = new System.Windows.Forms.CheckBox();
             this.label5 = new System.Windows.Forms.Label();
             this.txtB_id_acquiring_terminal = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.txtB_ip_address_acquiring_terminal = new System.Windows.Forms.TextBox();
             this.checkBox_self_service_kiosk = new System.Windows.Forms.CheckBox();
             this.groupBox_acquiring_terminal = new System.Windows.Forms.GroupBox();
-            this.checkBox_one_monitors_connected = new System.Windows.Forms.CheckBox();
-            this.checkBox_version2_marking = new System.Windows.Forms.CheckBox();
             this.checkBox_webservice_authorize = new System.Windows.Forms.CheckBox();
             this.checkBox_static_guid_in_print = new System.Windows.Forms.CheckBox();
             this.checkBox_printing_using_libraries = new System.Windows.Forms.CheckBox();
@@ -268,16 +266,15 @@
             this.txtB_version_fn.Size = new System.Drawing.Size(42, 20);
             this.txtB_version_fn.TabIndex = 69;
             // 
-            // checkBox_enable_stock_processing_in_memory
+            // checkBox_enable_cdn_markers
             // 
-            this.checkBox_enable_stock_processing_in_memory.AutoSize = true;
-            this.checkBox_enable_stock_processing_in_memory.Enabled = false;
-            this.checkBox_enable_stock_processing_in_memory.Location = new System.Drawing.Point(209, 78);
-            this.checkBox_enable_stock_processing_in_memory.Name = "checkBox_enable_stock_processing_in_memory";
-            this.checkBox_enable_stock_processing_in_memory.Size = new System.Drawing.Size(212, 17);
-            this.checkBox_enable_stock_processing_in_memory.TabIndex = 70;
-            this.checkBox_enable_stock_processing_in_memory.Text = "Включить обработку акций в памяти";
-            this.checkBox_enable_stock_processing_in_memory.UseVisualStyleBackColor = true;
+            this.checkBox_enable_cdn_markers.AutoSize = true;
+            this.checkBox_enable_cdn_markers.Location = new System.Drawing.Point(209, 78);
+            this.checkBox_enable_cdn_markers.Name = "checkBox_enable_cdn_markers";
+            this.checkBox_enable_cdn_markers.Size = new System.Drawing.Size(165, 17);
+            this.checkBox_enable_cdn_markers.TabIndex = 70;
+            this.checkBox_enable_cdn_markers.Text = "Включить CDN маркировку";
+            this.checkBox_enable_cdn_markers.UseVisualStyleBackColor = true;
             // 
             // label5
             // 
@@ -332,26 +329,6 @@
             this.groupBox_acquiring_terminal.TabStop = false;
             this.groupBox_acquiring_terminal.Text = "Настройки эквайриногов терминала";
             // 
-            // checkBox_one_monitors_connected
-            // 
-            this.checkBox_one_monitors_connected.AutoSize = true;
-            this.checkBox_one_monitors_connected.Location = new System.Drawing.Point(209, 105);
-            this.checkBox_one_monitors_connected.Name = "checkBox_one_monitors_connected";
-            this.checkBox_one_monitors_connected.Size = new System.Drawing.Size(156, 17);
-            this.checkBox_one_monitors_connected.TabIndex = 78;
-            this.checkBox_one_monitors_connected.Text = "Подключен один монитор";
-            this.checkBox_one_monitors_connected.UseVisualStyleBackColor = true;
-            // 
-            // checkBox_version2_marking
-            // 
-            this.checkBox_version2_marking.AutoSize = true;
-            this.checkBox_version2_marking.Location = new System.Drawing.Point(209, 137);
-            this.checkBox_version2_marking.Name = "checkBox_version2_marking";
-            this.checkBox_version2_marking.Size = new System.Drawing.Size(137, 17);
-            this.checkBox_version2_marking.TabIndex = 79;
-            this.checkBox_version2_marking.Text = "Версия маркировки 2";
-            this.checkBox_version2_marking.UseVisualStyleBackColor = true;
-            // 
             // checkBox_webservice_authorize
             // 
             this.checkBox_webservice_authorize.AutoSize = true;
@@ -365,7 +342,7 @@
             // checkBox_static_guid_in_print
             // 
             this.checkBox_static_guid_in_print.AutoSize = true;
-            this.checkBox_static_guid_in_print.Location = new System.Drawing.Point(209, 42);
+            this.checkBox_static_guid_in_print.Location = new System.Drawing.Point(209, 48);
             this.checkBox_static_guid_in_print.Name = "checkBox_static_guid_in_print";
             this.checkBox_static_guid_in_print.Size = new System.Drawing.Size(231, 17);
             this.checkBox_static_guid_in_print.TabIndex = 81;
@@ -411,13 +388,11 @@
             this.Controls.Add(this.checkBox_printing_using_libraries);
             this.Controls.Add(this.checkBox_static_guid_in_print);
             this.Controls.Add(this.checkBox_webservice_authorize);
-            this.Controls.Add(this.checkBox_version2_marking);
-            this.Controls.Add(this.checkBox_one_monitors_connected);
             this.Controls.Add(this.checkBox_self_service_kiosk);
             this.Controls.Add(this.txtB_ip_address_acquiring_terminal);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
-            this.Controls.Add(this.checkBox_enable_stock_processing_in_memory);
+            this.Controls.Add(this.checkBox_enable_cdn_markers);
             this.Controls.Add(this.txtB_version_fn);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.txtB_work_schema);
@@ -476,15 +451,13 @@
         private System.Windows.Forms.TextBox txtB_work_schema;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox txtB_version_fn;
-        private System.Windows.Forms.CheckBox checkBox_enable_stock_processing_in_memory;
+        private System.Windows.Forms.CheckBox checkBox_enable_cdn_markers;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox txtB_id_acquiring_terminal;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox txtB_ip_address_acquiring_terminal;
         private System.Windows.Forms.CheckBox checkBox_self_service_kiosk;
         private System.Windows.Forms.GroupBox groupBox_acquiring_terminal;
-        private System.Windows.Forms.CheckBox checkBox_one_monitors_connected;
-        private System.Windows.Forms.CheckBox checkBox_version2_marking;
         private System.Windows.Forms.CheckBox checkBox_webservice_authorize;
         private System.Windows.Forms.CheckBox checkBox_static_guid_in_print;
         private System.Windows.Forms.CheckBox checkBox_printing_using_libraries;

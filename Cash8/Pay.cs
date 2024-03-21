@@ -22,11 +22,14 @@ namespace Cash8
         public bool code_it_is_confirmed = false;//При списании бонусов, присланный код полтвержден клиентом  
         private bool complete = false;
         //private string reference_number = "";
-        private string str_command_sale = @"<?xml version=""1.0"" encoding=""UTF-8""?><request><field id = ""00"">sum</field><field id=""04"">643</field><field id = ""25"" >1</field><field id=""27"">id_terminal</field></request>";
-        string str_command_return_sale = @"<?xml version=""1.0"" encoding=""UTF-8""?><request><field id = ""00"">sum</field><field id=""04"">643</field><field id=""13"">sale_code_authorization_terminal</field><field id=""14"">number_reference</field><field id = ""25"" >29</field><field id=""27"">id_terminal</field></request>";
-        string str_command_cancel_sale = @"<?xml version=""1.0"" encoding=""UTF-8""?><request><field id = ""00"">sum</field><field id=""01"">sale_non_cash_money</field><field id=""04"">643</field><field id = ""25"">4</field><field id=""27"">id_terminal</field><field id=""13"">sale_code_authorization_terminal</field><field id=""14"">number_reference</field></request>";
-        //string str_command_cancel_sale = @"<?xml version=""1.0"" encoding=""UTF-8""?><request><field id = ""00"" >sum</field><field id=""04"">643</field><field id=""14"">number_reference</field><field id = ""25"" >4</field><field id=""27"">id_terminal</field></request>";
-        string str_command_sale_sbp = @"<?xml version=""1.0"" encoding=""UTF-8""?><request><field id = ""00"">sum</field><field id=""04"">643</field><field id=""14"">guid</field><field id = ""25"" >1</field><field id=""27"">id_terminal</field><field id=""53"">""115""</field></request>";
+        private string str_command_sale     = @"<?xml version=""1.0"" encoding=""UTF-8""?><request><field id = ""00"">sum</field><field id=""04"">643</field><field id = ""25"" >1</field><field id=""27"">id_terminal</field></request>";
+        string str_return_sale      = @"<?xml version=""1.0"" encoding=""UTF-8""?><request><field id = ""00"">sum</field><field id=""04"">643</field><field id=""13"">sale_code_authorization_terminal</field><field id=""14"">number_reference</field><field id = ""25"" >29</field><field id=""27"">id_terminal</field></request>";
+        string str_cancel_sale      = @"<?xml version=""1.0"" encoding=""UTF-8""?><request><field id = ""00"">sum</field><field id=""01"">sale_non_cash_money</field><field id=""04"">643</field><field id = ""25"">4</field><field id=""27"">id_terminal</field><field id=""13"">sale_code_authorization_terminal</field><field id=""14"">number_reference</field></request>";
+        //string str_command_cancel_sale    = @"<?xml version=""1.0"" encoding=""UTF-8""?><request><field id = ""00"" >sum</field><field id=""04"">643</field><field id=""14"">number_reference</field><field id = ""25"" >4</field><field id=""27"">id_terminal</field></request>";
+        string str_sale_sbp         = @"<?xml version=""1.0"" encoding=""UTF-8""?><request><field id = ""00"">sum</field><field id=""04"">643</field><field id=""14"">guid</field><field id = ""25"" >1</field><field id=""27"">id_terminal</field><field id=""53"">115</field></request>";
+        string str_payment_status_sale_sbp  = @"<?xml version=""1.0"" encoding=""UTF-8""?><request><field id = ""00"">sum</field><field id=""04"">643</field><field id=""13"">sale_code_authorization_terminal</field><field id = ""25"" >1</field><field id=""27"">id_terminal</field><field id=""53"">117</field></request>";
+        string str_return_sale_sbp  = @"<?xml version=""1.0"" encoding=""UTF-8""?><request><field id = ""00"">sum</field><field id=""04"">643</field><field id=""13"">sale_code_authorization_terminal</field><field id=""14"">guid</field><field id = ""25"" >29</field><field id=""27"">id_terminal</field><field id=""53"">118</field></request>";
+        string str_payment_status_return_sale_sbp = @"<?xml version=""1.0"" encoding=""UTF-8""?><request><field id = ""00"">sum</field><field id=""04"">643</field><field id=""13"">sale_code_authorization_terminal</field><field id=""14"">guid</field><field id = ""25"" >29</field><field id=""27"">id_terminal</field><field id=""53"">119</field></request>";
         public Cash_check cc = null;
           
 
@@ -131,7 +134,7 @@ namespace Cash8
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("non_cash_KeyUp "+ex.Message);
             }
             int start = non_cash_sum.SelectionStart;
             string _sum_ = non_cash_sum.Text;
@@ -323,7 +326,7 @@ namespace Cash8
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(" pay_bonus_KeyUp "+ex.Message);
             }
             int start = pay_bonus.SelectionStart;
             string _sum_ = pay_bonus.Text;
@@ -661,7 +664,7 @@ namespace Cash8
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(" calculate "+ex.Message);
             }
 
             int start = cash_sum.SelectionStart;
@@ -724,7 +727,7 @@ namespace Cash8
 			}
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(" cash_sum_KeyUp "+ex.Message);
             }
             int start = cash_sum.SelectionStart;
             string _sum_ = cash_sum.Text;
@@ -887,6 +890,10 @@ namespace Cash8
             if (MainStaticClass.Nick_Shop == "A01")
             {
                 checkBox_payment_by_sbp.Visible = true;
+            }
+            if (cc.payment_by_sbp_sales)
+            {
+                checkBox_payment_by_sbp.Checked = true;                
             }
         }
 
@@ -1166,25 +1173,91 @@ namespace Cash8
                     {
                         string url = "http://" + MainStaticClass.IpAddressAcquiringTerminal;
                         string money = ((Convert.ToDouble(this.non_cash_sum.Text.Trim()) + Convert.ToDouble(non_cash_sum_kop.Text) / 100) * 100).ToString();
-                        string _str_command_sale_ = str_command_sale_sbp.Replace("sum", money);
-                        _str_command_sale_ = _str_command_sale_.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
-                        _str_command_sale_ = _str_command_sale_.Replace("guid", cc.guid);
+                        string _str_sale_sbp = str_sale_sbp.Replace("sum", money);
+                        _str_sale_sbp = _str_sale_sbp.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
+                        _str_sale_sbp = _str_sale_sbp.Replace("guid", cc.guid);
                         ////MessageBox.Show(_str_command_sale_);
                         AnswerTerminal answerTerminal = new AnswerTerminal();
-                        send_command_acquiring_terminal(url, _str_command_sale_, ref complete, ref answerTerminal);
+                        send_command_acquiring_terminal(url, _str_sale_sbp, ref complete, ref answerTerminal);                        
                         if (!complete)//ответ от терминала не удовлетворительный, значит операция в обработке необходим дополнительный запрос
-                        {
-                            //calculate();
-                            //cc.recharge_note = "";
-                            //MessageBox.Show(" Неудачная попытка получения оплаты ");
-                            //return;
-                        }
-                        else
-                        {
-                            //cc.code_authorization_terminal = answerTerminal.code_authorization;     //13 поле
-                            //cc.id_transaction_terminal = answerTerminal.number_reference;  //14 поле
-                        }
+                        {                            
+                            string _str_payment_status_sale_sbp = str_payment_status_sale_sbp.Replace("sum", money);
+                            _str_payment_status_sale_sbp = _str_payment_status_sale_sbp.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
+                            _str_payment_status_sale_sbp = _str_payment_status_sale_sbp.Replace("sale_code_authorization_terminal", cc.guid);                            
+                            while (1==1)
+                            {
+                                answerTerminal = new AnswerTerminal();
+                                send_command_acquiring_terminal(url, _str_payment_status_sale_sbp, ref complete, ref answerTerminal);
+                                if (complete)//получен ответ об успешной оплате, прерываем цикл
+                                {
+                                    break;
+                                }
+                                else
+                                {
+                                    if (answerTerminal.сode_response_in_15_field == "R00")//Операция в обработке 
+                                    {
+                                        if (answerTerminal.сode_response_in_39_field == "0")
+                                        {
+                                            continue;
+                                        }
+                                    }
 
+                                        if (answerTerminal.сode_response_in_15_field == "R10")
+                                    {
+                                        MessageBox.Show(" Операция отклонена ");
+                                        break;
+                                    }
+                                    else if (answerTerminal.сode_response_in_15_field == "R11")
+                                    {
+                                        MessageBox.Show(" Операции по QR коду не существует. ");
+                                        break;
+                                    }
+                                    else if (answerTerminal.сode_response_in_15_field == "R12")
+                                    {
+                                        if (answerTerminal.сode_response_in_39_field == "0")
+                                        {
+                                            MessageBox.Show(" Не получен ответ на запрос статуса ");
+                                            break;
+                                        }
+                                        else if (answerTerminal.сode_response_in_39_field == "16")
+                                        {
+                                            MessageBox.Show(" Не получен ответ на запрос QR - кода ");
+                                            break;
+                                        }                                    
+                                    }
+                                    else if (answerTerminal.сode_response_in_15_field == "R13")
+                                    {
+                                        MessageBox.Show(" Запрос статуса не отправлен ");
+                                        break;
+                                    }
+                                    else if (answerTerminal.сode_response_in_15_field == "R14")
+                                    {
+                                        MessageBox.Show(" Операция не добавлена в базу транзакций терминала ");
+                                        break;
+                                    }
+                                    if (answerTerminal.error)
+                                    {
+                                        if (MessageBox.Show(" Продолжать опрос об оплате клиента по СБП ", "Продолжать опрос об оплате клиента по СБП", MessageBoxButtons.YesNo) == DialogResult.No)
+                                        {
+                                            //пользователь отказался от дальнейшего ожидания информации об оплате
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                            if (!complete)//если не удалось получить информацию об успешной оплате
+                            {
+                                calculate();
+                                cc.recharge_note = "";
+                                MessageBox.Show(" Неудачная попытка получения оплаты ","СБП");
+                                return;
+                            }
+                        }
+                        else//был сразу получен успешный ответ по по оплате СБП
+                        {
+                            cc.code_authorization_terminal = answerTerminal.code_authorization;     //13 поле
+                            cc.id_transaction_terminal = answerTerminal.number_reference;           //14 поле
+                        }
                     }
                 }
                 
@@ -1192,7 +1265,8 @@ namespace Cash8
                 //если это возврат и если сумма безнала меньше 1 тогда копейки прибавить к наличным
                 string sum_cash_pay = (Convert.ToDecimal(cash_sum.Text) - Convert.ToDecimal(remainder.Text)).ToString().Replace(",", ".");
                 string non_sum_cash_pay = (get_non_cash_sum(1)).ToString().Replace(",", ".");
-                cc.print_to_button = 0;                                          
+                cc.print_to_button = 0;
+                cc.payment_by_sbp = (checkBox_payment_by_sbp.CheckState == CheckState.Checked ? true : false);
                 if (cc.it_is_paid(cash_sum.Text, cc.calculation_of_the_sum_of_the_document().ToString().Replace(",", "."), remainder.Text.Replace(",", "."),
                 (pay_bonus_many.Text.Trim() == "" ? "0" : pay_bonus_many.Text.Trim()),
                 true,
@@ -1228,35 +1302,108 @@ namespace Cash8
                     //Поскольку нет автоматической конвертации отмены в возврат, то необходимо 2 варианта печати для возвратов                     
                     DateTime today = DateTime.Today;
                     AnswerTerminal answerTerminal = new AnswerTerminal();
-                    if (cc.sale_date.CompareTo(today) < 0)
+                    if (checkBox_payment_by_sbp.CheckState != CheckState.Checked)
                     {
-                        string _str_command_return_sale_ = str_command_return_sale.Replace("sum", money);
-                        _str_command_return_sale_ = _str_command_return_sale_.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
-                        _str_command_return_sale_ = _str_command_return_sale_.Replace("sale_code_authorization_terminal", cc.sale_code_authorization_terminal);
-                        _str_command_return_sale_ = _str_command_return_sale_.Replace("number_reference", cc.sale_id_transaction_terminal);
-                        send_command_acquiring_terminal(url, _str_command_return_sale_, ref complete, ref answerTerminal);
-                    }
-                    else
-                    {
-                        string _str_command_return_sale_ = str_command_cancel_sale.Replace("sum", money);
-                        _str_command_return_sale_ = _str_command_return_sale_.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
-                        _str_command_return_sale_ = _str_command_return_sale_.Replace("sale_code_authorization_terminal", cc.sale_code_authorization_terminal);
-                        _str_command_return_sale_ = _str_command_return_sale_.Replace("number_reference", cc.sale_id_transaction_terminal);
-                        if (money.Trim() != (cc.sale_non_cash_money * 100).ToString().Trim())//Это частичная отмена.
+                        if (cc.sale_date.CompareTo(today) < 0)
                         {
-                            _str_command_return_sale_ = _str_command_return_sale_.Replace("sale_non_cash_money", (cc.sale_non_cash_money * 100).ToString());
+                            string _str_return_sale_ = str_return_sale.Replace("sum", money);
+                            _str_return_sale_ = _str_return_sale_.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
+                            _str_return_sale_ = _str_return_sale_.Replace("sale_code_authorization_terminal", cc.sale_code_authorization_terminal);
+                            _str_return_sale_ = _str_return_sale_.Replace("number_reference", cc.sale_id_transaction_terminal);
+                            send_command_acquiring_terminal(url, _str_return_sale_, ref complete, ref answerTerminal);
                         }
                         else
                         {
-                            _str_command_return_sale_ = _str_command_return_sale_.Replace(@"<field id=""01"">sale_non_cash_money</field>", "");
+                            string _str_return_sale_ = str_cancel_sale.Replace("sum", money);
+                            _str_return_sale_ = _str_return_sale_.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
+                            _str_return_sale_ = _str_return_sale_.Replace("sale_code_authorization_terminal", cc.sale_code_authorization_terminal);
+                            _str_return_sale_ = _str_return_sale_.Replace("number_reference", cc.sale_id_transaction_terminal);
+                            if (money.Trim() != (cc.sale_non_cash_money * 100).ToString().Trim())//Это частичная отмена.
+                            {
+                                _str_return_sale_ = _str_return_sale_.Replace("sale_non_cash_money", (cc.sale_non_cash_money * 100).ToString());
+                            }
+                            else
+                            {
+                                _str_return_sale_ = _str_return_sale_.Replace(@"<field id=""01"">sale_non_cash_money</field>", "");
+                            }
+
+                            send_command_acquiring_terminal(url, _str_return_sale_, ref complete, ref answerTerminal);
+                        }
+                    }
+                    else
+                    {
+                        string _str_return_sale_sbp_ = str_return_sale_sbp.Replace("sum", money);
+                        _str_return_sale_sbp_ = _str_return_sale_sbp_.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
+                        _str_return_sale_sbp_ = _str_return_sale_sbp_.Replace("sale_code_authorization_terminal", cc.sale_id_transaction_terminal);// cc.sale_code_authorization_terminal);
+                        _str_return_sale_sbp_ = _str_return_sale_sbp_.Replace("guid", cc.guid_sales);
+                        send_command_acquiring_terminal(url, _str_return_sale_sbp_, ref complete, ref answerTerminal);
+                        if (!complete)//ответ от терминала не удовлетворительный
+                        {
+                            string _str_payment_status_return_sale_sbp_ = str_payment_status_return_sale_sbp.Replace("sum", money);
+                            _str_payment_status_return_sale_sbp_ = _str_payment_status_return_sale_sbp_.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
+                            _str_payment_status_return_sale_sbp_ = _str_payment_status_return_sale_sbp_.Replace("sale_code_authorization_terminal", cc.sale_id_transaction_terminal);// cc.sale_code_authorization_terminal);
+                            _str_payment_status_return_sale_sbp_ = _str_payment_status_return_sale_sbp_.Replace("guid", cc.guid_sales);
+                            //send_command_acquiring_terminal(url, _str_payment_status_return_sale_sbp_, ref complete, ref answerTerminal);
+                            while (1 == 1)
+                            {
+                                answerTerminal = new AnswerTerminal();
+                                send_command_acquiring_terminal(url, _str_payment_status_return_sale_sbp_, ref complete, ref answerTerminal);
+                                if (complete)//получен ответ об успешной оплате, прерываем цикл
+                                {
+                                    break;
+                                }
+                                else
+                                {
+                                    if (answerTerminal.сode_response_in_15_field == "R10")
+                                    {
+                                        MessageBox.Show(" Операция отклонена ");
+                                        break;
+                                    }
+                                    else if (answerTerminal.сode_response_in_15_field == "R11")
+                                    {
+                                        MessageBox.Show(" Операции по QR коду не существует. ");
+                                        break;
+                                    }
+                                    else if (answerTerminal.сode_response_in_15_field == "R12")
+                                    {
+                                        if (answerTerminal.сode_response_in_39_field == "0")
+                                        {
+                                            MessageBox.Show(" Не получен ответ на запрос статуса ");
+                                            break;
+                                        }
+                                        else if (answerTerminal.сode_response_in_39_field == "16")
+                                        {
+                                            MessageBox.Show(" Не получен ответ на запрос QR - кода ");
+                                            break;
+                                        }
+                                    }
+                                    else if (answerTerminal.сode_response_in_15_field == "R13")
+                                    {
+                                        MessageBox.Show(" Запрос статуса не отправлен ");
+                                        break;
+                                    }
+                                    else if (answerTerminal.сode_response_in_15_field == "R14")
+                                    {
+                                        MessageBox.Show(" Операция не добавлена в базу транзакций терминала ");
+                                        break;
+                                    }
+                                    if (answerTerminal.error)
+                                    {
+                                        if (MessageBox.Show(" Продолжать опрос по возврату оплаты по СБП ", "Опрос по возврату оплаты по СБП", MessageBoxButtons.YesNo) == DialogResult.No)
+                                        {
+                                            //пользователь отказался от дальнейшего ожидания информации об оплате
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
                         }
 
-                        send_command_acquiring_terminal(url, _str_command_return_sale_, ref complete, ref answerTerminal);
                     }
                     if (!complete)//ответ от терминала не удовлетворительный
                     {
                         calculate();
-                        MessageBox.Show(" Неудачная попытка получения оплаты ");
+                        MessageBox.Show(" Неудачная попытка возврата оплаты ","СБП");
                         return;
                     }
                     else
@@ -1278,6 +1425,11 @@ namespace Cash8
         {
             public string code_authorization { get; set; }
             public string number_reference { get; set; }
+            public string сode_response_in_15_field { get; set; }
+            public string сode_response_in_39_field { get; set; }
+            public bool error { get; set; }
+
+            
 
             public AnswerTerminal()
             {
@@ -1345,6 +1497,7 @@ namespace Cash8
                         {
                             if (field.Id == "39")
                             {
+                                answerTerminal.сode_response_in_39_field = field.Text;
                                 if (field.Text.Trim() == "1")
                                 {
                                     status = true;
@@ -1360,15 +1513,19 @@ namespace Cash8
                             }
                             else if (field.Id == "14")
                             {
-                                answerTerminal.number_reference = field.Text.Trim();                                
+                                answerTerminal.number_reference = field.Text.Trim();
+                            }
+                            else if (field.Id == "15")
+                            {
+                                answerTerminal.сode_response_in_15_field = field.Text.Trim();                                
                             }
                             else if (field.Id == "90")
-                            {                                
+                            {
                                 cc.recharge_note = field.Text.Trim();
                                 int num_pos = cc.recharge_note.IndexOf("(КАССИР)");
                                 if (num_pos > 0)
                                 {
-                                    cc.recharge_note = cc.recharge_note.Substring(0,num_pos+8);
+                                    cc.recharge_note = cc.recharge_note.Substring(0, num_pos + 8);
                                     //if ((answerTerminal.code_authorization == "sbpnspk")&&(answerTerminal.number_reference==""))//Оплата по сбп и не вернулся номер транзакции
                                     //{
                                     //    int num_pos1 = cc.recharge_note.IndexOf("TRN:");
@@ -1393,11 +1550,13 @@ namespace Cash8
             {
                 status = false;
                 MessageBox.Show(" Ошибка при оплате по карте  " + ex.Message);
+                answerTerminal.error = true;
             }
             catch (Exception ex)
             {
                 status = false;
                 MessageBox.Show(" Ошибка при оплате по карте  " + ex.Message);
+                answerTerminal.error = true;
             }
         }
 
@@ -2103,5 +2262,16 @@ namespace Cash8
 
     }
 
-}
+        private void checkBox_payment_by_sbp_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cc.payment_by_sbp_sales)
+            {
+                if (checkBox_payment_by_sbp.CheckState != CheckState.Checked)
+                {                    
+                    non_cash_sum.Text = "0";
+                    calculate();
+                }
+            }
+        }
+    }
 }
