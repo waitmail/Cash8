@@ -2958,10 +2958,10 @@ namespace Cash8
                                             {
                                                 lvi.SubItems[14].Text = mark_str;//добавим в чек qr код                                        
                                             }
-                                            else
-                                            {
-                                                lvi.SubItems[14].Text = this.qr_code;//добавим в чек qr код                                        
-                                            }
+                                            //else
+                                            //{
+                                            //    lvi.SubItems[14].Text = this.qr_code;//добавим в чек qr код                                        
+                                            //}
                                                                                  //}
                                                                                  //else
                                                                                  //{

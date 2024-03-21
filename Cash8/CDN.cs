@@ -280,11 +280,11 @@ namespace Cash8
                     MessageBox.Show("Список CDN серверов пустой");
                     return result_check;
                 }
-                MessageBox.Show(cdn_list.hosts[0].host, "check_marker_code");
-                MessageBox.Show(Application.StartupPath);
-                File.WriteAllText("Application.StartupPath/cdn.txt",cdn_list.hosts[0].host);
-                string url = cdn_list.hosts[0].host + codes_url;
-                //string url = "https://cdn01.am.crptech.ru"+ codes_url;
+                //MessageBox.Show(cdn_list.hosts[0].host, "check_marker_code");
+                //MessageBox.Show(Application.StartupPath);
+                //File.WriteAllText("Application.StartupPath/cdn.txt",cdn_list.hosts[0].host);
+                //string url = cdn_list.hosts[0].host + codes_url;
+                string url = "https://cdn01.crpt.ru"+ codes_url;
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                 request.Method = "POST";
 
