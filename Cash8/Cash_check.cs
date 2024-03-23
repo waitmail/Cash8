@@ -102,6 +102,11 @@ namespace Cash8
         public Dictionary<string, Cash_check.CdnMarkerDateTime> cdn_markers_date_time = new Dictionary<string, Cash_check.CdnMarkerDateTime>();
         
         System.Windows.Forms.Timer timer = null;
+
+        HttpWebRequest request = null;
+        //(HttpWebRequest)WebRequest.Create("url");
+        //request.KeepAlive = true;
+        //request.Method = "GET"; // Или другой метод, который вы используете
         
         public class CdnMarkerDateTime
         {
@@ -9007,13 +9012,37 @@ namespace Cash8
                 }
                 if (MainStaticClass.SystemTaxation == 3)
                 {
-                    fiscall_print_disburse_2_3(cash_money, non_cash_money, 0, guid);
-                    fiscall_print_disburse_2_3(cash_money, non_cash_money, 1, guid1);
+                    if (MainStaticClass.PrintingUsingLibraries == 0)
+                    {
+                        this.fiscall_print_disburse_2_3(cash_money, non_cash_money, 0, this.guid);
+                        this.fiscall_print_disburse_2_3(cash_money, non_cash_money, 1, this.guid1);
+                    }
+                    else
+                    {
+                        PrintingUsingLibraries printingUsingLibraries = new PrintingUsingLibraries();
+                        printingUsingLibraries.print_sell_2_3_or_return_sell(this, 0);
+                        printingUsingLibraries.print_sell_2_3_or_return_sell(this, 1);
+                        this.Close();
+                    }
                 }
                 else
                 {
-                    fiscall_print_disburse_2(cash_money, non_cash_money);
-                }                
+                    if (MainStaticClass.PrintingUsingLibraries == 0)
+                    {
+                        this.fiscall_print_disburse_2(cash_money, non_cash_money);
+                    }
+                    else
+                    {
+                        string sum_pay = this.calculation_of_the_sum_of_the_document().ToString();
+                        write_new_document(sum_pay, sum_pay, "0", "0", true, cash_money, non_cash_money, "0", "0");
+                        if (this.itsnew)
+                        {
+                            PrintingUsingLibraries printingUsingLibraries = new PrintingUsingLibraries();
+                            printingUsingLibraries.print_sell_2_or_return_sell(this);
+                        }
+                        this.Close();
+                    }
+                }
             }
             else
             {

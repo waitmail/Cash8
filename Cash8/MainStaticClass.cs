@@ -136,14 +136,14 @@ namespace Cash8
                         CDN cdn = new CDN();
                         CDN_list = cdn.get_cdn_list();
                     }
-                    else
-                    {
-                        if ((CDN_list.createDateTime - DateTime.Now).Hours > 0)//прошел 1 час опросим доступность серверов
-                        {
-                            CDN cdn = new CDN();
-                            CDN_list = cdn.get_cdn_list(CDN_list);
-                        }
-                    }
+                    //else
+                    //{
+                    //    if ((CDN_list.createDateTime - DateTime.Now).Hours > 0)//прошел 1 час опросим доступность серверов
+                    //    {
+                    //        CDN cdn = new CDN();
+                    //        CDN_list = cdn.get_cdn_list(CDN_list);
+                    //    }
+                    //}
                 }
                 return CDN_list;
             }
