@@ -2732,7 +2732,7 @@ namespace Cash8
                         //update_record_last_tovar(listView1.Items[this.listView1.Items.Count - 1].SubItems[1].Text, listView1.Items[this.listView1.Items.Count - 1].SubItems[3].Text);
                         bool error = false;
                         int code_marking_error = 0;
-                        if (check_marker_code(select_tovar.Tag.ToString()) > 0)
+                        if (check_sign_marker_code(select_tovar.Tag.ToString()) > 0)
                         {
                             if (!Console.CapsLock)
                             {
@@ -2791,31 +2791,32 @@ namespace Cash8
                                             {
                                                 WortWithMarkingV3 markingV3 = new WortWithMarkingV3();
                                                 mark_str = this.qr_code.Trim();
+                                                mark_str = add_gs1(mark_str);
                                                 //*******************************************************************************************************************************
-                                                string GS1 = Char.ConvertFromUtf32(29);
-                                                if ((mark_str.Length == 83) || (mark_str.Length == 127) || (mark_str.Length == 115))
-                                                {
-                                                    mark_str = mark_str.Insert(31, GS1);
-                                                    mark_str = mark_str.Insert(38, GS1);
-                                                }
+                                                //string GS1 = Char.ConvertFromUtf32(29);
+                                                //if ((mark_str.Length == 83) || (mark_str.Length == 127) || (mark_str.Length == 115))
+                                                //{
+                                                //    mark_str = mark_str.Insert(31, GS1);
+                                                //    mark_str = mark_str.Insert(38, GS1);
+                                                //}
 
-                                                if (mark_str.Length == 37 && mark_str.Substring(16, 2) == "21")
-                                                {
-                                                    //lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
-                                                    mark_str = mark_str.Insert(31, GS1);
-                                                }
+                                                //if (mark_str.Length == 37 && mark_str.Substring(16, 2) == "21")
+                                                //{
+                                                //    //lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
+                                                //    mark_str = mark_str.Insert(31, GS1);
+                                                //}
 
-                                                if (mark_str.Length == 30)
-                                                {
-                                                    //lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(24, GS1);
-                                                    mark_str = mark_str.Insert(24, GS1);
-                                                }
+                                                //if (mark_str.Length == 30)
+                                                //{
+                                                //    //lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(24, GS1);
+                                                //    mark_str = mark_str.Insert(24, GS1);
+                                                //}
 
-                                                if (mark_str.Length == 32)
-                                                {
-                                                    //lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(26, GS1);                                                    
-                                                    mark_str = mark_str.Insert(26, GS1);
-                                                }
+                                                //if (mark_str.Length == 32)
+                                                //{
+                                                //    //lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(26, GS1);                                                    
+                                                //    mark_str = mark_str.Insert(26, GS1);
+                                                //}
 
                                                 foreach (ListViewItem listViewItem4 in this.listView1.Items)
                                                 {
@@ -2833,7 +2834,7 @@ namespace Cash8
                                                     List<string> codes = new List<string>();
                                                     mark_str_cdn = mark_str.Replace("\u001D", "\\u001d");
                                                     codes.Add("mark_str_cdn");
-                                                    if (!cdn.check_marker_code(codes, mark_str, ref this.cdn_markers_date_time, this.numdoc))
+                                                    if (!cdn.check_marker_code(codes, mark_str, ref this.cdn_markers_date_time, this.numdoc, ref request))
                                                     {
                                                         return;
                                                     }
@@ -2953,6 +2954,13 @@ namespace Cash8
                                                         break;
                                                     }
                                                 }
+
+                                                //здесь проверка на корректность 
+                                                if (!error)
+                                                {
+                                                    //check_marker_code_with_cdn
+                                                }
+
                                             }
                                             if (error)
                                             {
@@ -3087,7 +3095,98 @@ namespace Cash8
             write_new_document("0", "0", "0", "0", false, "0", "0", "0", "0");
         }
         //5010182990247
-        
+
+
+            /// <summary>
+            /// Добавить разделитель групп
+            /// </summary>
+            /// <param name="mark_str"></param>
+            /// <returns></returns>
+        private string add_gs1(string mark_str)
+        {
+            string GS1 = Char.ConvertFromUtf32(29);
+            if ((mark_str.Length == 83) || (mark_str.Length == 127) || (mark_str.Length == 115))
+            {
+                mark_str = mark_str.Insert(31, GS1);
+                mark_str = mark_str.Insert(38, GS1);
+            }
+
+            if (mark_str.Length == 37 && mark_str.Substring(16, 2) == "21")
+            {
+                //lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
+                mark_str = mark_str.Insert(31, GS1);
+            }
+
+            if (mark_str.Length == 30)
+            {
+                //lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(24, GS1);
+                mark_str = mark_str.Insert(24, GS1);
+            }
+
+            if (mark_str.Length == 32)
+            {
+                //lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(26, GS1);                                                    
+                mark_str = mark_str.Insert(26, GS1);
+            }
+
+            return mark_str;
+        }
+
+
+        /// <summary>
+        /// Проверить на корректность код маркировки 
+        /// при помощи CDN серверов
+        /// 1. Успех если проверен успешно.
+        /// 2. Успех если нет связи(таймаут или что либо подобное)
+        /// Возвращает -1 если код проверен и он не корректне
+        /// Возвращает 1 если код успешно проверен
+        /// Возвращает 2 если по таймауту не удалось проверить код
+        /// </summary>
+        /// <param name="mark_str"></param>
+        /// <returns></returns>
+        private int check_marker_code_with_cdn(string mark_str)
+        {
+            int result = 0;
+
+            CDN cdn = new CDN();
+            CDN.CDN_List cdn_list = MainStaticClass.CDN_List;
+
+            if (cdn_list == null)//Нет доступных серверов для опроса
+            {
+                result = 2;
+                MainStaticClass.write_event_in_log(" check_marker_code_with_cdn cdn_list = null","Документ",numdoc.ToString());
+                return result;
+            }
+            
+            if (cdn_list.hosts.Count > 0)
+            {
+
+                if (cdn.selection_and_sorting(cdn_list) == 0)
+                {
+                    result = 2;
+                    MainStaticClass.write_event_in_log(" check_marker_code_with_cdn cdn_list != null, но доступных адресов CDN нет", "Документ", numdoc.ToString());
+                    return result;
+                }
+            }
+
+            mark_str = add_gs1(mark_str);          
+            List<string> codes = new List<string>();
+            string mark_str_cdn = mark_str.Replace("\u001D", "\\u001d");
+            codes.Add("mark_str_cdn");
+            if (!cdn.check_marker_code(codes, mark_str, ref this.cdn_markers_date_time, this.numdoc, ref request))
+            {
+                result = -1;
+            }
+            else
+            {
+                result = 1;
+            }
+
+            return result;
+        }
+
+
+
         /// <summary>
         /// Очищаем буфер проверенных КМ
         /// а затем снова его заполняет
@@ -3106,7 +3205,7 @@ namespace Cash8
             }
         }
 
-        private int check_marker_code(string code_tovar)
+        private int check_sign_marker_code(string code_tovar)
         {
             int result = 0;
 
@@ -5498,27 +5597,29 @@ namespace Cash8
                     AddingKmArrayToTableTested.Param param = new AddingKmArrayToTableTested.Param();
                     param.imcType = "auto";
 
-                    string GS1 = Char.ConvertFromUtf32(29);
-                    if ((lvi.SubItems[14].Text.Trim().Length == 83) || (lvi.SubItems[14].Text.Trim().Length == 127) || (lvi.SubItems[14].Text.Trim().Length == 115))
-                    {
-                        lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
-                        lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(38, GS1);
-                    }
+                    //string GS1 = Char.ConvertFromUtf32(29);
+                    //if ((lvi.SubItems[14].Text.Trim().Length == 83) || (lvi.SubItems[14].Text.Trim().Length == 127) || (lvi.SubItems[14].Text.Trim().Length == 115))
+                    //{
+                    //    lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
+                    //    lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(38, GS1);
+                    //}
 
-                    if (lvi.SubItems[14].Text.Trim().Length == 37 && lvi.SubItems[14].Text.Substring(16, 2) == "21")
-                    {
-                        lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
-                    }
+                    //if (lvi.SubItems[14].Text.Trim().Length == 37 && lvi.SubItems[14].Text.Substring(16, 2) == "21")
+                    //{
+                    //    lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
+                    //}
 
-                    if (lvi.SubItems[14].Text.Trim().Length == 30)
-                    {
-                        lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(24, GS1);
-                    }
+                    //if (lvi.SubItems[14].Text.Trim().Length == 30)
+                    //{
+                    //    lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(24, GS1);
+                    //}
 
-                    if (lvi.SubItems[14].Text.Trim().Length == 32)
-                    {
-                        lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(26, GS1);
-                    }
+                    //if (lvi.SubItems[14].Text.Trim().Length == 32)
+                    //{
+                    //    lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(26, GS1);
+                    //}
+
+                    lvi.SubItems[14].Text = add_gs1(lvi.SubItems[14].Text);
 
                     byte[] textAsBytes = Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim());
                     string mark_str = Convert.ToBase64String(textAsBytes);
@@ -5560,28 +5661,29 @@ namespace Cash8
             AddingKmArrayToTableTested.Param param = new AddingKmArrayToTableTested.Param();
             param.imcType = "auto";
 
-            string GS1 = Char.ConvertFromUtf32(29);
-            if ((lvi.SubItems[14].Text.Trim().Length == 83) || (lvi.SubItems[14].Text.Trim().Length == 127) || (lvi.SubItems[14].Text.Trim().Length == 115))
-            {
-                lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
-                lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(38, GS1);
-            }
+            //string GS1 = Char.ConvertFromUtf32(29);
+            //if ((lvi.SubItems[14].Text.Trim().Length == 83) || (lvi.SubItems[14].Text.Trim().Length == 127) || (lvi.SubItems[14].Text.Trim().Length == 115))
+            //{
+            //    lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
+            //    lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(38, GS1);
+            //}
 
-            if (lvi.SubItems[14].Text.Trim().Length == 37 && lvi.SubItems[14].Text.Substring(16, 2) == "21")
-            {
-                lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
-            }
+            //if (lvi.SubItems[14].Text.Trim().Length == 37 && lvi.SubItems[14].Text.Substring(16, 2) == "21")
+            //{
+            //    lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
+            //}
 
-            if (lvi.SubItems[14].Text.Trim().Length == 30)
-            {
-                lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(24, GS1);
-            }
+            //if (lvi.SubItems[14].Text.Trim().Length == 30)
+            //{
+            //    lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(24, GS1);
+            //}
 
-            if (lvi.SubItems[14].Text.Trim().Length == 32)
-            {
-                lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(26, GS1);
-            }
+            //if (lvi.SubItems[14].Text.Trim().Length == 32)
+            //{
+            //    lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(26, GS1);
+            //}
 
+            lvi.SubItems[14].Text = add_gs1(lvi.SubItems[14].Text);
             byte[] textAsBytes = Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim());
             string mark_str = Convert.ToBase64String(textAsBytes);
             param.imc = mark_str;
@@ -5623,32 +5725,33 @@ namespace Cash8
                 {
                     num_strt_km.Add(num_strt_km.Count, lvi.Index + 1);
                     AddingKmArrayToTableTested.Param param = new AddingKmArrayToTableTested.Param();
-                    param.imcType = "auto";                  
+                    param.imcType = "auto";
 
-                    string GS1 = Char.ConvertFromUtf32(29);
-                    if ((lvi.SubItems[14].Text.Trim().Length == 83)  ||
-                        (lvi.SubItems[14].Text.Trim().Length == 127) || 
-                        (lvi.SubItems[14].Text.Trim().Length == 115)) 
-                        
-                    {
-                        lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
-                        lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(38, GS1);
-                    }
+                    //string GS1 = Char.ConvertFromUtf32(29);
+                    //if ((lvi.SubItems[14].Text.Trim().Length == 83)  ||
+                    //    (lvi.SubItems[14].Text.Trim().Length == 127) || 
+                    //    (lvi.SubItems[14].Text.Trim().Length == 115)) 
 
-                    if (lvi.SubItems[14].Text.Trim().Length == 37 && lvi.SubItems[14].Text.Substring(16, 2) == "21")
-                    {
-                        lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
-                    }
+                    //{
+                    //    lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
+                    //    lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(38, GS1);
+                    //}
 
-                    if (lvi.SubItems[14].Text.Trim().Length == 30)
-                    {
-                        lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(24, GS1);
-                    }
+                    //if (lvi.SubItems[14].Text.Trim().Length == 37 && lvi.SubItems[14].Text.Substring(16, 2) == "21")
+                    //{
+                    //    lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
+                    //}
 
-                    if (lvi.SubItems[14].Text.Trim().Length == 32)
-                    {
-                        lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(26, GS1);
-                    }
+                    //if (lvi.SubItems[14].Text.Trim().Length == 30)
+                    //{
+                    //    lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(24, GS1);
+                    //}
+
+                    //if (lvi.SubItems[14].Text.Trim().Length == 32)
+                    //{
+                    //    lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(26, GS1);
+                    //}
+                    lvi.SubItems[14].Text = add_gs1(lvi.SubItems[14].Text);
 
                     byte[] textAsBytes = Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'"));
                     string mark_str = Convert.ToBase64String(textAsBytes);
@@ -5768,28 +5871,29 @@ namespace Cash8
                     num_strt_km.Add(num_strt_km.Count, lvi.Index + 1);
                     AddingKmArrayToTableTested.Param param = new AddingKmArrayToTableTested.Param();
                     param.imcType = "auto";
-                    
-                   string GS1 = Char.ConvertFromUtf32(29);                    
-                   if ((lvi.SubItems[14].Text.Trim().Length == 83) || (lvi.SubItems[14].Text.Trim().Length == 127) || (lvi.SubItems[14].Text.Trim().Length == 115))
-                    { 
-                        lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
-                        lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(38, GS1);
-                    }
 
-                    if (lvi.SubItems[14].Text.Trim().Length == 37 && lvi.SubItems[14].Text.Substring(16, 2) == "21")
-                    {
-                        lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
-                    }
+                    //string GS1 = Char.ConvertFromUtf32(29);                    
+                    //if ((lvi.SubItems[14].Text.Trim().Length == 83) || (lvi.SubItems[14].Text.Trim().Length == 127) || (lvi.SubItems[14].Text.Trim().Length == 115))
+                    // { 
+                    //     lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
+                    //     lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(38, GS1);
+                    // }
 
-                    if (lvi.SubItems[14].Text.Trim().Length == 30)
-                    {
-                        lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(24, GS1);
-                    }
+                    // if (lvi.SubItems[14].Text.Trim().Length == 37 && lvi.SubItems[14].Text.Substring(16, 2) == "21")
+                    // {
+                    //     lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
+                    // }
 
-                    if (lvi.SubItems[14].Text.Trim().Length == 32)
-                    {
-                        lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(26, GS1);
-                    }
+                    // if (lvi.SubItems[14].Text.Trim().Length == 30)
+                    // {
+                    //     lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(24, GS1);
+                    // }
+
+                    // if (lvi.SubItems[14].Text.Trim().Length == 32)
+                    // {
+                    //     lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(26, GS1);
+                    // }
+                    lvi.SubItems[14].Text = add_gs1(lvi.SubItems[14].Text);
 
                     byte[] textAsBytes = Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim());
                     string mark_str = Convert.ToBase64String(textAsBytes);

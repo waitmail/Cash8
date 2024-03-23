@@ -19,6 +19,7 @@ namespace Cash8
         string codes_url = "/api/v4/true-api/codes/check";
         //string token    = "537e95bb-eb82-4eb5-83f6-4d177d4eed49";//тестовый токен
         //string token      = "c09faf94-383f-4fcf-a2da-2e786a585d8e";//боевой токен
+        public int error_timeout = 0;//это счетчик ошибок при проверке кодов маркировки поможет понять что например нет интрнета
 
         public class Host
         {
@@ -136,6 +137,18 @@ namespace Cash8
             public string description { get; set; }
             public int avgTimeMs { get; set; }
             public long latency { get; set; }
+        }
+        
+        /// <summary>
+        /// Количество подходящих 
+        /// CDN серверов
+        /// </summary>
+        /// <param name="cdn_list"></param>
+        /// <returns></returns>
+        public int selection_and_sorting(CDN_List cdn_list)
+        {
+           cdn_list.hosts = cdn_list.hosts.Where(h => h.dateTime < DateTime.Now).OrderBy(h => h.latensy).ToList();
+            return cdn_list.hosts.Count;
         }
 
         /// <summary>
@@ -297,7 +310,9 @@ namespace Cash8
         }
 
 
-        public bool check_marker_code(List<string> codes, string mark_str, ref Dictionary<string, Cash_check.CdnMarkerDateTime> cdn_markers_date_time, Int64 numdoc)
+
+
+        public bool check_marker_code(List<string> codes, string mark_str, ref Dictionary<string, Cash_check.CdnMarkerDateTime> cdn_markers_date_time, Int64 numdoc, ref HttpWebRequest request)
         {
             bool result_check = false;
             AnswerCheckMark answer_check_mark = null;
@@ -311,17 +326,28 @@ namespace Cash8
             cdn_list.hosts = cdn_list.hosts.Where(h => h.dateTime < DateTime.Now).OrderBy(h => h.latensy).ToList();
 
             //cdn_list.hosts.Count
-
+            string url = "";
             bool error = false;
-            foreach (Host host in cdn_list.hosts)
+            //int error_timeout = 0;
+            //int error_timeout = 0;
+
+            //foreach (Host host in cdn_list.hosts)
+            //{
+            for (int i = 0; i < cdn_list.hosts.Count; i++)
             {
+                Host host = cdn_list.hosts[i];
+
                 try
-                {
+                {                    
                     error = false;
-                    string url = cdn_list.hosts[0].host + codes_url;
-                    //cdn_list.hosts[0].host
-                    //string url = "https://cdn01.crpt.ru"+ codes_url;//gaa убрать потом
-                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                    result_check = false;
+                    url = host.host + codes_url;                    
+                    if (request == null)
+                    {
+                        request = (HttpWebRequest)WebRequest.Create(url);
+                        request.KeepAlive = true;
+                        request.Timeout = 1500;
+                    }
                     request.Method = "POST";
 
                     // Добавление заголовков            
@@ -414,10 +440,33 @@ namespace Cash8
                         }
                     }
                 }
+                catch (WebException ex)
+                {
+                    MainStaticClass.write_event_in_log("CDN check_marker_code " + mark_str + " " + ex.Message, "Документ чек", numdoc.ToString());
+                    if (ex.Status == WebExceptionStatus.Timeout || ex.Status == WebExceptionStatus.ConnectionClosed)
+                    {
+                        request = (HttpWebRequest)WebRequest.Create(url);
+                        request.KeepAlive = true;
+                        request.Timeout = 1500;
+                        result_check = true;//ошибка работы с интернет если таймаут и закрытое соедниненте тогда не является ошибкой кода маркировки
+                        error = false;
+                        error_timeout++;
+                        if (error_timeout == 1)//если это первая ошибка по таймауту или соединение закрыто тогда попробуем обновить соединение и еще раз соединиться с наиболее быстрым CDN сервером
+                        {
+                            i--;
+                        }
+                    }
+                    else
+                    {
+                        host.dateTime = DateTime.Now.AddMinutes(15);
+                        result_check = false; //ошибка работы с интернет не является ошибкой кода маркировки
+                        error = true;
+                    }
+                }
                 catch (Exception ex)
                 {
                     MainStaticClass.write_event_in_log("Ошибка при проверке кода маркировки check_marker_code " + mark_str + "  " + ex.Message, "Документ чек", numdoc.ToString());
-                    host.dateTime = DateTime.Now.AddMinutes(15);
+                    //host.dateTime = DateTime.Now.AddMinutes(15);
                     error = true;
                 }
                 if (!error)

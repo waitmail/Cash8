@@ -117,7 +117,7 @@ namespace Cash8
         private static IFptr _fptr=null;
         private static string cdn_token = "";
         private static int this_new_database = 0;
-        public static Cash8.CDN.CDN_List CDN_list = null;
+        private static Cash8.CDN.CDN_List CDN_list = null;
         private static string fiscal_drive_number="";//номер фискального регистратора 
 
         public static Cash8.CDN.CDN_List CDN_List
@@ -129,22 +129,22 @@ namespace Cash8
                     CDN cdn = new CDN();
                     CDN_list = cdn.get_cdn_list();
                 }
-                else
-                {
-                    if ((CDN_list.createDateTime - DateTime.Now).Hours > 6)//Обновление списка если прошло уже больше 6-ти часов 
-                    {
-                        CDN cdn = new CDN();
-                        CDN_list = cdn.get_cdn_list();
-                    }
-                    //else
-                    //{
-                    //    if ((CDN_list.createDateTime - DateTime.Now).Hours > 0)//прошел 1 час опросим доступность серверов
-                    //    {
-                    //        CDN cdn = new CDN();
-                    //        CDN_list = cdn.get_cdn_list(CDN_list);
-                    //    }
-                    //}
-                }
+                //else
+                //{
+                //    if ((CDN_list.createDateTime - DateTime.Now).Hours > 6)//Обновление списка если прошло уже больше 6-ти часов 
+                //    {
+                //        CDN cdn = new CDN();
+                //        CDN_list = cdn.get_cdn_list();
+                //    }
+                //    //else
+                //    //{
+                //    //    if ((CDN_list.createDateTime - DateTime.Now).Hours > 0)//прошел 1 час опросим доступность серверов
+                //    //    {
+                //    //        CDN cdn = new CDN();
+                //    //        CDN_list = cdn.get_cdn_list(CDN_list);
+                //    //    }
+                //    //}
+                //}
                 return CDN_list;
             }
         }
