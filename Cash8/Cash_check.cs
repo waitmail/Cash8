@@ -2787,7 +2787,7 @@ namespace Cash8
                                             //перед тем как добавить qr код в чек необходимо его проверить
                                             string mark_str = "";
                                             string mark_str_cdn = "";
-                                            if (MainStaticClass.Version2Marking == 0)
+                                            if (MainStaticClass.Version2Marking == 1)
                                             {
                                                 WortWithMarkingV3 markingV3 = new WortWithMarkingV3();
                                                 mark_str = this.qr_code.Trim();
