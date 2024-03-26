@@ -256,14 +256,16 @@ namespace Cash8
                     "date_time_action," +
                     "tovar," +
                     "quantity," +
-                    "type_of_operation)	VALUES(" +
+                    "type_of_operation," +
+                    "guid)	VALUES(" +
                     numdoc.ToString() + "," +
                     num_cash.Tag.ToString() + ",'" +
                      date_time_start.Text.Replace("Чек", "").Trim() + "','" +
                     DateTime.Now.ToString("yyy-MM-dd HH:mm:ss") + "'," +
                     tovar.ToString() + "," +
                     quantity.ToString() + "," +
-                    type_of_operation + ");";
+                    type_of_operation + ",'"+
+                    guid+"');";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 command.ExecuteNonQuery();
                 command.Dispose();
@@ -2836,7 +2838,7 @@ namespace Cash8
                                                     codes.Add("mark_str_cdn");
                                                     if (!cdn.check_marker_code(codes, mark_str, ref this.cdn_markers_date_time, this.numdoc, ref request))
                                                     {
-                                                        return;
+                                                        //return;
                                                     }
                                                 }
 
@@ -2968,7 +2970,7 @@ namespace Cash8
                                                         codes.Add("mark_str_cdn");
                                                         if (!cdn.check_marker_code(codes, mark_str1, ref this.cdn_markers_date_time, this.numdoc, ref request))
                                                         {
-                                                            return;
+                                                            //return;
                                                         }
                                                     }
                                                 }
