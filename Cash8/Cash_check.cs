@@ -2787,7 +2787,7 @@ namespace Cash8
                                             //перед тем как добавить qr код в чек необходимо его проверить
                                             string mark_str = "";
                                             string mark_str_cdn = "";
-                                            if (MainStaticClass.Version2Marking == 1)
+                                            if (MainStaticClass.Version2Marking == 0)
                                             {
                                                 WortWithMarkingV3 markingV3 = new WortWithMarkingV3();
                                                 mark_str = this.qr_code.Trim();
@@ -2958,7 +2958,19 @@ namespace Cash8
                                                 //здесь проверка на корректность 
                                                 if (!error)
                                                 {
-                                                    //check_marker_code_with_cdn
+                                                    if (MainStaticClass.CashDeskNumber != 9 && MainStaticClass.EnableCdnMarkers == 1 && MainStaticClass.CDN_Token != "")
+                                                    {
+                                                        string mark_str1 = this.qr_code.Trim();
+                                                        mark_str1 = add_gs1(mark_str1);
+                                                        CDN cdn = new CDN();
+                                                        List<string> codes = new List<string>();
+                                                        mark_str_cdn = mark_str.Replace("\u001D", "\\u001d");
+                                                        codes.Add("mark_str_cdn");
+                                                        if (!cdn.check_marker_code(codes, mark_str1, ref this.cdn_markers_date_time, this.numdoc, ref request))
+                                                        {
+                                                            return;
+                                                        }
+                                                    }
                                                 }
 
                                             }
@@ -3175,7 +3187,14 @@ namespace Cash8
             codes.Add("mark_str_cdn");
             if (!cdn.check_marker_code(codes, mark_str, ref this.cdn_markers_date_time, this.numdoc, ref request))
             {
-                result = -1;
+                if (cdn.error_timeout >= 3)
+                {
+                    result = 2;
+                }
+                else
+                {
+                    result = -1;
+                }
             }
             else
             {
@@ -8031,7 +8050,19 @@ namespace Cash8
             {
                 if (MainStaticClass.SystemTaxation != 3)
                 {
-                    fiscall_print_pay_2(pay);//Печатаем чек
+                    if (MainStaticClass.PrintingUsingLibraries == 0)
+                    {
+                        this.fiscall_print_pay_2(pay);
+
+                    }
+                    else
+                    {
+                        PrintingUsingLibraries printingUsingLibraries = new PrintingUsingLibraries();
+                        {
+                            printingUsingLibraries.print_sell_2_or_return_sell(this);
+
+                        }
+                    }                    
                 }
                 else
                 {
@@ -9123,6 +9154,8 @@ namespace Cash8
                     }
                     else
                     {
+                        string sum_pay = this.calculation_of_the_sum_of_the_document().ToString();
+                        write_new_document(sum_pay, sum_pay, "0", "0", true, cash_money, non_cash_money, "0", "0");
                         PrintingUsingLibraries printingUsingLibraries = new PrintingUsingLibraries();
                         printingUsingLibraries.print_sell_2_3_or_return_sell(this, 0);
                         printingUsingLibraries.print_sell_2_3_or_return_sell(this, 1);

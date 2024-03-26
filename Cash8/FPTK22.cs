@@ -49,8 +49,6 @@ namespace Cash8
 
         private void FPTK22_Load(object sender, EventArgs e)
         {
-            get_fiscall_info();
-
             btn_ofd_exchange_status_Click(null, null);
             btn_have_internet_Click(null, null);
 
@@ -69,7 +67,11 @@ namespace Cash8
                 btn_reconciliation_of_totals.Enabled = true;
                 btn_query_summary_report.Enabled = true;
                 btn_query_full_report.Enabled = true;
-            }            
+            }
+
+            get_fiscall_info();
+
+            //Не отправлено документов
         }
 
 
@@ -96,7 +98,10 @@ namespace Cash8
                             }
                             if (result.results[0].result.fnInfo.warnings.ofdTimeout)
                             {
-                                fn_info += "\r\n" + "Превышено время ожидания ответа от ОФД !!!";
+                                if (txtB_ofd_exchange_status.Text.Contains("Не отправлено документов"))
+                                {
+                                    fn_info += "\r\n" + "Превышено время ожидания ответа от ОФД !!!";
+                                }
                             }
                             if (result.results[0].result.fnInfo.warnings.memoryOverflow)
                             {

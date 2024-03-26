@@ -2156,7 +2156,8 @@ namespace Cash8
         {
             string _version_fn_real = MainStaticClass.GetVersionFnReal;            
             double _version_fn = Convert.ToDouble(MainStaticClass.GetVersionFn);
-            //MessageBox.Show(_version_fn_real);
+            //MessageBox.Show("_version_fn_real "+_version_fn_real);
+            //MessageBox.Show("_version_fn "+ _version_fn.ToString());
             if ((_version_fn_real == "0")||(_version_fn_real == ""))
             {
                 error = true;

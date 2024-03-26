@@ -158,37 +158,40 @@ namespace Cash8
         public CDN_List get_cdn_list()
         {
             CDN_List list = get_cdn_info();
-            try
+            if (list != null)
             {
-                CDNHealth cDNHealth = null;
-                if (list.code == 0)//ответ без ошибок 
+                try
                 {
-                    foreach (Host host in list.hosts)
+                    CDNHealth cDNHealth = null;
+                    if (list.code == 0)//ответ без ошибок 
                     {
-                        cDNHealth = cdn_health_check(host.host.ToString());
-                        if (cDNHealth.code == 0)
+                        foreach (Host host in list.hosts)
                         {
-                            host.avgTimeMs = cDNHealth.avgTimeMs;
-                            host.dateTime = DateTime.Now;
+                            cDNHealth = cdn_health_check(host.host.ToString());
+                            if (cDNHealth.code == 0)
+                            {
+                                host.avgTimeMs = cDNHealth.avgTimeMs;
+                                host.dateTime = DateTime.Now;
+                            }
+                            else
+                            {
+                                host.dateTime = DateTime.Now.AddMinutes(15);
+                            }
+                            host.latensy = cDNHealth.latency;
                         }
-                        else
-                        {
-                            host.dateTime = DateTime.Now.AddMinutes(15);
-                        }
-                        host.latensy = cDNHealth.latency;
+                        //list.hosts = list.hosts.OrderBy(h => h.latensy).ThenByDescending(h => h.dateTime).ToList();
+                        //возвращает список с наименьшим latensy и где время доступности меньше чем текущее, время может быть больше если площадка была помечена как не рабочая на 15 минут 
+                        //list.hosts = list.hosts.Where(h => h.dateTime < DateTime.Now).OrderBy(h => h.latensy).ToList();
                     }
-                    //list.hosts = list.hosts.OrderBy(h => h.latensy).ThenByDescending(h => h.dateTime).ToList();
-                    //возвращает список с наименьшим latensy и где время доступности меньше чем текущее, время может быть больше если площадка была помечена как не рабочая на 15 минут 
-                    //list.hosts = list.hosts.Where(h => h.dateTime < DateTime.Now).OrderBy(h => h.latensy).ToList();
+                    else
+                    {
+                        MessageBox.Show("Произошли ошибка при опросе досутности CDN серверов, код ошибки  " + list.code + " , описание ошибки " + list.description);
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    MessageBox.Show("Произошли ошибка при опросе досутности CDN серверов, код ошибки  " + list.code + " , описание ошибки " + list.description);
+                    MessageBox.Show("Произошли ошибки при опросе досутности CDN серверов " + ex.Message);
                 }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Произошли ошибки при опросе досутности CDN серверов " + ex.Message);
             }
 
             return list;
@@ -309,9 +312,6 @@ namespace Cash8
             return cDNHealth;
         }
 
-
-
-
         public bool check_marker_code(List<string> codes, string mark_str, ref Dictionary<string, Cash_check.CdnMarkerDateTime> cdn_markers_date_time, Int64 numdoc, ref HttpWebRequest request)
         {
             bool result_check = false;
@@ -328,8 +328,7 @@ namespace Cash8
             //cdn_list.hosts.Count
             string url = "";
             bool error = false;
-            //int error_timeout = 0;
-            //int error_timeout = 0;
+            
 
             //foreach (Host host in cdn_list.hosts)
             //{
@@ -437,24 +436,25 @@ namespace Cash8
                             cdnMarkerDateTime.reqId = answer_check_mark.reqId;
                             cdnMarkerDateTime.reqTimestamp = answer_check_mark.reqTimestamp;
                             cdn_markers_date_time[mark_str] = cdnMarkerDateTime;
+                            break;//проверка успешно завершена
                         }
                     }
                 }
                 catch (WebException ex)
                 {
-                    MainStaticClass.write_event_in_log("CDN check_marker_code " + mark_str + " " + ex.Message, "Документ чек", numdoc.ToString());
+                    MainStaticClass.write_event_in_log("WebException CDN check_marker_code " + ex.Message, "Документ чек", numdoc.ToString());
                     if (ex.Status == WebExceptionStatus.Timeout || ex.Status == WebExceptionStatus.ConnectionClosed)
                     {
                         request = (HttpWebRequest)WebRequest.Create(url);
                         request.KeepAlive = true;
                         request.Timeout = 1500;
-                        result_check = true;//ошибка работы с интернет если таймаут и закрытое соедниненте тогда не является ошибкой кода маркировки
-                        error = false;
-                        error_timeout++;
-                        if (error_timeout == 1)//если это первая ошибка по таймауту или соединение закрыто тогда попробуем обновить соединение и еще раз соединиться с наиболее быстрым CDN сервером
+                        //result_check = true;//ошибка работы с интернет если таймаут и закрытое соедниненте тогда не является ошибкой кода маркировки
+                        error = true;
+                        if (error_timeout == 0)//если это первая ошибка по таймауту или соединение закрыто тогда попробуем обновить соединение и еще раз соединиться с наиболее быстрым CDN сервером
                         {
                             i--;
                         }
+                        error_timeout++;                        
                     }
                     else
                     {
@@ -462,10 +462,11 @@ namespace Cash8
                         result_check = false; //ошибка работы с интернет не является ошибкой кода маркировки
                         error = true;
                     }
+                    //MainStaticClass.write_event_in_log("WebException при проверке кода маркировки check_marker_code "+ ex.Message, "Документ чек", numdoc.ToString());
                 }
                 catch (Exception ex)
                 {
-                    MainStaticClass.write_event_in_log("Ошибка при проверке кода маркировки check_marker_code " + mark_str + "  " + ex.Message, "Документ чек", numdoc.ToString());
+                    MainStaticClass.write_event_in_log("Exception при проверке кода маркировки check_marker_code " + ex.Message, "Документ чек", numdoc.ToString());
                     //host.dateTime = DateTime.Now.AddMinutes(15);
                     error = true;
                 }
