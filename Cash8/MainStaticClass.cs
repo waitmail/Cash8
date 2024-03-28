@@ -147,6 +147,10 @@ namespace Cash8
                 //}
                 return CDN_list;
             }
+            set
+            {
+                CDN_list = null;//Если CDN сервера недоступны, то таким образом мы обнуляем весь список 
+            }
         }
         
         public static string FiscalDriveNumber
@@ -2330,6 +2334,7 @@ namespace Cash8
             public string ffdVersion { get; set; }
             public Organization organization { get; set; }
             public Device device { get; set; }
+            public string modelName { get; set; }
         }
 
         private static string get_device_info_printing_libraries()
@@ -2355,6 +2360,11 @@ namespace Cash8
             fptr.queryData();
 
             string serialNumber = fptr.getParamString(AtolConstants.LIBFPTR_PARAM_SERIAL_NUMBER);
+
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_DATA_TYPE, AtolConstants.LIBFPTR_DT_STATUS);
+            fptr.queryData();
+            string modelName    = fptr.getParamString(AtolConstants.LIBFPTR_PARAM_MODEL_NAME);
+
 
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_DATA_TYPE, AtolConstants.LIBFPTR_DT_MODEL_INFO);
             fptr.queryData();
@@ -2388,6 +2398,7 @@ namespace Cash8
             deviseInfo.serial = serialNumber;
             deviseInfo.firmwareVersion = firmwareVersion;
             deviseInfo.ffdVersion = (Convert.ToDouble(ffdVersion)/100).ToString().Replace(",",".");
+            deviseInfo.modelName = modelName;
 
             Organization organization = new Organization();
             organization.name    = organizationName;

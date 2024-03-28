@@ -1039,6 +1039,9 @@ namespace Cash8
             fptr.beginMarkingCodeValidation();
 
             // Дожидаемся окончания проверки и запоминаем результат
+            //Необходимо установить тайм аут проверки
+            DateTime start_check = DateTime.Now;
+            uint validationError = 0;
             while (true)
             {
                 fptr.getMarkingCodeValidationStatus();
@@ -1046,10 +1049,19 @@ namespace Cash8
                 {
                     break;
                 }
+                if ((DateTime.Now - start_check).Milliseconds > 2000)
+                {
+                    //MessageBox.Show("check_marking_code таймаут при проверки qr кода " + mark);
+                    MainStaticClass.write_event_in_log("Таймаут при gроверкt маркировки " + mark, "check_marking_code", num_doc);
+                    validationError = 421;
+                    break;
+                }
             }
-            uint validationResult = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_RESULT);
-
-            uint validationError = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_ERROR);            
+            if (validationError == 0)
+            {
+                //uint validationResult = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_RESULT);
+                validationError = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_ERROR);
+            }
             if ((validationError != 0) && (validationError != 402) && (validationError != 421))
             {
                 result = false;

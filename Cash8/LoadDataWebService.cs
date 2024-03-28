@@ -887,16 +887,17 @@ namespace Cash8
 
                 queries.Clear();
                 queries = null;
-                tran.Commit();                
-                MessageBox.Show("Загрузка успешно завершена");
+                tran.Commit();
+                if (!MainStaticClass.SendResultGetData())
+                {
+                    MessageBox.Show("Не удалось отправить информацию об успешной загрузке");
+                    MainStaticClass.write_event_in_log("Не удалось отправить информацию об успешной загрузке ", "Загрузка данных", "0");
+                }                
                 conn.Close();
                 command.Dispose();
                 command = null;
                 tran = null;
-                if (!MainStaticClass.SendResultGetData())
-                {
-                    MessageBox.Show("Не удалось отправить информацию об успешной загрузке");
-                }
+                MessageBox.Show("Загрузка успешно завершена");                
             }
             catch (NpgsqlException ex)
             {

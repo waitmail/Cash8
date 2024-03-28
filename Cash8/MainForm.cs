@@ -280,74 +280,74 @@ namespace Cash8
         //    printing.getShiftStatus();         
         //}
 
-        private void UploadTempCodeClients()
-        {
-            string nick_shop = MainStaticClass.Nick_Shop.Trim();
-            if (nick_shop.Trim().Length == 0)
-            {
-                MessageBox.Show(" Не удалось получить название магазина ");
-                return;
-            }
+        //private void UploadTempCodeClients()
+        //{
+        //    string nick_shop = MainStaticClass.Nick_Shop.Trim();
+        //    if (nick_shop.Trim().Length == 0)
+        //    {
+        //        MessageBox.Show(" Не удалось получить название магазина ");
+        //        return;
+        //    }
 
-            string code_shop = MainStaticClass.Code_Shop.Trim();
-            if (code_shop.Trim().Length == 0)
-            {
-                MessageBox.Show(" Не удалось получить код магазина ");
-                return;
-            }
+        //    string code_shop = MainStaticClass.Code_Shop.Trim();
+        //    if (code_shop.Trim().Length == 0)
+        //    {
+        //        MessageBox.Show(" Не удалось получить код магазина ");
+        //        return;
+        //    }
 
-            StringBuilder sb = new StringBuilder();
+        //    StringBuilder sb = new StringBuilder();
 
-            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+        //    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
 
-            try
-            {
-                conn.Open();
-                string query = " SELECT old_code_client, new_code_client, date_time_change  FROM temp_code_clients;";
-                NpgsqlCommand command = new NpgsqlCommand(query, conn);
-                NpgsqlDataReader reader = command.ExecuteReader();
-                while (reader.Read())
-                {
-                    sb.Append("'" + reader["old_code_client"].ToString() + "','" + reader["new_code_client"].ToString().Trim() + "','" + nick_shop + "','" + reader.GetDateTime(2).ToString("dd-MM-yyyy HH:mm:ss") + "'" + "|");
-                }
-                reader.Close();
-                reader.Dispose();
-                //conn.Close();
+        //    try
+        //    {
+        //        conn.Open();
+        //        string query = " SELECT old_code_client, new_code_client, date_time_change  FROM temp_code_clients;";
+        //        NpgsqlCommand command = new NpgsqlCommand(query, conn);
+        //        NpgsqlDataReader reader = command.ExecuteReader();
+        //        while (reader.Read())
+        //        {
+        //            sb.Append("'" + reader["old_code_client"].ToString() + "','" + reader["new_code_client"].ToString().Trim() + "','" + nick_shop + "','" + reader.GetDateTime(2).ToString("dd-MM-yyyy HH:mm:ss") + "'" + "|");
+        //        }
+        //        reader.Close();
+        //        reader.Dispose();
+        //        //conn.Close();
 
-                if (!MainStaticClass.service_is_worker())
-                {
-                    MessageBox.Show("Веб сервис недоступен");
-                    return;
-                }
-                Cash8.DS.DS ds = MainStaticClass.get_ds();
-                ds.Timeout = 20000;
+        //        if (!MainStaticClass.service_is_worker())
+        //        {
+        //            MessageBox.Show("Веб сервис недоступен");
+        //            return;
+        //        }
+        //        Cash8.DS.DS ds = MainStaticClass.get_ds();
+        //        ds.Timeout = 20000;
 
-                //Получить параметра для запроса на сервер                                 
-                string count_day = CryptorEngine.get_count_day();
-                string key = nick_shop.Trim() + count_day.Trim() + code_shop.Trim();
-                string encrypt_string = CryptorEngine.Encrypt(sb.ToString(), true, key);
-                string answer = ds.UploadCodeClients(nick_shop, encrypt_string,MainStaticClass.GetWorkSchema.ToString());
-                if (answer == "1")
-                {
-                    query = "DELETE FROM temp_code_clients";
-                    command = new NpgsqlCommand(query, conn);
-                    command.ExecuteNonQuery();
-                    command.Dispose();
-                }
-                conn.Close();
-            }
-            catch
-            {
+        //        //Получить параметра для запроса на сервер                                 
+        //        string count_day = CryptorEngine.get_count_day();
+        //        string key = nick_shop.Trim() + count_day.Trim() + code_shop.Trim();
+        //        string encrypt_string = CryptorEngine.Encrypt(sb.ToString(), true, key);
+        //        string answer = ds.UploadCodeClients(nick_shop, encrypt_string,MainStaticClass.GetWorkSchema.ToString());
+        //        if (answer == "1")
+        //        {
+        //            query = "DELETE FROM temp_code_clients";
+        //            command = new NpgsqlCommand(query, conn);
+        //            command.ExecuteNonQuery();
+        //            command.Dispose();
+        //        }
+        //        conn.Close();
+        //    }
+        //    catch
+        //    {
 
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                }
-            }
-        }
+        //    }
+        //    finally
+        //    {
+        //        if (conn.State == ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //        }
+        //    }
+        //}
 
 
 

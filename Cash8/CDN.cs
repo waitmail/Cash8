@@ -86,6 +86,7 @@ namespace Cash8
 
         private CDN_List get_cdn_info()
         {
+            ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
             string url = kontur_url + info_url;
             CDN_List list = null;
             try
@@ -138,18 +139,19 @@ namespace Cash8
             public int avgTimeMs { get; set; }
             public long latency { get; set; }
         }
-        
-        /// <summary>
-        /// Количество подходящих 
-        /// CDN серверов
-        /// </summary>
-        /// <param name="cdn_list"></param>
-        /// <returns></returns>
-        public int selection_and_sorting(CDN_List cdn_list)
-        {
-           cdn_list.hosts = cdn_list.hosts.Where(h => h.dateTime < DateTime.Now).OrderBy(h => h.latensy).ToList();
-            return cdn_list.hosts.Count;
-        }
+
+        ///// <summary>
+        ///// Количество подходящих 
+        ///// CDN серверов
+        ///// </summary>
+        ///// <param name="cdn_list"></param>
+        ///// <returns></returns>
+        //public int selection_and_sorting(CDN_List cdn_list)
+        //{
+        //    cdn_list.hosts = cdn_list.hosts.Where(h => h.dateTime < DateTime.Now).OrderBy(h => h.latensy).ToList();
+        //    return cdn_list.hosts.Count;
+        //}
+
 
         /// <summary>
         /// Возращает список cdn серверов
@@ -157,7 +159,22 @@ namespace Cash8
         /// <returns></returns>
         public CDN_List get_cdn_list()
         {
+            ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
             CDN_List list = get_cdn_info();
+            if (list != null)
+            {
+                list = get_cdn_list_health(list);
+            }
+            return list;
+        }
+
+
+        /// <summary>
+        /// Возращает список cdn серверов с данными по доступу к ним
+        /// </summary>
+        /// <returns></returns>
+        public CDN_List get_cdn_list_health(CDN_List list)
+        {
             if (list != null)
             {
                 try
@@ -168,16 +185,23 @@ namespace Cash8
                         foreach (Host host in list.hosts)
                         {
                             cDNHealth = cdn_health_check(host.host.ToString());
-                            if (cDNHealth.code == 0)
+                            if (cDNHealth != null)
                             {
-                                host.avgTimeMs = cDNHealth.avgTimeMs;
-                                host.dateTime = DateTime.Now;
+                                if (cDNHealth.code == 0)
+                                {
+                                    host.avgTimeMs = cDNHealth.avgTimeMs;
+                                    host.dateTime = DateTime.Now;
+                                }
+                                else
+                                {
+                                    host.dateTime = DateTime.Now.AddMinutes(15);
+                                }
+                                host.latensy = cDNHealth.latency;
                             }
                             else
                             {
                                 host.dateTime = DateTime.Now.AddMinutes(15);
                             }
-                            host.latensy = cDNHealth.latency;
                         }
                         //list.hosts = list.hosts.OrderBy(h => h.latensy).ThenByDescending(h => h.dateTime).ToList();
                         //возвращает список с наименьшим latensy и где время доступности меньше чем текущее, время может быть больше если площадка была помечена как не рабочая на 15 минут 
@@ -311,7 +335,7 @@ namespace Cash8
 
             return cDNHealth;
         }
-
+               
         public bool check_marker_code(List<string> codes, string mark_str, ref Dictionary<string, Cash_check.CdnMarkerDateTime> cdn_markers_date_time, Int64 numdoc, ref HttpWebRequest request)
         {
             bool result_check = false;
@@ -321,17 +345,48 @@ namespace Cash8
             if (cdn_list == null)
             {
                 MessageBox.Show("Список CDN серверов пустой");
+                MainStaticClass.write_event_in_log("Список CDN серверов пустой check_marker_code ", "Документ чек", numdoc.ToString());
+                result_check = true;
                 return result_check;
             }
-            cdn_list.hosts = cdn_list.hosts.Where(h => h.dateTime < DateTime.Now).OrderBy(h => h.latensy).ToList();
+            
+            cdn_list.hosts = cdn_list.hosts.Where(h => h.dateTime < DateTime.Now).OrderBy(h => h.latensy).ToList();            
+
+            if (cdn_list.hosts.Count == 0)
+            {
+                MessageBox.Show("Нет доступных CDN площадок для проверки кода маркировки, пробуем еще раз check_marker_code");
+                MainStaticClass.write_event_in_log("Нет доступных CDN площадок для проверки кода маркировки, пробуем еще раз check_marker_code", "Документ чек", numdoc.ToString());
+                cdn_list = MainStaticClass.CDN_List;
+                if (cdn_list == null)
+                {
+                    MessageBox.Show("Список CDN серверов пустой check_marker_code");
+                    MainStaticClass.write_event_in_log("Список CDN серверов пустой после 2-й попытки check_marker_code", "Документ чек", numdoc.ToString());
+                    result_check = true;
+                    return result_check;
+                }
+                cdn_list.hosts = cdn_list.hosts.Where(h => h.dateTime < DateTime.Now).OrderBy(h => h.latensy).ToList();
+
+                if (cdn_list.hosts.Count == 0)
+                {
+                    MessageBox.Show("Нет доступных CDN площадок для проверки кода маркировки, вторая попытка check_marker_code");
+                    MainStaticClass.write_event_in_log("Нет доступных CDN площадок для проверки кода маркировки, вторая попытка check_marker_code", "Документ чек", numdoc.ToString());
+                    result_check = true;
+                    return result_check;
+                }
+            }
 
             //cdn_list.hosts.Count
             string url = "";
             bool error = false;
             
-
             //foreach (Host host in cdn_list.hosts)
             //{
+            CheckMark check_mark = new CheckMark();
+            check_mark.codes = codes;
+            check_mark.fiscalDriveNumber = MainStaticClass.FiscalDriveNumber;
+
+            string body = JsonConvert.SerializeObject(check_mark, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            body = body.Replace("\\u001d", @"u001d");
             for (int i = 0; i < cdn_list.hosts.Count; i++)
             {
                 Host host = cdn_list.hosts[i];
@@ -353,11 +408,11 @@ namespace Cash8
                     request.Headers.Add("X-API-KEY", MainStaticClass.CDN_Token);
                     request.ContentType = "application/json";
 
-                    CheckMark check_mark = new CheckMark();
-                    check_mark.codes = codes;
-                    check_mark.fiscalDriveNumber = MainStaticClass.FiscalDriveNumber;
+                    //CheckMark check_mark = new CheckMark();
+                    //check_mark.codes = codes;
+                    //check_mark.fiscalDriveNumber = MainStaticClass.FiscalDriveNumber;
 
-                    string body = JsonConvert.SerializeObject(check_mark, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                    //string body = JsonConvert.SerializeObject(check_mark, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
 
                     byte[] byteArray = Encoding.UTF8.GetBytes(body);
 
@@ -424,7 +479,7 @@ namespace Cash8
                             MessageBox.Show("Для кода маркировки " + answer_check_mark.codes[0].gtin + " нет информации о вводе в оборот." + s, "CDN проверка");
                             MainStaticClass.write_event_in_log("Для кода маркировки " + answer_check_mark.codes[0].gtin + " нет информации о вводе в оборот.", "Документ чек", numdoc.ToString());
                         }
-                        else if (answer_check_mark.codes[0].expireDate >= DateTime.Now)
+                        else if (answer_check_mark.codes[0].expireDate < DateTime.Now)
                         {
                             MessageBox.Show("У товара с кодом маркировки " + answer_check_mark.codes[0].gtin + "  истек срок годности." + s, "CDN проверка");
                             MainStaticClass.write_event_in_log("У товара с кодом маркировки " + answer_check_mark.codes[0].gtin + "  истек срок годности.", "Документ чек", numdoc.ToString());

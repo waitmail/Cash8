@@ -1074,7 +1074,9 @@ namespace Cash8
             queries.Add("ALTER TABLE  public.constants ALTER COLUMN cdn_token TYPE character varying(36);");
             queries.Add("ALTER TABLE public.constants ADD COLUMN cdn_token character varying(36) COLLATE pg_catalog.default;");
             queries.Add("ALTER TABLE public.constants ADD COLUMN enable_cdn_markers boolean DEFAULT false;");
-
+            queries.Add("ALTER TABLE checks_header ALTER COLUMN autor TYPE bigint;");
+            queries.Add("ALTER TABLE users ALTER COLUMN code TYPE bigint;");
+            
             foreach (string str in queries)
             {
                 append_column(str);
@@ -1089,6 +1091,5 @@ namespace Cash8
 
             MessageBox.Show(" Дополнительные колонки добавлены ");
         }
-
     }
 }

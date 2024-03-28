@@ -31,7 +31,7 @@ namespace Cash8
         public int to_print_certainly = 0;
         public int to_print_certainly_p = 0;
         //Флаг закрытия документа
-        public bool closing = true;
+        public bool closing = true;//в этом значении форма не закрывается, закрывается тогда когда становится false
         public bool inpun_action_barcode = false;//Доступ из формы ввода акционного штрихкода
         private Read_Data_From_Com_Port rd = null;
         // private System.IO.Ports.SerialPort mySerial;
@@ -189,7 +189,7 @@ namespace Cash8
             }
             catch(Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("SendDataToCustomerScreen "+ex.Message);
             }
         }
 
@@ -203,7 +203,7 @@ namespace Cash8
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                MessageBox.Show("SendDataToCustomerScreen " + ex.Message);
             }
             finally
             {
@@ -273,11 +273,11 @@ namespace Cash8
             }
             catch (NpgsqlException ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(" insert_incident_record" +ex.Message);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(" insert_incident_record "+ex.Message);
             }
             finally
             {
@@ -624,11 +624,11 @@ namespace Cash8
             }
             catch (WebException ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("get_crm_cabinet_info "+ex.Message);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(" get_crm_cabinet_info"+ex.Message);
             }
 
             return crmCabinetInfo;
@@ -755,11 +755,11 @@ namespace Cash8
             }
             catch (NpgsqlException ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(" find_client_on_num_phone" +ex.Message);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("find_client_on_num_phone "+ex.Message);
             }
             finally
             {
@@ -1069,7 +1069,7 @@ namespace Cash8
             }
             catch (NpgsqlException ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("to_open_the_written_down_document "+ex.Message);
             }
             finally
             {
@@ -1141,6 +1141,10 @@ namespace Cash8
                 //    }
                 //}
                 pay_form.Dispose();
+                if (request != null)
+                {
+                    request.Abort();
+                }
             }
         }
 
@@ -1594,11 +1598,11 @@ namespace Cash8
             }
             catch (NpgsqlException ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("its_certificate "+ex.Message);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("its_certificate "+ex.Message);
             }
             finally
             {
@@ -2275,11 +2279,11 @@ namespace Cash8
             }
             catch (NpgsqlException ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("get_price_action "+ex.Message);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("get_price_action "+ex.Message);
             }
             finally
             {
@@ -2393,7 +2397,7 @@ namespace Cash8
             }
             catch (NpgsqlException ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("find_barcode_or_code_in_tovar_action "+ex.Message);
             }
             finally
             {
@@ -2834,8 +2838,9 @@ namespace Cash8
                                                 {
                                                     CDN cdn = new CDN();
                                                     List<string> codes = new List<string>();
-                                                    mark_str_cdn = mark_str.Replace("\u001D", "\\u001d");
-                                                    codes.Add("mark_str_cdn");
+                                                    mark_str_cdn = mark_str.Replace("\u001d",@"\u001d");
+                                                    //mark_str_cdn = mark_str_cdn.Replace("\\u001d", "\u001d");
+                                                    codes.Add(mark_str_cdn);
                                                     if (!cdn.check_marker_code(codes, mark_str, ref this.cdn_markers_date_time, this.numdoc, ref request))
                                                     {
                                                         //return;
@@ -2966,8 +2971,8 @@ namespace Cash8
                                                         mark_str1 = add_gs1(mark_str1);
                                                         CDN cdn = new CDN();
                                                         List<string> codes = new List<string>();
-                                                        mark_str_cdn = mark_str.Replace("\u001D", "\\u001d");
-                                                        codes.Add("mark_str_cdn");
+                                                        mark_str_cdn = mark_str.Replace("\u001d", @"\u001d");
+                                                        codes.Add(mark_str_cdn);
                                                         if (!cdn.check_marker_code(codes, mark_str1, ref this.cdn_markers_date_time, this.numdoc, ref request))
                                                         {
                                                             //return;
@@ -3024,7 +3029,7 @@ namespace Cash8
                                 km_adding_to_buffer_index(listView1.Items.Count - 1);
                             }
                         }
-                        else                        
+                        else
                         {
                             MainStaticClass.write_event_in_log("Отказ от ввода qr кода, товар не добавлен", "Документ чек", numdoc.ToString());
                             last_tovar.Text = barcode;
@@ -3068,7 +3073,7 @@ namespace Cash8
 
                     }
                     inputbarcode.Focus();
-                    calculation_of_the_sum_of_the_document();                    
+                    calculation_of_the_sum_of_the_document();
                 }
                 else if (listView2.Items.Count > 1)//Найденных товаров больше одного необходимо показать список выбра пользователю
                 {
@@ -3095,7 +3100,11 @@ namespace Cash8
             }
             catch (NpgsqlException ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("find_barcode_or_code_in_tovar " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("find_barcode_or_code_in_tovar " + ex.Message);
             }
             finally
             {
@@ -3147,64 +3156,64 @@ namespace Cash8
         }
 
 
-        /// <summary>
-        /// Проверить на корректность код маркировки 
-        /// при помощи CDN серверов
-        /// 1. Успех если проверен успешно.
-        /// 2. Успех если нет связи(таймаут или что либо подобное)
-        /// Возвращает -1 если код проверен и он не корректне
-        /// Возвращает 1 если код успешно проверен
-        /// Возвращает 2 если по таймауту не удалось проверить код
-        /// </summary>
-        /// <param name="mark_str"></param>
-        /// <returns></returns>
-        private int check_marker_code_with_cdn(string mark_str)
-        {
-            int result = 0;
+        ///// <summary>
+        ///// Проверить на корректность код маркировки 
+        ///// при помощи CDN серверов
+        ///// 1. Успех если проверен успешно.
+        ///// 2. Успех если нет связи(таймаут или что либо подобное)
+        ///// Возвращает -1 если код проверен и он не корректне
+        ///// Возвращает 1 если код успешно проверен
+        ///// Возвращает 2 если по таймауту не удалось проверить код
+        ///// </summary>
+        ///// <param name="mark_str"></param>
+        ///// <returns></returns>
+        //private int check_marker_code_with_cdn(string mark_str)
+        //{
+        //    int result = 0;
 
-            CDN cdn = new CDN();
-            CDN.CDN_List cdn_list = MainStaticClass.CDN_List;
+        //    CDN cdn = new CDN();
+        //    CDN.CDN_List cdn_list = MainStaticClass.CDN_List;
 
-            if (cdn_list == null)//Нет доступных серверов для опроса
-            {
-                result = 2;
-                MainStaticClass.write_event_in_log(" check_marker_code_with_cdn cdn_list = null","Документ",numdoc.ToString());
-                return result;
-            }
+        //    if (cdn_list == null)//Нет доступных серверов для опроса
+        //    {
+        //        result = 2;
+        //        MainStaticClass.write_event_in_log(" check_marker_code_with_cdn cdn_list = null","Документ",numdoc.ToString());
+        //        return result;
+        //    }
             
-            if (cdn_list.hosts.Count > 0)
-            {
+        //    if (cdn_list.hosts.Count > 0)
+        //    {
 
-                if (cdn.selection_and_sorting(cdn_list) == 0)
-                {
-                    result = 2;
-                    MainStaticClass.write_event_in_log(" check_marker_code_with_cdn cdn_list != null, но доступных адресов CDN нет", "Документ", numdoc.ToString());
-                    return result;
-                }
-            }
+        //        if (cdn.selection_and_sorting(cdn_list) == 0)
+        //        {
+        //            result = 2;
+        //            MainStaticClass.write_event_in_log(" check_marker_code_with_cdn cdn_list != null, но доступных адресов CDN нет", "Документ", numdoc.ToString());
+        //            return result;
+        //        }
+        //    }
 
-            mark_str = add_gs1(mark_str);          
-            List<string> codes = new List<string>();
-            string mark_str_cdn = mark_str.Replace("\u001D", "\\u001d");
-            codes.Add("mark_str_cdn");
-            if (!cdn.check_marker_code(codes, mark_str, ref this.cdn_markers_date_time, this.numdoc, ref request))
-            {
-                if (cdn.error_timeout >= 3)
-                {
-                    result = 2;
-                }
-                else
-                {
-                    result = -1;
-                }
-            }
-            else
-            {
-                result = 1;
-            }
+        //    mark_str = add_gs1(mark_str);          
+        //    List<string> codes = new List<string>();
+        //    string mark_str_cdn = mark_str.Replace("\u001D", "\\u001d");
+        //    codes.Add("mark_str_cdn");
+        //    if (!cdn.check_marker_code(codes, mark_str, ref this.cdn_markers_date_time, this.numdoc, ref request))
+        //    {
+        //        if (cdn.error_timeout >= 3)
+        //        {
+        //            result = 2;
+        //        }
+        //        else
+        //        {
+        //            result = -1;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        result = 1;
+        //    }
 
-            return result;
-        }
+        //    return result;
+        //}
 
 
 
@@ -3355,7 +3364,7 @@ namespace Cash8
             }
             catch (NpgsqlException ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("get_date_birthday "+ex.Message);
             }
             finally
             {
