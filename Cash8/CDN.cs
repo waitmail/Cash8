@@ -479,10 +479,13 @@ namespace Cash8
                             MessageBox.Show("Для кода маркировки " + answer_check_mark.codes[0].gtin + " нет информации о вводе в оборот." + s, "CDN проверка");
                             MainStaticClass.write_event_in_log("Для кода маркировки " + answer_check_mark.codes[0].gtin + " нет информации о вводе в оборот.", "Документ чек", numdoc.ToString());
                         }
-                        else if (answer_check_mark.codes[0].expireDate < DateTime.Now)
+                        else if (answer_check_mark.codes[0].expireDate.Year>2000)
                         {
-                            MessageBox.Show("У товара с кодом маркировки " + answer_check_mark.codes[0].gtin + "  истек срок годности." + s, "CDN проверка");
-                            MainStaticClass.write_event_in_log("У товара с кодом маркировки " + answer_check_mark.codes[0].gtin + "  истек срок годности.", "Документ чек", numdoc.ToString());
+                            if (answer_check_mark.codes[0].expireDate < DateTime.Now)
+                            {
+                                MessageBox.Show("У товара с кодом маркировки " + answer_check_mark.codes[0].gtin + "  истек срок годности." + s, "CDN проверка");
+                                MainStaticClass.write_event_in_log("У товара с кодом маркировки " + answer_check_mark.codes[0].gtin + "  истек срок годности.", "Документ чек", numdoc.ToString());
+                            }
                         }
                         else
                         {
