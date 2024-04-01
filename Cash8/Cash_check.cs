@@ -9166,7 +9166,10 @@ namespace Cash8
                     else
                     {
                         string sum_pay = this.calculation_of_the_sum_of_the_document().ToString();
-                        write_new_document(sum_pay, sum_pay, "0", "0", true, cash_money, non_cash_money, "0", "0");
+                        if (itsnew)
+                        {
+                            write_new_document(sum_pay, sum_pay, "0", "0", true, cash_money, non_cash_money, "0", "0");
+                        }
                         PrintingUsingLibraries printingUsingLibraries = new PrintingUsingLibraries();
                         printingUsingLibraries.print_sell_2_3_or_return_sell(this, 0);
                         printingUsingLibraries.print_sell_2_3_or_return_sell(this, 1);
@@ -9182,12 +9185,15 @@ namespace Cash8
                     else
                     {
                         string sum_pay = this.calculation_of_the_sum_of_the_document().ToString();
-                        write_new_document(sum_pay, sum_pay, "0", "0", true, cash_money, non_cash_money, "0", "0");
-                        if (this.itsnew)
+                        if (itsnew)
                         {
+                            write_new_document(sum_pay, sum_pay, "0", "0", true, cash_money, non_cash_money, "0", "0");
+                        }
+                        //if (this.itsnew)
+                        //{
                             PrintingUsingLibraries printingUsingLibraries = new PrintingUsingLibraries();
                             printingUsingLibraries.print_sell_2_or_return_sell(this);
-                        }
+                        //}
                         this.Close();
                     }
                 }
