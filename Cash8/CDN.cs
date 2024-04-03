@@ -452,39 +452,39 @@ namespace Cash8
                         if (!answer_check_mark.codes[0].found)
                         {
                             MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + " не найден в ГИС МТ" + s, "CDN проверка");
-                            MainStaticClass.write_event_in_log("Код маркировки " + answer_check_mark.codes[0].gtin + " не найден в ГИС МТ", "Документ чек", numdoc.ToString());
+                            MainStaticClass.write_event_in_log("CDN Код маркировки " + answer_check_mark.codes[0].gtin + " не найден в ГИС МТ", "Документ чек", numdoc.ToString());
                         }
                         else if (!answer_check_mark.codes[0].utilised)
                         {
                             MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + " эмитирован, но нет информации о его нанесении." + s, "CDN проверка");
-                            MainStaticClass.write_event_in_log("Код маркировки " + answer_check_mark.codes[0].gtin + " эмитирован, но нет информации о его нанесении.", "Документ чек", numdoc.ToString());
+                            MainStaticClass.write_event_in_log("CDN Код маркировки " + answer_check_mark.codes[0].gtin + " эмитирован, но нет информации о его нанесении.", "Документ чек", numdoc.ToString());
                         }
                         else if (!answer_check_mark.codes[0].verified)
                         {
                             MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + "  не пройдена криптографическая проверка." + s, "CDN проверка");
-                            MainStaticClass.write_event_in_log("Код маркировки " + answer_check_mark.codes[0].gtin + "  не пройдена криптографическая проверка.", "Документ чек", numdoc.ToString());
+                            MainStaticClass.write_event_in_log("CDN Код маркировки " + answer_check_mark.codes[0].gtin + "  не пройдена криптографическая проверка.", "Документ чек", numdoc.ToString());
                         }
                         else if (answer_check_mark.codes[0].sold)
                         {
                             MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + "  уже выведен из оборота." + s, "CDN проверка");
-                            MainStaticClass.write_event_in_log("Код маркировки " + answer_check_mark.codes[0].gtin + "  уже выведен из оборота.", "Документ чек", numdoc.ToString());
+                            MainStaticClass.write_event_in_log("CDN Код маркировки " + answer_check_mark.codes[0].gtin + "  уже выведен из оборота.", "Документ чек", numdoc.ToString());
                         }
                         else if (answer_check_mark.codes[0].isBlocked)
                         {
                             MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + "  заблокирован по решению ОГВ." + s, "CDN проверка");
-                            MainStaticClass.write_event_in_log("Код маркировки " + answer_check_mark.codes[0].gtin + "  заблокирован по решению ОГВ.", "Документ чек", numdoc.ToString());
+                            MainStaticClass.write_event_in_log("CDN Код маркировки " + answer_check_mark.codes[0].gtin + "  заблокирован по решению ОГВ.", "Документ чек", numdoc.ToString());
                         }
                         else if ((!answer_check_mark.codes[0].realizable) && (!answer_check_mark.codes[0].sold))
                         {
                             MessageBox.Show("Для кода маркировки " + answer_check_mark.codes[0].gtin + " нет информации о вводе в оборот." + s, "CDN проверка");
-                            MainStaticClass.write_event_in_log("Для кода маркировки " + answer_check_mark.codes[0].gtin + " нет информации о вводе в оборот.", "Документ чек", numdoc.ToString());
+                            MainStaticClass.write_event_in_log("CDN Для кода маркировки " + answer_check_mark.codes[0].gtin + " нет информации о вводе в оборот.", "Документ чек", numdoc.ToString());
                         }
                         else if (answer_check_mark.codes[0].expireDate.Year>2000)
                         {
                             if (answer_check_mark.codes[0].expireDate < DateTime.Now)
                             {
                                 MessageBox.Show("У товара с кодом маркировки " + answer_check_mark.codes[0].gtin + "  истек срок годности." + s, "CDN проверка");
-                                MainStaticClass.write_event_in_log("У товара с кодом маркировки " + answer_check_mark.codes[0].gtin + "  истек срок годности.", "Документ чек", numdoc.ToString());
+                                MainStaticClass.write_event_in_log("CDN У товара с кодом маркировки " + answer_check_mark.codes[0].gtin + "  истек срок годности.", "Документ чек", numdoc.ToString());
                             }
                         }
                         else
@@ -524,7 +524,7 @@ namespace Cash8
                 }
                 catch (Exception ex)
                 {
-                    MainStaticClass.write_event_in_log("Exception при проверке кода маркировки check_marker_code " + ex.Message, "Документ чек", numdoc.ToString());
+                    MainStaticClass.write_event_in_log("Exception при проверке кода маркировки CDN check_marker_code " + ex.Message, "Документ чек", numdoc.ToString());
                     //host.dateTime = DateTime.Now.AddMinutes(15);
                     error = true;
                 }
