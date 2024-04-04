@@ -1185,7 +1185,7 @@ namespace Cash8
                 }
                 else if (e.KeyCode == Keys.F6)
                 {
-                    if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema==3))
+                    if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema==3) || (MainStaticClass.GetWorkSchema == 4))
                     {
                         inpun_client_barcode = true;
                     }
@@ -3692,7 +3692,7 @@ namespace Cash8
             {
                 //if (DateTime.Now < new DateTime(2022, 08, 01))//Начиная с первого августа 2022 года алгоритм однаковый для чд и визы
                 //{
-                if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema==3))
+                if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema==3)||(MainStaticClass.GetWorkSchema == 4))
                 {
                     process_client_discount(this.client_barcode.Text);
                 }
@@ -4691,7 +4691,7 @@ namespace Cash8
 
 
                 string sent_to_processing_center = "0";
-                if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema==3))
+                if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema==3) || (MainStaticClass.GetWorkSchema == 4))
                 {
                     //Необходимо отделить бонусные документы от дисконтных и те которые дисконтные записакть с sent_to_processing_center = 1
                     if (client.Tag != null)//Клиент обязательно должен быть выбран при этом 
@@ -6502,7 +6502,7 @@ namespace Cash8
                     //length = MainStaticClass.Nick_Shop.Length;
                     //length = (MainStaticClass.Nick_Shop + " кассир " + this.cashier).Length;
                     //Бонусы если такие есть 
-                    if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema==3))
+                    if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema==3) || (MainStaticClass.GetWorkSchema == 4))
                     {
                         if (MainStaticClass.PassPromo != "")
                         {
@@ -7263,7 +7263,7 @@ namespace Cash8
                 }
 
                 //Бонусы если такие есть 
-                if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema==3))
+                if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema==3) || (MainStaticClass.GetWorkSchema == 4))
                 {
                     if (MainStaticClass.PassPromo != "")
                     {
@@ -14202,7 +14202,7 @@ namespace Cash8
 
         private void btn_change_status_client_Click(object sender, EventArgs e)
         {
-            if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema==3))
+            if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema==3) || (MainStaticClass.GetWorkSchema == 4))
             {
                 if (listView1.Items.Count > 0)
                 {
@@ -14463,7 +14463,7 @@ namespace Cash8
             id_sale = Convert.ToInt32(txtB_num_sales.Text);
             NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
 
-            if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema==3))
+            if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema==3)|| (MainStaticClass.GetWorkSchema == 4))
             {
                 try
                 {
