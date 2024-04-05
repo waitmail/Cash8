@@ -905,7 +905,7 @@ namespace Cash8
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_SUM, (double)check.calculation_of_the_sum_of_the_document());
             fptr.receiptTotal();
 
-            double[] get_result_payment = MainStaticClass.get_cash_on_type_payment(check.numdoc.ToString());
+            double[] get_result_payment = check.get_summ1_systemtaxation3(variant);//MainStaticClass.get_cash_on_type_payment(check.numdoc.ToString());
             if (get_result_payment[0] != 0)//Наличные
             {
                 fptr.setParam(AtolConstants.LIBFPTR_PARAM_PAYMENT_TYPE, AtolConstants.LIBFPTR_PT_CASH);

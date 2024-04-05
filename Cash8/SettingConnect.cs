@@ -1076,7 +1076,10 @@ namespace Cash8
             queries.Add("ALTER TABLE public.constants ADD COLUMN enable_cdn_markers boolean DEFAULT false;");
             queries.Add("ALTER TABLE checks_header ALTER COLUMN autor TYPE bigint;");
             queries.Add("ALTER TABLE users ALTER COLUMN code TYPE bigint;");
-            
+            queries.Add("ALTER TABLE public.clients DROP CONSTRAINT clients_discount_types_code_fkey");
+            queries.Add("ALTER TABLE public.clients DROP COLUMN discount_types_code");
+
+
             foreach (string str in queries)
             {
                 append_column(str);

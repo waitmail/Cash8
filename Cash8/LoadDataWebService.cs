@@ -170,6 +170,221 @@ namespace Cash8
             }
         }
 
+        public class Client
+        {
+            public string card_id { get; set; }
+            public string name { get; set; }
+            public string holiday { get; set; }
+            public string use_blocked { get; set; }
+            public string reason_for_blocking { get; set; }
+            public string notify_security { get; set; }
+            public string datetime_update { get; set; }
+        }
+        public class Clients
+        {
+            public List<Client> list_clients { get; set; }
+        }
+
+
+
+        private bool get_load_bonus_clients_on_portions_new(bool show_message)
+        {
+            bool result = false;
+
+
+            if (!MainStaticClass.service_is_worker())
+            {
+                if (show_message)
+                {
+                    MessageBox.Show("Веб сервис недоступен");
+                }
+                return result;
+            }
+
+            Cash8.DS.DS ds = MainStaticClass.get_ds();
+            ds.Timeout = 60000;
+
+            //Получить параметра для запроса на сервер 
+            string nick_shop = MainStaticClass.Nick_Shop.Trim();
+            if (nick_shop.Trim().Length == 0)
+            {
+                if (show_message)
+                {
+                    MessageBox.Show(" Не удалось получить название магазина ");
+                }
+                return result;
+            }
+
+            string code_shop = MainStaticClass.Code_Shop.Trim();
+            if (code_shop.Trim().Length == 0)
+            {
+                if (show_message)
+                {
+                    MessageBox.Show(" Не удалось получить код магазина ");
+                }
+                return result;
+            }
+            string count_day = CryptorEngine.get_count_day();
+            string key = nick_shop.Trim() + count_day.Trim() + code_shop.Trim();
+            DateTime dt = last_date_download_bonus_clients();
+
+            string data = CryptorEngine.Encrypt(nick_shop + "|" + dt.Ticks.ToString() + "|" + code_shop, true, key);
+
+            string result_query = "-1";
+            try
+            {
+                result_query = ds.GetDiscountClientsV8DateTime_NEW(nick_shop, data, MainStaticClass.GetWorkSchema.ToString());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+            if (result_query == "-1")
+            {
+                if (show_message)
+                {
+                    MessageBox.Show("При обработке запроса на сервере произошли ошибки");
+                }
+                return result;
+            }
+            string result_query_decrypt = CryptorEngine.Decrypt(result_query, true, key);
+
+
+            Clients clients = JsonConvert.DeserializeObject<Clients>(result_query_decrypt);
+
+            //string[] delimiters = new string[] { "|" };
+
+            //string[] insert_query = result_query_decrypt.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
+            //if (insert_query.Length == 0)
+            //{
+            //    return false;
+            //}
+            if (clients.list_clients.Count == 0)
+            {
+                return false;
+            }
+
+            progressBar1.Maximum = clients.list_clients.Count;
+            progressBar1.Minimum = 0;
+            progressBar1.Value = 0;
+
+            NpgsqlConnection conn = null;
+            NpgsqlTransaction tran = null;
+            string query = "";
+
+            try
+            {
+                conn = MainStaticClass.NpgsqlConn();
+                conn.Open();
+                tran = conn.BeginTransaction();
+                NpgsqlCommand command = null;
+                //delimiters = new string[] { "," };
+                int rowsaffected = 0;
+                string local_last_date_download_bonus_clients = "";
+
+                foreach (Client client in clients.list_clients)
+                {
+                    //string[] str1 = str.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
+                    //query=" DELETE FROM clients WHERE code="+str1[0]+";";
+                    //query += "INSERT INTO clients(code,name, sum, date_of_birth,discount_types_code,its_work)VALUES(" + str + ")";
+
+                    query = "UPDATE clients SET code='" + client.card_id + "'," +
+                        " name='" + client.name + "'," +
+                        //" sum=" + str1[2] + "," +
+                        " date_of_birth='" + client.holiday + "'," +
+                        //" discount_types_code=" + str1[4] + "," +
+                        " its_work='" + client.use_blocked + "'," +
+                        //" phone=" + client.str1[7] + "," +
+                        //" attribute=" + str1[8] + "," +
+                        //" bonus_is_on=" + str1[9] + "," +
+                        " reason_for_blocking='" + client.reason_for_blocking + "'," +
+                        " notify_security='" + client.notify_security +"' "+
+                        " WHERE code='" + client.card_id + "';";
+
+                    local_last_date_download_bonus_clients = client.datetime_update;
+
+                    command = new NpgsqlCommand(query, conn);
+                    command.Transaction = tran;
+                    rowsaffected = command.ExecuteNonQuery();
+                    if (rowsaffected == 0)
+                    {
+                        query = "INSERT INTO clients(code,name, date_of_birth,its_work,reason_for_blocking,notify_security)VALUES('" +
+                            client.card_id+ "','" +
+                            client.name + "','" +
+                            client.holiday + "','" +
+                            client.use_blocked + "','" +
+                            client.reason_for_blocking + "','" +
+                            client.notify_security + "')";
+                        command = new NpgsqlCommand(query, conn);
+                        command.Transaction = tran;
+                        command.ExecuteNonQuery();
+                    }
+
+                    progressBar1.Value++;
+                    if (progressBar1.Value % 1000 == 0)
+                    {
+                        this.Refresh();
+                        this.Update();
+                        progressBar1.Refresh();
+                        progressBar1.Update();
+                    }
+                }
+
+                query = "UPDATE constants SET last_date_download_bonus_clients='" + local_last_date_download_bonus_clients+"'";
+                command = new NpgsqlCommand(query, conn);
+                command.Transaction = tran;
+                command.ExecuteNonQuery();
+
+                tran.Commit();
+                conn.Close();
+                result = true;
+                //set_last_date_download_bonus_clients(); теперь делается для каждой строки
+                //if (show_message)
+                //{
+                //    MessageBox.Show("Загрузка успешно завершена");
+                //}
+            }
+            catch (NpgsqlException ex)
+            {
+                if (show_message)
+                {
+                    MessageBox.Show(query);
+                    MessageBox.Show(ex.Message, "Ошибка при импорте данных ");
+                }
+                if (tran != null)
+                {
+                    tran.Rollback();
+                }
+            }
+            catch (Exception ex)
+            {
+                if (show_message)
+                {
+                    MessageBox.Show(query);
+                    MessageBox.Show(ex.Message, "Ошибка при импорте данных " + ex.Message);
+                }
+                if (tran != null)
+                {
+                    tran.Rollback();
+                }
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            if (progressBar1.Maximum < 900)
+            {
+                result = false;
+            }
+
+            return result;
+
+        }
 
 
         private bool get_load_bonus_clients_on_portions(bool show_message)
@@ -372,13 +587,21 @@ namespace Cash8
 
         public void load_bonus_clients(bool show_message)
         {
-
             bool loaded = true;
+
             while (loaded)
             {
-                loaded = get_load_bonus_clients_on_portions(show_message);
-            }            
-        }
+                if (MainStaticClass.GetWorkSchema != 4)
+                {
+                    loaded = get_load_bonus_clients_on_portions(show_message);
+                }
+                else
+                {
+                    loaded = get_load_bonus_clients_on_portions_new(show_message);
+                }
+            }
+        }            
+        
 
         /// <summary>        
         /// Класс данных для отправки на кассу        

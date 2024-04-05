@@ -7510,7 +7510,7 @@ namespace Cash8
         /// </summary>
         /// <param name="variant"></param>
         /// <returns></returns>
-        private double[] get_summ1_systemtaxation3(int variant )
+        public double[] get_summ1_systemtaxation3(int variant )
         {
             double[] result = new double[3];
 
@@ -9139,22 +9139,25 @@ namespace Cash8
             }
             else if (MainStaticClass.GetVersionFn == 2)
             {
-                int count_km = 0;
-                foreach (ListViewItem lvi in listView1.Items)
+                if (MainStaticClass.PrintingUsingLibraries == 0)
                 {
-                    if (lvi.SubItems[14].Text.Trim().Length > 13)
+                    int count_km = 0;
+                    foreach (ListViewItem lvi in listView1.Items)
                     {
-                        count_km++;
+                        if (lvi.SubItems[14].Text.Trim().Length > 13)
+                        {
+                            count_km++;
+                        }
                     }
-                }
-                bool continue_print = true;
-                if (count_km != 0)
-                {
-                    continue_print = check_imc_work_state(count_km);//Проверка соответсвия состояния буфера в ФН и 
-                }
-                if (!continue_print)
-                {
-                    return;
+                    bool continue_print = true;
+                    if (count_km != 0)
+                    {
+                        continue_print = check_imc_work_state(count_km);//Проверка соответсвия состояния буфера в ФН и 
+                    }
+                    if (!continue_print)
+                    {
+                        return;
+                    }
                 }
                 if (MainStaticClass.SystemTaxation == 3)
                 {
