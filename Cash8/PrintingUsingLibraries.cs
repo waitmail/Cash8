@@ -735,8 +735,6 @@ namespace Cash8
             {
                 //здесь проверяем есть ли строки
 
-
-
                 if (check.to_print_certainly_p == 1)
                 {
                     MainStaticClass.delete_document_wil_be_printed(check.numdoc.ToString(), variant);
