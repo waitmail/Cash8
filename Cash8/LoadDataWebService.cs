@@ -172,7 +172,8 @@ namespace Cash8
 
         public class Client
         {
-            public string card_id { get; set; }
+            public string code { get; set; }
+            public string phone { get; set; }
             public string name { get; set; }
             public string holiday { get; set; }
             public string use_blocked { get; set; }
@@ -289,9 +290,9 @@ namespace Cash8
                     //query=" DELETE FROM clients WHERE code="+str1[0]+";";
                     //query += "INSERT INTO clients(code,name, sum, date_of_birth,discount_types_code,its_work)VALUES(" + str + ")";
 
-                    query = "UPDATE clients SET code='" + client.card_id + "'," +
-                        " name='" + client.name + "'," +
-                        //" sum=" + str1[2] + "," +
+                    query = "UPDATE clients SET code='" + client.code + "'," +
+                        " phone='" + client.phone + "'," +
+                        " name='" + client.name + "'," +                        
                         " date_of_birth='" + client.holiday + "'," +
                         //" discount_types_code=" + str1[4] + "," +
                         " its_work='" + client.use_blocked + "'," +
@@ -300,7 +301,7 @@ namespace Cash8
                         //" bonus_is_on=" + str1[9] + "," +
                         " reason_for_blocking='" + client.reason_for_blocking + "'," +
                         " notify_security='" + client.notify_security +"' "+
-                        " WHERE code='" + client.card_id + "';";
+                        " WHERE code='" + client.code + "';";
 
                     local_last_date_download_bonus_clients = client.datetime_update;
 
@@ -309,8 +310,9 @@ namespace Cash8
                     rowsaffected = command.ExecuteNonQuery();
                     if (rowsaffected == 0)
                     {
-                        query = "INSERT INTO clients(code,name, date_of_birth,its_work,reason_for_blocking,notify_security)VALUES('" +
-                            client.card_id+ "','" +
+                        query = "INSERT INTO clients(code,phone,name, date_of_birth,its_work,reason_for_blocking,notify_security)VALUES('" +
+                            client.code+ "','" +
+                            client.phone + "','" +
                             client.name + "','" +
                             client.holiday + "','" +
                             client.use_blocked + "','" +
