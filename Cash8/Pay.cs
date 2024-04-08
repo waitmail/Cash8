@@ -1160,7 +1160,7 @@ namespace Cash8
                         {
                             calculate();
                             cc.recharge_note = "";
-                            MessageBox.Show(" Неудачная попытка получения оплаты ");
+                            MessageBox.Show(" Неудачная попытка получения оплаты ","Оплата по терминалу");
                             return;
                         }
                         else
@@ -1204,35 +1204,35 @@ namespace Cash8
 
                                         if (answerTerminal.сode_response_in_15_field == "R10")
                                     {
-                                        MessageBox.Show(" Операция отклонена ");
+                                        MessageBox.Show(" Операция отклонена ", "Оплата по терминалу");
                                         break;
                                     }
                                     else if (answerTerminal.сode_response_in_15_field == "R11")
                                     {
-                                        MessageBox.Show(" Операции по QR коду не существует. ");
+                                        MessageBox.Show(" Операции по QR коду не существует. ", "Оплата по терминалу");
                                         break;
                                     }
                                     else if (answerTerminal.сode_response_in_15_field == "R12")
                                     {
                                         if (answerTerminal.сode_response_in_39_field == "0")
                                         {
-                                            MessageBox.Show(" Не получен ответ на запрос статуса ");
+                                            MessageBox.Show(" Не получен ответ на запрос статуса ", "Оплата по терминалу");
                                             break;
                                         }
                                         else if (answerTerminal.сode_response_in_39_field == "16")
                                         {
-                                            MessageBox.Show(" Не получен ответ на запрос QR - кода ");
+                                            MessageBox.Show(" Не получен ответ на запрос QR - кода ", "Оплата по терминалу");
                                             break;
                                         }                                    
                                     }
                                     else if (answerTerminal.сode_response_in_15_field == "R13")
                                     {
-                                        MessageBox.Show(" Запрос статуса не отправлен ");
+                                        MessageBox.Show(" Запрос статуса не отправлен ", "Оплата по терминалу");
                                         break;
                                     }
                                     else if (answerTerminal.сode_response_in_15_field == "R14")
                                     {
-                                        MessageBox.Show(" Операция не добавлена в базу транзакций терминала ");
+                                        MessageBox.Show(" Операция не добавлена в базу транзакций терминала ", "Оплата по терминалу");
                                         break;
                                     }
                                     if (answerTerminal.error)
@@ -1549,13 +1549,13 @@ namespace Cash8
             catch (WebException ex)
             {
                 status = false;
-                MessageBox.Show(" Ошибка при оплате по карте  " + ex.Message);
+                MessageBox.Show(" Ошибка при оплате по карте  " + ex.Message, "Оплата по терминалу");
                 answerTerminal.error = true;
             }
             catch (Exception ex)
             {
                 status = false;
-                MessageBox.Show(" Ошибка при оплате по карте  " + ex.Message);
+                MessageBox.Show(" Ошибка при оплате по карте  " + ex.Message, "Оплата по терминалу");
                 answerTerminal.error = true;
             }
         }

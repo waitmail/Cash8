@@ -3445,9 +3445,15 @@ namespace Cash8
                 conn.Open();
                 NpgsqlCommand command = new NpgsqlCommand();
                 command.Connection = conn;
-                command.CommandText = " SELECT discount_types.discount_percent,clients.code,clients.name,clients.phone AS clients_phone," +
+                //command.CommandText = " SELECT discount_types.discount_percent,clients.code,clients.name,clients.phone AS clients_phone," +
+                //    " temp_phone_clients.phone AS temp_phone_clients_phone,attribute,clients.its_work,COALESCE(clients.bonus_is_on,0) AS bonus_is_on  FROM clients " +
+                //    " left join discount_types ON clients.discount_types_code= discount_types.code " +
+                //    " left join temp_phone_clients ON clients.code = temp_phone_clients.barcode " +
+                //    " WHERE clients.code='" + barcode + "' OR right(clients.phone,10)='" + barcode + "' AND clients.its_work = 1 ";
+
+                command.CommandText = " SELECT 5.00,clients.code,clients.name,clients.phone AS clients_phone," +
                     " temp_phone_clients.phone AS temp_phone_clients_phone,attribute,clients.its_work,COALESCE(clients.bonus_is_on,0) AS bonus_is_on  FROM clients " +
-                    " left join discount_types ON clients.discount_types_code= discount_types.code " +
+                    //" left join discount_types ON clients.discount_types_code= discount_types.code " +
                     " left join temp_phone_clients ON clients.code = temp_phone_clients.barcode " +
                     " WHERE clients.code='" + barcode + "' OR right(clients.phone,10)='" + barcode + "' AND clients.its_work = 1 ";
 
@@ -13979,67 +13985,67 @@ namespace Cash8
             }
         }
 
-        private void check_action(ListView lv)
-        {
-            string code_tovar_not_actions = "";
+        //private void check_action(ListView lv)
+        //{
+        //    string code_tovar_not_actions = "";
 
-            foreach (ListViewItem lvi in listView1.Items)
-            {
-                if (lvi.SubItems[8].Text == "0" && lvi.SubItems[9].Text == "0" && lvi.SubItems[10].Text == "0")
-                {
-                    code_tovar_not_actions += lvi.SubItems[0].Text + ",";
-                }
-            }
+        //    foreach (ListViewItem lvi in listView1.Items)
+        //    {
+        //        if (lvi.SubItems[8].Text == "0" && lvi.SubItems[9].Text == "0" && lvi.SubItems[10].Text == "0")
+        //        {
+        //            code_tovar_not_actions += lvi.SubItems[0].Text + ",";
+        //        }
+        //    }
 
-            if (code_tovar_not_actions.Length == 0)
-            {
-                return;
-            }
-            else
-            {
-                code_tovar_not_actions = code_tovar_not_actions.Substring(0, code_tovar_not_actions.Length - 1); 
-            }
+        //    if (code_tovar_not_actions.Length == 0)
+        //    {
+        //        return;
+        //    }
+        //    else
+        //    {
+        //        code_tovar_not_actions = code_tovar_not_actions.Substring(0, code_tovar_not_actions.Length - 1); 
+        //    }
 
-            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
-            try
-            {
-                conn.Open();
-                string query = " SELECT action_table.code_tovar,tovar.name,comment,action_table.num_doc " +
-                               " FROM action_header LEFT JOIN action_table ON action_header.num_doc = action_table.num_doc " +
-                               " LEFT JOIN tovar ON action_table.code_tovar = tovar.code " +
-                               " WHERE '" + DateTime.Now.ToString("dd-MM-yyyy") + "' between date_started AND date_end " +
-                               " AND action_header.tip in (2,3,4,6,8) AND action_table.code_tovar in (" + code_tovar_not_actions + ")" +
-                               " GROUP BY action_table.code_tovar,tovar.name,action_table.num_doc,comment";
-                NpgsqlCommand command = new NpgsqlCommand(query, conn);
-                NpgsqlDataReader reader = command.ExecuteReader();
-                lv.Items.Clear();
-                while (reader.Read())
-                {
-                    ListViewItem lvi = new ListViewItem(reader[0].ToString());
-                    lvi.SubItems.Add(reader[1].ToString());
-                    lvi.SubItems.Add(reader[2].ToString());
-                    lv.Items.Add(lvi); 
-                }
-                reader.Close();
-                conn.Close();
-            }            
-            catch (NpgsqlException ex)
-            {
-                MessageBox.Show(" Ошибка при анализе товаров вне акции " + ex.Message);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(" Ошибка при анализе товаров вне акции " + ex.Message);
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                }
-            }
+        //    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+        //    try
+        //    {
+        //        conn.Open();
+        //        string query = " SELECT action_table.code_tovar,tovar.name,comment,action_table.num_doc " +
+        //                       " FROM action_header LEFT JOIN action_table ON action_header.num_doc = action_table.num_doc " +
+        //                       " LEFT JOIN tovar ON action_table.code_tovar = tovar.code " +
+        //                       " WHERE '" + DateTime.Now.ToString("dd-MM-yyyy") + "' between date_started AND date_end " +
+        //                       " AND action_header.tip in (2,3,4,6,8) AND action_table.code_tovar in (" + code_tovar_not_actions + ")" +
+        //                       " GROUP BY action_table.code_tovar,tovar.name,action_table.num_doc,comment";
+        //        NpgsqlCommand command = new NpgsqlCommand(query, conn);
+        //        NpgsqlDataReader reader = command.ExecuteReader();
+        //        lv.Items.Clear();
+        //        while (reader.Read())
+        //        {
+        //            ListViewItem lvi = new ListViewItem(reader[0].ToString());
+        //            lvi.SubItems.Add(reader[1].ToString());
+        //            lvi.SubItems.Add(reader[2].ToString());
+        //            lv.Items.Add(lvi); 
+        //        }
+        //        reader.Close();
+        //        conn.Close();
+        //    }            
+        //    catch (NpgsqlException ex)
+        //    {
+        //        MessageBox.Show(" Ошибка при анализе товаров вне акции " + ex.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(" Ошибка при анализе товаров вне акции " + ex.Message);
+        //    }
+        //    finally
+        //    {
+        //        if (conn.State == ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //        }
+        //    }
  
-        }
+        //}
 
        
         private void btn_inpute_phone_client_Click(object sender, EventArgs e)

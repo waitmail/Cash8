@@ -1488,32 +1488,69 @@ namespace Cash8
         //}
 
 
+        //public static void delete_old_checks(DateTime date)
+        //{
+        //    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+        //    try
+        //    {
+        //        conn.Open();
+        //        string query = "SELECT Max(document_number)  FROM checks_header where date_time_start<'" + date.ToString("yyyy.MM.dd") + "'";
+        //        NpgsqlCommand command = new NpgsqlCommand(query, conn);
+        //        object result_query = command.ExecuteScalar();
+        //        if (result_query.ToString() != "")
+        //        {
+        //            query = "DELETE FROM checks_header where document_number<" + Convert.ToInt64(result_query).ToString()+ " AND is_sent=1";
+        //            command = new NpgsqlCommand(query, conn);
+        //            command.ExecuteNonQuery();
+        //            //query = "DELETE FROM checks_table LEFT JOIN checks_header ON checks_table.document_number = checks_header.document_number  where document_number<=" + Convert.ToInt64(result_query).ToString()+ " AND is_sent = 1";
+        //            //query = "DELETE FROM checks_table ct  USING checks_header ch Where ct.document_number = ch.document_number  AND ct.document_number <=" + Convert.ToInt64(result_query).ToString() + " AND ch.is_sent = 1";
+        //            query = "DELETE FROM checks_table Where document_number <" + Convert.ToInt64(result_query).ToString();
+        //            command = new NpgsqlCommand(query, conn);
+        //            command.ExecuteNonQuery();
+        //        }
+        //        command.Dispose();
+        //        conn.Close();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(" Ошибка при удалении документов с датой до " + date.ToString("yyyy.MM.dd") + " " + ex.Message);
+        //    }
+        //    finally
+        //    {
+        //        if (conn.State == ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //        }
+        //    }
+        //}
+
         public static void delete_old_checks(DateTime date)
         {
             NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+            NpgsqlTransaction transaction = null;
             try
             {
                 conn.Open();
-                string query = "SELECT Max(document_number)  FROM checks_header where date_time_start<'" + date.ToString("yyyy.MM.dd") + "'";
+                transaction = conn.BeginTransaction();
+                string query = "DELETE FROM checks_table WHERE guid in(SELECT guid FROM checks_header where date_time_write < '" + date.ToString("yyyy.MM.dd") + "' AND is_sent=1)";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
-                object result_query = command.ExecuteScalar();
-                if (result_query.ToString() != "")
-                {
-                    query = "DELETE FROM checks_header where document_number<" + Convert.ToInt64(result_query).ToString()+ " AND is_sent=1";
-                    command = new NpgsqlCommand(query, conn);
-                    command.ExecuteNonQuery();
-                    //query = "DELETE FROM checks_table LEFT JOIN checks_header ON checks_table.document_number = checks_header.document_number  where document_number<=" + Convert.ToInt64(result_query).ToString()+ " AND is_sent = 1";
-                    //query = "DELETE FROM checks_table ct  USING checks_header ch Where ct.document_number = ch.document_number  AND ct.document_number <=" + Convert.ToInt64(result_query).ToString() + " AND ch.is_sent = 1";
-                    query = "DELETE FROM checks_table Where document_number <" + Convert.ToInt64(result_query).ToString();
-                    command = new NpgsqlCommand(query, conn);
-                    command.ExecuteNonQuery();
-                }
+                command.Transaction = transaction;
+                command.ExecuteNonQuery();
+                query = "DELETE FROM checks_header where date_time_write < '" + date.ToString("yyyy.MM.dd") + "' AND is_sent=1)";
+                command = new NpgsqlCommand(query, conn);
+                command.Transaction = transaction;
+                command.ExecuteNonQuery();
+                transaction.Commit();
                 command.Dispose();
                 conn.Close();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(" Ошибка при удалении документов с датой до " + date.ToString("yyyy.MM.dd") + " " + ex.Message);
+                if (transaction != null)
+                {
+                    transaction.Rollback();
+                }
             }
             finally
             {
@@ -2680,9 +2717,7 @@ namespace Cash8
             catch
             {
                 ds.Url = "http://8.8.8.8/DiscountSystem/Ds.asmx";//.get_path_for_web_service();
-            }
-
-            
+            }            
 
             return ds;
         }
