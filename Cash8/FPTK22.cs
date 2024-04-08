@@ -19,6 +19,7 @@ namespace Cash8
     {
         private bool    complete      = false;
         private string  recharge_note = "";
+        private DateTime dateTimeEnd;        
 
         public FPTK22()
         {
@@ -163,7 +164,14 @@ namespace Cash8
         }
 
         private void avans_Click(object sender, EventArgs e)
-        {
+        {            
+
+            if (!MainStaticClass.continue_process(dateTimeEnd, 1))
+            {                
+                return;
+            }
+            
+            
             avans.Enabled = false;
             if (MainStaticClass.PrintingUsingLibraries == 0)
             {
@@ -208,7 +216,9 @@ namespace Cash8
                 printing.cashIncome(Convert.ToDouble(sum_avans.Text));
                 get_summ_in_cashe_Click(null, null);
             }
+            //sum_avans.Text = "0";
             avans.Enabled = true;
+            dateTimeEnd = DateTime.Now;
         }
 
         private void incass_Click(object sender, EventArgs e)

@@ -152,6 +152,29 @@ namespace Cash8
                 CDN_list = null;//Если CDN сервера недоступны, то таким образом мы обнуляем весь список 
             }
         }
+
+
+        /// <summary>
+        /// Возвращает false если нажатие 
+        /// было очень быстрым
+        /// </summary>
+        /// <param name="dateTime"></param>
+        /// <param name="second"></param>
+        /// <returns></returns>
+        public static bool continue_process(DateTime dateTime, int second)
+        {
+            bool result = true; 
+            if (dateTime > DateTime.Now.AddDays(-1))
+            {
+                if ((DateTime.Now - dateTime).TotalSeconds < 1)
+                {
+                    //MessageBox.Show((DateTime.Now - dateTime).TotalSeconds.ToString());
+                    MainStaticClass.write_event_in_log("Слишком частое нажатие", "", "0");
+                    return false;
+                }
+            }
+            return result;
+        }
         
         public static string FiscalDriveNumber
         {

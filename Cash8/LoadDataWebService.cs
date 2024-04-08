@@ -871,6 +871,7 @@ namespace Cash8
 
         private void btn_new_load_Click(object sender, EventArgs e)
         {
+            btn_new_load.Enabled = false;
             if (!MainStaticClass.service_is_worker())
             {
                 MessageBox.Show("Веб сервис недоступен");
@@ -1077,6 +1078,7 @@ namespace Cash8
                     loadPacketData.ListActionClients.Clear();
                     loadPacketData.ListActionClients = null;
                 }
+                ;
             }
 
             //queries.Add("UPDATE date_sync SET tovar='" + DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd")+"'");
@@ -1156,6 +1158,8 @@ namespace Cash8
             }
             GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
             GC.WaitForPendingFinalizers();
+
+            btn_new_load.Enabled = true;
         }
 
 
