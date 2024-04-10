@@ -945,7 +945,7 @@ namespace Cash8
 
                 MainStaticClass.SystemTaxation = check_system_taxation();
 
-                MainStaticClass.delete_old_checks(MainStaticClass.GetMinDateWork);
+                //MainStaticClass.delete_old_checks(MainStaticClass.GetMinDateWork);
                 MainStaticClass.delete_all_events_in_log(MainStaticClass.GetMinDateWork);
 
                 if (MainStaticClass.Use_Fiscall_Print)

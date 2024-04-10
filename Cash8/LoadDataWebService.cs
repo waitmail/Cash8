@@ -379,7 +379,7 @@ namespace Cash8
                 }
             }
 
-            if (progressBar1.Maximum < 900)
+            if (progressBar1.Maximum < 50000)
             {
                 result = false;
             }
@@ -488,7 +488,7 @@ namespace Cash8
                         " name=" + str1[1] + "," +
                         " sum=" + str1[2] + "," +
                         " date_of_birth=" + str1[3] + "," +
-                        " discount_types_code=" + str1[4] + "," +
+                        //" discount_types_code=" + str1[4] + "," +
                         " its_work=" + str1[5] + "," +
                         " phone=" + str1[7] + "," +
                         " attribute=" + str1[8] + "," +
@@ -504,12 +504,13 @@ namespace Cash8
                     rowsaffected = command.ExecuteNonQuery();
                     if (rowsaffected == 0)
                     {
-                        query = "INSERT INTO clients(code,name, sum, date_of_birth,discount_types_code,its_work,phone,attribute,bonus_is_on,reason_for_blocking,notify_security)VALUES(" +
+                        //query = "INSERT INTO clients(code,name, sum, date_of_birth,discount_types_code,its_work,phone,attribute,bonus_is_on,reason_for_blocking,notify_security)VALUES(" +
+                        query = "INSERT INTO clients(code,name, sum, date_of_birth,its_work,phone,attribute,bonus_is_on,reason_for_blocking,notify_security)VALUES(" +
                             str1[0] + "," +
                             str1[1] + "," +
                             str1[2] + "," +
                             str1[3] + "," +
-                            str1[4] + "," +
+                            //str1[4] + "," +
                             str1[5] + "," +
                             str1[7] + "," +
                             str1[8] + "," +
@@ -577,7 +578,7 @@ namespace Cash8
                 }
             }
 
-            if (progressBar1.Maximum < 900)
+            if (progressBar1.Maximum < 50000)
             {
                 result = false;
             }

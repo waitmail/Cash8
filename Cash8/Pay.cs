@@ -71,7 +71,7 @@ namespace Cash8
 
         void non_cash_sum_kop_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema ==3))
+            if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema ==3) || (MainStaticClass.GetWorkSchema == 4))
             {
                 e.Handled = true;
             }
@@ -79,7 +79,7 @@ namespace Cash8
 
         public void set_kop_on_non_cash_sum_kop(string kop)
         {
-            if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema ==3))
+            if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema ==3) || (MainStaticClass.GetWorkSchema == 4))
             {
                 non_cash_sum_kop.Text = kop;
             }
@@ -344,7 +344,7 @@ namespace Cash8
             {
                 //Decimal input_bonus = Convert.ToDecimal(pay_bonus.Text);
                 Decimal input_bonus = 0;
-                if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema ==3))
+                if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema ==3) || (MainStaticClass.GetWorkSchema == 4))
                 {
                     input_bonus = Convert.ToDecimal(pay_bonus.Text);
                 }
@@ -358,7 +358,7 @@ namespace Cash8
                 //Decimal bonus_total = Convert.ToDecimal(bonus_total_in_centr.Text);
 
                 Int64 bonus_total = 0;
-                if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema ==3))
+                if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema ==3) || (MainStaticClass.GetWorkSchema == 4))
                 {
                     bonus_total = Convert.ToInt64(bonus_total_in_centr.Text);
                 }
@@ -380,7 +380,7 @@ namespace Cash8
                 //}
 
                 //if (Convert.ToDecimal(pay_bonus.Text) > (Convert.ToDecimal(pay_sum.Text)-1))
-                if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema ==3))
+                if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema ==3) || (MainStaticClass.GetWorkSchema == 4))
                 {
                     int const_remaind = (int)(cc.calculation_quantity_on_document() / 100) + 1;
                     if (Convert.ToInt64(pay_bonus.Text) > (int)(Convert.ToDecimal(pay_sum.Text) - const_remaind))
@@ -617,7 +617,7 @@ namespace Cash8
                     set_kop_on_non_cash_sum_kop(kop);
                 }
 
-                if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema ==3))
+                if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema ==3) || (MainStaticClass.GetWorkSchema == 4))
                 {
 
                     this.remainder.Text = Math.Round(
@@ -1002,7 +1002,7 @@ namespace Cash8
                     MessageBox.Show("В чеке выбрана скидка.Оплата бонусами невозможна!");
                     return;
                 }
-                if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema ==3))
+                if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema ==3) || (MainStaticClass.GetWorkSchema == 4))
                 {
                     if (!cc.check_bonus_is_on())
                     {
@@ -1060,7 +1060,7 @@ namespace Cash8
                 if (cc.client.Tag != null)
                 {
                     //***********************************************   
-                    if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema ==3))
+                    if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema ==3) || (MainStaticClass.GetWorkSchema == 4))
                     {
                         if (Convert.ToDecimal(pay_bonus_many.Text) > 0)
                         {
@@ -1093,7 +1093,7 @@ namespace Cash8
                 }
                 else
                 {
-                    if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema ==3))
+                    if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema ==3) || (MainStaticClass.GetWorkSchema == 4))
                     {
                         if (Convert.ToDecimal(non_cash_sum.Text) == 0)
                         {
@@ -1570,7 +1570,7 @@ namespace Cash8
                 {
                     if (cc.client.Tag != null)
                     {
-                        if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema ==3))
+                        if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema ==3) || (MainStaticClass.GetWorkSchema == 4))
                         {
                             if (cc.check_bonus_is_on())
                             {
@@ -1808,13 +1808,13 @@ namespace Cash8
 
             if (_non_cash_summ_ == 0)
             {
-                if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema ==3))
+                if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema ==3) || (MainStaticClass.GetWorkSchema == 4))
                 {
                     sum_of_the_document = (int)sum_of_the_document;
                 }
             }
 
-            if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema == 3))
+            if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema == 3) || (MainStaticClass.GetWorkSchema == 4))
             {
                 if (Math.Round(sum_of_the_document, 2) != Math.Round((_cash_summ_ + _non_cash_summ_ + _sertificates_sum_ + _pay_bonus_many_), 2))
                 {
