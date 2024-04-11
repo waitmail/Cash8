@@ -925,7 +925,7 @@ namespace Cash8
                     //t.Start();
 
                     UploadPhoneClients();
-                    UploadChangeStatusClients();
+                    //UploadChangeStatusClients();
                     check_failed_input_phone();
                 }
 

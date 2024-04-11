@@ -104,10 +104,12 @@ namespace Cash8
         System.Windows.Forms.Timer timer = null;
 
         HttpWebRequest request = null;
+        //список допустимых длин qr кодов
+        List<int> qr_code_lenght = new List<int>();
         //(HttpWebRequest)WebRequest.Create("url");
         //request.KeepAlive = true;
         //request.Method = "GET"; // Или другой метод, который вы используете
-        
+
         public class CdnMarkerDateTime
         {
             public string reqId { get; set; }
@@ -2786,13 +2788,23 @@ namespace Cash8
                                                 {
                                                     error = true;
                                                     MessageBox.Show("Считан не верный qr код");
-                                                    MainStaticClass.write_event_in_log("HTTP не верный qr код  " + barcode, "Документ чек", numdoc.ToString());
+                                                    MainStaticClass.write_event_in_log("HTTP не верный qr код  " + this.qr_code, "Документ чек", numdoc.ToString());
                                                 }
                                             }
 
                                             //перед тем как добавить qr код в чек необходимо его проверить
                                             string mark_str = "";
                                             string mark_str_cdn = "";
+                                            if (this.qr_code.Trim().Length > 13)
+                                            {
+                                                if (!qr_code_lenght.Contains(this.qr_code.Trim().Length))
+                                                {
+                                                    MessageBox.Show("Длина введенного qr-кода не входит в диапазон допустимых ! \r\n ТОВАР В ЧЕК ДОБАВЛЕНЕ НЕ БУДЕТ!!! ", "Проверки введенного qr кода");
+                                                    MainStaticClass.write_event_in_log("Длина введенного qr-кода не входит в диапазон допустимых"+ this.qr_code, "Документ чек", numdoc.ToString());
+                                                    error = true;
+                                                    return;
+                                                }
+                                            }
                                             if (MainStaticClass.Version2Marking == 1)
                                             {
                                                 WortWithMarkingV3 markingV3 = new WortWithMarkingV3();
@@ -4042,6 +4054,12 @@ namespace Cash8
                 first_start_com_barcode_scaner();
                 selection_goods = true;
                 inputbarcode.Focus();
+                //список допустимых длин qr кодов
+                qr_code_lenght.Add(83);
+                qr_code_lenght.Add(127);
+                qr_code_lenght.Add(115);
+                qr_code_lenght.Add(30);
+                qr_code_lenght.Add(32);               
             }
             else
             {

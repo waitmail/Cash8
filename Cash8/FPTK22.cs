@@ -181,14 +181,14 @@ namespace Cash8
                     return;
                 }
 
-                if (Convert.ToDouble(sum_avans.Text) == 0)
+                if (Convert.ToDouble(sum_avans.Text.Replace(".",",")) == 0)
                 {
                     MessageBox.Show(" Сумма внесения должна быть больше нуля ");
                     return;
                 }
                 try
                 {
-                    Cash8.FiscallPrintJason.RootObject result = FiscallPrintJason.cashe_in_out("cashIn", Convert.ToDouble(sum_avans.Text));
+                    Cash8.FiscallPrintJason.RootObject result = FiscallPrintJason.cashe_in_out("cashIn", Convert.ToDouble(sum_avans.Text.Replace(".",",")));
                     if (result != null)
                     {
                         if (result.results[0].status == "ready")//Задание выполнено успешно 
@@ -213,7 +213,7 @@ namespace Cash8
             else
             {
                 PrintingUsingLibraries printing = new PrintingUsingLibraries();
-                printing.cashIncome(Convert.ToDouble(sum_avans.Text));
+                printing.cashIncome(Convert.ToDouble(sum_avans.Text.Replace(".",",")));
                 get_summ_in_cashe_Click(null, null);
             }
             //sum_avans.Text = "0";
@@ -228,7 +228,7 @@ namespace Cash8
             {
                 try
                 {
-                    Cash8.FiscallPrintJason.RootObject result = FiscallPrintJason.cashe_in_out("cashOut", Convert.ToDouble(sum_incass.Text));
+                    Cash8.FiscallPrintJason.RootObject result = FiscallPrintJason.cashe_in_out("cashOut", Convert.ToDouble(sum_incass.Text.Replace(".",",")));
                     if (result != null)
                     {
                         if (result.results[0].status == "ready")//Задание выполнено успешно 
@@ -253,7 +253,7 @@ namespace Cash8
             else
             {
                 PrintingUsingLibraries printing = new PrintingUsingLibraries();
-                printing.cashOutcome(Convert.ToDouble(sum_incass.Text));
+                printing.cashOutcome(Convert.ToDouble(sum_incass.Text.Replace(".",",")));
                 get_summ_in_cashe_Click(null, null);
             }
             incass.Enabled = true;

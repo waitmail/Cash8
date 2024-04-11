@@ -63,6 +63,7 @@ namespace Cash8
             public bool realizable { get; set; }
             public bool utilised { get; set; }
             public bool isBlocked { get; set; }
+            public bool isOwner { get; set; }            
             public DateTime expireDate { get; set; }
             public DateTime productionDate { get; set; }
             public int errorCode { get; set; }
@@ -449,6 +450,11 @@ namespace Cash8
                     if (answer_check_mark != null)
                     {
                         string s = " ТОВАР НЕ МОЖЕТ БЫТЬ ПРОДАН!!! ";
+                        if (!answer_check_mark.codes[0].isOwner)
+                        {
+                            MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + " Вы не являетесь владельцем " + s, "CDN проверка");
+                            MainStaticClass.write_event_in_log("CDN Код маркировки " + answer_check_mark.codes[0].gtin + " Вы не являетесь владельцем ", "Документ чек", numdoc.ToString());
+                        }
                         if (!answer_check_mark.codes[0].found)
                         {
                             MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + " не найден в ГИС МТ" + s, "CDN проверка");
