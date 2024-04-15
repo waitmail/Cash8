@@ -1078,6 +1078,7 @@ namespace Cash8
             queries.Add("ALTER TABLE users ALTER COLUMN code TYPE bigint;");
             queries.Add("ALTER TABLE public.clients DROP CONSTRAINT clients_discount_types_code_fkey");
             queries.Add("ALTER TABLE public.clients DROP COLUMN discount_types_code");
+            queries.Add("ALTER TABLE checks_header ALTER COLUMN autor TYPE character varying USING autor::character varying(12);");
 
 
             foreach (string str in queries)

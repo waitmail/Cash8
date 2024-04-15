@@ -106,6 +106,7 @@ namespace Cash8
         HttpWebRequest request = null;
         //список допустимых длин qr кодов
         List<int> qr_code_lenght = new List<int>();
+        ToolTip toolTip = null;
         //(HttpWebRequest)WebRequest.Create("url");
         //request.KeepAlive = true;
         //request.Method = "GET"; // Или другой метод, который вы используете
@@ -176,7 +177,7 @@ namespace Cash8
                     customerScreen.show_price = 1;
                     customerScreen.ListCheckPositions = new List<CheckPosition>();
                     DataTable dataTable = to_define_the_action_dt(false);
-                    this.txtB_total_sum.Text = Convert.ToDouble(dataTable.Compute("Sum(sum_at_discount)", (string)null)).ToString("F2");
+                    this.txtB_total_sum.Text = calculation_of_the_sum_of_the_document().ToString() +" / "+Convert.ToDouble(dataTable.Compute("Sum(sum_at_discount)", (string)null)).ToString("F2");
                     foreach (DataRow row in dataTable.Rows)
                     {
                         CheckPosition checkPosition = new CheckPosition();
@@ -237,7 +238,31 @@ namespace Cash8
             this.checkBox_to_print_repeatedly.CheckStateChanged += new EventHandler(checkBox_to_print_repeatedly_CheckStateChanged);
             txtB_inn.KeyPress += new KeyPressEventHandler(TxtB_inn_KeyPress);
             comment.KeyPress += new KeyPressEventHandler(Comment_KeyPress);
+            this.txtB_total_sum.MouseHover += TxtB_total_sum_MouseHover;
             //this.Paint += Cash_check_Paint;
+            toolTip = new ToolTip();            
+            toolTip.SetToolTip(this.txtB_total_sum, "Сумма без промо / Сумма с учетом промо");
+            txtB_total_sum.KeyPress += TxtB_total_sum_KeyPress;
+        }
+
+        private void TxtB_total_sum_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = true;
+        }
+        
+        private void TxtB_total_sum_MouseHover(object sender, EventArgs e)
+        {
+            //ToolTip t = new ToolTip();            
+
+            //// Установка задержек для ToolTip
+            ////toolTip.AutoPopDelay = 50000;
+            ////toolTip.InitialDelay = 1000;
+            ////toolTip.ReshowDelay = 500;
+
+            ////// Принудительное отображение текста ToolTip независимо от активности формы
+            ////toolTip.ShowAlways = true;
+            //toolTip.Show("Без промо / с учетом промо", this.txtB_total_sum);
+
         }
 
         //private void Cash_check_Paint(object sender, PaintEventArgs e)
@@ -1767,6 +1792,19 @@ namespace Cash8
 
             return total;
         }
+
+        //public decimal calculation_of_the_sum_without_discount_of_the_document()
+        //{
+        //    decimal total = 0;
+        //    foreach (ListViewItem lvi in listView1.Items)
+        //    {
+        //        total += Convert.ToDecimal(lvi.SubItems[6].Text);
+        //        //MessageBox.Show("Подсчет суммы документа " + lvi.SubItems[7].Text + " общая сумма " + total.ToString()," Подсчет суммы ");
+        //    }
+
+        //    return total;
+        //}
+
         ///// <summary>
         ///// Нет сдачи в копейках 
         ///// для этого отсекается копеечная часть
@@ -3985,7 +4023,7 @@ namespace Cash8
                 this.date_time_start.Text = "Чек   " + DateTime.Now.ToString("yyy-MM-dd HH:mm:ss");
                 this.Discount = 0;
                 this.user.Text = MainStaticClass.Cash_Operator;
-                this.user.Tag = MainStaticClass.Cash_Operator_Client_Code;
+                this.user.Tag = MainStaticClass.Cash_Operator_Client_Code;//gaa поменять на инн
                 numdoc = get_new_number_document();
                 this.txtB_num_doc.Text = this.numdoc.ToString();
                 MainStaticClass.write_event_in_log(" Ввод нового документа ", "Документ чек", numdoc.ToString());

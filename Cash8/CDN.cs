@@ -267,7 +267,8 @@ namespace Cash8
             string url = url_sdn + health_url;
             ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
             long latency = 9999999999;
-            CDNHealth cDNHealth = null;
+            CDNHealth cDNHealth = new CDNHealth();
+            cDNHealth.latency = latency;
             try
             {
 
@@ -275,6 +276,7 @@ namespace Cash8
                 // Создание запроса
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                 request.Method = "GET";
+                request.Timeout = 1500;
 
                 // Добавление заголовков            
                 request.Headers.Add("X-API-KEY", MainStaticClass.CDN_Token);
@@ -330,7 +332,7 @@ namespace Cash8
                 }
             }
             catch (Exception ex)
-            {
+            {                
                 MessageBox.Show("Произошла ошибка " + ex.Message + " при запросе о доступности для CDN площадки " + url, "Получение списка CDN серверов");
             }
 
@@ -388,16 +390,18 @@ namespace Cash8
 
             string body = JsonConvert.SerializeObject(check_mark, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             body = body.Replace("\\u001d", @"u001d");
+            error = false; result_check = false;
             for (int i = 0; i < cdn_list.hosts.Count; i++)
             {
                 Host host = cdn_list.hosts[i];
+                //error = false;
+//                result_check = false;
+                url = host.host + codes_url;
 
                 try
                 {                    
-                    error = false;
-                    result_check = false;
-                    url = host.host + codes_url;                    
-                    if (request == null)
+                                    
+                    if ((request == null)||(error))
                     {
                         request = (HttpWebRequest)WebRequest.Create(url);
                         request.KeepAlive = true;
@@ -449,13 +453,15 @@ namespace Cash8
 
                     if (answer_check_mark != null)
                     {
+                        error = false;
+
                         string s = " ТОВАР НЕ МОЖЕТ БЫТЬ ПРОДАН!!! ";
                         if (!answer_check_mark.codes[0].isOwner)
                         {
                             MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + " Вы не являетесь владельцем " + s, "CDN проверка");
                             MainStaticClass.write_event_in_log("CDN Код маркировки " + answer_check_mark.codes[0].gtin + " Вы не являетесь владельцем ", "Документ чек", numdoc.ToString());
                         }
-                        if (!answer_check_mark.codes[0].found)
+                        else if (!answer_check_mark.codes[0].found)
                         {
                             MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + " не найден в ГИС МТ" + s, "CDN проверка");
                             MainStaticClass.write_event_in_log("CDN Код маркировки " + answer_check_mark.codes[0].gtin + " не найден в ГИС МТ", "Документ чек", numdoc.ToString());
@@ -509,9 +515,9 @@ namespace Cash8
                     MainStaticClass.write_event_in_log("WebException CDN check_marker_code " + ex.Message, "Документ чек", numdoc.ToString());
                     if (ex.Status == WebExceptionStatus.Timeout || ex.Status == WebExceptionStatus.ConnectionClosed)
                     {
-                        request = (HttpWebRequest)WebRequest.Create(url);
-                        request.KeepAlive = true;
-                        request.Timeout = 1500;
+                        //request = (HttpWebRequest)WebRequest.Create(url);
+                        //request.KeepAlive = true;
+                        //request.Timeout = 1500;
                         //result_check = true;//ошибка работы с интернет если таймаут и закрытое соедниненте тогда не является ошибкой кода маркировки
                         error = true;
                         if (error_timeout == 0)//если это первая ошибка по таймауту или соединение закрыто тогда попробуем обновить соединение и еще раз соединиться с наиболее быстрым CDN сервером

@@ -440,10 +440,10 @@ namespace Cash8
                         }
                         else
                         {
-                            if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
-                            {
-                                action_1_dt(num_doc, comment, marker); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
-                            }
+                            //if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
+                            //{
+                                action_1_dt(num_doc, comment, marker, show_messages); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
+                            //}
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
                     }
@@ -457,10 +457,10 @@ namespace Cash8
                         }
                         else
                         {
-                            if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
-                            {
-                                action_2_dt(num_doc, comment, marker); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
-                            }
+                            //if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
+                            //{
+                                action_2_dt(num_doc, comment, marker, show_messages); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
+                            //}
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
 
@@ -474,10 +474,10 @@ namespace Cash8
                         }
                         else
                         {
-                            if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
-                            {
-                                action_3_dt(num_doc, comment, sum, marker); //Сообщить о подарке                           
-                            }
+                            //if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
+                            //{
+                                action_3_dt(num_doc, comment, sum, marker,show_messages); //Сообщить о подарке                           
+                            //}
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
 
@@ -492,10 +492,10 @@ namespace Cash8
                         }
                         else
                         {
-                            if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
-                            {
-                                action_4_dt(num_doc, comment, sum);
-                            }
+                            //if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
+                            //{
+                                action_4_dt(num_doc, comment, sum, show_messages);
+                            //}
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
                     }
@@ -682,10 +682,10 @@ namespace Cash8
                         }
                         else
                         {
-                            if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
-                            {                                             
-                                action_1_dt(num_doc, comment, marker); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
-                            }
+                            //if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
+                            //{                                             
+                                action_1_dt(num_doc, comment, marker, show_messages); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
+                            //}
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
                     }
@@ -699,10 +699,10 @@ namespace Cash8
                         }
                         else
                         {
-                            if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
-                            {                         
-                                action_2_dt(num_doc, comment, marker); //Сообщить о подарке, а так же добавить товар в подарок                          
-                            }
+                            //if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
+                            //{                         
+                                action_2_dt(num_doc, comment, marker, show_messages); //Сообщить о подарке, а так же добавить товар в подарок                          
+                            //}
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
 
@@ -718,10 +718,10 @@ namespace Cash8
                         }
                         else
                         {
-                            if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
-                            {                                
-                                action_3_dt(num_doc, comment, sum, marker); //Сообщить о подарке                           
-                            }
+                            //if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
+                            //{                                
+                                action_3_dt(num_doc, comment, sum, marker, show_messages); //Сообщить о подарке                           
+                            //}
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
 
@@ -736,10 +736,10 @@ namespace Cash8
                         }
                         else
                         {
-                            if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
-                            {                            
-                                action_4_dt(num_doc, comment, sum);
-                            }
+                            //if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
+                            //{                            
+                                action_4_dt(num_doc, comment, sum, show_messages);
+                            //}
                         }                    
                     }
                     else
@@ -935,10 +935,10 @@ namespace Cash8
                         }
                         else
                         {
-                            if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
-                            {                                                    
-                                action_1_dt(num_doc, comment, marker); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
-                            }
+                            //if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
+                            //{                                                    
+                                action_1_dt(num_doc, comment, marker, show_messages); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
+                            //}
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
                     }
@@ -952,10 +952,10 @@ namespace Cash8
                         }
                         else
                         {
-                            if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
-                            {                         
-                                action_2_dt(num_doc, comment, marker); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
-                            }
+                            //if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
+                            //{                         
+                                action_2_dt(num_doc, comment, marker, show_messages); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
+                            //}
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
 
@@ -971,10 +971,10 @@ namespace Cash8
                         }
                         else
                         {
-                            if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
-                            {                                
-                                action_3_dt(num_doc, comment, sum, marker); //Сообщить о подарке                           
-                            }
+                            //if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
+                            //{                                
+                                action_3_dt(num_doc, comment, sum, marker, show_messages); //Сообщить о подарке                           
+                            //}
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
 
@@ -989,10 +989,10 @@ namespace Cash8
                         }
                         else
                         {
-                            if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
-                            {                            
-                                action_4_dt(num_doc, comment, sum);
-                            }
+                            //if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
+                            //{                            
+                                action_4_dt(num_doc, comment, sum,show_messages);
+                            //}
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
                     }
@@ -1357,9 +1357,9 @@ namespace Cash8
         /// <param name="marker"></param>
         /// <param name="code_tovar"></param>
         //private void action_1_dt(int num_doc, string comment, int marker, long code_tovar)        
-        private void action_1_dt(int num_doc, string comment, int marker)
-            {
-                NpgsqlConnection conn = null;
+        private void action_1_dt(int num_doc, string comment, int marker, bool show_messages)
+        {
+            NpgsqlConnection conn = null;
             NpgsqlCommand command = null;
             Int16 result = 0;
             try
@@ -1368,7 +1368,7 @@ namespace Cash8
                 conn.Open();
                 //Поскольку документ не записан еще найти строки которые могут участвовать в акции можно только последовательным перебором 
                 string query = "";
-                dt_copy = dt.Clone();                
+                dt_copy = dt.Clone();
 
                 foreach (DataRow row in dt.Rows)
                 {
@@ -1384,11 +1384,14 @@ namespace Cash8
                         have_action = true;//Признак того что в документе есть сработка по акции                        
 
                         row["gift"] = num_doc.ToString();//Тип акции                                                 
-                        MessageBox.Show("Сработала акция, НЕОБХОДИМО выдать подарок " + comment);
-                        DialogResult dr = DialogResult.Cancel;
-                        if (marker == 1)
+                        if (show_messages)
                         {
-                            dr = show_query_window_barcode(2, 1, num_doc,1);
+                            MessageBox.Show("Сработала акция, НЕОБХОДИМО выдать подарок " + comment);
+                            DialogResult dr = DialogResult.Cancel;
+                            if (marker == 1)
+                            {
+                                dr = show_query_window_barcode(2, 1, num_doc, 1);
+                            }
                         }
                         //if (dr != DialogResult.Cancel)
                         //{
@@ -1403,7 +1406,7 @@ namespace Cash8
                 {
                     dt.ImportRow(row);
                 }
-                    conn.Close();
+                conn.Close();
             }
             catch (NpgsqlException ex)
             {
@@ -1744,7 +1747,7 @@ namespace Cash8
        * 
        */
         //private void action_2_dt(int num_doc, string comment, int marker, long code_tovar)
-        private void action_2_dt(int num_doc, string comment, int marker)
+        private void action_2_dt(int num_doc, string comment, int marker, bool show_messages)
         {
             /*В этой переменной запомнится позиция которая первой входит в первый список акции
             * на него будет дана скидка, необходимо скопировать эту позицию в конец списка 
@@ -1845,12 +1848,15 @@ namespace Cash8
                 }
                 if (the_action_has_worked)
                 {
-                    have_action = true;//Признак того что в документе есть сработка по акции                    
-                    MessageBox.Show("Сработала акция, НЕОБХОДИМО выдать подарок количестве " + min_quantity.ToString() + " шт. " + comment);
-                    DialogResult dr = DialogResult.Cancel;
-                    if (marker == 1)
+                    have_action = true;//Признак того что в документе есть сработка по акции 
+                    if (show_messages)
                     {
-                        dr = show_query_window_barcode(2, min_quantity, num_doc,0);
+                        MessageBox.Show("Сработала акция, НЕОБХОДИМО выдать подарок количестве " + min_quantity.ToString() + " шт. " + comment);
+                        DialogResult dr = DialogResult.Cancel;
+                        if (marker == 1)
+                        {
+                            dr = show_query_window_barcode(2, min_quantity, num_doc, 0);
+                        }
                     }
 
                     //if (dr != DialogResult.Cancel)
@@ -1958,7 +1964,7 @@ namespace Cash8
         /*Эта акция срабатывает когда сумма без скидки в документе >= сумме акции
          * тогда выдается сообщение о подарке
          */
-        private void action_3_dt(int num_doc, string comment, decimal sum, int marker)
+        private void action_3_dt(int num_doc, string comment, decimal sum, int marker,bool show_messages)
         {
 
             NpgsqlConnection conn = null;
@@ -1990,7 +1996,10 @@ namespace Cash8
                 {
                     have_action = true;//Признак того что в документе есть сработка по акции                    
                     dt.Rows[index]["gift"] = num_doc.ToString();//Тип акции                    
-                    MessageBox.Show(comment, " АКЦИЯ !!!");
+                    if (show_messages)
+                    {
+                        MessageBox.Show(comment, " АКЦИЯ !!!");
+                    }
                     DialogResult dr = DialogResult.Cancel;
                     if (show_messages)
                     {
@@ -2332,7 +2341,7 @@ namespace Cash8
         * и еще добавляется некий товар из акционного документа         
         */
         //private void action_4(int num_doc, string comment, decimal sum, long code_tovar)
-        private void action_4_dt(int num_doc, string comment, decimal sum)
+        private void action_4_dt(int num_doc, string comment, decimal sum,bool show_messages)
         {
             if (!create_temp_tovar_table_4()) //Создать временную таблицу для акционного товара
             {
@@ -2377,7 +2386,7 @@ namespace Cash8
                         }
                         quantity_on_doc += Convert.ToDecimal(row["quantity"]);
                     }
-                    else//Не участвует в акции убираем пока в сторонку
+                    else//Не участвует в акции убираем пока в сторону
                     {
                         DataRow row2 = dt2.NewRow();
                         row2.ItemArray = row.ItemArray;
