@@ -125,9 +125,10 @@ namespace Cash8
             get
             {
                 if (CDN_list == null)
-                {
+                {                    
                     CDN cdn = new CDN();
                     CDN_list = cdn.get_cdn_list();
+                    MainStaticClass.write_event_in_log("Получение CDN серверов,CDN_List, в списке  серверов "+CDN_list.code.ToString(), "Документ чек", "0");
                 }
                 //else
                 //{

@@ -865,7 +865,7 @@ namespace Cash8
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void txtB_client_phone_KeyPress(object sender, KeyPressEventArgs e)
+        private void txtB_client_phone_KeyPress(object sender, KeyPressEventArgs e)
         {
             //if (MainStaticClass.PassPromo != "")//Бонусная программа выключена
             //{
@@ -2837,8 +2837,9 @@ namespace Cash8
                                             {
                                                 if (!qr_code_lenght.Contains(this.qr_code.Trim().Length))
                                                 {
-                                                    MessageBox.Show("Длина введенного qr-кода не входит в диапазон допустимых ! \r\n ТОВАР В ЧЕК ДОБАВЛЕНЕ НЕ БУДЕТ!!! ", "Проверки введенного qr кода");
-                                                    MainStaticClass.write_event_in_log("Длина введенного qr-кода не входит в диапазон допустимых"+ this.qr_code, "Документ чек", numdoc.ToString());
+                                                    MessageBox.Show(qr_code + "\r\n Ваш qr-код имеет длину " + qr_code.Length.ToString() + " символов при этом он не входит в диаразон докустимых длин ", "Проверка qr-кода на допустимую длину");
+                                                    //MessageBox.Show("Длина введенного qr-кода не входит в диапазон допустимых ! \r\n ТОВАР В ЧЕК ДОБАВЛЕНЕ НЕ БУДЕТ!!! ", "Проверки введенного qr кода");
+                                                    MainStaticClass.write_event_in_log("Длина введенного qr-кода не входит в диапазон допустимых, он имеет длину " + qr_code.Length.ToString(), "Документ чек", numdoc.ToString());
                                                     error = true;
                                                     return;
                                                 }
@@ -3507,6 +3508,8 @@ namespace Cash8
                     " left join temp_phone_clients ON clients.code = temp_phone_clients.barcode " +
                     " WHERE clients.code='" + barcode + "' OR right(clients.phone,10)='" + barcode + "' AND clients.its_work = 1 ";
 
+                MainStaticClass.write_event_in_log("Старт поиска клиента", "Документ чек", numdoc.ToString());
+
                 NpgsqlDataReader reader = command.ExecuteReader();
 
                 while (reader.Read())
@@ -3526,9 +3529,7 @@ namespace Cash8
                     {
                         Discount = Convert.ToDouble(reader.GetDecimal(0));
                     }
-
-
-
+                                       
                     client_barcode.Enabled = false;//дисконтная карта определена, сделаем недоступным окно ввода кода  
                     txtB_client_phone.Enabled = false;//дисконтная карта определена, сделаем недоступным окно ввода телефона  
                     btn_inpute_phone_client.Enabled = false;
@@ -3569,6 +3570,7 @@ namespace Cash8
                 }
                 reader.Close();
                 conn.Close();
+                MainStaticClass.write_event_in_log(" Клиент найден ", "Документ чек", numdoc.ToString());
 
                 if (this.client.Tag == null)//По каким то причинам клиент или не найден или не прошел проверки 
                 {
@@ -3750,6 +3752,7 @@ namespace Cash8
                 //{
                 if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema==3)||(MainStaticClass.GetWorkSchema == 4))
                 {
+                    MainStaticClass.write_event_in_log(" Перед началом поиска клиента ", "Документ чек", numdoc.ToString());
                     process_client_discount(this.client_barcode.Text);
                 }
                 else if (MainStaticClass.GetWorkSchema == 2)
@@ -4093,6 +4096,7 @@ namespace Cash8
                 selection_goods = true;
                 inputbarcode.Focus();
                 //список допустимых длин qr кодов
+                qr_code_lenght.Add(37);
                 qr_code_lenght.Add(83);
                 qr_code_lenght.Add(127);
                 qr_code_lenght.Add(115);
@@ -4139,7 +4143,12 @@ namespace Cash8
             {
                 process_client_discount("9999999999");
             }
-
+            if (MainStaticClass.Nick_Shop == "B47")
+            {                
+                client.Tag = "0000000001";
+                client.Text = "0000000001";
+                Discount = 0.05;
+            }
         }
 
         #region com_barcode_scaner

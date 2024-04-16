@@ -95,7 +95,7 @@ namespace Cash8
                 // Создание объекта HttpWebRequest
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                 request.Method = "GET";
-
+                request.Timeout = 5000;
                 // Добавление заголовков            
                 request.Headers.Add("X-API-KEY", MainStaticClass.CDN_Token);
                 request.ContentType = "application/json";
@@ -127,7 +127,8 @@ namespace Cash8
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Ошибка при запросе списка CDN площадок " + ex.Message);
+                MainStaticClass.write_event_in_log("Получение списка CDN get_cdn_info " + ex.Message, "Документ чек", "0");
+                MessageBox.Show("Ошибка при запросе списка CDN площадок " + ex.Message);                
             }
 
             return list;
@@ -267,8 +268,8 @@ namespace Cash8
             string url = url_sdn + health_url;
             ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
             long latency = 9999999999;
-            CDNHealth cDNHealth = new CDNHealth();
-            cDNHealth.latency = latency;
+            CDNHealth cDNHealth = null;// new CDNHealth();
+            //cDNHealth.latency = latency;
             try
             {
 
@@ -276,7 +277,7 @@ namespace Cash8
                 // Создание запроса
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                 request.Method = "GET";
-                request.Timeout = 1500;
+                request.Timeout = 5000;
 
                 // Добавление заголовков            
                 request.Headers.Add("X-API-KEY", MainStaticClass.CDN_Token);
@@ -293,23 +294,24 @@ namespace Cash8
 
                     // Вывод времени задержки в миллисекундах
                     latency = stopwatch.ElapsedMilliseconds;
-                }
+                //}
 
                 //ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072 | (SecurityProtocolType)768 | SecurityProtocolType.Tls;
 
                 // Создание объекта HttpWebRequest
-                request = (HttpWebRequest)WebRequest.Create(url);
-                request.Method = "GET";
+                //request = (HttpWebRequest)WebRequest.Create(url);
+                //request.Method = "GET";
+                //request.Timeout = 5000;
 
-                // Добавление заголовков            
-                request.Headers.Add("X-API-KEY", MainStaticClass.CDN_Token);
-                request.ContentType = "application/json";
+                //// Добавление заголовков            
+                //request.Headers.Add("X-API-KEY", MainStaticClass.CDN_Token);
+                //request.ContentType = "application/json";
 
-                // Получение ответа от сервера
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-                {
+                //// Получение ответа от сервера
+                //using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                //{
                     // Вывод статус кода ответа
-                    Console.WriteLine("Status Code: " + (int)response.StatusCode);
+                    //Console.WriteLine("Status Code: " + (int)response.StatusCode);
                     int status_code = (int)response.StatusCode;
                     if (status_code != 200)
                     {
@@ -332,7 +334,8 @@ namespace Cash8
                 }
             }
             catch (Exception ex)
-            {                
+            {
+                MainStaticClass.write_event_in_log("Проверка доступности CDN cdn_health_check "+ url_sdn +"  "+ ex.Message, "Документ чек", "0");
                 MessageBox.Show("Произошла ошибка " + ex.Message + " при запросе о доступности для CDN площадки " + url, "Получение списка CDN серверов");
             }
 
@@ -341,6 +344,7 @@ namespace Cash8
                
         public bool check_marker_code(List<string> codes, string mark_str, ref Dictionary<string, Cash_check.CdnMarkerDateTime> cdn_markers_date_time, Int64 numdoc, ref HttpWebRequest request)
         {
+
             bool result_check = false;
             AnswerCheckMark answer_check_mark = null;
             ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
@@ -352,8 +356,12 @@ namespace Cash8
                 result_check = true;
                 return result_check;
             }
+            else
+            {
+                MainStaticClass.write_event_in_log("Список CDN серверов успешно получен check_marker_code ", "Документ чек", numdoc.ToString());
+            }
             
-            cdn_list.hosts = cdn_list.hosts.Where(h => h.dateTime < DateTime.Now).OrderBy(h => h.latensy).ToList();            
+            cdn_list.hosts = cdn_list.hosts.Where(h => h.dateTime < DateTime.Now).OrderBy(h => h.latensy).ToList();
 
             if (cdn_list.hosts.Count == 0)
             {
@@ -375,6 +383,17 @@ namespace Cash8
                     MainStaticClass.write_event_in_log("Нет доступных CDN площадок для проверки кода маркировки, вторая попытка check_marker_code", "Документ чек", numdoc.ToString());
                     result_check = true;
                     return result_check;
+                }
+                else
+                {
+                    MainStaticClass.write_event_in_log("Список CDN серверов успешно получен, при повторном запросе,check_marker_code ", "Документ чек", numdoc.ToString());
+                }
+            }
+            else
+            {
+                for (int i = 0; i < cdn_list.hosts.Count; i++)
+                {                   
+                   MainStaticClass.write_event_in_log(cdn_list.hosts[i].host+ " latensy = "+ cdn_list.hosts[i].latensy.ToString(), "Документ чек", numdoc.ToString());
                 }
             }
 
@@ -442,6 +461,7 @@ namespace Cash8
                             {
                                 string responseFromServer = reader.ReadToEnd();
                                 answer_check_mark = JsonConvert.DeserializeObject<AnswerCheckMark>(responseFromServer);
+                                MainStaticClass.write_event_in_log(host.host + " Успешное получение данных ", "Документ чек", numdoc.ToString());
                             }
                         }
                     }
@@ -454,52 +474,67 @@ namespace Cash8
                     if (answer_check_mark != null)
                     {
                         error = false;
+                        StringBuilder sb = new StringBuilder();
 
-                        string s = " ТОВАР НЕ МОЖЕТ БЫТЬ ПРОДАН!!! ";
+                        string s = "ТОВАР НЕ МОЖЕТ БЫТЬ ПРОДАН!";
                         if (!answer_check_mark.codes[0].isOwner)
                         {
-                            MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + " Вы не являетесь владельцем " + s, "CDN проверка");
+                            //MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + " Вы не являетесь владельцем " + s, "CDN проверка");
+                            sb.Append("Вы не являетесь владельцем!\r\n".ToUpper());
                             MainStaticClass.write_event_in_log("CDN Код маркировки " + answer_check_mark.codes[0].gtin + " Вы не являетесь владельцем ", "Документ чек", numdoc.ToString());
                         }
-                        else if (!answer_check_mark.codes[0].found)
+                        if (!answer_check_mark.codes[0].found)
                         {
-                            MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + " не найден в ГИС МТ" + s, "CDN проверка");
+                            //MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + " не найден в ГИС МТ" + s, "CDN проверка");
+                            sb.Append("Не найден в ГИС МТ!\r\n".ToUpper());
                             MainStaticClass.write_event_in_log("CDN Код маркировки " + answer_check_mark.codes[0].gtin + " не найден в ГИС МТ", "Документ чек", numdoc.ToString());
+                            if ((!answer_check_mark.codes[0].realizable) && (!answer_check_mark.codes[0].sold))
+                            {
+                                sb.Append("Нет информации о вводе в оборот!\r\n".ToUpper());
+                                //MessageBox.Show("Для кода маркировки " + answer_check_mark.codes[0].gtin + " нет информации о вводе в оборот." + s, "CDN проверка");
+                                MainStaticClass.write_event_in_log("CDN Для кода маркировки " + answer_check_mark.codes[0].gtin + " нет информации о вводе в оборот.", "Документ чек", numdoc.ToString());
+                            }
                         }
-                        else if (!answer_check_mark.codes[0].utilised)
+                        if (!answer_check_mark.codes[0].utilised)
                         {
-                            MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + " эмитирован, но нет информации о его нанесении." + s, "CDN проверка");
+                            sb.Append("митирован, но нет информации о его нанесении!\r\n".ToUpper());
+                            //MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + " эмитирован, но нет информации о его нанесении." + s, "CDN проверка");
                             MainStaticClass.write_event_in_log("CDN Код маркировки " + answer_check_mark.codes[0].gtin + " эмитирован, но нет информации о его нанесении.", "Документ чек", numdoc.ToString());
                         }
-                        else if (!answer_check_mark.codes[0].verified)
+                        if (!answer_check_mark.codes[0].verified)
                         {
-                            MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + "  не пройдена криптографическая проверка." + s, "CDN проверка");
+                            sb.Append("Не пройдена криптографическая проверка!\r\n".ToUpper());
+                            //MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + "  не пройдена криптографическая проверка." + s, "CDN проверка");
                             MainStaticClass.write_event_in_log("CDN Код маркировки " + answer_check_mark.codes[0].gtin + "  не пройдена криптографическая проверка.", "Документ чек", numdoc.ToString());
                         }
-                        else if (answer_check_mark.codes[0].sold)
+                        if (answer_check_mark.codes[0].sold)
                         {
-                            MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + "  уже выведен из оборота." + s, "CDN проверка");
+                            sb.Append("Уже выведен из оборота!\r\n".ToUpper());
+                            //MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + "  уже выведен из оборота." + s, "CDN проверка");
                             MainStaticClass.write_event_in_log("CDN Код маркировки " + answer_check_mark.codes[0].gtin + "  уже выведен из оборота.", "Документ чек", numdoc.ToString());
                         }
-                        else if (answer_check_mark.codes[0].isBlocked)
+                        if (answer_check_mark.codes[0].isBlocked)
                         {
-                            MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + "  заблокирован по решению ОГВ." + s, "CDN проверка");
+                            sb.Append("Заблокирован по решению ОГВ!\r\n".ToUpper());
+                            //MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + "  заблокирован по решению ОГВ." + s, "CDN проверка");
                             MainStaticClass.write_event_in_log("CDN Код маркировки " + answer_check_mark.codes[0].gtin + "  заблокирован по решению ОГВ.", "Документ чек", numdoc.ToString());
                         }
-                        else if ((!answer_check_mark.codes[0].realizable) && (!answer_check_mark.codes[0].sold))
-                        {
-                            MessageBox.Show("Для кода маркировки " + answer_check_mark.codes[0].gtin + " нет информации о вводе в оборот." + s, "CDN проверка");
-                            MainStaticClass.write_event_in_log("CDN Для кода маркировки " + answer_check_mark.codes[0].gtin + " нет информации о вводе в оборот.", "Документ чек", numdoc.ToString());
-                        }
-                        else if (answer_check_mark.codes[0].expireDate.Year>2000)
+                        //if ((!answer_check_mark.codes[0].realizable) && (!answer_check_mark.codes[0].sold))
+                        //{
+                        //    sb.Append("Нет информации о вводе в оборот!\r\n".ToUpper());
+                        //    //MessageBox.Show("Для кода маркировки " + answer_check_mark.codes[0].gtin + " нет информации о вводе в оборот." + s, "CDN проверка");
+                        //    MainStaticClass.write_event_in_log("CDN Для кода маркировки " + answer_check_mark.codes[0].gtin + " нет информации о вводе в оборот.", "Документ чек", numdoc.ToString());
+                        //}
+                        if (answer_check_mark.codes[0].expireDate.Year>2000)
                         {
                             if (answer_check_mark.codes[0].expireDate < DateTime.Now)
                             {
-                                MessageBox.Show("У товара с кодом маркировки " + answer_check_mark.codes[0].gtin + "  истек срок годности." + s, "CDN проверка");
+                                sb.Append("Истек срок годности!\r\n".ToUpper());
+                                //MessageBox.Show("У товара с кодом маркировки " + answer_check_mark.codes[0].gtin + "  истек срок годности." + s, "CDN проверка");
                                 MainStaticClass.write_event_in_log("CDN У товара с кодом маркировки " + answer_check_mark.codes[0].gtin + "  истек срок годности.", "Документ чек", numdoc.ToString());
                             }
                         }
-                        else
+                        if (sb.Length == 0)
                         {
                             result_check = true;
                             Cash_check.CdnMarkerDateTime cdnMarkerDateTime = new Cash_check.CdnMarkerDateTime();
@@ -508,11 +543,25 @@ namespace Cash8
                             cdn_markers_date_time[mark_str] = cdnMarkerDateTime;
                             break;//проверка успешно завершена
                         }
+                        else
+                        {
+                            int stringCount = sb.ToString().Split(new string[] { Environment.NewLine }, StringSplitOptions.None).Length;
+                            if (stringCount == 1)
+                            {
+                                sb.Insert(0, "Код маркировки " + mark_str + "\r\nне прошел проверку по следующей причине:\r\n".ToUpper());
+                            }
+                            else
+                            {
+                                sb.Insert(0, "Код маркировки " + mark_str + "\r\nне прошел проверку по следующим причинам:\r\n".ToUpper());
+                            }
+                            sb.Append(s);
+                            MessageBox.Show(sb.ToString());
+                        }
                     }
                 }
                 catch (WebException ex)
                 {
-                    MainStaticClass.write_event_in_log("WebException CDN check_marker_code " + ex.Message, "Документ чек", numdoc.ToString());
+                    MainStaticClass.write_event_in_log("check_marker_code " + host.host+" "+ex.Message, "Документ чек", numdoc.ToString());
                     if (ex.Status == WebExceptionStatus.Timeout || ex.Status == WebExceptionStatus.ConnectionClosed)
                     {
                         //request = (HttpWebRequest)WebRequest.Create(url);
@@ -536,7 +585,7 @@ namespace Cash8
                 }
                 catch (Exception ex)
                 {
-                    MainStaticClass.write_event_in_log("Exception при проверке кода маркировки CDN check_marker_code " + ex.Message, "Документ чек", numdoc.ToString());
+                    MainStaticClass.write_event_in_log("check_marker_code " + host.host + " " + ex.Message, "Документ чек", numdoc.ToString());
                     //host.dateTime = DateTime.Now.AddMinutes(15);
                     error = true;
                 }
