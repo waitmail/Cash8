@@ -90,7 +90,7 @@ namespace Cash8
                     //{
                     //    break;
                     //}
-                    query = "SELECT COUNT(*) FROM users where code=" + settings[0];
+                    query = "SELECT COUNT(*) FROM users where code='" + settings[0]+"'";
                     command = new NpgsqlCommand(query, conn);
                     command.Transaction = trans;
                     if (Convert.ToInt16(command.ExecuteScalar()) == 0)
@@ -103,8 +103,8 @@ namespace Cash8
                             " password_m," +
                             " password_b," +
                             " inn " +
-                            ")VALUES (" +
-                            settings[0] + ",'" +
+                            ")VALUES ('" +
+                            settings[0] + "','" +
                             settings[1] + "'," +
                             settings[2] + ",'" +
                             settings[3] + "','" +
@@ -121,7 +121,7 @@ namespace Cash8
                          " password_m='" + settings[4].Replace(" ", "") + "'," +
                          " password_b='" + settings[5].Replace(" ", "") + "', " +
                          " inn='" + settings[6].Replace(" ", "") + "' " +                         
-                         " WHERE code=" + settings[0];
+                         " WHERE code='" + settings[0]+"'";
                     }
                     command = new NpgsqlCommand(query, conn);
                     command.Transaction = trans;

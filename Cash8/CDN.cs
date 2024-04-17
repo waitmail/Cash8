@@ -342,7 +342,7 @@ namespace Cash8
             return cDNHealth;
         }
                
-        public bool check_marker_code(List<string> codes, string mark_str, ref Dictionary<string, Cash_check.CdnMarkerDateTime> cdn_markers_date_time, Int64 numdoc, ref HttpWebRequest request)
+        public bool check_marker_code(List<string> codes, string mark_str, ref Dictionary<string, Cash_check.CdnMarkerDateTime> cdn_markers_date_time, Int64 numdoc, ref HttpWebRequest request, string mark_str_cdn)
         {
 
             bool result_check = false;
@@ -480,44 +480,44 @@ namespace Cash8
                         if (!answer_check_mark.codes[0].isOwner)
                         {
                             //MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + " Вы не являетесь владельцем " + s, "CDN проверка");
-                            sb.Append("Вы не являетесь владельцем!\r\n".ToUpper());
-                            MainStaticClass.write_event_in_log("CDN Код маркировки " + answer_check_mark.codes[0].gtin + " Вы не являетесь владельцем ", "Документ чек", numdoc.ToString());
+                            sb.AppendLine("Вы не являетесь владельцем!".ToUpper());
+                            MainStaticClass.write_event_in_log("CDN Код маркировки " + mark_str_cdn + " Вы не являетесь владельцем ", "Документ чек", numdoc.ToString());
                         }
                         if (!answer_check_mark.codes[0].found)
                         {
                             //MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + " не найден в ГИС МТ" + s, "CDN проверка");
-                            sb.Append("Не найден в ГИС МТ!\r\n".ToUpper());
-                            MainStaticClass.write_event_in_log("CDN Код маркировки " + answer_check_mark.codes[0].gtin + " не найден в ГИС МТ", "Документ чек", numdoc.ToString());
+                            sb.AppendLine("Не найден в ГИС МТ!".ToUpper());
+                            MainStaticClass.write_event_in_log("CDN Код маркировки " + mark_str_cdn + " не найден в ГИС МТ", "Документ чек", numdoc.ToString());
                             if ((!answer_check_mark.codes[0].realizable) && (!answer_check_mark.codes[0].sold))
                             {
-                                sb.Append("Нет информации о вводе в оборот!\r\n".ToUpper());
+                                sb.AppendLine("Нет информации о вводе в оборот!".ToUpper());
                                 //MessageBox.Show("Для кода маркировки " + answer_check_mark.codes[0].gtin + " нет информации о вводе в оборот." + s, "CDN проверка");
-                                MainStaticClass.write_event_in_log("CDN Для кода маркировки " + answer_check_mark.codes[0].gtin + " нет информации о вводе в оборот.", "Документ чек", numdoc.ToString());
+                                MainStaticClass.write_event_in_log("CDN Для кода маркировки " + mark_str_cdn + " нет информации о вводе в оборот.", "Документ чек", numdoc.ToString());
                             }
                         }
                         if (!answer_check_mark.codes[0].utilised)
                         {
-                            sb.Append("митирован, но нет информации о его нанесении!\r\n".ToUpper());
+                            sb.AppendLine("Эмитирован, но нет информации о его нанесении!".ToUpper());
                             //MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + " эмитирован, но нет информации о его нанесении." + s, "CDN проверка");
-                            MainStaticClass.write_event_in_log("CDN Код маркировки " + answer_check_mark.codes[0].gtin + " эмитирован, но нет информации о его нанесении.", "Документ чек", numdoc.ToString());
+                            MainStaticClass.write_event_in_log("CDN Код маркировки " + mark_str_cdn + " эмитирован, но нет информации о его нанесении.", "Документ чек", numdoc.ToString());
                         }
                         if (!answer_check_mark.codes[0].verified)
                         {
-                            sb.Append("Не пройдена криптографическая проверка!\r\n".ToUpper());
+                            sb.AppendLine("Не пройдена криптографическая проверка!".ToUpper());
                             //MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + "  не пройдена криптографическая проверка." + s, "CDN проверка");
-                            MainStaticClass.write_event_in_log("CDN Код маркировки " + answer_check_mark.codes[0].gtin + "  не пройдена криптографическая проверка.", "Документ чек", numdoc.ToString());
+                            MainStaticClass.write_event_in_log("CDN Код маркировки " + mark_str_cdn + "  не пройдена криптографическая проверка.", "Документ чек", numdoc.ToString());
                         }
                         if (answer_check_mark.codes[0].sold)
                         {
-                            sb.Append("Уже выведен из оборота!\r\n".ToUpper());
+                            sb.AppendLine("Уже выведен из оборота!".ToUpper());
                             //MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + "  уже выведен из оборота." + s, "CDN проверка");
-                            MainStaticClass.write_event_in_log("CDN Код маркировки " + answer_check_mark.codes[0].gtin + "  уже выведен из оборота.", "Документ чек", numdoc.ToString());
+                            MainStaticClass.write_event_in_log("CDN Код маркировки " + mark_str_cdn + "  уже выведен из оборота.", "Документ чек", numdoc.ToString());
                         }
                         if (answer_check_mark.codes[0].isBlocked)
                         {
-                            sb.Append("Заблокирован по решению ОГВ!\r\n".ToUpper());
+                            sb.AppendLine("Заблокирован по решению ОГВ!".ToUpper());
                             //MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + "  заблокирован по решению ОГВ." + s, "CDN проверка");
-                            MainStaticClass.write_event_in_log("CDN Код маркировки " + answer_check_mark.codes[0].gtin + "  заблокирован по решению ОГВ.", "Документ чек", numdoc.ToString());
+                            MainStaticClass.write_event_in_log("CDN Код маркировки " + mark_str_cdn + "  заблокирован по решению ОГВ.", "Документ чек", numdoc.ToString());
                         }
                         //if ((!answer_check_mark.codes[0].realizable) && (!answer_check_mark.codes[0].sold))
                         //{
@@ -529,9 +529,9 @@ namespace Cash8
                         {
                             if (answer_check_mark.codes[0].expireDate < DateTime.Now)
                             {
-                                sb.Append("Истек срок годности!\r\n".ToUpper());
+                                sb.AppendLine("Истек срок годности!".ToUpper());
                                 //MessageBox.Show("У товара с кодом маркировки " + answer_check_mark.codes[0].gtin + "  истек срок годности." + s, "CDN проверка");
-                                MainStaticClass.write_event_in_log("CDN У товара с кодом маркировки " + answer_check_mark.codes[0].gtin + "  истек срок годности.", "Документ чек", numdoc.ToString());
+                                MainStaticClass.write_event_in_log("CDN У товара с кодом маркировки " + mark_str_cdn + "  истек срок годности.", "Документ чек", numdoc.ToString());
                             }
                         }
                         if (sb.Length == 0)
@@ -548,11 +548,11 @@ namespace Cash8
                             int stringCount = sb.ToString().Split(new string[] { Environment.NewLine }, StringSplitOptions.None).Length;
                             if (stringCount == 1)
                             {
-                                sb.Insert(0, "Код маркировки " + mark_str + "\r\nне прошел проверку по следующей причине:\r\n".ToUpper());
+                                sb.Insert(0, "Код маркировки " + mark_str_cdn + "\r\nне прошел проверку по следующей причине:\r\n".ToUpper());
                             }
                             else
                             {
-                                sb.Insert(0, "Код маркировки " + mark_str + "\r\nне прошел проверку по следующим причинам:\r\n".ToUpper());
+                                sb.Insert(0, "Код маркировки " + mark_str_cdn + "\r\nне прошел проверку по следующим причинам:\r\n".ToUpper());
                             }
                             sb.Append(s);
                             MessageBox.Show(sb.ToString());

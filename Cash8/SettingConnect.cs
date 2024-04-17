@@ -1080,9 +1080,9 @@ namespace Cash8
             queries.Add("ALTER TABLE public.clients DROP COLUMN discount_types_code");
             queries.Add("CREATE INDEX _client_phone_ ON public.clients USING btree(phone COLLATE pg_catalog.default ASC NULLS LAST) TABLESPACE pg_default;");
             queries.Add("CREATE INDEX _time_event_ ON public.logs USING btree (time_event ASC NULLS LAST) TABLESPACE pg_default;");
-
-
-            //queries.Add("ALTER TABLE checks_header ALTER COLUMN autor TYPE character varying USING autor::character varying(12);");
+            queries.Add("ALTER TABLE public.logs ADD COLUMN description text COLLATE pg_catalog.default;");
+            queries.Add("ALTER TABLE checks_header ALTER COLUMN autor TYPE character varying (12) USING autor::character varying(12);");
+            queries.Add("ALTER TABLE users ALTER COLUMN code TYPE character varying (12) USING code::character varying(12);");
 
 
             foreach (string str in queries)

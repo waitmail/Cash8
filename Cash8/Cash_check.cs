@@ -975,6 +975,34 @@ namespace Cash8
 
         }
 
+        //private string get_user_name()
+        //{
+        //    string result = "";
+        //    NpgsqlConnection conn = null;
+        //    try
+        //    {
+        //        conn = MainStaticClass.NpgsqlConn();
+        //        conn.Open();
+        //        string query = "SELECT name FROM public.users where code="+MainStaticClass.Cash_Operator;
+
+        //    }
+        //    catch (NpgsqlException ex)
+        //    {
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //    }
+        //    finally
+        //    {
+
+        //    }
+
+
+        //        return result;
+        //}
+
         private void to_open_the_written_down_document()
         {
             //itsnew = false;
@@ -1000,6 +1028,23 @@ namespace Cash8
                                " left join users ON  checks_header.autor = users.code " +
                                " left join characteristic ON  checks_table.characteristic = characteristic.guid " +
                                " where checks_header.date_time_write='" + date_time_write + "' order by checks_table.numstr;";
+                //string query = "SELECT checks_header.client, checks_header.cash_desk_number, checks_header.comment, checks_header.cash, " +
+                //              " checks_header.remainder,checks_header.date_time_start,checks_header.discount,clients.name AS clients_name ,users.name AS users_name  " +
+                //              ",tovar.name AS tovar_name ,checks_table.tovar_code, checks_table.quantity,checks_table.price, checks_table.price_at_a_discount,checks_table.sum, " +
+                //              " checks_table.sum_at_a_discount,checks_table.action_num_doc,checks_table.action_num_doc1,checks_table.action_num_doc2," +
+                //              " checks_header.check_type " +
+                //              " ,characteristic.name AS characteristic_name,checks_header.document_number,checks_header.autor,characteristic.guid,clients.code AS clients_code ," +
+                //              //" checks_header.sertificate_money,checks_header.non_cash_money,checks_header.cash_money,checks_header.sales_assistant,checks_header.bonuses_it_is_counted, " +
+                //              " checks_header.sertificate_money,checks_header.non_cash_money,checks_header.cash_money,checks_header.bonuses_it_is_counted, " +
+                //              " checks_header.bonuses_it_is_written_off, " +
+                //              " checks_table.bonus_standard,checks_table.bonus_promotion,checks_table.promotion_b_mover,checks_table.item_marker,checks_header.requisite," +
+                //              "checks_header.its_deleted,checks_header.system_taxation,checks_header.guid AS checks_header_guid,checks_header.guid1 AS checks_header_guid " +
+                //              " FROM checks_header left join checks_table ON checks_header.document_number=checks_table.document_number " +
+                //              " left join clients ON checks_header.client  = clients.code " +
+                //              " left join tovar ON checks_table.tovar_code = tovar.code " +
+                //              " left join users ON  checks_header.autor = users.code " +
+                //              " left join characteristic ON  checks_table.characteristic = characteristic.guid " +
+                //              " where checks_header.date_time_write='" + date_time_write + "' order by checks_table.numstr;";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();
                 bool header_fill = false;
@@ -1021,6 +1066,7 @@ namespace Cash8
                         this.client.Text = reader["clients_name"].ToString();//.GetString(7);//Наименование клиента если была скидка
                                                                              //}
                         this.user.Text = reader["users_name"].ToString();//.GetString(8);
+                        //this.user.Text = MainStaticClass.Cash_Operator; //reader["users_name"].ToString();//.GetString(8);
                         this.pay.Text = "Напечатать F8";
                         if (Convert.ToInt32(reader["system_taxation"]) == 3)
                         {
@@ -1037,6 +1083,8 @@ namespace Cash8
                         this.numdoc = Convert.ToInt64(reader["document_number"]);
                         this.txtB_num_doc.Text = this.numdoc.ToString();
                         this.user.Tag = reader["autor"].ToString();
+                        //this.user.Tag = MainStaticClass.Cash_Operator_Client_Code; reader["autor"].ToString();
+
                         this.client_barcode.Tag = reader["clients_code"].ToString();
                         this.txtB_sertificate_money.Text = reader["sertificate_money"].ToString();
                         this.txtB_non_cash_money.Text = reader["non_cash_money"].ToString();
@@ -2837,9 +2885,9 @@ namespace Cash8
                                             {
                                                 if (!qr_code_lenght.Contains(this.qr_code.Trim().Length))
                                                 {
-                                                    MessageBox.Show(qr_code + "\r\n Ваш qr-код имеет длину " + qr_code.Length.ToString() + " символов при этом он не входит в диаразон докустимых длин ", "Проверка qr-кода на допустимую длину");
+                                                    MessageBox.Show(qr_code + "\r\n Ваш код маркировки имеет длину " + qr_code.Length.ToString() + " символов при этом он не входит в допустимый диапазок ", "Проверка qr-кода на допустимую длину");
                                                     //MessageBox.Show("Длина введенного qr-кода не входит в диапазон допустимых ! \r\n ТОВАР В ЧЕК ДОБАВЛЕНЕ НЕ БУДЕТ!!! ", "Проверки введенного qr кода");
-                                                    MainStaticClass.write_event_in_log("Длина введенного qr-кода не входит в диапазон допустимых, он имеет длину " + qr_code.Length.ToString(), "Документ чек", numdoc.ToString());
+                                                    MainStaticClass.write_event_in_log("Длина введенного кода маркировки не входит в диапазон допустимых, он имеет длину " + qr_code.Length.ToString(), "Документ чек", numdoc.ToString());
                                                     error = true;
                                                     return;
                                                 }
@@ -2892,7 +2940,7 @@ namespace Cash8
                                                     mark_str_cdn = mark_str.Replace("\u001d",@"\u001d");
                                                     //mark_str_cdn = mark_str_cdn.Replace("\\u001d", "\u001d");
                                                     codes.Add(mark_str_cdn);
-                                                    if (!cdn.check_marker_code(codes, mark_str, ref this.cdn_markers_date_time, this.numdoc, ref request))
+                                                    if (!cdn.check_marker_code(codes, mark_str_cdn, ref this.cdn_markers_date_time, this.numdoc, ref request, mark_str))
                                                     {
                                                         //return;
                                                     }
@@ -3014,22 +3062,22 @@ namespace Cash8
                                                 }
 
                                                 //здесь проверка на корректность 
-                                                if (!error)
-                                                {
-                                                    if (MainStaticClass.CashDeskNumber != 9 && MainStaticClass.EnableCdnMarkers == 1 && MainStaticClass.CDN_Token != "")
-                                                    {
-                                                        string mark_str1 = this.qr_code.Trim();
-                                                        mark_str1 = add_gs1(mark_str1);
-                                                        CDN cdn = new CDN();
-                                                        List<string> codes = new List<string>();
-                                                        mark_str_cdn = mark_str.Replace("\u001d", @"\u001d");
-                                                        codes.Add(mark_str_cdn);
-                                                        if (!cdn.check_marker_code(codes, mark_str1, ref this.cdn_markers_date_time, this.numdoc, ref request))
-                                                        {
-                                                            //return;
-                                                        }
-                                                    }
-                                                }
+                                                //if (!error)
+                                                //{
+                                                //    if (MainStaticClass.CashDeskNumber != 9 && MainStaticClass.EnableCdnMarkers == 1 && MainStaticClass.CDN_Token != "")
+                                                //    {
+                                                //        string mark_str1 = this.qr_code.Trim();
+                                                //        mark_str1 = add_gs1(mark_str1);
+                                                //        CDN cdn = new CDN();
+                                                //        List<string> codes = new List<string>();
+                                                //        mark_str_cdn = mark_str.Replace("\u001d", @"\u001d");
+                                                //        codes.Add(mark_str_cdn);
+                                                //        if (!cdn.check_marker_code(codes, mark_str1, ref this.cdn_markers_date_time, this.numdoc, ref request, mark_str_cdn))
+                                                //        {
+                                                //            //return;
+                                                //        }
+                                                //    }
+                                                //}
 
                                             }
                                             if (error)

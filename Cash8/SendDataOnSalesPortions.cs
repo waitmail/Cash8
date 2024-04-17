@@ -105,6 +105,10 @@ namespace Cash8
                     salesPortionsHeader.Sum_certificate = reader["sertificate_money"].ToString().Replace(",", ".");
                     //salesPortionsHeader.Sales_assistant = reader["sales_assistant"].ToString();
                     salesPortionsHeader.Autor = reader["autor"].ToString();
+                    //if (salesPortionsHeader.Autor.Trim() == "")
+                    //{
+                    //    salesPortionsHeader.Autor = MainStaticClass.Cash_Operator_Client_Code;
+                    //}
                     salesPortionsHeader.Comment = reader["comment"].ToString();
                     if (reader["its_print"].ToString() == "")
                     {
