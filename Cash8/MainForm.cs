@@ -22,6 +22,21 @@ namespace Cash8
         //Thread printThread;
         //private System.Timers.Timer timer = new System.Timers.Timer();//Таймер для печати фискального принтера
         private System.Timers.Timer timer_send_data = new System.Timers.Timer();//Таймер для печати фискального принтера
+        
+        public class Users
+        {
+            public List<User> list_users { get; set; }
+        }
+
+        public class User
+        {
+            public string shop { get; set; }
+            public string user_id { get; set; }
+            public string name { get; set; }
+            public string rights { get; set; }
+            public string password_m { get; set; }
+            public string password_b { get; set; }
+        }
 
 
         private void get_users()
@@ -52,7 +67,8 @@ namespace Cash8
             try
             {
                 //MessageBox.Show("2");
-                answer = ds.GetUsers(MainStaticClass.Nick_Shop, encrypt_string,MainStaticClass.GetWorkSchema.ToString());
+                //answer = ds.GetUsers(MainStaticClass.Nick_Shop, encrypt_string,MainStaticClass.GetWorkSchema.ToString());
+                answer = ds.GetUsers(MainStaticClass.Nick_Shop, encrypt_string, "4");
                 //MessageBox.Show("3");
             }
             catch
@@ -63,12 +79,12 @@ namespace Cash8
                 return;
             }
 
-            
 
             string decrypt_string = CryptorEngine.Decrypt(answer, true, key);
-
-            string[] delimiters = new string[] { "||" };
-            string[] s = decrypt_string.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
+            Users users = JsonConvert.DeserializeObject<Users>(decrypt_string);
+            
+            //string[] delimiters = new string[] { "||" };
+            //string[] s = decrypt_string.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
             NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
             NpgsqlTransaction trans = null;
            // int rezult_query = 0;
@@ -81,21 +97,24 @@ namespace Cash8
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 command.Transaction = trans;
                 command.ExecuteNonQuery();
-                foreach (string str in s)
+                foreach (User user in users.list_users)
                 {
-                    delimiters = new string[] { "|" };
-                    string[] settings = str.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
+                    //delimiters = new string[] { "|" };
+                    //string[] settings = str.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
                     //rezult_query = check_insert_or_update_user(s2, conn, trans, command);
                     //if (rezult_query == -1)
                     //{
                     //    break;
                     //}
-                    query = "SELECT COUNT(*) FROM users where code='" + settings[0]+"'";
-                    command = new NpgsqlCommand(query, conn);
-                    command.Transaction = trans;
-                    if (Convert.ToInt16(command.ExecuteScalar()) == 0)
-                    {
-                        query = "INSERT INTO users(" +
+                    //query = "SELECT COUNT(*) FROM users where code='"+ user.user_id+"'";
+                    //command = new NpgsqlCommand(query, conn);
+                    //command.Transaction = trans;
+                    //if (Convert.ToInt16(command.ExecuteScalar()) == 0)
+                    //{
+                        query = "DELETE FROM public.users	WHERE inn='" + user.user_id + "';";
+                    //}
+
+                        query += "INSERT INTO users(" +
                             " code," +
                             " name," +
                             " rights," +
@@ -104,25 +123,26 @@ namespace Cash8
                             " password_b," +
                             " inn " +
                             ")VALUES ('" +
-                            settings[0] + "','" +
-                            settings[1] + "'," +
-                            settings[2] + ",'" +
-                            settings[3] + "','" +
-                            settings[4].Replace(" ", "") + "','" +
-                            settings[5].Replace(" ", "") + "','"+
-                            settings[6] + "')";
-                    }
-                    else
-                    {
-                        query = "UPDATE users  SET " +
-                            " name='" + settings[1] + "'," +
-                         " rights=" + settings[2] + "," +
-                         " shop='" + settings[3] + "'," +
-                         " password_m='" + settings[4].Replace(" ", "") + "'," +
-                         " password_b='" + settings[5].Replace(" ", "") + "', " +
-                         " inn='" + settings[6].Replace(" ", "") + "' " +                         
-                         " WHERE code='" + settings[0]+"'";
-                    }
+                            user.user_id + "','" +
+                            user.name + "'," +
+                            user.rights + ",'" +
+                            user.shop + "','" +
+                            user.password_m + "','" +
+                            user.password_b  + "','"+
+                            user.user_id + "')";
+                    //}
+                    //else
+                    //{
+                        
+                    //    query += "UPDATE users  SET " +
+                    //        " name='" + user.name + "'," +
+                    //     " rights=" + user.rights + "," +
+                    //     " shop='" + user.shop + "'," +
+                    //     " password_m='" + user.password_m + "'," +
+                    //     " password_b='" + user.password_b + "', " +
+                    //     " inn='" + user.user_id + "' " +                         
+                    //     " WHERE code='" + user.user_id+"'";
+                    //}
                     command = new NpgsqlCommand(query, conn);
                     command.Transaction = trans;
                     command.ExecuteNonQuery();
