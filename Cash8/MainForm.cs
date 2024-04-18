@@ -673,7 +673,8 @@ namespace Cash8
                 string key = nick_shop.Trim() + count_day.Trim() + code_shop.Trim();
                 string data = JsonConvert.SerializeObject(phonesClients, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
                 string encrypt_string = CryptorEngine.Encrypt(data, true, key);
-                string answer = ds.UploadPhoneClients(nick_shop, encrypt_string,MainStaticClass.GetWorkSchema.ToString());
+                //string answer = ds.UploadPhoneClients(nick_shop, encrypt_string,MainStaticClass.GetWorkSchema.ToString());
+                string answer = ds.UploadPhoneClients(nick_shop, encrypt_string, "4");
                 if (answer == "1")
                 {
                     query = "DELETE FROM temp_phone_clients";

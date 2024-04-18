@@ -234,7 +234,8 @@ namespace Cash8
             string result_query = "-1";
             try
             {
-                result_query = ds.GetDiscountClientsV8DateTime_NEW(nick_shop, data, MainStaticClass.GetWorkSchema.ToString());
+                //result_query = ds.GetDiscountClientsV8DateTime_NEW(nick_shop, data, MainStaticClass.GetWorkSchema.ToString());
+                result_query = ds.GetDiscountClientsV8DateTime_NEW(nick_shop, data, "4");
             }
             catch (Exception ex)
             {
@@ -594,16 +595,16 @@ namespace Cash8
 
             while (loaded)
             {
-                if (MainStaticClass.GetWorkSchema != 4)
-                {
-                    loaded = get_load_bonus_clients_on_portions(show_message);
-                }
-                else
-                {
-                    loaded = get_load_bonus_clients_on_portions_new(show_message);
-                }
+                //if (MainStaticClass.GetWorkSchema != 4)
+                //{
+                //    loaded = get_load_bonus_clients_on_portions(show_message);
+                //}
+                //else
+                //{
+                loaded = get_load_bonus_clients_on_portions_new(show_message);
+                //}
             }
-        }            
+        }           
         
 
         /// <summary>        
