@@ -14582,6 +14582,11 @@ namespace Cash8
         public void fill_on_sales()
         {
 
+            if (txtB_num_sales.Text.Trim().Length == 0)
+            {
+                return;
+            }
+
             id_sale = Convert.ToInt32(txtB_num_sales.Text);
             NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
 
@@ -14763,8 +14768,7 @@ namespace Cash8
                             listView1.Items.Add(lvi);
                         }
                     }                    
-                    conn.Close();                   
-                    
+                    conn.Close();                    
                 }
                 catch (NpgsqlException ex)
                 {

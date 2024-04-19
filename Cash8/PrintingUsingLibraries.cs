@@ -733,6 +733,7 @@ namespace Cash8
             }
             else if (variant == 1)
             {
+                fptr.openDrawer();
                 //здесь проверяем есть ли строки
 
                 if (check.to_print_certainly_p == 1)
