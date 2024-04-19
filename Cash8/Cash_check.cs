@@ -673,8 +673,7 @@ namespace Cash8
                 client_barcode.Enabled = false;
             }
         }
-
-
+               
 
         private void find_client_on_num_phone(string phone_number)
         {
@@ -690,7 +689,8 @@ namespace Cash8
                 string query = "SELECT MIN(CAST(code as numeric)) AS number_card,code, MAX(its_work) AS its_work," +
                     "CASE WHEN left(code,10) = right(phone, 10) THEN 1 else 0 END AS virtual," +
                     " COALESCE(bonus_is_on, 0) as bonus_is_on FROM clients " +
-                    " where right(phone,10)= '" + phone_number + "' group by code,virtual,bonus_is_on" +
+                    //" where right(phone,10)= '" + phone_number + "' group by code,virtual,bonus_is_on" +
+                    " where phone= '" + phone_number + "' group by code,virtual,bonus_is_on" +
                     " order by its_work DESC,virtual DESC,number_card limit 1";
 
                 //string query = "SELECT code,MAX(its_work) AS its_work,COALESCE(bonus_is_on, 0) as bonus_is_on FROM clients where right(phone,10)= '" + phone_number + "' " +
@@ -4191,7 +4191,7 @@ namespace Cash8
             {
                 process_client_discount("9999999999");
             }
-            if (MainStaticClass.Nick_Shop == "B47")
+            if (MainStaticClass.Nick_Shop == "A75")
             {                
                 client.Tag = "0000000001";
                 client.Text = "0000000001";

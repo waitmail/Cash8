@@ -897,7 +897,15 @@ namespace Cash8
             {
                 Cash8.MainStaticClass.loadConfig(Application.StartupPath + "/Setting.gaa");
             }
-            
+
+            MainStaticClass.write_event_in_log("Перед проверкой обновления в интернет", " Старт программы ", "0");
+            LoadProgramFromInternet lpfi = new LoadProgramFromInternet();
+            lpfi.show_phone = true;
+            lpfi.check_new_version_programm();
+            bool new_version_of_the_program_exist = lpfi.new_version_of_the_program;
+            lpfi.Dispose();
+            MainStaticClass.write_event_in_log("Проверка обновления в интернет завершена", " Старт программы ", "0");
+
             if (MainStaticClass.exist_table_name("constants"))
             {
                 MainStaticClass.write_event_in_log(" Старт программы ", "проверка таблицы констант", "0");
@@ -919,13 +927,13 @@ namespace Cash8
                     //t2.IsBackground = true;
                     //t2.Start();               
                 }
-                MainStaticClass.write_event_in_log("Перед проверкой обновления в интернет", " Старт программы ", "0");
-                LoadProgramFromInternet lpfi = new LoadProgramFromInternet();
-                lpfi.show_phone = true;
-                lpfi.check_new_version_programm();
-                bool new_version_of_the_program_exist = lpfi.new_version_of_the_program;
-                lpfi.Dispose();
-                MainStaticClass.write_event_in_log("Проверка обновления в интернет завершена", " Старт программы ", "0");
+                //MainStaticClass.write_event_in_log("Перед проверкой обновления в интернет", " Старт программы ", "0");
+                //LoadProgramFromInternet lpfi = new LoadProgramFromInternet();
+                //lpfi.show_phone = true;
+                //lpfi.check_new_version_programm();
+                //bool new_version_of_the_program_exist = lpfi.new_version_of_the_program;
+                //lpfi.Dispose();
+                //MainStaticClass.write_event_in_log("Проверка обновления в интернет завершена", " Старт программы ", "0");
 
                 if (new_version_of_the_program_exist)
                 {
@@ -967,7 +975,7 @@ namespace Cash8
                 MainStaticClass.SystemTaxation = check_system_taxation();
 
                 //MainStaticClass.delete_old_checks(MainStaticClass.GetMinDateWork);
-                MainStaticClass.delete_all_events_in_log(MainStaticClass.GetMinDateWork);
+                //MainStaticClass.delete_all_events_in_log(MainStaticClass.GetMinDateWork);
 
                 if (MainStaticClass.Use_Fiscall_Print)
                 {

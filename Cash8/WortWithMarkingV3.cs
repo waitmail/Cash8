@@ -160,9 +160,9 @@ namespace Cash8
         public static string POST(string Url, string Data)
         {
             string Out = String.Empty;
+            System.Net.WebRequest req = System.Net.WebRequest.Create(Url);
             try
-            {
-                System.Net.WebRequest req = System.Net.WebRequest.Create(Url);
+            {                
                 req.Method = "POST";
                 req.Timeout = 1000;
                 req.ContentType = "application/json";
@@ -187,9 +187,10 @@ namespace Cash8
                 req = null;
                 sendStream = null;
                 myHttpWebResponse.Close();// = null;
+                myHttpWebResponse = null;
             }
             catch (WebException ex)
-            {
+            {                
                 Out = ex.Message;
                 MessageBox.Show("Ошибка2 Post запрос, статус " + Out);
             }
