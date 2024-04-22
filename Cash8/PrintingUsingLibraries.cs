@@ -352,10 +352,10 @@ namespace Cash8
                                 {
                                     break;
                                 }
-                                else
-                                {
-                                    MainStaticClass.write_event_in_log(fptr.getParamBool(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_VALIDATION_READY).ToString() + " " + mark, "check_marking_code", check.numdoc.ToString());
-                                }
+                                //else
+                                //{
+                                //    MainStaticClass.write_event_in_log(fptr.getParamBool(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_VALIDATION_READY).ToString() + " " + mark, "check_marking_code", check.numdoc.ToString());
+                                //}
                                 if ((DateTime.Now - start_check).Seconds > 2)
                                 {
                                     //MessageBox.Show("check_marking_code таймаут при проверки qr кода " + mark);
@@ -823,10 +823,10 @@ namespace Cash8
                                 {
                                     break;
                                 }
-                                else
-                                {
-                                    MainStaticClass.write_event_in_log(fptr.getParamBool(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_VALIDATION_READY).ToString() + " " + mark, "check_marking_code", check.numdoc.ToString());
-                                }
+                                //else
+                                //{
+                                //    MainStaticClass.write_event_in_log(fptr.getParamBool(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_VALIDATION_READY).ToString() + " " + mark, "check_marking_code", check.numdoc.ToString());
+                                //}
                                 if ((DateTime.Now - start_check).Seconds > 2)
                                 {
                                     //MessageBox.Show("check_marking_code таймаут при проверки qr кода " + mark);
@@ -1091,10 +1091,10 @@ namespace Cash8
                 {
                     break;
                 }
-                else
-                {
-                    MainStaticClass.write_event_in_log(fptr.getParamBool(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_VALIDATION_READY).ToString() + " "+ mark, "check_marking_code", num_doc);
-                }
+                //else
+                //{
+                //    MainStaticClass.write_event_in_log(fptr.getParamBool(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_VALIDATION_READY).ToString() + " "+ mark, "check_marking_code", num_doc);
+                //}
                 if ((DateTime.Now - start_check).Seconds > 2)
                 {
                     //MessageBox.Show("check_marking_code таймаут при проверки qr кода " + mark);

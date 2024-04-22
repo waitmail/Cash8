@@ -128,7 +128,15 @@ namespace Cash8
                 {                    
                     CDN cdn = new CDN();
                     CDN_list = cdn.get_cdn_list();
-                    MainStaticClass.write_event_in_log("Получение CDN серверов,CDN_List, в списке  серверов "+CDN_list.code.ToString(), "Документ чек", "0");
+                    //if (CDN_list != null)
+                    //{
+                    //    StringBuilder sb = new StringBuilder();
+                    //    for (int i = 0; i < CDN_list.hosts.Count; i++)
+                    //    {
+                    //        sb.Append(CDN_list.hosts[i].host + ";");
+                    //    }
+                    //    MainStaticClass.write_event_in_log(sb.ToString(), "CDN сервера ", "0");
+                    //}
                 }
                 //else
                 //{

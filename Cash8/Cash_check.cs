@@ -1396,7 +1396,6 @@ namespace Cash8
 
         private Int64 get_new_number_document()
         {
-
             NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
             conn.Open();
             NpgsqlCommand command = new NpgsqlCommand();
@@ -1405,9 +1404,8 @@ namespace Cash8
             command.CommandText = "SELECT nextval('checks_header_document_number_seq'::regclass);";
             Int64 result = Convert.ToInt64(command.ExecuteScalar());
             conn.Close();
-            MainStaticClass.write_event_in_log(" Получение номера для нового документа ", "Документ чек", (result + 1).ToString());
-            return result++;
-
+            MainStaticClass.write_event_in_log(" Получение номера для нового документа ", "Документ чек", result.ToString());
+            return result;
         }
 
         public void recalculate_all()

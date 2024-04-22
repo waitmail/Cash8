@@ -7,6 +7,8 @@ using System.Windows.Forms;
 using System.Linq;
 using System.Text;
 using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Cash8
 {
@@ -108,7 +110,7 @@ namespace Cash8
                     int status_code = (int)response.StatusCode;
                     if (status_code != 200)
                     {
-                        MessageBox.Show("Получен неверный ответ от сервера при запросе списка CDN серверов, кот ответа = " + status_code.ToString(), "Получение списка CDN серверов");
+                        MessageBox.Show("Получен неверный ответ от сервера при запросе списка CDN серверов, коl ответа = " + status_code.ToString(), "Получение списка CDN серверов");
                         return list;
                     }
 
@@ -165,9 +167,58 @@ namespace Cash8
             CDN_List list = get_cdn_info();
             if (list != null)
             {
+                if (list != null)
+                {
+                    StringBuilder sb = new StringBuilder();
+                    for (int i = 0; i < list.hosts.Count; i++)
+                    {
+                        sb.Append(list.hosts[i].host + ";");
+                    }
+                    MainStaticClass.write_event_in_log(sb.ToString(), "CDN сервера ", "0");
+                }
                 list = get_cdn_list_health(list);
             }
             return list;
+        }
+
+        private CDNHealth invoke_CDNHealth(string url)
+        {
+            CDNHealth result = null;
+
+            // Запуск функции с параметром в новом потоке            
+            Task<CDNHealth> task = Task.Factory.StartNew(() => cdn_health_check(url));
+
+            try
+            {
+                // Ожидание результата функции в течение 5 секунд
+                bool isCompletedSuccessfully = task.Wait(TimeSpan.FromSeconds(3));
+
+                if (isCompletedSuccessfully)
+                {
+                    // Если задача завершена успешно, получаем результат
+                    MainStaticClass.write_event_in_log("Удачное завершение invoke_CDNHealth " + url , "Документ чек", "0");
+                    result = task.Result;
+                    //Console.WriteLine("Результат функции: " + result);
+                }
+                else
+                {
+                    // Если результат не был получен в течение 5 секунд
+                    //Console.WriteLine("Функция не завершила выполнение в отведённое время.");
+                    MainStaticClass.write_event_in_log("Произошли ошибка при invoke_CDNHealth " + url + " Timeout ", "Документ чек", "0");
+                }
+            }
+            catch (AggregateException ae)
+            {
+                //Обработка исключений, которые могли быть выброшены во время выполнения функции
+                foreach (var e in ae.InnerExceptions)
+                {
+                    //Console.WriteLine("Исключение: " + e.Message);
+                    MainStaticClass.write_event_in_log("Произошли ошибка при invoke_CDNHealth " + url + " "+ e.Message, "Документ чек", "0");
+                }               
+            }      
+
+
+            return result;
         }
 
 
@@ -186,7 +237,9 @@ namespace Cash8
                     {
                         foreach (Host host in list.hosts)
                         {
-                            cDNHealth = cdn_health_check(host.host.ToString());
+                           // MessageBox.Show(host.host.ToString(), "cdn_health_check");
+                            //cDNHealth = cdn_health_check(host.host.ToString());
+                            cDNHealth = invoke_CDNHealth(host.host.ToString());
                             if (cDNHealth != null)
                             {
                                 if (cDNHealth.code == 0)
@@ -274,7 +327,6 @@ namespace Cash8
             //cDNHealth.latency = latency;
             try
             {
-
                 Stopwatch stopwatch = new Stopwatch();
                 // Создание запроса
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
@@ -287,37 +339,23 @@ namespace Cash8
 
                 // Запуск таймера непосредственно перед отправкой запроса
                 stopwatch.Start();
+                MainStaticClass.write_event_in_log("stopwatch старт " + url_sdn , "Документ чек", "0");
 
                 // Отправка запроса и получение ответа
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
                     // Остановка таймера сразу после получения ответа
                     stopwatch.Stop();
-
+                    
                     // Вывод времени задержки в миллисекундах
                     latency = stopwatch.ElapsedMilliseconds;
-                //}
 
-                //ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072 | (SecurityProtocolType)768 | SecurityProtocolType.Tls;
-
-                // Создание объекта HttpWebRequest
-                //request = (HttpWebRequest)WebRequest.Create(url);
-                //request.Method = "GET";
-                //request.Timeout = 5000;
-
-                //// Добавление заголовков            
-                //request.Headers.Add("X-API-KEY", MainStaticClass.CDN_Token);
-                //request.ContentType = "application/json";
-
-                //// Получение ответа от сервера
-                //using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-                //{
-                    // Вывод статус кода ответа
-                    //Console.WriteLine("Status Code: " + (int)response.StatusCode);
+                    MainStaticClass.write_event_in_log(" stopwatch стоп,получение latency "+ latency.ToString()+" " + url_sdn, "Документ чек", "0");
+                                        
                     int status_code = (int)response.StatusCode;
                     if (status_code != 200)
                     {
-                        MainStaticClass.write_event_in_log("Получен неверный ответ при запросе о доступности для CDN площадки" + url + ", код ответа = " + status_code.ToString(), "Документ чек", "0");
+                        MainStaticClass.write_event_in_log(" Получен неверный ответ при запросе о доступности для CDN площадки" + url + ", код ответа = " + status_code.ToString(), "Документ чек", "0");
                         //MessageBox.Show("Получен неверный ответ при запросе о доступности для CDN площадки" + url + ", код ответа = " + status_code.ToString(), "Опрос статуса доступности CDN площадки");
                         return cDNHealth;
                     }
@@ -327,9 +365,8 @@ namespace Cash8
                     {
                         using (StreamReader reader = new StreamReader(stream))
                         {
-                            string cdn_health = reader.ReadToEnd();
-                            //MessageBox.Show("Response: " + sdn_list);
-                            //txtB_result.Text += cdn_health + "\r\n";
+                            MainStaticClass.write_event_in_log(" Чтение ответа о времени обработки запроса " + url_sdn, "Документ чек", "0");
+                            string cdn_health = reader.ReadToEnd();                            
                             cDNHealth = JsonConvert.DeserializeObject<CDNHealth>(cdn_health);
                             cDNHealth.latency = latency;
                         }
@@ -368,7 +405,7 @@ namespace Cash8
 
             if (cdn_list.hosts.Count == 0)
             {
-                MessageBox.Show("Нет доступных CDN площадок для проверки кода маркировки, пробуем еще раз check_marker_code");
+                //MessageBox.Show("Нет доступных CDN площадок для проверки кода маркировки, пробуем еще раз check_marker_code");
                 MainStaticClass.write_event_in_log("Нет доступных CDN площадок для проверки кода маркировки, пробуем еще раз check_marker_code", "Документ чек", numdoc.ToString());
                 cdn_list = MainStaticClass.CDN_List;
                 if (cdn_list == null)
@@ -394,10 +431,13 @@ namespace Cash8
             }
             else
             {
+                StringBuilder sb = new StringBuilder();
                 for (int i = 0; i < cdn_list.hosts.Count; i++)
-                {                   
-                   MainStaticClass.write_event_in_log(cdn_list.hosts[i].host+ " latensy = "+ cdn_list.hosts[i].latensy.ToString(), "Документ чек", numdoc.ToString());
+                {
+                    sb.Append(cdn_list.hosts[i].host + " latensy = " + cdn_list.hosts[i].latensy.ToString()+";");
+                   //MainStaticClass.write_event_in_log(cdn_list.hosts[i].host+ " latensy = "+ cdn_list.hosts[i].latensy.ToString(), "Документ чек", numdoc.ToString());
                 }
+                MainStaticClass.write_event_in_log(sb.ToString(), "Документ чек", numdoc.ToString());
             }
 
             //cdn_list.hosts.Count
