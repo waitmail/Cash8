@@ -2704,7 +2704,8 @@ namespace Cash8
                                                     mark_str_cdn = mark_str.Replace("\u001d",@"\u001d");
                                                     //mark_str_cdn = mark_str_cdn.Replace("\\u001d", "\u001d");
                                                     codes.Add(mark_str_cdn);
-                                                    mark_str_cdn = mark_str_cdn.Replace("'", "vasya2021");
+                                                    //mark_str_cdn = mark_str_cdn.Replace("'", "vasya2021");
+                                                    mark_str_cdn = mark_str_cdn.Replace("'", "\'");
                                                     if (!cdn.check_marker_code(codes, mark_str, ref this.cdn_markers_date_time, this.numdoc, ref request, mark_str_cdn))
                                                     {
                                                         //return;

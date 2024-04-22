@@ -3670,14 +3670,25 @@ namespace Cash8
             NpgsqlCommand command = null;
             try
             {
-                //if (description.Length > 200)
-                //{
-                //    description = description.Substring(0, 200);
-                //}
+                                
                 conn = MainStaticClass.NpgsqlConn();
                 conn.Open();
-                string query = "INSERT INTO logs(time_event,description,metadata,document_number) VALUES('" + DateTime.Now.ToString("yyy-MM-dd HH:mm:ss") + "','" + description + "','" + metadata + "','" + document_number + "')";
+                //string query = "INSERT INTO logs(time_event,description,metadata,document_number) VALUES('" + DateTime.Now.ToString("yyy-MM-dd HH:mm:ss") + "','" + description + "','" + metadata + "','" + document_number + "')";
+                string query = "INSERT INTO logs(time_event,description,metadata,document_number) VALUES(@time_event,@description,@metadata,@document_number)";
                 command = new NpgsqlCommand(query, conn);
+
+                NpgsqlParameter parameter = new NpgsqlParameter("time_event", DateTime.Now.ToString("yyy-MM-dd HH:mm:ss"));
+                command.Parameters.Add(parameter);
+
+                parameter = new NpgsqlParameter("description", description);
+                command.Parameters.Add(parameter);
+
+                parameter = new NpgsqlParameter("metadata", metadata);
+                command.Parameters.Add(parameter);
+
+                parameter = new NpgsqlParameter("document_number", document_number);
+                command.Parameters.Add(parameter);
+
                 command.ExecuteNonQuery();
                 command.Dispose();
                 conn.Close();

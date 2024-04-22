@@ -373,7 +373,7 @@ namespace Cash8
                 cdn_list = MainStaticClass.CDN_List;
                 if (cdn_list == null)
                 {
-                    MessageBox.Show("Список CDN серверов пустой check_marker_code");
+                    //MessageBox.Show("Список CDN серверов пустой check_marker_code");
                     MainStaticClass.write_event_in_log("Список CDN серверов пустой после 2-й попытки check_marker_code", "Документ чек", numdoc.ToString());
                     result_check = true;
                     return result_check;
@@ -382,7 +382,7 @@ namespace Cash8
 
                 if (cdn_list.hosts.Count == 0)
                 {
-                    MessageBox.Show("Нет доступных CDN площадок для проверки кода маркировки, вторая попытка check_marker_code");
+                    //MessageBox.Show("Нет доступных CDN площадок для проверки кода маркировки, вторая попытка check_marker_code");
                     MainStaticClass.write_event_in_log("Нет доступных CDN площадок для проверки кода маркировки, вторая попытка check_marker_code", "Документ чек", numdoc.ToString());
                     result_check = true;
                     return result_check;
