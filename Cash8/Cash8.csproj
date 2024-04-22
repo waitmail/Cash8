@@ -92,9 +92,6 @@
     <Compile Include="AddingKmArrayToTableTested.cs" />
     <Compile Include="AnswerAddingKmArrayToTableTested.cs" />
     <Compile Include="AnswerCheckImcWorkState.cs" />
-    <Compile Include="BuyerInfo.cs" />
-    <Compile Include="BuyerInfoRequest.cs" />
-    <Compile Include="BuyerInfoResponce.cs" />
     <Compile Include="Cash_check.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -144,7 +141,6 @@
     <Compile Include="CreateVirtualCard.Designer.cs">
       <DependentUpon>CreateVirtualCard.cs</DependentUpon>
     </Compile>
-    <Compile Include="CrmCabinetInfo.cs" />
     <Compile Include="CryptorEngine.cs" />
     <Compile Include="Discount_types.cs">
       <SubType>Form</SubType>

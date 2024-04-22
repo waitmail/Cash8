@@ -211,12 +211,14 @@ namespace Cash8
                     }
                     else
                     {
-                        MessageBox.Show("Произошли ошибка при опросе досутности CDN серверов, код ошибки  " + list.code + " , описание ошибки " + list.description);
+                        MainStaticClass.write_event_in_log("Произошли ошибка при опросе досутности CDN серверов, код ошибки  " + list.code + ", описание ошибки " + list.description, "Документ чек", "0");
+                        //MessageBox.Show("Произошли ошибка при опросе досутности CDN серверов, код ошибки  " + list.code + " , описание ошибки " + list.description);
                     }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Произошли ошибки при опросе досутности CDN серверов " + ex.Message);
+                    //MessageBox.Show("Произошли ошибки при опросе досутности CDN серверов " + ex.Message);
+                    MainStaticClass.write_event_in_log("Произошли ошибки при опросе досутности CDN серверов " + ex.Message, "Документ чек", "0");
                 }
             }
 
@@ -315,7 +317,8 @@ namespace Cash8
                     int status_code = (int)response.StatusCode;
                     if (status_code != 200)
                     {
-                        MessageBox.Show("Получен неверный ответ при запросе о доступности для CDN площадки" + url + ", код ответа = " + status_code.ToString(), "Опрос статуса доступности CDN площадки");
+                        MainStaticClass.write_event_in_log("Получен неверный ответ при запросе о доступности для CDN площадки" + url + ", код ответа = " + status_code.ToString(), "Документ чек", "0");
+                        //MessageBox.Show("Получен неверный ответ при запросе о доступности для CDN площадки" + url + ", код ответа = " + status_code.ToString(), "Опрос статуса доступности CDN площадки");
                         return cDNHealth;
                     }
 
@@ -336,7 +339,7 @@ namespace Cash8
             catch (Exception ex)
             {
                 MainStaticClass.write_event_in_log("Проверка доступности CDN cdn_health_check "+ url_sdn +"  "+ ex.Message, "Документ чек", "0");
-                MessageBox.Show("Произошла ошибка " + ex.Message + " при запросе о доступности для CDN площадки " + url, "Получение списка CDN серверов");
+                //MessageBox.Show("Произошла ошибка " + ex.Message + " при запросе о доступности для CDN площадки " + url, "Получение списка CDN серверов");
             }
 
             return cDNHealth;
@@ -351,7 +354,7 @@ namespace Cash8
             CDN_List cdn_list = MainStaticClass.CDN_List;
             if (cdn_list == null)
             {
-                MessageBox.Show("Список CDN серверов пустой");
+                //MessageBox.Show("Список CDN серверов пустой");
                 MainStaticClass.write_event_in_log("Список CDN серверов пустой check_marker_code ", "Документ чек", numdoc.ToString());
                 result_check = true;
                 return result_check;

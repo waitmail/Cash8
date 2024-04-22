@@ -140,7 +140,7 @@ namespace Cash8
                     //this.checkBox_enable_cdn_markers.CheckState= (reader["enable_stock_processing_in_memory"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
                     this.txtB_id_acquiring_terminal.Text= reader["id_acquirer_terminal"].ToString();
                     this.txtB_ip_address_acquiring_terminal.Text= reader["ip_address_acquiring_terminal"].ToString();
-                    this.checkBox_self_service_kiosk.CheckState = (reader["self_service_kiosk"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
+                    //this.checkBox_self_service_kiosk.CheckState = (reader["self_service_kiosk"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
                     this.checkBox_enable_cdn_markers.CheckState = (reader["enable_cdn_markers"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
                     //this.checkBox_version2_marking.CheckState = (reader["version2_marking"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
                     this.checkBox_webservice_authorize.CheckState = (reader["webservice_authorize"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
@@ -278,7 +278,7 @@ namespace Cash8
                         
             string print_m = (checkBox_print_m.CheckState == CheckState.Unchecked ? "false" : "true");
             //string enable_stock_processing_in_memory = (checkBox_enable_cdn_markers.CheckState == CheckState.Unchecked ? "false" : "true");
-            string self_service_kiosk = (checkBox_self_service_kiosk.CheckState == CheckState.Unchecked ? "false" : "true");
+            //string self_service_kiosk = (checkBox_self_service_kiosk.CheckState == CheckState.Unchecked ? "false" : "true");
             string enable_cdn_markers = (checkBox_enable_cdn_markers.CheckState == CheckState.Unchecked ? "false" : "true");
             //string version2_marking = (checkBox_version2_marking.CheckState == CheckState.Unchecked ? "false" : "true");
             string webservice_authorize = (checkBox_webservice_authorize.CheckState == CheckState.Unchecked ? "false" : "true");
@@ -306,7 +306,7 @@ namespace Cash8
                     //"enable_stock_processing_in_memory=" + enable_stock_processing_in_memory + "," +
                     "id_acquirer_terminal='" + txtB_id_acquiring_terminal.Text.ToString() + "'," +
                     "ip_address_acquiring_terminal='" + txtB_ip_address_acquiring_terminal.Text.ToString().Trim() + "'," +
-                    "self_service_kiosk=" + self_service_kiosk + "," +
+                    //"self_service_kiosk=" + self_service_kiosk + "," +
                     "enable_cdn_markers=" + enable_cdn_markers + "," +
                     //"version2_marking=" + version2_marking + "," +
                     "webservice_authorize=" + webservice_authorize + "," +
@@ -354,7 +354,7 @@ namespace Cash8
                         //enable_stock_processing_in_memory+"','"+
                         txtB_id_acquiring_terminal.Text.ToString()+"','"+
                         txtB_ip_address_acquiring_terminal.ToString().Trim()+"','"+
-                        self_service_kiosk+","+
+                        //self_service_kiosk+","+
                         enable_cdn_markers+","+
                         //version2_marking+","+
                         webservice_authorize + ","+

@@ -1095,10 +1095,10 @@ namespace Cash8
                 {
                     MainStaticClass.write_event_in_log(fptr.getParamBool(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_VALIDATION_READY).ToString() + " "+ mark, "check_marking_code", num_doc);
                 }
-                if ((DateTime.Now - start_check).Milliseconds > 2000)
+                if ((DateTime.Now - start_check).Seconds > 2)
                 {
                     //MessageBox.Show("check_marking_code таймаут при проверки qr кода " + mark);
-                    MainStaticClass.write_event_in_log("Таймаут при gроверкt маркировки " + mark, "check_marking_code", num_doc);
+                    MainStaticClass.write_event_in_log(" Таймаут при проверке маркировки " + mark, "check_marking_code", num_doc);
                     validationError = 421;
                     break;
                 }

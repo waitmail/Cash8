@@ -106,7 +106,7 @@ namespace Cash8
 
         public static bool continue_to_read_the_data_from_a_port = false;
         //private static int enable_stock_processing_in_memory=-1;
-        private static int self_service_kiosk = -1;
+        //private static int self_service_kiosk = -1;
         private static string id_acquirer_terminal = "00000000";
         private static string ip_address_acquiring_terminal = "000000000000000";
         private static int enable_cdn_markers = -1;
@@ -979,53 +979,53 @@ namespace Cash8
 
 
 
-        /// <summary>
-        /// Возвращает флаг 1 если это киоск
-        /// саммобслуживания иначе 0
-        /// </summary>
-        public static int SelfServiceKiosk
-        {
-            get
-            {
-                if (self_service_kiosk == -1)
-                {
-                    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
-                    try
-                    {
-                        conn.Open();
-                        string query = "SELECT self_service_kiosk FROM constants";
-                        NpgsqlCommand command = new NpgsqlCommand(query, conn);
-                        object result_query = command.ExecuteScalar();
-                        if (Convert.ToBoolean(result_query) == false)
-                        {
-                            self_service_kiosk = 0;
-                        }
-                        else
-                        {
-                            self_service_kiosk = 1;
-                        }
-                    }
-                    catch (NpgsqlException ex)
-                    {
-                        self_service_kiosk = 0;
-                        MessageBox.Show("Ошибка при чтении флага это киоск самообслуживания" + ex.Message);
-                    }
-                    catch (Exception ex)
-                    {
-                        self_service_kiosk = 0;
-                        MessageBox.Show("Ошибка при чтении флага это киоск самообслуживания" + ex.Message);
-                    }
-                    finally
-                    {
-                        if (conn.State == ConnectionState.Open)
-                        {
-                            conn.Close();
-                        }
-                    }
-                }                
-                    return self_service_kiosk;
-            }
-        }
+        ///// <summary>
+        ///// Возвращает флаг 1 если это киоск
+        ///// саммобслуживания иначе 0
+        ///// </summary>
+        //public static int SelfServiceKiosk
+        //{
+        //    get
+        //    {
+        //        if (self_service_kiosk == -1)
+        //        {
+        //            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+        //            try
+        //            {
+        //                conn.Open();
+        //                string query = "SELECT self_service_kiosk FROM constants";
+        //                NpgsqlCommand command = new NpgsqlCommand(query, conn);
+        //                object result_query = command.ExecuteScalar();
+        //                if (Convert.ToBoolean(result_query) == false)
+        //                {
+        //                    self_service_kiosk = 0;
+        //                }
+        //                else
+        //                {
+        //                    self_service_kiosk = 1;
+        //                }
+        //            }
+        //            catch (NpgsqlException ex)
+        //            {
+        //                self_service_kiosk = 0;
+        //                MessageBox.Show("Ошибка при чтении флага это киоск самообслуживания" + ex.Message);
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                self_service_kiosk = 0;
+        //                MessageBox.Show("Ошибка при чтении флага это киоск самообслуживания" + ex.Message);
+        //            }
+        //            finally
+        //            {
+        //                if (conn.State == ConnectionState.Open)
+        //                {
+        //                    conn.Close();
+        //                }
+        //            }
+        //        }                
+        //            return self_service_kiosk;
+        //    }
+        //}
 
 
 
@@ -1160,12 +1160,12 @@ namespace Cash8
                 {
                     result = "http://92.242.41.218/processing/v3";
                 }
-                else if (MainStaticClass.GetWorkSchema == 2)
-                {
-                    //это боевой процессинг "https://evaviza1.cardnonstop.com/processing";
-                    result = "https://evaviza1.cardnonstop.com/processing";
-                    //result = "https://evaviza1.cardnonstop.com/test";//"http://5.188.118.39/test";
-                }
+                //else if (MainStaticClass.GetWorkSchema == 2)
+                //{
+                //    //это боевой процессинг "https://evaviza1.cardnonstop.com/processing";
+                //    result = "https://evaviza1.cardnonstop.com/processing";
+                //    //result = "https://evaviza1.cardnonstop.com/test";//"http://5.188.118.39/test";
+                //}
 
                 return result;
             }
@@ -2043,47 +2043,47 @@ namespace Cash8
             }
         }
 
-        /// <summary>
-        /// Обновить статус в документе данные по накопленному бонусу отправлены успешно
-        /// 
-        /// </summary>
-        public static bool update_status_sent_bonus(string num_doc)
-        {
+        ///// <summary>
+        ///// Обновить статус в документе данные по накопленному бонусу отправлены успешно
+        ///// 
+        ///// </summary>
+        //public static bool update_status_sent_bonus(string num_doc)
+        //{
 
-            bool result = true;
+        //    bool result = true;
 
-            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+        //    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
 
-            try
-            {
-                conn.Open();
-                string query = " UPDATE checks_header SET discount_it_is_sent=true WHERE document_number=" + num_doc;
-                NpgsqlCommand command = new NpgsqlCommand(query, conn);
-                command.ExecuteNonQuery();
-                conn.Close();
-                command.Dispose();
-            }
-            catch (NpgsqlException ex)
-            {
-                //MyMessageBox mmb = new MyMessageBox(ex.Message, "Попытка обновить статус документа отправлено для документа " + num_doc);
-                result = false;
-            }
-            catch (Exception ex)
-            {
-                //MyMessageBox mmb = new MyMessageBox(ex.Message, "Попытка обновить статус документа отправлено для документа " + num_doc);
-                //mmb.ShowDialog();
-                result = false;
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                }
-            }
+        //    try
+        //    {
+        //        conn.Open();
+        //        string query = " UPDATE checks_header SET discount_it_is_sent=true WHERE document_number=" + num_doc;
+        //        NpgsqlCommand command = new NpgsqlCommand(query, conn);
+        //        command.ExecuteNonQuery();
+        //        conn.Close();
+        //        command.Dispose();
+        //    }
+        //    catch (NpgsqlException ex)
+        //    {
+        //        //MyMessageBox mmb = new MyMessageBox(ex.Message, "Попытка обновить статус документа отправлено для документа " + num_doc);
+        //        result = false;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        //MyMessageBox mmb = new MyMessageBox(ex.Message, "Попытка обновить статус документа отправлено для документа " + num_doc);
+        //        //mmb.ShowDialog();
+        //        result = false;
+        //    }
+        //    finally
+        //    {
+        //        if (conn.State == ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //        }
+        //    }
 
-            return result;
-        }
+        //    return result;
+        //}
 
 
         /// <summary>

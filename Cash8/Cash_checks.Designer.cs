@@ -39,7 +39,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.btn_update_status_send = new System.Windows.Forms.Button();
             this.checkBox_show_3_last_checks = new System.Windows.Forms.CheckBox();
-            this.btn_new_check = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // listView1
@@ -159,24 +158,11 @@
             this.checkBox_show_3_last_checks.UseVisualStyleBackColor = true;
             this.checkBox_show_3_last_checks.CheckedChanged += new System.EventHandler(this.checkBox_show_3_last_checks_CheckedChanged);
             // 
-            // btn_new_check
-            // 
-            this.btn_new_check.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btn_new_check.ForeColor = System.Drawing.Color.LimeGreen;
-            this.btn_new_check.Location = new System.Drawing.Point(847, -1);
-            this.btn_new_check.Name = "btn_new_check";
-            this.btn_new_check.Size = new System.Drawing.Size(161, 58);
-            this.btn_new_check.TabIndex = 22;
-            this.btn_new_check.Text = "Новая продажа";
-            this.btn_new_check.UseVisualStyleBackColor = true;
-            this.btn_new_check.Click += new System.EventHandler(this.btn_new_check_Click);
-            // 
             // Cash_checks
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1020, 580);
-            this.Controls.Add(this.btn_new_check);
             this.Controls.Add(this.checkBox_show_3_last_checks);
             this.Controls.Add(this.btn_update_status_send);
             this.Controls.Add(this.label1);
@@ -217,6 +203,5 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btn_update_status_send;
         private System.Windows.Forms.CheckBox checkBox_show_3_last_checks;
-        private System.Windows.Forms.Button btn_new_check;
     }
 }

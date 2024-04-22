@@ -83,11 +83,7 @@
             this.txtB_num_sales = new System.Windows.Forms.TextBox();
             this.btn_fill_on_sales = new System.Windows.Forms.Button();
             this.cash = new System.Windows.Forms.TextBox();
-            this.checkBox_club = new System.Windows.Forms.CheckBox();
-            this.checkBox_viza_d = new System.Windows.Forms.CheckBox();
             this.checkBox_to_print_repeatedly_p = new System.Windows.Forms.CheckBox();
-            this.btn_del_position = new System.Windows.Forms.Button();
-            this.btn_cancel_check = new System.Windows.Forms.Button();
             this.txtB_total_sum = new System.Windows.Forms.TextBox();
             this.txtB_num_doc = new System.Windows.Forms.TextBox();
             this.checkBox_print_check = new System.Windows.Forms.CheckBox();
@@ -232,7 +228,7 @@
             this.panel_return.Controls.Add(this.return_kop);
             this.panel_return.Controls.Add(this.return_rouble);
             this.panel_return.Controls.Add(this.return_quantity);
-            this.panel_return.Location = new System.Drawing.Point(108, 71);
+            this.panel_return.Location = new System.Drawing.Point(24, 298);
             this.panel_return.Name = "panel_return";
             this.panel_return.Size = new System.Drawing.Size(432, 88);
             this.panel_return.TabIndex = 42;
@@ -400,6 +396,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.panel_return);
             this.tabPage1.Controls.Add(this.panel2);
             this.tabPage1.Controls.Add(this.panel1);
             this.tabPage1.Controls.Add(this.listView1);
@@ -676,31 +673,6 @@
             this.cash.Visible = false;
             this.cash.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.cash_KeyPress);
             // 
-            // checkBox_club
-            // 
-            this.checkBox_club.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkBox_club.AutoSize = true;
-            this.checkBox_club.CheckAlign = System.Drawing.ContentAlignment.TopRight;
-            this.checkBox_club.Location = new System.Drawing.Point(623, 11);
-            this.checkBox_club.Name = "checkBox_club";
-            this.checkBox_club.Size = new System.Drawing.Size(50, 17);
-            this.checkBox_club.TabIndex = 71;
-            this.checkBox_club.Text = "Клуб";
-            this.checkBox_club.UseVisualStyleBackColor = true;
-            // 
-            // checkBox_viza_d
-            // 
-            this.checkBox_viza_d.AutoSize = true;
-            this.checkBox_viza_d.Enabled = false;
-            this.checkBox_viza_d.Location = new System.Drawing.Point(534, 12);
-            this.checkBox_viza_d.Name = "checkBox_viza_d";
-            this.checkBox_viza_d.Size = new System.Drawing.Size(63, 17);
-            this.checkBox_viza_d.TabIndex = 72;
-            this.checkBox_viza_d.Text = "Скидка";
-            this.checkBox_viza_d.UseVisualStyleBackColor = true;
-            this.checkBox_viza_d.Visible = false;
-            this.checkBox_viza_d.CheckedChanged += new System.EventHandler(this.checkBox_viza_d_CheckedChanged);
-            // 
             // checkBox_to_print_repeatedly_p
             // 
             this.checkBox_to_print_repeatedly_p.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -715,30 +687,6 @@
             this.checkBox_to_print_repeatedly_p.UseVisualStyleBackColor = true;
             this.checkBox_to_print_repeatedly_p.Visible = false;
             this.checkBox_to_print_repeatedly_p.CheckedChanged += new System.EventHandler(this.checkBox_to_print_repeatedly_p_CheckedChanged);
-            // 
-            // btn_del_position
-            // 
-            this.btn_del_position.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btn_del_position.Location = new System.Drawing.Point(81, 538);
-            this.btn_del_position.Name = "btn_del_position";
-            this.btn_del_position.Size = new System.Drawing.Size(165, 23);
-            this.btn_del_position.TabIndex = 74;
-            this.btn_del_position.Text = "Удалить позицию из чека";
-            this.btn_del_position.UseVisualStyleBackColor = true;
-            this.btn_del_position.Click += new System.EventHandler(this.btn_del_position_Click);
-            // 
-            // btn_cancel_check
-            // 
-            this.btn_cancel_check.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btn_cancel_check.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btn_cancel_check.ForeColor = System.Drawing.Color.OrangeRed;
-            this.btn_cancel_check.Location = new System.Drawing.Point(623, 34);
-            this.btn_cancel_check.Name = "btn_cancel_check";
-            this.btn_cancel_check.Size = new System.Drawing.Size(166, 33);
-            this.btn_cancel_check.TabIndex = 75;
-            this.btn_cancel_check.Text = "Отменить чек";
-            this.btn_cancel_check.UseVisualStyleBackColor = true;
-            this.btn_cancel_check.Click += new System.EventHandler(this.btn_cancel_check_Click);
             // 
             // txtB_total_sum
             // 
@@ -761,7 +709,6 @@
             this.txtB_num_doc.Name = "txtB_num_doc";
             this.txtB_num_doc.Size = new System.Drawing.Size(52, 20);
             this.txtB_num_doc.TabIndex = 77;
-            this.txtB_num_doc.Text = "21111199";
             this.txtB_num_doc.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // checkBox_print_check
@@ -794,15 +741,10 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 600);
-            this.Controls.Add(this.panel_return);
             this.Controls.Add(this.checkBox_payment_by_sbp);
             this.Controls.Add(this.checkBox_print_check);
             this.Controls.Add(this.txtB_num_doc);
-            this.Controls.Add(this.btn_cancel_check);
-            this.Controls.Add(this.btn_del_position);
             this.Controls.Add(this.checkBox_to_print_repeatedly_p);
-            this.Controls.Add(this.checkBox_viza_d);
-            this.Controls.Add(this.checkBox_club);
             this.Controls.Add(this.btn_fill_on_sales);
             this.Controls.Add(this.txtB_num_sales);
             this.Controls.Add(this.txtB_name);
@@ -911,11 +853,7 @@
         private System.Windows.Forms.Button btn_get_name;
         private System.Windows.Forms.Button btn_fill_on_sales;
         private System.Windows.Forms.TextBox cash;
-        private System.Windows.Forms.CheckBox checkBox_club;
-        public System.Windows.Forms.CheckBox checkBox_viza_d;
         private System.Windows.Forms.CheckBox checkBox_to_print_repeatedly_p;
-        private System.Windows.Forms.Button btn_del_position;
-        private System.Windows.Forms.Button btn_cancel_check;
         private System.Windows.Forms.TextBox txtB_total_sum;
         private System.Windows.Forms.TextBox txtB_num_doc;
         private System.Windows.Forms.CheckBox checkBox_print_check;

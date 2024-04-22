@@ -598,10 +598,10 @@ namespace Cash8
                     }
                     else
                     {
-                        if (MainStaticClass.SelfServiceKiosk == 0)
-                        {                            
+                        //if (MainStaticClass.SelfServiceKiosk == 0)
+                        //{                            
                             this.non_cash_sum.Text = "0";                            
-                        }
+                        //}
                         this.sertificates_sum.Text = "0";
                         this.cash_sum.Text = "0";
                     }
@@ -817,15 +817,15 @@ namespace Cash8
 
         private void Pay_Load(object sender, EventArgs e)
         {
-            if (MainStaticClass.SelfServiceKiosk == 1)//это киоск самообслуживания 
-            {
-                this.cash_sum.Enabled = false;
-                this.non_cash_sum.Enabled = false;                
-            }
-            else
-            {
+            //if (MainStaticClass.SelfServiceKiosk == 1)//это киоск самообслуживания 
+            //{
+            //    this.cash_sum.Enabled = false;
+            //    this.non_cash_sum.Enabled = false;                
+            //}
+            //else
+            //{
                 this.cash_sum.Text = "";
-            }
+            //}
             this.cash_sum.Focus();
             cash_sum.SelectionStart = 0;
             non_cash_sum.SelectionStart = 0;
@@ -850,11 +850,11 @@ namespace Cash8
 
             //sertificates_sum.Text = summ_sertificates.ToString();
 
-            if (MainStaticClass.SelfServiceKiosk == 0)//это не киоск самообслуживания )
-            {
+            //if (MainStaticClass.SelfServiceKiosk == 0)//это не киоск самообслуживания )
+            //{
                 this.non_cash_sum.Text = "0";
                 this.non_cash_sum_kop.Text = "0";               
-            }
+            //}
 
             calculate();
 
@@ -989,46 +989,46 @@ namespace Cash8
                     cash_sum.Focus();
                 //}
             }
-            if (e.KeyCode == Keys.F6)//попытка сделать доступным полее вода списания бонусов
-            {
+        //    if (e.KeyCode == Keys.F6)//попытка сделать доступным полее вода списания бонусов
+        //    {
                 
-                if (cc.client.Tag == null)
-                {
-                    MessageBox.Show("В чеке нет карты лояльности.Оплата бонусами невозможна.");
-                    return;
-                }
-                if (cc.checkBox_viza_d.CheckState == CheckState.Checked)
-                {
-                    MessageBox.Show("В чеке выбрана скидка.Оплата бонусами невозможна!");
-                    return;
-                }
-                if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema ==3) || (MainStaticClass.GetWorkSchema == 4))
-                {
-                    if (!cc.check_bonus_is_on())
-                    {
-                        return;
-                    }
-                }
-                if (Convert.ToInt32(bonus_total_in_centr.Text) == 0)
-                {
-                    MessageBox.Show("Нет доступных для списания бонусов");
-                    return;
-                }
-                InputCodeNumberPhone inputCodeNumberPhone = new InputCodeNumberPhone();
-                inputCodeNumberPhone.code_client = cc.client.Tag.ToString();
-                inputCodeNumberPhone.phone_client = cc.phone_client;
-                DialogResult dialogResult = inputCodeNumberPhone.ShowDialog();
-                if (dialogResult == DialogResult.Yes)
-                {
-                    code_it_is_confirmed = true;
-                    pay_bonus.Enabled = true;
-                }
-                calculate();
-                if (button_pay.Enabled)
-                {
-                    button2_Click(null, null);
-                }
-            }
+        //        if (cc.client.Tag == null)
+        //        {
+        //            MessageBox.Show("В чеке нет карты лояльности.Оплата бонусами невозможна.");
+        //            return;
+        //        }
+        //        //if (cc.checkBox_viza_d.CheckState == CheckState.Checked)
+        //        //{
+        //        //    MessageBox.Show("В чеке выбрана скидка.Оплата бонусами невозможна!");
+        //        //    return;
+        //        //}
+        //        if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema ==3) || (MainStaticClass.GetWorkSchema == 4))
+        //        {
+        //            if (!cc.check_bonus_is_on())
+        //            {
+        //                return;
+        //            }
+        //        }
+        //        //if (Convert.ToInt32(bonus_total_in_centr.Text) == 0)
+        //        //{
+        //        //    MessageBox.Show("Нет доступных для списания бонусов");
+        //        //    return;
+        //        //}
+        //        InputCodeNumberPhone inputCodeNumberPhone = new InputCodeNumberPhone();
+        //        inputCodeNumberPhone.code_client = cc.client.Tag.ToString();
+        //        inputCodeNumberPhone.phone_client = cc.phone_client;
+        //        DialogResult dialogResult = inputCodeNumberPhone.ShowDialog();
+        //        if (dialogResult == DialogResult.Yes)
+        //        {
+        //            code_it_is_confirmed = true;
+        //            pay_bonus.Enabled = true;
+        //        }
+        //        calculate();
+        //        if (button_pay.Enabled)
+        //        {
+        //            button2_Click(null, null);
+        //        }
+        //    }
         }
 
         /*Оплачено
@@ -1083,13 +1083,13 @@ namespace Cash8
 
                         }
                     }
-                    else if (MainStaticClass.GetWorkSchema == 2)
-                    {
-                        if (Convert.ToDecimal(pay_bonus_many.Text) > 0)
-                        {
-                            cc.distribute(Convert.ToDouble(pay_bonus_many.Text), total);//теперь бонусы 
-                        }                       
-                    }
+                    //else if (MainStaticClass.GetWorkSchema == 2)
+                    //{
+                    //    if (Convert.ToDecimal(pay_bonus_many.Text) > 0)
+                    //    {
+                    //        cc.distribute(Convert.ToDouble(pay_bonus_many.Text), total);//теперь бонусы 
+                    //    }                       
+                    //}
                 }
                 else
                 {
@@ -1564,172 +1564,172 @@ namespace Cash8
         {
             bool result = true;
 
-            if (MainStaticClass.PassPromo != "")//Пароль не пустой бонусная магазин включен в бнусную систему
-            {
-                if (cc.check_type.SelectedIndex == 0) // Это продажа
-                {
-                    if (cc.client.Tag != null)
-                    {
-                        if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema ==3) || (MainStaticClass.GetWorkSchema == 4))
-                        {
-                            if (cc.check_bonus_is_on())
-                            {
-                                SentDataOnBonus.BuynewResponse buynewResponse = null;
-                                buynewResponse = cc.get_bonus_on_document((Convert.ToDecimal(pay_bonus_many.Text)*100).ToString());
+            //if (MainStaticClass.PassPromo != "")//Пароль не пустой бонусная магазин включен в бнусную систему
+            //{
+            //    if (cc.check_type.SelectedIndex == 0) // Это продажа
+            //    {
+            //        if (cc.client.Tag != null)
+            //        {
+            //            if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema ==3) || (MainStaticClass.GetWorkSchema == 4))
+            //            {
+            //            //    if (cc.check_bonus_is_on())
+            //            //    {
+            //            //        SentDataOnBonus.BuynewResponse buynewResponse = null;
+            //            //        buynewResponse = cc.get_bonus_on_document((Convert.ToDecimal(pay_bonus_many.Text)*100).ToString());
 
-                                if (buynewResponse != null)
-                                {
-                                    if (buynewResponse.res == "1")
-                                    {
-                                        this.bonus_on_document.Text = ((int)(Convert.ToInt64(buynewResponse.bonusSum) / 100)).ToString();
-                                        cc.id_transaction = buynewResponse.transactionId;
-                                        cc.bonuses_it_is_counted = Convert.ToInt32(this.bonus_on_document.Text);
-                                    }
-                                    else
-                                    {
-                                        get_description_errors_on_code(buynewResponse.res);
-                                        result = false;
-                                    }
-                                }
-                                else // Если оплата бонусами и нет связи с процессинговым цетром, тогда отлуп 
-                                {
-                                    if (Convert.ToInt32(pay_bonus_many.Text) > 0)
-                                    {
-                                        MessageBox.Show(" Нет связи с процессинговым центром ");
-                                        result = false;
-                                    }
-                                }
-                            }
-                        }
-                        else if (MainStaticClass.GetWorkSchema == 2)
-                        {
-                            SentDataOnBonusEva.BuynewResponse buynewResponse = null;
-                            buynewResponse = cc.get_bonus_on_document_eva(pay_bonus_many.Text);
+            //            //        if (buynewResponse != null)
+            //            //        {
+            //            //            if (buynewResponse.res == "1")
+            //            //            {
+            //            //                this.bonus_on_document.Text = ((int)(Convert.ToInt64(buynewResponse.bonusSum) / 100)).ToString();
+            //            //                cc.id_transaction = buynewResponse.transactionId;
+            //            //                cc.bonuses_it_is_counted = Convert.ToInt32(this.bonus_on_document.Text);
+            //            //            }
+            //            //            else
+            //            //            {
+            //            //                get_description_errors_on_code(buynewResponse.res);
+            //            //                result = false;
+            //            //            }
+            //            //        }
+            //            //        else // Если оплата бонусами и нет связи с процессинговым цетром, тогда отлуп 
+            //            //        {
+            //            //            if (Convert.ToInt32(pay_bonus_many.Text) > 0)
+            //            //            {
+            //            //                MessageBox.Show(" Нет связи с процессинговым центром ");
+            //            //                result = false;
+            //            //            }
+            //            //        }
+            //            //    }
+            //            //}
+            //            //else if (MainStaticClass.GetWorkSchema == 2)
+            //            //{
+            //            //    SentDataOnBonusEva.BuynewResponse buynewResponse = null;
+            //            //    buynewResponse = cc.get_bonus_on_document_eva(pay_bonus_many.Text);
 
-                            if (buynewResponse != null)
-                            {
-                                if (buynewResponse.res == "1")
-                                {
-                                    //this.bonus_on_document.Text = ((int)(Convert.ToInt64(buynewResponse.bonusSum) / 100)).ToString();
-                                    this.bonus_on_document.Text = buynewResponse.bonusSum;
-                                    cc.id_transaction = buynewResponse.transactionId;
-                                    cc.bonuses_it_is_counted = Convert.ToInt32(this.bonus_on_document.Text);
-                                    cc.message_processing = buynewResponse.message;
-                                }
-                                else
-                                {
-                                    get_description_errors_on_code(buynewResponse.res);
-                                    result = false;
-                                }
-                            }
-                            else // Если оплата бонусами и нет связи с процессинговым цетром, тогда отлуп 
-                            {
-                                if (Convert.ToInt32(pay_bonus_many.Text) > 0)
-                                {
-                                    MessageBox.Show(" Нет связи с процессинговым центром ");
-                                    result = false;
-                                }
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    if (MainStaticClass.GetWorkSchema == 2)
-                    {
-                        if (cc.client.Tag != null)
-                        {
-                            SentDataOnBonusEva.TransactionResponse transactionResponse = cc.get_bonus_on_document_eva_by_return();
-                            if (transactionResponse != null)
-                            {
-                                if (transactionResponse.res == "1")
-                                {
-                                    cc.id_transaction = transactionResponse.returnTransactionId;
-                                    cc.message_processing = transactionResponse.message;
-                                    cc.bonuses_it_is_written_off = ((int)(Convert.ToInt64(transactionResponse.bonusSum) / 100));
-                                }
-                                else
-                                {
-                                    if (transactionResponse.error != null)
-                                    {
-                                        MessageBox.Show(transactionResponse.error);
-                                    }
-                                    get_description_errors_on_code(transactionResponse.res);//Сообщим об ошибках пользователю
-                                    result = false;
-                                }
-                            }
-                            else
-                            {
-                                MessageBox.Show(" Нет связи с процессинговым центром ");
-                                result = false;
-                            }
-                        }
-                    }
-                }
-            }
+            //            //    if (buynewResponse != null)
+            //            //    {
+            //            //        if (buynewResponse.res == "1")
+            //            //        {
+            //            //            //this.bonus_on_document.Text = ((int)(Convert.ToInt64(buynewResponse.bonusSum) / 100)).ToString();
+            //            //            this.bonus_on_document.Text = buynewResponse.bonusSum;
+            //            //            cc.id_transaction = buynewResponse.transactionId;
+            //            //            cc.bonuses_it_is_counted = Convert.ToInt32(this.bonus_on_document.Text);
+            //            //            cc.message_processing = buynewResponse.message;
+            //            //        }
+            //            //        else
+            //            //        {
+            //            //            get_description_errors_on_code(buynewResponse.res);
+            //            //            result = false;
+            //            //        }
+            //            //    }
+            //            //    else // Если оплата бонусами и нет связи с процессинговым цетром, тогда отлуп 
+            //            //    {
+            //            //        if (Convert.ToInt32(pay_bonus_many.Text) > 0)
+            //            //        {
+            //            //            MessageBox.Show(" Нет связи с процессинговым центром ");
+            //            //            result = false;
+            //            //        }
+            //            //    }
+            //            }
+            //        }
+            //    }
+            //    else
+            //    {
+            //    //    if (MainStaticClass.GetWorkSchema == 2)
+            //    //    {
+            //    //        if (cc.client.Tag != null)
+            //    //        {
+            //    //            SentDataOnBonusEva.TransactionResponse transactionResponse = cc.get_bonus_on_document_eva_by_return();
+            //    //            if (transactionResponse != null)
+            //    //            {
+            //    //                if (transactionResponse.res == "1")
+            //    //                {
+            //    //                    cc.id_transaction = transactionResponse.returnTransactionId;
+            //    //                    cc.message_processing = transactionResponse.message;
+            //    //                    cc.bonuses_it_is_written_off = ((int)(Convert.ToInt64(transactionResponse.bonusSum) / 100));
+            //    //                }
+            //    //                else
+            //    //                {
+            //    //                    if (transactionResponse.error != null)
+            //    //                    {
+            //    //                        MessageBox.Show(transactionResponse.error);
+            //    //                    }
+            //    //                    get_description_errors_on_code(transactionResponse.res);//Сообщим об ошибках пользователю
+            //    //                    result = false;
+            //    //                }
+            //    //            }
+            //    //            else
+            //    //            {
+            //    //                MessageBox.Show(" Нет связи с процессинговым центром ");
+            //    //                result = false;
+            //    //            }
+            //    //        }
+            //    //    }
+            //    }
+            //}
             return result;
         }
 
 
-        /// <summary>
-        /// получить текстовое описание по коду 
-        /// </summary>
-        /// <param name="code_error"></param>
-        private void get_description_errors_on_code(string code_answer)
-        {
-            switch (code_answer)
-            {
-                case "2":
-                    MessageBox.Show("2. Неверный запрос ");
-                    break;
-                case "3":
-                    MessageBox.Show("3. Клиент не найден ");
-                    break;
-                case "4":
-                    MessageBox.Show("4. Недостаточно прав для операции ");
-                    break;
-                case "5":
-                    MessageBox.Show("5. Карта не найдена ");
-                    break;
-                case "6":
-                    MessageBox.Show("6. Операции с картой запрещены ");
-                    break;
-                case "7":
-                    MessageBox.Show("7. Ошибочная операция с картой ");
-                    break;
-                case "8":
-                    MessageBox.Show("8. Недостаточно средств ");
-                    break;
-                case "9":
-                    MessageBox.Show("9. Транзакция не найдена(неверный transactionId) ");
-                    break;
-                case "10":
-                    MessageBox.Show("10. Значение параметра выходит за границы ");
-                    break;
-                case "11":
-                    MessageBox.Show("11. Id чека, сгенерированный кассой, не уникален ");
-                    break;
-                case "12":
-                    MessageBox.Show("12. Артикул товара(SKU) не найден ");
-                    break;
-                case "13":
-                    MessageBox.Show("13. Ошибка запроса ");
-                    break;
-                case "14":
-                    MessageBox.Show("14. Ошибка базы данных ");
-                    break;
-                case "15":
-                    MessageBox.Show("15. Транзакция отклонена ");
-                    break;
-                case "16":
-                    MessageBox.Show("16. Транзакция уже существует ");
-                    break;
+        ///// <summary>
+        ///// получить текстовое описание по коду 
+        ///// </summary>
+        ///// <param name="code_error"></param>
+        //private void get_description_errors_on_code(string code_answer)
+        //{
+        //    switch (code_answer)
+        //    {
+        //        case "2":
+        //            MessageBox.Show("2. Неверный запрос ");
+        //            break;
+        //        case "3":
+        //            MessageBox.Show("3. Клиент не найден ");
+        //            break;
+        //        case "4":
+        //            MessageBox.Show("4. Недостаточно прав для операции ");
+        //            break;
+        //        case "5":
+        //            MessageBox.Show("5. Карта не найдена ");
+        //            break;
+        //        case "6":
+        //            MessageBox.Show("6. Операции с картой запрещены ");
+        //            break;
+        //        case "7":
+        //            MessageBox.Show("7. Ошибочная операция с картой ");
+        //            break;
+        //        case "8":
+        //            MessageBox.Show("8. Недостаточно средств ");
+        //            break;
+        //        case "9":
+        //            MessageBox.Show("9. Транзакция не найдена(неверный transactionId) ");
+        //            break;
+        //        case "10":
+        //            MessageBox.Show("10. Значение параметра выходит за границы ");
+        //            break;
+        //        case "11":
+        //            MessageBox.Show("11. Id чека, сгенерированный кассой, не уникален ");
+        //            break;
+        //        case "12":
+        //            MessageBox.Show("12. Артикул товара(SKU) не найден ");
+        //            break;
+        //        case "13":
+        //            MessageBox.Show("13. Ошибка запроса ");
+        //            break;
+        //        case "14":
+        //            MessageBox.Show("14. Ошибка базы данных ");
+        //            break;
+        //        case "15":
+        //            MessageBox.Show("15. Транзакция отклонена ");
+        //            break;
+        //        case "16":
+        //            MessageBox.Show("16. Транзакция уже существует ");
+        //            break;
 
-                default:
-                    Console.WriteLine(" Неизвестный ответ от процессингового центра ");
-                    break;
-            }
-        }
+        //        default:
+        //            Console.WriteLine(" Неизвестный ответ от процессингового центра ");
+        //            break;
+        //    }
+        //}
 
 
 
@@ -1829,35 +1829,35 @@ namespace Cash8
                     return;
                 }
             }
-            else if (MainStaticClass.GetWorkSchema == 2)
-            {
-                //if (sum_of_the_document != _cash_summ_ + _non_cash_summ_ + _sertificates_sum_ + _pay_bonus_many_)
-                if (Math.Round(sum_of_the_document, 2) != Math.Round((_cash_summ_ + _non_cash_summ_ + _sertificates_sum_ + _pay_bonus_many_), 2))
-                {
+            //else if (MainStaticClass.GetWorkSchema == 2)
+            //{
+            //    //if (sum_of_the_document != _cash_summ_ + _non_cash_summ_ + _sertificates_sum_ + _pay_bonus_many_)
+            //    if (Math.Round(sum_of_the_document, 2) != Math.Round((_cash_summ_ + _non_cash_summ_ + _sertificates_sum_ + _pay_bonus_many_), 2))
+            //    {
 
-                    MessageBox.Show(" Повторно внесите суммы оплаты, обнаружено несхождение в окне оплаты ");
-                    MessageBox.Show("Сумма документа = " + sum_of_the_document.ToString() + " а сумма оплат = " + (_cash_summ_ + _non_cash_summ_ + _sertificates_sum_ + _pay_bonus_many_).ToString());
-                    MessageBox.Show("Сумма наличные = " + _cash_summ_.ToString());
-                    MessageBox.Show("Сумма карта оплаты = " + _non_cash_summ_.ToString());
-                    MessageBox.Show("Сумма сертификатов = " + _sertificates_sum_.ToString());
-                    MessageBox.Show("Сумма бонусов = " + _pay_bonus_many_.ToString());
+            //        MessageBox.Show(" Повторно внесите суммы оплаты, обнаружено несхождение в окне оплаты ");
+            //        MessageBox.Show("Сумма документа = " + sum_of_the_document.ToString() + " а сумма оплат = " + (_cash_summ_ + _non_cash_summ_ + _sertificates_sum_ + _pay_bonus_many_).ToString());
+            //        MessageBox.Show("Сумма наличные = " + _cash_summ_.ToString());
+            //        MessageBox.Show("Сумма карта оплаты = " + _non_cash_summ_.ToString());
+            //        MessageBox.Show("Сумма сертификатов = " + _sertificates_sum_.ToString());
+            //        MessageBox.Show("Сумма бонусов = " + _pay_bonus_many_.ToString());
 
-                    return;
-                }
+            //        return;
+            //    }
 
-            }
+            //}
 
             //здесь перед записью еще проверка процессингового центра 
-            if (cc.client.Tag != null)
-            {
-                if ((cc.check_bonus_is_on()||MainStaticClass.GetWorkSchema==2))
-                {
-                    if (!continue_sales())
-                    {
-                        return;
-                    }
-                }
-            }
+            //if (cc.client.Tag != null)
+            //{
+            //    //if ((cc.check_bonus_is_on()||MainStaticClass.GetWorkSchema==2))
+            //    //{
+            //    //    if (!continue_sales())
+            //    //    {
+            //    //        return;
+            //    //    }
+            //    //}
+            //}
 
             //Если это возврат то необходимо проверить сумму по каждой форме оплаты 
             if (cc.check_type.SelectedIndex == 1)

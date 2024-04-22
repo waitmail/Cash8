@@ -351,10 +351,10 @@ namespace Cash8
                 this.BringToFront();
             }
 
-            if (MainStaticClass.SelfServiceKiosk == 0)
-            {
-                btn_new_check.Visible = false;
-            }
+            //if (MainStaticClass.SelfServiceKiosk == 0)
+            //{
+                //btn_new_check.Visible = false;
+            //}
         }
 
         protected override void OnClosed(EventArgs e)

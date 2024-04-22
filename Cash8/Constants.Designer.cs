@@ -55,7 +55,6 @@
             this.txtB_id_acquiring_terminal = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.txtB_ip_address_acquiring_terminal = new System.Windows.Forms.TextBox();
-            this.checkBox_self_service_kiosk = new System.Windows.Forms.CheckBox();
             this.groupBox_acquiring_terminal = new System.Windows.Forms.GroupBox();
             this.checkBox_webservice_authorize = new System.Windows.Forms.CheckBox();
             this.checkBox_static_guid_in_print = new System.Windows.Forms.CheckBox();
@@ -309,16 +308,6 @@
             this.txtB_ip_address_acquiring_terminal.Size = new System.Drawing.Size(129, 20);
             this.txtB_ip_address_acquiring_terminal.TabIndex = 75;
             // 
-            // checkBox_self_service_kiosk
-            // 
-            this.checkBox_self_service_kiosk.AutoSize = true;
-            this.checkBox_self_service_kiosk.Location = new System.Drawing.Point(514, 291);
-            this.checkBox_self_service_kiosk.Name = "checkBox_self_service_kiosk";
-            this.checkBox_self_service_kiosk.Size = new System.Drawing.Size(179, 17);
-            this.checkBox_self_service_kiosk.TabIndex = 76;
-            this.checkBox_self_service_kiosk.Text = "Это киоск самообслуживания";
-            this.checkBox_self_service_kiosk.UseVisualStyleBackColor = true;
-            // 
             // groupBox_acquiring_terminal
             // 
             this.groupBox_acquiring_terminal.Controls.Add(this.txtB_id_acquiring_terminal);
@@ -388,7 +377,6 @@
             this.Controls.Add(this.checkBox_printing_using_libraries);
             this.Controls.Add(this.checkBox_static_guid_in_print);
             this.Controls.Add(this.checkBox_webservice_authorize);
-            this.Controls.Add(this.checkBox_self_service_kiosk);
             this.Controls.Add(this.txtB_ip_address_acquiring_terminal);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
@@ -456,7 +444,6 @@
         private System.Windows.Forms.TextBox txtB_id_acquiring_terminal;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox txtB_ip_address_acquiring_terminal;
-        private System.Windows.Forms.CheckBox checkBox_self_service_kiosk;
         private System.Windows.Forms.GroupBox groupBox_acquiring_terminal;
         private System.Windows.Forms.CheckBox checkBox_webservice_authorize;
         private System.Windows.Forms.CheckBox checkBox_static_guid_in_print;

@@ -46,12 +46,12 @@ namespace Cash8
         private void timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             Invoke(new show_tovar_not_found(set_show_tovar_not_found));
-            if (MainStaticClass.SelfServiceKiosk == 1)
-            {
-                System.Threading.Thread.Sleep(2000);
-                KeyEventArgs args = new KeyEventArgs(Keys.Escape);
-                OnKeyDown(args);
-            }
+            //if (MainStaticClass.SelfServiceKiosk == 1)
+            //{
+            //    System.Threading.Thread.Sleep(2000);
+            //    KeyEventArgs args = new KeyEventArgs(Keys.Escape);
+            //    OnKeyDown(args);
+            //}
         }
     }
 }

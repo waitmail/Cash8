@@ -1106,63 +1106,63 @@ namespace Cash8
             //}
         }
 
-        private void change_schema_2_to_3()
-        {
-            if (MainStaticClass.GetWorkSchema == 2)//Переводим на 3 схему 
-            {
-                //MessageBox.Show("2to3");
-                NpgsqlConnection conn = null;
-                NpgsqlTransaction tran = null;
-                try
-                {
-                    conn = MainStaticClass.NpgsqlConn();
-                    conn.Open();
-                    tran = conn.BeginTransaction();
-                    string query = "TRUNCATE TABLE clients;";
-                    NpgsqlCommand command = new NpgsqlCommand(query, conn);
-                    command.Transaction = tran;
-                    command.ExecuteNonQuery();
-                    //MessageBox.Show("2to3,1");
+        //private void change_schema_2_to_3()
+        //{
+        //    if (MainStaticClass.GetWorkSchema == 2)//Переводим на 3 схему 
+        //    {
+        //        //MessageBox.Show("2to3");
+        //        NpgsqlConnection conn = null;
+        //        NpgsqlTransaction tran = null;
+        //        try
+        //        {
+        //            conn = MainStaticClass.NpgsqlConn();
+        //            conn.Open();
+        //            tran = conn.BeginTransaction();
+        //            string query = "TRUNCATE TABLE clients;";
+        //            NpgsqlCommand command = new NpgsqlCommand(query, conn);
+        //            command.Transaction = tran;
+        //            command.ExecuteNonQuery();
+        //            //MessageBox.Show("2to3,1");
 
-                    query = "UPDATE constants SET last_date_download_bonus_clients='01.01.1980';";
-                    command = new NpgsqlCommand(query, conn);
-                    command.Transaction = tran;
-                    command.ExecuteNonQuery();
-                    //MessageBox.Show("2to3,2");
+        //            query = "UPDATE constants SET last_date_download_bonus_clients='01.01.1980';";
+        //            command = new NpgsqlCommand(query, conn);
+        //            command.Transaction = tran;
+        //            command.ExecuteNonQuery();
+        //            //MessageBox.Show("2to3,2");
 
-                    query = "UPDATE constants	SET work_schema=3;";
-                    command = new NpgsqlCommand(query, conn);
-                    command.Transaction = tran;
-                    command.ExecuteNonQuery();
-                    //MessageBox.Show("2to3,3");
+        //            query = "UPDATE constants	SET work_schema=3;";
+        //            command = new NpgsqlCommand(query, conn);
+        //            command.Transaction = tran;
+        //            command.ExecuteNonQuery();
+        //            //MessageBox.Show("2to3,3");
 
-                    query = "UPDATE constants SET pass_promo='', login_promo = ''";
-                    command = new NpgsqlCommand(query, conn);
-                    command.Transaction = tran;
-                    command.ExecuteNonQuery();
-                    //MessageBox.Show("2to3,4");
-                    tran.Commit();
-                    conn.Close();
-                    MessageBox.Show("Переход со 2-й на 3-ю схему успешно завершен");
-                    this.Close();
-                }
-                catch(NpgsqlException ex)
-                {
-                    MessageBox.Show(" Ошибка при обновлении схему " + ex.Message);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(" Ошибка при обновлении схемы " + ex.Message);
-                }
-                finally
-                {
-                    if (conn.State == ConnectionState.Open)
-                    {
-                        conn.Close();
-                    }
-                }              
-            }
-        }
+        //            query = "UPDATE constants SET pass_promo='', login_promo = ''";
+        //            command = new NpgsqlCommand(query, conn);
+        //            command.Transaction = tran;
+        //            command.ExecuteNonQuery();
+        //            //MessageBox.Show("2to3,4");
+        //            tran.Commit();
+        //            conn.Close();
+        //            MessageBox.Show("Переход со 2-й на 3-ю схему успешно завершен");
+        //            this.Close();
+        //        }
+        //        catch(NpgsqlException ex)
+        //        {
+        //            MessageBox.Show(" Ошибка при обновлении схему " + ex.Message);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            MessageBox.Show(" Ошибка при обновлении схемы " + ex.Message);
+        //        }
+        //        finally
+        //        {
+        //            if (conn.State == ConnectionState.Open)
+        //            {
+        //                conn.Close();
+        //            }
+        //        }              
+        //    }
+        //}
 
 
         private void get_login_and_pass_on_bonus_programm()
