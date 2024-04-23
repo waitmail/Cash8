@@ -2362,7 +2362,7 @@ namespace Cash8
                 if (barcode.Length > 6)
                 {
                     //command.CommandText = "select tovar.code,tovar.name,tovar.retail_price from  barcode left join tovar ON barcode.tovar_code=tovar.code where barcode='" + inputbarcode.Text + "' ";
-                    command.CommandText = "select tovar.code,tovar.name,tovar.retail_price,characteristic.name,characteristic.guid,characteristic.retail_price_characteristic,tovar.its_certificate,tovar.its_marked " +
+                    command.CommandText = "select tovar.code,tovar.name,tovar.retail_price,characteristic.name,characteristic.guid,characteristic.retail_price_characteristic,tovar.its_certificate,tovar.its_marked,tovar.cdn_check " +
                         " from  barcode left join tovar ON barcode.tovar_code=tovar.code " +
                     " left join characteristic ON tovar.code = characteristic.tovar_code " +
                     " where barcode='" + barcode + "' AND its_deleted=0  AND (retail_price<>0 OR characteristic.retail_price_characteristic<>0)";
@@ -2377,7 +2377,7 @@ namespace Cash8
                 else
                 {
                     //command.CommandText = "select tovar.code,tovar.name,tovar.retail_price from  tovar where tovar.code='" + inputbarcode.Text + "'";
-                    command.CommandText = "select tovar.code,tovar.name,tovar.retail_price, characteristic.name,characteristic.guid,characteristic.retail_price_characteristic,tovar.its_certificate,tovar.its_marked " +
+                    command.CommandText = "select tovar.code,tovar.name,tovar.retail_price, characteristic.name,characteristic.guid,characteristic.retail_price_characteristic,tovar.its_certificate,tovar.its_marked,tovar.cdn_check " +
                         " FROM tovar left join characteristic  ON tovar.code = characteristic.tovar_code where tovar.its_deleted=0 AND tovar.its_certificate=0 AND  (retail_price<>0 OR characteristic.retail_price_characteristic<>0) " +
                         " AND tovar.code='" + barcode + "'";
                     //if (MainStaticClass.Use_Trassir > 0)
@@ -2396,17 +2396,19 @@ namespace Cash8
                 NpgsqlDataReader reader = command.ExecuteReader();
                 listView2.Items.Clear();
                 bool find_sertificate = false;
-                bool its_bonus_card = false;
+                bool cdn_check = false;
+
 
                 while (reader.Read())
                 {
+                    cdn_check = Convert.ToBoolean(reader["cdn_check"]);
                     //Сначала добавляем в предварительный список listView2 для того чтобы дать выбор если таких товаров будет несколько
                     //ListViewItem lvi = new ListViewItem(reader[1].ToString());
 
-                    if (reader[3].ToString().Trim() == "3")
-                    {
-                        its_bonus_card = true;
-                    }
+                    //if (reader[3].ToString().Trim() == "3")
+                    //{
+                    //    its_bonus_card = true;
+                    //}
                     ListViewItem lvi = new ListViewItem(reader[3].ToString().Trim());//Внутренний код товара
                     //lvi.Tag = reader.GetInt32(0);//Внутренний код товара
                     //lvi.SubItems.Add(reader[1].ToString().Trim());//Наименование
@@ -2448,11 +2450,11 @@ namespace Cash8
                     return;
                 }
 
-                if (its_bonus_card)
-                {
-                    MessageBox.Show("Этот бонусная карта и добавлена в чек может быть только по нажатию на F9 ");
-                    return;
-                }
+                //if (its_bonus_card)
+                //{
+                //    MessageBox.Show("Этот бонусная карта и добавлена в чек может быть только по нажатию на F9 ");
+                //    return;
+                //}
 
                 //Проверка по сертификату
                 if (its_certificate == 1)
@@ -2694,19 +2696,21 @@ namespace Cash8
                                                         break;
                                                     }
                                                 }
-
-                                                if (MainStaticClass.CashDeskNumber != 9 && MainStaticClass.EnableCdnMarkers == 1 && MainStaticClass.CDN_Token != "")
+                                                if (cdn_check)
                                                 {
-                                                    CDN cdn = new CDN();
-                                                    List<string> codes = new List<string>();
-                                                    mark_str_cdn = mark_str.Replace("\u001d",@"\u001d");
-                                                    //mark_str_cdn = mark_str_cdn.Replace("\\u001d", "\u001d");
-                                                    codes.Add(mark_str_cdn);
-                                                    //mark_str_cdn = mark_str_cdn.Replace("'", "vasya2021");
-                                                    mark_str_cdn = mark_str_cdn.Replace("'", "\'");
-                                                    if (!cdn.check_marker_code(codes, mark_str, ref this.cdn_markers_date_time, this.numdoc, ref request, mark_str_cdn))
+                                                    if (MainStaticClass.CashDeskNumber != 9 && MainStaticClass.EnableCdnMarkers == 1 && MainStaticClass.CDN_Token != "")
                                                     {
-                                                        //return;
+                                                        CDN cdn = new CDN();
+                                                        List<string> codes = new List<string>();
+                                                        mark_str_cdn = mark_str.Replace("\u001d", @"\u001d");
+                                                        //mark_str_cdn = mark_str_cdn.Replace("\\u001d", "\u001d");
+                                                        codes.Add(mark_str_cdn);
+                                                        //mark_str_cdn = mark_str_cdn.Replace("'", "vasya2021");
+                                                        mark_str_cdn = mark_str_cdn.Replace("'", "\'");
+                                                        if (!cdn.check_marker_code(codes, mark_str, ref this.cdn_markers_date_time, this.numdoc, ref request, mark_str_cdn))
+                                                        {
+                                                            //return;
+                                                        }
                                                     }
                                                 }
 
@@ -5671,6 +5675,7 @@ namespace Cash8
 
                             if ((result == 421) || (result == 402))
                             {
+                                MessageBox.Show("Ошибка при проверке кодов маркировки код ошибки " + answerAddingKmArrayToTableTested.results[0].result[x].driverError.code.ToString() + " " + description);
                                 km_adding_to_buffer(x);
                             }
                             else

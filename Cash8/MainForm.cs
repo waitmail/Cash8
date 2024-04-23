@@ -890,7 +890,7 @@ namespace Cash8
 
             if (File.Exists(Application.StartupPath + "/Setting.gaa") == false)
             {
-                MessageBox.Show("Не обнаружен файл " + " Setting.gaa " + " с параметрами для программы " + Application.StartupPath+ " дальнейшая работа невозможна ");
+                MessageBox.Show("Не обнаружен файл " + " Setting.gaa " + " с параметрами для программы " + Application.StartupPath + " дальнейшая работа невозможна ");
                 return;
             }
             else
@@ -940,12 +940,18 @@ namespace Cash8
                     обновлениеПрограммыToolStripMenuItem_Click(null, null);
                 }
 
-                if (MainStaticClass.GetWorkSchema != 2)
-                {
-                    Thread t = new Thread(load_bonus_clients);
-                    t.IsBackground = true;
-                    t.Start();
-                }
+                //if (MainStaticClass.GetWorkSchema != 2)
+                //{
+                Thread t = new Thread(load_bonus_clients);
+                t.IsBackground = true;
+                t.Start();
+                //if (MainStaticClass.EnableCdnMarkers == 1)
+                //{
+                //    Thread t2 = new Thread(get_cdn_with_start);
+                //    t2.IsBackground = true;
+                //    t2.Start();
+                //}
+                //}
 
                 if (MainStaticClass.GetWorkSchema == 1)//Это условие будет работать только для ЧД
                 {
@@ -958,10 +964,10 @@ namespace Cash8
                     check_failed_input_phone();
                 }
 
-                
-                MainStaticClass.write_event_in_log("Перед получением данных по пользователям"," Старт программы ", "0");
+
+                MainStaticClass.write_event_in_log("Перед получением данных по пользователям", " Старт программы ", "0");
                 get_users();
-                MainStaticClass.write_event_in_log( "После получения данных по пользователям", " Старт программы ", "0");
+                MainStaticClass.write_event_in_log("После получения данных по пользователям", " Старт программы ", "0");
                 //MainStaticClass.Use_Envd = check_envd();
                 //if (DateTime.Now > new DateTime(2021, 1, 1) && (MainStaticClass.Use_Envd))
                 //{
@@ -987,7 +993,7 @@ namespace Cash8
                 //get_login_and_pass_on_bonus_programm();//Пока не работаем по бонусам со сторонними поставщиками
                 //}            
                 //check_and_update_npgsql();
-                MainStaticClass.write_event_in_log( "Перед передача удаленных строк и строк с изменением количества вниз", " Старт программы ", "0");
+                MainStaticClass.write_event_in_log("Перед передача удаленных строк и строк с изменением количества вниз", " Старт программы ", "0");
                 UploadDeletedItems();//передача удаленных строк и строк с изменением количества вниз
                 MainStaticClass.write_event_in_log("После передача удаленных строк и строк с изменением количества вниз", " Старт программы ", "0");
 
@@ -1021,7 +1027,7 @@ namespace Cash8
             }
             this.menuStrip.Items.Clear();
             MainStaticClass.Main.start_interface_switching();
-            
+
             if (MainStaticClass.GetVersionFn == 2)
             {
                 MainStaticClass.Version2Marking = 1;
@@ -1029,82 +1035,87 @@ namespace Cash8
             else
             {
                 MainStaticClass.Version2Marking = 0;
-            }           
+            }
         }
 
-        /// <summary>
-        /// Первоначально применялось для 1 схемы,
-        /// но потом алгоритм функции стал меняться
-        /// название осталось старым
-        /// </summary>
-        private void change_clients_for_schema1()
+        private void get_cdn_with_start()
         {
-            //if (MainStaticClass.GetWorkSchema == 1)
-            //{
-            NpgsqlConnection conn = null;
-            NpgsqlTransaction tran = null;
-            try
-            {
-                conn = MainStaticClass.NpgsqlConn();
-                conn.Open();
-                tran = conn.BeginTransaction();
-                string query = "SELECT COALESCE (threshold,0) FROM constants;";
-                NpgsqlCommand command = new NpgsqlCommand(query, conn);
-                int threshold = Convert.ToInt32(command.ExecuteScalar());
-                if (threshold != 50000)
-                {
-                    query = "TRUNCATE TABLE clients;";
-                    command = new NpgsqlCommand(query, conn);
-                    command.Transaction = tran;
-                    command.ExecuteNonQuery();
-                    //MessageBox.Show("2to3,1");
-
-                    query = "UPDATE constants SET last_date_download_bonus_clients='01.01.1980';";
-                    command = new NpgsqlCommand(query, conn);
-                    command.Transaction = tran;
-                    command.ExecuteNonQuery();
-
-                    query = "UPDATE constants SET threshold=50000;";
-                    command = new NpgsqlCommand(query, conn);
-                    command.Transaction = tran;
-                    command.ExecuteNonQuery();
-                    tran.Commit();
-                    MessageBox.Show("При следующем запуске будут обновлены клиенты, в течении 30 минут  не все клиенты могут быть найдены ");
-                    conn.Close();
-                    this.Close();
-                }
-                //else
-                //{
-                //    //MessageBox.Show(count.ToString());
-                //}
-
-            }
-            catch (NpgsqlException ex)
-            {
-                MessageBox.Show(" Ошибка при обновлении клиентов " + ex.Message,"Сообщите в ит отдел !!!");
-                if (tran != null)
-                {
-                    tran.Rollback();
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(" Ошибка при обновлении клиентов " + ex.Message, "Сообщите в ит отдел !!!");
-                if (tran != null)
-                {
-                    tran.Rollback();
-                }
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                }
-            }
-
-            //}
+            CDN.CDN_List list = MainStaticClass.CDN_List;
         }
+
+        ///// <summary>
+        ///// Первоначально применялось для 1 схемы,
+        ///// но потом алгоритм функции стал меняться
+        ///// название осталось старым
+        ///// </summary>
+        //private void change_clients_for_schema1()
+        //{
+        //    //if (MainStaticClass.GetWorkSchema == 1)
+        //    //{
+        //    NpgsqlConnection conn = null;
+        //    NpgsqlTransaction tran = null;
+        //    try
+        //    {
+        //        conn = MainStaticClass.NpgsqlConn();
+        //        conn.Open();
+        //        tran = conn.BeginTransaction();
+        //        string query = "SELECT COALESCE (threshold,0) FROM constants;";
+        //        NpgsqlCommand command = new NpgsqlCommand(query, conn);
+        //        int threshold = Convert.ToInt32(command.ExecuteScalar());
+        //        if (threshold != 50000)
+        //        {
+        //            query = "TRUNCATE TABLE clients;";
+        //            command = new NpgsqlCommand(query, conn);
+        //            command.Transaction = tran;
+        //            command.ExecuteNonQuery();
+        //            //MessageBox.Show("2to3,1");
+
+        //            query = "UPDATE constants SET last_date_download_bonus_clients='01.01.1980';";
+        //            command = new NpgsqlCommand(query, conn);
+        //            command.Transaction = tran;
+        //            command.ExecuteNonQuery();
+
+        //            query = "UPDATE constants SET threshold=50000;";
+        //            command = new NpgsqlCommand(query, conn);
+        //            command.Transaction = tran;
+        //            command.ExecuteNonQuery();
+        //            tran.Commit();
+        //            MessageBox.Show("При следующем запуске будут обновлены клиенты, в течении 30 минут  не все клиенты могут быть найдены ");
+        //            conn.Close();
+        //            this.Close();
+        //        }
+        //        //else
+        //        //{
+        //        //    //MessageBox.Show(count.ToString());
+        //        //}
+
+        //    }
+        //    catch (NpgsqlException ex)
+        //    {
+        //        MessageBox.Show(" Ошибка при обновлении клиентов " + ex.Message,"Сообщите в ит отдел !!!");
+        //        if (tran != null)
+        //        {
+        //            tran.Rollback();
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(" Ошибка при обновлении клиентов " + ex.Message, "Сообщите в ит отдел !!!");
+        //        if (tran != null)
+        //        {
+        //            tran.Rollback();
+        //        }
+        //    }
+        //    finally
+        //    {
+        //        if (conn.State == ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //        }
+        //    }
+
+        //    //}
+        //}
 
         //private void change_schema_2_to_3()
         //{

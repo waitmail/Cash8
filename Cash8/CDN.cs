@@ -172,7 +172,7 @@ namespace Cash8
                     StringBuilder sb = new StringBuilder();
                     for (int i = 0; i < list.hosts.Count; i++)
                     {
-                        sb.Append(list.hosts[i].host + ";");
+                        sb.Append(list.hosts[i].host + ";   ");
                     }
                     MainStaticClass.write_event_in_log(sb.ToString(), "CDN сервера ", "0");
                 }
@@ -184,6 +184,8 @@ namespace Cash8
         private CDNHealth invoke_CDNHealth(string url)
         {
             CDNHealth result = null;
+            CancellationTokenSource cts = new CancellationTokenSource();
+            CancellationToken token = cts.Token;
 
             // Запуск функции с параметром в новом потоке            
             Task<CDNHealth> task = Task.Factory.StartNew(() => cdn_health_check(url));
@@ -205,6 +207,7 @@ namespace Cash8
                     // Если результат не был получен в течение 5 секунд
                     //Console.WriteLine("Функция не завершила выполнение в отведённое время.");
                     MainStaticClass.write_event_in_log("Произошли ошибка при invoke_CDNHealth " + url + " Timeout ", "Документ чек", "0");
+                    cts.Cancel(); // Отправка запроса на отмену задачи
                 }
             }
             catch (AggregateException ae)
@@ -215,8 +218,7 @@ namespace Cash8
                     //Console.WriteLine("Исключение: " + e.Message);
                     MainStaticClass.write_event_in_log("Произошли ошибка при invoke_CDNHealth " + url + " "+ e.Message, "Документ чек", "0");
                 }               
-            }      
-
+            }     
 
             return result;
         }
@@ -331,7 +333,7 @@ namespace Cash8
                 // Создание запроса
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                 request.Method = "GET";
-                request.Timeout = 5000;
+                request.Timeout = 3000;
 
                 // Добавление заголовков            
                 request.Headers.Add("X-API-KEY", MainStaticClass.CDN_Token);

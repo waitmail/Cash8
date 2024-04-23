@@ -1083,6 +1083,7 @@ namespace Cash8
             queries.Add("ALTER TABLE public.logs ADD COLUMN description text COLLATE pg_catalog.default;");
             queries.Add("ALTER TABLE checks_header ALTER COLUMN autor TYPE character varying (12) USING autor::character varying(12);");
             queries.Add("ALTER TABLE users ALTER COLUMN code TYPE character varying (12) USING code::character varying(12);");
+            queries.Add("ALTER TABLE public.tovar ADD COLUMN cdn_check boolean NOT NULL DEFAULT false;");
 
 
             foreach (string str in queries)
