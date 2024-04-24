@@ -3905,12 +3905,12 @@ namespace Cash8
             //{
             //    process_client_discount("9999999999");
             //}
-            if (MainStaticClass.Nick_Shop == "A75")
-            {                
-                client.Tag = "0000000001";
-                client.Text = "0000000001";
-                Discount = 0.05;
-            }
+            //if (MainStaticClass.Nick_Shop == "A75")
+            //{                
+            //    client.Tag = "0000000001";
+            //    client.Text = "0000000001";
+            //    Discount = 0.05;
+            //}
         }
 
         #region com_barcode_scaner

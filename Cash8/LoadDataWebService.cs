@@ -291,7 +291,7 @@ namespace Cash8
                     //query=" DELETE FROM clients WHERE code="+str1[0]+";";
                     //query += "INSERT INTO clients(code,name, sum, date_of_birth,discount_types_code,its_work)VALUES(" + str + ")";
 
-                    query = "UPDATE clients SET code='" + client.code + "'," +
+                    query = "UPDATE clients SET "+//code='" + client.code + "'," +
                         " phone='" + client.phone + "'," +
                         " name='" + client.name + "'," +                        
                         " date_of_birth='" + client.holiday + "'," +
