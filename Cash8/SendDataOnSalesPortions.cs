@@ -16,7 +16,7 @@ namespace Cash8
 
         private string nick_shop = "";
         public bool show_messages = true;
-        private StringBuilder document_number_list;
+        private StringBuilder document_guid_list;
         private bool were_mistakes = false;//были ошибки
 
 
@@ -79,7 +79,7 @@ namespace Cash8
                     " sertificate_money1," +
                     " guid,"+
                     "payment_by_sbp "+
-                    " FROM checks_header WHERE document_number in  (" + document_number_list.ToString() + ")";
+                    " FROM checks_header WHERE guid in  (" + document_guid_list.ToString() + ")";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();                                
                 while (reader.Read())
@@ -179,8 +179,8 @@ namespace Cash8
                     " checks_table.action_num_doc1, checks_table.action_num_doc2,checks_table.characteristic,checks_header.date_time_start,checks_table.numstr, "+
                     " checks_table.bonus_standard,checks_table.bonus_promotion,checks_table.promotion_b_mover,checks_table.item_marker,checks_header.guid " +
                     " FROM checks_header " +
-                    " LEFT JOIN checks_table ON checks_header.document_number = checks_table.document_number " +
-                    " WHERE checks_table.document_number in (" + document_number_list.ToString() + ")";
+                    " LEFT JOIN checks_table ON checks_header.guid = checks_table.guid " +
+                    " WHERE checks_table.guid in (" + document_guid_list.ToString() + ")";
 
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();                
@@ -253,38 +253,38 @@ namespace Cash8
         private bool get_document_list_not_sent()
         {
             bool result = true;
-            document_number_list = new StringBuilder();
+            document_guid_list = new StringBuilder();
             NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
 
             try
             {
                 string its_deleted = "";
                 conn.Open();
-                string query = "SELECT document_number,its_deleted FROM checks_header WHERE is_sent=0 order by document_number ";
+                string query = "SELECT guid,its_deleted FROM checks_header WHERE is_sent=0 order by document_number ";
                     //" WHERE date_time_write > ";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    document_number_list.Append(reader["document_number"]+",");
+                    document_guid_list.Append("'"+reader["guid"]+"','");
                     its_deleted = reader["its_deleted"].ToString();
                 }
                 reader.Close();
                 conn.Close();
 
-                string temp = document_number_list.ToString();
-                document_number_list = new StringBuilder();
-                document_number_list.Append(temp.Substring(0, temp.Length - 1));
+                string temp = document_guid_list.ToString();
+                document_guid_list = new StringBuilder();
+                document_guid_list.Append(temp.Substring(0, temp.Length - 2));
 
                 //document_number_list.Append(document_number_list.ToString().Substring().Append(s[i] + ",");)
 
                 if (its_deleted == "2")//последняя строка со статусом 2, чтобы не было фокусов с перезаписью последний документ со статусом 2 не выгружаем
                 {
-                    string[] s = document_number_list.ToString().Split(',');
-                    document_number_list = new StringBuilder();//обнуляем список 
+                    string[] s = document_guid_list.ToString().Split(',');
+                    document_guid_list = new StringBuilder();//обнуляем список 
                     if (s.Length == 1)
                     {
-                        document_number_list = new StringBuilder();//обнуляем список 
+                        document_guid_list = new StringBuilder();//обнуляем список 
                     }
                     else
                     {
@@ -292,11 +292,11 @@ namespace Cash8
                         {
                             if (i == s.Length - 2)
                             {
-                                document_number_list.Append(s[i]);
+                                document_guid_list.Append(s[i]);
                             }
                             else
                             {
-                                document_number_list.Append(s[i] + ",");
+                                document_guid_list.Append(s[i] + ",");
                             }
                         }                         
                     }
@@ -337,7 +337,7 @@ namespace Cash8
                 result = false;
                 return result;
             }
-            if (document_number_list.ToString().Length == 0)
+            if (document_guid_list.ToString().Length == 0)
             {
                 result = false;
                 return result;
@@ -482,10 +482,10 @@ namespace Cash8
                     " checks_header.date_time_write " +","+
                     " checks_header.check_type "+
                 " FROM checks_table LEFT JOIN tovar ON checks_table.tovar_code = tovar.code " +
-                " LEFT JOIN checks_header ON checks_header.document_number = checks_table.document_number " +
+                " LEFT JOIN checks_header ON checks_header.guid = checks_table.guid " +
                 //" LEFT JOIN sertificates ON checks_table.tovar_code = sertificates.code_tovar " +
-                " where checks_table.document_number in (" +
-                document_number_list.ToString() +
+                " where checks_table.guid in (" +
+                document_guid_list.ToString() +
                 ") AND tovar.its_certificate = 1 AND checks_header.its_deleted = 0 ";//сертификаты только из проведенных документов 
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();
@@ -539,8 +539,8 @@ namespace Cash8
             {
                 conn.Open();
                 trans = conn.BeginTransaction();
-                string query = "UPDATE checks_header SET is_sent=1 WHERE document_number in (" + 
-                    document_number_list.ToString() + ")";
+                string query = "UPDATE checks_header SET is_sent=1 WHERE guid in (" +
+                    document_guid_list.ToString() + ")";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 command.Transaction = trans;
                 command.ExecuteNonQuery();

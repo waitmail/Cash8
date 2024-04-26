@@ -2637,8 +2637,8 @@ namespace Cash8
                                                 if (this.qr_code.ToUpper().Substring(0, 4).IndexOf("HTTP") != -1)
                                                 {
                                                     error = true;
-                                                    MessageBox.Show("Считан не верный qr код");
-                                                    MainStaticClass.write_event_in_log("HTTP не верный qr код  " + this.qr_code, "Документ чек", numdoc.ToString());
+                                                    MessageBox.Show("Считан не верный код маркировки");
+                                                    MainStaticClass.write_event_in_log("HTTP не верный код маркировки  " + this.qr_code, "Документ чек", numdoc.ToString());
                                                 }
                                             }
 
@@ -5485,8 +5485,9 @@ namespace Cash8
                     lvi.SubItems[14].Text = add_gs1(lvi.SubItems[14].Text);
 
                     byte[] textAsBytes = Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim());
-                    string mark_str = Convert.ToBase64String(textAsBytes);
-                    param.imc = mark_str;
+                    //string mark_str = Convert.ToBase64String(textAsBytes);
+                    //param.imc = mark_str;
+                    param.imc = Convert.ToBase64String(textAsBytes);
                     param.itemEstimatedStatus = "itemPieceSold";
                     param.imcModeProcessing = 0;
                     addingKmArrayToTableTestedKm.@params.Add(param);
@@ -5548,8 +5549,9 @@ namespace Cash8
 
             lvi.SubItems[14].Text = add_gs1(lvi.SubItems[14].Text);
             byte[] textAsBytes = Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim());
-            string mark_str = Convert.ToBase64String(textAsBytes);
-            param.imc = mark_str;
+            //string mark_str = Convert.ToBase64String(textAsBytes);
+            //param.imc = mark_str;
+            param.imc = Convert.ToBase64String(textAsBytes);
             param.itemEstimatedStatus = "itemPieceSold";
             param.imcModeProcessing = 0;
             addingKmArrayToTableTestedKm.@params.Add(param);
@@ -5617,8 +5619,9 @@ namespace Cash8
                     lvi.SubItems[14].Text = add_gs1(lvi.SubItems[14].Text);
 
                     byte[] textAsBytes = Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'"));
-                    string mark_str = Convert.ToBase64String(textAsBytes);
-                    param.imc = mark_str;
+                    //string mark_str = Convert.ToBase64String(textAsBytes);
+                    //param.imc = mark_str;
+                    param.imc = Convert.ToBase64String(textAsBytes);
                     param.itemEstimatedStatus = "itemPieceSold";
                     param.imcModeProcessing = 0;
                     addingKmArrayToTableTestedKm.@params.Add(param);
@@ -5760,8 +5763,9 @@ namespace Cash8
                     lvi.SubItems[14].Text = add_gs1(lvi.SubItems[14].Text);
 
                     byte[] textAsBytes = Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim());
-                    string mark_str = Convert.ToBase64String(textAsBytes);
-                    param.imc = mark_str;
+                    //string mark_str = Convert.ToBase64String(textAsBytes);
+                    //param.imc = mark_str;
+                    param.imc = Convert.ToBase64String(textAsBytes);
                     param.itemEstimatedStatus = "itemPieceSold";
                     param.imcModeProcessing = 0;
                     addingKmArrayToTableTestedKm.@params.Add(param);
@@ -6963,8 +6967,9 @@ namespace Cash8
                                 FiscallPrintJason2.ImcParams imcParams = new FiscallPrintJason2.ImcParams();
                                 imcParams.imcType = "auto";
                                 byte[] textAsBytes = Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'"));
-                                string mark_str = Convert.ToBase64String(textAsBytes);
-                                imcParams.imc = mark_str;
+                                //string mark_str = Convert.ToBase64String(textAsBytes);
+                                //imcParams.imc = mark_str;
+                                imcParams.imc = Convert.ToBase64String(textAsBytes);
                                 imcParams.itemEstimatedStatus = "itemPieceSold";
                                 imcParams.imcModeProcessing = 0;
 
@@ -6991,8 +6996,9 @@ namespace Cash8
                                 FiscallPrintJason2.ImcParams imcParams = new FiscallPrintJason2.ImcParams();
                                 imcParams.imcType = "auto";
                                 byte[] textAsBytes = Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim());
-                                string mark_str = Convert.ToBase64String(textAsBytes);
-                                imcParams.imc = mark_str;
+                                //string mark_str = Convert.ToBase64String(textAsBytes);
+                                //imcParams.imc = mark_str;
+                                imcParams.imc = Convert.ToBase64String(textAsBytes);
                                 imcParams.itemEstimatedStatus = "itemPieceSold";
                                 imcParams.imcModeProcessing = 0;
                                 item.imcParams = imcParams;
@@ -7563,8 +7569,9 @@ namespace Cash8
                             FiscallPrintJason2.ImcParams imcParams = new FiscallPrintJason2.ImcParams();
                             imcParams.imcType = "auto";
                             byte[] textAsBytes = Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim());
-                            string mark_str = Convert.ToBase64String(textAsBytes);
-                            imcParams.imc = mark_str;
+                            //string mark_str = Convert.ToBase64String(textAsBytes);
+                            //imcParams.imc = mark_str;
+                            imcParams.imc = Convert.ToBase64String(textAsBytes);
                             imcParams.itemEstimatedStatus = "itemPieceSold";
                             imcParams.imcModeProcessing = 0;
 
@@ -8412,8 +8419,9 @@ namespace Cash8
                                 FiscallPrintJason2.ImcParams imcParams = new FiscallPrintJason2.ImcParams();
                                 imcParams.imcType = "auto";
                                 byte[] textAsBytes = Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim());
-                                string mark_str = Convert.ToBase64String(textAsBytes);
-                                imcParams.imc = mark_str;
+                                //string mark_str = Convert.ToBase64String(textAsBytes);
+                                //imcParams.imc = mark_str;
+                                imcParams.imc = Convert.ToBase64String(textAsBytes);
                                 imcParams.itemEstimatedStatus = "itemPieceSold";
                                 imcParams.imcModeProcessing = 0;
                                 item.imcParams = imcParams;
@@ -8752,8 +8760,9 @@ namespace Cash8
                                 FiscallPrintJason2.ImcParams imcParams = new FiscallPrintJason2.ImcParams();
                                 imcParams.imcType = "auto";
                                 byte[] textAsBytes = Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim());
-                                string mark_str = Convert.ToBase64String(textAsBytes);
-                                imcParams.imc = mark_str;
+                                //string mark_str = Convert.ToBase64String(textAsBytes);
+                                //imcParams.imc = mark_str;
+                                imcParams.imc = Convert.ToBase64String(textAsBytes);
                                 imcParams.itemEstimatedStatus = "itemPieceSold";
                                 imcParams.imcModeProcessing = 0;
                                 item.imcParams = imcParams;
@@ -13446,7 +13455,7 @@ namespace Cash8
             if (itsnew)
             {
                 this.check_type.Enabled = false;
-                if (check_type.SelectedIndex == 1)
+                if (check_type.SelectedIndex >0)
                 {
                     if (listView1.Items.Count > 0)
                     {

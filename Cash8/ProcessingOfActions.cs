@@ -3195,7 +3195,7 @@ namespace Cash8
                             }
                             if (Convert.ToDouble(row_list1["tovar_code"]) == Convert.ToDouble(row_dt["tovar_code"]))//на эту строку необходимо дать скидку но проверить сумму 
                             {
-                                if (action_sum > Convert.ToDecimal(row_dt["sum_at_discount"]))//сумма в строке меньше чем сумма на которую должна распространиться скидка
+                                if (action_sum >= Convert.ToDecimal(row_dt["sum_at_discount"]))//сумма в строке меньше чем сумма на которую должна распространиться скидка
                                 {
                                     action_sum = action_sum - Convert.ToDecimal(row_dt["sum_at_discount"]);
                                     row_dt["price_at_discount"] = Math.Round(Convert.ToDecimal(Convert.ToDecimal(row_dt["price"]) - Convert.ToDecimal(row_dt["price"]) * persent / 100), 2);//Цена со скидкой                                                                        

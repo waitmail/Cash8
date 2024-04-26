@@ -359,13 +359,14 @@ namespace Cash8
                                 if ((DateTime.Now - start_check).Seconds > 2)
                                 {
                                     //MessageBox.Show("check_marking_code таймаут при проверки qr кода " + mark);
-                                    MainStaticClass.write_event_in_log("Таймаут при gроверкt маркировки " + mark, "check_marking_code", check.numdoc.ToString());
+                                    MainStaticClass.write_event_in_log("Таймаут при проверки маркировки " + mark, "check_marking_code", check.numdoc.ToString());
                                     validationError = 421;
                                     break;
                                 }
                             }
                             //**************************************************************************
                             validationError = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_ERROR);
+                            uint validationResult = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_RESULT);
                             if ((validationError != 0) && (validationError != 402) && (validationError != 421))
                             {
                                 error = true;
@@ -500,7 +501,21 @@ namespace Cash8
                 {
                     fptr.setParam(1212, 2);//подакцизеый товар
                 }
-                fptr.registration();
+                fptr.resetError();
+                fptr.registration();                
+                if (fptr.errorCode() > 0)
+                {
+                    MessageBox.Show("При печати позиции " + lvi.SubItems[0].Text.Trim() + " " + lvi.SubItems[1].Text.Trim() + " произошли ошибки \r\n Код ошибки " + fptr.errorCode().ToString() +
+                        "\r\n " + fptr.errorDescription().ToString());
+                    error = true;
+                    fptr.cancelReceipt();
+                    break;
+                }                
+            }
+
+            if (error)
+            {
+                return;
             }
 
             // Регистрация итога (отбрасываем копейки)
@@ -1112,10 +1127,10 @@ namespace Cash8
             {
                 result = false;
                 string error_decription = "Код ошибки = " + validationError + "; " + fptr.getParamString(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_ERROR_DESCRIPTION);
-                if (error_decription.Trim().Length > 200)
-                {
-                    error_decription = error_decription.Trim().Substring(0, 199);
-                }
+                //if (error_decription.Trim().Length > 200)
+                //{
+                //    error_decription = error_decription.Trim().Substring(0, 199);
+                //}
                 MessageBox.Show("Код ошибки = " + validationError + "; " + fptr.getParamString(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_ERROR_DESCRIPTION), "Проверка кода маркировки");
                 MainStaticClass.write_event_in_log(error_decription, " Проверка маркировки " + mark, num_doc);
                 fptr.declineMarkingCode();
