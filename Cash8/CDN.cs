@@ -538,6 +538,7 @@ namespace Cash8
                                 sb.AppendLine("Нет информации о вводе в оборот!".ToUpper());
                                 //MessageBox.Show("Для кода маркировки " + answer_check_mark.codes[0].gtin + " нет информации о вводе в оборот." + s, "CDN проверка");
                                 MainStaticClass.write_event_in_log("CDN Для кода маркировки " + mark_str_cdn + " нет информации о вводе в оборот.", "Документ чек", numdoc.ToString());
+                                result_check = false;
                             }
                         }
                         if (!answer_check_mark.codes[0].utilised)
@@ -545,24 +546,28 @@ namespace Cash8
                             sb.AppendLine("Эмитирован, но нет информации о его нанесении!".ToUpper());
                             //MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + " эмитирован, но нет информации о его нанесении." + s, "CDN проверка");
                             MainStaticClass.write_event_in_log("CDN Код маркировки " + mark_str_cdn + " эмитирован, но нет информации о его нанесении.", "Документ чек", numdoc.ToString());
+                            result_check = false;
                         }
                         if (!answer_check_mark.codes[0].verified)
                         {
                             sb.AppendLine("Не пройдена криптографическая проверка!".ToUpper());
                             //MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + "  не пройдена криптографическая проверка." + s, "CDN проверка");
                             MainStaticClass.write_event_in_log("CDN Код маркировки " + mark_str_cdn + "  не пройдена криптографическая проверка.", "Документ чек", numdoc.ToString());
+                            result_check = false;
                         }
                         if (answer_check_mark.codes[0].sold)
                         {
                             sb.AppendLine("Уже выведен из оборота!".ToUpper());
                             //MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + "  уже выведен из оборота." + s, "CDN проверка");
                             MainStaticClass.write_event_in_log("CDN Код маркировки " + mark_str_cdn + "  уже выведен из оборота.", "Документ чек", numdoc.ToString());
+                            result_check = false;
                         }
                         if (answer_check_mark.codes[0].isBlocked)
                         {
                             sb.AppendLine("Заблокирован по решению ОГВ!".ToUpper());
                             //MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + "  заблокирован по решению ОГВ." + s, "CDN проверка");
                             MainStaticClass.write_event_in_log("CDN Код маркировки " + mark_str_cdn + "  заблокирован по решению ОГВ.", "Документ чек", numdoc.ToString());
+                            result_check = false;
                         }
                         //if ((!answer_check_mark.codes[0].realizable) && (!answer_check_mark.codes[0].sold))
                         //{
@@ -577,6 +582,7 @@ namespace Cash8
                                 sb.AppendLine("Истек срок годности!".ToUpper());
                                 //MessageBox.Show("У товара с кодом маркировки " + answer_check_mark.codes[0].gtin + "  истек срок годности." + s, "CDN проверка");
                                 MainStaticClass.write_event_in_log("CDN У товара с кодом маркировки " + mark_str_cdn + "  истек срок годности.", "Документ чек", numdoc.ToString());
+                                result_check = false;
                             }
                         }
                         if (sb.Length == 0)
@@ -600,7 +606,7 @@ namespace Cash8
                                 sb.Insert(0, "Код маркировки " + mark_str_cdn + "\r\nне прошел проверку по следующим причинам:\r\n".ToUpper());
                             }
                             sb.Append(s);
-                            MessageBox.Show(sb.ToString());
+                            MessageBox.Show(sb.ToString());                            
                         }
                     }
                 }

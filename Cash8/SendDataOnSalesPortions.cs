@@ -266,7 +266,7 @@ namespace Cash8
                 NpgsqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    document_guid_list.Append("'"+reader["guid"]+"','");
+                    document_guid_list.Append("'"+reader["guid"]+"',");
                     its_deleted = reader["its_deleted"].ToString();
                 }
                 reader.Close();
@@ -274,7 +274,7 @@ namespace Cash8
 
                 string temp = document_guid_list.ToString();
                 document_guid_list = new StringBuilder();
-                document_guid_list.Append(temp.Substring(0, temp.Length - 2));
+                document_guid_list.Append(temp.Substring(0, temp.Length - 1));
 
                 //document_number_list.Append(document_number_list.ToString().Substring().Append(s[i] + ",");)
 

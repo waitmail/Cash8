@@ -2307,7 +2307,70 @@ namespace Cash8
             return result;
         }
 
+        /// <summary>
+        /// Проверка по продаваемому сертификату на 
+        /// то что он только сегодня поступил в магазин 
+        /// в качестве оплаты 
+        /// </summary>
+        /// <param name="tovar_code"></param>
+        /// <returns></returns>
+        private bool check_sertificate_for_sales(string barcode)
+        {
 
+            bool result = true;
+            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+            NpgsqlParameter parameter = null;
+            try
+            {
+                conn.Open();
+                //string query = "SELECT checks_header.guid "+
+                //               " FROM public.checks_header "+
+                //               " LEFT JOIN public.checks_table ON checks_header.guid = checks_table.guid "+
+                //               " WHERE checks_table.item_marker = @barcode AND sum_at_a_discount < 0 "+
+                //               " AND date_time_start between @date_start AND @date_finish;";
+                string query = " SELECT checks_header.guid,checks_table.item_marker "+
+                               " FROM public.checks_header "+
+                               " LEFT JOIN public.checks_table ON checks_header.guid = checks_table.guid "+
+                               " WHERE checks_table.item_marker = @barcode AND sum_at_a_discount< 0  "+
+                               " AND date_time_start between @date_start AND @date_finish;";
+
+                NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                parameter = new NpgsqlParameter("@date_start", DateTime.Now.Date.ToString("yyyy-MM-dd"));
+                command.Parameters.Add(parameter);
+                parameter = new NpgsqlParameter("@date_finish", DateTime.Now.Date.AddDays(1).ToString("yyyy-MM-dd"));
+                command.Parameters.Add(parameter);
+                parameter = new NpgsqlParameter("@barcode", barcode);
+                command.Parameters.Add(parameter);
+                NpgsqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    MessageBox.Show(" Вы пытаетесь продать сертификат который был сегодня получен в качестве оплаты на этой кассе. "," Проверка сертификатов ");
+                    MainStaticClass.write_event_in_log(" Вы пытаетесь продать сертификат который был сегодня получен в качестве оплаты на этой кассе. ", "Документ", numdoc.ToString());
+                    result = false;
+                }
+                conn.Close();
+                command.Dispose();
+            }
+            catch (NpgsqlException ex)
+            {
+                MessageBox.Show("Ошибка при проверке сертификата" + ex.Message);
+                result = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ошибка при проверке сертификата" + ex.Message);
+                result = false;
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return result;
+        }
 
         /*Поиск товара по штрихкоду
          * и добвление его в табличную часть
@@ -2397,6 +2460,7 @@ namespace Cash8
                 listView2.Items.Clear();
                 bool find_sertificate = false;
                 bool cdn_check = false;
+                //string tovar_code = ""; 
 
 
                 while (reader.Read())
@@ -2414,6 +2478,7 @@ namespace Cash8
                     //lvi.SubItems.Add(reader[1].ToString().Trim());//Наименование
                     select_tovar.Text = reader[1].ToString().Trim();
                     select_tovar.Tag = reader.GetInt64(0).ToString();
+                    //tovar_code = reader.GetInt64(0).ToString();
 
                     //lvi.SubItems.Add(reader[3].ToString().Trim());//Характеристика
                     lvi.Tag = reader[4].ToString().Trim();//GUID характеристики
@@ -2459,6 +2524,10 @@ namespace Cash8
                 //Проверка по сертификату
                 if (its_certificate == 1)
                 {
+                    if (!check_sertificate_for_sales(barcode))
+                    {
+                        return;
+                    }
                     Cash8.DS.DS ds = MainStaticClass.get_ds();
                     ds.Timeout = 60000;
                     //Получить параметр для запроса на сервер 
@@ -2662,30 +2731,7 @@ namespace Cash8
                                                 mark_str = this.qr_code.Trim();
                                                 mark_str = add_gs1(mark_str);
                                                 //*******************************************************************************************************************************
-                                                //string GS1 = Char.ConvertFromUtf32(29);
-                                                //if ((mark_str.Length == 83) || (mark_str.Length == 127) || (mark_str.Length == 115))
-                                                //{
-                                                //    mark_str = mark_str.Insert(31, GS1);
-                                                //    mark_str = mark_str.Insert(38, GS1);
-                                                //}
-
-                                                //if (mark_str.Length == 37 && mark_str.Substring(16, 2) == "21")
-                                                //{
-                                                //    //lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
-                                                //    mark_str = mark_str.Insert(31, GS1);
-                                                //}
-
-                                                //if (mark_str.Length == 30)
-                                                //{
-                                                //    //lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(24, GS1);
-                                                //    mark_str = mark_str.Insert(24, GS1);
-                                                //}
-
-                                                //if (mark_str.Length == 32)
-                                                //{
-                                                //    //lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(26, GS1);                                                    
-                                                //    mark_str = mark_str.Insert(26, GS1);
-                                                //}
+                                                
 
                                                 foreach (ListViewItem listViewItem4 in this.listView1.Items)
                                                 {
@@ -2709,7 +2755,7 @@ namespace Cash8
                                                         mark_str_cdn = mark_str_cdn.Replace("'", "\'");
                                                         if (!cdn.check_marker_code(codes, mark_str, ref this.cdn_markers_date_time, this.numdoc, ref request, mark_str_cdn))
                                                         {
-                                                            //return;
+                                                            return;
                                                         }
                                                     }
                                                 }
@@ -2727,13 +2773,14 @@ namespace Cash8
                                                         //MessageBox.Show(root.results[0].errorDescription, "Ошибка при начале проверки кода маркировки");
                                                         if ((code_marking_error != 421) && (code_marking_error != 402))
                                                         {
-                                                            MessageBox.Show("beginMarkingCodeValidation " + root.results[0].errorDescription + " " + code_marking_error, "Ошибка при начале проверки кода маркировки");
+                                                            //MessageBox.Show("beginMarkingCodeValidation " + root.results[0].errorDescription + " " + code_marking_error, "Ошибка при начале проверки кода маркировки");
+                                                            MainStaticClass.write_event_in_log("beginMarkingCodeValidation " + root.results[0].errorDescription + " " + code_marking_error, "Документ",numdoc.ToString());
                                                             error = true;//не прошли проверку товар не добавляем в чек
                                                         }
-                                                        else
-                                                        {
+                                                        //else
+                                                        //{
 
-                                                        }
+                                                        //}
                                                     }
                                                     else
                                                     {
@@ -2812,9 +2859,15 @@ namespace Cash8
                                                     }
 
                                                 }
-                                                else if (!new PrintingUsingLibraries().check_marking_code(imc, this.numdoc.ToString()))
+                                                else //if (!new PrintingUsingLibraries().check_marking_code(imc, this.numdoc.ToString()))
                                                 {
-                                                    error = true;
+                                                    if (!cdn_check)//пока те что проверяем по сдн не проверяем на маркировку 
+                                                    {
+                                                        if (!new PrintingUsingLibraries().check_marking_code(imc, this.numdoc.ToString()))
+                                                        {
+                                                            error = true;
+                                                        }
+                                                    }                                                    
                                                 }
                                             }
                                             else
@@ -9910,10 +9963,10 @@ namespace Cash8
             //ПРОВЕРКА МАССИВА КОДОВ МАРКИРОВКИ
             if (MainStaticClass.GetVersionFn == 2)
             {
-                if ((MainStaticClass.SystemTaxation != 3)|| (check_type.SelectedIndex==1))
+                if ((MainStaticClass.SystemTaxation != 3) || (check_type.SelectedIndex == 1))
                 {
                     //if ((MainStaticClass.Version2Marking == 0)||(this.check_type.SelectedIndex==1)||!itsnew)//старый механизм работы с макрировкой, для возвратов так же пока старая схема
-                    if (MainStaticClass.GetVersionFn == 2 && (MainStaticClass.SystemTaxation != 3 || this.check_type.SelectedIndex == 1) 
+                    if (MainStaticClass.GetVersionFn == 2 && (MainStaticClass.SystemTaxation != 3 || this.check_type.SelectedIndex == 1)
                         && (MainStaticClass.Version2Marking == 0 || this.check_type.SelectedIndex == 1 || !this.itsnew) && MainStaticClass.PrintingUsingLibraries == 0)
                     {
                         //System.IO.File.AppendAllText(Application.StartupPath.Replace("\\", "/") + "/" + "json.txt", DateTime.Now.ToString() + " clearMarkingBuffer \r\n");
@@ -9952,7 +10005,7 @@ namespace Cash8
                 //}
             }
             //КОНЕЦ ПРОВЕРКИ МАССИВА КОДОВ МАРКИРОВКИ
-            
+
 
 
             if (itsnew)

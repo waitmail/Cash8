@@ -300,7 +300,7 @@ namespace Cash8
                     status = root.results[0].status;
                     if ((status != "ready") && (status != "error"))
                     {
-                        if (count > 14)
+                        if (count > 4)
                         {
                             break;
                         }
