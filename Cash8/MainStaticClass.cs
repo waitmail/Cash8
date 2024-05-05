@@ -64,8 +64,8 @@ namespace Cash8
         private static DateTime last_answer_barcode_scaner;
         private static ArrayList forms = new ArrayList();
 
-        private static string pass_promo = "";
-        private static string login_promo = "";
+        //private static string pass_promo = "";
+        //private static string login_promo = "";
 
         private static bool first_fogin_admin = false;
 
@@ -1127,32 +1127,32 @@ namespace Cash8
         }
 
 
-        public static string GetAuthStringProcessing
-        {
-            get
-            {
-                string result = "";
-                if (MainStaticClass.GetWorkSchema == 1)
-                {
-                    string shop_request = "";
-                    if (MainStaticClass.Nick_Shop.Substring(0, 1).ToUpper() == "A")
-                    {
-                        shop_request = MainStaticClass.Nick_Shop + MainStaticClass.CashDeskNumber;
-                    }
-                    else
-                    {
-                        shop_request = "1" + Convert.ToInt16(MainStaticClass.Nick_Shop.Substring(1, 2)).ToString() + MainStaticClass.CashDeskNumber;
-                    }
+        //public static string GetAuthStringProcessing
+        //{
+        //    get
+        //    {
+        //        string result = "";
+        //        if (MainStaticClass.GetWorkSchema == 1)
+        //        {
+        //            string shop_request = "";
+        //            if (MainStaticClass.Nick_Shop.Substring(0, 1).ToUpper() == "A")
+        //            {
+        //                shop_request = MainStaticClass.Nick_Shop + MainStaticClass.CashDeskNumber;
+        //            }
+        //            else
+        //            {
+        //                shop_request = "1" + Convert.ToInt16(MainStaticClass.Nick_Shop.Substring(1, 2)).ToString() + MainStaticClass.CashDeskNumber;
+        //            }
 
-                    result = Convert.ToBase64String(Encoding.Default.GetBytes(shop_request + ":" + MainStaticClass.PassPromo));
-                }
-                else if (MainStaticClass.GetWorkSchema == 2)
-                {
-                    result = Convert.ToBase64String(Encoding.Default.GetBytes(MainStaticClass.LoginPromo + ":" + MainStaticClass.PassPromo));
-                }
-                return result;
-            }
-        }
+        //            result = Convert.ToBase64String(Encoding.Default.GetBytes(shop_request + ":" + MainStaticClass.PassPromo));
+        //        }
+        //        else if (MainStaticClass.GetWorkSchema == 2)
+        //        {
+        //            result = Convert.ToBase64String(Encoding.Default.GetBytes(MainStaticClass.LoginPromo + ":" + MainStaticClass.PassPromo));
+        //        }
+        //        return result;
+        //    }
+        //}
 
 
         /// <summary>
@@ -3055,103 +3055,103 @@ namespace Cash8
 
 
 
-        public static string LoginPromo
-        {
-            get
-            {
+        //public static string LoginPromo
+        //{
+        //    get
+        //    {
 
-                if (login_promo == "")
-                {
+        //        if (login_promo == "")
+        //        {
 
 
-                    NpgsqlConnection conn = null;
+        //            NpgsqlConnection conn = null;
 
-                    try
-                    {
-                        conn = MainStaticClass.NpgsqlConn();
-                        conn.Open();
-                        string query = "SELECT login_promo  FROM constants;";
-                        NpgsqlCommand command = new NpgsqlCommand(query, conn);
-                        login_promo = command.ExecuteScalar().ToString().Trim();
-                        conn.Close();
-                    }
-                    catch (NpgsqlException ex)
-                    {
-                        MessageBox.Show(ex.Message, " Ошибка при определении включения бонусов  получение пароля");
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message, " Ошибка при определении включения бонусов получение пароля");
-                    }
-                    finally
-                    {
-                        if (conn.State == ConnectionState.Open)
-                        {
-                            conn.Close();
-                        }
-                    }
+        //            try
+        //            {
+        //                conn = MainStaticClass.NpgsqlConn();
+        //                conn.Open();
+        //                string query = "SELECT login_promo  FROM constants;";
+        //                NpgsqlCommand command = new NpgsqlCommand(query, conn);
+        //                login_promo = command.ExecuteScalar().ToString().Trim();
+        //                conn.Close();
+        //            }
+        //            catch (NpgsqlException ex)
+        //            {
+        //                MessageBox.Show(ex.Message, " Ошибка при определении включения бонусов  получение пароля");
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                MessageBox.Show(ex.Message, " Ошибка при определении включения бонусов получение пароля");
+        //            }
+        //            finally
+        //            {
+        //                if (conn.State == ConnectionState.Open)
+        //                {
+        //                    conn.Close();
+        //                }
+        //            }
 
-                    return login_promo;
+        //            return login_promo;
 
-                }
-                else
-                {
-                    return login_promo;
-                }
-            }
-        }
+        //        }
+        //        else
+        //        {
+        //            return login_promo;
+        //        }
+        //    }
+        //}
 
 
         /// <summary>
         /// Если пароль заполнен, значит бонусная программа для этой кассы включена
         /// </summary>
-        public static string PassPromo
-        {
-            get
-            {
+        //public static string PassPromo
+        //{
+        //    get
+        //    {
 
-                if (pass_promo == "")
-                {
+        //        if (pass_promo == "")
+        //        {
 
 
-                    NpgsqlConnection conn = null;
+        //            NpgsqlConnection conn = null;
 
-                    try
-                    {
-                        conn = MainStaticClass.NpgsqlConn();
-                        conn.Open();
-                        string query = "SELECT pass_promo  FROM constants;";
-                        NpgsqlCommand command = new NpgsqlCommand(query, conn);
-                        pass_promo = command.ExecuteScalar().ToString().Trim();
-                        conn.Close();
-                    }
-                    catch (NpgsqlException ex)
-                    {
-                        MessageBox.Show(ex.Message, " Ошибка при определении включения бонусов  получение пароля");
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message, " Ошибка при определении включения бонусов получение пароля");
-                    }
-                    finally
-                    {
-                        if (conn.State == ConnectionState.Open)
-                        {
-                            conn.Close();
-                        }
-                    }
+        //            try
+        //            {
+        //                conn = MainStaticClass.NpgsqlConn();
+        //                conn.Open();
+        //                string query = "SELECT pass_promo  FROM constants;";
+        //                NpgsqlCommand command = new NpgsqlCommand(query, conn);
+        //                pass_promo = command.ExecuteScalar().ToString().Trim();
+        //                conn.Close();
+        //            }
+        //            catch (NpgsqlException ex)
+        //            {
+        //                MessageBox.Show(ex.Message, " Ошибка при определении включения бонусов  получение пароля");
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                MessageBox.Show(ex.Message, " Ошибка при определении включения бонусов получение пароля");
+        //            }
+        //            finally
+        //            {
+        //                if (conn.State == ConnectionState.Open)
+        //                {
+        //                    conn.Close();
+        //                }
+        //            }
 
-                    return pass_promo;
+        //            return pass_promo;
 
-                }
-                else
-                {
-                    return pass_promo;
-                }               
-            }
+        //        }
+        //        else
+        //        {
+        //            return pass_promo;
+        //        }               
+        //    }
             
 
-        }
+        //}
 
         /// <summary>
         /// Возвращает путь к папке обмена с главным компом

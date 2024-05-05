@@ -200,9 +200,9 @@
             // 
             // выгрузкаДанныхПоБонусамToolStripMenuItem
             // 
-            this.выгрузкаДанныхПоБонусамToolStripMenuItem.Name = "выгрузкаДанныхПоБонусамToolStripMenuItem";
-            resources.ApplyResources(this.выгрузкаДанныхПоБонусамToolStripMenuItem, "выгрузкаДанныхПоБонусамToolStripMenuItem");
-            this.выгрузкаДанныхПоБонусамToolStripMenuItem.Click += new System.EventHandler(this.выгрузкаДанныхПоБонусамToolStripMenuItem_Click);
+            //this.выгрузкаДанныхПоБонусамToolStripMenuItem.Name = "выгрузкаДанныхПоБонусамToolStripMenuItem";
+            //resources.ApplyResources(this.выгрузкаДанныхПоБонусамToolStripMenuItem, "выгрузкаДанныхПоБонусамToolStripMenuItem");
+            //this.выгрузкаДанныхПоБонусамToolStripMenuItem.Click += new System.EventHandler(this.выгрузкаДанныхПоБонусамToolStripMenuItem_Click);
             // 
             // выгрузкаПродажToolStripMenuItem
             // 

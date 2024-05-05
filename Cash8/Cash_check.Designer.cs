@@ -561,14 +561,14 @@
             // 
             // btn_change_status_client
             // 
-            this.btn_change_status_client.Location = new System.Drawing.Point(252, 43);
-            this.btn_change_status_client.Name = "btn_change_status_client";
-            this.btn_change_status_client.Size = new System.Drawing.Size(32, 23);
-            this.btn_change_status_client.TabIndex = 61;
-            this.btn_change_status_client.Text = "...";
-            this.btn_change_status_client.UseVisualStyleBackColor = true;
-            this.btn_change_status_client.Visible = false;
-            this.btn_change_status_client.Click += new System.EventHandler(this.btn_change_status_client_Click);
+            //this.btn_change_status_client.Location = new System.Drawing.Point(252, 43);
+            //this.btn_change_status_client.Name = "btn_change_status_client";
+            //this.btn_change_status_client.Size = new System.Drawing.Size(32, 23);
+            //this.btn_change_status_client.TabIndex = 61;
+            //this.btn_change_status_client.Text = "...";
+            //this.btn_change_status_client.UseVisualStyleBackColor = true;
+            //this.btn_change_status_client.Visible = false;
+            //this.btn_change_status_client.Click += new System.EventHandler(this.btn_change_status_client_Click);
             // 
             // label13
             // 

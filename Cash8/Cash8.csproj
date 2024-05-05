@@ -105,18 +105,6 @@
       <DependentUpon>Cash_checks.cs</DependentUpon>
     </Compile>
     <Compile Include="CDN.cs" />
-    <Compile Include="ChangeBonusCard.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ChangeBonusCard.Designer.cs">
-      <DependentUpon>ChangeBonusCard.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ChangeBonusStatusClient.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ChangeBonusStatusClient.Designer.cs">
-      <DependentUpon>ChangeBonusStatusClient.cs</DependentUpon>
-    </Compile>
     <Compile Include="Constants.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -128,18 +116,6 @@
     </Compile>
     <Compile Include="CorrectionChecks.Designer.cs">
       <DependentUpon>CorrectionChecks.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CreateBonusCardOrAddPhone.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CreateBonusCardOrAddPhone.Designer.cs">
-      <DependentUpon>CreateBonusCardOrAddPhone.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CreateVirtualCard.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CreateVirtualCard.Designer.cs">
-      <DependentUpon>CreateVirtualCard.cs</DependentUpon>
     </Compile>
     <Compile Include="CryptorEngine.cs" />
     <Compile Include="Discount_types.cs">
@@ -245,24 +221,12 @@
       <DependentUpon>Cash_checks.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="ChangeBonusCard.resx">
-      <DependentUpon>ChangeBonusCard.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ChangeBonusStatusClient.resx">
-      <DependentUpon>ChangeBonusStatusClient.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Constants.resx">
       <DependentUpon>Constants.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="CorrectionChecks.resx">
       <DependentUpon>CorrectionChecks.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CreateBonusCardOrAddPhone.resx">
-      <DependentUpon>CreateBonusCardOrAddPhone.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CreateVirtualCard.resx">
-      <DependentUpon>CreateVirtualCard.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FPTK22.resx">
       <DependentUpon>FPTK22.cs</DependentUpon>
@@ -316,12 +280,6 @@
       <DependentUpon>SendDataOnSalesPortions.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="SentDataOnBonusEva.resx">
-      <DependentUpon>SentDataOnBonusEva.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SentDataOnBonus.resx">
-      <DependentUpon>SentDataOnBonus.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="SettingConnect.resx">
       <DependentUpon>SettingConnect.cs</DependentUpon>
     </EmbeddedResource>
@@ -354,18 +312,6 @@
     </Compile>
     <Compile Include="SendDataOnSalesPortions.Designer.cs">
       <DependentUpon>SendDataOnSalesPortions.cs</DependentUpon>
-    </Compile>
-    <Compile Include="SentDataOnBonusEva.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SentDataOnBonusEva.Designer.cs">
-      <DependentUpon>SentDataOnBonusEva.cs</DependentUpon>
-    </Compile>
-    <Compile Include="SentDataOnBonus.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SentDataOnBonus.Designer.cs">
-      <DependentUpon>SentDataOnBonus.cs</DependentUpon>
     </Compile>
     <Compile Include="SettingConnect.cs">
       <SubType>Form</SubType>

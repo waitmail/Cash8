@@ -45,13 +45,13 @@
             // 
             // btn_send_sms
             // 
-            this.btn_send_sms.Location = new System.Drawing.Point(17, 72);
-            this.btn_send_sms.Name = "btn_send_sms";
-            this.btn_send_sms.Size = new System.Drawing.Size(97, 23);
-            this.btn_send_sms.TabIndex = 1;
-            this.btn_send_sms.Text = "Отправить смс";
-            this.btn_send_sms.UseVisualStyleBackColor = true;
-            this.btn_send_sms.Click += new System.EventHandler(this.btn_send_sms_Click);
+            //this.btn_send_sms.Location = new System.Drawing.Point(17, 72);
+            //this.btn_send_sms.Name = "btn_send_sms";
+            //this.btn_send_sms.Size = new System.Drawing.Size(97, 23);
+            //this.btn_send_sms.TabIndex = 1;
+            //this.btn_send_sms.Text = "Отправить смс";
+            //this.btn_send_sms.UseVisualStyleBackColor = true;
+            //this.btn_send_sms.Click += new System.EventHandler(this.btn_send_sms_Click);
             // 
             // btn_check_code
             // 

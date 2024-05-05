@@ -1829,9 +1829,9 @@ namespace Cash8
             // 
             // выгрузкаДанныхПоБонусамToolStripMenuItem
             // 
-            this.выгрузкаДанныхПоБонусамToolStripMenuItem.Name = "выгрузкаДанныхПоБонусамToolStripMenuItem";
-            resources.ApplyResources(this.выгрузкаДанныхПоБонусамToolStripMenuItem, "выгрузкаДанныхПоБонусамToolStripMenuItem");
-            this.выгрузкаДанныхПоБонусамToolStripMenuItem.Click += new System.EventHandler(this.выгрузкаДанныхПоБонусамToolStripMenuItem_Click);
+            //this.выгрузкаДанныхПоБонусамToolStripMenuItem.Name = "выгрузкаДанныхПоБонусамToolStripMenuItem";
+            //resources.ApplyResources(this.выгрузкаДанныхПоБонусамToolStripMenuItem, "выгрузкаДанныхПоБонусамToolStripMenuItem");
+            //this.выгрузкаДанныхПоБонусамToolStripMenuItem.Click += new System.EventHandler(this.выгрузкаДанныхПоБонусамToolStripMenuItem_Click);
             // 
             // выгрузкаПродажToolStripMenuItem
             // 
@@ -1937,21 +1937,21 @@ namespace Cash8
         //    sd.ShowDialog();
         //}
 
-        private void выгрузкаДанныхПоБонусамToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (MainStaticClass.GetWorkSchema == 1)
-            {
-                SentDataOnBonus sdb = new SentDataOnBonus();
-                sdb.ShowDialog();
-            }
-            else if (MainStaticClass.GetWorkSchema == 2)
-            {
-                SentDataOnBonusEva sentDataOnBonusEva = new SentDataOnBonusEva();
-                sentDataOnBonusEva.ShowDialog();
-            }
+        //private void выгрузкаДанныхПоБонусамToolStripMenuItem_Click(object sender, EventArgs e)
+        //{
+        //    if (MainStaticClass.GetWorkSchema == 1)
+        //    {
+        //        SentDataOnBonus sdb = new SentDataOnBonus();
+        //        sdb.ShowDialog();
+        //    }
+        //    else if (MainStaticClass.GetWorkSchema == 2)
+        //    {
+        //        SentDataOnBonusEva sentDataOnBonusEva = new SentDataOnBonusEva();
+        //        sentDataOnBonusEva.ShowDialog();
+        //    }
             
-            //MessageBox.Show("В этой версии не работает");
-        } 
+        //    //MessageBox.Show("В этой версии не работает");
+        //} 
         
 
 

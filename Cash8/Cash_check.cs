@@ -445,18 +445,18 @@ namespace Cash8
             public string uid { get; set; }
         }
                           
-        private void create_virtual_card()
-        {
-            CreateVirtualCard createVirtualCard = new CreateVirtualCard();
-            createVirtualCard.txtBox_phone.Text = "7" + txtB_client_phone.Text.Trim();
-            createVirtualCard.cash_Check = this;
-            DialogResult dr = createVirtualCard.ShowDialog();
-            if (dr == DialogResult.OK)
-            {
-                txtB_client_phone.Enabled = false;
-                client_barcode.Enabled = false;
-            }
-        }
+        //private void create_virtual_card()
+        //{
+        //    CreateVirtualCard createVirtualCard = new CreateVirtualCard();
+        //    createVirtualCard.txtBox_phone.Text = "7" + txtB_client_phone.Text.Trim();
+        //    createVirtualCard.cash_Check = this;
+        //    DialogResult dr = createVirtualCard.ShowDialog();
+        //    if (dr == DialogResult.OK)
+        //    {
+        //        txtB_client_phone.Enabled = false;
+        //        client_barcode.Enabled = false;
+        //    }
+        //}
                
 
         private void find_client_on_num_phone(string phone_number)
@@ -1033,28 +1033,28 @@ namespace Cash8
 
                     }
                 }
-                if (e.KeyCode == Keys.F1)
-                {
-                    if (client.Tag != null)
-                    {
-                        check_availability_card_sale();
-                        if (code_bonus_card != "")
-                        {
-                            ChangeBonusCard changeBonusCard = new ChangeBonusCard();
-                            changeBonusCard.cash_Check = this;
-                            changeBonusCard.txtB_num_card.Text = code_bonus_card;
-                            DialogResult dialogResult = changeBonusCard.ShowDialog();
-                            if (dialogResult == DialogResult.OK)
-                            {
-                                change_bonus_card = true;
-                            }
-                        }
-                        else
-                        {
-                            MessageBox.Show("В строках чека нет бонусной карты на продажу");
-                        }
-                    }
-                }
+                //if (e.KeyCode == Keys.F1)
+                //{
+                //    if (client.Tag != null)
+                //    {
+                //        check_availability_card_sale();
+                //        if (code_bonus_card != "")
+                //        {
+                //            ChangeBonusCard changeBonusCard = new ChangeBonusCard();
+                //            changeBonusCard.cash_Check = this;
+                //            changeBonusCard.txtB_num_card.Text = code_bonus_card;
+                //            DialogResult dialogResult = changeBonusCard.ShowDialog();
+                //            if (dialogResult == DialogResult.OK)
+                //            {
+                //                change_bonus_card = true;
+                //            }
+                //        }
+                //        else
+                //        {
+                //            MessageBox.Show("В строках чека нет бонусной карты на продажу");
+                //        }
+                //    }
+                //}
                 else if (e.KeyCode == Keys.F5)
                 {
                     //Если сканер USB ---->> COM или COM окно не нужно
@@ -1340,10 +1340,10 @@ namespace Cash8
                 //        show_query_window_barcode(4, 0, 0);
                 //    }            
                 //}
-                if (client.Tag != null)
-                {
-                    btn_change_status_client_Click(null, null);
-                }
+                //if (client.Tag != null)
+                //{
+                //    btn_change_status_client_Click(null, null);
+                //}
             }
         }
 
@@ -9805,79 +9805,7 @@ namespace Cash8
                 conn.Dispose();
             }
         }
-
-        public SentDataOnBonus.BuynewResponse get_bonus_on_document(string charge)
-        {
-            SentDataOnBonus sentDataOnBonus = new SentDataOnBonus();
-            SentDataOnBonus.BuyNewRequest buyNewRequest = new SentDataOnBonus.BuyNewRequest();
-            buyNewRequest.cashierName = MainStaticClass.Cash_Operator;
-            buyNewRequest.commit = "0";
-            buyNewRequest.date = date_time_start.Text.Replace("Чек", "").Trim();
-            buyNewRequest.type = "4";//Ставми 4 всегда , а не либо 2 либо 4
-            //if (client.Tag.ToString().Trim().Length == 36)
-            //{
-            //    buyNewRequest.cardTrack2 = client.Tag.ToString().Trim();// client.Tag.ToString();
-            //}
-            if (client.Tag.ToString().Trim().Length == 10)
-            {
-                buyNewRequest.cardNum = client.Tag.ToString().Trim();// client.Tag.ToString();
-            }
-
-            if (Convert.ToInt32(charge) > 0)
-            {
-                buyNewRequest.charge = (Convert.ToInt32(charge) * 100).ToString();
-            }
-
-            sentDataOnBonus.fill_items(buyNewRequest, numdoc.ToString(), client.Tag.ToString());
-            SentDataOnBonus.BuynewResponse buynewResponse = new SentDataOnBonus.BuynewResponse();
-            sentDataOnBonus.sent_document_buyNew(buyNewRequest, numdoc.ToString(), ref buynewResponse);
-            return buynewResponse;
-        }
-
-
-        public SentDataOnBonusEva.BuynewResponse get_bonus_on_document_eva(string charge)
-        {
-            SentDataOnBonusEva sentDataOnBonusEva = new SentDataOnBonusEva();
-            SentDataOnBonusEva.BuyNewRequest buyNewRequest = new SentDataOnBonusEva.BuyNewRequest();
-            buyNewRequest.cashierName = MainStaticClass.Cash_Operator;
-            buyNewRequest.commit = "0";
-            buyNewRequest.date = date_time_start.Text.Replace("Чек", "").Trim();
-            if (charge == "0")
-            {
-                buyNewRequest.type = "2";
-            }
-            else
-            {
-                buyNewRequest.type = "3";
-            }
-            buyNewRequest.cardNum = client.Tag.ToString().Trim();// client.Tag.ToString();            
-
-            if (Convert.ToDecimal(charge) > 0)
-            {
-                buyNewRequest.charge = (Convert.ToDecimal(charge) * 100).ToString();
-            }
-
-            sentDataOnBonusEva.fill_items(buyNewRequest, numdoc.ToString(), client.Tag.ToString());
-            SentDataOnBonusEva.BuynewResponse buynewResponse = new SentDataOnBonusEva.BuynewResponse();
-            sentDataOnBonusEva.sent_document_buyNew(buyNewRequest, numdoc.ToString(), ref buynewResponse);
-            return buynewResponse;
-        }
-
-        public SentDataOnBonusEva.TransactionResponse get_bonus_on_document_eva_by_return()
-        {
-            SentDataOnBonusEva sentDataOnBonusEva = new SentDataOnBonusEva();
-            SentDataOnBonusEva.BuyReturnRequest buyReturnRequest = new SentDataOnBonusEva.BuyReturnRequest();
-            buyReturnRequest.cashierName = MainStaticClass.Cash_Operator;
-            buyReturnRequest.commit = "0";
-            buyReturnRequest.date = date_time_start.Text.Replace("Чек", "").Trim();
-            buyReturnRequest.transactionId = id_transaction_sale;
-            sentDataOnBonusEva.fill_items(buyReturnRequest, numdoc.ToString(), client.Tag.ToString());
-            SentDataOnBonusEva.TransactionResponse transactionResponse = new SentDataOnBonusEva.TransactionResponse();
-            sentDataOnBonusEva.sent_documentbuyReturn(buyReturnRequest, numdoc.ToString(), ref transactionResponse);
-            return transactionResponse;
-
-        }
-
+               
         private void pay_Click(object sender, EventArgs e)
         {
             recharge_note = "";
@@ -13823,87 +13751,87 @@ namespace Cash8
             return result;
         }
 
-        private void btn_change_status_client_Click(object sender, EventArgs e)
-        {
-            if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema==3) || (MainStaticClass.GetWorkSchema == 4))
-            {
-                if (listView1.Items.Count > 0)
-                {
-                    MessageBox.Show(" В чеке уже есть товар, операция по переходу невозможна  ");
-                    return;
-                }
+        //private void btn_change_status_client_Click(object sender, EventArgs e)
+        //{
+        //    if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema==3) || (MainStaticClass.GetWorkSchema == 4))
+        //    {
+        //        if (listView1.Items.Count > 0)
+        //        {
+        //            MessageBox.Show(" В чеке уже есть товар, операция по переходу невозможна  ");
+        //            return;
+        //        }
 
-                if (MainStaticClass.PassPromo == "")
-                {
-                    MessageBox.Show(" Эта касса не участвует в бонусной программе  ");
-                    return;
-                }
+        //        if (MainStaticClass.PassPromo == "")
+        //        {
+        //            MessageBox.Show(" Эта касса не участвует в бонусной программе  ");
+        //            return;
+        //        }
 
-                //Прежде чем вызвать окно изменения статуча надо проверить номер телефона
-                if (!check_client_have_telephone())
-                {
-                    MessageBox.Show(" У покупателя не заполнен номер телефона ");
-                    return;
-                }
+        //        //Прежде чем вызвать окно изменения статуча надо проверить номер телефона
+        //        if (!check_client_have_telephone())
+        //        {
+        //            MessageBox.Show(" У покупателя не заполнен номер телефона ");
+        //            return;
+        //        }
 
-                //Проверить нет ли клиента в уже измененных
-                if (check_in_change_status_client())
-                {
-                    MessageBox.Show(" У этого покупателя уже возможно изменен статус ");
-                    return;
-                }
+        //        //Проверить нет ли клиента в уже измененных
+        //        if (check_in_change_status_client())
+        //        {
+        //            MessageBox.Show(" У этого покупателя уже возможно изменен статус ");
+        //            return;
+        //        }
 
-                //if (check_bonus_is_on())
-                //{
-                //    MessageBox.Show(" У этого покупателя уже установлен статус бонусный ");
-                //    return;
-                //}
+        //        //if (check_bonus_is_on())
+        //        //{
+        //        //    MessageBox.Show(" У этого покупателя уже установлен статус бонусный ");
+        //        //    return;
+        //        //}
 
-                ChangeBonusStatusClient changeBonusStatusClient = new ChangeBonusStatusClient();
-                changeBonusStatusClient.client_code = this.client.Tag.ToString();
-                DialogResult dr = changeBonusStatusClient.ShowDialog();
-                if (dr == DialogResult.OK)
-                {
-                    btn_change_status_client.Visible = false;
-                }
-            }
-            else if (MainStaticClass.GetWorkSchema == 2)
-            {
-                if (client.Tag == null)
-                {
-                    MessageBox.Show("Необходимо считать карту клиента в поле код клиента");
-                    return;
-                }
-                if (client.Tag.ToString().Substring(0, 2) != "29")
-                {
-                    MessageBox.Show("Введенная карта не соответсвтует критериям, продолжение невозможно");
-                    return;
-                }
+        //        ChangeBonusStatusClient changeBonusStatusClient = new ChangeBonusStatusClient();
+        //        changeBonusStatusClient.client_code = this.client.Tag.ToString();
+        //        DialogResult dr = changeBonusStatusClient.ShowDialog();
+        //        if (dr == DialogResult.OK)
+        //        {
+        //            btn_change_status_client.Visible = false;
+        //        }
+        //    }
+        //    else if (MainStaticClass.GetWorkSchema == 2)
+        //    {
+        //        if (client.Tag == null)
+        //        {
+        //            MessageBox.Show("Необходимо считать карту клиента в поле код клиента");
+        //            return;
+        //        }
+        //        if (client.Tag.ToString().Substring(0, 2) != "29")
+        //        {
+        //            MessageBox.Show("Введенная карта не соответсвтует критериям, продолжение невозможно");
+        //            return;
+        //        }
                 
-                bool find = false;
-                foreach (ListViewItem lvi in listView1.Items)
-                {
-                    if (lvi.SubItems[0].Text == client.Tag.ToString())
-                    {
-                        find = true;
-                        break;
-                    }
-                }
+        //        bool find = false;
+        //        foreach (ListViewItem lvi in listView1.Items)
+        //        {
+        //            if (lvi.SubItems[0].Text == client.Tag.ToString())
+        //            {
+        //                find = true;
+        //                break;
+        //            }
+        //        }
 
-                if (find)
-                {
-                    CreateBonusCardOrAddPhone createBonusCardOrAddPhone = new CreateBonusCardOrAddPhone();
-                    createBonusCardOrAddPhone.txtB_num_card.Text = client.Tag.ToString();
-                    createBonusCardOrAddPhone.its_new = true;
-                    createBonusCardOrAddPhone.cash_Check = this;                    
-                    createBonusCardOrAddPhone.ShowDialog();
-                }
-                else //Это замена карты
-                {
+        //        if (find)
+        //        {
+        //            CreateBonusCardOrAddPhone createBonusCardOrAddPhone = new CreateBonusCardOrAddPhone();
+        //            createBonusCardOrAddPhone.txtB_num_card.Text = client.Tag.ToString();
+        //            createBonusCardOrAddPhone.its_new = true;
+        //            createBonusCardOrAddPhone.cash_Check = this;                    
+        //            createBonusCardOrAddPhone.ShowDialog();
+        //        }
+        //        else //Это замена карты
+        //        {
 
-                }
-            }
-        }
+        //        }
+        //    }
+        //}
 
         public class Suggestion
         {
