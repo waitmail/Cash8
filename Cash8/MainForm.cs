@@ -881,6 +881,14 @@ namespace Cash8
             //    }
             //}
 
+            if (MainStaticClass.CashDeskNumber != 9 && MainStaticClass.EnableCdnMarkers == 1)
+            {
+                if (MainStaticClass.CDN_Token == "")
+                {
+                    MessageBox.Show("В этой кассе не заполнен CDN токен, \r\n ПРОДАЖА МАРКИРОВАННОГО ТОВАРА ОГРАНИЧЕНА/НЕВОЗМОЖНА!", "Проверка CDN");                    
+                }
+            }
+
             MainStaticClass.Main = this;
             this.IsMdiContainer = true;
             MainStaticClass.Last_Send_Last_Successful_Sending = DateTime.Now;
@@ -1800,7 +1808,7 @@ namespace Cash8
             this.параметрыБазыДанныхToolStripMenuItem,
             //this.загрузкаДанныхToolStripMenuItem,
             //this.выгрузкаДанныхToolStripMenuItem,
-            this.выгрузкаДанныхПоБонусамToolStripMenuItem,
+            //this.выгрузкаДанныхПоБонусамToolStripMenuItem,
             //this.выгрузкаПродажToolStripMenuItem,
             this.корректировочныеЧекиToolStripMenuItem,
             this.загрузкаДанныхЧерезИнтернетToolStripMenuItem,

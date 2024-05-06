@@ -2743,9 +2743,14 @@ namespace Cash8
                                                     }
                                                 }
                                                 if (cdn_check)
-                                                {
-                                                    if (MainStaticClass.CashDeskNumber != 9 && MainStaticClass.EnableCdnMarkers == 1 && MainStaticClass.CDN_Token != "")
+                                                {                                                    
+                                                    if (MainStaticClass.CashDeskNumber != 9 && MainStaticClass.EnableCdnMarkers == 1)
                                                     {
+                                                        if (MainStaticClass.CDN_Token == "")
+                                                        {
+                                                            MessageBox.Show("В этой кассе не заполнен CDN токен, \r\n ПРОДАЖА ДАННОГО ТОВАРА НЕВОЗМОЖНА ! ", "Проверка CDN");
+                                                            return;
+                                                        }
                                                         CDN cdn = new CDN();
                                                         List<string> codes = new List<string>();
                                                         mark_str_cdn = mark_str.Replace("\u001d", @"\u001d");
@@ -2753,7 +2758,7 @@ namespace Cash8
                                                         codes.Add(mark_str_cdn);
                                                         //mark_str_cdn = mark_str_cdn.Replace("'", "vasya2021");
                                                         mark_str_cdn = mark_str_cdn.Replace("'", "\'");
-                                                        if (!cdn.check_marker_code(codes, mark_str, ref this.cdn_markers_date_time, this.numdoc, ref request, mark_str_cdn))
+                                                        if (!cdn.check_marker_code(codes, mark_str, ref this.cdn_markers_date_time, this.numdoc, ref request, mark_str_cdn,lvi.SubItems[0].Text, lvi.SubItems[1].Text))
                                                         {
                                                             return;
                                                         }

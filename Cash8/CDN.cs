@@ -384,7 +384,7 @@ namespace Cash8
             return cDNHealth;
         }
                
-        public bool check_marker_code(List<string> codes, string mark_str, ref Dictionary<string, Cash_check.CdnMarkerDateTime> cdn_markers_date_time, Int64 numdoc, ref HttpWebRequest request, string mark_str_cdn)
+        public bool check_marker_code(List<string> codes, string mark_str, ref Dictionary<string, Cash_check.CdnMarkerDateTime> cdn_markers_date_time, Int64 numdoc, ref HttpWebRequest request, string mark_str_cdn,string tovar_code,string tovar_name)
         {
 
             bool result_check = false;
@@ -521,7 +521,7 @@ namespace Cash8
                         error = false;
                         StringBuilder sb = new StringBuilder();
 
-                        string s = "ТОВАР НЕ МОЖЕТ БЫТЬ ПРОДАН!";
+                        string s = "ТОВАР НЕ МОЖЕТ БЫТЬ ПРОДАН!\r\n";
                         if (!answer_check_mark.codes[0].isOwner)
                         {
                             //MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + " Вы не являетесь владельцем " + s, "CDN проверка");
@@ -599,13 +599,15 @@ namespace Cash8
                             int stringCount = sb.ToString().Split(new string[] { Environment.NewLine }, StringSplitOptions.None).Length;
                             if (stringCount == 1)
                             {
-                                sb.Insert(0, "Код маркировки " + mark_str_cdn + "\r\nне прошел проверку по следующей причине:\r\n".ToUpper());
+                                sb.Insert(0, "Код маркировки " + mark_str + "\r\nне прошел проверку по следующей причине:\r\n".ToUpper());
                             }
                             else
                             {
-                                sb.Insert(0, "Код маркировки " + mark_str_cdn + "\r\nне прошел проверку по следующим причинам:\r\n".ToUpper());
+                                sb.Insert(0, "Код маркировки " + mark_str + "\r\nне прошел проверку по следующим причинам:\r\n".ToUpper());
                             }
                             sb.Append(s);
+                            sb.AppendLine(tovar_code);
+                            sb.AppendLine(tovar_name);
                             MessageBox.Show(sb.ToString());                            
                         }
                     }

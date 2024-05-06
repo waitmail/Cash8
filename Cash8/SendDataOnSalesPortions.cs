@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Npgsql;
@@ -18,7 +18,7 @@ namespace Cash8
         public bool show_messages = true;
         private StringBuilder document_guid_list;
         private bool were_mistakes = false;//были ошибки
-
+        private DataTable dt = null;
 
         public SendDataOnSalesPortions()
         {
@@ -135,7 +135,16 @@ namespace Cash8
                     salesPortionsHeader.SBP = (Convert.ToBoolean(reader["payment_by_sbp"]) == true ? 1 : 0).ToString();
 
                     salesPortions.ListSalesPortionsHeader.Add(salesPortionsHeader);
-                    //Конец Новое заполнение                 
+                    //Конец Новое заполнение 
+                    ////////////////////////////////////////////////////////////////////////
+                    DataRow row = dt.NewRow();
+                    row["guid"] = reader["guid"].ToString();
+                    row["sum_header"] = Convert.ToDouble(salesPortionsHeader.Sum_cash.Replace(".",",")) +
+                        Convert.ToDouble(salesPortionsHeader.Sum_terminal.Replace(".", ",")) + 
+                        Convert.ToDouble(salesPortionsHeader.Sum_certificate.Replace(".", ","));
+                    row["sum_table"] = 0;
+                    dt.Rows.Add(row);
+                    ////////////////////////////////////////////////////////////////////////
                 }
                 conn.Close();
                 reader.Close();
@@ -164,8 +173,7 @@ namespace Cash8
                 }
             }           
         }
-
-
+                          
         private void getdata_t()
         {
             salesPortions.ListSalesPortionsTable = new List<SalesPortionsTable>();
@@ -211,6 +219,12 @@ namespace Cash8
 
                     salesPortions.ListSalesPortionsTable.Add(salesPortionsTable);
                     //Конец Новой заполнение
+
+                    DataRow row = dt.NewRow();
+                    row["guid"] = reader["guid"].ToString();
+                    row["sum_header"] = 0;
+                    row["sum_table"] = Convert.ToDouble(salesPortionsTable.Sum_d.Replace(".", ","));
+                    dt.Rows.Add(row);
                 }
                 conn.Close();
                 reader.Close();
@@ -239,7 +253,30 @@ namespace Cash8
                 }
             }         
         }
-        
+
+        private void check_sum_header_and_table()
+        {
+            // Фильтрация строк и подсчет суммы
+            var filteredData = from row in dt.AsEnumerable()
+                               group row by row.Field<string>("guid") into grp
+                               let total_sum_header = grp.Sum(r => r.Field<double>("sum_header"))
+                               let total_sum_table = grp.Sum(r => r.Field<double>("sum_table"))
+                               where total_sum_header != total_sum_table
+                               select new
+                               {
+                                   guid = grp.Key,
+                                   TotalSumHeader = total_sum_header,
+                                   TotalSumTable = total_sum_table
+                               };
+            if (filteredData != null && filteredData.Any())
+            {                
+                foreach (var item in filteredData)
+                {                   
+                    MainStaticClass.write_event_in_log("guid: " + item.guid +" Сумма по шапке: " + item.TotalSumHeader+" Сумма по строкам: " + item.TotalSumTable,"Отправка чеков","0");                    
+                }
+            }            
+        }
+
         private void get_data_on_sales()
         {            
             getdata_h();
@@ -527,10 +564,10 @@ namespace Cash8
             return result;
         }
 
-            /// <summary>
-            /// Обновим статусы после успешной отправки документов
-            /// </summary>
-            private void update_status_is_sent()
+        /// <summary>
+        /// Обновим статусы после успешной отправки документов
+        /// </summary>
+        private void update_status_is_sent()
         {
             NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
             NpgsqlTransaction trans = null;
@@ -693,7 +730,32 @@ namespace Cash8
             salesPortions.Shop = nick_shop;
             salesPortions.Guid = code_shop;
             salesPortions.Version = MainStaticClass.version().Replace(".","");
+            if (dt == null)
+            {
+                dt = new DataTable();
+
+                DataColumn guid = new DataColumn();
+                guid.DataType = System.Type.GetType("System.String");
+                guid.ColumnName = "guid";
+                dt.Columns.Add(guid);
+
+                DataColumn sum_header = new DataColumn();
+                sum_header.DataType = System.Type.GetType("System.Double");
+                sum_header.ColumnName = "sum_header";
+                dt.Columns.Add(sum_header);
+
+                DataColumn sum_table = new DataColumn();
+                sum_table.DataType = System.Type.GetType("System.Double");
+                sum_table.ColumnName = "sum_table";
+                dt.Columns.Add(sum_table);
+            }
+            else
+            {
+                dt.Rows.Clear();
+            }
+
             get_data_on_sales();
+            check_sum_header_and_table();
             if (were_mistakes)//Произошли какие то ошибки при выгрузке
             {
                 return;
