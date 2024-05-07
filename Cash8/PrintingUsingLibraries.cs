@@ -29,6 +29,18 @@ namespace Cash8
         //    fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_BAUDRATE, AtolConstants.LIBFPTR_PORT_BR_115200.ToString());
         //    fptr.applySingleSettings();
         //}
+        
+        public void print_last_document()
+        {
+            IFptr fptr = MainStaticClass.FPTR;
+            //setConnectSetting(fptr);
+            if (!fptr.isOpened())
+            {
+                fptr.open();
+            }
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_REPORT_TYPE, AtolConstants.LIBFPTR_RT_LAST_DOCUMENT);
+            fptr.report();
+        }
 
         public void getShiftStatus()
         {

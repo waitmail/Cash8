@@ -881,13 +881,7 @@ namespace Cash8
             //    }
             //}
 
-            if (MainStaticClass.CashDeskNumber != 9 && MainStaticClass.EnableCdnMarkers == 1)
-            {
-                if (MainStaticClass.CDN_Token == "")
-                {
-                    MessageBox.Show("В этой кассе не заполнен CDN токен, \r\n ПРОДАЖА МАРКИРОВАННОГО ТОВАРА ОГРАНИЧЕНА/НЕВОЗМОЖНА!", "Проверка CDN");                    
-                }
-            }
+           
 
             MainStaticClass.Main = this;
             this.IsMdiContainer = true;
@@ -1044,12 +1038,19 @@ namespace Cash8
             {
                 MainStaticClass.Version2Marking = 0;
             }
+            if (MainStaticClass.CashDeskNumber != 9 && MainStaticClass.EnableCdnMarkers == 1)
+            {
+                if (MainStaticClass.CDN_Token == "")
+                {
+                    MessageBox.Show("В этой кассе не заполнен CDN токен, \r\n ПРОДАЖА МАРКИРОВАННОГО ТОВАРА ОГРАНИЧЕНА/НЕВОЗМОЖНА!", "Проверка CDN");
+                }
+            }
         }
 
-        private void get_cdn_with_start()
-        {
-            CDN.CDN_List list = MainStaticClass.CDN_List;
-        }
+        //private void get_cdn_with_start()
+        //{
+        //    CDN.CDN_List list = MainStaticClass.CDN_List;
+        //}
 
         ///// <summary>
         ///// Первоначально применялось для 1 схемы,

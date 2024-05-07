@@ -344,30 +344,39 @@ namespace Cash8
         private void print_last_check_Click(object sender, EventArgs e)
         {
             //printLastReceiptCopy
-            try
+            if (MainStaticClass.PrintingUsingLibraries == 0)
             {
-                Cash8.FiscallPrintJason.RootObject result = FiscallPrintJason.execute_operator_type("printLastReceiptCopy");
-                if (result != null)
+                try
                 {
-                    if (result.results[0].status == "ready")//Задание выполнено успешно 
+                    Cash8.FiscallPrintJason.RootObject result = FiscallPrintJason.execute_operator_type("printLastReceiptCopy");
+                    if (result != null)
                     {
-                        //sum_incass.Text = result.results[0].result.counters.cashSum.ToString();
+                        if (result.results[0].status == "ready")//Задание выполнено успешно 
+                        {
+                            //sum_incass.Text = result.results[0].result.counters.cashSum.ToString();
+                        }
+                        else
+                        {
+                            MessageBox.Show(" Ошибка !!! " + result.results[0].status + " | " + result.results[0].errorDescription);
+                        }
                     }
                     else
                     {
-                        MessageBox.Show(" Ошибка !!! " + result.results[0].status + " | " + result.results[0].errorDescription);
+                        MessageBox.Show("Общая ошибка");
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    MessageBox.Show("Общая ошибка");
+                    MessageBox.Show("print_last_check_Click" + ex.Message);
                 }
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show("print_last_check_Click" + ex.Message);
+                PrintingUsingLibraries printing = new PrintingUsingLibraries();
+                printing.print_last_document();
             }
         }
+
 
         private void get_summ_in_cashe_Click(object sender, EventArgs e)
         {
