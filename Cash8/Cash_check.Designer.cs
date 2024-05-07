@@ -35,7 +35,7 @@
             this.client_barcode = new System.Windows.Forms.TextBox();
             this.inputbarcode = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.enter_quantity = new System.Windows.Forms.TextBox();
+            this.numericUpDown_enter_quantity = new System.Windows.Forms.NumericUpDown();
             this.panel2 = new System.Windows.Forms.Panel();
             this.listView2 = new System.Windows.Forms.ListView();
             this.select_tovar = new System.Windows.Forms.TextBox();
@@ -72,7 +72,6 @@
             this.label_client_barcode = new System.Windows.Forms.Label();
             this.label_client_phone = new System.Windows.Forms.Label();
             this.btn_inpute_phone_client = new System.Windows.Forms.Button();
-            this.btn_change_status_client = new System.Windows.Forms.Button();
             this.label13 = new System.Windows.Forms.Label();
             this.txtB_bonus_money = new System.Windows.Forms.TextBox();
             this.checkBox_to_print_repeatedly = new System.Windows.Forms.CheckBox();
@@ -82,13 +81,14 @@
             this.txtB_name = new System.Windows.Forms.TextBox();
             this.txtB_num_sales = new System.Windows.Forms.TextBox();
             this.btn_fill_on_sales = new System.Windows.Forms.Button();
-            this.cash = new System.Windows.Forms.TextBox();
             this.checkBox_to_print_repeatedly_p = new System.Windows.Forms.CheckBox();
             this.txtB_total_sum = new System.Windows.Forms.TextBox();
             this.txtB_num_doc = new System.Windows.Forms.TextBox();
             this.checkBox_print_check = new System.Windows.Forms.CheckBox();
             this.checkBox_payment_by_sbp = new System.Windows.Forms.CheckBox();
+            this.cash = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_enter_quantity)).BeginInit();
             this.panel2.SuspendLayout();
             this.panel_return.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -160,26 +160,28 @@
             // 
             // panel1
             // 
-            this.panel1.BackColor = System.Drawing.SystemColors.Control;
-            this.panel1.Controls.Add(this.enter_quantity);
-            this.panel1.Location = new System.Drawing.Point(21, 351);
+            this.panel1.BackColor = System.Drawing.Color.LightSalmon;
+            this.panel1.Controls.Add(this.numericUpDown_enter_quantity);
+            this.panel1.Location = new System.Drawing.Point(620, 12);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(166, 44);
             this.panel1.TabIndex = 21;
             this.panel1.Visible = false;
             // 
-            // enter_quantity
+            // numericUpDown_enter_quantity
             // 
-            this.enter_quantity.BackColor = System.Drawing.Color.White;
-            this.enter_quantity.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.enter_quantity.Location = new System.Drawing.Point(3, 8);
-            this.enter_quantity.MaxLength = 10;
-            this.enter_quantity.Name = "enter_quantity";
-            this.enter_quantity.Size = new System.Drawing.Size(160, 29);
-            this.enter_quantity.TabIndex = 0;
-            this.enter_quantity.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.enter_quantity.Visible = false;
-            this.enter_quantity.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.enter_quantity_KeyPress);
+            this.numericUpDown_enter_quantity.DecimalPlaces = 3;
+            this.numericUpDown_enter_quantity.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.numericUpDown_enter_quantity.Location = new System.Drawing.Point(6, 7);
+            this.numericUpDown_enter_quantity.Maximum = new decimal(new int[] {
+            9999,
+            0,
+            0,
+            0});
+            this.numericUpDown_enter_quantity.Name = "numericUpDown_enter_quantity";
+            this.numericUpDown_enter_quantity.Size = new System.Drawing.Size(155, 31);
+            this.numericUpDown_enter_quantity.TabIndex = 0;
+            this.numericUpDown_enter_quantity.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // panel2
             // 
@@ -228,7 +230,7 @@
             this.panel_return.Controls.Add(this.return_kop);
             this.panel_return.Controls.Add(this.return_rouble);
             this.panel_return.Controls.Add(this.return_quantity);
-            this.panel_return.Location = new System.Drawing.Point(24, 298);
+            this.panel_return.Location = new System.Drawing.Point(45, 362);
             this.panel_return.Name = "panel_return";
             this.panel_return.Size = new System.Drawing.Size(432, 88);
             this.panel_return.TabIndex = 42;
@@ -398,7 +400,6 @@
             // 
             this.tabPage1.Controls.Add(this.panel_return);
             this.tabPage1.Controls.Add(this.panel2);
-            this.tabPage1.Controls.Add(this.panel1);
             this.tabPage1.Controls.Add(this.listView1);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
@@ -559,17 +560,6 @@
             this.btn_inpute_phone_client.Visible = false;
             this.btn_inpute_phone_client.Click += new System.EventHandler(this.btn_inpute_phone_client_Click);
             // 
-            // btn_change_status_client
-            // 
-            //this.btn_change_status_client.Location = new System.Drawing.Point(252, 43);
-            //this.btn_change_status_client.Name = "btn_change_status_client";
-            //this.btn_change_status_client.Size = new System.Drawing.Size(32, 23);
-            //this.btn_change_status_client.TabIndex = 61;
-            //this.btn_change_status_client.Text = "...";
-            //this.btn_change_status_client.UseVisualStyleBackColor = true;
-            //this.btn_change_status_client.Visible = false;
-            //this.btn_change_status_client.Click += new System.EventHandler(this.btn_change_status_client_Click);
-            // 
             // label13
             // 
             this.label13.AutoSize = true;
@@ -657,22 +647,6 @@
             this.btn_fill_on_sales.Visible = false;
             this.btn_fill_on_sales.Click += new System.EventHandler(this.btn_fill_on_sales_Click);
             // 
-            // cash
-            // 
-            this.cash.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.cash.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.cash.ForeColor = System.Drawing.Color.Black;
-            this.cash.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.cash.Location = new System.Drawing.Point(45, 25);
-            this.cash.MaxLength = 10;
-            this.cash.Name = "cash";
-            this.cash.Size = new System.Drawing.Size(122, 23);
-            this.cash.TabIndex = 8;
-            this.cash.Text = "0.00";
-            this.cash.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.cash.Visible = false;
-            this.cash.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.cash_KeyPress);
-            // 
             // checkBox_to_print_repeatedly_p
             // 
             this.checkBox_to_print_repeatedly_p.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -736,11 +710,27 @@
             this.checkBox_payment_by_sbp.UseVisualStyleBackColor = true;
             this.checkBox_payment_by_sbp.Visible = false;
             // 
+            // cash
+            // 
+            this.cash.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.cash.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.cash.ForeColor = System.Drawing.Color.Black;
+            this.cash.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.cash.Location = new System.Drawing.Point(45, 25);
+            this.cash.MaxLength = 10;
+            this.cash.Name = "cash";
+            this.cash.Size = new System.Drawing.Size(122, 23);
+            this.cash.TabIndex = 8;
+            this.cash.Text = "0.00";
+            this.cash.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.cash.Visible = false;
+            // 
             // Cash_check
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 600);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.checkBox_payment_by_sbp);
             this.Controls.Add(this.checkBox_print_check);
             this.Controls.Add(this.txtB_num_doc);
@@ -754,7 +744,6 @@
             this.Controls.Add(this.checkBox_to_print_repeatedly);
             this.Controls.Add(this.txtB_bonus_money);
             this.Controls.Add(this.label13);
-            this.Controls.Add(this.btn_change_status_client);
             this.Controls.Add(this.btn_inpute_phone_client);
             this.Controls.Add(this.label_client_phone);
             this.Controls.Add(this.label_client_barcode);
@@ -790,7 +779,7 @@
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.Cash_check_Load);
             this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_enter_quantity)).EndInit();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.panel_return.ResumeLayout(false);
@@ -811,7 +800,6 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox client_barcode;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.TextBox enter_quantity;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.ListView listView2;
         private System.Windows.Forms.Button pay;
@@ -845,14 +833,12 @@
         private System.Windows.Forms.Label label_client_barcode;
         private System.Windows.Forms.Label label_client_phone;
         private System.Windows.Forms.Button btn_inpute_phone_client;
-        private System.Windows.Forms.Button btn_change_status_client;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.TextBox txtB_bonus_money;
         private System.Windows.Forms.CheckBox checkBox_to_print_repeatedly;
         private System.Windows.Forms.Label lbl_inn;
         private System.Windows.Forms.Button btn_get_name;
         private System.Windows.Forms.Button btn_fill_on_sales;
-        private System.Windows.Forms.TextBox cash;
         private System.Windows.Forms.CheckBox checkBox_to_print_repeatedly_p;
         private System.Windows.Forms.TextBox txtB_total_sum;
         private System.Windows.Forms.TextBox txtB_num_doc;
@@ -866,5 +852,7 @@
         public System.Windows.Forms.TextBox txtB_non_cash_money;
         public System.Windows.Forms.TextBox txtB_cash_money;
         public System.Windows.Forms.CheckBox checkBox_payment_by_sbp;
+        private System.Windows.Forms.TextBox cash;
+        private System.Windows.Forms.NumericUpDown numericUpDown_enter_quantity;
     }
 }

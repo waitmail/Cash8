@@ -166,7 +166,7 @@ namespace Cash8
             dt.Columns.Add(characteristic_name);
 
             DataColumn quantity = new DataColumn();
-            quantity.DataType = System.Type.GetType("System.Int32");
+            quantity.DataType = System.Type.GetType("System.Decimal");
             quantity.ColumnName = "quantity"; //listView1.Columns.Add("Количество", 50, HorizontalAlignment.Right);
             dt.Columns.Add(quantity);
 

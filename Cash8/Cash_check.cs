@@ -243,7 +243,182 @@ namespace Cash8
             toolTip = new ToolTip();            
             toolTip.SetToolTip(this.txtB_total_sum, "Сумма без промо / Сумма с учетом промо");
             txtB_total_sum.KeyPress += TxtB_total_sum_KeyPress;
+            numericUpDown_enter_quantity.KeyPress += NumericUpDown_enter_quantity_KeyPress;
+            numericUpDown_enter_quantity.KeyDown += NumericUpDown_enter_quantity_KeyDown;
         }
+
+        //private void enter_quantity_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
+        //{
+
+        //    if (e.KeyChar == 27)
+        //    {
+        //        this.enter_quantity.Visible = false;
+        //        this.panel1.Visible = false;
+        //        return;
+        //    }
+
+        //    if (e.KeyChar == 13)
+        //    {
+        //        if ((this.enter_quantity.Text.Length == 0) || (Convert.ToDecimal(this.enter_quantity.Text) == 0))
+        //        {
+        //            MessageBox.Show("Количество не может быть пустым");
+        //            return;
+        //        }
+
+        //        if (Convert.ToInt32(this.listView1.SelectedItems[0].SubItems[3].Text) > Convert.ToInt32(this.enter_quantity.Text))
+        //        {
+        //            //MessageBox.Show("Не администраторам запрещено менять количество на меньшее");
+        //            ///////////////////////////////////////////////////////////////
+        //            if (MainStaticClass.Code_right_of_user != 1)
+        //            {
+        //                enable_delete = false;
+        //                Interface_switching isw = new Interface_switching();
+        //                isw.caller_type = 3;
+        //                isw.cc = this;
+        //                isw.not_change_Cash_Operator = true;
+        //                isw.ShowDialog();
+        //                isw.Dispose();
+
+        //                if (!enable_delete)
+        //                {
+        //                    MessageBox.Show("Вам запрещено менять количество на меньшее");
+        //                    //this.enter_quantity.Text = "0";
+        //                    return;
+        //                }
+        //            }
+
+        //            insert_incident_record(listView1.SelectedItems[0].SubItems[0].Text, (Convert.ToInt32(listView1.SelectedItems[0].SubItems[3].Text) - Convert.ToInt32(this.enter_quantity.Text)).ToString(), "1");
+
+        //        }
+        //        else if (Convert.ToInt32(this.listView1.SelectedItems[0].SubItems[3].Text) < Convert.ToInt32(this.enter_quantity.Text))
+        //        {
+
+        //            //Проверка на сертификат 
+        //            if (its_sertificate(this.listView1.SelectedItems[0].SubItems[0].Text.Trim()))
+        //            {
+        //                MessageBox.Show("Каждый сертификат продается отдельной строкой");
+        //                return;
+        //            }
+        //        }
+
+        //        this.listView1.SelectedItems[0].SubItems[3].Text = Convert.ToInt16(this.enter_quantity.Text).ToString();                
+        //        recalculate_all();
+        //        calculation_of_the_sum_of_the_document();                
+        //        this.enter_quantity.Visible = false;
+        //        this.panel1.Visible = false;
+        //        this.listView1.Select();                
+        //        this.listView1.Items[this.listView1.SelectedIndices[0]].Selected = true;
+        //        write_new_document("0", "0", "0", "0", false, "0", "0", "0", "0");
+        //    }
+
+        //    if ((enter_quantity.Text.Length == 0))
+        //    {
+        //        if (e.KeyChar == 48)
+        //        {
+        //            e.Handled = true;
+        //        }
+        //    }
+
+        //    if (!(Char.IsDigit(e.KeyChar)))
+        //    {
+
+        //        if (e.KeyChar != (char)Keys.Back)
+        //        {
+        //            e.Handled = true;
+        //        }
+        //    }
+
+        //    //if (!(Char.IsDigit(e.KeyChar)) && !((e.KeyChar == '.') && (enter_quantity.Text.IndexOf(".") == -1) && (enter_quantity.Text.Length != 0)))
+        //    //{
+        //    //    if (e.KeyChar != (char)Keys.Back)
+        //    //    {
+        //    //        e.Handled = true;
+        //    //    }
+        //    //}
+
+        //    //if (!(Char.IsDigit(e.KeyChar)) && !((e.KeyChar == '.') && (enter_quantity.Text.IndexOf(".") == -1)))
+        //    //{
+        //    //    if (e.KeyChar != (char)Keys.Back)
+        //    //    {
+        //    //        e.Handled = true;
+        //    //    }
+        //    //}
+
+        //    SendDataToCustomerScreen(1, 0,1);
+        //}
+
+        private void NumericUpDown_enter_quantity_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == 27)
+            {
+                this.numericUpDown_enter_quantity.Visible = false;
+                this.panel1.Visible = false;
+                return;
+            }
+
+                if (e.KeyChar == 13)
+                {
+                if (this.numericUpDown_enter_quantity.Value == 0)
+                {
+                    MessageBox.Show("Количество не может быть пустым");
+                    return;
+                }
+
+                if (Convert.ToDecimal(this.listView1.SelectedItems[0].SubItems[3].Text) > this.numericUpDown_enter_quantity.Value)
+                {
+                    //MessageBox.Show("Не администраторам запрещено менять количество на меньшее");
+                    ///////////////////////////////////////////////////////////////
+                    if (MainStaticClass.Code_right_of_user != 1)
+                    {
+                        enable_delete = false;
+                        Interface_switching isw = new Interface_switching();
+                        isw.caller_type = 3;
+                        isw.cc = this;
+                        isw.not_change_Cash_Operator = true;
+                        isw.ShowDialog();
+                        isw.Dispose();
+
+                        if (!enable_delete)
+                        {
+                            MessageBox.Show("Вам запрещено менять количество на меньшее");
+                            //this.enter_quantity.Text = "0";
+                            return;
+                        }
+                    }
+
+                    insert_incident_record(listView1.SelectedItems[0].SubItems[0].Text, (Convert.ToInt32(listView1.SelectedItems[0].SubItems[3].Text) - this.numericUpDown_enter_quantity.Value).ToString(), "1");
+
+                }
+                else if (Convert.ToDecimal(this.listView1.SelectedItems[0].SubItems[3].Text) < this.numericUpDown_enter_quantity.Value)
+                {
+
+                    //Проверка на сертификат 
+                    if (its_sertificate(this.listView1.SelectedItems[0].SubItems[0].Text.Trim()))
+                    {
+                        MessageBox.Show("Каждый сертификат продается отдельной строкой");
+                        return;
+                    }
+                }
+
+                this.listView1.SelectedItems[0].SubItems[3].Text = Convert.ToDecimal(this.numericUpDown_enter_quantity.Value).ToString();
+                recalculate_all();
+                calculation_of_the_sum_of_the_document();
+                this.numericUpDown_enter_quantity.Visible = false;
+                this.panel1.Visible = false;
+                this.listView1.Select();
+                this.listView1.Items[this.listView1.SelectedIndices[0]].Selected = true;
+                write_new_document("0", "0", "0", "0", false, "0", "0", "0", "0");
+            }
+
+            SendDataToCustomerScreen(1, 0, 1);
+        }
+
+        private void NumericUpDown_enter_quantity_KeyDown(object sender, KeyEventArgs e)
+        {
+            //throw new NotImplementedException();
+        }
+
+        
 
         private void TxtB_total_sum_KeyPress(object sender, KeyPressEventArgs e)
         {
@@ -1464,11 +1639,11 @@ namespace Cash8
                 {
                     if (check_type.SelectedIndex == 0)
                     {
-                        lvi.SubItems[5].Text = (Math.Round(Convert.ToDouble(lvi.SubItems[4].Text) - Convert.ToDouble(lvi.SubItems[4].Text) * Discount, 2)).ToString();//Цена со скидкой            
+                        lvi.SubItems[5].Text = Math.Round(Convert.ToDouble(lvi.SubItems[4].Text) - Convert.ToDouble(lvi.SubItems[4].Text) * Discount, 2).ToString();//Цена со скидкой            
                     }
                     else if (check_type.SelectedIndex == 1)
                     {
-                        lvi.SubItems[7].Text = (Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)).ToString();//Это возврат 
+                        lvi.SubItems[7].Text = Math.Round(Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text),2,MidpointRounding.ToEven).ToString();//Это возврат 
                     }
                 }
                 else
@@ -1477,14 +1652,14 @@ namespace Cash8
                 }
 
                 lvi.SubItems[6].Text = ((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString());
-                lvi.SubItems[7].Text = ((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)).ToString());
+                lvi.SubItems[7].Text = Math.Round((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)),2,MidpointRounding.ToEven).ToString();
             }
             if (lvi.SubItems[8].Text.Trim() != "0")//Это подарок и необходимо проверить цена 0.01 или нет
             {
                 if (Convert.ToDouble(lvi.SubItems[4].Text.Trim()) == 0.01)
                 {
                     lvi.SubItems[6].Text = ((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString());
-                    lvi.SubItems[7].Text = ((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)).ToString());
+                    lvi.SubItems[7].Text = Math.Round((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)),2,MidpointRounding.ToEven).ToString();
                 }
             }
         }
@@ -3722,7 +3897,7 @@ namespace Cash8
             listView1.Columns.Add("Код", 90, HorizontalAlignment.Left);
             listView1.Columns.Add("Товар", 450, HorizontalAlignment.Left);
             listView1.Columns.Add("Характеристика", 1, HorizontalAlignment.Left);
-            listView1.Columns.Add("Количество", 60, HorizontalAlignment.Right);
+            listView1.Columns.Add("Количество", 80, HorizontalAlignment.Right);
             //if (MainStaticClass.SelfServiceKiosk==1)
             //{
             //    listView1.Columns.Add("Цена", 1, HorizontalAlignment.Right);
@@ -4153,203 +4328,70 @@ namespace Cash8
             this.Close();
         }
 
-        private void cash_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
-        {
-            //MessageBox.Show(cash.SelectionStart.ToString());
-            if (cash.SelectionStart == 0)
-            {
-                e.Handled = true;
-                return;
-            }
-            if (!(Char.IsDigit(e.KeyChar)) && !((e.KeyChar == '.') && (enter_quantity.Text.IndexOf(".") == -1)))
-            {
-                if (e.KeyChar != (char)Keys.Back)
-                {
-                    e.Handled = true;
-                }
-                //else
-                //{
+        //private void cash_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
+        //{
+        //    //MessageBox.Show(cash.SelectionStart.ToString());
+        //    if (cash.SelectionStart == 0)
+        //    {
+        //        e.Handled = true;
+        //        return;
+        //    }
+        //    if (!(Char.IsDigit(e.KeyChar)) && !((e.KeyChar == '.') && (enter_quantity.Text.IndexOf(".") == -1)))
+        //    {
+        //        if (e.KeyChar != (char)Keys.Back)
+        //        {
+        //            e.Handled = true;
+        //        }
+        //        //else
+        //        //{
 
-                //}
-            }
-
-
-            //if (e.KeyChar == 13)
-            //{
-            //    //calculate_rests();
-            //    //button2.Focus();
-            //    //this.listView1.Select();
-            //    //this.listView1.Items[this.listView1.Items.Count - 1].Selected = true;
-            //}
-
-            if (e.Handled == false)
-            {
-                if (e.KeyChar != (char)Keys.Back)
-                {
-                    curpos = cash.SelectionStart;
-                    if ((curpos > 1) || ((curpos == 1) && (cash.Text.Substring(0, 1) != "0")))
-                    {
-                        curpos++;
-                    }
-                }
-                else
-                {
-                    if (cash.SelectionStart != 0)
-                    {
-                        if (cash.Text.Substring(cash.SelectionStart - 1, 1) == ",")
-                        {
-                            e.Handled = true;
-                            cash.SelectionStart -= 1;
-                        }
-                        else if ((cash.SelectionStart == 2) && (!e.Handled))
-                        {
-                            curpos = 1;
-                        }
-                        else
-                        {
-                            curpos = cash.SelectionStart - 1;
-                        }
-                    }
-
-                }
-            }
-        }
+        //        //}
+        //    }
 
 
-        private void enter_quantity_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
-        {
+        //    //if (e.KeyChar == 13)
+        //    //{
+        //    //    //calculate_rests();
+        //    //    //button2.Focus();
+        //    //    //this.listView1.Select();
+        //    //    //this.listView1.Items[this.listView1.Items.Count - 1].Selected = true;
+        //    //}
 
-            if (e.KeyChar == 27)
-            {
-                this.enter_quantity.Visible = false;
-                this.panel1.Visible = false;
-                return;
-            }
+        //    if (e.Handled == false)
+        //    {
+        //        if (e.KeyChar != (char)Keys.Back)
+        //        {
+        //            curpos = cash.SelectionStart;
+        //            if ((curpos > 1) || ((curpos == 1) && (cash.Text.Substring(0, 1) != "0")))
+        //            {
+        //                curpos++;
+        //            }
+        //        }
+        //        else
+        //        {
+        //            if (cash.SelectionStart != 0)
+        //            {
+        //                if (cash.Text.Substring(cash.SelectionStart - 1, 1) == ",")
+        //                {
+        //                    e.Handled = true;
+        //                    cash.SelectionStart -= 1;
+        //                }
+        //                else if ((cash.SelectionStart == 2) && (!e.Handled))
+        //                {
+        //                    curpos = 1;
+        //                }
+        //                else
+        //                {
+        //                    curpos = cash.SelectionStart - 1;
+        //                }
+        //            }
 
-            if (e.KeyChar == 13)
-            {
-                if ((this.enter_quantity.Text.Length == 0) || (Convert.ToDecimal(this.enter_quantity.Text) == 0))
-                {
-                    MessageBox.Show("Количество не может быть пустым");
-                    return;
-                }
+        //        }
+        //    }
+        //}
 
-                if (Convert.ToInt32(this.listView1.SelectedItems[0].SubItems[3].Text) > Convert.ToInt32(this.enter_quantity.Text))
-                {
-                    //MessageBox.Show("Не администраторам запрещено менять количество на меньшее");
-                    ///////////////////////////////////////////////////////////////
-                    if (MainStaticClass.Code_right_of_user != 1)
-                    {
-                        enable_delete = false;
-                        Interface_switching isw = new Interface_switching();
-                        isw.caller_type = 3;
-                        isw.cc = this;
-                        isw.not_change_Cash_Operator = true;
-                        isw.ShowDialog();
-                        isw.Dispose();
 
-                        if (!enable_delete)
-                        {
-                            MessageBox.Show("Вам запрещено менять количество на меньшее");
-                            //this.enter_quantity.Text = "0";
-                            return;
-                        }
-                    }
-
-                    insert_incident_record(listView1.SelectedItems[0].SubItems[0].Text, (Convert.ToInt32(listView1.SelectedItems[0].SubItems[3].Text) - Convert.ToInt32(this.enter_quantity.Text)).ToString(), "1");
-
-                    ////////////////////////////////////////////////////////////////
-                    //if (!this.inventory.Checked)
-                    //{
-
-                    //if (MainStaticClass.Use_Trassir >0)
-                    //{
-                    //    string s = MainStaticClass.get_string_message_for_trassir("POSNG_POSITION_AMOUNT_DECREASE_BEGIN", numdoc.ToString(), MainStaticClass.Cash_Operator, DateTime.Now.Date.ToString("MM'/'dd'/'yyyy"), DateTime.Now.ToString("HH:mm:ss"), this.listView1.SelectedItems[0].Index.ToString(), this.enter_quantity.Text, "", "", "", MainStaticClass.CashDeskNumber.ToString(), "");
-                    //    MainStaticClass.send_data_trassir(s);
-                    //    s = MainStaticClass.get_string_message_for_trassir("POSNG_POSITION_AMOUNT_DECREASE_FAIL", numdoc.ToString(), MainStaticClass.Cash_Operator, DateTime.Now.Date.ToString("MM'/'dd'/'yyyy"), DateTime.Now.ToString("HH:mm:ss"), this.listView1.SelectedItems[0].Index.ToString(), this.enter_quantity.Text, "", "", "", MainStaticClass.CashDeskNumber.ToString(), "");
-                    //    MainStaticClass.send_data_trassir(s);
-                    //}
-                    //MessageBox.Show("Запрещено менять количество на меньшее");
-                    //this.enter_quantity.Visible = false;
-                    //this.enter_quantity.Visible = false;
-                    //this.panel1.Visible = false;
-                    //this.listView1.Select();
-                    //this.Refresh();
-                    //return;
-                    //}
-                    // MainStaticClass.write_event_in_log("Изм кол-ва на меньшее,код "+this.listView1.SelectedItems[0].SubItems[0].Text+" было " + this.listView1.SelectedItems[0].SubItems[2].Text + " стало " + this.enter_quantity.Text, "Документ чек",numdoc.ToString()); 
-                }
-                else if (Convert.ToInt32(this.listView1.SelectedItems[0].SubItems[3].Text) < Convert.ToInt32(this.enter_quantity.Text))
-                {
-
-                    //Проверка на сертификат 
-                    if (its_sertificate(this.listView1.SelectedItems[0].SubItems[0].Text.Trim()))
-                    {
-                        MessageBox.Show("Каждый сертификат продается отдельной строкой");
-                        return;
-                    }
-
-                    //if (MainStaticClass.Use_Trassir > 0)
-                    //{
-                    //    string s = MainStaticClass.get_string_message_for_trassir("POSNG_POSITION_AMOUNT_INCREASE_BEGIN", numdoc.ToString(), MainStaticClass.Cash_Operator, DateTime.Now.Date.ToString("MM'/'dd'/'yyyy"), DateTime.Now.ToString("HH:mm:ss"), this.listView1.SelectedItems[0].Index.ToString(), this.enter_quantity.Text, "", "", "", MainStaticClass.CashDeskNumber.ToString(), "");
-                    //    MainStaticClass.send_data_trassir(s);
-                    //    s = MainStaticClass.get_string_message_for_trassir("POSNG_POSITION_AMOUNT_INCREASE", numdoc.ToString(), MainStaticClass.Cash_Operator, DateTime.Now.Date.ToString("MM'/'dd'/'yyyy"), DateTime.Now.ToString("HH:mm:ss"), this.listView1.SelectedItems[0].Index.ToString(), this.enter_quantity.Text, "", "", "", MainStaticClass.CashDeskNumber.ToString(), "");
-                    //    MainStaticClass.send_data_trassir(s);               
-
-                    //}
-
-                }
-
-                this.listView1.SelectedItems[0].SubItems[3].Text = Convert.ToInt16(this.enter_quantity.Text).ToString();
-                //**********************
-                recalculate_all();
-                calculation_of_the_sum_of_the_document();
-                //show_discount_persent();
-                //**********************
-                this.enter_quantity.Visible = false;
-                this.panel1.Visible = false;
-                this.listView1.Select();
-                //this.listView1.SelectedIndices[0]
-                this.listView1.Items[this.listView1.SelectedIndices[0]].Selected = true;
-                write_new_document("0", "0", "0", "0", false, "0", "0", "0", "0");
-
-            }
-
-            if ((enter_quantity.Text.Length == 0))
-            {
-                if (e.KeyChar == 48)
-                {
-                    e.Handled = true;
-                }
-            }
-
-            if (!(Char.IsDigit(e.KeyChar)))
-            {
-
-                if (e.KeyChar != (char)Keys.Back)
-                {
-                    e.Handled = true;
-                }
-            }
-
-            //if (!(Char.IsDigit(e.KeyChar)) && !((e.KeyChar == '.') && (enter_quantity.Text.IndexOf(".") == -1) && (enter_quantity.Text.Length != 0)))
-            //{
-            //    if (e.KeyChar != (char)Keys.Back)
-            //    {
-            //        e.Handled = true;
-            //    }
-            //}
-
-            //if (!(Char.IsDigit(e.KeyChar)) && !((e.KeyChar == '.') && (enter_quantity.Text.IndexOf(".") == -1)))
-            //{
-            //    if (e.KeyChar != (char)Keys.Back)
-            //    {
-            //        e.Handled = true;
-            //    }
-            //}
-
-            SendDataToCustomerScreen(1, 0,1);
-        }
+       
 
 
         private bool its_sertificate(string code)
@@ -4653,7 +4695,7 @@ namespace Cash8
                     command.Parameters.AddWithValue("document_number", numdoc.ToString());
                     command.Parameters.AddWithValue("tovar_code", lvi.Tag);
                     command.Parameters.AddWithValue("characteristic", (lvi.SubItems[2].Tag == null ? "" : lvi.SubItems[2].Tag.ToString()));
-                    command.Parameters.AddWithValue("quantity", lvi.SubItems[3].Text);
+                    command.Parameters.AddWithValue("quantity", lvi.SubItems[3].Text.Replace(",","."));
                     command.Parameters.AddWithValue("price", lvi.SubItems[4].Text.Replace(",", "."));
                     command.Parameters.AddWithValue("price_at_a_discount", lvi.SubItems[5].Text.Replace(",", "."));
                     command.Parameters.AddWithValue("sum", lvi.SubItems[6].Text.Replace(",", "."));
@@ -9530,7 +9572,7 @@ namespace Cash8
                     return;
                 }
 
-                this.enter_quantity.Visible = true;
+                this.numericUpDown_enter_quantity.Visible = true;
                 this.panel1.Visible = true;
 
                 //this.panel1.Location = new System.Drawing.Point(this.listView1.Bounds.Location.X + this.listView1.Columns[0].Width + this.listView1.Columns[1].Width, this.listView1.Bounds.Location.Y + this.listView1.SelectedIndices[0] * this.listView1.SelectedItems[0].Bounds.Height);
@@ -9539,12 +9581,13 @@ namespace Cash8
                     this.listView1.Columns[0].Width +
                     this.listView1.Columns[1].Width,
                     //20+                   
-                    this.listView1.Bounds.Location.Y + this.listView1.SelectedIndices[0] * this.listView1.SelectedItems[0].Bounds.Height);
+                    this.tabControl1.Location.Y+
+                    this.listView1.Bounds.Location.Y + (this.listView1.SelectedIndices[0]+1) * this.listView1.SelectedItems[0].Bounds.Height);
 
-                this.enter_quantity.Text = this.listView1.SelectedItems[0].SubItems[3].Text;
+                this.numericUpDown_enter_quantity.Value = Convert.ToDecimal(this.listView1.SelectedItems[0].SubItems[3].Text);
                 this.panel1.BringToFront();
                 //this.enter_quantity.BringToFront();
-                this.enter_quantity.Focus();
+                this.numericUpDown_enter_quantity.Focus();
                 //write_new_document("0", "0", "0", "0", false);
             }
             else if (e.KeyChar == 110)
@@ -14297,6 +14340,6 @@ namespace Cash8
         {
             KeyEventArgs args = new KeyEventArgs(Keys.F12);
             OnKeyDown(args);
-        }
+        }       
     }
 }
