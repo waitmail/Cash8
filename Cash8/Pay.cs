@@ -887,10 +887,15 @@ namespace Cash8
                     }
                 }
             }
-            if (MainStaticClass.Nick_Shop == "A01")
+            //if (MainStaticClass.Nick_Shop == "A01")
+            //{
+            //    
+            //}
+            if ((MainStaticClass.IpAddressAcquiringTerminal.Trim() != "") && (MainStaticClass.IdAcquirerTerminal.Trim() != ""))
             {
                 checkBox_payment_by_sbp.Visible = true;
             }
+
             if (cc.payment_by_sbp_sales)
             {
                 checkBox_payment_by_sbp.Checked = true;                

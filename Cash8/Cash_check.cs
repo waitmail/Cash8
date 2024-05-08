@@ -9621,6 +9621,16 @@ namespace Cash8
                 {
                     return;
                 }
+                ListView view = (ListView)sender;
+                if (check_tovar_fractional(view.SelectedItems[0].SubItems[0].Text))
+                {
+                    numericUpDown_enter_quantity.DecimalPlaces = 3;
+                }
+                else
+                {
+                    numericUpDown_enter_quantity.DecimalPlaces = 0;
+                }
+
                 //Если это фискальни тогда
                 //if (MainStaticClass.Use_Fiscall_Print)
                 //{
@@ -9685,6 +9695,39 @@ namespace Cash8
             {
 
             }
+        }
+
+        private bool check_tovar_fractional(string tovar_code)
+        {
+            bool result = false;
+
+            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+            try
+            {
+                conn.Open();
+                string query = "SELECT fractional FROM tovar WHERE code ="+ tovar_code;
+                NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                result = Convert.ToBoolean(command.ExecuteScalar());
+                command.Dispose();
+                conn.Close();
+            }
+            catch (NpgsqlException ex)
+            {
+                MessageBox.Show(" Ошибка при получении признака весовой "+ex.Message);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(" Ошибка при получении признака весовой " + ex.Message);
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return result;
         }
 
         private void clear_client_Click(object sender, EventArgs e)
