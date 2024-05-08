@@ -200,7 +200,7 @@ namespace Cash8
                     salesPortionsTable.Num_doc = reader["document_number"].ToString();
                     salesPortionsTable.Num_cash = reader["cash_desk_number"].ToString();
                     salesPortionsTable.Tovar = reader["tovar_code"].ToString();
-                    salesPortionsTable.Quantity = reader["quantity"].ToString();
+                    salesPortionsTable.Quantity = reader["quantity"].ToString().Replace(",",".");
                     salesPortionsTable.Price = reader["price"].ToString().Replace(",", ".");
                     salesPortionsTable.Price_d = reader["price_at_a_discount"].ToString().Replace(",", ".");
                     salesPortionsTable.Sum = reader["sum"].ToString().Replace(",", ".");

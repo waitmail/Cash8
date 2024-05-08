@@ -245,6 +245,86 @@ namespace Cash8
             txtB_total_sum.KeyPress += TxtB_total_sum_KeyPress;
             numericUpDown_enter_quantity.KeyPress += NumericUpDown_enter_quantity_KeyPress;
             numericUpDown_enter_quantity.KeyDown += NumericUpDown_enter_quantity_KeyDown;
+            numericUpDown_enter_quantity.ValueChanged += NumericUpDown_enter_quantity_ValueChanged;
+            TextBox textBox = (TextBox)numericUpDown_enter_quantity.Controls[1];
+            textBox.KeyPress += TextBox_KeyPress;
+        }
+
+        private void TextBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+            //// Проверяем, что введенный символ - это цифра или управляющий символ
+            //if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+            //{
+            //    e.Handled = true;
+            //}
+            //else
+            //{
+            //    // Проверяем количество знаков после запятой
+            //    if (textBox.Text.Contains(","))
+            //    {
+            //        int commaPosition = textBox.Text.IndexOf(',');
+            //        int decimalCount = textBox.Text.Length - commaPosition - 1;
+            //        // Если курсор находится после запятой и количество знаков после запятой уже три или больше
+            //        if (textBox.SelectionStart > commaPosition && decimalCount > 3)
+            //        {
+            //            e.Handled = true;
+            //        }
+            //    }
+            //}
+
+            if ((Keys)e.KeyChar == Keys.Back)
+            {
+                e.Handled = true;
+            }
+            
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+            {
+                e.Handled = true;
+            }
+            else
+            {
+                
+                if (textBox.Text.Contains(","))
+                {
+
+                    if (textBox.Text.Split(',').Length == 2)
+                    {
+                        if (textBox.Text.Split(',')[1].Length < numericUpDown_enter_quantity.DecimalPlaces)
+                        {
+                            return;                        
+                        }
+                    }
+
+                if (textBox.SelectionStart >= textBox.Text.Length)
+                    {
+                        e.Handled = true;
+                    }
+                    else
+                    {
+                        int commaPosition = textBox.Text.IndexOf(',');
+                        int decimalCount = textBox.Text.Length - commaPosition - 1;
+                        if (textBox.SelectionStart > commaPosition && decimalCount >= 3)
+                        {
+                            // Если курсор находится после запятой и количество знаков после запятой уже три или больше
+                            if (textBox.SelectionLength == 0 && decimalCount == 3)
+                            {
+                                // Заменяем следующий символ, если не выделено символов для замены
+                                int selectionStart = textBox.SelectionStart;
+                                textBox.Text = textBox.Text.Remove(selectionStart, 1).Insert(selectionStart, e.KeyChar.ToString());
+                                textBox.SelectionStart = selectionStart + 1; // Сдвигаем курсор
+                                e.Handled = true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    
+
+        private void NumericUpDown_enter_quantity_ValueChanged(object sender, EventArgs e)
+        {
+            numericUpDown_enter_quantity.Value = Decimal.Round(numericUpDown_enter_quantity.Value, 3);
         }
 
         //private void enter_quantity_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
@@ -349,6 +429,7 @@ namespace Cash8
 
         private void NumericUpDown_enter_quantity_KeyPress(object sender, KeyPressEventArgs e)
         {
+
             if (e.KeyChar == 27)
             {
                 this.numericUpDown_enter_quantity.Visible = false;
@@ -386,7 +467,7 @@ namespace Cash8
                         }
                     }
 
-                    insert_incident_record(listView1.SelectedItems[0].SubItems[0].Text, (Convert.ToInt32(listView1.SelectedItems[0].SubItems[3].Text) - this.numericUpDown_enter_quantity.Value).ToString(), "1");
+                    insert_incident_record(listView1.SelectedItems[0].SubItems[0].Text, Math.Round(Convert.ToDecimal(listView1.SelectedItems[0].SubItems[3].Text) - this.numericUpDown_enter_quantity.Value,2,MidpointRounding.ToEven).ToString().Replace(",","."), "1");
 
                 }
                 else if (Convert.ToDecimal(this.listView1.SelectedItems[0].SubItems[3].Text) < this.numericUpDown_enter_quantity.Value)
@@ -415,7 +496,17 @@ namespace Cash8
 
         private void NumericUpDown_enter_quantity_KeyDown(object sender, KeyEventArgs e)
         {
-            //throw new NotImplementedException();
+            //NumericUpDown numericUpDown = sender as NumericUpDown;
+
+            //// Проверяем, не превышает ли количество знаков после запятой установленное значение
+            //if (numericUpDown.Value.ToString().Split(',').Length == 2)
+            //{
+            //    if (numericUpDown.Text.Contains(",") && numericUpDown.Value.ToString().Split(',')[1].Length > numericUpDown.DecimalPlaces)
+            //    {
+            //        // Если превышает, отменяем последний ввод
+            //        e.SuppressKeyPress = true;
+            //    }
+            //}
         }
 
         
