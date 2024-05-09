@@ -99,8 +99,10 @@ namespace Cash8
         public bool payment_by_sbp = false;
         public bool payment_by_sbp_sales = false;       
 
-        public Dictionary<string, Cash_check.CdnMarkerDateTime> cdn_markers_date_time = new Dictionary<string, Cash_check.CdnMarkerDateTime>();
-        
+        //public Dictionary<string, Cash_check.CdnMarkerDateTime> cdn_markers_date_time = new Dictionary<string, Cash_check.CdnMarkerDateTime>();
+
+        public Dictionary<string, uint>  cdn_markers_result_check = new Dictionary<string, uint>();
+
         System.Windows.Forms.Timer timer = null;
 
         HttpWebRequest request = null;
@@ -111,12 +113,19 @@ namespace Cash8
         //request.KeepAlive = true;
         //request.Method = "GET"; // Или другой метод, который вы используете
 
-        public class CdnMarkerDateTime
-        {
-            public string reqId { get; set; }
+        //public class CdnMarkerDateTime
+        //{
+        //    public string reqId { get; set; }
 
-            public long reqTimestamp { get; set; }
-        }
+        //    public long reqTimestamp { get; set; }
+        //}
+
+        //public class CdnMarkersResultCheck
+        //{
+        //    public string marker_code { get; set; }
+
+        //    public Int16 result_check { get; set; }
+        //}
 
         public class CustomerScreen
         {
@@ -3024,7 +3033,8 @@ namespace Cash8
                                                         codes.Add(mark_str_cdn);
                                                         //mark_str_cdn = mark_str_cdn.Replace("'", "vasya2021");
                                                         mark_str_cdn = mark_str_cdn.Replace("'", "\'");
-                                                        if (!cdn.check_marker_code(codes, mark_str, ref this.cdn_markers_date_time, this.numdoc, ref request, mark_str_cdn,lvi.SubItems[0].Text, lvi.SubItems[1].Text))
+
+                                                        if (!cdn.check_marker_code(codes, mark_str, this.numdoc, ref request, mark_str_cdn,lvi.SubItems[0].Text, lvi.SubItems[1].Text))
                                                         {
                                                             return;
                                                         }
@@ -3134,7 +3144,7 @@ namespace Cash8
                                                 {
                                                     if (!cdn_check)//пока те что проверяем по сдн не проверяем на маркировку 
                                                     {
-                                                        if (!new PrintingUsingLibraries().check_marking_code(imc, this.numdoc.ToString()))
+                                                        if (!new PrintingUsingLibraries().check_marking_code(imc, this.numdoc.ToString()),ref this.cdn_markers_result_check)
                                                         {
                                                             error = true;
                                                         }

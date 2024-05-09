@@ -384,7 +384,7 @@ namespace Cash8
             return cDNHealth;
         }
                
-        public bool check_marker_code(List<string> codes, string mark_str, ref Dictionary<string, Cash_check.CdnMarkerDateTime> cdn_markers_date_time, Int64 numdoc, ref HttpWebRequest request, string mark_str_cdn,string tovar_code,string tovar_name)
+        public bool check_marker_code(List<string> codes, string mark_str, Int64 numdoc, ref HttpWebRequest request, string mark_str_cdn,string tovar_code,string tovar_name)
         {
 
             bool result_check = false;
@@ -588,10 +588,11 @@ namespace Cash8
                         if (sb.Length == 0)
                         {
                             result_check = true;
-                            Cash_check.CdnMarkerDateTime cdnMarkerDateTime = new Cash_check.CdnMarkerDateTime();
-                            cdnMarkerDateTime.reqId = answer_check_mark.reqId;
-                            cdnMarkerDateTime.reqTimestamp = answer_check_mark.reqTimestamp;
-                            cdn_markers_date_time[mark_str] = cdnMarkerDateTime;
+                            
+                            //Cash_check.CdnMarkerDateTime cdnMarkerDateTime = new Cash_check.CdnMarkerDateTime();
+                            //cdnMarkerDateTime.reqId = answer_check_mark.reqId;
+                            //cdnMarkerDateTime.reqTimestamp = answer_check_mark.reqTimestamp;
+                            //cdn_markers_date_time[mark_str] = cdnMarkerDateTime;
                             break;//проверка успешно завершена
                         }
                         else

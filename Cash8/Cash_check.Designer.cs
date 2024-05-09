@@ -443,9 +443,9 @@
             this.listView_sertificates.HideSelection = false;
             this.listView_sertificates.Location = new System.Drawing.Point(3, 0);
             this.listView_sertificates.Name = "listView_sertificates";
-            this.listView_sertificates.Size = new System.Drawing.Size(922, 362);
+            this.listView_sertificates.Size = new System.Drawing.Size(784, 341);
             this.listView_sertificates.TabIndex = 0;
-            this.listView_sertificates.UseCompatibleStateImageBehavior = false;
+            this.listView_sertificates.UseCompatibleStateImageBehavior = false;            
             // 
             // txtB_sertificate_money
             // 

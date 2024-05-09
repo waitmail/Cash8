@@ -5,6 +5,7 @@ using System;
 using System.Data;
 using System.Text;
 using Npgsql;
+using System.Collections.Generic;
 
 
 namespace Cash8
@@ -1168,7 +1169,7 @@ namespace Cash8
         }      
 
 
-        public bool check_marking_code(string mark,string num_doc)
+        public bool check_marking_code(string mark,string num_doc, ref Dictionary<string, uint> cdn_markers_result_check) 
         {
             bool result = true;
             IFptr fptr = MainStaticClass.FPTR;
@@ -1222,6 +1223,7 @@ namespace Cash8
             if (validationError == 0)
             {
                 uint validationResult = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_RESULT);
+                cdn_markers_result_check[mark] = validationResult;
                 validationError = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_ERROR);
             }
             if ((validationError != 0) && (validationError != 402) && (validationError != 421))
