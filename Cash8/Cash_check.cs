@@ -3144,7 +3144,7 @@ namespace Cash8
                                                 {
                                                     if (!cdn_check)//пока те что проверяем по сдн не проверяем на маркировку 
                                                     {
-                                                        if (!new PrintingUsingLibraries().check_marking_code(imc, this.numdoc.ToString()),ref this.cdn_markers_result_check)
+                                                        if (!new PrintingUsingLibraries().check_marking_code(imc, this.numdoc.ToString(),ref this.cdn_markers_result_check))
                                                         {
                                                             error = true;
                                                         }

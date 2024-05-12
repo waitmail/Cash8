@@ -365,6 +365,7 @@ namespace Cash8
                             while (true)
                             {
                                 fptr.getMarkingCodeValidationStatus();
+                                check.cdn_markers_result_check.Clear();//если мы здесь предыдущие проверки очищаем
                                 if (fptr.getParamBool(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_VALIDATION_READY))
                                 {
                                     break;
@@ -390,7 +391,7 @@ namespace Cash8
                             }
                             //**************************************************************************
                             validationError = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_ERROR);
-                            uint validationResult = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_RESULT);
+                            //uint validationResult = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_RESULT);
                             if ((validationError != 0) && (validationError != 402) && (validationError != 421))
                             {
                                 error = true;
@@ -399,8 +400,10 @@ namespace Cash8
                                 MainStaticClass.write_event_in_log(error_decription + " " + mark, "check_marking_code", check.numdoc.ToString());
                             }
                             else
-                            {                                
+                            {
                                 // Подтверждаем реализацию товара с указанным КМ
+                                uint validationResult = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_RESULT);
+                                check.cdn_markers_result_check[mark] = validationResult;
                                 fptr.acceptMarkingCode();
                             }
                         }
@@ -517,12 +520,14 @@ namespace Cash8
                     {
                         if (!cdn_check(lvi.SubItems[0].Text.Trim(), check.numdoc.ToString()))
                         {
+                            string marker_code = lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'");
                             byte[] textAsBytes = System.Text.Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'"));
                             string mark = Convert.ToBase64String(textAsBytes);
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE, mark);
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, 2);
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_TYPE, AtolConstants.LIBFPTR_MCT12_AUTO);
-                            fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_RESULT, 5);
+                            uint result_check = check.cdn_markers_result_check[mark];
+                            fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_RESULT, result_check);
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_PROCESSING_MODE, 0);
                         }                        
                     }
@@ -871,7 +876,9 @@ namespace Cash8
 
                 if (check.check_type.SelectedIndex == 1 || !check.itsnew) //|| MainStaticClass.SystemTaxation == 3)//старый механизм работы с макрировкой, для возвратов так же пока старая схема
                 {
+                    
                     fptr.clearMarkingCodeValidationResult();
+                    check.cdn_markers_result_check.Clear();//если мы здесь предыдущие проверки очищаем
                     foreach (ListViewItem lvi in check.listView1.Items)
                     {
                         if (lvi.SubItems[14].Text.Trim().Length > 13)
@@ -879,7 +886,7 @@ namespace Cash8
                             if (cdn_check(lvi.SubItems[0].Text.Trim(), check.numdoc.ToString()))
                             {
                                 continue;
-                            }
+                            }                            
 
                             byte[] textAsBytes = System.Text.Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'"));
                             string mark = Convert.ToBase64String(textAsBytes);
@@ -944,8 +951,10 @@ namespace Cash8
                                 fptr.declineMarkingCode();
                             }
                             else
-                            {                                
+                            {
                                 // Подтверждаем реализацию товара с указанным КМ
+                                uint validationResult = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_RESULT);
+                                check.cdn_markers_result_check[mark] = validationResult;
                                 fptr.acceptMarkingCode();
                             }
                         }
@@ -1031,12 +1040,14 @@ namespace Cash8
                     {
                         if (!cdn_check(lvi.SubItems[0].Text.Trim(), check.numdoc.ToString()))
                         {
-                            byte[] textAsBytes = System.Text.Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'"));
+                            string marker_code = lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'");
+                            byte[] textAsBytes = System.Text.Encoding.Default.GetBytes(marker_code);
                             string mark = Convert.ToBase64String(textAsBytes);
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE, mark);
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, 2);
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_TYPE, AtolConstants.LIBFPTR_MCT12_AUTO);
-                            fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_RESULT, 5);
+                            uint result_check = check.cdn_markers_result_check[mark];
+                            fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_RESULT, result_check);
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_PROCESSING_MODE, 0);
                         }
                     }
@@ -1222,8 +1233,8 @@ namespace Cash8
             }
             if (validationError == 0)
             {
-                uint validationResult = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_RESULT);
-                cdn_markers_result_check[mark] = validationResult;
+                //uint validationResult = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_RESULT);
+                //cdn_markers_result_check[mark] = validationResult;
                 validationError = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_ERROR);
             }
             if ((validationError != 0) && (validationError != 402) && (validationError != 421))
@@ -1237,6 +1248,8 @@ namespace Cash8
             else
             {
                 // Подтверждаем реализацию товара с указанным КМ
+                uint validationResult = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_RESULT);
+                cdn_markers_result_check[mark] = validationResult;
                 fptr.acceptMarkingCode();
             }
             
