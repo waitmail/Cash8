@@ -615,6 +615,7 @@ namespace Cash8
                 }
                 catch (WebException ex)
                 {
+                    MessageBox.Show("check_marker_code " + host.host + " " + ex.Message);
                     MainStaticClass.write_event_in_log("check_marker_code " + host.host+" "+ex.Message, "Документ чек", numdoc.ToString());
                     if (ex.Status == WebExceptionStatus.Timeout || ex.Status == WebExceptionStatus.ConnectionClosed)
                     {
@@ -639,6 +640,7 @@ namespace Cash8
                 }
                 catch (Exception ex)
                 {
+                    MessageBox.Show("check_marker_code " + host.host + " " + ex.Message);
                     MainStaticClass.write_event_in_log("check_marker_code " + host.host + " " + ex.Message, "Документ чек", numdoc.ToString());
                     //host.dateTime = DateTime.Now.AddMinutes(15);
                     error = true;

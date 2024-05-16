@@ -5879,7 +5879,7 @@ namespace Cash8
 
                             if ((result == 421) || (result == 402))
                             {
-                                MessageBox.Show("Ошибка при проверке кодов маркировки код ошибки " + answerAddingKmArrayToTableTested.results[0].result[x].driverError.code.ToString() + " " + description);
+                                //MessageBox.Show("Ошибка при проверке кодов маркировки код ошибки " + answerAddingKmArrayToTableTested.results[0].result[x].driverError.code.ToString() + " " + description);
                                 km_adding_to_buffer(x);
                             }
                             else
