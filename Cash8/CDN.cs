@@ -463,14 +463,14 @@ namespace Cash8
                 url = host.host + codes_url;
 
                 try
-                {                    
-                                    
-                    if ((request == null)||(error))
-                    {
+                {
+
+                    //if ((request == null) || (error))
+                    //{
                         request = (HttpWebRequest)WebRequest.Create(url);
                         request.KeepAlive = true;
                         request.Timeout = 1500;
-                    }
+                    //}
                     request.Method = "POST";
 
                     // Добавление заголовков            
@@ -493,6 +493,9 @@ namespace Cash8
                     using (var dataStream = request.GetRequestStream())
                     {
                         dataStream.Write(byteArray, 0, byteArray.Length);
+                        dataStream.Flush();
+                        dataStream.Close();
+                        dataStream.Dispose();
                     }
 
                     // Получаем ответ

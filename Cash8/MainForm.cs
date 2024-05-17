@@ -514,7 +514,7 @@ namespace Cash8
             public string Version { get; set; }
             public string NickShop { get; set; }
             public string CodeShop { get; set; }
-            public string Guid { get; set; }
+            //public string Guid { get; set; }
             public List<DeletedItem> ListDeletedItem { get; set; }
 
             void IDisposable.Dispose()
@@ -547,7 +547,7 @@ namespace Cash8
                     deletedItem.tovar = reader["tovar"].ToString();
                     deletedItem.quantity = reader["quantity"].ToString();
                     deletedItem.type_of_operation = reader["type_of_operation"].ToString();
-                    deletedItem.guid = reader["guid"].ToString();
+                    deletedItem.guid = reader["guid"].ToString();                    
                     deletedItems.ListDeletedItem.Add(deletedItem);
                 }
                 reader.Close();

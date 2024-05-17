@@ -526,7 +526,11 @@ namespace Cash8
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE, mark);
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, 2);
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_TYPE, AtolConstants.LIBFPTR_MCT12_AUTO);
-                            uint result_check = check.cdn_markers_result_check[mark];
+                            uint result_check = 0;
+                            if (check.cdn_markers_result_check.ContainsKey(mark))
+                            {
+                                result_check = check.cdn_markers_result_check[mark];
+                            }
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_RESULT, result_check);
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_PROCESSING_MODE, 0);
                         }                        
@@ -1046,7 +1050,11 @@ namespace Cash8
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE, mark);
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, 2);
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_TYPE, AtolConstants.LIBFPTR_MCT12_AUTO);
-                            uint result_check = check.cdn_markers_result_check[mark];
+                            uint result_check = 0;
+                            if (check.cdn_markers_result_check.ContainsKey(mark))
+                            {
+                                result_check = check.cdn_markers_result_check[mark];
+                            }
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_RESULT, result_check);
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_PROCESSING_MODE, 0);
                         }
