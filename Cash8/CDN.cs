@@ -384,7 +384,7 @@ namespace Cash8
             return cDNHealth;
         }
                
-        public bool check_marker_code(List<string> codes, string mark_str, Int64 numdoc, ref HttpWebRequest request, string mark_str_cdn,string tovar_code,string tovar_name)
+        public bool check_marker_code(List<string> codes, string mark_str, Int64 numdoc, ref HttpWebRequest request, string mark_str_cdn,Dictionary<string,string> d_tovar,ref bool timeout)
         {
 
             bool result_check = false;
@@ -610,9 +610,9 @@ namespace Cash8
                                 sb.Insert(0, "Код маркировки " + mark_str + "\r\nне прошел проверку по следующим причинам:\r\n".ToUpper());
                             }
                             sb.Append(s);
-                            sb.AppendLine(tovar_code);
-                            sb.AppendLine(tovar_name);
-                            MessageBox.Show(sb.ToString());                            
+                            sb.AppendLine(d_tovar.Keys.ElementAt(0));
+                            sb.AppendLine(d_tovar[d_tovar.Keys.ElementAt(0)]);
+                            MessageBox.Show(sb.ToString());
                         }
                     }
                 }
@@ -653,9 +653,13 @@ namespace Cash8
                     break;
                 }
             }
+            if (cdn_list.hosts.Count == error_timeout)
+            {
+                timeout = true;
+            }
 
             return result_check;
-        }       
+        }              
 
 
         ///// <summary>

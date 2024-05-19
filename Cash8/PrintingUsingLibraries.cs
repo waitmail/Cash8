@@ -905,18 +905,9 @@ namespace Cash8
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, status);
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_QUANTITY, 1.000);
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_MEASUREMENT_UNIT, AtolConstants.LIBFPTR_IU_PIECE);
-                            fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_PROCESSING_MODE, 0);
-                            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_FRACTIONAL_QUANTITY, "1/2");
+                            fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_PROCESSING_MODE, 0);                            
                             fptr.beginMarkingCodeValidation();
-
-                            //// Дожидаемся окончания проверки и запоминаем результат
-                            //while (true)
-                            //{
-                            //    fptr.getMarkingCodeValidationStatus();
-                            //    if (fptr.getParamBool(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_VALIDATION_READY))
-                            //        break;
-                            //}
-                            //uint validationResult = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_RESULT);
+                                                        
                             DateTime start_check = DateTime.Now;
                             uint validationError = 0;
                             while (true)
@@ -926,25 +917,14 @@ namespace Cash8
                                 {
                                     break;
                                 }
-                                //else
-                                //{
-                                //    MainStaticClass.write_event_in_log(fptr.getParamBool(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_VALIDATION_READY).ToString() + " " + mark, "check_marking_code", check.numdoc.ToString());
-                                //}
-                                if ((DateTime.Now - start_check).Seconds > 2)
+
+                                if (fptr.errorCode() != 0)
                                 {
-                                    if (fptr.errorCode() != 0)
-                                    {
-                                        validationError = Convert.ToUInt16(fptr.errorCode());
-                                        //MainStaticClass.write_event_in_log("Таймаут при проверке маркировки " + mark, "check_marking_code", check.numdoc.ToString());
-                                        break;
-                                    }
-                                    //MessageBox.Show("check_marking_code таймаут при проверки qr кода " + mark);
-                                    //MainStaticClass.write_event_in_log("Таймаут при проверке маркировки " + mark, "check_marking_code", check.numdoc.ToString());
-                                    //validationError = 421;                                    
+                                    validationError = Convert.ToUInt16(fptr.errorCode());
+                                    break;
                                 }
                             }
-                            //**************************************************************************
-                            //validationError = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_ERROR);
+                            
                             if ((validationError != 0) && (validationError != 402) && (validationError != 421))
                             {
                                 error = true;
@@ -1185,14 +1165,50 @@ namespace Cash8
                     check.Close();
                 }
             }
-        }      
+        }
+
+        //public bool km_adding_to_buffer(string mark, string num_doc)
+        //{
+        //    bool result = true;                        
+        //    IFptr fptr = MainStaticClass.FPTR;
+            
+        //    if (!fptr.isOpened())
+        //    {
+        //        fptr.open();
+        //    }
+        //    fptr.resetError();
+
+        //    uint status = 2;
+
+        //    fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_TYPE, AtolConstants.LIBFPTR_MCT12_AUTO);
+        //    fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE, mark);
+        //    fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, status);
+        //    fptr.setParam(AtolConstants.LIBFPTR_PARAM_QUANTITY, 1.000);
+        //    fptr.setParam(AtolConstants.LIBFPTR_PARAM_MEASUREMENT_UNIT, AtolConstants.LIBFPTR_IU_PIECE);
+        //    fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_PROCESSING_MODE, 0);
+        //    fptr.beginMarkingCodeValidation();
+        //    fptr.getMarkingCodeValidationStatus();
+        //    fptr.acceptMarkingCode();
+        //    if (fptr.errorCode() != 0)
+        //    {
+        //        result = false;
+        //        MessageBox.Show("Ошибка при попытке добавить код маркировки в буфер проверенных \r\nКод ошибки = " + fptr.errorCode().ToString() + "\r\nОписание ошибки = " + fptr.errorDescription() + "\r\n" + mark);
+        //        MainStaticClass.write_event_in_log("Ошибка при попытке добавить код маркировки в буфер проверенных \r\nКод ошибки = " + fptr.errorCode().ToString() + "\r\nОписание ошибки = " + fptr.errorDescription()+"\r\n"+mark, "Документ", num_doc);
+        //    }
+        //    else
+        //    {
+        //        MainStaticClass.write_event_in_log("Удачное добавление кода маркировки " + mark+" в буфер проверенных ","Документ", num_doc);
+        //    }
+
+        //    return result;
+        //}
 
 
         public bool check_marking_code(string mark,string num_doc, ref Dictionary<string, uint> cdn_markers_result_check) 
         {
             bool result = true;
             IFptr fptr = MainStaticClass.FPTR;
-            //setConnectSetting(fptr);
+            
             if (!fptr.isOpened())
             {
                 fptr.open();
@@ -1210,39 +1226,26 @@ namespace Cash8
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, status);
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_QUANTITY, 1.000);
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_MEASUREMENT_UNIT, AtolConstants.LIBFPTR_IU_PIECE);
-            fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_PROCESSING_MODE, 0);
-            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_FRACTIONAL_QUANTITY, "1/2");
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_PROCESSING_MODE, 0);            
             fptr.beginMarkingCodeValidation();
-
-            // Дожидаемся окончания проверки и запоминаем результат
-            //Необходимо установить тайм аут проверки
-            DateTime start_check = DateTime.Now;
+                        
             uint validationError = 0;
-            
+            fptr.resetError();
             while (true)
             {
                 fptr.getMarkingCodeValidationStatus();
                 if (fptr.getParamBool(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_VALIDATION_READY))
                 {
                     break;
-                }                               
-                if ((DateTime.Now - start_check).Seconds > 2)
+                }
+                if (fptr.errorCode() != 0)
                 {
-                    //MessageBox.Show("check_marking_code таймаут при проверки qr кода " + mark);
-                    //MainStaticClass.write_event_in_log(" Таймаут при проверке маркировки " + mark, "check_marking_code", num_doc);
-                    //validationError = 421;
-                    //break;
-                    if (fptr.errorCode() != 0)
-                    {
-                        validationError = Convert.ToUInt16(fptr.errorCode());
-                        break;
-                    }                   
+                    validationError = Convert.ToUInt16(fptr.errorCode());
+                    break;
                 }
             }
             if (validationError == 0)
-            {
-                //uint validationResult = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_RESULT);
-                //cdn_markers_result_check[mark] = validationResult;
+            {                
                 validationError = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_ERROR);
             }
             if ((validationError != 0) && (validationError != 402) && (validationError != 421))
@@ -1250,7 +1253,7 @@ namespace Cash8
                 result = false;
                 string error_decription = "Код ошибки = " + validationError + ";\r\nОписание ошибки " + fptr.errorDescription()+";\r\n"+fptr.getParamString(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_ERROR_DESCRIPTION);                
                 MessageBox.Show(error_decription, "Проверка кода маркировки");
-                MainStaticClass.write_event_in_log(error_decription, " Проверка маркировки " + mark, num_doc);
+                MainStaticClass.write_event_in_log(error_decription,"Документ", num_doc);
                 fptr.declineMarkingCode();
             }
             else
@@ -1259,9 +1262,8 @@ namespace Cash8
                 uint validationResult = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_RESULT);
                 cdn_markers_result_check[mark] = validationResult;
                 fptr.acceptMarkingCode();
-            }
-            
-            //fptr.close();
+            }            
+
             return result;
         }
     }
