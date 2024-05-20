@@ -252,8 +252,7 @@ namespace Cash8
             toolTip = new ToolTip();            
             toolTip.SetToolTip(this.txtB_total_sum, "Сумма без промо / Сумма с учетом промо");
             txtB_total_sum.KeyPress += TxtB_total_sum_KeyPress;
-            numericUpDown_enter_quantity.KeyPress += NumericUpDown_enter_quantity_KeyPress;
-            numericUpDown_enter_quantity.KeyDown += NumericUpDown_enter_quantity_KeyDown;
+            numericUpDown_enter_quantity.KeyPress += NumericUpDown_enter_quantity_KeyPress;            
             numericUpDown_enter_quantity.ValueChanged += NumericUpDown_enter_quantity_ValueChanged;
             TextBox textBox = (TextBox)numericUpDown_enter_quantity.Controls[1];
             textBox.KeyPress += TextBox_KeyPress;
@@ -282,10 +281,10 @@ namespace Cash8
             //    }
             //}
 
-            if ((Keys)e.KeyChar == Keys.Back)
-            {
-                e.Handled = true;
-            }
+            //if ((Keys)e.KeyChar == Keys.Back)
+            //{
+            //    e.Handled = true;
+            //}
             
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
             {
@@ -502,23 +501,7 @@ namespace Cash8
 
             SendDataToCustomerScreen(1, 0, 1);
         }
-
-        private void NumericUpDown_enter_quantity_KeyDown(object sender, KeyEventArgs e)
-        {
-            //NumericUpDown numericUpDown = sender as NumericUpDown;
-
-            //// Проверяем, не превышает ли количество знаков после запятой установленное значение
-            //if (numericUpDown.Value.ToString().Split(',').Length == 2)
-            //{
-            //    if (numericUpDown.Text.Contains(",") && numericUpDown.Value.ToString().Split(',')[1].Length > numericUpDown.DecimalPlaces)
-            //    {
-            //        // Если превышает, отменяем последний ввод
-            //        e.SuppressKeyPress = true;
-            //    }
-            //}
-        }
-
-        
+              
 
         private void TxtB_total_sum_KeyPress(object sender, KeyPressEventArgs e)
         {
@@ -9625,20 +9608,20 @@ namespace Cash8
         }
 
 
-        private void pd_PrintPage(object sender, PrintPageEventArgs e)
-        {
-            if (count_pages < print_data.Length - 1)
-            {
-                count_pages++;
-                e.HasMorePages = true;
-            }
-            else
-            {
-                e.HasMorePages = false;
-            }
-            e.Graphics.DrawString(print_data[count_pages].ToString(), Font, new SolidBrush(Color.Black), new RectangleF(5, 5, 400, 120000));
+        //private void pd_PrintPage(object sender, PrintPageEventArgs e)
+        //{
+        //    if (count_pages < print_data.Length - 1)
+        //    {
+        //        count_pages++;
+        //        e.HasMorePages = true;
+        //    }
+        //    else
+        //    {
+        //        e.HasMorePages = false;
+        //    }
+        //    e.Graphics.DrawString(print_data[count_pages].ToString(), Font, new SolidBrush(Color.Black), new RectangleF(5, 5, 400, 120000));
 
-        }
+        //}
 
         private void listView1_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
         {
@@ -9711,6 +9694,11 @@ namespace Cash8
 
                 this.numericUpDown_enter_quantity.Visible = true;
                 this.panel1.Visible = true;
+                               
+                
+                
+
+
 
                 //this.panel1.Location = new System.Drawing.Point(this.listView1.Bounds.Location.X + this.listView1.Columns[0].Width + this.listView1.Columns[1].Width, this.listView1.Bounds.Location.Y + this.listView1.SelectedIndices[0] * this.listView1.SelectedItems[0].Bounds.Height);
                 this.panel1.Location = new System.Drawing.Point(this.tabControl1.Location.X +
@@ -9725,6 +9713,11 @@ namespace Cash8
                 this.panel1.BringToFront();
                 //this.enter_quantity.BringToFront();
                 this.numericUpDown_enter_quantity.Focus();
+
+                TextBox tb = (TextBox)numericUpDown_enter_quantity.Controls[1];                                
+                tb.SelectionStart = 0;
+                tb.SelectionLength = tb.Text.Length;//gaa
+
                 //write_new_document("0", "0", "0", "0", false);
             }
             else if (e.KeyChar == 110)
