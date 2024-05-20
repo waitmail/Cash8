@@ -61,7 +61,7 @@ namespace Cash8.DS {
         
         private System.Threading.SendOrPostCallback UploadDeletedItemsOperationCompleted;
         
-        private System.Threading.SendOrPostCallback UploadCodeClientsOperationCompleted;
+        private System.Threading.SendOrPostCallback GetTovarCheckCDNOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetDataForCasheV8JasonOperationCompleted;
         
@@ -162,7 +162,7 @@ namespace Cash8.DS {
         public event UploadDeletedItemsCompletedEventHandler UploadDeletedItemsCompleted;
         
         /// <remarks/>
-        public event UploadCodeClientsCompletedEventHandler UploadCodeClientsCompleted;
+        public event GetTovarCheckCDNCompletedEventHandler GetTovarCheckCDNCompleted;
         
         /// <remarks/>
         public event GetDataForCasheV8JasonCompletedEventHandler GetDataForCasheV8JasonCompleted;
@@ -689,9 +689,9 @@ namespace Cash8.DS {
         }
         
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/UploadCodeClients", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public string UploadCodeClients(string nick_shop, string data, string scheme) {
-            object[] results = this.Invoke("UploadCodeClients", new object[] {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetTovarCheckCDN", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public string GetTovarCheckCDN(string nick_shop, string data, string scheme) {
+            object[] results = this.Invoke("GetTovarCheckCDN", new object[] {
                         nick_shop,
                         data,
                         scheme});
@@ -699,25 +699,25 @@ namespace Cash8.DS {
         }
         
         /// <remarks/>
-        public void UploadCodeClientsAsync(string nick_shop, string data, string scheme) {
-            this.UploadCodeClientsAsync(nick_shop, data, scheme, null);
+        public void GetTovarCheckCDNAsync(string nick_shop, string data, string scheme) {
+            this.GetTovarCheckCDNAsync(nick_shop, data, scheme, null);
         }
         
         /// <remarks/>
-        public void UploadCodeClientsAsync(string nick_shop, string data, string scheme, object userState) {
-            if ((this.UploadCodeClientsOperationCompleted == null)) {
-                this.UploadCodeClientsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnUploadCodeClientsOperationCompleted);
+        public void GetTovarCheckCDNAsync(string nick_shop, string data, string scheme, object userState) {
+            if ((this.GetTovarCheckCDNOperationCompleted == null)) {
+                this.GetTovarCheckCDNOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetTovarCheckCDNOperationCompleted);
             }
-            this.InvokeAsync("UploadCodeClients", new object[] {
+            this.InvokeAsync("GetTovarCheckCDN", new object[] {
                         nick_shop,
                         data,
-                        scheme}, this.UploadCodeClientsOperationCompleted, userState);
+                        scheme}, this.GetTovarCheckCDNOperationCompleted, userState);
         }
         
-        private void OnUploadCodeClientsOperationCompleted(object arg) {
-            if ((this.UploadCodeClientsCompleted != null)) {
+        private void OnGetTovarCheckCDNOperationCompleted(object arg) {
+            if ((this.GetTovarCheckCDNCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.UploadCodeClientsCompleted(this, new UploadCodeClientsCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+                this.GetTovarCheckCDNCompleted(this, new GetTovarCheckCDNCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -1358,17 +1358,17 @@ namespace Cash8.DS {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
-    public delegate void UploadCodeClientsCompletedEventHandler(object sender, UploadCodeClientsCompletedEventArgs e);
+    public delegate void GetTovarCheckCDNCompletedEventHandler(object sender, GetTovarCheckCDNCompletedEventArgs e);
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class UploadCodeClientsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+    public partial class GetTovarCheckCDNCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
         
         private object[] results;
         
-        internal UploadCodeClientsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+        internal GetTovarCheckCDNCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }

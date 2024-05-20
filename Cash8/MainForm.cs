@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Threading;
 using Npgsql;
 using Newtonsoft.Json;
-using System.Diagnostics;
+using System.Transactions;
+
 
 
 
@@ -523,6 +523,74 @@ namespace Cash8
             }
         }
 
+        /// <summary>
+        /// Запрашивает на промежуточном сервере 
+        /// необходимость проверки в CDN 
+        /// для данного магазина и управляет этим состоянием на кассе
+        /// </summary>
+        private void get_web_tovar_check_cdn()
+        {
+            string nick_shop = MainStaticClass.Nick_Shop.Trim();
+            if (nick_shop.Trim().Length == 0)
+            {
+                MessageBox.Show(" Не удалось получить название магазина ");
+                return;
+            }
+
+            string code_shop = MainStaticClass.Code_Shop.Trim();
+            if (code_shop.Trim().Length == 0)
+            {
+                MessageBox.Show(" Не удалось получить код магазина ");
+                return;
+            }
+
+            string count_day = CryptorEngine.get_count_day();
+            string key = nick_shop.Trim() + count_day.Trim() + code_shop.Trim();            
+            string encrypt_string = CryptorEngine.Encrypt(code_shop, true, key);            
+
+            Cash8.DS.DS ds = MainStaticClass.get_ds();
+            ds.Timeout = 200000;
+
+            string answer_crypt = ds.GetTovarCheckCDN(nick_shop, encrypt_string, MainStaticClass.GetWorkSchema.ToString());
+            string decrypt_data = CryptorEngine.Decrypt(answer_crypt, true, key);
+            if (decrypt_data != "-1")
+            {
+                if (decrypt_data != MainStaticClass.EnableCdnMarkers.ToString())
+                {
+                    string updateSql = "UPDATE constants SET enable_cdn_markers =" + (decrypt_data == "1" ? true : false);
+                    UpdateDatabaseAndVariable(updateSql, decrypt_data);
+                }
+            }
+        }
+
+
+        public void UpdateDatabaseAndVariable(string updateSql,string decrypt_data)
+        {
+            using (TransactionScope scope = new TransactionScope())
+            {
+                
+                using (NpgsqlConnection conn = MainStaticClass.NpgsqlConn())
+                {
+                    conn.Open();
+                    NpgsqlCommand command = new NpgsqlCommand(updateSql, conn);
+
+                    // Изменение в базе данных
+                    int rowwaffected = command.ExecuteNonQuery();
+
+                    // Изменение переменной программы
+                    MainStaticClass.EnableCdnMarkers = -1;
+
+                    // Проверка условий и завершение транзакции
+                    if (rowwaffected>0)
+                    {
+                        scope.Complete();
+                    }
+                }
+            }
+        }
+
+
+
         private void UploadDeletedItems()
         {
             DeletedItems deletedItems = new DeletedItems();
@@ -710,7 +778,7 @@ namespace Cash8
                 sdsp.send_sales_data_Click(null, null);
                 sdsp.Dispose();
                 UploadDeletedItems();
-
+                get_web_tovar_check_cdn();
                 //if (MainStaticClass.PassPromo != "")
                 //{
                 //    if (MainStaticClass.GetWorkSchema == 1)
@@ -1038,13 +1106,14 @@ namespace Cash8
             {
                 MainStaticClass.Version2Marking = 0;
             }
-            if (MainStaticClass.CashDeskNumber != 9 && MainStaticClass.EnableCdnMarkers == 1)
+            if (MainStaticClass.CashDeskNumber != 9)//&& MainStaticClass.EnableCdnMarkers == 1
             {
                 if (MainStaticClass.CDN_Token == "")
                 {
                     MessageBox.Show("В этой кассе не заполнен CDN токен, \r\n ПРОДАЖА МАРКИРОВАННОГО ТОВАРА ОГРАНИЧЕНА/НЕВОЗМОЖНА!", "Проверка CDN");
-                }
+                }                
             }
+            
         }
 
         //private void get_cdn_with_start()

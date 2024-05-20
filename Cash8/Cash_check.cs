@@ -9694,11 +9694,6 @@ namespace Cash8
 
                 this.numericUpDown_enter_quantity.Visible = true;
                 this.panel1.Visible = true;
-                               
-                
-                
-
-
 
                 //this.panel1.Location = new System.Drawing.Point(this.listView1.Bounds.Location.X + this.listView1.Columns[0].Width + this.listView1.Columns[1].Width, this.listView1.Bounds.Location.Y + this.listView1.SelectedIndices[0] * this.listView1.SelectedItems[0].Bounds.Height);
                 this.panel1.Location = new System.Drawing.Point(this.tabControl1.Location.X +

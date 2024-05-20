@@ -890,8 +890,12 @@ namespace Cash8
                             conn.Close();
                         }
                     }
-                }
+                }                
                 return enable_cdn_markers;
+            }
+            set
+            {
+                enable_cdn_markers = value;
             }
         }
 
