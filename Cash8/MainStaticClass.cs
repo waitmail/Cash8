@@ -2378,6 +2378,7 @@ namespace Cash8
             public string Version { get; set; }
             public string OSVersion { get; set; }
             public string DeviceInfo { get; set; }
+            public string PrintingLibraryes { get; set; }
         }
 
 #region DeviceInfo
@@ -2521,6 +2522,7 @@ namespace Cash8
             {
                 resultGetData.DeviceInfo = get_device_info_printing_libraries();
             }
+            resultGetData.PrintingLibraryes = MainStaticClass.PrintingUsingLibraries.ToString();
             //string vatin = get_registration_info();
             //if (vatin.Trim() != "")
             //{
@@ -2564,6 +2566,7 @@ namespace Cash8
             resultGetData.Successfully = "Successfully";
             resultGetData.Version = MainStaticClass.version().Replace(".", "");
             resultGetData.NumCash = MainStaticClass.CashDeskNumber.ToString();
+            resultGetData.PrintingLibraryes = MainStaticClass.PrintingUsingLibraries.ToString();
             string data = JsonConvert.SerializeObject(resultGetData, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             data_encrypt = CryptorEngine.Encrypt(data, true, key);
             using (Cash8.DS.DS ds = MainStaticClass.get_ds())
