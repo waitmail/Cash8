@@ -551,15 +551,23 @@ namespace Cash8
             Cash8.DS.DS ds = MainStaticClass.get_ds();
             ds.Timeout = 200000;
 
-            string answer_crypt = ds.GetTovarCheckCDN(nick_shop, encrypt_string, MainStaticClass.GetWorkSchema.ToString());
-            string decrypt_data = CryptorEngine.Decrypt(answer_crypt, true, key);
-            if (decrypt_data != "-1")
+            try
             {
-                if (decrypt_data != MainStaticClass.EnableCdnMarkers.ToString())
+
+                string answer_crypt = ds.GetTovarCheckCDN(nick_shop, encrypt_string, MainStaticClass.GetWorkSchema.ToString());
+                string decrypt_data = CryptorEngine.Decrypt(answer_crypt, true, key);
+                if (decrypt_data != "-1")
                 {
-                    string updateSql = "UPDATE constants SET enable_cdn_markers =" + (decrypt_data == "1" ? true : false);
-                    UpdateDatabaseAndVariable(updateSql, decrypt_data);
+                    if (decrypt_data != MainStaticClass.EnableCdnMarkers.ToString())
+                    {
+                        string updateSql = "UPDATE constants SET enable_cdn_markers =" + (decrypt_data == "1" ? true : false);
+                        UpdateDatabaseAndVariable(updateSql, decrypt_data);
+                    }
                 }
+            }
+            catch
+            {
+
             }
         }
 

@@ -288,7 +288,13 @@ namespace Cash8
             
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
             {
-                e.Handled = true;
+                if (e.KeyChar.ToString() == ",")
+                {
+                    if (textBox.Text.Contains(","))
+                    {
+                        e.Handled = true;
+                    }
+                }                
             }
             else
             {
@@ -7035,6 +7041,8 @@ namespace Cash8
         }
 
 
+
+
         /// <summary>
         /// Печать чеа по ффд 1.2
         /// </summary>
@@ -7164,7 +7172,7 @@ namespace Cash8
                         item.type = "position";
                         item.amount = Convert.ToDouble(lvi.SubItems[7].Text);
                         item.tax = new FiscallPrintJason2.Tax();
-                        item.measurementUnit = "piece";
+                        item.measurementUnit = MainStaticClass.check_fractional_tovar(lvi.SubItems[0].Text.Trim()); //piece
                         if (its_excise(lvi.SubItems[0].Text.Trim()) == 0)
                         {
                             if (lvi.SubItems[14].Text.Trim().Length <= 13)//код маркировки не заполнен
@@ -7768,7 +7776,7 @@ namespace Cash8
                         item.type = "position";
                         item.amount = Convert.ToDouble(lvi.SubItems[7].Text);
                         item.tax = new FiscallPrintJason2.Tax();
-                        item.measurementUnit = "piece";
+                        item.measurementUnit = MainStaticClass.check_fractional_tovar(lvi.SubItems[0].Text.Trim());// "piece";
                         if (lvi.SubItems[14].Text.Trim().Length <= 13)//код маркировки не заполнен оригинальное условие                          
                         {
                             item.paymentObject = "commodityWithoutMarking";
@@ -8618,7 +8626,7 @@ namespace Cash8
                             item.amount = Convert.ToDouble(lvi.SubItems[7].Text);
                             item.tax = new FiscallPrintJason2.Tax();
                             item.tax.type = tax_type;//ндс
-                            item.measurementUnit = "piece";
+                            item.measurementUnit = MainStaticClass.check_fractional_tovar(lvi.SubItems[0].Text.Trim());// "piece";
                             if (lvi.SubItems[14].Text.Trim().Length <= 13)//Код маркировки не заполнен
                             {
                                 item.paymentObject = "commodityWithoutMarking";
@@ -8959,7 +8967,7 @@ namespace Cash8
                             item.amount = Convert.ToDouble(lvi.SubItems[7].Text);
                             item.tax = new FiscallPrintJason2.Tax();
                             item.tax.type = tax_type;//ндс
-                            item.measurementUnit = "piece";
+                            item.measurementUnit = MainStaticClass.check_fractional_tovar(lvi.SubItems[0].Text.Trim());// "piece";
                             if (lvi.SubItems[14].Text.Trim().Length <= 13)//Код маркировки не заполнен
                             {
                                 item.paymentObject = "commodityWithoutMarking";

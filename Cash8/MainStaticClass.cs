@@ -110,22 +110,22 @@ namespace Cash8
         private static string id_acquirer_terminal = "00000000";
         private static string ip_address_acquiring_terminal = "000000000000000";
         private static int enable_cdn_markers = -1;
-        private static int version2_marking =-1;
+        private static int version2_marking = -1;
         private static int authorization_required = -1;
         private static int static_guid_in_print = -1;
         private static int printing_using_libraries = -1;
-        private static IFptr _fptr=null;
+        private static IFptr _fptr = null;
         private static string cdn_token = "";
         private static int this_new_database = 0;
         private static Cash8.CDN.CDN_List CDN_list = null;
-        private static string fiscal_drive_number="";//номер фискального регистратора 
+        private static string fiscal_drive_number = "";//номер фискального регистратора 
 
         public static Cash8.CDN.CDN_List CDN_List
         {
             get
             {
                 if (CDN_list == null)
-                {                    
+                {
                     CDN cdn = new CDN();
                     CDN_list = cdn.get_cdn_list();
                     //if (CDN_list != null)
@@ -162,6 +162,42 @@ namespace Cash8
             }
         }
 
+
+        public static string check_fractional_tovar(string tovar_code)
+        {
+            string result = "piece";
+
+            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+            try
+            {
+                conn.Open();
+                string query = "SELECT fractional FROM tovar WHERE code="+tovar_code;
+                NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                if (Convert.ToBoolean(command.ExecuteScalar()))
+                {
+                    result = "kilogram";
+                }
+                conn.Close();
+                command.Dispose();
+            }
+            catch (NpgsqlException ex)
+            {
+                MessageBox.Show("Ошибка при получении признака весовой "+ex.Message);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ошибка при получении признака весовой " + ex.Message);
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return result;
+        }
 
         /// <summary>
         /// Возвращает false если нажатие 
