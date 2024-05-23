@@ -607,7 +607,8 @@ namespace Cash8
                     "tovar," +
                     "quantity," +
                     "type_of_operation," +
-                    "guid)	VALUES(" +
+                    "guid," +
+                    "autor)	VALUES(" +
                     numdoc.ToString() + "," +
                     num_cash.Tag.ToString() + ",'" +
                      date_time_start.Text.Replace("Чек", "").Trim() + "','" +
@@ -615,7 +616,8 @@ namespace Cash8
                     tovar.ToString() + "," +
                     quantity.ToString() + "," +
                     type_of_operation + ",'"+
-                    guid+"');";
+                    guid+"','" +
+                    MainStaticClass.CashOperatorInn+"');";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 command.ExecuteNonQuery();
                 command.Dispose();

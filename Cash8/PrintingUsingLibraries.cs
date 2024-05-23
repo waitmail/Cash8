@@ -635,8 +635,16 @@ namespace Cash8
             while (fptr.checkDocumentClosed() < 0)
             {
                 // Не удалось проверить состояние документа. Вывести пользователю текст ошибки, попросить устранить неполадку и повторить запрос
-                MessageBox.Show(fptr.errorDescription());
-                continue;
+                MessageBox.Show(fptr.errorCode().ToString()+" "+ fptr.errorDescription()," Ошибка при печати чека ");
+                if (MessageBox.Show(" Продолжать попытки печати чека ", "Ошибка при печати чека", MessageBoxButtons.YesNo,MessageBoxIcon.Error) == DialogResult.Yes)
+                {
+                    continue;
+                }
+                else
+                {
+                    error = true;
+                    break;                    
+                }
             }
 
             if ((!fptr.getParamBool(AtolConstants.LIBFPTR_PARAM_DOCUMENT_CLOSED)) || (error))
@@ -1126,11 +1134,26 @@ namespace Cash8
             // Закрытие чека
             fptr.closeReceipt();
 
+            //while (fptr.checkDocumentClosed() < 0)
+            //{
+            //    // Не удалось проверить состояние документа. Вывести пользователю текст ошибки, попросить устранить неполадку и повторить запрос
+            //    MessageBox.Show(fptr.errorDescription());
+            //    continue;
+            //}
+
             while (fptr.checkDocumentClosed() < 0)
             {
                 // Не удалось проверить состояние документа. Вывести пользователю текст ошибки, попросить устранить неполадку и повторить запрос
-                MessageBox.Show(fptr.errorDescription());
-                continue;
+                MessageBox.Show(fptr.errorCode().ToString() + " " + fptr.errorDescription(), " Ошибка при печати чека ");
+                if (MessageBox.Show(" Продолжать попытки печати чека ", "Ошибка при печати чека", MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
+                {
+                    continue;
+                }
+                else
+                {
+                    error = true;
+                    break;
+                }
             }
 
             if ((!fptr.getParamBool(AtolConstants.LIBFPTR_PARAM_DOCUMENT_CLOSED)) || (error))

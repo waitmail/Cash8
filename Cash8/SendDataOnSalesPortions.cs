@@ -711,7 +711,7 @@ namespace Cash8
                 return;
             }
 
-            Cash8.DS.DS ds = MainStaticClass.get_ds();
+            Cash8.DS.DS ds = MainStaticClass.get_ds(); 
             ds.Timeout = 180000;            
             
             //Получить параметра для запроса на сервер 

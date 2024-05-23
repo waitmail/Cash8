@@ -507,6 +507,7 @@ namespace Cash8
             public string quantity { get; set; }
             public string type_of_operation { get; set; }
             public string guid { get; set; }
+            public string autor { get; set; }
         }
 
         public class DeletedItems : IDisposable
@@ -623,7 +624,8 @@ namespace Cash8
                     deletedItem.tovar = reader["tovar"].ToString();
                     deletedItem.quantity = reader["quantity"].ToString();
                     deletedItem.type_of_operation = reader["type_of_operation"].ToString();
-                    deletedItem.guid = reader["guid"].ToString();                    
+                    deletedItem.guid = reader["guid"].ToString();
+                    deletedItem.autor = MainStaticClass.CashOperatorInn;
                     deletedItems.ListDeletedItem.Add(deletedItem);
                 }
                 reader.Close();

@@ -351,11 +351,11 @@ namespace Cash8
                 this.WindowState = FormWindowState.Normal;
                 this.BringToFront();
             }
-
-            //if (MainStaticClass.SelfServiceKiosk == 0)
-            //{
-                //btn_new_check.Visible = false;
-            //}
+            
+            if (MainStaticClass.Code_right_of_user != 1)
+            {                
+                fill.BackColor= System.Drawing.Color.FromArgb(255, 255, 192);
+            }
         }
 
         protected override void OnClosed(EventArgs e)
@@ -679,7 +679,7 @@ namespace Cash8
             }
             e.Graphics.DrawString(print_data[count_pages].ToString(), Font, new SolidBrush(Color.Black), new RectangleF(5, 5, 400, 120000));
         }
-        
+
         //private void close_day_Click(object sender, EventArgs e)
         //{
 
@@ -729,6 +729,8 @@ namespace Cash8
         //        }
         //    }
         //}
+
+        
 
         private void fill_Click(object sender, EventArgs e)
         {

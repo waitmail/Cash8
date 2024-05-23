@@ -87,12 +87,13 @@
             // 
             // fill
             // 
+            this.fill.BackColor = System.Drawing.SystemColors.Control;
             this.fill.Location = new System.Drawing.Point(300, 29);
             this.fill.Name = "fill";
             this.fill.Size = new System.Drawing.Size(75, 22);
             this.fill.TabIndex = 14;
             this.fill.Text = "Заполнить";
-            this.fill.UseVisualStyleBackColor = true;
+            this.fill.UseVisualStyleBackColor = false;
             this.fill.Click += new System.EventHandler(this.fill_Click);
             // 
             // dateTimePicker1
