@@ -261,71 +261,46 @@ namespace Cash8
         private void TextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             TextBox textBox = sender as TextBox;
-            //// Проверяем, что введенный символ - это цифра или управляющий символ
-            //if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
-            //{
-            //    e.Handled = true;
-            //}
-            //else
-            //{
-            //    // Проверяем количество знаков после запятой
-            //    if (textBox.Text.Contains(","))
-            //    {
-            //        int commaPosition = textBox.Text.IndexOf(',');
-            //        int decimalCount = textBox.Text.Length - commaPosition - 1;
-            //        // Если курсор находится после запятой и количество знаков после запятой уже три или больше
-            //        if (textBox.SelectionStart > commaPosition && decimalCount > 3)
-            //        {
-            //            e.Handled = true;
-            //        }
-            //    }
-            //}
 
-            //if ((Keys)e.KeyChar == Keys.Back)
-            //{
-            //    e.Handled = true;
-            //}
-            
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+            // Замена точки на запятую
+            if (e.KeyChar == '.')
             {
-                if (e.KeyChar.ToString() == ",")
-                {
-                    if (textBox.Text.Contains(","))
-                    {
-                        e.Handled = true;
-                    }
-                }                
+                textBox.Focus();
+                SendKeys.Send(",");
+                e.Handled = true;
+                return;
+            }
+
+            // Проверка, что введенный символ - это цифра, управляющий символ или запятая
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && e.KeyChar != ',')
+            {
+                e.Handled = true;
             }
             else
             {
-                
+                // Обработка ввода, если уже есть запятая в тексте
                 if (textBox.Text.Contains(","))
                 {
-
-                    if (textBox.Text.Split(',').Length == 2)
+                    // Проверка количества знаков после запятой
+                    string[] parts = textBox.Text.Split(',');
+                    if (parts.Length == 2 && parts[1].Length >= numericUpDown_enter_quantity.DecimalPlaces)
                     {
-                        if (textBox.Text.Split(',')[1].Length < numericUpDown_enter_quantity.DecimalPlaces)
+                        // Если курсор находится после запятой и количество знаков после запятой уже равно или больше установленного
+                        if (textBox.SelectionStart > textBox.Text.IndexOf(',') && parts[1].Length >= 3)
                         {
-                            return;                        
-                        }
-                    }
-
-                if (textBox.SelectionStart >= textBox.Text.Length)
-                    {
-                        e.Handled = true;
-                    }
-                    else
-                    {
-                        int commaPosition = textBox.Text.IndexOf(',');
-                        int decimalCount = textBox.Text.Length - commaPosition - 1;
-                        if (textBox.SelectionStart > commaPosition && decimalCount >= 3)
-                        {
-                            // Если курсор находится после запятой и количество знаков после запятой уже три или больше
-                            if (textBox.SelectionLength == 0 && decimalCount == 3)
+                            // Заменяем следующий символ, если не выделено символов для замены
+                            if (textBox.SelectionLength == 0 && parts[1].Length == 3)
                             {
-                                // Заменяем следующий символ, если не выделено символов для замены
                                 int selectionStart = textBox.SelectionStart;
-                                textBox.Text = textBox.Text.Remove(selectionStart, 1).Insert(selectionStart, e.KeyChar.ToString());
+                                if (selectionStart >= 0 && selectionStart < textBox.Text.Length)
+                                {
+                                    // Удаляем символ в позиции selectionStart, если это возможно
+                                    textBox.Text = textBox.Text.Remove(selectionStart, 1);
+                                    // Вставляем новый символ в ту же позицию
+                                    textBox.Text = textBox.Text.Insert(selectionStart, e.KeyChar.ToString());
+                                    textBox.SelectionStart = selectionStart + 1; // Сдвигаем курсор
+                                    e.Handled = true;
+                                }
                                 textBox.SelectionStart = selectionStart + 1; // Сдвигаем курсор
                                 e.Handled = true;
                             }
@@ -334,7 +309,91 @@ namespace Cash8
                 }
             }
         }
-    
+
+        //private void TextBox_KeyPress(object sender, KeyPressEventArgs e)
+        //{
+        //    TextBox textBox = sender as TextBox;
+        //    //// Проверяем, что введенный символ - это цифра или управляющий символ
+        //    //if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+        //    //{
+        //    //    e.Handled = true;
+        //    //}
+        //    //else
+        //    //{
+        //    //    // Проверяем количество знаков после запятой
+        //    //    if (textBox.Text.Contains(","))
+        //    //    {
+        //    //        int commaPosition = textBox.Text.IndexOf(',');
+        //    //        int decimalCount = textBox.Text.Length - commaPosition - 1;
+        //    //        // Если курсор находится после запятой и количество знаков после запятой уже три или больше
+        //    //        if (textBox.SelectionStart > commaPosition && decimalCount > 3)
+        //    //        {
+        //    //            e.Handled = true;
+        //    //        }
+        //    //    }
+        //    //}
+
+        //    //if ((Keys)e.KeyChar == Keys.Back)
+        //    //{
+        //    //    e.Handled = true;
+        //    //}
+        //    if (e.KeyChar == '.')
+        //    {
+        //        textBox.Focus();
+        //        SendKeys.Send(",");
+        //        e.Handled = true;
+        //        return;
+        //    }
+
+        //    if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+        //    {
+        //        if (e.KeyChar.ToString() == ",")
+        //        {
+        //            if (textBox.Text.Contains(","))
+        //            {
+        //                e.Handled = true;
+        //            }
+        //        }
+        //    }
+        //    else
+        //    {
+
+        //        if (textBox.Text.Contains(","))
+        //        {
+
+        //            if (textBox.Text.Split(',').Length == 2)
+        //            {
+        //                if (textBox.Text.Split(',')[1].Length < numericUpDown_enter_quantity.DecimalPlaces)
+        //                {
+        //                    return;
+        //                }
+        //            }
+
+        //            if (textBox.SelectionStart >= textBox.Text.Length)
+        //            {
+        //                e.Handled = true;
+        //            }
+        //            else
+        //            {
+        //                int commaPosition = textBox.Text.IndexOf(',');
+        //                int decimalCount = textBox.Text.Length - commaPosition - 1;
+        //                if (textBox.SelectionStart > commaPosition && decimalCount >= 3)
+        //                {
+        //                    // Если курсор находится после запятой и количество знаков после запятой уже три или больше
+        //                    if (textBox.SelectionLength == 0 && decimalCount == 3)
+        //                    {
+        //                        // Заменяем следующий символ, если не выделено символов для замены
+        //                        int selectionStart = textBox.SelectionStart;
+        //                        textBox.Text = textBox.Text.Remove(selectionStart, 1).Insert(selectionStart, e.KeyChar.ToString());
+        //                        textBox.SelectionStart = selectionStart + 1; // Сдвигаем курсор
+        //                        e.Handled = true;
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
+
 
         private void NumericUpDown_enter_quantity_ValueChanged(object sender, EventArgs e)
         {
@@ -2689,7 +2748,7 @@ namespace Cash8
                 if (barcode.Length > 6)
                 {
                     //command.CommandText = "select tovar.code,tovar.name,tovar.retail_price from  barcode left join tovar ON barcode.tovar_code=tovar.code where barcode='" + inputbarcode.Text + "' ";
-                    command.CommandText = "select tovar.code,tovar.name,tovar.retail_price,characteristic.name,characteristic.guid,characteristic.retail_price_characteristic,tovar.its_certificate,tovar.its_marked,tovar.cdn_check " +
+                    command.CommandText = "select tovar.code,tovar.name,tovar.retail_price,characteristic.name,characteristic.guid,characteristic.retail_price_characteristic,tovar.its_certificate,tovar.its_marked,tovar.cdn_check,tovar.fractional " +
                         " from  barcode left join tovar ON barcode.tovar_code=tovar.code " +
                     " left join characteristic ON tovar.code = characteristic.tovar_code " +
                     " where barcode='" + barcode + "' AND its_deleted=0  AND (retail_price<>0 OR characteristic.retail_price_characteristic<>0)";
@@ -2704,7 +2763,7 @@ namespace Cash8
                 else
                 {
                     //command.CommandText = "select tovar.code,tovar.name,tovar.retail_price from  tovar where tovar.code='" + inputbarcode.Text + "'";
-                    command.CommandText = "select tovar.code,tovar.name,tovar.retail_price, characteristic.name,characteristic.guid,characteristic.retail_price_characteristic,tovar.its_certificate,tovar.its_marked,tovar.cdn_check " +
+                    command.CommandText = "select tovar.code,tovar.name,tovar.retail_price, characteristic.name,characteristic.guid,characteristic.retail_price_characteristic,tovar.its_certificate,tovar.its_marked,tovar.cdn_check,tovar.fractional " +
                         " FROM tovar left join characteristic  ON tovar.code = characteristic.tovar_code where tovar.its_deleted=0 AND tovar.its_certificate=0 AND  (retail_price<>0 OR characteristic.retail_price_characteristic<>0) " +
                         " AND tovar.code='" + barcode + "'";
                     //if (MainStaticClass.Use_Trassir > 0)
@@ -2724,12 +2783,14 @@ namespace Cash8
                 listView2.Items.Clear();
                 bool find_sertificate = false;
                 bool cdn_check = false;
+                bool fractional = false;
                 //string tovar_code = ""; 
 
 
                 while (reader.Read())
                 {
                     cdn_check = Convert.ToBoolean(reader["cdn_check"]);
+                    fractional= Convert.ToBoolean(reader["fractional"]);
                     //Сначала добавляем в предварительный список listView2 для того чтобы дать выбор если таких товаров будет несколько
                     //ListViewItem lvi = new ListViewItem(reader[1].ToString());
 
@@ -3191,7 +3252,8 @@ namespace Cash8
 
                             if ((!error) || ((code_marking_error == 402) || (code_marking_error == 421) || cdn_vrifyed))//Если с qr кодом все хорошо тогда добавляем позицию иначе не добавляем 
                             {
-                                listView1.Items.Add(lvi);
+                                listView1.Items.Add(lvi);                               
+
                                 MainStaticClass.write_event_in_log("Товар добавлен " + barcode, "Документ чек", numdoc.ToString());                                
                                 if (cdn_vrifyed && MainStaticClass.PrintingUsingLibraries == 0)
                                 {                                    
@@ -3215,6 +3277,18 @@ namespace Cash8
                         else
                         {
                             listView1.Items.Add(lvi);
+                        }
+
+                        if (fractional)
+                        {
+                            listView1.Focus();
+                            listView1.Select();
+                            listView1.Items[this.listView1.Items.Count - 1].Selected = true;
+                            listView1.Items[this.listView1.Items.Count - 1].Focused  = true;
+                            SendKeys.Send("Enter");
+
+                            //listView1.Invoke((MethodInvoker)(() => listView1_ItemActivate(listView1, new EventArgs())));
+                            show_quantity_control();                           
                         }
 
 
@@ -3260,8 +3334,11 @@ namespace Cash8
                         SendDataToCustomerScreen(1, 0, 1);
                         if ((MainStaticClass.GetWorkSchema == 1) || (MainStaticClass.GetWorkSchema == 3))
                         {
-                            listView1.Select();
-                            listView1.Items[this.listView1.Items.Count - 1].Selected = true;
+                            if (!fractional)
+                            {
+                                listView1.Select();
+                                listView1.Items[this.listView1.Items.Count - 1].Selected = true;
+                            }
                             //inputbarcode.Focus();//01.08.2022 Теперь здесь для Визы автоматом переност фокуса
                         }
                         else if (MainStaticClass.GetWorkSchema == 2)
@@ -3279,16 +3356,27 @@ namespace Cash8
                     }
                     else
                     {
-                        lvi.SubItems[3].Text = (Convert.ToInt64(lvi.SubItems[3].Text) + 1).ToString();
-                        //lvi.SubItems[4].Text = listView2.Items[0].SubItems[2].Text;//Цена
-                        calculate_on_string(lvi);
-                        lvi.Selected = true;
-                        listView1.Select();
+                        if (!fractional)
+                        {
+                            lvi.SubItems[3].Text = (Convert.ToDecimal(lvi.SubItems[3].Text) + 1).ToString();
+                            calculate_on_string(lvi);
+                            lvi.Selected = true;
+                            listView1.Select();
+                        }
+                        else
+                        {
+                            listView1.Focus();
+                            listView1.Select();
+                            listView1.Items[this.listView1.Items.Count - 1].Selected = true;
+                            listView1.Items[this.listView1.Items.Count - 1].Focused = true;                            
+                            show_quantity_control();
+                        }                        
                         update_record_last_tovar(lvi.SubItems[1].Text, lvi.SubItems[4].Text);
-                        //inputbarcode.Focus();
-
                     }
-                    inputbarcode.Focus();
+                    if (!fractional)
+                    {
+                        inputbarcode.Focus();
+                    }
                     calculation_of_the_sum_of_the_document();
                 }
                 else if (listView2.Items.Count > 1)//Найденных товаров больше одного необходимо показать список выбра пользователю
@@ -9700,26 +9788,28 @@ namespace Cash8
                     return;
                 }
 
-                this.numericUpDown_enter_quantity.Visible = true;
-                this.panel1.Visible = true;
+                show_quantity_control();
 
-                //this.panel1.Location = new System.Drawing.Point(this.listView1.Bounds.Location.X + this.listView1.Columns[0].Width + this.listView1.Columns[1].Width, this.listView1.Bounds.Location.Y + this.listView1.SelectedIndices[0] * this.listView1.SelectedItems[0].Bounds.Height);
-                this.panel1.Location = new System.Drawing.Point(this.tabControl1.Location.X +
-                    this.listView1.Bounds.Location.X +
-                    this.listView1.Columns[0].Width +
-                    this.listView1.Columns[1].Width,
-                    //20+                   
-                    this.tabControl1.Location.Y+
-                    this.listView1.Bounds.Location.Y + (this.listView1.SelectedIndices[0]+1) * this.listView1.SelectedItems[0].Bounds.Height);
+                //this.numericUpDown_enter_quantity.Visible = true;
+                //this.panel1.Visible = true;
 
-                this.numericUpDown_enter_quantity.Value = Convert.ToDecimal(this.listView1.SelectedItems[0].SubItems[3].Text);
-                this.panel1.BringToFront();
-                //this.enter_quantity.BringToFront();
-                this.numericUpDown_enter_quantity.Focus();
+                ////this.panel1.Location = new System.Drawing.Point(this.listView1.Bounds.Location.X + this.listView1.Columns[0].Width + this.listView1.Columns[1].Width, this.listView1.Bounds.Location.Y + this.listView1.SelectedIndices[0] * this.listView1.SelectedItems[0].Bounds.Height);
+                //this.panel1.Location = new System.Drawing.Point(this.tabControl1.Location.X +
+                //    this.listView1.Bounds.Location.X +
+                //    this.listView1.Columns[0].Width +
+                //    this.listView1.Columns[1].Width,
+                //    //20+                   
+                //    this.tabControl1.Location.Y+
+                //    this.listView1.Bounds.Location.Y + (this.listView1.SelectedIndices[0]+1) * this.listView1.SelectedItems[0].Bounds.Height);
 
-                TextBox tb = (TextBox)numericUpDown_enter_quantity.Controls[1];                                
-                tb.SelectionStart = 0;
-                tb.SelectionLength = tb.Text.Length;//gaa
+                //this.numericUpDown_enter_quantity.Value = Convert.ToDecimal(this.listView1.SelectedItems[0].SubItems[3].Text);
+                //this.panel1.BringToFront();
+                ////this.enter_quantity.BringToFront();
+                //this.numericUpDown_enter_quantity.Focus();
+
+                //TextBox tb = (TextBox)numericUpDown_enter_quantity.Controls[1];                                
+                //tb.SelectionStart = 0;
+                //tb.SelectionLength = tb.Text.Length;//gaa
 
                 //write_new_document("0", "0", "0", "0", false);
             }
@@ -9727,6 +9817,31 @@ namespace Cash8
             {
 
             }
+        }
+
+        private void show_quantity_control()
+        {            
+            this.numericUpDown_enter_quantity.Visible = true;
+            this.panel1.Visible = true;
+
+            //this.panel1.Location = new System.Drawing.Point(this.listView1.Bounds.Location.X + this.listView1.Columns[0].Width + this.listView1.Columns[1].Width, this.listView1.Bounds.Location.Y + this.listView1.SelectedIndices[0] * this.listView1.SelectedItems[0].Bounds.Height);
+            this.panel1.Location = new System.Drawing.Point(this.tabControl1.Location.X +
+                this.listView1.Bounds.Location.X +
+                this.listView1.Columns[0].Width +
+                this.listView1.Columns[1].Width,
+                //20+                   
+                this.tabControl1.Location.Y +
+                this.listView1.Bounds.Location.Y + (this.listView1.SelectedIndices[0] + 1) * this.listView1.SelectedItems[0].Bounds.Height);
+
+            this.numericUpDown_enter_quantity.Value = Convert.ToDecimal(this.listView1.SelectedItems[0].SubItems[3].Text);
+            this.panel1.BringToFront();
+            //this.enter_quantity.BringToFront();
+            this.numericUpDown_enter_quantity.Focus();
+
+            TextBox tb = (TextBox)numericUpDown_enter_quantity.Controls[1];
+            tb.SelectionStart = 0;
+            tb.SelectionLength = tb.Text.Length;
+            //tb.Focus();
         }
 
         private bool check_tovar_fractional(string tovar_code)

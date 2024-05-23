@@ -1000,9 +1000,10 @@ namespace Cash8
                     }
                 }
 
+                queries.Add("DELETE FROM sertificates");
+
                 if (loadPacketData.ListSertificate.Count > 0)
-                {
-                    queries.Add("DELETE FROM sertificates");
+                {                    
                     foreach (Sertificate sertificate in loadPacketData.ListSertificate)
                     {
                         queries.Add(" INSERT INTO sertificates(code, code_tovar, rating, is_active)VALUES (" +

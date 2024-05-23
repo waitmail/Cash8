@@ -780,24 +780,7 @@ namespace Cash8
         public void print_sell_2_3_or_return_sell(Cash_check check, int variant)
         {
             bool error = false;
-
-            //if (check.itsnew)
-            //{
-            //    if (variant == 0)
-            //    {
-            //        if (!check.write_new_document(output, output, "0", "0", true, cash_money, non_cash_money, "0", "0"))
-            //        {
-            //            return;
-            //        }
-            //    }
-            //}
-            //***************************************************************************          
-
-            //if (MainStaticClass.SystemTaxation == 0)
-            //{
-            //    MessageBox.Show("В константах не опрелена система налогобложения, печать чеков невозможна");
-            //    return;
-            //}
+                      
 
             IFptr fptr = MainStaticClass.FPTR;
             //setConnectSetting(fptr);
@@ -1133,6 +1116,13 @@ namespace Cash8
                 }
             }
 
+            s = MainStaticClass.Nick_Shop + "-" + MainStaticClass.CashDeskNumber.ToString() + "-" + check.numdoc.ToString();// +" кассир " + this.cashier;
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, s);
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_DEFER, AtolConstants.LIBFPTR_DEFER_POST);
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_LEFT);
+            fptr.printText();
+            print_fiscal_advertisement(fptr);
+
             // Закрытие чека
             fptr.closeReceipt();
 
@@ -1162,12 +1152,12 @@ namespace Cash8
                 }
             }
 
-            s = MainStaticClass.Nick_Shop + "-" + MainStaticClass.CashDeskNumber.ToString() + "-" + check.numdoc.ToString();// +" кассир " + this.cashier;
-            fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, s);
-            fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_LEFT);
-            fptr.printText();
+            //s = MainStaticClass.Nick_Shop + "-" + MainStaticClass.CashDeskNumber.ToString() + "-" + check.numdoc.ToString();// +" кассир " + this.cashier;
+            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, s);
+            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_LEFT);
+            //fptr.printText();
+            //print_fiscal_advertisement(fptr);
 
-            print_fiscal_advertisement(fptr);
             // Завершение работы
             //fptr.close();
             if (!error)
