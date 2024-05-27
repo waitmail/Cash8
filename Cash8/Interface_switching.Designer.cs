@@ -40,7 +40,7 @@
             this.input_barcode.Name = "input_barcode";
             this.input_barcode.PasswordChar = '$';
             this.input_barcode.Size = new System.Drawing.Size(229, 20);
-            this.input_barcode.TabIndex = 0;
+            this.input_barcode.TabIndex = 0;            
             this.input_barcode.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.input_barcode_KeyPress);
             // 
             // authorization
@@ -56,8 +56,8 @@
             // 
             // fail_autorize
             // 
-            this.fail_autorize.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.fail_autorize.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.fail_autorize.BackColor = System.Drawing.SystemColors.ScrollBar;
             this.fail_autorize.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.fail_autorize.Enabled = false;

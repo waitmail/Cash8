@@ -352,7 +352,7 @@ namespace Cash8
                 this.BringToFront();
             }
             
-            if (MainStaticClass.Code_right_of_user != 1)
+            if (MainStaticClass.Code_right_of_user == 1)
             {                
                 fill.BackColor= System.Drawing.Color.FromArgb(255, 255, 192);
             }

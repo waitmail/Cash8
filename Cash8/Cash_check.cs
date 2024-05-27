@@ -1149,11 +1149,12 @@ namespace Cash8
                         this.p_remainder = Convert.ToDecimal(reader["remainder"]).ToString();//Сдача                        
                         this.date_time_start.Text = Convert.ToDateTime(reader["date_time_start"]).ToString("yyy-MM-dd HH:mm:ss");//Время создания документа
                         this.p_sum_pay = reader["cash_money"].ToString();// (reader.GetDecimal(3) + reader.GetDecimal(4)).ToString();//Сумма наличных
-                        this.p_discount = reader["discount"].ToString();// reader.GetDecimal(6).ToString();//Скидка по документу
-                                                                        //if (!reader.IsDBNull(7))
-                                                                        //{
+                        this.p_discount = reader["discount"].ToString();// reader.GetDecimal(6).ToString();//Скидка по документу                                                                         
                         this.client.Text = reader["clients_name"].ToString();//.GetString(7);//Наименование клиента если была скидка
-                                                                             //}
+                        if (this.client.Text != "")
+                        {
+                            this.Discount = 0.05;
+                        }                                                                             //}
                         this.user.Text = reader["users_name"].ToString();//.GetString(8);
                         //this.user.Text = MainStaticClass.Cash_Operator; //reader["users_name"].ToString();//.GetString(8);
                         this.pay.Text = "Напечатать F8";
@@ -1162,11 +1163,7 @@ namespace Cash8
                             checkBox_to_print_repeatedly_p.Visible = true;
                         }
 
-                        header_fill = true;
-                        //if (reader.GetBoolean(19))
-                        //{
-                        //    this.inventory.CheckState = CheckState.Checked;
-                        //}
+                        header_fill = true;                        
                         this.check_type.SelectedIndex = Convert.ToInt16(reader["check_type"]);//.GetInt16(19);
                         //this.type_pay.SelectedIndex = reader.GetInt16(22);
                         this.numdoc = Convert.ToInt64(reader["document_number"]);
@@ -1501,11 +1498,17 @@ namespace Cash8
 
                         if (enable_delete)
                         {
-                            calculation_of_the_sum_of_the_document();
-                            write_new_document("0", calculation_of_the_sum_of_the_document().ToString().Replace(",", "."), "0", "0", false, "0", "0", "0", "1"); //Это удаляемый документ
-                            closing = false;
-                            this.Close();
-                            return;
+                            ReasonsDeletionCheck reasons = new ReasonsDeletionCheck();
+                            DialogResult dialogResult = reasons.ShowDialog();
+                            if (dialogResult == DialogResult.OK)
+                            {
+                                this.comment.Text += ">>"+reasons.reason+"<<";
+                                calculation_of_the_sum_of_the_document();
+                                write_new_document("0", calculation_of_the_sum_of_the_document().ToString().Replace(",", "."), "0", "0", false, "0", "0", "0", "1"); //Это удаляемый документ
+                                closing = false;
+                                this.Close();
+                                return;
+                            }
                         }
                     }
                     else
@@ -1523,10 +1526,16 @@ namespace Cash8
                                 return;
                             //}
                         }
-                        write_new_document("0", calculation_of_the_sum_of_the_document().ToString().Replace(",", "."), "0", "0", false, "0", "0", "0", "1"); //Это удаляемый документ
-                        closing = false;
-                        this.Close();
-                        return;
+                        ReasonsDeletionCheck reasons = new ReasonsDeletionCheck();
+                        DialogResult dialogResult = reasons.ShowDialog();                       
+                        if (dialogResult == DialogResult.OK)
+                        {
+                            this.comment.Text += ">>"+reasons.reason+"<<";
+                            write_new_document("0", calculation_of_the_sum_of_the_document().ToString().Replace(",", "."), "0", "0", false, "0", "0", "0", "1"); //Это удаляемый документ
+                            closing = false;
+                            this.Close();
+                            return;
+                        }
                     }
                 }
                 if (e.KeyCode == Keys.F10)//Переключение режима на бонусирование

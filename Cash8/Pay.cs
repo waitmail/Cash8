@@ -1242,9 +1242,16 @@ namespace Cash8
                                     }
                                     if (answerTerminal.error)
                                     {
-                                        if (MessageBox.Show(" Продолжать опрос об оплате клиента по СБП ", "Продолжать опрос об оплате клиента по СБП", MessageBoxButtons.YesNo) == DialogResult.No)
+                                        if (answerTerminal.error_code != 404)
                                         {
-                                            //пользователь отказался от дальнейшего ожидания информации об оплате
+                                            if (MessageBox.Show(" Продолжать опрос об оплате клиента по СБП ", "Продолжать опрос об оплате клиента по СБП", MessageBoxButtons.YesNo) == DialogResult.No)
+                                            {
+                                                //пользователь отказался от дальнейшего ожидания информации об оплате
+                                                break;
+                                            }
+                                        }
+                                        else
+                                        {
                                             break;
                                         }
                                     }
@@ -1433,8 +1440,7 @@ namespace Cash8
             public string сode_response_in_15_field { get; set; }
             public string сode_response_in_39_field { get; set; }
             public bool error { get; set; }
-
-            
+            public int error_code { get; set; }
 
             public AnswerTerminal()
             {
@@ -1556,6 +1562,10 @@ namespace Cash8
                 status = false;
                 MessageBox.Show(" Ошибка при оплате по карте  " + ex.Message, "Оплата по терминалу");
                 answerTerminal.error = true;
+                if (ex.Message.IndexOf("404") != -1)
+                {
+                    answerTerminal.error_code = 404;
+                }
             }
             catch (Exception ex)
             {

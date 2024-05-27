@@ -213,6 +213,12 @@
     <Compile Include="ProcessingOfActions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReasonsDeletionCheck.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ReasonsDeletionCheck.Designer.cs">
+      <DependentUpon>ReasonsDeletionCheck.cs</DependentUpon>
+    </Compile>
     <Compile Include="WortWithMarkingV3.cs" />
     <Compile Include="СheckKmArray.cs" />
     <EmbeddedResource Include="Cash_check.resx">
@@ -277,6 +283,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReasonsDeletionCheck.resx">
+      <DependentUpon>ReasonsDeletionCheck.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SendDataOnSalesPortions.resx">
       <DependentUpon>SendDataOnSalesPortions.cs</DependentUpon>

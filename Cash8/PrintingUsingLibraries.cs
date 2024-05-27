@@ -39,6 +39,9 @@ namespace Cash8
             {
                 fptr.open();
             }
+            fptr.setParam(1021, MainStaticClass.Cash_Operator);
+            fptr.setParam(1203, MainStaticClass.CashOperatorInn);
+            fptr.operatorLogin();
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_REPORT_TYPE, AtolConstants.LIBFPTR_RT_LAST_DOCUMENT);
             fptr.report();
         }
@@ -166,6 +169,10 @@ namespace Cash8
             {
                 fptr.open();
             }
+            fptr.setParam(1021, MainStaticClass.Cash_Operator);
+            fptr.setParam(1203, MainStaticClass.CashOperatorInn);
+            fptr.operatorLogin();
+
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_DATA_TYPE, AtolConstants.LIBFPTR_DT_CASH_SUM);
             fptr.queryData();
             double cashSum = fptr.getParamDouble(AtolConstants.LIBFPTR_PARAM_SUM);
@@ -221,6 +228,9 @@ namespace Cash8
             {
                 fptr.open();
             }
+            fptr.setParam(1021, MainStaticClass.Cash_Operator);
+            fptr.setParam(1203, MainStaticClass.CashOperatorInn);
+            fptr.operatorLogin();
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_REPORT_TYPE, AtolConstants.LIBFPTR_RT_X);
             if (fptr.report() != 0)
             {
@@ -238,6 +248,9 @@ namespace Cash8
             {
                 fptr.open();
             }
+            fptr.setParam(1021, MainStaticClass.Cash_Operator);
+            fptr.setParam(1203, MainStaticClass.CashOperatorInn);
+            fptr.operatorLogin();
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_REPORT_TYPE, AtolConstants.LIBFPTR_RT_CLOSE_SHIFT);
             if (fptr.report() != 0)
             {
@@ -595,6 +608,7 @@ namespace Cash8
                     //fptr.beginNonfiscalDocument();
                     s = "Вами получена скидка " + check.calculation_of_the_discount_of_the_document().ToString().Replace(",", ".") + " " + MainStaticClass.get_currency();
                     fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, s);
+                    fptr.setParam(AtolConstants.LIBFPTR_PARAM_DEFER, AtolConstants.LIBFPTR_DEFER_POST);
                     fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
                     fptr.printText();
 
@@ -604,6 +618,7 @@ namespace Cash8
                         {
                             s = "ДК: стандартная скидка";
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, s);
+                            fptr.setParam(AtolConstants.LIBFPTR_PARAM_DEFER, AtolConstants.LIBFPTR_DEFER_POST);
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_LEFT);
                             fptr.printText();
                         }
@@ -611,12 +626,14 @@ namespace Cash8
                         {
                             s = "ДК: " + check.client.Tag.ToString();
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, s);
+                            fptr.setParam(AtolConstants.LIBFPTR_PARAM_DEFER, AtolConstants.LIBFPTR_DEFER_POST);
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_LEFT);
                             fptr.printText();
                         }
                     }
                     s = "ДК: " + MainStaticClass.Nick_Shop + "-" + MainStaticClass.CashDeskNumber.ToString() + "-" + check.numdoc.ToString();// +" кассир " + this.cashier;
                     fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, s);
+                    fptr.setParam(AtolConstants.LIBFPTR_PARAM_DEFER, AtolConstants.LIBFPTR_DEFER_POST);
                     fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_LEFT);
                     fptr.printText();
                     //fptr.endNonfiscalDocument();
@@ -1087,13 +1104,14 @@ namespace Cash8
             }
             string s = "";
             if (check.check_type.SelectedIndex == 0)//это продажа
-            {
+            {                
                 if (check.Discount != 0)
                 {
                     s = "Вами получена скидка " + check.calculation_of_the_discount_of_the_document().ToString().Replace(",", ".") + " " + MainStaticClass.get_currency();
                     fptr.beginNonfiscalDocument();
 
                     fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, s);
+                    fptr.setParam(AtolConstants.LIBFPTR_PARAM_DEFER, AtolConstants.LIBFPTR_DEFER_POST);
                     fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
                     fptr.printText();
 
@@ -1103,6 +1121,7 @@ namespace Cash8
                         {
                             s = "ДК: стандартная скидка";
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, s);
+                            fptr.setParam(AtolConstants.LIBFPTR_PARAM_DEFER, AtolConstants.LIBFPTR_DEFER_POST);
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_LEFT);
                             fptr.printText();
                         }
@@ -1110,6 +1129,7 @@ namespace Cash8
                         {
                             s = "ДК: " + check.client.Tag.ToString();
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, s);
+                            fptr.setParam(AtolConstants.LIBFPTR_PARAM_DEFER, AtolConstants.LIBFPTR_DEFER_POST);
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_LEFT);
                             fptr.printText();
                         }
@@ -1117,9 +1137,10 @@ namespace Cash8
 
                     s = "ДК: " + MainStaticClass.Nick_Shop + "-" + MainStaticClass.CashDeskNumber.ToString() + "-" + check.numdoc.ToString();// +" кассир " + this.cashier;
                     fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, s);
+                    fptr.setParam(AtolConstants.LIBFPTR_PARAM_DEFER, AtolConstants.LIBFPTR_DEFER_POST);
                     fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_LEFT);
                     fptr.printText();
-                    fptr.endNonfiscalDocument();
+                    //fptr.endNonfiscalDocument();
 
                 }
             }

@@ -240,6 +240,7 @@ namespace Cash8
                 conn.Open();
                 //string query = "SELECT users._right_,nick FROM users left join clients on users.client_code=clients.code where clients.barcode='" + user_code + "'";
                 string query = "SELECT users._right_,nick,client_code FROM users left join clients on users.client_code=clients.code where clients.code='" + user_code + "'";
+                MainStaticClass.write_event_in_log("Вход пользователя " + user_code, "Логин", "0");
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
@@ -574,7 +575,6 @@ namespace Cash8
             //{                
             //    this.Close();
             //}
-        }
-
+        }        
     }
 }
