@@ -362,17 +362,22 @@ namespace Cash8
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_QUANTITY, 1.000);
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_MEASUREMENT_UNIT, AtolConstants.LIBFPTR_IU_PIECE);
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_PROCESSING_MODE, 0);
-                            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_FRACTIONAL_QUANTITY, "1/2");
+                            fptr.resetError();
                             fptr.beginMarkingCodeValidation();
+                            if (fptr.errorCode() == 401)
+                            {
+                                fptr.declineMarkingCode();
 
-                            //// Дожидаемся окончания проверки и запоминаем результат
-                            //while (true)
-                            //{
-                            //    fptr.getMarkingCodeValidationStatus();
-                            //    if (fptr.getParamBool(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_VALIDATION_READY))
-                            //        break;
-                            //}
-                            //uint validationResult = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_RESULT);
+                                fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_TYPE, AtolConstants.LIBFPTR_MCT12_AUTO);
+                                fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE, mark);
+                                fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, status);
+                                fptr.setParam(AtolConstants.LIBFPTR_PARAM_QUANTITY, 1.000);
+                                fptr.setParam(AtolConstants.LIBFPTR_PARAM_MEASUREMENT_UNIT, AtolConstants.LIBFPTR_IU_PIECE);
+                                fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_PROCESSING_MODE, 0);
+
+                                fptr.beginMarkingCodeValidation();
+                            }
+                                                        
                             DateTime start_check = DateTime.Now;
                             uint validationError = 0;
                             while (true)
@@ -920,9 +925,23 @@ namespace Cash8
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, status);
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_QUANTITY, 1.000);
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_MEASUREMENT_UNIT, AtolConstants.LIBFPTR_IU_PIECE);
-                            fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_PROCESSING_MODE, 0);                            
+                            fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_PROCESSING_MODE, 0);
+                            fptr.resetError();
                             fptr.beginMarkingCodeValidation();
-                                                        
+                            if (fptr.errorCode() == 401)
+                            {
+                                fptr.declineMarkingCode();
+
+                                fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_TYPE, AtolConstants.LIBFPTR_MCT12_AUTO);
+                                fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE, mark);
+                                fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, status);
+                                fptr.setParam(AtolConstants.LIBFPTR_PARAM_QUANTITY, 1.000);
+                                fptr.setParam(AtolConstants.LIBFPTR_PARAM_MEASUREMENT_UNIT, AtolConstants.LIBFPTR_IU_PIECE);
+                                fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_PROCESSING_MODE, 0);
+
+                                fptr.beginMarkingCodeValidation();
+                            }
+
                             DateTime start_check = DateTime.Now;
                             uint validationError = 0;
                             while (true)
@@ -1249,7 +1268,7 @@ namespace Cash8
         //    }
 
         //    return result;
-        //}
+        //}        
 
 
         public bool check_marking_code(string mark,string num_doc, ref Dictionary<string, uint> cdn_markers_result_check) 
@@ -1274,8 +1293,22 @@ namespace Cash8
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, status);
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_QUANTITY, 1.000);
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_MEASUREMENT_UNIT, AtolConstants.LIBFPTR_IU_PIECE);
-            fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_PROCESSING_MODE, 0);            
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_PROCESSING_MODE, 0);
+            fptr.resetError();
             fptr.beginMarkingCodeValidation();
+            if (fptr.errorCode() == 401)
+            {
+                fptr.declineMarkingCode();
+
+                fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_TYPE, AtolConstants.LIBFPTR_MCT12_AUTO);
+                fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE, mark);
+                fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, status);
+                fptr.setParam(AtolConstants.LIBFPTR_PARAM_QUANTITY, 1.000);
+                fptr.setParam(AtolConstants.LIBFPTR_PARAM_MEASUREMENT_UNIT, AtolConstants.LIBFPTR_IU_PIECE);
+                fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_PROCESSING_MODE, 0);                
+
+                fptr.beginMarkingCodeValidation();
+            }
                         
             uint validationError = 0;
             fptr.resetError();

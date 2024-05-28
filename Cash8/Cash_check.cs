@@ -1502,7 +1502,7 @@ namespace Cash8
                             DialogResult dialogResult = reasons.ShowDialog();
                             if (dialogResult == DialogResult.OK)
                             {
-                                this.comment.Text += ">>"+reasons.reason+"<<";
+                                this.comment.Text += " >>"+reasons.reason+"<<";
                                 calculation_of_the_sum_of_the_document();
                                 write_new_document("0", calculation_of_the_sum_of_the_document().ToString().Replace(",", "."), "0", "0", false, "0", "0", "0", "1"); //Это удаляемый документ
                                 closing = false;
@@ -1530,7 +1530,7 @@ namespace Cash8
                         DialogResult dialogResult = reasons.ShowDialog();                       
                         if (dialogResult == DialogResult.OK)
                         {
-                            this.comment.Text += ">>"+reasons.reason+"<<";
+                            this.comment.Text += " >>"+reasons.reason+"<<";
                             write_new_document("0", calculation_of_the_sum_of_the_document().ToString().Replace(",", "."), "0", "0", false, "0", "0", "0", "1"); //Это удаляемый документ
                             closing = false;
                             this.Close();
