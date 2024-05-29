@@ -510,8 +510,8 @@ namespace Cash8
                 return;
             }
 
-                if (e.KeyChar == 13)
-                {
+            if (e.KeyChar == 13)
+            {
                 if (this.numericUpDown_enter_quantity.Value == 0)
                 {
                     MessageBox.Show("Количество не может быть пустым");
@@ -539,8 +539,16 @@ namespace Cash8
                             return;
                         }
                     }
-
-                    insert_incident_record(listView1.SelectedItems[0].SubItems[0].Text, Math.Round(Convert.ToDecimal(listView1.SelectedItems[0].SubItems[3].Text) - this.numericUpDown_enter_quantity.Value,2,MidpointRounding.ToEven).ToString().Replace(",","."), "1");
+                    ReasonsDeletionCheck reasons = new ReasonsDeletionCheck();
+                    DialogResult dialogResult = reasons.ShowDialog();
+                    if (dialogResult == DialogResult.OK)
+                    {
+                        insert_incident_record(listView1.SelectedItems[0].SubItems[0].Text, Math.Round(Convert.ToDecimal(listView1.SelectedItems[0].SubItems[3].Text) - this.numericUpDown_enter_quantity.Value, 2, MidpointRounding.ToEven).ToString().Replace(",", "."), "1",reasons.reason);
+                    }
+                    else
+                    {
+                        return;
+                    }
 
                 }
                 else if (Convert.ToDecimal(this.listView1.SelectedItems[0].SubItems[3].Text) < this.numericUpDown_enter_quantity.Value)
@@ -593,7 +601,7 @@ namespace Cash8
         //    txtB_total_sum.Text = "Сумма: "+calculation_of_the_sum_of_the_document().ToString("F2");
         //}
 
-        private void insert_incident_record(string tovar, string quantity, string type_of_operation)
+        private void insert_incident_record(string tovar, string quantity, string type_of_operation,string reason)
         {
             NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
             try
@@ -608,7 +616,8 @@ namespace Cash8
                     "quantity," +
                     "type_of_operation," +
                     "guid," +
-                    "autor)	VALUES(" +
+                    "autor,"+
+                    "reason)	VALUES(" +
                     numdoc.ToString() + "," +
                     num_cash.Tag.ToString() + ",'" +
                      date_time_start.Text.Replace("Чек", "").Trim() + "','" +
@@ -617,7 +626,8 @@ namespace Cash8
                     quantity.ToString() + "," +
                     type_of_operation + ",'"+
                     guid+"','" +
-                    MainStaticClass.CashOperatorInn+"');";
+                    MainStaticClass.CashOperatorInn+"','"+
+                    reason+"');";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 command.ExecuteNonQuery();
                 command.Dispose();
@@ -689,44 +699,51 @@ namespace Cash8
                         }
                         else
                         {
-                            insert_incident_record(listView1.SelectedItems[0].SubItems[0].Text, listView1.SelectedItems[0].SubItems[3].Text, "0");
+                            ReasonsDeletionCheck reasons = new ReasonsDeletionCheck();
+                            DialogResult dialogResult = reasons.ShowDialog();
+                            if (dialogResult == DialogResult.OK)
+                            {
+
+                                insert_incident_record(listView1.SelectedItems[0].SubItems[0].Text, listView1.SelectedItems[0].SubItems[3].Text, "0",reasons.reason);
+                                bool reloadKM = false;
+                                if (listView1.SelectedItems[0].SubItems[14].Text.Trim().Length > 13)
+                                {
+                                    reloadKM = true;
+                                }
+                                listView1.Items.Remove(listView1.SelectedItems[0]);
+                                if (reloadKM)
+                                {
+                                    reload_km_buffer();
+                                }
+                                calculation_of_the_sum_of_the_document();
+                                write_new_document("0", calculation_of_the_sum_of_the_document().ToString().Replace(",", "."), "0", "0", false, "0", "0", "0", "0");
+                            }
+                            else
+                            {
+                                return;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        ReasonsDeletionCheck reasons = new ReasonsDeletionCheck();
+                        DialogResult dialogResult = reasons.ShowDialog();
+                        if (dialogResult == DialogResult.OK)
+                        {
+                            insert_incident_record(listView1.SelectedItems[0].SubItems[0].Text, listView1.SelectedItems[0].SubItems[3].Text, "0",reasons.reason);
                             bool reloadKM = false;
                             if (listView1.SelectedItems[0].SubItems[14].Text.Trim().Length > 13)
                             {
                                 reloadKM = true;
-                            }                           
+                            }
                             listView1.Items.Remove(listView1.SelectedItems[0]);
                             if (reloadKM)
                             {
                                 reload_km_buffer();
                             }
                             calculation_of_the_sum_of_the_document();
-                            write_new_document("0", calculation_of_the_sum_of_the_document().ToString().Replace(",", "."), "0", "0", false, "0", "0", "0", "0"); //Это удаляемый документ                            
-                            //if (MainStaticClass.SelfServiceKiosk == 1)
-                            //{
-                            //    inputbarcode.Focus();
-                            //}
+                            write_new_document("0", calculation_of_the_sum_of_the_document().ToString().Replace(",", "."), "0", "0", false, "0", "0", "0", "0");                         
                         }
-                    }
-                    else
-                    {
-                        insert_incident_record(listView1.SelectedItems[0].SubItems[0].Text, listView1.SelectedItems[0].SubItems[3].Text, "0");
-                        bool reloadKM = false;
-                        if (listView1.SelectedItems[0].SubItems[14].Text.Trim().Length > 13)
-                        {
-                            reloadKM = true;
-                        }
-                        listView1.Items.Remove(listView1.SelectedItems[0]);
-                        if (reloadKM)
-                        {
-                            reload_km_buffer();
-                        }
-                        calculation_of_the_sum_of_the_document();
-                        write_new_document("0", calculation_of_the_sum_of_the_document().ToString().Replace(",", "."), "0", "0", false, "0", "0", "0", "0"); //Это удаляемый документ                            
-                        //if (MainStaticClass.SelfServiceKiosk == 1)
-                        //{
-                        //    inputbarcode.Focus();
-                        //}
                     }
                 }
                 else if (listView1.Items.Count == 1)
@@ -1449,7 +1466,7 @@ namespace Cash8
                         }
                     }
                 }
-                else if (e.KeyCode == Keys.F12)
+                else if (e.KeyCode == Keys.F9)//Удаление чека
                 {
                     if (!itsnew)
                     {
@@ -1665,20 +1682,20 @@ namespace Cash8
                     this.Close();
                 }
             }
-            if (e.KeyCode == Keys.F9)//Перевод клиента на бонусную программу
-            {
-                //if ((itsnew) && (check_type.SelectedIndex == 0))
-                //{
-                //    if (txtB_sales_assistant.Text.Trim().Length == 0)
-                //    {
-                //        show_query_window_barcode(4, 0, 0);
-                //    }            
-                //}
-                //if (client.Tag != null)
-                //{
-                //    btn_change_status_client_Click(null, null);
-                //}
-            }
+            //if (e.KeyCode == Keys.F9)//Перевод клиента на бонусную программу
+            //{
+            //    //if ((itsnew) && (check_type.SelectedIndex == 0))
+            //    //{
+            //    //    if (txtB_sales_assistant.Text.Trim().Length == 0)
+            //    //    {
+            //    //        show_query_window_barcode(4, 0, 0);
+            //    //    }            
+            //    //}
+            //    //if (client.Tag != null)
+            //    //{
+            //    //    btn_change_status_client_Click(null, null);
+            //    //}
+            //}
         }
 
         ///// <summary>

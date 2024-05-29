@@ -508,6 +508,7 @@ namespace Cash8
             public string type_of_operation { get; set; }
             public string guid { get; set; }
             public string autor { get; set; }
+            public string reason { get; set; }
         }
 
         public class DeletedItems : IDisposable
@@ -611,7 +612,7 @@ namespace Cash8
             try
             {
                 conn.Open();
-                string query = "SELECT num_doc, num_cash, date_time_start, date_time_action, tovar, quantity, type_of_operation,guid FROM deleted_items;";
+                string query = "SELECT num_doc, num_cash, date_time_start, date_time_action, tovar, quantity, type_of_operation,guid,reason FROM deleted_items;";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
@@ -626,6 +627,7 @@ namespace Cash8
                     deletedItem.type_of_operation = reader["type_of_operation"].ToString();
                     deletedItem.guid = reader["guid"].ToString();
                     deletedItem.autor = MainStaticClass.CashOperatorInn;
+                    deletedItem.reason= reader["reason"].ToString();
                     deletedItems.ListDeletedItem.Add(deletedItem);
                 }
                 reader.Close();

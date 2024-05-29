@@ -196,7 +196,11 @@ namespace Cash8
             {
                 fptr.open();
             }
+            fptr.setParam(1021, MainStaticClass.Cash_Operator);
+            fptr.setParam(1203, MainStaticClass.CashOperatorInn);
+            fptr.operatorLogin();
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_SUM, sumCashOut);
+            
             if (fptr.cashOutcome() != 0)
             {
                 MessageBox.Show("Ошибка при инкасации  " + fptr.errorDescription());
@@ -212,7 +216,10 @@ namespace Cash8
             {
                 fptr.open();
             }
-            fptr.setParam(AtolConstants.LIBFPTR_PARAM_SUM, sumCashIn);
+            fptr.setParam(1021, MainStaticClass.Cash_Operator);
+            fptr.setParam(1203, MainStaticClass.CashOperatorInn);
+            fptr.operatorLogin();
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_SUM, sumCashIn);            
             if (fptr.cashIncome() != 0)
             {
                 MessageBox.Show("Ошибка при внесении  " + fptr.errorDescription());
@@ -686,6 +693,15 @@ namespace Cash8
                 {
                     // Если не удалось допечатать документ - показать пользователю ошибку и попробовать еще раз.
                     MessageBox.Show(String.Format("Не удалось напечатать документ (Ошибка \"{0}\"). Устраните неполадку и повторите.", fptr.errorDescription()));
+                    //*********************************
+                    fptr.setParam(AtolConstants.LIBFPTR_PARAM_DATA_TYPE, AtolConstants.LIBFPTR_DT_SHORT_STATUS);
+                    fptr.queryData();                    
+                    bool isPaperPresent = fptr.getParamBool(AtolConstants.LIBFPTR_PARAM_RECEIPT_PAPER_PRESENT);
+                    if (!isPaperPresent)
+                    {
+                        MessageBox.Show("В ФР закончилась бумага.");
+                    }
+                    //*********************************
                     continue;
                 }
             }
