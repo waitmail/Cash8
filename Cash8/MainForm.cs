@@ -1075,10 +1075,9 @@ namespace Cash8
                 //get_login_and_pass_on_bonus_programm();//Пока не работаем по бонусам со сторонними поставщиками
                 //}            
                 //check_and_update_npgsql();
-                MainStaticClass.write_event_in_log("Перед передача удаленных строк и строк с изменением количества вниз", " Старт программы ", "0");
-                UploadDeletedItems();//передача удаленных строк и строк с изменением количества вниз
-                MainStaticClass.write_event_in_log("После передача удаленных строк и строк с изменением количества вниз", " Старт программы ", "0");
-
+                //MainStaticClass.write_event_in_log("Перед передача удаленных строк и строк с изменением количества вниз", " Старт программы ", "0");
+                //UploadDeletedItems();//передача удаленных строк и строк с изменением количества вниз
+                //MainStaticClass.write_event_in_log("После передача удаленных строк и строк с изменением количества вниз", " Старт программы ", "0");
                 //if (MainStaticClass.Nick_Shop == "A01")//Для отладки нового механизма пока что сделаю такую заплатку
                 //{
                 //    MainStaticClass.UseOldProcessiingActions = false;
@@ -1764,6 +1763,7 @@ namespace Cash8
             this.параметрыБазыДанныхToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.загрузкаДанныхToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.корректировочныеЧекиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.проверкаАкцийToolStripMenuItem        = new System.Windows.Forms.ToolStripMenuItem();
             this.выгрузкаДанныхПоБонусамToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.выгрузкаПродажToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.загрузкаДанныхЧерезИнтернетToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -1891,7 +1891,7 @@ namespace Cash8
             //this.загрузкаДанныхToolStripMenuItem,
             //this.выгрузкаДанныхToolStripMenuItem,
             //this.выгрузкаДанныхПоБонусамToolStripMenuItem,
-            //this.выгрузкаПродажToolStripMenuItem,
+            this.проверкаАкцийToolStripMenuItem,
             this.корректировочныеЧекиToolStripMenuItem,
             this.загрузкаДанныхЧерезИнтернетToolStripMenuItem,
             this.обновлениеПрограммыToolStripMenuItem,
@@ -1911,11 +1911,11 @@ namespace Cash8
             resources.ApplyResources(this.загрузкаДанныхToolStripMenuItem, "загрузкаДанныхToolStripMenuItem");
             this.загрузкаДанныхToolStripMenuItem.Click += new System.EventHandler(this.загрузкаДанныхToolStripMenuItem_Click);
             // 
-            // выгрузкаДанныхToolStripMenuItem
+            // проверкаАкцийToolStripMenuItem
             // 
-            //this.выгрузкаДанныхToolStripMenuItem.Name = "выгрузкаДанныхToolStripMenuItem";
-            //resources.ApplyResources(this.выгрузкаДанныхToolStripMenuItem, "выгрузкаДанныхToolStripMenuItem");
-            //this.выгрузкаДанныхToolStripMenuItem.Click += new System.EventHandler(this.выгрузкаДанныхToolStripMenuItem_Click);
+            this.проверкаАкцийToolStripMenuItem.Name = "проверкаАкцийToolStripMenuItem";
+            resources.ApplyResources(this.проверкаАкцийToolStripMenuItem, "проверкаАкцийToolStripMenuItem");
+            this.проверкаАкцийToolStripMenuItem.Click += new System.EventHandler(this.проверкаАкцийToolStripMenuItem_Click);
             // 
             // выгрузкаДанныхПоБонусамToolStripMenuItem
             // 
@@ -1972,6 +1972,20 @@ namespace Cash8
             checks.MdiParent = MainStaticClass.Main;
             checks.Show();
         }
+
+        private void проверкаАкцийToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CheckActions checkActions = new CheckActions();
+            checkActions.ShowDialog();
+            //CorrectionChecks checks = new CorrectionChecks();
+            ////checks.FormBorderStyle = FormBorderStyle.None;
+            //checks.WindowState = FormWindowState.Maximized;
+            //checks.MdiParent = MainStaticClass.Main;
+            //checks.Show();
+        }
+
+
+
 
         private void выходToolStripMenuItem_Click(object sender, EventArgs e)
         {

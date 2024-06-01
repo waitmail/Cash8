@@ -52,6 +52,7 @@
             this.параметрыБазыДанныхToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.загрузкаДанныхToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.корректировочныеЧекиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.проверкаАкцийToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.выгрузкаДанныхПоБонусамToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.выгрузкаПродажToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.загрузкаДанныхЧерезИнтернетToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -171,6 +172,7 @@
             this.параметрыБазыДанныхToolStripMenuItem,
             this.загрузкаДанныхToolStripMenuItem,
             this.корректировочныеЧекиToolStripMenuItem,
+            this.проверкаАкцийToolStripMenuItem,
             this.выгрузкаДанныхПоБонусамToolStripMenuItem,
             this.выгрузкаПродажToolStripMenuItem,
             this.загрузкаДанныхЧерезИнтернетToolStripMenuItem,
@@ -270,6 +272,7 @@
         private System.Windows.Forms.ToolStripMenuItem константыToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem выходToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem корректировочныеЧекиToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem проверкаАкцийToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem акцииToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem закрытиеДняToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem фискальныйПринтерToolStripMenuItem;
