@@ -193,11 +193,11 @@
   <data name="параметрыБазыДанныхToolStripMenuItem.Text" xml:space="preserve">
     <value>Параметры базы данных</value>
   </data>
-  <data name="загрузкаДанныхToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="проверкаАкцийToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>252, 22</value>
   </data>
-  <data name="загрузкаДанныхToolStripMenuItem.Text" xml:space="preserve">
-    <value>Загрузка данных из файлов</value>
+  <data name="проверкаАкцийToolStripMenuItem.Text" xml:space="preserve">
+    <value>Проверка акций</value>
   </data>
   <data name="корректировочныеЧекиToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>252, 22</value>

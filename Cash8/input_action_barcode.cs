@@ -22,7 +22,8 @@ namespace Cash8
          */
         public Cash_check caller = null;
         public ProcessingOfActions caller2 = null;
-        
+        public CheckActions caller3 = null;
+
 
         public int call_type = 0;
         public int count = 0;
