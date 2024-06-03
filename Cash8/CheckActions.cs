@@ -357,6 +357,9 @@ namespace Cash8
                     if (найденныеСтроки.Length > 0)
                     {
                         найденныеСтроки[0]["quantity"] = Convert.ToInt32(найденныеСтроки[0]["quantity"]) + 1;
+                        row = найденныеСтроки[0];
+                        row["sum_full"] = Convert.ToDecimal(row["price"]) * Convert.ToDecimal(row["quantity"]);
+                        row["sum_at_discount"] = Convert.ToDecimal(row["price_at_discount"]) * Convert.ToDecimal(row["quantity"]);
                     }
                     else
                     {
@@ -376,11 +379,17 @@ namespace Cash8
                         {
                             row["price_at_discount"] = Convert.ToDecimal(row["price"]);
                         }
+                        row["sum_full"] = Convert.ToDecimal(row["price"]) * Convert.ToDecimal(row["quantity"]);
+                        row["sum_at_discount"] = Convert.ToDecimal(row["price_at_discount"]) * Convert.ToDecimal(row["quantity"]);
+
+                        row["action"] = 0;// Convert.ToDecimal(row["price_at_discount"]) * Convert.ToDecimal(row["quantity"]);
+                        row["gift"] = 0;// Convert.ToDecimal(row["price_at_discount"]) * Convert.ToDecimal(row["quantity"]);
+                        row["action2"] = 0;// Convert.ToDecimal(row["price_at_discount"]) * Convert.ToDecimal(row["quantity"]);
+                        //row["sum_at_discount"] = Convert.ToDecimal(row["price_at_discount"]) * Convert.ToDecimal(row["quantity"]);
+                        dt1.Rows.Add(row);
                     }
 
-                    row["sum_full"] = Convert.ToDecimal(row["price"]) * Convert.ToDecimal(row["quantity"]);
-                    row["sum_at_discount"] = Convert.ToDecimal(row["price_at_discount"]) * Convert.ToDecimal(row["quantity"]);
-                    dt1.Rows.Add(row);
+
                     btn_check_actions_Click(null, null);
                 }
             }

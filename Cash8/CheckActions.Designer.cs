@@ -123,6 +123,7 @@
             this.Controls.Add(this.dataGridView_tovar_execute);
             this.Controls.Add(this.dataGridView_tovar);
             this.Controls.Add(this.txtB_input_code_or_barcode);
+            this.KeyPreview = true;
             this.Name = "CheckActions";
             this.Text = "Проверка акций";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_tovar)).EndInit();
