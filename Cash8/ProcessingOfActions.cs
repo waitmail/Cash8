@@ -423,7 +423,7 @@ namespace Cash8
                     tip_action = Convert.ToInt16(reader["tip"]);
                     persent = Convert.ToDecimal(reader["persent"]);
                     num_doc = Convert.ToInt32(reader["num_doc"]);
-                    comment = reader["comment"].ToString();
+                    comment = reader["comment"].ToString().Trim();
                     marker = Convert.ToInt16(reader["marker"]);
                     sum = Convert.ToDecimal(reader["sum"]);
                     sum1 = Convert.ToDecimal(reader["sum1"]);
@@ -436,7 +436,7 @@ namespace Cash8
                         //start_action = DateTime.Now;
                         if (persent != 0)
                         {
-                            action_1_dt(num_doc, persent);//Дать скидку на эту позицию                                                 
+                            action_1_dt(num_doc, persent, comment);//Дать скидку на эту позицию                                                 
                         }
                         else
                         {
@@ -453,7 +453,7 @@ namespace Cash8
 
                         if (persent != 0)
                         {
-                            action_2_dt(num_doc, persent);
+                            action_2_dt(num_doc, persent, comment);
                         }
                         else
                         {
@@ -470,7 +470,7 @@ namespace Cash8
                         //start_action = DateTime.Now;                        
                         if (persent != 0)
                         {
-                            action_3_dt(num_doc, persent, sum);//Дать скидку на все позиции из списка позицию                                                 
+                            action_3_dt(num_doc, persent, sum, comment);//Дать скидку на все позиции из списка позицию                                                 
                         }
                         else
                         {
@@ -488,7 +488,7 @@ namespace Cash8
 
                         if (persent != 0)
                         {
-                            action_4_dt(num_doc, persent, sum);//Дать скидку на все позиции из списка позицию                                                 
+                            action_4_dt(num_doc, persent, sum,comment);//Дать скидку на все позиции из списка позицию                                                 
                         }
                         else
                         {
@@ -515,7 +515,7 @@ namespace Cash8
                         {
                             if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
                             {
-                                action_8_dt(num_doc, persent, sum);//Дать скидку на все позиции из списка позицию                                                 
+                                action_8_dt(num_doc, persent, sum,comment);//Дать скидку на все позиции из списка позицию                                                 
                             }
                         }
                         else
@@ -539,7 +539,7 @@ namespace Cash8
                         //if (reader.GetDecimal(2) != 0)
                         if (persent != 0)
                         {
-                            action_1_dt(num_doc, persent);
+                            action_1_dt(num_doc, persent, comment);
                         }
                         else
                         {
@@ -678,7 +678,7 @@ namespace Cash8
                         //start_action = DateTime.Now;
                         if (persent != 0)
                         {                           
-                            action_1_dt(num_doc, persent);//Дать скидку на эту позицию                                                 
+                            action_1_dt(num_doc, persent, comment);//Дать скидку на эту позицию                                                 
                         }
                         else
                         {
@@ -695,7 +695,7 @@ namespace Cash8
 
                         if (persent != 0)
                         {                            
-                            action_2_dt(num_doc, persent);
+                            action_2_dt(num_doc, persent, comment);
                         }
                         else
                         {
@@ -714,7 +714,7 @@ namespace Cash8
                         //action_2(reader.GetInt32(1));
                         if (persent != 0)
                         {                                                                        
-                            action_3_dt(num_doc, persent, sum);//Дать скидку на все позиции из списка позицию                                                 
+                            action_3_dt(num_doc, persent, sum, comment);//Дать скидку на все позиции из списка позицию                                                 
                         }
                         else
                         {
@@ -732,7 +732,7 @@ namespace Cash8
 
                         if (persent != 0)
                         {                                                                        
-                            action_4_dt(num_doc, persent, sum);//Дать скидку на все позиции из списка позицию                                                 
+                            action_4_dt(num_doc, persent, sum,comment);//Дать скидку на все позиции из списка позицию                                                 
                         }
                         else
                         {
@@ -931,7 +931,7 @@ namespace Cash8
                         if (persent != 0)
                         {
                                                             
-                            action_1_dt(num_doc, persent);//Дать скидку на эту позицию                                                 
+                            action_1_dt(num_doc, persent, comment);//Дать скидку на эту позицию                                                 
                         }
                         else
                         {
@@ -948,7 +948,7 @@ namespace Cash8
 
                         if (persent != 0)
                         {                            
-                            action_2_dt(num_doc, persent);
+                            action_2_dt(num_doc, persent, comment);
                         }
                         else
                         {
@@ -967,7 +967,7 @@ namespace Cash8
                         //action_2(reader.GetInt32(1));
                         if (persent != 0)
                         {                                                                        
-                            action_3_dt(num_doc, persent, sum);//Дать скидку на все позиции из списка позицию                                                 
+                            action_3_dt(num_doc, persent, sum, comment);//Дать скидку на все позиции из списка позицию                                                 
                         }
                         else
                         {
@@ -985,7 +985,7 @@ namespace Cash8
 
                         if (persent != 0)
                         {                                                                        
-                            action_4_dt(num_doc, persent, sum);//Дать скидку на все позиции из списка позицию                                                 
+                            action_4_dt(num_doc, persent, sum,comment);//Дать скидку на все позиции из списка позицию                                                 
                         }
                         else
                         {
@@ -998,7 +998,7 @@ namespace Cash8
                     }
                     else if (tip_action == 5)
                     {                        
-                        action_5_dt(num_doc, sum);
+                        action_5_dt(num_doc, sum,comment);
                     }                    
                     else
                     {
@@ -1029,7 +1029,7 @@ namespace Cash8
         /*Пометка товарных позиций которые участвовали в акции
         * для того чтобы они не участвоствовали в следующих акциях
         */
-        private void marked_action_tovar_dt(int num_doc)
+        private void marked_action_tovar_dt(int num_doc,string comment)
         {
             NpgsqlConnection conn = null;
             NpgsqlCommand command = null;
@@ -1049,6 +1049,10 @@ namespace Cash8
                     if (result == 1)
                     {
                         row["action2"] = num_doc.ToString();
+                        if (dt.Columns.Contains("promo_description"))
+                        {
+                            row["promo_description"] = comment;
+                        }
                     }
                 }
             }
@@ -1435,7 +1439,7 @@ namespace Cash8
         /// </summary>
         /// <param name="num_doc"></param>
         /// <param name="persent"></param>
-        private void action_1_dt(int num_doc, decimal persent)
+        private void action_1_dt(int num_doc, decimal persent, string comment)
         {
             NpgsqlConnection conn = null;
             NpgsqlCommand command = null;
@@ -1466,7 +1470,11 @@ namespace Cash8
                             row["sum_full"] = Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price"]);
                             row["sum_at_discount"] = Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price_at_discount"]);
                             row["action"] = num_doc.ToString(); //Номер акционного документа                        
-                            row["action2"] = num_doc.ToString();//Тип акции                        
+                            row["action2"] = num_doc.ToString();//Тип акции 
+                            if (dt.Columns.Contains("promo_description"))
+                            {
+                                row["promo_description"] = comment;
+                            }
                         }
                         else
                         {
@@ -1475,12 +1483,15 @@ namespace Cash8
                             row["sum_at_discount"] = Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price_at_discount"]);
                             row["action"] = num_doc.ToString(); //Номер акционного документа                        
                             row["action2"] = num_doc.ToString();//Тип акции         
+                            if (dt.Columns.Contains("promo_description"))
+                            {
+                                row["promo_description"] = comment;
+                            }
                         }
-                    }                   
-
+                    }
+                    conn.Close();
+                    //command.Dispose();
                 }
-                conn.Close();
-                //command.Dispose();
             }
             catch (NpgsqlException ex)
             {
@@ -1508,7 +1519,7 @@ namespace Cash8
         /// </summary>
         /// <param name="num_doc"></param>
         /// <param name="persent"></param>
-        private void action_2_dt(int num_doc, decimal persent)
+        private void action_2_dt(int num_doc, decimal persent, string comment)
         {
             /*В этой переменной запомнится позиция которая первой входит в первый список акции
             * на него будет дана скидка, необходимо скопировать эту позицию в конец списка 
@@ -1693,7 +1704,7 @@ namespace Cash8
                  */
                     if (the_action_has_worked)
                     {
-                        marked_action_tovar_dt(num_doc);
+                        marked_action_tovar_dt(num_doc,comment);
                     }
                 }
             }
@@ -1871,7 +1882,7 @@ namespace Cash8
 
                     if (the_action_has_worked)
                     {
-                        marked_action_tovar_dt(num_doc);
+                        marked_action_tovar_dt(num_doc,comment);
                     }
                 }
             }
@@ -1896,7 +1907,7 @@ namespace Cash8
         /*Эта акция срабатывает когда сумма без скидки в документе >= сумме акции
         * тогда дается скидка на те позиции которые перечисляются в условии акции
         */
-        private void action_3_dt(int num_doc, decimal persent, decimal sum)
+        private void action_3_dt(int num_doc, decimal persent, decimal sum, string comment)
         {
             NpgsqlConnection conn = null;
             NpgsqlCommand command = null;
@@ -2012,7 +2023,7 @@ namespace Cash8
                     * надо отметить все товарные позиции 
                     * чтобы они не участвовали в других акциях 
                     */
-                    marked_action_tovar_dt(num_doc);
+                    marked_action_tovar_dt(num_doc,comment);
                 }
             }
             catch (NpgsqlException ex)
@@ -2093,7 +2104,7 @@ namespace Cash8
         * на самый дешевый товар из участвующих в акции 
         * 
         */
-        private void action_4_dt(int num_doc, decimal persent, decimal sum)
+        private void action_4_dt(int num_doc, decimal persent, decimal sum,string comment)
         {
 
             if (!create_temp_tovar_table_4())
@@ -2263,7 +2274,7 @@ namespace Cash8
              * надо отметить все товарные позиции 
              * чтобы они не участвовали в других акциях 
              */
-                    marked_action_tovar_dt(num_doc);
+                    marked_action_tovar_dt(num_doc,comment);
                 }
                 
             }
@@ -2516,7 +2527,7 @@ namespace Cash8
              * надо отметить все товарные позиции 
              * чтобы они не участвовали в других акциях 
              */
-                    marked_action_tovar_dt(num_doc);
+                    marked_action_tovar_dt(num_doc,comment);
                 }
                 roll_up_dt();
             }
@@ -2546,7 +2557,7 @@ namespace Cash8
         * в одном чеке может использоваться только один акционный купон!!!
         * имеется ввиду что сколько раз не предъявляй купон скидка не накапливается
         */
-        private void action_5_dt(int num_doc, decimal sum)
+        private void action_5_dt(int num_doc, decimal sum,string comment)
         {
             // 1 сНачала надо проверить сработку акции
             //bool the_action_has_worked = false;
@@ -2600,7 +2611,7 @@ namespace Cash8
                  * остались не помеченными 
                  * при сработке акции                 
                  */
-                marked_action_tovar_dt(num_doc);
+                marked_action_tovar_dt(num_doc,comment);
 
             }
             catch (NpgsqlException ex)
@@ -2693,7 +2704,7 @@ namespace Cash8
                         show_query_window_barcode(2, 1, num_doc,0);
                     }
                 }
-                marked_action_tovar_dt(num_doc);
+                marked_action_tovar_dt(num_doc,comment);
             }
             roll_up_dt();
         }
@@ -2772,7 +2783,7 @@ namespace Cash8
         /// <param name="num_doc"></param>
         /// <param name="persent"></param>
         /// <param name="sum"></param>
-        private void action_8_dt(int num_doc, decimal persent, decimal sum)
+        private void action_8_dt(int num_doc, decimal persent, decimal sum,string comment)
         {
 
             if (!create_temp_tovar_table_4())
@@ -2930,7 +2941,7 @@ namespace Cash8
              * надо отметить все товарные позиции 
              * чтобы они не участвовали в других акциях 
              */
-                    marked_action_tovar_dt(num_doc);
+                    marked_action_tovar_dt(num_doc,comment);
                 }
             }
             catch (NpgsqlException ex)
@@ -3022,7 +3033,7 @@ namespace Cash8
                             show_query_window_barcode(2, 1, num_doc,0);
                         }
                     }
-                    marked_action_tovar_dt(num_doc);
+                    marked_action_tovar_dt(num_doc,comment);
                 }
                 roll_up_dt();
             }

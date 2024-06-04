@@ -22,8 +22,8 @@ namespace Cash8
         {
             InitializeComponent();
             this.txtB_input_code_or_barcode.KeyPress += TxtB_input_code_or_barcode_KeyPress;
-            dt1 = create_dt();
-            dt2 = create_dt();
+            dt1 = create_dt(1);
+            dt2 = create_dt(2);
 
            
             this.Load += CheckActions_Load;
@@ -87,7 +87,7 @@ namespace Cash8
                         }
                     }
                     txtB_client_code.Text = "";
-                    btn_check_actions_Click(null, null);
+                    btn_check_actions_Click();
                 }
                 catch (NpgsqlException ex)
                 {
@@ -124,13 +124,15 @@ namespace Cash8
                 {"tovar_name", "Намиенование"},
                 { "quantity", "К-во"},
                 { "price", "Цена б.с."},
-                { "price_at_discount", "Цена ск."},
+                { "price_at_discount", "Цена"},
                 { "sum_full", "Сумма б.с."},
-                { "sum_at_discount", "Сумма ск."},
+                { "sum_at_discount", "Сумма"},
                 { "action", "Акция"},
                 { "gift", "Подарок"},
                 { "action2", "Уч. в акции"},
-                { "marking", "Марк./сертиф."}
+                { "marking", "Марк./сертиф."},
+                { "promo_description", "Акция"}
+                
             };
 
             this.dataGridView_tovar.DataSource = dt1;
@@ -178,19 +180,35 @@ namespace Cash8
             dataGridView_tovar.Columns["tovar_name"].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
             dataGridView_tovar_execute.Columns["tovar_name"].Width = 200;
 
+            foreach (DataGridViewColumn col in dataGridView_tovar.Columns)
+            {
+                if (col.Name != "tovar_name")
+                {
+                    col.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                }
+            }
 
-            // Устанавливаем автоматическое изменение высоты строк для конкретной колонки
-            //dataGridView_tovar_execute.Columns["tovar_name"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            foreach (DataGridViewColumn col in dataGridView_tovar_execute.Columns)
+            {
+                if (col.Name != "tovar_name")
+                {
+                    col.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                }
+            }
 
-            // Устанавливаем автоматическое изменение высоты строк для конкретной колонки
-            //dataGridView_tovar_execute.Columns["tovar_name"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
 
-            // Устанавливаем автоматическое изменение высоты строк для конкретной колонки
-            //dataGridView_tovar.Columns["tovar_name"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                // Устанавливаем автоматическое изменение высоты строк для конкретной колонки
+                //dataGridView_tovar_execute.Columns["tovar_name"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
 
-        }
+                // Устанавливаем автоматическое изменение высоты строк для конкретной колонки
+                //dataGridView_tovar_execute.Columns["tovar_name"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
 
-        public DataTable create_dt()
+                // Устанавливаем автоматическое изменение высоты строк для конкретной колонки
+                //dataGridView_tovar.Columns["tovar_name"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+
+            }
+
+        public DataTable create_dt(int variant)
         {
 
             DataTable dt = new DataTable();
@@ -224,6 +242,7 @@ namespace Cash8
             DataColumn price = new DataColumn();
             price.DataType = System.Type.GetType("System.Decimal");
             price.ColumnName = "price"; //listView1.Columns.Add("Цена", 50, HorizontalAlignment.Right);
+            price.ColumnMapping = MappingType.Hidden;
             dt.Columns.Add(price);
 
             DataColumn price_at_discount = new DataColumn();
@@ -234,6 +253,7 @@ namespace Cash8
             DataColumn sum_full = new DataColumn();
             sum_full.DataType = System.Type.GetType("System.Decimal");
             sum_full.ColumnName = "sum_full"; //listView1.Columns.Add("Сумма", 50, HorizontalAlignment.Right);
+            sum_full.ColumnMapping = MappingType.Hidden;
             dt.Columns.Add(sum_full);
 
             DataColumn sum_at_discount = new DataColumn();
@@ -244,16 +264,22 @@ namespace Cash8
             DataColumn action = new DataColumn();
             action.DataType = System.Type.GetType("System.Int32");
             action.ColumnName = "action"; //listView1.Columns.Add("Акция", 50, HorizontalAlignment.Right);
+            action.ColumnMapping = MappingType.Hidden;
             dt.Columns.Add(action);
 
             DataColumn gift = new DataColumn();
             gift.DataType = System.Type.GetType("System.Int32");
             gift.ColumnName = "gift"; //listView1.Columns.Add("Подарок", 50, HorizontalAlignment.Right);
+            gift.ColumnMapping = MappingType.Hidden;
             dt.Columns.Add(gift);
 
             DataColumn action2 = new DataColumn();
             action2.DataType = System.Type.GetType("System.Int32");
             action2.ColumnName = "action2"; //listView1.Columns.Add("Акция2", 50, HorizontalAlignment.Right);
+            if (variant == 1)
+            {
+                action2.ColumnMapping = MappingType.Hidden;
+            }
             dt.Columns.Add(action2);
 
             DataColumn bonus_reg = new DataColumn();
@@ -277,32 +303,18 @@ namespace Cash8
             DataColumn marking = new DataColumn();
             marking.DataType = System.Type.GetType("System.String");
             marking.ColumnName = "marking"; //listView1.Columns.Add("Акция2", 50, HorizontalAlignment.Right);
+            marking.ColumnMapping = MappingType.Hidden;
             dt.Columns.Add(marking);
-
-
-            //foreach (ListViewItem lvi in listView1.Items)
-            //{
-            //    DataRow row = dt.NewRow();
-            //    row["tovar_code"] = lvi.SubItems[0].Text;
-            //    row["tovar_name"] = lvi.SubItems[1].Text;
-            //    row["characteristic_code"] = lvi.SubItems[2].Tag.ToString();
-            //    row["characteristic_name"] = lvi.SubItems[2].Text;
-            //    row["quantity"] = lvi.SubItems[3].Text;
-            //    row["price"] = lvi.SubItems[4].Text;
-            //    row["price_at_discount"] = lvi.SubItems[5].Text;
-            //    row["sum_full"] = lvi.SubItems[6].Text;
-            //    row["sum_at_discount"] = lvi.SubItems[7].Text;
-            //    row["action"] = lvi.SubItems[8].Text;
-            //    row["gift"] = lvi.SubItems[9].Text;
-            //    row["action2"] = lvi.SubItems[10].Text;
-            //    row["bonus_reg"] = lvi.SubItems[11].Text;
-            //    row["bonus_action"] = lvi.SubItems[12].Text;
-            //    row["bonus_action_b"] = lvi.SubItems[13].Text;
-            //    row["marking"] = lvi.SubItems[14].Text;
-
-            //    dt.Rows.Add(row);
-            //}
-
+            
+            DataColumn promo_description = new DataColumn();
+            promo_description.DataType = System.Type.GetType("System.String");
+            promo_description.ColumnName = "promo_description"; //listView1.Columns.Add("Акция2", 50, HorizontalAlignment.Right);
+            if (variant == 1)
+            {
+                promo_description.ColumnMapping = MappingType.Hidden;
+            }
+            dt.Columns.Add(promo_description);
+            
             return dt;
         }
 
@@ -324,8 +336,7 @@ namespace Cash8
                 command.Connection = conn;
 
                 if (barcode.Length > 6)
-                {
-                    //command.CommandText = "select tovar.code,tovar.name,tovar.retail_price from  barcode left join tovar ON barcode.tovar_code=tovar.code where barcode='" + inputbarcode.Text + "' ";
+                {                    
                     command.CommandText = "select tovar.code,tovar.name,tovar.retail_price,characteristic.name,characteristic.guid,characteristic.retail_price_characteristic,tovar.its_certificate,tovar.its_marked,tovar.cdn_check,tovar.fractional " +
                         " from  barcode left join tovar ON barcode.tovar_code=tovar.code " +
                     " left join characteristic ON tovar.code = characteristic.tovar_code " +
@@ -337,19 +348,14 @@ namespace Cash8
                         " FROM tovar left join characteristic  ON tovar.code = characteristic.tovar_code where tovar.its_deleted=0 AND tovar.its_certificate=0 AND  (retail_price<>0 OR characteristic.retail_price_characteristic<>0) " +
                         " AND tovar.code='" + barcode + "'";
                 }
-
-                //    int its_certificate = 0;
-                //    int its_marked = 0;
+                
                 NpgsqlDataReader reader = command.ExecuteReader();
-
-                //    bool find_sertificate = false;
-
-                //     bool fractional = false;
-
-
+                
+                bool ТоварНайден = false;
 
                 while (reader.Read())
                 {
+                    ТоварНайден = true;
                     DataRow row = null;
 
                     DataRow[] найденныеСтроки = dt1.Select("tovar_code = '" + reader["code"].ToString() + "'");
@@ -389,8 +395,13 @@ namespace Cash8
                         dt1.Rows.Add(row);
                     }
 
-
-                    btn_check_actions_Click(null, null);
+                    btn_check_actions_Click();
+                }
+                if (!ТоварНайден)
+                {
+                    Tovar_Not_Found t_n_f = new Tovar_Not_Found();
+                    t_n_f.ShowDialog();
+                    t_n_f.Dispose();
                 }
             }
             catch (NpgsqlException ex)
@@ -405,8 +416,7 @@ namespace Cash8
             {
                 if (conn.State == ConnectionState.Open)
                 {
-                    conn.Close();
-                    // conn.Dispose();
+                    conn.Close();                    
                 }
             }
         }
@@ -444,7 +454,7 @@ namespace Cash8
 
         }
 
-        private void btn_check_actions_Click(object sender, EventArgs e)
+        public void btn_check_actions_Click()
         {
             to_define_the_action_dt(true);
         }
@@ -473,7 +483,7 @@ namespace Cash8
             }
 
             processingOfActions.to_define_the_action_dt();
-            dt2 = processingOfActions.dt.Copy();            
+            dt2 = processingOfActions.dt.Copy();
             dataGridView_tovar_execute.DataSource = dt2;           
         }
 
@@ -484,6 +494,32 @@ namespace Cash8
                 show_query_window_barcode(1, 0, 0);
             }
         }
+        
+        //private string get_promo_description(int promo_um_doc)
+        //{
+        //    string result = "";
+        //    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+
+        //    try
+        //    {
+        //        conn.Open();
+
+        //    }
+        //    catch (NpgsqlException ex)
+        //    {
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //    }
+        //    finally
+        //    {
+
+        //    }
+
+        //    return result;
+        //}
 
         /*
         * Когда по акции должен быть выдан подарок
@@ -503,6 +539,53 @@ namespace Cash8
             DialogResult dr = ib.ShowDialog();
             ib.Dispose();
             return dr;
+        }
+
+        public bool check_action(string barcode)
+        {
+            if (barcode.Trim().Length == 0)
+            {
+                return false;
+            }
+            NpgsqlConnection conn = null;
+            NpgsqlCommand command = null;
+            int count_action = 0;
+            try
+            {
+                conn = MainStaticClass.NpgsqlConn();
+                conn.Open();
+                string query = "";
+                if (barcode.Trim().Length > 4)
+                {
+                    query = "SELECT COUNT(*) FROM action_header WHERE '" + DateTime.Now.Date.ToString("yyy-MM-dd") + "' between date_started AND date_end AND barcode='" + barcode + "'";
+                }
+                else
+                {
+                    query = "SELECT COUNT(*) FROM action_header WHERE '" + DateTime.Now.Date.ToString("yyy-MM-dd") + "' between date_started AND date_end AND promo_code='" + barcode + "'";
+                }
+                command = new NpgsqlCommand(query, conn);
+                count_action = Convert.ToInt32(command.ExecuteScalar());
+                conn.Close();
+            }
+            catch (NpgsqlException ex)
+            {
+                MessageBox.Show("Ошибка при работе с базой данных " + ex.Message);
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+            if (count_action > 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

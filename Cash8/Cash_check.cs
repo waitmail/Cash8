@@ -4459,7 +4459,7 @@ namespace Cash8
         /*Проверяет есть ли акция с таким шриходом в настоящее время или нет ?
          * если есть возвращает true иначе false
          */
-        public bool chect_action(string barcode)
+        public bool check_action(string barcode)
         {
             if (barcode.Trim().Length == 0)
             {
@@ -4532,7 +4532,7 @@ namespace Cash8
                     //Проверка есть ли акция с таким штрихкодом 
                     //process_client_discount(MainStaticClass.Barcode);
                     inpun_action_barcode = false;
-                    if (chect_action(MainStaticClass.Barcode))
+                    if (check_action(MainStaticClass.Barcode))
                     {
                         if (action_barcode_list.IndexOf(MainStaticClass.Barcode) == -1)
                         {

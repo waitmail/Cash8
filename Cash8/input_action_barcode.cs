@@ -131,41 +131,56 @@ namespace Cash8
 
                 if (e.KeyChar == 13)
                 {
-                    if (!(caller.chect_action(input_barcode.Text)))
+                    if (caller != null)//Чек продажи 
                     {
-                        MessageBox.Show("Акция с таким штрихкодом не найдена");
-                    }
-                    else
-                    {
-                        if (input_barcode.Text.Trim().Length > 4)
+                        if (!(caller.check_action(input_barcode.Text)))
                         {
-                            if (caller.action_barcode_list.IndexOf(input_barcode.Text) == -1)
-                            {
-                                caller.action_barcode_list.Add(input_barcode.Text);//Для обычных акций
-                            }
+                            MessageBox.Show("Акция с таким штрихкодом не найдена");
                         }
                         else
                         {
-                            if (caller.action_barcode_bonus_list.IndexOf(input_barcode.Text) == -1)
+                            if (input_barcode.Text.Trim().Length > 4)
                             {
-                                caller.action_barcode_bonus_list.Add(input_barcode.Text);//Для бонусных акций
+                                if (caller.action_barcode_list.IndexOf(input_barcode.Text) == -1)
+                                {
+                                    caller.action_barcode_list.Add(input_barcode.Text);//Для обычных акций
+                                }
+                            }
+                            else
+                            {
+                                if (caller.action_barcode_bonus_list.IndexOf(input_barcode.Text) == -1)
+                                {
+                                    caller.action_barcode_bonus_list.Add(input_barcode.Text);//Для бонусных акций
+                                }
                             }
                         }
+                        caller.inpun_action_barcode = false;
                     }
+                    else if (caller3 != null)//проверка акций
+                    {
+                        if (!(caller3.check_action(input_barcode.Text)))
+                        {
+                            MessageBox.Show("Акция с таким штрихкодом не найдена");
+                        }
+                        else
+                        {
+                            if (input_barcode.Text.Trim().Length > 4)
+                            {
+                                if (caller3.action_barcode_list.IndexOf(input_barcode.Text) == -1)
+                                {
+                                    caller3.action_barcode_list.Add(input_barcode.Text);//Для обычных акций
+                                }
+                            }
+                            //else
+                            //{
+                            //    if (caller3.action_barcode_bonus_list.IndexOf(input_barcode.Text) == -1)
+                            //    {
+                            //        caller3.action_barcode_bonus_list.Add(input_barcode.Text);//Для бонусных акций
+                            //    }
+                            //}
+                        }
 
-                    caller.inpun_action_barcode = false;
-
-                    //if (caller.chect_action(MainStaticClass.Barcode))
-                    //{
-                    //    if (caller.action_barcode_list.IndexOf(MainStaticClass.Barcode) == -1)
-                    //    {
-                    //        caller.action_barcode_list.Add(MainStaticClass.Barcode);
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    MessageBox.Show("Акция с таким штрихкодом не найдена");
-                    //}
+                    }                  
 
                     this.Close();
                 }
@@ -174,16 +189,16 @@ namespace Cash8
             {
                 //Cash_check parent = ((Cash_check)this.Parent);
                 if (e.KeyChar == 13)
-                {                    
+                {
                     if (caller != null)
-                    {                        
+                    {
                         caller.find_barcode_or_code_in_tovar_action(this.input_barcode.Text, count, true, num_doc);
                     }
                     else
                     {
-                        caller2.find_barcode_or_code_in_tovar_action_dt(this.input_barcode.Text, count, true, num_doc,mode);
+                        caller2.find_barcode_or_code_in_tovar_action_dt(this.input_barcode.Text, count, true, num_doc, mode);
                     }
-                    
+
                     this.Close();
 
                 }
@@ -195,7 +210,7 @@ namespace Cash8
                     caller.inpun_action_barcode = false;
                     this.Close();
                 }
-            }            
+            }
             else if (call_type == 5)//Проверка на 4 последние цифры телефона 
             {
                 if (e.KeyChar != 13)
