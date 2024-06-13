@@ -1489,9 +1489,8 @@ namespace Cash8
                             }
                         }
                     }
-                    conn.Close();
-                    //command.Dispose();
                 }
+                conn.Close();                
             }
             catch (NpgsqlException ex)
             {

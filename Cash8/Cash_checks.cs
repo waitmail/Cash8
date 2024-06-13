@@ -476,14 +476,17 @@ namespace Cash8
                 conn.Open();
                 //string myQuery = "SELECT checks_header.date_time_write,clients.name,checks_header.cash,checks_header.remainder  FROM checks_header left join clients ON checks_header.client=clients.code WHERE checks_header.date_time_write BETWEEN '" + data_start.Text + "' and '" + data_finish.Text + "' order by checks_header.date_time_write  ";
                 string myQuery = "SELECT checks_header.its_deleted,"+
-                    "checks_header.date_time_write,"+
-                    "clients.name,"+
-                    "checks_header.cash,"+
-                    "checks_header.remainder,"+
-                    "checks_header.comment,"+
-                    //"checks_header.inventory,"+
-                    "checks_header.its_print,"+
-                    "checks_header.check_type,checks_header.document_number,checks_header.its_print_p  FROM checks_header left join clients ON checks_header.client=clients.code WHERE checks_header.date_time_write BETWEEN '" + dateTimePicker1.Value.ToString("yyy-MM-dd") + " 00:00:00" + "' and '" + dateTimePicker1.Value.AddDays(1).ToString("yyy-MM-dd") + " 00:00:00" + "' AND its_deleted<2 order by checks_header.date_time_write  ";
+                    " checks_header.date_time_write,"+
+                    " clients.name,"+
+                    " checks_header.cash,"+
+                    " checks_header.remainder,"+
+                    " checks_header.comment,"+                    
+                    " checks_header.its_print,"+
+                    " checks_header.check_type,checks_header.document_number,checks_header.its_print_p  FROM checks_header "+
+                    " LEFT JOIN clients ON checks_header.client = clients.code " +
+                    //" LEFT JOIN clients ON checks_header.client = CASE WHEN LEFT(checks_header.client, 1) = '9' THEN clients.phone ELSE clients.code END  "+
+                    " WHERE checks_header.date_time_write BETWEEN '" + dateTimePicker1.Value.ToString("yyy-MM-dd") + " 00:00:00" + "' and '" + 
+                    dateTimePicker1.Value.AddDays(1).ToString("yyy-MM-dd") + " 00:00:00" + "' AND its_deleted<2 order by checks_header.date_time_write  ";
                 if (checkBox_show_3_last_checks.CheckState == CheckState.Checked)
                 {
                     myQuery += " desc limit 3 ";

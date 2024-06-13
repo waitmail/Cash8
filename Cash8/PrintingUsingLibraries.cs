@@ -369,7 +369,12 @@ namespace Cash8
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_QUANTITY, 1.000);
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_MEASUREMENT_UNIT, AtolConstants.LIBFPTR_IU_PIECE);
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_PROCESSING_MODE, 0);
-                            fptr.resetError();
+                            if (fptr.errorCode() != 0)
+                            {
+                                string error_decription = "Код ошибки = " + fptr.errorCode().ToString() + ";\r\nОписание ошибки " + fptr.errorDescription() + ";\r\n" + fptr.errorDescription();
+                                MessageBox.Show(error_decription, "Ошибки перед проверкой кода маркировки");
+                                MainStaticClass.write_event_in_log(error_decription + " " + mark, "check_marking_code", check.numdoc.ToString());
+                            }
                             fptr.beginMarkingCodeValidation();
                             if (fptr.errorCode() == 401)
                             {
@@ -719,6 +724,10 @@ namespace Cash8
                 check.closing = false;
                 check.Close();
             }
+            else
+            {
+                fptr.cancelReceipt();
+            }
         } 
 
         private void print_fiscal_advertisement(IFptr fptr)
@@ -942,7 +951,13 @@ namespace Cash8
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_QUANTITY, 1.000);
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_MEASUREMENT_UNIT, AtolConstants.LIBFPTR_IU_PIECE);
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_PROCESSING_MODE, 0);
-                            fptr.resetError();
+                            //fptr.resetError();
+                            if (fptr.errorCode() != 0)
+                            {
+                                string error_decription = "Код ошибки = " + fptr.errorCode().ToString() + ";\r\nОписание ошибки " + fptr.errorDescription() + ";\r\n" + fptr.errorDescription();
+                                MessageBox.Show(error_decription, "Ошибки перед проверкой кода маркировки");
+                                MainStaticClass.write_event_in_log(error_decription + " " + mark, "check_marking_code", check.numdoc.ToString());
+                            }
                             fptr.beginMarkingCodeValidation();
                             if (fptr.errorCode() == 401)
                             {
@@ -1247,6 +1262,10 @@ namespace Cash8
                 {
                     check.Close();
                 }
+            }
+            else
+            {
+                    fptr.cancelReceipt();                
             }
         }
 

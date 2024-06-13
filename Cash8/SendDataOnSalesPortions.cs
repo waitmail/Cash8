@@ -78,8 +78,9 @@ namespace Cash8
                     " non_cash_money1, " +
                     " sertificate_money1," +
                     " guid,"+
-                    "payment_by_sbp "+
-                    " FROM checks_header WHERE guid in  (" + document_guid_list.ToString() + ")";
+                    "payment_by_sbp, "+
+                    " clients.phone "+
+                    " FROM checks_header LEFT JOIN clients ON checks_header.client=clients.code WHERE guid in  (" + document_guid_list.ToString() + ")  ";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();                                
                 while (reader.Read())
@@ -109,7 +110,7 @@ namespace Cash8
                     //{
                     //    salesPortionsHeader.Autor = MainStaticClass.Cash_Operator_Client_Code;
                     //}
-                    salesPortionsHeader.Comment = reader["comment"].ToString();
+                    salesPortionsHeader.Comment = reader["comment"].ToString().Trim();
                     if (reader["its_print"].ToString() == "")
                     {
                         salesPortionsHeader.Its_print = "0";
@@ -133,7 +134,7 @@ namespace Cash8
                     salesPortionsHeader.Sum_certificate1 = reader["sertificate_money1"].ToString().Replace(",", ".");
                     salesPortionsHeader.Guid = reader["guid"].ToString();
                     salesPortionsHeader.SBP = (Convert.ToBoolean(reader["payment_by_sbp"]) == true ? 1 : 0).ToString();
-
+                    salesPortionsHeader.ClientPhone = (reader["phone"].ToString() == "" ? "''" : reader["phone"].ToString());
                     salesPortions.ListSalesPortionsHeader.Add(salesPortionsHeader);
                     //Конец Новое заполнение 
                     ////////////////////////////////////////////////////////////////////////
@@ -655,7 +656,8 @@ namespace Cash8
             public string SystemTaxation { get; set; }
             public string Guid { get; set; }
             public string SBP { get; set; }
-    }
+            public string ClientPhone { get; set; }
+        }
         
         public class SalesPortionsTable
         {

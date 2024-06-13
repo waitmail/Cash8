@@ -86,7 +86,6 @@
             this.txtB_num_doc = new System.Windows.Forms.TextBox();
             this.checkBox_print_check = new System.Windows.Forms.CheckBox();
             this.checkBox_payment_by_sbp = new System.Windows.Forms.CheckBox();
-            this.cash = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_enter_quantity)).BeginInit();
             this.panel2.SuspendLayout();
@@ -162,7 +161,7 @@
             // 
             this.panel1.BackColor = System.Drawing.Color.LightSalmon;
             this.panel1.Controls.Add(this.numericUpDown_enter_quantity);
-            this.panel1.Location = new System.Drawing.Point(620, 12);
+            this.panel1.Location = new System.Drawing.Point(15, -2);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(166, 44);
             this.panel1.TabIndex = 21;
@@ -445,7 +444,7 @@
             this.listView_sertificates.Name = "listView_sertificates";
             this.listView_sertificates.Size = new System.Drawing.Size(784, 341);
             this.listView_sertificates.TabIndex = 0;
-            this.listView_sertificates.UseCompatibleStateImageBehavior = false;            
+            this.listView_sertificates.UseCompatibleStateImageBehavior = false;
             // 
             // txtB_sertificate_money
             // 
@@ -710,21 +709,6 @@
             this.checkBox_payment_by_sbp.UseVisualStyleBackColor = true;
             this.checkBox_payment_by_sbp.Visible = false;
             // 
-            // cash
-            // 
-            this.cash.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.cash.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.cash.ForeColor = System.Drawing.Color.Black;
-            this.cash.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.cash.Location = new System.Drawing.Point(45, 25);
-            this.cash.MaxLength = 10;
-            this.cash.Name = "cash";
-            this.cash.Size = new System.Drawing.Size(122, 23);
-            this.cash.TabIndex = 8;
-            this.cash.Text = "0.00";
-            this.cash.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.cash.Visible = false;
-            // 
             // Cash_check
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -764,7 +748,6 @@
             this.Controls.Add(this.num_cash);
             this.Controls.Add(this.date_time_start);
             this.Controls.Add(this.pay);
-            this.Controls.Add(this.cash);
             this.Controls.Add(this.inputbarcode);
             this.Controls.Add(this.client_barcode);
             this.Controls.Add(this.client);
@@ -852,7 +835,6 @@
         public System.Windows.Forms.TextBox txtB_non_cash_money;
         public System.Windows.Forms.TextBox txtB_cash_money;
         public System.Windows.Forms.CheckBox checkBox_payment_by_sbp;
-        private System.Windows.Forms.TextBox cash;
         private System.Windows.Forms.NumericUpDown numericUpDown_enter_quantity;
     }
 }

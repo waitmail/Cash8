@@ -29,7 +29,23 @@ namespace Cash8
             this.Load += CheckActions_Load;
             this.Resize += CheckActions_Resize;
             txtB_client_code.KeyPress += TxtB_client_code_KeyPress;
+            dataGridView_tovar_execute.DataSourceChanged += DataGridView_tovar_execute_DataSourceChanged;
         }
+
+        private void DataGridView_tovar_execute_DataSourceChanged(object sender, EventArgs e)
+        {
+            foreach (DataGridViewRow row in dataGridView_tovar_execute.Rows)
+            {
+                if (Convert.ToInt32(row.Cells["action2"].Value) != 0)
+                {
+                    dataGridView_tovar_execute.Rows[row.Index].DefaultCellStyle.BackColor = Color.LightYellow;
+                }
+                else
+                {
+                    dataGridView_tovar_execute.Rows[row.Index].DefaultCellStyle.BackColor = Color.White;
+                }
+            }
+        }       
 
         private void TxtB_client_code_KeyPress(object sender, KeyPressEventArgs e)
         {

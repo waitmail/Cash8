@@ -618,7 +618,7 @@ namespace Cash8
                 }
                 catch (WebException ex)
                 {
-                    MessageBox.Show("check_marker_code " + host.host + " " + ex.Message);
+                    //MessageBox.Show("check_marker_code " + host.host + " " + ex.Message);
                     MainStaticClass.write_event_in_log("check_marker_code " + host.host+" "+ex.Message, "Документ чек", numdoc.ToString());
                     if (ex.Status == WebExceptionStatus.Timeout || ex.Status == WebExceptionStatus.ConnectionClosed)
                     {
@@ -638,12 +638,13 @@ namespace Cash8
                         host.dateTime = DateTime.Now.AddMinutes(15);
                         result_check = false; //ошибка работы с интернет не является ошибкой кода маркировки
                         error = true;
+                        MessageBox.Show("WebException check_marker_code " + host.host + " " + ex.Message, "check_marker_code");
                     }
                     //MainStaticClass.write_event_in_log("WebException при проверке кода маркировки check_marker_code "+ ex.Message, "Документ чек", numdoc.ToString());
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("check_marker_code " + host.host + " " + ex.Message);
+                    MessageBox.Show("Exception check_marker_code " + host.host + " " + ex.Message, "check_marker_code");
                     MainStaticClass.write_event_in_log("check_marker_code " + host.host + " " + ex.Message, "Документ чек", numdoc.ToString());
                     //host.dateTime = DateTime.Now.AddMinutes(15);
                     error = true;

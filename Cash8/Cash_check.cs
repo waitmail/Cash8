@@ -3825,8 +3825,9 @@ namespace Cash8
                     }
                     MainStaticClass.write_event_in_log(" Клиент найден ", "Документ чек", numdoc.ToString());
                     MainStaticClass.write_event_in_log(" Присвоение значения реквизиту на форме ", " Документ ", numdoc.ToString());
-                    this.client.Tag = reader.GetString(1);
-                    this.client.Text = reader.GetString(2);
+                    //this.client.Tag = reader["code"].ToString();
+                    this.client.Tag = reader["code"].ToString();
+                    this.client.Text = reader["name"].ToString();
                     
 
                     if ((reader["clients_phone"].ToString().Trim().Length < 10) && (reader["temp_phone_clients_phone"].ToString().Trim().Length < 10))//будем считать, что номера телефона нет
@@ -3862,28 +3863,9 @@ namespace Cash8
                     MainStaticClass.write_event_in_log(" Клиент не найден ", "Документ чек", numdoc.ToString());
                     MessageBox.Show("Клиент не найден");
                     return;
-                }
-
-                //if (MainStaticClass.PassPromo != "")
-                //{
-                //    if (!check_bonus_is_on())//нет флажка о то что этот клиент бонусный
-                //    {
-
-                //        if (check_client_have_telephone())//Проверка о том, что клиент имеет телефон
-                //        {
-                //            if (!check_in_change_status_client())//Проверка на то что у этого покупателя уже возможно изменен статус
-                //            {
-                //                btn_change_status_client.Visible = true;
-                //                btn_change_status_client.Enabled = true;
-                //                //return;
-                //            }
-                //        }
-                //    }
-                //}
-
-
-                //if (bonus_is_on == 0)
-                //{
+                }              
+                
+               
                 if (check_type.SelectedIndex == 1)//При возврате теперь можно использовать карту клиента 
                 {
                     Discount = 0;
@@ -3911,8 +3893,7 @@ namespace Cash8
                 MainStaticClass.write_event_in_log(" Проверка на день рождения окончание " + barcode, " Документ ", numdoc.ToString());
                 this.inputbarcode.Focus();
                 this.client_barcode.Text = "";
-                this.btn_inpute_phone_client.Enabled = false;
-                //}                
+                this.btn_inpute_phone_client.Enabled = false;                           
             }
             else
             {
@@ -4223,7 +4204,7 @@ namespace Cash8
             //listView2.Columns.Add("Товар", SystemInformation.PrimaryMonitorSize.Width-500, HorizontalAlignment.Left);
             listView2.Columns.Add("Характеристика", SystemInformation.PrimaryMonitorSize.Width - 500, HorizontalAlignment.Left);
             listView2.Columns.Add("Цена", 200, HorizontalAlignment.Right);
-            cash.SelectionStart = 0;
+            //cash.SelectionStart = 0;
             //Здесь получаем признак документ новый или нет
 
             if (MainStaticClass.GetVersionFn == 1)
