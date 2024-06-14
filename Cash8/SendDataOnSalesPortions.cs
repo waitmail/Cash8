@@ -134,7 +134,7 @@ namespace Cash8
                     salesPortionsHeader.Sum_certificate1 = reader["sertificate_money1"].ToString().Replace(",", ".");
                     salesPortionsHeader.Guid = reader["guid"].ToString();
                     salesPortionsHeader.SBP = (Convert.ToBoolean(reader["payment_by_sbp"]) == true ? 1 : 0).ToString();
-                    salesPortionsHeader.ClientPhone = (reader["phone"].ToString() == "" ? "''" : reader["phone"].ToString());
+                    salesPortionsHeader.ClientPhone = (reader["phone"].ToString() == "" ? "''" : reader["phone"].ToString()).Replace("+7","");
                     salesPortions.ListSalesPortionsHeader.Add(salesPortionsHeader);
                     //Конец Новое заполнение 
                     ////////////////////////////////////////////////////////////////////////
