@@ -3784,19 +3784,30 @@ namespace Cash8
                 //    " left join temp_phone_clients ON clients.code = temp_phone_clients.barcode " +
                 //    " WHERE clients.code='" + barcode + "' OR right(clients.phone,10)='" + barcode + "' AND clients.its_work = 1 ";
 
-                command.CommandText = " SELECT 5.00,clients.code,clients.name,clients.phone AS clients_phone," +
-                    " temp_phone_clients.phone AS temp_phone_clients_phone,attribute,clients.its_work,COALESCE(clients.bonus_is_on,0) AS bonus_is_on  FROM clients " +
-                    //" left join discount_types ON clients.discount_types_code= discount_types.code " +
-                    " left join temp_phone_clients ON clients.code = temp_phone_clients.barcode " +
-                    //" WHERE clients.code='" + barcode + "' OR right(clients.phone,10)='" + barcode + "' AND clients.its_work = 1 ";
-                    " WHERE clients.code='" + barcode + "' AND clients.its_work = 1 ";
+                if (barcode.Substring(0, 1) == "9")
+                {
+                    check_and_verify_phone_number(barcode);//возможно что это новый клиент необходимо провести проверку 
+
+                    command.CommandText = " SELECT 5.00,clients.code,clients.name,clients.phone AS clients_phone," +
+                     " temp_phone_clients.phone AS temp_phone_clients_phone,attribute,clients.its_work,COALESCE(clients.bonus_is_on,0) AS bonus_is_on  FROM clients " +                     
+                     " left join temp_phone_clients ON clients.code = temp_phone_clients.barcode " +                     
+                     " WHERE clients.phone='" + barcode + "' AND clients.its_work = 1 ";
+                }
+                else
+                {
+                    command.CommandText = " SELECT 5.00,clients.code,clients.name,clients.phone AS clients_phone," +
+                        " temp_phone_clients.phone AS temp_phone_clients_phone,attribute,clients.its_work,COALESCE(clients.bonus_is_on,0) AS bonus_is_on  FROM clients " +                        
+                        " left join temp_phone_clients ON clients.code = temp_phone_clients.barcode " +                        
+                        " WHERE clients.code='" + barcode + "' AND clients.its_work = 1 ";
+                }
 
                 MainStaticClass.write_event_in_log("Старт поиска клиента", "Документ чек", numdoc.ToString());
 
                 NpgsqlDataReader reader = command.ExecuteReader();
-
+                //bool client_find = false;
                 while (reader.Read())
                 {
+                    //bool client_find = true;
 
                     if (reader["its_work"].ToString() != "1")
                     {
@@ -3810,7 +3821,7 @@ namespace Cash8
 
                     //if (bonus_is_on == 0)
                     //{
-                        Discount = Convert.ToDouble(reader.GetDecimal(0));
+                        Discount = Convert.ToDouble(reader.GetDecimal(0))/100;
                     //}
 
                     client_barcode.Enabled = false;//дисконтная карта определена, сделаем недоступным окно ввода кода  
@@ -3871,7 +3882,7 @@ namespace Cash8
                     Discount = 0;
                 }
 
-                Discount = Discount / 100;
+                //Discount = Discount / 100;
 
                 if (Discount != 0)//Пересчитать цены 
                 {

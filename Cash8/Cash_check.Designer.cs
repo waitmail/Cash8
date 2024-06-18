@@ -69,7 +69,6 @@
             this.txtB_email_telephone = new System.Windows.Forms.TextBox();
             this.label12 = new System.Windows.Forms.Label();
             this.txtB_client_phone = new System.Windows.Forms.TextBox();
-            this.label_client_barcode = new System.Windows.Forms.Label();
             this.label_client_phone = new System.Windows.Forms.Label();
             this.btn_inpute_phone_client = new System.Windows.Forms.Button();
             this.label13 = new System.Windows.Forms.Label();
@@ -136,10 +135,10 @@
             // client_barcode
             // 
             this.client_barcode.BackColor = System.Drawing.SystemColors.Window;
-            this.client_barcode.Location = new System.Drawing.Point(366, 45);
+            this.client_barcode.Location = new System.Drawing.Point(415, 42);
             this.client_barcode.MaxLength = 13;
             this.client_barcode.Name = "client_barcode";
-            this.client_barcode.Size = new System.Drawing.Size(99, 20);
+            this.client_barcode.Size = new System.Drawing.Size(120, 20);
             this.client_barcode.TabIndex = 0;
             this.client_barcode.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.client_barcode_KeyPress);
             // 
@@ -161,7 +160,7 @@
             // 
             this.panel1.BackColor = System.Drawing.Color.LightSalmon;
             this.panel1.Controls.Add(this.numericUpDown_enter_quantity);
-            this.panel1.Location = new System.Drawing.Point(15, -2);
+            this.panel1.Location = new System.Drawing.Point(558, 18);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(166, 44);
             this.panel1.TabIndex = 21;
@@ -519,32 +518,23 @@
             // txtB_client_phone
             // 
             this.txtB_client_phone.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtB_client_phone.Location = new System.Drawing.Point(545, 45);
+            this.txtB_client_phone.Location = new System.Drawing.Point(748, 40);
             this.txtB_client_phone.MaxLength = 10;
             this.txtB_client_phone.Name = "txtB_client_phone";
-            this.txtB_client_phone.Size = new System.Drawing.Size(72, 20);
+            this.txtB_client_phone.Size = new System.Drawing.Size(37, 20);
             this.txtB_client_phone.TabIndex = 1;
-            // 
-            // label_client_barcode
-            // 
-            this.label_client_barcode.AutoSize = true;
-            this.label_client_barcode.Location = new System.Drawing.Point(290, 49);
-            this.label_client_barcode.Name = "label_client_barcode";
-            this.label_client_barcode.Size = new System.Drawing.Size(70, 13);
-            this.label_client_barcode.TabIndex = 58;
-            this.label_client_barcode.Text = "Код клиента";
+            this.txtB_client_phone.Visible = false;
             // 
             // label_client_phone
             // 
-            this.label_client_phone.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label_client_phone.AutoSize = true;
             this.label_client_phone.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.label_client_phone.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.label_client_phone.Location = new System.Drawing.Point(470, 47);
+            this.label_client_phone.Location = new System.Drawing.Point(261, 45);
             this.label_client_phone.Name = "label_client_phone";
-            this.label_client_phone.Size = new System.Drawing.Size(69, 15);
+            this.label_client_phone.Size = new System.Drawing.Size(143, 15);
             this.label_client_phone.TabIndex = 59;
-            this.label_client_phone.Text = "Телефон +7";
+            this.label_client_phone.Text = "Код клиента / Телефон +7";
             this.label_client_phone.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // btn_inpute_phone_client
@@ -730,7 +720,6 @@
             this.Controls.Add(this.label13);
             this.Controls.Add(this.btn_inpute_phone_client);
             this.Controls.Add(this.label_client_phone);
-            this.Controls.Add(this.label_client_barcode);
             this.Controls.Add(this.txtB_client_phone);
             this.Controls.Add(this.label12);
             this.Controls.Add(this.txtB_email_telephone);
@@ -813,7 +802,6 @@
         public System.Windows.Forms.ComboBox check_type;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.TextBox txtB_client_phone;
-        private System.Windows.Forms.Label label_client_barcode;
         private System.Windows.Forms.Label label_client_phone;
         private System.Windows.Forms.Button btn_inpute_phone_client;
         private System.Windows.Forms.Label label13;
