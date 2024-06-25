@@ -57,11 +57,17 @@
             this.txtB_ip_address_acquiring_terminal = new System.Windows.Forms.TextBox();
             this.groupBox_acquiring_terminal = new System.Windows.Forms.GroupBox();
             this.checkBox_webservice_authorize = new System.Windows.Forms.CheckBox();
-            this.checkBox_static_guid_in_print = new System.Windows.Forms.CheckBox();
             this.checkBox_printing_using_libraries = new System.Windows.Forms.CheckBox();
             this.comboBox_fn_port = new System.Windows.Forms.ComboBox();
             this.btn_trst_connection = new System.Windows.Forms.Button();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.checkBox_get_weight_automatically = new System.Windows.Forms.CheckBox();
+            this.comboBox_scale_port = new System.Windows.Forms.ComboBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.btn_get_weight = new System.Windows.Forms.Button();
             this.groupBox_acquiring_terminal.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // cash_desk_number
@@ -132,37 +138,41 @@
             // path_for_web_service
             // 
             this.path_for_web_service.Enabled = false;
-            this.path_for_web_service.Location = new System.Drawing.Point(209, 292);
+            this.path_for_web_service.Location = new System.Drawing.Point(204, 345);
             this.path_for_web_service.MaxLength = 100;
             this.path_for_web_service.Name = "path_for_web_service";
             this.path_for_web_service.Size = new System.Drawing.Size(264, 20);
             this.path_for_web_service.TabIndex = 42;
+            this.path_for_web_service.Visible = false;
             // 
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(12, 295);
+            this.label15.Location = new System.Drawing.Point(7, 348);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(102, 13);
             this.label15.TabIndex = 41;
             this.label15.Text = "Путь к вебсервису";
+            this.label15.Visible = false;
             // 
             // currency
             // 
-            this.currency.Location = new System.Drawing.Point(253, 12);
+            this.currency.Location = new System.Drawing.Point(571, 373);
             this.currency.MaxLength = 4;
             this.currency.Name = "currency";
             this.currency.Size = new System.Drawing.Size(43, 20);
             this.currency.TabIndex = 43;
+            this.currency.Visible = false;
             // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(222, 16);
+            this.label8.Location = new System.Drawing.Point(524, 380);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(29, 13);
             this.label8.TabIndex = 44;
             this.label8.Text = "Вал.";
+            this.label8.Visible = false;
             // 
             // unloading_period
             // 
@@ -216,15 +226,15 @@
             "ОСН",
             "УСН",
             " УСН + ПАТЕНТ"});
-            this.comboBox_system_taxation.Location = new System.Drawing.Point(209, 251);
+            this.comboBox_system_taxation.Location = new System.Drawing.Point(353, 87);
             this.comboBox_system_taxation.Name = "comboBox_system_taxation";
-            this.comboBox_system_taxation.Size = new System.Drawing.Size(264, 21);
+            this.comboBox_system_taxation.Size = new System.Drawing.Size(120, 21);
             this.comboBox_system_taxation.TabIndex = 63;
             this.comboBox_system_taxation.SelectedIndexChanged += new System.EventHandler(this.comboBox_system_taxation_SelectedIndexChanged);
             // 
             // lbl_system_taxation
             // 
-            this.lbl_system_taxation.Location = new System.Drawing.Point(8, 241);
+            this.lbl_system_taxation.Location = new System.Drawing.Point(247, 78);
             this.lbl_system_taxation.Name = "lbl_system_taxation";
             this.lbl_system_taxation.Size = new System.Drawing.Size(100, 31);
             this.lbl_system_taxation.TabIndex = 64;
@@ -233,7 +243,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(319, 16);
+            this.label3.Location = new System.Drawing.Point(247, 47);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(39, 13);
             this.label3.TabIndex = 65;
@@ -242,7 +252,7 @@
             // txtB_work_schema
             // 
             this.txtB_work_schema.Enabled = false;
-            this.txtB_work_schema.Location = new System.Drawing.Point(360, 12);
+            this.txtB_work_schema.Location = new System.Drawing.Point(326, 40);
             this.txtB_work_schema.MaxLength = 1;
             this.txtB_work_schema.Name = "txtB_work_schema";
             this.txtB_work_schema.Size = new System.Drawing.Size(34, 20);
@@ -251,7 +261,7 @@
             // 
             // label4
             // 
-            this.label4.Location = new System.Drawing.Point(8, 170);
+            this.label4.Location = new System.Drawing.Point(247, 7);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(100, 25);
             this.label4.TabIndex = 68;
@@ -259,16 +269,16 @@
             // 
             // txtB_version_fn
             // 
-            this.txtB_version_fn.Location = new System.Drawing.Point(209, 175);
+            this.txtB_version_fn.Location = new System.Drawing.Point(326, 5);
             this.txtB_version_fn.MaxLength = 1;
             this.txtB_version_fn.Name = "txtB_version_fn";
-            this.txtB_version_fn.Size = new System.Drawing.Size(42, 20);
+            this.txtB_version_fn.Size = new System.Drawing.Size(34, 20);
             this.txtB_version_fn.TabIndex = 69;
             // 
             // checkBox_enable_cdn_markers
             // 
             this.checkBox_enable_cdn_markers.AutoSize = true;
-            this.checkBox_enable_cdn_markers.Location = new System.Drawing.Point(209, 78);
+            this.checkBox_enable_cdn_markers.Location = new System.Drawing.Point(11, 149);
             this.checkBox_enable_cdn_markers.Name = "checkBox_enable_cdn_markers";
             this.checkBox_enable_cdn_markers.Size = new System.Drawing.Size(165, 17);
             this.checkBox_enable_cdn_markers.TabIndex = 70;
@@ -321,51 +331,91 @@
             // checkBox_webservice_authorize
             // 
             this.checkBox_webservice_authorize.AutoSize = true;
-            this.checkBox_webservice_authorize.Location = new System.Drawing.Point(11, 137);
+            this.checkBox_webservice_authorize.Location = new System.Drawing.Point(11, 126);
             this.checkBox_webservice_authorize.Name = "checkBox_webservice_authorize";
             this.checkBox_webservice_authorize.Size = new System.Drawing.Size(167, 17);
             this.checkBox_webservice_authorize.TabIndex = 80;
             this.checkBox_webservice_authorize.Text = "Веб сервис с авторизацией";
             this.checkBox_webservice_authorize.UseVisualStyleBackColor = true;
             // 
-            // checkBox_static_guid_in_print
-            // 
-            this.checkBox_static_guid_in_print.AutoSize = true;
-            this.checkBox_static_guid_in_print.Location = new System.Drawing.Point(209, 48);
-            this.checkBox_static_guid_in_print.Name = "checkBox_static_guid_in_print";
-            this.checkBox_static_guid_in_print.Size = new System.Drawing.Size(231, 17);
-            this.checkBox_static_guid_in_print.TabIndex = 81;
-            this.checkBox_static_guid_in_print.Text = "Статический uuid(документа) при печати";
-            this.checkBox_static_guid_in_print.UseVisualStyleBackColor = true;
-            // 
             // checkBox_printing_using_libraries
             // 
             this.checkBox_printing_using_libraries.AutoSize = true;
-            this.checkBox_printing_using_libraries.Location = new System.Drawing.Point(11, 211);
+            this.checkBox_printing_using_libraries.Location = new System.Drawing.Point(31, 22);
             this.checkBox_printing_using_libraries.Name = "checkBox_printing_using_libraries";
-            this.checkBox_printing_using_libraries.Size = new System.Drawing.Size(125, 17);
+            this.checkBox_printing_using_libraries.Size = new System.Drawing.Size(154, 17);
             this.checkBox_printing_using_libraries.TabIndex = 82;
-            this.checkBox_printing_using_libraries.Text = "Печать ФН прямая";
+            this.checkBox_printing_using_libraries.Text = "Включить прямую печать";
             this.checkBox_printing_using_libraries.UseVisualStyleBackColor = true;
             // 
             // comboBox_fn_port
             // 
             this.comboBox_fn_port.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_fn_port.FormattingEnabled = true;
-            this.comboBox_fn_port.Location = new System.Drawing.Point(209, 211);
+            this.comboBox_fn_port.Location = new System.Drawing.Point(208, 190);
             this.comboBox_fn_port.Name = "comboBox_fn_port";
             this.comboBox_fn_port.Size = new System.Drawing.Size(127, 21);
             this.comboBox_fn_port.TabIndex = 83;
             // 
             // btn_trst_connection
             // 
-            this.btn_trst_connection.Location = new System.Drawing.Point(344, 211);
+            this.btn_trst_connection.Location = new System.Drawing.Point(344, 190);
             this.btn_trst_connection.Name = "btn_trst_connection";
             this.btn_trst_connection.Size = new System.Drawing.Size(129, 23);
             this.btn_trst_connection.TabIndex = 84;
             this.btn_trst_connection.Text = "Проверка соединения";
             this.btn_trst_connection.UseVisualStyleBackColor = true;
             this.btn_trst_connection.Click += new System.EventHandler(this.btn_trst_connection_Click);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.checkBox_printing_using_libraries);
+            this.groupBox1.Location = new System.Drawing.Point(11, 170);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(475, 61);
+            this.groupBox1.TabIndex = 85;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Настроки прямой печати";
+            // 
+            // checkBox_get_weight_automatically
+            // 
+            this.checkBox_get_weight_automatically.Location = new System.Drawing.Point(25, 24);
+            this.checkBox_get_weight_automatically.Name = "checkBox_get_weight_automatically";
+            this.checkBox_get_weight_automatically.Size = new System.Drawing.Size(160, 33);
+            this.checkBox_get_weight_automatically.TabIndex = 87;
+            this.checkBox_get_weight_automatically.Text = "Получать вес с весов автоматически";
+            this.checkBox_get_weight_automatically.UseVisualStyleBackColor = true;
+            // 
+            // comboBox_scale_port
+            // 
+            this.comboBox_scale_port.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox_scale_port.FormattingEnabled = true;
+            this.comboBox_scale_port.Location = new System.Drawing.Point(187, 24);
+            this.comboBox_scale_port.Name = "comboBox_scale_port";
+            this.comboBox_scale_port.Size = new System.Drawing.Size(127, 21);
+            this.comboBox_scale_port.TabIndex = 88;
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.btn_get_weight);
+            this.groupBox2.Controls.Add(this.comboBox_scale_port);
+            this.groupBox2.Controls.Add(this.checkBox_get_weight_automatically);
+            this.groupBox2.Location = new System.Drawing.Point(17, 247);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(469, 71);
+            this.groupBox2.TabIndex = 89;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Настройки весов";
+            // 
+            // btn_get_weight
+            // 
+            this.btn_get_weight.Location = new System.Drawing.Point(327, 24);
+            this.btn_get_weight.Name = "btn_get_weight";
+            this.btn_get_weight.Size = new System.Drawing.Size(129, 23);
+            this.btn_get_weight.TabIndex = 89;
+            this.btn_get_weight.Text = "Получить вес";
+            this.btn_get_weight.UseVisualStyleBackColor = true;
+            this.btn_get_weight.Click += new System.EventHandler(this.btn_get_weight_Click);
             // 
             // Constants
             // 
@@ -374,8 +424,6 @@
             this.ClientSize = new System.Drawing.Size(781, 443);
             this.Controls.Add(this.btn_trst_connection);
             this.Controls.Add(this.comboBox_fn_port);
-            this.Controls.Add(this.checkBox_printing_using_libraries);
-            this.Controls.Add(this.checkBox_static_guid_in_print);
             this.Controls.Add(this.checkBox_webservice_authorize);
             this.Controls.Add(this.txtB_ip_address_acquiring_terminal);
             this.Controls.Add(this.label6);
@@ -404,10 +452,15 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.cash_desk_number);
             this.Controls.Add(this.groupBox_acquiring_terminal);
+            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.groupBox2);
             this.Name = "Constants";
             this.Text = "Константы";
             this.groupBox_acquiring_terminal.ResumeLayout(false);
             this.groupBox_acquiring_terminal.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -446,9 +499,13 @@
         private System.Windows.Forms.TextBox txtB_ip_address_acquiring_terminal;
         private System.Windows.Forms.GroupBox groupBox_acquiring_terminal;
         private System.Windows.Forms.CheckBox checkBox_webservice_authorize;
-        private System.Windows.Forms.CheckBox checkBox_static_guid_in_print;
         private System.Windows.Forms.CheckBox checkBox_printing_using_libraries;
         private System.Windows.Forms.ComboBox comboBox_fn_port;
         private System.Windows.Forms.Button btn_trst_connection;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.CheckBox checkBox_get_weight_automatically;
+        private System.Windows.Forms.ComboBox comboBox_scale_port;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Button btn_get_weight;
     }
 }

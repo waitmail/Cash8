@@ -16,6 +16,7 @@ using System.Net.NetworkInformation;
 using Newtonsoft.Json;
 using Atol.Drivers10.Fptr;
 using AtolConstants = Atol.Drivers10.Fptr.Constants;
+using System.IO.Ports;
 
 namespace Cash8
 {
@@ -88,7 +89,7 @@ namespace Cash8
         private static int work_schema = 0;
         private static int version_fn = 0;
         private static string version_fn_real = "";
-        private static string fn_sreial_port = "";
+        private static string fn_serial_port = "";
 
         //private static bool use_text_print;
         //private static int width_of_symbols;
@@ -119,6 +120,82 @@ namespace Cash8
         private static int this_new_database = 0;
         private static Cash8.CDN.CDN_List CDN_list = null;
         private static string fiscal_drive_number = "";//номер фискального регистратора 
+        private static int get_weight_automatically = -1;
+        private static string scale_serial_port = "";
+
+
+
+        public static int GetWeightAutomatically
+        {
+            get
+            {
+                if (get_weight_automatically == -1)
+                {
+                    NpgsqlConnection conn = null;
+                    NpgsqlCommand command = null;
+                    conn = MainStaticClass.NpgsqlConn();
+                    try
+                    {
+                        conn.Open();
+                        string query = "SELECT get_weight_automatically FROM constants";
+                        command = new NpgsqlCommand(query, conn);
+                        get_weight_automatically = (Convert.ToBoolean(command.ExecuteScalar()) ? 1 : 0 );
+                    }
+                    catch (NpgsqlException ex)
+                    {
+                        MessageBox.Show("Ошибка при чтении get_weight_automatically" + ex.ToString());
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Ошибка при чтении get_weight_automatically" + ex.ToString());
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                }
+                return get_weight_automatically;
+            }
+        }
+
+        public static string ScaleSerialPort
+        {
+            get
+            {
+                if (scale_serial_port == "")
+                {
+                    NpgsqlConnection conn = null;
+                    NpgsqlCommand command = null;
+                    conn = MainStaticClass.NpgsqlConn();
+                    try
+                    {
+                        conn.Open();
+                        string query = "SELECT scale_serial_port FROM constants";
+                        command = new NpgsqlCommand(query, conn);
+                        scale_serial_port = command.ExecuteScalar().ToString();
+                    }
+                    catch (NpgsqlException ex)
+                    {
+                        MessageBox.Show("Ошибка при чтении scale_serial_port" + ex.ToString());
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Ошибка при чтении scale_serial_port" + ex.ToString());
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                }
+                return scale_serial_port;
+            }
+        }
 
         public static Cash8.CDN.CDN_List CDN_List
         {
@@ -196,6 +273,67 @@ namespace Cash8
                 }
             }
 
+            return result;
+        }
+
+
+        public static double GetWeight(ref bool error)
+        {
+            error = false;
+            double result = 0;
+            string portName = MainStaticClass.ScaleSerialPort;
+            int baudRate = 9600;
+
+            using (SerialPort serialPort = new SerialPort(portName, baudRate, Parity.None, 8, StopBits.One))
+            {
+                try
+                {
+                    Thread.Sleep(100);
+                    serialPort.Open();
+                    //Console.WriteLine("Порт открыт успешно.");
+
+                    byte[] data = { 0x02, 0x05, 0x3A, 0x30, 0x30, 0x33, 0x30, 0x3C }; // команда весам
+                    serialPort.Write(data, 0, data.Length); // отправляем команду весам
+
+                    serialPort.ReadTimeout = 1000; // ждем 1 секунду для получения ответа
+
+                    byte[] buffer = new byte[15];
+                    int bytesRead = serialPort.Read(buffer, 0, buffer.Length); // читаем ответ
+
+                    if (bytesRead == 15)
+                    {
+                        // используем BitConverter для выделения нужных байт из ответного сообщения
+                        int b = BitConverter.ToInt32(buffer, 7);
+                        result = b / 10000.0; // Перевод в килограммы
+                    }
+                    else
+                    {
+                        error = true;
+                    }
+                }
+                catch (TimeoutException)
+                {
+                    MessageBox.Show("Время ожидания истекло.");
+                    //    Console.WriteLine("Время ожидания истекло.");
+                    result = -1;
+                    error = true;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Ошибка " + ex.Message);
+                    //Console.WriteLine($"Ошибка: {ex.Message}");
+                    result = -1;
+                    error = true;
+                }
+                finally
+                {
+                    if (serialPort.IsOpen)
+                    {
+                        serialPort.Close();
+                        //Console.WriteLine("Порт закрыт.");
+                    }
+                }
+            }
             return result;
         }
 
@@ -309,11 +447,11 @@ namespace Cash8
             }
         }
 
-        public static string FnSreialPort
+        public static string FnSerialPort
         {
             get
             {
-                if (fn_sreial_port == "")
+                if (fn_serial_port == "")
                 {
                     NpgsqlConnection conn = null;
                     NpgsqlCommand command = null;
@@ -321,17 +459,17 @@ namespace Cash8
                     try
                     {
                         conn.Open();
-                        string query = "SELECT fn_sreial_port FROM constants";                        
+                        string query = "SELECT fn_serial_port FROM constants";                        
                         command = new NpgsqlCommand(query, conn);
-                        fn_sreial_port = command.ExecuteScalar().ToString();
+                        fn_serial_port = command.ExecuteScalar().ToString();
                     }
                     catch (NpgsqlException ex)
                     {
-                        MessageBox.Show("Ошибка при чтении fn_sreial_port" + ex.ToString());
+                        MessageBox.Show("Ошибка при чтении fn_serial_port" + ex.ToString());
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Ошибка при чтении fn_sreial_port" + ex.ToString());
+                        MessageBox.Show("Ошибка при чтении fn_serial_port" + ex.ToString());
                     }
                     finally
                     {
@@ -342,7 +480,7 @@ namespace Cash8
                     }
 
                 }
-                return fn_sreial_port ;
+                return fn_serial_port ;
             }
         }
 
@@ -2350,7 +2488,7 @@ namespace Cash8
             fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_MODEL, AtolConstants.LIBFPTR_MODEL_ATOL_AUTO.ToString());
             fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_PORT, AtolConstants.LIBFPTR_PORT_COM.ToString());
             //fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_PORT, AtolConstants.LIBFPTR_PORT_TCPIP.ToString());
-            fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_COM_FILE, MainStaticClass.FnSreialPort);
+            fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_COM_FILE, MainStaticClass.FnSerialPort);
             //fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_IPADDRESS, "10.21.200.46");
             //fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_IPPORT, "5555");            
             fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_BAUDRATE, AtolConstants.LIBFPTR_PORT_BR_115200.ToString());

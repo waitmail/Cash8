@@ -50,14 +50,14 @@
             this.listView1.HideSelection = false;
             this.listView1.Location = new System.Drawing.Point(12, 59);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(984, 486);
+            this.listView1.Size = new System.Drawing.Size(1001, 486);
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
             // 
             // button1
             // 
             this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.Location = new System.Drawing.Point(1248, 688);
+            this.button1.Location = new System.Drawing.Point(1253, 688);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(84, 23);
             this.button1.TabIndex = 1;
@@ -71,7 +71,7 @@
             this.num_cash.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.num_cash.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.num_cash.ForeColor = System.Drawing.Color.Maroon;
-            this.num_cash.Location = new System.Drawing.Point(643, 3);
+            this.num_cash.Location = new System.Drawing.Point(648, 3);
             this.num_cash.Name = "num_cash";
             this.num_cash.Size = new System.Drawing.Size(198, 24);
             this.num_cash.TabIndex = 11;
@@ -151,7 +151,7 @@
             this.checkBox_show_3_last_checks.AutoSize = true;
             this.checkBox_show_3_last_checks.Checked = true;
             this.checkBox_show_3_last_checks.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_show_3_last_checks.Location = new System.Drawing.Point(650, 34);
+            this.checkBox_show_3_last_checks.Location = new System.Drawing.Point(655, 34);
             this.checkBox_show_3_last_checks.Name = "checkBox_show_3_last_checks";
             this.checkBox_show_3_last_checks.Size = new System.Drawing.Size(180, 17);
             this.checkBox_show_3_last_checks.TabIndex = 21;
@@ -163,7 +163,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1020, 580);
+            this.ClientSize = new System.Drawing.Size(1025, 580);
             this.Controls.Add(this.checkBox_show_3_last_checks);
             this.Controls.Add(this.btn_update_status_send);
             this.Controls.Add(this.label1);

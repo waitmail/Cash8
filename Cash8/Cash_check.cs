@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Drawing.Printing;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
@@ -2978,8 +2978,14 @@ namespace Cash8
                         {
                             lvi.SubItems[2].Tag = listView2.Items[0].Tag;//GUID характеристики   
                         }
-
-                        lvi.SubItems.Add("1");
+                        if (!fractional)
+                        {
+                            lvi.SubItems.Add("1");
+                        }
+                        else
+                        {
+                            lvi.SubItems.Add("0,001");
+                        }
                         lvi.SubItems.Add(listView2.Items[0].SubItems[1].Text);//Цена 
                                                                               //Проверка на сертификат               
                         if (this.its_certificate(select_tovar.Tag.ToString()) != "1")
@@ -9861,6 +9867,37 @@ namespace Cash8
             TextBox tb = (TextBox)numericUpDown_enter_quantity.Controls[1];
             tb.SelectionStart = 0;
             tb.SelectionLength = tb.Text.Length;
+            if (MainStaticClass.GetWeightAutomatically == 1)
+            {
+                Dictionary<double, int> frequencyMap = new Dictionary<double, int>();
+                if (MessageBox.Show("Ввод веса будет из весов ? ", "Истоник веса", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    bool error = false;
+                    double weigt = 0;
+                    int num = 0;
+                    while (num < 5)
+                    {
+                        num++;
+                        weigt = MainStaticClass.GetWeight(ref error);
+                        if (frequencyMap.ContainsKey(weigt))
+                        {
+                            frequencyMap[weigt]++;
+                        }
+                        else
+                        {
+                            frequencyMap[weigt] = 1;
+                        }
+                    }
+                    weigt = frequencyMap.Where(pair => pair.Key > 0) // Фильтруем, оставляя только числа больше нуля
+                        .OrderByDescending(pair => pair.Value) // Сортируем по убыванию частоты
+                        .FirstOrDefault().Key; // Берем первый элемент или значение по умолчанию, если таких нет
+                    if (weigt > 0)
+                    {
+                        this.numericUpDown_enter_quantity.Value = Convert.ToDecimal(weigt);
+                    }
+                }
+            }
+
             //tb.Focus();
         }
 

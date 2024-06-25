@@ -162,22 +162,22 @@
             this.panel1.Controls.Add(this.numericUpDown_enter_quantity);
             this.panel1.Location = new System.Drawing.Point(558, 18);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(166, 44);
+            this.panel1.Size = new System.Drawing.Size(174, 66);
             this.panel1.TabIndex = 21;
             this.panel1.Visible = false;
             // 
             // numericUpDown_enter_quantity
             // 
             this.numericUpDown_enter_quantity.DecimalPlaces = 3;
-            this.numericUpDown_enter_quantity.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.numericUpDown_enter_quantity.Location = new System.Drawing.Point(6, 7);
+            this.numericUpDown_enter_quantity.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.numericUpDown_enter_quantity.Location = new System.Drawing.Point(9, 10);
             this.numericUpDown_enter_quantity.Maximum = new decimal(new int[] {
             9999,
             0,
             0,
             0});
             this.numericUpDown_enter_quantity.Name = "numericUpDown_enter_quantity";
-            this.numericUpDown_enter_quantity.Size = new System.Drawing.Size(155, 31);
+            this.numericUpDown_enter_quantity.Size = new System.Drawing.Size(155, 44);
             this.numericUpDown_enter_quantity.TabIndex = 0;
             this.numericUpDown_enter_quantity.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 

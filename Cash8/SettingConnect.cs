@@ -1089,9 +1089,12 @@ namespace Cash8
             queries.Add("ALTER TABLE public.tovar ADD COLUMN fractional boolean NOT NULL DEFAULT false;");
             queries.Add("ALTER TABLE public.deleted_items ADD COLUMN autor character varying(12) COLLATE pg_catalog.default;");
             queries.Add("ALTER TABLE public.deleted_items ADD COLUMN reason character varying(50) COLLATE pg_catalog.default;");
+            queries.Add("ALTER TABLE public.constants ADD COLUMN scale_serial_port character varying(20) COLLATE pg_catalog.default");
+            queries.Add("ALTER TABLE public.constants ADD COLUMN get_weight_automatically boolean DEFAULT false;");
+            queries.Add("ALTER TABLE public.constants RENAME COLUMN fn_sreial_port TO fn_serial_port;");
 
             //queries.Add("CREATE INDEX _guid ON public.checks_table USING btree (guid COLLATE pg_catalog.default ASC NULLS LAST) TABLESPACE pg_default;");
-            
+
             foreach (string str in queries)
             {
                 append_column(str);

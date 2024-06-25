@@ -10,6 +10,7 @@ using Npgsql;
 using System.Drawing.Printing;
 using Atol.Drivers10.Fptr;
 using AtolConstants = Atol.Drivers10.Fptr.Constants;
+using System.Linq;
 
 namespace Cash8
 {
@@ -23,8 +24,8 @@ namespace Cash8
             InitializeComponent();
             this.KeyPreview = true;
             this.unloading_period.KeyPress += new KeyPressEventHandler(unloading_period_KeyPress);
-            this.cash_desk_number.KeyPress += new KeyPressEventHandler(cash_desk_number_KeyPress);            
-            this.Load += new EventHandler(Constants_Load);            
+            this.cash_desk_number.KeyPress += new KeyPressEventHandler(cash_desk_number_KeyPress);
+            this.Load += new EventHandler(Constants_Load);
         }
 
 
@@ -36,7 +37,7 @@ namespace Cash8
                 {
                     e.Handled = true;
                 }
-            }            
+            }
         }
 
         private void txtB_ip_addr_trassir_KeyPress(object sender, KeyPressEventArgs e)
@@ -65,7 +66,7 @@ namespace Cash8
                 e.Handled = true;
             }
         }
-        
+
         //private void size_font_listview_KeyPress(object sender, KeyPressEventArgs e)
         //{
         //    if (!(Char.IsDigit(e.KeyChar)) && (e.KeyChar != (char)Keys.Back))
@@ -74,7 +75,7 @@ namespace Cash8
         //    }
         //}
 
-        
+
 
         private void width_of_symbols_KeyPress(object sender, KeyPressEventArgs e)
         {
@@ -105,16 +106,24 @@ namespace Cash8
             {
                 comboBox_fn_port.Items.Add(s);
             }
+
+            comboBox_scale_port.Items.Clear();
+            sreial_ports = SerialPort.GetPortNames();
+            foreach (string s in sreial_ports)
+            {
+                comboBox_scale_port.Items.Add(s);
+            }
+
             NpgsqlConnection conn = null;
             try
             {
                 conn = MainStaticClass.NpgsqlConn();
                 conn.Open();
-                string query = "SELECT nick_shop,cash_desk_number,use_debug,code_shop,"+
-                    " path_for_web_service,currency,unloading_period,last_date_download_bonus_clients,"+
+                string query = "SELECT nick_shop,cash_desk_number,use_debug,code_shop," +
+                    " path_for_web_service,currency,unloading_period,last_date_download_bonus_clients," +
                     " envd,pass_promo,print_m,system_taxation,work_schema,version_fn,enable_stock_processing_in_memory," +
                     " id_acquirer_terminal,ip_address_acquiring_terminal,self_service_kiosk,enable_cdn_markers, " +
-                    " webservice_authorize,printing_using_libraries,fn_sreial_port FROM constants";
+                    " webservice_authorize,printing_using_libraries,fn_serial_port,get_weight_automatically,scale_serial_port FROM constants";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
@@ -128,8 +137,8 @@ namespace Cash8
                     }
                     //this.code_shop.Text = reader["code_shop"].ToString();
                     this.path_for_web_service.Text = reader["path_for_web_service"].ToString();
-                    this.currency.Text = reader["currency"].ToString();                    
-                    this.unloading_period.Text = reader["unloading_period"].ToString();                    
+                    this.currency.Text = reader["currency"].ToString();
+                    this.unloading_period.Text = reader["unloading_period"].ToString();
                     this.txtB_last_date_download_bonus_clients.Text = (reader["last_date_download_bonus_clients"].ToString() == "" ? new DateTime(2000, 1, 1).ToString("dd-MM-yyyy") : Convert.ToDateTime(reader["last_date_download_bonus_clients"]).ToString("dd-MM-yyyy"));
                     //this.checkBox_envd.CheckState = (reader["envd"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
                     this.checkBox_print_m.CheckState = (reader["print_m"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
@@ -138,15 +147,20 @@ namespace Cash8
                     this.txtB_work_schema.Text = reader["work_schema"].ToString();
                     this.txtB_version_fn.Text = reader["version_fn"].ToString();
                     //this.checkBox_enable_cdn_markers.CheckState= (reader["enable_stock_processing_in_memory"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
-                    this.txtB_id_acquiring_terminal.Text= reader["id_acquirer_terminal"].ToString();
-                    this.txtB_ip_address_acquiring_terminal.Text= reader["ip_address_acquiring_terminal"].ToString();
+                    this.txtB_id_acquiring_terminal.Text = reader["id_acquirer_terminal"].ToString();
+                    this.txtB_ip_address_acquiring_terminal.Text = reader["ip_address_acquiring_terminal"].ToString();
                     //this.checkBox_self_service_kiosk.CheckState = (reader["self_service_kiosk"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
                     this.checkBox_enable_cdn_markers.CheckState = (reader["enable_cdn_markers"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
                     //this.checkBox_version2_marking.CheckState = (reader["version2_marking"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
                     this.checkBox_webservice_authorize.CheckState = (reader["webservice_authorize"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
                     this.checkBox_printing_using_libraries.CheckState = (reader["printing_using_libraries"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
-                    int index = comboBox_fn_port.Items.IndexOf(reader["fn_sreial_port"].ToString());
+                    this.checkBox_get_weight_automatically.CheckState = (reader["get_weight_automatically"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
+
+                    int index = comboBox_fn_port.Items.IndexOf(reader["fn_serial_port"].ToString());
                     this.comboBox_fn_port.SelectedIndex = index;
+
+                    index = comboBox_scale_port.Items.IndexOf(reader["scale_serial_port"].ToString());
+                    this.comboBox_scale_port.SelectedIndex = index;
                 }
                 reader.Close();
                 //if (nick_shop.Text.Trim() != "A01")
@@ -155,6 +169,10 @@ namespace Cash8
                 //}
             }
             catch (NpgsqlException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
@@ -253,7 +271,7 @@ namespace Cash8
                     }
                 }
             }
-            
+
             if (currency.Text.Trim().Length == 0)
             {
                 MessageBox.Show(" Не заполнена валюта ", " Ошибка ввода !!!");
@@ -275,15 +293,19 @@ namespace Cash8
                     }
                 }
             }
-                        
+
             string print_m = (checkBox_print_m.CheckState == CheckState.Unchecked ? "false" : "true");
             //string enable_stock_processing_in_memory = (checkBox_enable_cdn_markers.CheckState == CheckState.Unchecked ? "false" : "true");
             //string self_service_kiosk = (checkBox_self_service_kiosk.CheckState == CheckState.Unchecked ? "false" : "true");
             string enable_cdn_markers = (checkBox_enable_cdn_markers.CheckState == CheckState.Unchecked ? "false" : "true");
             //string version2_marking = (checkBox_version2_marking.CheckState == CheckState.Unchecked ? "false" : "true");
             string webservice_authorize = (checkBox_webservice_authorize.CheckState == CheckState.Unchecked ? "false" : "true");
-            string static_guid_in_print = (checkBox_static_guid_in_print.CheckState == CheckState.Unchecked ? "false" : "true");
+            //string static_guid_in_print = (checkBox_static_guid_in_print.CheckState == CheckState.Unchecked ? "false" : "true");
             string printing_using_libraries = (checkBox_printing_using_libraries.CheckState == CheckState.Unchecked ? "false" : "true");
+            string get_weight_automatically = (checkBox_get_weight_automatically.CheckState == CheckState.Unchecked ? "false" : "true");
+
+            string fn_serial_port = (comboBox_fn_port.Items.Count == 0 ? "" : (comboBox_fn_port.SelectedIndex == -1 ? "" : comboBox_fn_port.SelectedItem.ToString()));
+            string scale_serial_port = (comboBox_scale_port.Items.Count == 0 ? "" : (comboBox_scale_port.SelectedIndex == -1 ? "" : comboBox_scale_port.SelectedItem.ToString()));
 
 
             try
@@ -310,9 +332,11 @@ namespace Cash8
                     "enable_cdn_markers=" + enable_cdn_markers + "," +
                     //"version2_marking=" + version2_marking + "," +
                     "webservice_authorize=" + webservice_authorize + "," +
-                    "static_guid_in_print=" + static_guid_in_print + "," +
+                    //"static_guid_in_print=" + static_guid_in_print + "," +
                     "printing_using_libraries=" + printing_using_libraries + "," +
-                    "fn_sreial_port = '"+(comboBox_fn_port.Items.Count == 0 ? "" : (comboBox_fn_port.SelectedIndex == -1 ? "" : comboBox_fn_port.SelectedItem.ToString()))+"';";
+                    "fn_serial_port = '" + fn_serial_port + "'," +
+                    "scale_serial_port = '" + scale_serial_port + "'," +
+                    "get_weight_automatically=" + get_weight_automatically;
 
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 int resul_update = command.ExecuteNonQuery();
@@ -320,47 +344,51 @@ namespace Cash8
                 {
                     query = "INSERT INTO constants(cash_desk_number," +
                         "nick_shop," +
-                        "use_debug," +                        
+                        "use_debug," +
                         "path_for_web_service," +
                         "currency," +
                         "unloading_period," +
                         "last_date_download_bonus_clients," +
                         //"envd,"+
-                        "print_m,"+
-                        "system_taxation,"+
-                        "work_schema,"+
-                        "version_fn,"+
+                        "print_m," +
+                        "system_taxation," +
+                        "work_schema," +
+                        "version_fn," +
                         //"enable_stock_processing_in_memory,"+
-                        "id_acquirer_terminal,"+
-                        "ip_address_acquiring_terminal,"+
-                        "self_service_kiosk,"+
-                        "enable_cdn_markers,"+
+                        "id_acquirer_terminal," +
+                        "ip_address_acquiring_terminal," +
+                        "self_service_kiosk," +
+                        "enable_cdn_markers," +
                         //"version2_marking,"+
                         "webservice_authorize," +
-                        "static_guid_in_print," +
-                        "printing_using_libraries,"+
-                        "fn_sreial_port) VALUES(" +
+                        //"static_guid_in_print," +
+                        "printing_using_libraries," +
+                        "fn_serial_port," +
+                        "scale_serial_port," +
+                        "get_weight_automatically) VALUES(" +
                         cash_desk_number.Text + ",'" +
                         nick_shop.Text + "'," +
-                        get_use_debug() + ",'" +                        
+                        get_use_debug() + ",'" +
                         path_for_web_service.Text + "','" +
                         currency.Text + "','" +
                         unloading_period.Text + "','" +
-                        txtB_last_date_download_bonus_clients.Text + "','" +                       
-                        print_m+"','"+
-                        comboBox_system_taxation.SelectedIndex.ToString()+ "','"+
-                        txtB_work_schema.Text+"','"+
-                        txtB_version_fn.Text+"','"+
+                        txtB_last_date_download_bonus_clients.Text + "','" +
+                        print_m + "','" +
+                        comboBox_system_taxation.SelectedIndex.ToString() + "','" +
+                        txtB_work_schema.Text + "','" +
+                        txtB_version_fn.Text + "','" +
                         //enable_stock_processing_in_memory+"','"+
-                        txtB_id_acquiring_terminal.Text.ToString()+"','"+
-                        txtB_ip_address_acquiring_terminal.ToString().Trim()+"','"+
+                        txtB_id_acquiring_terminal.Text.ToString() + "','" +
+                        txtB_ip_address_acquiring_terminal.ToString().Trim() + "','" +
                         //self_service_kiosk+","+
-                        enable_cdn_markers+","+
+                        enable_cdn_markers + "," +
                         //version2_marking+","+
-                        webservice_authorize + ","+
-                        static_guid_in_print+","+
-                        printing_using_libraries + ",'"+
-                        comboBox_fn_port.SelectedItem.ToString()+"')";
+                        webservice_authorize + "," +
+                        //static_guid_in_print+","+
+                        printing_using_libraries + ",'" +
+                        comboBox_fn_port.SelectedItem.ToString() + "','" +
+                        scale_serial_port + "'," +
+                        get_weight_automatically + ")";
 
                     command = new NpgsqlCommand(query, conn);
                     command.ExecuteNonQuery();
@@ -376,7 +404,7 @@ namespace Cash8
                 MessageBox.Show(ex.Message);
             }
         }
-              
+
         private string get_use_debug()
         {
             if (use_debug.CheckState == CheckState.Checked)
@@ -402,13 +430,6 @@ namespace Cash8
         private void btn_trst_connection_Click(object sender, EventArgs e)
         {
             IFptr fptr = MainStaticClass.FPTR;
-            //fptr = MainStaticClass.FPTR;
-            //fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_MODEL, AtolConstants.LIBFPTR_MODEL_ATOL_AUTO.ToString());
-            //fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_PORT, AtolConstants.LIBFPTR_PORT_COM.ToString());
-            ////fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_PORT, AtolConstants.LIBFPTR_PORT_USB.ToString());
-            //fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_COM_FILE, comboBox_fn_port.SelectedItem.ToString());
-            //fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_BAUDRATE, AtolConstants.LIBFPTR_PORT_BR_115200.ToString());
-            //fptr.applySingleSettings();
             if (!fptr.isOpened())
             {
                 fptr.open();
@@ -421,7 +442,76 @@ namespace Cash8
             {
                 MessageBox.Show("Соединение успешно установлено!");
             }
-            //fptr.close();
         }
+
+        private void btn_get_weight_Click(object sender, EventArgs e)
+        {
+            bool error = true;
+            Dictionary<double, int> frequencyMap = new Dictionary<double, int>();
+            if (MainStaticClass.GetWeightAutomatically == 1)
+            {
+                double weigt = 0;
+                int num = 0;
+                while (num<5)
+                {
+                    num++;
+                    weigt = MainStaticClass.GetWeight(ref error);                  
+                    if (frequencyMap.ContainsKey(weigt))
+                    {
+                        frequencyMap[weigt]++;
+                    }
+                    else
+                    {
+                        frequencyMap[weigt] = 1;
+                    }
+                }                
+                weigt = frequencyMap.Where(pair => pair.Key > 0) // Фильтруем, оставляя только числа больше нуля
+                    .OrderByDescending(pair => pair.Value) // Сортируем по убыванию частоты
+                    .FirstOrDefault().Key; // Берем первый элемент или значение по умолчанию, если таких нет
+                MessageBox.Show(weigt.ToString());//+ (error ? " \r\nОшибка чтения " : "\r\nВес получен").ToString()                
+            }
+        
+
+        //bool error = true;
+        //if (MainStaticClass.GetWeightAutomatically == 1)
+        //{
+        //    Dictionary<double, int> weightFrequencies = new Dictionary<double, int>();
+        //    double mostFrequentWeight = 0;
+        //    int highestFrequency = 0;
+
+        //    for (int num = 0; num < 10; num++)
+        //    {
+        //        double weight = MainStaticClass.GetWeight(ref error);
+        //        if (error)
+        //        {
+        //            weight = 0;
+        //        }
+        //        //{
+        //            if (weightFrequencies.ContainsKey(weight))
+        //            {
+        //                weightFrequencies[weight]++;
+        //            }
+        //            else
+        //            {
+        //                weightFrequencies[weight] = 1;
+        //            }
+
+        //            if (weightFrequencies[weight] > highestFrequency)
+        //            {
+        //                mostFrequentWeight = weight;
+        //                highestFrequency = weightFrequencies[weight];
+        //            }
+        //        //}
+        //        //else
+        //        //{
+        //        //    //MessageBox.Show("Ошибка чтения");
+        //        //    //return;
+        //        //}
+        //    }
+
+        //    MessageBox.Show(mostFrequentWeight.ToString() + "\r\nВес получен");
+        //}
     }
+    }   
+        
 }

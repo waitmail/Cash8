@@ -10,6 +10,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Drawing.Printing;
 using Npgsql;
+using System.Threading.Tasks;
 
 
 using System.Windows;
@@ -748,8 +749,15 @@ namespace Cash8
 
         private void btn_update_status_send_Click(object sender, EventArgs e)
         {
-            MainStaticClass.Last_Write_Check = DateTime.Now;
-           //timer_Elapsed(null, null);
+            MainStaticClass.Last_Write_Check = DateTime.Now;            
+            Task.Factory.StartNew(() => execute_send_data());            
+            //get_status_send_document();
+        }
+
+        private void execute_send_data()
+        {
+            var parentForm = this.MdiParent as Main;
+            parentForm.timer_send_data_Elapsed(null, null);
             get_status_send_document();
         }
 

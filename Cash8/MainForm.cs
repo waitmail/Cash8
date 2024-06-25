@@ -781,7 +781,7 @@ namespace Cash8
             }
         }
                 
-        private void timer_send_data_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        public void timer_send_data_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             MainStaticClass.SendOnlineStatus();
             if (MainStaticClass.Last_Write_Check > MainStaticClass.Last_Send_Last_Successful_Sending)
@@ -790,24 +790,7 @@ namespace Cash8
                 sdsp.send_sales_data_Click(null, null);
                 sdsp.Dispose();
                 UploadDeletedItems();
-                get_web_tovar_check_cdn();
-                //if (MainStaticClass.PassPromo != "")
-                //{
-                //    if (MainStaticClass.GetWorkSchema == 1)
-                //    {
-                //        //SentDataOnBonus sentDataOnBonus = new SentDataOnBonus();
-                //        //sentDataOnBonus.run_in_the_background = true;
-                //        //sentDataOnBonus.sent_Click(null, null);
-                //        //sentDataOnBonus.Dispose();
-                //    }
-                //    else if (MainStaticClass.GetWorkSchema == 2)
-                //    {
-                //        SentDataOnBonusEva sentDataOnBonusEva = new SentDataOnBonusEva();
-                //        sentDataOnBonusEva.run_in_the_background = true;
-                //        sentDataOnBonusEva.sent_Click(null, null);
-                //        sentDataOnBonusEva.Dispose();
-                //    }
-                //}
+                get_web_tovar_check_cdn();                
             }
         }
 
