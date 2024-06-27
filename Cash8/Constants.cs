@@ -157,10 +157,33 @@ namespace Cash8
                     this.checkBox_get_weight_automatically.CheckState = (reader["get_weight_automatically"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
 
                     int index = comboBox_fn_port.Items.IndexOf(reader["fn_serial_port"].ToString());
-                    this.comboBox_fn_port.SelectedIndex = index;
+                    if (index == -1)
+                    {
+                        btn_trst_connection.Enabled = false;
+                        if (this.checkBox_printing_using_libraries.CheckState == CheckState.Checked)
+                        {
+                            MessageBox.Show(" fn_serial_port в доступных не найден ","ФР");
+                        }
+                    }
+                    else
+                    {
+                        this.comboBox_fn_port.SelectedIndex = index;
+                    }
 
                     index = comboBox_scale_port.Items.IndexOf(reader["scale_serial_port"].ToString());
-                    this.comboBox_scale_port.SelectedIndex = index;
+                    if (index == -1)
+                    {
+                        btn_get_weight.Enabled = false;
+                        if (this.checkBox_get_weight_automatically.CheckState == CheckState.Checked)
+                        {
+                            MessageBox.Show(" scale_serial_port в доступных не найден ","Весы");
+                        }
+                    }
+                    else
+                    {
+                        this.comboBox_scale_port.SelectedIndex = index;
+                    }
+                    
                 }
                 reader.Close();
                 //if (nick_shop.Text.Trim() != "A01")
@@ -446,72 +469,30 @@ namespace Cash8
 
         private void btn_get_weight_Click(object sender, EventArgs e)
         {
-            bool error = true;
-            Dictionary<double, int> frequencyMap = new Dictionary<double, int>();
-            if (MainStaticClass.GetWeightAutomatically == 1)
-            {
-                double weigt = 0;
-                int num = 0;
-                while (num<5)
-                {
-                    num++;
-                    weigt = MainStaticClass.GetWeight(ref error);                  
-                    if (frequencyMap.ContainsKey(weigt))
-                    {
-                        frequencyMap[weigt]++;
-                    }
-                    else
-                    {
-                        frequencyMap[weigt] = 1;
-                    }
-                }                
-                weigt = frequencyMap.Where(pair => pair.Key > 0) // Фильтруем, оставляя только числа больше нуля
-                    .OrderByDescending(pair => pair.Value) // Сортируем по убыванию частоты
-                    .FirstOrDefault().Key; // Берем первый элемент или значение по умолчанию, если таких нет
-                MessageBox.Show(weigt.ToString());//+ (error ? " \r\nОшибка чтения " : "\r\nВес получен").ToString()                
-            }
-        
-
-        //bool error = true;
-        //if (MainStaticClass.GetWeightAutomatically == 1)
-        //{
-        //    Dictionary<double, int> weightFrequencies = new Dictionary<double, int>();
-        //    double mostFrequentWeight = 0;
-        //    int highestFrequency = 0;
-
-        //    for (int num = 0; num < 10; num++)
-        //    {
-        //        double weight = MainStaticClass.GetWeight(ref error);
-        //        if (error)
-        //        {
-        //            weight = 0;
-        //        }
-        //        //{
-        //            if (weightFrequencies.ContainsKey(weight))
-        //            {
-        //                weightFrequencies[weight]++;
-        //            }
-        //            else
-        //            {
-        //                weightFrequencies[weight] = 1;
-        //            }
-
-        //            if (weightFrequencies[weight] > highestFrequency)
-        //            {
-        //                mostFrequentWeight = weight;
-        //                highestFrequency = weightFrequencies[weight];
-        //            }
-        //        //}
-        //        //else
-        //        //{
-        //        //    //MessageBox.Show("Ошибка чтения");
-        //        //    //return;
-        //        //}
-        //    }
-
-        //    MessageBox.Show(mostFrequentWeight.ToString() + "\r\nВес получен");
-        //}
+            //bool error = true;
+            //Dictionary<double, int> frequencyMap = new Dictionary<double, int>();
+            //if (MainStaticClass.GetWeightAutomatically == 1)
+            //{
+            double weigt = 0;
+            //int num = 0;
+            //while (num<5)
+            //{
+            //    num++;
+            weigt = MainStaticClass.GetWeight();
+            //    if (frequencyMap.ContainsKey(weigt))
+            //    {
+            //        frequencyMap[weigt]++;
+            //    }
+            //    else
+            //    {
+            //        frequencyMap[weigt] = 1;
+            //    }
+            //}                
+            //weigt = frequencyMap.Where(pair => pair.Key > 0) // Фильтруем, оставляя только числа больше нуля
+            //    .OrderByDescending(pair => pair.Value) // Сортируем по убыванию частоты
+            //    .FirstOrDefault().Key; // Берем первый элемент или значение по умолчанию, если таких нет
+            MessageBox.Show(weigt.ToString());//+ (error ? " \r\nОшибка чтения " : "\r\nВес получен").ToString()                
+        }
     }
-    }   
-        
+
 }

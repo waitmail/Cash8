@@ -11,7 +11,7 @@ using System.Threading;
 using System.Drawing.Printing;
 using System.Net;
 using System.Net.Sockets;
-using System.Diagnostics;
+using System.Linq;
 using System.Net.NetworkInformation;
 using Newtonsoft.Json;
 using Atol.Drivers10.Fptr;
@@ -277,9 +277,34 @@ namespace Cash8
         }
 
 
-        public static double GetWeight(ref bool error)
+        public static double GetWeight()
         {
-            error = false;
+            Dictionary<double, int> frequencyMap = new Dictionary<double, int>();
+            double weigt = 0;
+            int num = 0;
+            while (num < 7)
+            {
+                num++;
+                weigt = MainStaticClass.TryGetWeight();
+                if (frequencyMap.ContainsKey(weigt))
+                {
+                    frequencyMap[weigt]++;
+                }
+                else
+                {
+                    frequencyMap[weigt] = 1;
+                }
+            }
+            weigt = frequencyMap.Where(pair => pair.Key > 0) // Фильтруем, оставляя только числа больше нуля
+                .OrderByDescending(pair => pair.Value) // Сортируем по убыванию частоты
+                .FirstOrDefault().Key; // Берем первый элемент или значение по умолчанию, если таких нет
+
+            return weigt;
+        }
+
+        private static double TryGetWeight()
+        {
+            //error = false;
             double result = 0;
             string portName = MainStaticClass.ScaleSerialPort;
             int baudRate = 9600;
@@ -306,24 +331,24 @@ namespace Cash8
                         int b = BitConverter.ToInt32(buffer, 7);
                         result = b / 10000.0; // Перевод в килограммы
                     }
-                    else
-                    {
-                        error = true;
-                    }
+                    //else
+                    //{
+                    //    error = true;
+                    //}
                 }
                 catch (TimeoutException)
                 {
                     MessageBox.Show("Время ожидания истекло.");
                     //    Console.WriteLine("Время ожидания истекло.");
                     result = -1;
-                    error = true;
+                    //error = true;
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show("Ошибка " + ex.Message);
                     //Console.WriteLine($"Ошибка: {ex.Message}");
                     result = -1;
-                    error = true;
+                    //error = true;
                 }
                 finally
                 {

@@ -265,9 +265,15 @@ namespace Cash8
             // Замена точки на запятую
             if (e.KeyChar == '.')
             {
-                textBox.Focus();
-                SendKeys.Send(",");
-                e.Handled = true;
+                //textBox.Focus();
+                //SendKeys.Send(",");
+                //e.Handled = true;
+                e.Handled = true; // предотвращаем ввод точки
+                if (textBox.Text.IndexOf(",") == -1)
+                {
+                    textBox.Text += ','; // добавляем запятую в текстовое поле
+                    textBox.SelectionStart = textBox.Text.Length; // перемещаем курсор в конец текста
+                }
                 return;
             }
 
@@ -9872,25 +9878,25 @@ namespace Cash8
                 Dictionary<double, int> frequencyMap = new Dictionary<double, int>();
                 if (MessageBox.Show("Ввод веса будет из весов ? ", "Истоник веса", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
-                    bool error = false;
+                    //bool error = false;
                     double weigt = 0;
-                    int num = 0;
-                    while (num < 5)
-                    {
-                        num++;
-                        weigt = MainStaticClass.GetWeight(ref error);
-                        if (frequencyMap.ContainsKey(weigt))
-                        {
-                            frequencyMap[weigt]++;
-                        }
-                        else
-                        {
-                            frequencyMap[weigt] = 1;
-                        }
-                    }
-                    weigt = frequencyMap.Where(pair => pair.Key > 0) // Фильтруем, оставляя только числа больше нуля
-                        .OrderByDescending(pair => pair.Value) // Сортируем по убыванию частоты
-                        .FirstOrDefault().Key; // Берем первый элемент или значение по умолчанию, если таких нет
+                    //int num = 0;
+                    //while (num < 5)
+                    //{
+                    //    num++;
+                        weigt = MainStaticClass.GetWeight();
+                    //    if (frequencyMap.ContainsKey(weigt))
+                    //    {
+                    //        frequencyMap[weigt]++;
+                    //    }
+                    //    else
+                    //    {
+                    //        frequencyMap[weigt] = 1;
+                    //    }
+                    //}
+                    //weigt = frequencyMap.Where(pair => pair.Key > 0) // Фильтруем, оставляя только числа больше нуля
+                    //    .OrderByDescending(pair => pair.Value) // Сортируем по убыванию частоты
+                    //    .FirstOrDefault().Key; // Берем первый элемент или значение по умолчанию, если таких нет
                     if (weigt > 0)
                     {
                         this.numericUpDown_enter_quantity.Value = Convert.ToDecimal(weigt);
