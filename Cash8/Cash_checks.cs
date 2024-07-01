@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Net.Sockets;
-using System.Net.NetworkInformation;
-using System.Threading;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
@@ -12,8 +8,6 @@ using System.Drawing.Printing;
 using Npgsql;
 using System.Threading.Tasks;
 
-
-using System.Windows;
 
 
 namespace Cash8
@@ -607,19 +601,11 @@ namespace Cash8
                 MessageBox.Show("Не задана ширина печати, печать выполнена не будет ", "Ошибка настройки программы");
                 return;
             }
-            //using (StreamWriter sw = new StreamWriter(Application.StartupPath + "/PrintCheck.txt"))
-            //{
-            //sw.WriteLine("ЧИСТЫЙ ДОМ - Магазин низких цен №1");
-
-
-            print_string.Append("ЧИСТЫЙ ДОМ - Магазин низких цен №1" + "\r\n");
-            //sw.WriteLine("       << ЧИСТЫЙ ДОМ >>");
-            //sw.WriteLine("бытовая химия - косметика - парфюмерия");
-            print_string.Append("бытовая химия - косметика - парфюмерия" + "\r\n");
-            //sw.WriteLine("_______________________________________");
+            
+            print_string.Append("ЧИСТЫЙ ДОМ - Магазин низких цен №1" + "\r\n");            
+            print_string.Append("бытовая химия - косметика - парфюмерия" + "\r\n");            
             print_string.Append("---------------------------------------" + "\r\n");
-
-
+            
             print_string.Append(MainStaticClass.Nick_Shop + " К №" + MainStaticClass.CashDeskNumber + " " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + MainStaticClass.Cash_Operator + "\r\n");
 
             string number = "";

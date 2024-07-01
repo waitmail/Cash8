@@ -368,6 +368,7 @@ namespace Cash8
         /// <returns></returns>
         private bool its_sent_sertificate()
         {
+
             bool result = true;
             //Заполняем спиок номеров документов которые не отправлены
             if (!get_document_list_not_sent())

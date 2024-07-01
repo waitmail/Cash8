@@ -252,49 +252,7 @@ namespace Cash8
                     MessageBox.Show("Сертификат номер " + sertificate_code + " не активирован");
                     result = false;
                 }
-
-            }
-
-            //if (result) //проверим в локальной базе
-            //{
-            //    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
-            //    try
-            //    {
-            //        conn.Open();
-            //        string query = "SELECT is_active FROM sertificates WHERE code_tovar="+sertificate_code;
-            //        NpgsqlCommand command = new NpgsqlCommand(query, conn);
-            //        object result_query = command.ExecuteScalar();
-            //        if(result_query!=null)
-            //        {
-            //            if(result_query.ToString()!="1")
-            //            {
-            //                MessageBox.Show(" Произошли ошибки при определении cтатуса сертификата в локальной базе, необходимо обновить данные через интернет");
-            //                result=false;
-            //            }
-            //        }
-            //        else
-            //        {
-            //            result=false;
-            //        }
-            //    }
-            //    catch (NpgsqlException ex)
-            //    {
-            //        MessageBox.Show(" Произошли ошибки при определении мтатуса сертификата в локальной базе " + ex.Message + " | " + ex.Detail);
-            //        result = false;
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        MessageBox.Show(" Произошли ошибки при определении мтатуса сертификата в локальной базе " + ex.Message);
-            //        result = false;
-            //    }
-            //    finally
-            //    {
-            //        if (conn.State == ConnectionState.Open)
-            //        {
-            //            conn.Close();
-            //        }
-            //    } 
-            //}
+            }           
             
             return result;
         }
@@ -312,7 +270,7 @@ namespace Cash8
             {
                 //if (!check_sertificate_active(lvi.Tag.ToString()))
                 if (!check_sertificate_active(lvi.SubItems[3].Text))
-                     {
+                {
                     result_check = false;
                     break;
                 }

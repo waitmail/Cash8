@@ -132,6 +132,12 @@
     <Compile Include="Discount_types.Designer.cs">
       <DependentUpon>Discount_types.cs</DependentUpon>
     </Compile>
+    <Compile Include="EnterQuantity.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EnterQuantity.Designer.cs">
+      <DependentUpon>EnterQuantity.cs</DependentUpon>
+    </Compile>
     <Compile Include="FiscallPrintJason.cs" />
     <Compile Include="FiscallPrintJason2.cs" />
     <Compile Include="FPTK22.cs">
@@ -244,6 +250,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CorrectionChecks.resx">
       <DependentUpon>CorrectionChecks.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EnterQuantity.resx">
+      <DependentUpon>EnterQuantity.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FPTK22.resx">
       <DependentUpon>FPTK22.cs</DependentUpon>

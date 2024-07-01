@@ -148,7 +148,7 @@ namespace Cash8
         /// этот режим будет доступен после перехода в окно оплаты
         /// </summary>
         /// <param name="mode"></param>
-        private void SendDataToCustomerScreen(int mode, int show_price, int calculate_actionc)
+        public void SendDataToCustomerScreen(int mode, int show_price, int calculate_actionc)
         {
             //if (MainStaticClass.GetWorkSchema == 2)
             //{
@@ -262,6 +262,7 @@ namespace Cash8
         {
             TextBox textBox = sender as TextBox;
 
+            //MessageBox.Show(e.KeyChar.ToString(), "Нажатие");
             // Замена точки на запятую
             if (e.KeyChar == '.')
             {
@@ -271,14 +272,19 @@ namespace Cash8
                 e.Handled = true; // предотвращаем ввод точки
                 if (textBox.Text.IndexOf(",") == -1)
                 {
+                    //MessageBox.Show(" Это точка и сейчас преобразуется в запятую ");
                     textBox.Text += ','; // добавляем запятую в текстовое поле
                     textBox.SelectionStart = textBox.Text.Length; // перемещаем курсор в конец текста
                 }
                 return;
             }
+            else
+            {
+                //MessageBox.Show(" Это не точка, код символа " + Convert.ToInt32(e.KeyChar).ToString());
+            }
 
             // Проверка, что введенный символ - это цифра, управляющий символ или запятая
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && e.KeyChar != ',')
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && e.KeyChar != ',' && e.KeyChar != '.')
             {
                 e.Handled = true;
             }
@@ -287,6 +293,11 @@ namespace Cash8
                 // Обработка ввода, если уже есть запятая в тексте
                 if (textBox.Text.Contains(","))
                 {
+                    if ((e.KeyChar == '.') || (e.KeyChar == ','))
+                    {
+                        e.Handled = true;
+                        return;
+                    }
                     // Проверка количества знаков после запятой
                     string[] parts = textBox.Text.Split(',');
                     if (parts.Length == 2 && parts[1].Length >= numericUpDown_enter_quantity.DecimalPlaces)
@@ -607,7 +618,7 @@ namespace Cash8
         //    txtB_total_sum.Text = "Сумма: "+calculation_of_the_sum_of_the_document().ToString("F2");
         //}
 
-        private void insert_incident_record(string tovar, string quantity, string type_of_operation,string reason)
+        public void insert_incident_record(string tovar, string quantity, string type_of_operation,string reason)
         {
             NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
             try
@@ -2991,6 +3002,7 @@ namespace Cash8
                         else
                         {
                             lvi.SubItems.Add("0,001");
+                            //lvi.SubItems.Add("999");
                         }
                         lvi.SubItems.Add(listView2.Items[0].SubItems[1].Text);//Цена 
                                                                               //Проверка на сертификат               
@@ -3325,10 +3337,8 @@ namespace Cash8
                             listView1.Select();
                             listView1.Items[this.listView1.Items.Count - 1].Selected = true;
                             listView1.Items[this.listView1.Items.Count - 1].Focused  = true;
-                            SendKeys.Send("Enter");
-
-                            //listView1.Invoke((MethodInvoker)(() => listView1_ItemActivate(listView1, new EventArgs())));
-                            show_quantity_control();                           
+                            //SendKeys.Send("Enter");                            
+                            show_quantity_control(true);                           
                         }
 
 
@@ -3371,6 +3381,7 @@ namespace Cash8
                         //    t_n_f.Dispose();
                         //    return;
                         //}
+
                         SendDataToCustomerScreen(1, 0, 1);
                         if ((MainStaticClass.GetWorkSchema == 1) || (MainStaticClass.GetWorkSchema == 3))
                         {
@@ -3409,7 +3420,7 @@ namespace Cash8
                             listView1.Select();
                             listView1.Items[this.listView1.Items.Count - 1].Selected = true;
                             listView1.Items[this.listView1.Items.Count - 1].Focused = true;                            
-                            show_quantity_control();
+                            show_quantity_control(true);
                         }                        
                         update_record_last_tovar(lvi.SubItems[1].Text, lvi.SubItems[4].Text);
                     }
@@ -3438,17 +3449,16 @@ namespace Cash8
                     t_n_f.Dispose();
                     //start_com_barcode_scaner();
                 }
-
                 reader.Close();
-                //                 conn.Close();                
+                conn.Close();                
             }
             catch (NpgsqlException ex)
             {
-                MessageBox.Show("find_barcode_or_code_in_tovar " + ex.Message);
+                MessageBox.Show("find_barcode_or_code_in_tovar " + ex.Message, "NpgsqlException");
             }
             catch (Exception ex)
             {
-                MessageBox.Show("find_barcode_or_code_in_tovar " + ex.Message);
+                MessageBox.Show("find_barcode_or_code_in_tovar " + ex.Message, "Exception");
             }
             finally
             {
@@ -4630,7 +4640,7 @@ namespace Cash8
        
 
 
-        private bool its_sertificate(string code)
+        public bool its_sertificate(string code)
         {
             bool result = false;
             NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
@@ -9820,7 +9830,7 @@ namespace Cash8
                     return;
                 }
 
-                show_quantity_control();
+                show_quantity_control(false);
 
                 //this.numericUpDown_enter_quantity.Visible = true;
                 //this.panel1.Visible = true;
@@ -9851,60 +9861,81 @@ namespace Cash8
             }
         }
 
-        private void show_quantity_control()
-        {            
-            this.numericUpDown_enter_quantity.Visible = true;
-            this.panel1.Visible = true;
+        private void show_quantity_control(bool НоваяСтрока)
+        {
+            //this.numericUpDown_enter_quantity.Visible = true;
+            //this.panel1.Visible = true;
 
-            //this.panel1.Location = new System.Drawing.Point(this.listView1.Bounds.Location.X + this.listView1.Columns[0].Width + this.listView1.Columns[1].Width, this.listView1.Bounds.Location.Y + this.listView1.SelectedIndices[0] * this.listView1.SelectedItems[0].Bounds.Height);
-            this.panel1.Location = new System.Drawing.Point(this.tabControl1.Location.X +
-                this.listView1.Bounds.Location.X +
-                this.listView1.Columns[0].Width +
-                this.listView1.Columns[1].Width,
-                //20+                   
-                this.tabControl1.Location.Y +
-                this.listView1.Bounds.Location.Y + (this.listView1.SelectedIndices[0] + 1) * this.listView1.SelectedItems[0].Bounds.Height);
+            ////this.panel1.Location = new System.Drawing.Point(this.listView1.Bounds.Location.X + this.listView1.Columns[0].Width + this.listView1.Columns[1].Width, this.listView1.Bounds.Location.Y + this.listView1.SelectedIndices[0] * this.listView1.SelectedItems[0].Bounds.Height);
+            //this.panel1.Location = new System.Drawing.Point(this.tabControl1.Location.X +
+            //    this.listView1.Bounds.Location.X +
+            //    this.listView1.Columns[0].Width +
+            //    this.listView1.Columns[1].Width,
+            //    //20+                   
+            //    this.tabControl1.Location.Y +
+            //    this.listView1.Bounds.Location.Y + (this.listView1.SelectedIndices[0] + 1) * this.listView1.SelectedItems[0].Bounds.Height);
 
-            this.numericUpDown_enter_quantity.Value = Convert.ToDecimal(this.listView1.SelectedItems[0].SubItems[3].Text);
-            this.panel1.BringToFront();
-            //this.enter_quantity.BringToFront();
-            this.numericUpDown_enter_quantity.Focus();
+            //this.numericUpDown_enter_quantity.Value = Convert.ToDecimal(this.listView1.SelectedItems[0].SubItems[3].Text);
+            //this.panel1.BringToFront();
+            ////this.enter_quantity.BringToFront();
+            //this.numericUpDown_enter_quantity.Focus();
 
-            TextBox tb = (TextBox)numericUpDown_enter_quantity.Controls[1];
-            tb.SelectionStart = 0;
-            tb.SelectionLength = tb.Text.Length;
-            if (MainStaticClass.GetWeightAutomatically == 1)
+            //TextBox tb = (TextBox)numericUpDown_enter_quantity.Controls[1];
+            //tb.SelectionStart = 0;
+            //tb.SelectionLength = tb.Text.Length;
+            //if (MainStaticClass.GetWeightAutomatically == 1)
+            //{
+            //    Dictionary<double, int> frequencyMap = new Dictionary<double, int>();
+            //    if (MessageBox.Show("Ввод веса будет из весов ? ", "Истоник веса", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            //    {
+            //        double weigt = 0;
+            //        weigt = MainStaticClass.GetWeight();
+            //        if (weigt > 0)
+            //        {
+            //            this.numericUpDown_enter_quantity.Value = Convert.ToDecimal(weigt);
+            //        }
+            //    }
+            //}
+
+
+            EnterQuantity enterQuantity = new EnterQuantity();
+            if (check_tovar_fractional(this.listView1.SelectedItems[0].SubItems[0].Text))
             {
-                Dictionary<double, int> frequencyMap = new Dictionary<double, int>();
-                if (MessageBox.Show("Ввод веса будет из весов ? ", "Истоник веса", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                enterQuantity.numericUpDown_enter_quantity.DecimalPlaces = 3;
+            }
+            else
+            {
+                enterQuantity.numericUpDown_enter_quantity.DecimalPlaces = 0;
+            }
+            
+            DialogResult result = enterQuantity.ShowDialog();
+            if (result == DialogResult.Cancel)
+            {
+                if (НоваяСтрока)
                 {
-                    //bool error = false;
-                    double weigt = 0;
-                    //int num = 0;
-                    //while (num < 5)
-                    //{
-                    //    num++;
-                        weigt = MainStaticClass.GetWeight();
-                    //    if (frequencyMap.ContainsKey(weigt))
-                    //    {
-                    //        frequencyMap[weigt]++;
-                    //    }
-                    //    else
-                    //    {
-                    //        frequencyMap[weigt] = 1;
-                    //    }
-                    //}
-                    //weigt = frequencyMap.Where(pair => pair.Key > 0) // Фильтруем, оставляя только числа больше нуля
-                    //    .OrderByDescending(pair => pair.Value) // Сортируем по убыванию частоты
-                    //    .FirstOrDefault().Key; // Берем первый элемент или значение по умолчанию, если таких нет
-                    if (weigt > 0)
+                    ReasonsDeletionCheck reasons = new ReasonsDeletionCheck();
+                    DialogResult dialogResult = reasons.ShowDialog();
+                    while (dialogResult != DialogResult.OK)
                     {
-                        this.numericUpDown_enter_quantity.Value = Convert.ToDecimal(weigt);
+                        dialogResult = reasons.ShowDialog();
                     }
+                    //if (dialogResult == DialogResult.OK)
+                    //{
+                    insert_incident_record(listView1.SelectedItems[0].SubItems[0].Text, listView1.SelectedItems[0].SubItems[3].Text, "0", reasons.reason);
+                    listView1.Items.Remove(listView1.SelectedItems[0]);
+                    //}                      
                 }
             }
-
-            //tb.Focus();
+            else if (result == DialogResult.OK)
+            {
+                listView1.SelectedItems[0].SubItems[3].Text = enterQuantity.numericUpDown_enter_quantity.Value.ToString();
+                recalculate_all();
+                calculation_of_the_sum_of_the_document();
+                if (listView1.Items.Count > 0)
+                {
+                    SendDataToCustomerScreen(1, 0, 1);
+                }
+            }
         }
 
         private bool check_tovar_fractional(string tovar_code)
