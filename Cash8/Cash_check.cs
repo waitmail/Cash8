@@ -2976,7 +2976,7 @@ namespace Cash8
                 if (listView2.Items.Count == 1)//1 товар найден
                 {
                     ListViewItem lvi = null;
-                    if ((its_marked == 0) && (its_certificate == 0) && ((MainStaticClass.GetWorkSchema == 1) || (MainStaticClass.GetWorkSchema == 3)))
+                    if ((its_marked == 0) && (its_certificate == 0) && (!fractional) && ((MainStaticClass.GetWorkSchema == 1) || (MainStaticClass.GetWorkSchema == 3)))
                     {
                         lvi = exist_tovar_in_listView(listView1, Convert.ToInt64(select_tovar.Tag), listView2.Items[0].Tag);
                     }
@@ -3002,8 +3002,7 @@ namespace Cash8
                         }
                         else
                         {
-                            lvi.SubItems.Add("0,001");
-                            //lvi.SubItems.Add("999");
+                            lvi.SubItems.Add("0,001");                            
                         }
                         lvi.SubItems.Add(listView2.Items[0].SubItems[1].Text);//Цена 
                                                                               //Проверка на сертификат               
@@ -9903,16 +9902,18 @@ namespace Cash8
             if (check_tovar_fractional(this.listView1.SelectedItems[0].SubItems[0].Text))
             {
                 enterQuantity.numericUpDown_enter_quantity.DecimalPlaces = 3;
+                enterQuantity.Text = "Введите вес";
             }
             else
             {
                 enterQuantity.numericUpDown_enter_quantity.DecimalPlaces = 0;
+                enterQuantity.Text = "Введите количество";
             }
             if (!new_string)
             {
                 enterQuantity.numericUpDown_enter_quantity.Value = Convert.ToDecimal(listView1.SelectedItems[0].SubItems[3].Text);
             }
-            
+
             DialogResult result = enterQuantity.ShowDialog();
             if (result == DialogResult.Cancel)
             {
@@ -9992,8 +9993,15 @@ namespace Cash8
                 //this.listView1.Select();
                 //this.listView1.Items[this.listView1.SelectedIndices[0]].Selected = true;
                 //write_new_document("0", "0", "0", "0", false, "0", "0", "0", "0");
+                //if (new_string)
+                //{
+                listView1.SelectedItems[0].SubItems[3].Text = enterQuantity.numericUpDown_enter_quantity.Value.ToString();
+                //}
+                //else
+                //{
+                //    listView1.SelectedItems[0].SubItems[3].Text = (Convert.ToDecimal(listView1.SelectedItems[0].SubItems[3].Text) + enterQuantity.numericUpDown_enter_quantity.Value).ToString();
+                //}
 
-                listView1.SelectedItems[0].SubItems[3].Text = enterQuantity.numericUpDown_enter_quantity.Value.ToString();                
                 if (listView1.Items.Count > 0)
                 {
                     recalculate_all();

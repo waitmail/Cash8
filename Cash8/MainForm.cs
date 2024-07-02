@@ -887,6 +887,7 @@ namespace Cash8
             SettingConnect sc = new SettingConnect();
             sc.MdiParent = this;
             sc.Show();
+            MessageBox.Show(Math.Round(0.479 * 897.17, 2, MidpointRounding.ToEven).ToString());
         }
 
 

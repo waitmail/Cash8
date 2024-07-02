@@ -16,6 +16,7 @@ namespace Cash8
             numericUpDown_enter_quantity.ValueChanged += NumericUpDown_enter_quantity_ValueChanged;
             TextBox textBox = (TextBox)numericUpDown_enter_quantity.Controls[1];
             textBox.KeyPress += TextBox_KeyPress;
+            numericUpDown_enter_quantity.Controls[0].Visible=false;
         }
 
         private void TextBox_KeyPress(object sender, KeyPressEventArgs e)
@@ -127,7 +128,7 @@ namespace Cash8
             {
                 this.DialogResult = DialogResult.Cancel;
             }
-            else if (e.KeyCode == Keys.F4)
+            else if (e.KeyCode == Keys.F12)
             {
                 if (numericUpDown_enter_quantity.Value == 0)
                 {
@@ -138,6 +139,12 @@ namespace Cash8
                 {
                     this.DialogResult = DialogResult.OK;
                 }
+            }
+
+            if (numericUpDown_enter_quantity.Focused && (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down))
+            {
+                e.Handled = true;
+                return;
             }
         }
     }
