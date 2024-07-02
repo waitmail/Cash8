@@ -1,10 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace Cash8
@@ -17,8 +12,7 @@ namespace Cash8
         public EnterQuantity()
         {
             InitializeComponent();
-            this.Shown += EnterQuantity_Shown;
-            numericUpDown_enter_quantity.KeyPress += NumericUpDown_enter_quantity_KeyPress;
+            this.Shown += EnterQuantity_Shown;            
             numericUpDown_enter_quantity.ValueChanged += NumericUpDown_enter_quantity_ValueChanged;
             TextBox textBox = (TextBox)numericUpDown_enter_quantity.Controls[1];
             textBox.KeyPress += TextBox_KeyPress;
@@ -28,14 +22,22 @@ namespace Cash8
         {
             TextBox textBox = sender as TextBox;
 
-            //MessageBox.Show(e.KeyChar.ToString(), "Нажатие");
+            if ((numericUpDown_enter_quantity.DecimalPlaces == 0)|| textBox.Text.Contains(","))
+            {
+                if ((e.KeyChar == '.')||(e.KeyChar == ','))
+                {
+                    e.Handled = true;
+                    return;
+                }
+            }
+                        
             // Замена точки на запятую
             if (e.KeyChar == '.')
             {
                 //textBox.Focus();
                 //SendKeys.Send(",");
                 //e.Handled = true;
-                e.Handled = true; // предотвращаем ввод точки
+                e.Handled = true; // предотвращаем ввод точки                
                 if (textBox.Text.IndexOf(",") == -1)
                 {
                     //MessageBox.Show(" Это точка и сейчас преобразуется в запятую ");
@@ -59,11 +61,11 @@ namespace Cash8
                 // Обработка ввода, если уже есть запятая в тексте
                 if (textBox.Text.Contains(","))
                 {
-                    if ((e.KeyChar == '.') || (e.KeyChar == ','))
-                    {
-                        e.Handled = true;
-                        return;
-                    }
+                    //if ((e.KeyChar == '.') || (e.KeyChar == ','))
+                    //{
+                    //    e.Handled = true;
+                    //    return;
+                    //}
                     // Проверка количества знаков после запятой
                     string[] parts = textBox.Text.Split(',');
                     if (parts.Length == 2 && parts[1].Length >= numericUpDown_enter_quantity.DecimalPlaces)
@@ -97,88 +99,12 @@ namespace Cash8
         {
             numericUpDown_enter_quantity.Value = Decimal.Round(numericUpDown_enter_quantity.Value, 3);
         }
-
-        private void NumericUpDown_enter_quantity_KeyPress(object sender, KeyPressEventArgs e)
-        {
-
-            //if (e.KeyChar == 27)
-            //{
-            //    this.numericUpDown_enter_quantity.Visible = false;
-            //    this.panel1.Visible = false;
-            //    return;
-            //}
-
-            if (e.KeyChar == (char)(Keys.F1))
-            {
-                if (this.numericUpDown_enter_quantity.Value == 0)
-                {
-                    MessageBox.Show("Количество не может быть пустым");
-                    return;
-                }
-
-                if (Convert.ToDecimal(check.listView1.SelectedItems[0].SubItems[3].Text) > this.numericUpDown_enter_quantity.Value)
-                {
-                    //MessageBox.Show("Не администраторам запрещено менять количество на меньшее");
-                    ///////////////////////////////////////////////////////////////
-                    if (MainStaticClass.Code_right_of_user != 1)
-                    {
-                        check.enable_delete = false;
-                        Interface_switching isw = new Interface_switching();
-                        isw.caller_type = 3;
-                        isw.cc = check;
-                        isw.not_change_Cash_Operator = true;
-                        isw.ShowDialog();
-                        isw.Dispose();
-
-                        if (!check.enable_delete)
-                        {
-                            MessageBox.Show("Вам запрещено менять количество на меньшее");
-                            //this.enter_quantity.Text = "0";
-                            return;
-                        }
-                    }
-                    ReasonsDeletionCheck reasons = new ReasonsDeletionCheck();
-                    DialogResult dialogResult = reasons.ShowDialog();
-                    if (dialogResult == DialogResult.OK)
-                    {
-                        check.insert_incident_record(check.listView1.SelectedItems[0].SubItems[0].Text, Math.Round(Convert.ToDecimal(check.listView1.SelectedItems[0].SubItems[3].Text) - this.numericUpDown_enter_quantity.Value, 2, MidpointRounding.ToEven).ToString().Replace(",", "."), "1", reasons.reason);
-                    }
-                    else
-                    {
-                        return;
-                    }
-
-                }
-                else if (Convert.ToDecimal(check.listView1.SelectedItems[0].SubItems[3].Text) < this.numericUpDown_enter_quantity.Value)
-                {
-
-                    //Проверка на сертификат 
-                    if (check.its_sertificate(check.listView1.SelectedItems[0].SubItems[0].Text.Trim()))
-                    {
-                        MessageBox.Show("Каждый сертификат продается отдельной строкой");
-                        return;
-                    }
-                }
-
-                check.listView1.SelectedItems[0].SubItems[3].Text = Convert.ToDecimal(this.numericUpDown_enter_quantity.Value).ToString();
-                //check.recalculate_all();
-                //check.calculation_of_the_sum_of_the_document();
-                //this.numericUpDown_enter_quantity.Visible = false;
-                //this.panel1.Visible = false;
-                //this.listView1.Select();
-                //this.listView1.Items[this.listView1.SelectedIndices[0]].Selected = true;
-                check.write_new_document("0", "0", "0", "0", false, "0", "0", "0", "0");
-            }
-
-            //check.SendDataToCustomerScreen(1, 0, 1);
-        }
-
-
+        
         private void EnterQuantity_Shown(object sender, EventArgs e)
         {
             TextBox tb = (TextBox)numericUpDown_enter_quantity.Controls[1];
             tb.SelectionStart = 0;
-            tb.SelectionLength = 1;
+            tb.SelectionLength = tb.Text.Length;
 
             if (MainStaticClass.GetWeightAutomatically == 1)
             {
@@ -201,7 +127,7 @@ namespace Cash8
             {
                 this.DialogResult = DialogResult.Cancel;
             }
-            else if (e.KeyCode == Keys.F1)
+            else if (e.KeyCode == Keys.F4)
             {
                 if (numericUpDown_enter_quantity.Value == 0)
                 {

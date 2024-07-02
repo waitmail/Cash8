@@ -252,80 +252,80 @@ namespace Cash8
             toolTip = new ToolTip();            
             toolTip.SetToolTip(this.txtB_total_sum, "Сумма без промо / Сумма с учетом промо");
             txtB_total_sum.KeyPress += TxtB_total_sum_KeyPress;
-            numericUpDown_enter_quantity.KeyPress += NumericUpDown_enter_quantity_KeyPress;            
-            numericUpDown_enter_quantity.ValueChanged += NumericUpDown_enter_quantity_ValueChanged;
-            TextBox textBox = (TextBox)numericUpDown_enter_quantity.Controls[1];
-            textBox.KeyPress += TextBox_KeyPress;
+            //numericUpDown_enter_quantity.KeyPress += NumericUpDown_enter_quantity_KeyPress;            
+            //numericUpDown_enter_quantity.ValueChanged += NumericUpDown_enter_quantity_ValueChanged;
+            //TextBox textBox = (TextBox)numericUpDown_enter_quantity.Controls[1];
+            //textBox.KeyPress += TextBox_KeyPress;
         }
 
-        private void TextBox_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            TextBox textBox = sender as TextBox;
+        //private void TextBox_KeyPress(object sender, KeyPressEventArgs e)
+        //{
+        //    TextBox textBox = sender as TextBox;
 
-            //MessageBox.Show(e.KeyChar.ToString(), "Нажатие");
-            // Замена точки на запятую
-            if (e.KeyChar == '.')
-            {
-                //textBox.Focus();
-                //SendKeys.Send(",");
-                //e.Handled = true;
-                e.Handled = true; // предотвращаем ввод точки
-                if (textBox.Text.IndexOf(",") == -1)
-                {
-                    //MessageBox.Show(" Это точка и сейчас преобразуется в запятую ");
-                    textBox.Text += ','; // добавляем запятую в текстовое поле
-                    textBox.SelectionStart = textBox.Text.Length; // перемещаем курсор в конец текста
-                }
-                return;
-            }
-            else
-            {
-                //MessageBox.Show(" Это не точка, код символа " + Convert.ToInt32(e.KeyChar).ToString());
-            }
+        //    //MessageBox.Show(e.KeyChar.ToString(), "Нажатие");
+        //    // Замена точки на запятую
+        //    if (e.KeyChar == '.')
+        //    {
+        //        //textBox.Focus();
+        //        //SendKeys.Send(",");
+        //        //e.Handled = true;
+        //        e.Handled = true; // предотвращаем ввод точки
+        //        if (textBox.Text.IndexOf(",") == -1)
+        //        {
+        //            //MessageBox.Show(" Это точка и сейчас преобразуется в запятую ");
+        //            textBox.Text += ','; // добавляем запятую в текстовое поле
+        //            textBox.SelectionStart = textBox.Text.Length; // перемещаем курсор в конец текста
+        //        }
+        //        return;
+        //    }
+        //    else
+        //    {
+        //        //MessageBox.Show(" Это не точка, код символа " + Convert.ToInt32(e.KeyChar).ToString());
+        //    }
 
-            // Проверка, что введенный символ - это цифра, управляющий символ или запятая
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && e.KeyChar != ',' && e.KeyChar != '.')
-            {
-                e.Handled = true;
-            }
-            else
-            {
-                // Обработка ввода, если уже есть запятая в тексте
-                if (textBox.Text.Contains(","))
-                {
-                    if ((e.KeyChar == '.') || (e.KeyChar == ','))
-                    {
-                        e.Handled = true;
-                        return;
-                    }
-                    // Проверка количества знаков после запятой
-                    string[] parts = textBox.Text.Split(',');
-                    if (parts.Length == 2 && parts[1].Length >= numericUpDown_enter_quantity.DecimalPlaces)
-                    {
-                        // Если курсор находится после запятой и количество знаков после запятой уже равно или больше установленного
-                        if (textBox.SelectionStart > textBox.Text.IndexOf(',') && parts[1].Length >= 3)
-                        {
-                            // Заменяем следующий символ, если не выделено символов для замены
-                            if (textBox.SelectionLength == 0 && parts[1].Length == 3)
-                            {
-                                int selectionStart = textBox.SelectionStart;
-                                if (selectionStart >= 0 && selectionStart < textBox.Text.Length)
-                                {
-                                    // Удаляем символ в позиции selectionStart, если это возможно
-                                    textBox.Text = textBox.Text.Remove(selectionStart, 1);
-                                    // Вставляем новый символ в ту же позицию
-                                    textBox.Text = textBox.Text.Insert(selectionStart, e.KeyChar.ToString());
-                                    textBox.SelectionStart = selectionStart + 1; // Сдвигаем курсор
-                                    e.Handled = true;
-                                }
-                                textBox.SelectionStart = selectionStart + 1; // Сдвигаем курсор
-                                e.Handled = true;
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        //    // Проверка, что введенный символ - это цифра, управляющий символ или запятая
+        //    if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && e.KeyChar != ',' && e.KeyChar != '.')
+        //    {
+        //        e.Handled = true;
+        //    }
+        //    else
+        //    {
+        //        // Обработка ввода, если уже есть запятая в тексте
+        //        if (textBox.Text.Contains(","))
+        //        {
+        //            if ((e.KeyChar == '.') || (e.KeyChar == ','))
+        //            {
+        //                e.Handled = true;
+        //                return;
+        //            }
+        //            // Проверка количества знаков после запятой
+        //            string[] parts = textBox.Text.Split(',');
+        //            if (parts.Length == 2 && parts[1].Length >= numericUpDown_enter_quantity.DecimalPlaces)
+        //            {
+        //                // Если курсор находится после запятой и количество знаков после запятой уже равно или больше установленного
+        //                if (textBox.SelectionStart > textBox.Text.IndexOf(',') && parts[1].Length >= 3)
+        //                {
+        //                    // Заменяем следующий символ, если не выделено символов для замены
+        //                    if (textBox.SelectionLength == 0 && parts[1].Length == 3)
+        //                    {
+        //                        int selectionStart = textBox.SelectionStart;
+        //                        if (selectionStart >= 0 && selectionStart < textBox.Text.Length)
+        //                        {
+        //                            // Удаляем символ в позиции selectionStart, если это возможно
+        //                            textBox.Text = textBox.Text.Remove(selectionStart, 1);
+        //                            // Вставляем новый символ в ту же позицию
+        //                            textBox.Text = textBox.Text.Insert(selectionStart, e.KeyChar.ToString());
+        //                            textBox.SelectionStart = selectionStart + 1; // Сдвигаем курсор
+        //                            e.Handled = true;
+        //                        }
+        //                        textBox.SelectionStart = selectionStart + 1; // Сдвигаем курсор
+        //                        e.Handled = true;
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
 
         //private void TextBox_KeyPress(object sender, KeyPressEventArgs e)
         //{
@@ -412,10 +412,10 @@ namespace Cash8
         //}
 
 
-        private void NumericUpDown_enter_quantity_ValueChanged(object sender, EventArgs e)
-        {
-            numericUpDown_enter_quantity.Value = Decimal.Round(numericUpDown_enter_quantity.Value, 3);
-        }
+        //private void NumericUpDown_enter_quantity_ValueChanged(object sender, EventArgs e)
+        //{
+        //    numericUpDown_enter_quantity.Value = Decimal.Round(numericUpDown_enter_quantity.Value, 3);
+        //}
 
         //private void enter_quantity_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
         //{
@@ -517,80 +517,80 @@ namespace Cash8
         //    SendDataToCustomerScreen(1, 0,1);
         //}
 
-        private void NumericUpDown_enter_quantity_KeyPress(object sender, KeyPressEventArgs e)
-        {
+        //private void NumericUpDown_enter_quantity_KeyPress(object sender, KeyPressEventArgs e)
+        //{
 
-            if (e.KeyChar == 27)
-            {
-                this.numericUpDown_enter_quantity.Visible = false;
-                this.panel1.Visible = false;
-                return;
-            }
+        //    if (e.KeyChar == 27)
+        //    {
+        //        this.numericUpDown_enter_quantity.Visible = false;
+        //        this.panel1.Visible = false;
+        //        return;
+        //    }
 
-            if (e.KeyChar == 13)
-            {
-                if (this.numericUpDown_enter_quantity.Value == 0)
-                {
-                    MessageBox.Show("Количество не может быть пустым");
-                    return;
-                }
+        //    if (e.KeyChar == 13)
+        //    {
+        //        if (this.numericUpDown_enter_quantity.Value == 0)
+        //        {
+        //            MessageBox.Show("Количество не может быть пустым");
+        //            return;
+        //        }
 
-                if (Convert.ToDecimal(this.listView1.SelectedItems[0].SubItems[3].Text) > this.numericUpDown_enter_quantity.Value)
-                {
-                    //MessageBox.Show("Не администраторам запрещено менять количество на меньшее");
-                    ///////////////////////////////////////////////////////////////
-                    if (MainStaticClass.Code_right_of_user != 1)
-                    {
-                        enable_delete = false;
-                        Interface_switching isw = new Interface_switching();
-                        isw.caller_type = 3;
-                        isw.cc = this;
-                        isw.not_change_Cash_Operator = true;
-                        isw.ShowDialog();
-                        isw.Dispose();
+        //        if (Convert.ToDecimal(this.listView1.SelectedItems[0].SubItems[3].Text) > this.numericUpDown_enter_quantity.Value)
+        //        {
+        //            //MessageBox.Show("Не администраторам запрещено менять количество на меньшее");
+        //            ///////////////////////////////////////////////////////////////
+        //            if (MainStaticClass.Code_right_of_user != 1)
+        //            {
+        //                enable_delete = false;
+        //                Interface_switching isw = new Interface_switching();
+        //                isw.caller_type = 3;
+        //                isw.cc = this;
+        //                isw.not_change_Cash_Operator = true;
+        //                isw.ShowDialog();
+        //                isw.Dispose();
 
-                        if (!enable_delete)
-                        {
-                            MessageBox.Show("Вам запрещено менять количество на меньшее");
-                            //this.enter_quantity.Text = "0";
-                            return;
-                        }
-                    }
-                    ReasonsDeletionCheck reasons = new ReasonsDeletionCheck();
-                    DialogResult dialogResult = reasons.ShowDialog();
-                    if (dialogResult == DialogResult.OK)
-                    {
-                        insert_incident_record(listView1.SelectedItems[0].SubItems[0].Text, Math.Round(Convert.ToDecimal(listView1.SelectedItems[0].SubItems[3].Text) - this.numericUpDown_enter_quantity.Value, 2, MidpointRounding.ToEven).ToString().Replace(",", "."), "1",reasons.reason);
-                    }
-                    else
-                    {
-                        return;
-                    }
+        //                if (!enable_delete)
+        //                {
+        //                    MessageBox.Show("Вам запрещено менять количество на меньшее");
+        //                    //this.enter_quantity.Text = "0";
+        //                    return;
+        //                }
+        //            }
+        //            ReasonsDeletionCheck reasons = new ReasonsDeletionCheck();
+        //            DialogResult dialogResult = reasons.ShowDialog();
+        //            if (dialogResult == DialogResult.OK)
+        //            {
+        //                insert_incident_record(listView1.SelectedItems[0].SubItems[0].Text, Math.Round(Convert.ToDecimal(listView1.SelectedItems[0].SubItems[3].Text) - this.numericUpDown_enter_quantity.Value, 2, MidpointRounding.ToEven).ToString().Replace(",", "."), "1",reasons.reason);
+        //            }
+        //            else
+        //            {
+        //                return;
+        //            }
 
-                }
-                else if (Convert.ToDecimal(this.listView1.SelectedItems[0].SubItems[3].Text) < this.numericUpDown_enter_quantity.Value)
-                {
+        //        }
+        //        else if (Convert.ToDecimal(this.listView1.SelectedItems[0].SubItems[3].Text) < this.numericUpDown_enter_quantity.Value)
+        //        {
 
-                    //Проверка на сертификат 
-                    if (its_sertificate(this.listView1.SelectedItems[0].SubItems[0].Text.Trim()))
-                    {
-                        MessageBox.Show("Каждый сертификат продается отдельной строкой");
-                        return;
-                    }
-                }
+        //            //Проверка на сертификат 
+        //            if (its_sertificate(this.listView1.SelectedItems[0].SubItems[0].Text.Trim()))
+        //            {
+        //                MessageBox.Show("Каждый сертификат продается отдельной строкой");
+        //                return;
+        //            }
+        //        }
 
-                this.listView1.SelectedItems[0].SubItems[3].Text = Convert.ToDecimal(this.numericUpDown_enter_quantity.Value).ToString();
-                recalculate_all();
-                calculation_of_the_sum_of_the_document();
-                this.numericUpDown_enter_quantity.Visible = false;
-                this.panel1.Visible = false;
-                this.listView1.Select();
-                this.listView1.Items[this.listView1.SelectedIndices[0]].Selected = true;
-                write_new_document("0", "0", "0", "0", false, "0", "0", "0", "0");
-            }
+        //        this.listView1.SelectedItems[0].SubItems[3].Text = Convert.ToDecimal(this.numericUpDown_enter_quantity.Value).ToString();
+        //        recalculate_all();
+        //        calculation_of_the_sum_of_the_document();
+        //        this.numericUpDown_enter_quantity.Visible = false;
+        //        this.panel1.Visible = false;
+        //        this.listView1.Select();
+        //        this.listView1.Items[this.listView1.SelectedIndices[0]].Selected = true;
+        //        write_new_document("0", "0", "0", "0", false, "0", "0", "0", "0");
+        //    }
 
-            SendDataToCustomerScreen(1, 0, 1);
-        }
+        //    SendDataToCustomerScreen(1, 0, 1);
+        //}
               
 
         private void TxtB_total_sum_KeyPress(object sender, KeyPressEventArgs e)
@@ -640,7 +640,7 @@ namespace Cash8
                      date_time_start.Text.Replace("Чек", "").Trim() + "','" +
                     DateTime.Now.ToString("yyy-MM-dd HH:mm:ss") + "'," +
                     tovar.ToString() + "," +
-                    quantity.ToString() + "," +
+                    quantity.ToString().Replace(",",".") + "," +
                     type_of_operation + ",'"+
                     guid+"','" +
                     MainStaticClass.CashOperatorInn+"','"+
@@ -717,6 +717,7 @@ namespace Cash8
                         else
                         {
                             ReasonsDeletionCheck reasons = new ReasonsDeletionCheck();
+                            reasons.Text = "Удаление строки ";
                             DialogResult dialogResult = reasons.ShowDialog();
                             if (dialogResult == DialogResult.OK)
                             {
@@ -9861,7 +9862,7 @@ namespace Cash8
             }
         }
 
-        private void show_quantity_control(bool НоваяСтрока)
+        private void show_quantity_control(bool new_string)
         {
             //this.numericUpDown_enter_quantity.Visible = true;
             //this.panel1.Visible = true;
@@ -9907,11 +9908,15 @@ namespace Cash8
             {
                 enterQuantity.numericUpDown_enter_quantity.DecimalPlaces = 0;
             }
+            if (!new_string)
+            {
+                enterQuantity.numericUpDown_enter_quantity.Value = Convert.ToDecimal(listView1.SelectedItems[0].SubItems[3].Text);
+            }
             
             DialogResult result = enterQuantity.ShowDialog();
             if (result == DialogResult.Cancel)
             {
-                if (НоваяСтрока)
+                if (new_string)
                 {
                     ReasonsDeletionCheck reasons = new ReasonsDeletionCheck();
                     DialogResult dialogResult = reasons.ShowDialog();
@@ -9928,11 +9933,71 @@ namespace Cash8
             }
             else if (result == DialogResult.OK)
             {
-                listView1.SelectedItems[0].SubItems[3].Text = enterQuantity.numericUpDown_enter_quantity.Value.ToString();
-                recalculate_all();
-                calculation_of_the_sum_of_the_document();
+                if (enterQuantity.numericUpDown_enter_quantity.Value == 0)
+                {
+                    MessageBox.Show("Количество не может быть пустым");
+                    return;
+                }
+
+                if (Convert.ToDecimal(this.listView1.SelectedItems[0].SubItems[3].Text) > enterQuantity.numericUpDown_enter_quantity.Value)
+                {
+                    //MessageBox.Show("Не администраторам запрещено менять количество на меньшее");
+                    ///////////////////////////////////////////////////////////////
+                    if (MainStaticClass.Code_right_of_user != 1)
+                    {
+                        enable_delete = false;
+                        Interface_switching isw = new Interface_switching();
+                        isw.caller_type = 3;
+                        isw.cc = this;
+                        isw.not_change_Cash_Operator = true;
+                        isw.ShowDialog();
+                        isw.Dispose();
+
+                        if (!enable_delete)
+                        {
+                            MessageBox.Show("Вам запрещено менять количество на меньшее");
+                            //this.enter_quantity.Text = "0";
+                            return;
+                        }
+                    }
+                    ReasonsDeletionCheck reasons = new ReasonsDeletionCheck();
+                    reasons.Text = "Уменьшение количества";
+                    DialogResult dialogResult = reasons.ShowDialog();
+                    if (dialogResult == DialogResult.OK)
+                    {
+                        insert_incident_record(listView1.SelectedItems[0].SubItems[0].Text, Math.Round(Convert.ToDecimal(listView1.SelectedItems[0].SubItems[3].Text) - this.numericUpDown_enter_quantity.Value, 2, MidpointRounding.ToEven).ToString().Replace(",", "."), "1", reasons.reason);
+                    }
+                    else
+                    {
+                        return;
+                    }
+
+                }
+                else if (Convert.ToDecimal(this.listView1.SelectedItems[0].SubItems[3].Text) < this.numericUpDown_enter_quantity.Value)
+                {
+
+                    //Проверка на сертификат 
+                    if (its_sertificate(this.listView1.SelectedItems[0].SubItems[0].Text.Trim()))
+                    {
+                        MessageBox.Show("Каждый сертификат продается отдельной строкой");
+                        return;
+                    }
+                }
+
+                //this.listView1.SelectedItems[0].SubItems[3].Text = Convert.ToDecimal(this.numericUpDown_enter_quantity.Value).ToString();
+                //recalculate_all();
+                //calculation_of_the_sum_of_the_document();
+                //this.numericUpDown_enter_quantity.Visible = false;
+                //this.panel1.Visible = false;
+                //this.listView1.Select();
+                //this.listView1.Items[this.listView1.SelectedIndices[0]].Selected = true;
+                //write_new_document("0", "0", "0", "0", false, "0", "0", "0", "0");
+
+                listView1.SelectedItems[0].SubItems[3].Text = enterQuantity.numericUpDown_enter_quantity.Value.ToString();                
                 if (listView1.Items.Count > 0)
                 {
+                    recalculate_all();
+                    calculation_of_the_sum_of_the_document();
                     SendDataToCustomerScreen(1, 0, 1);
                 }
             }
