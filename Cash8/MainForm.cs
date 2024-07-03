@@ -887,7 +887,7 @@ namespace Cash8
             SettingConnect sc = new SettingConnect();
             sc.MdiParent = this;
             sc.Show();
-            MessageBox.Show(Math.Round(0.479 * 897.17, 2, MidpointRounding.ToEven).ToString());
+            //MessageBox.Show(Math.Round(Convert.ToDouble(0.479) * Convert.ToDouble(897.17), 2, MidpointRounding.ToEven).ToString());
         }
 
 
@@ -968,7 +968,11 @@ namespace Cash8
             LoadProgramFromInternet lpfi = new LoadProgramFromInternet();
             lpfi.show_phone = true;
             lpfi.check_new_version_programm();
-            bool new_version_of_the_program_exist = lpfi.new_version_of_the_program;
+            //bool new_version_of_the_program_exist = lpfi.new_version_of_the_program;
+            if (lpfi.new_version_of_the_program)
+            {
+                обновлениеПрограммыToolStripMenuItem_Click(null, null);
+            }
             lpfi.Dispose();
             MainStaticClass.write_event_in_log("Проверка обновления в интернет завершена", " Старт программы ", "0");
 
@@ -1001,10 +1005,10 @@ namespace Cash8
                 //lpfi.Dispose();
                 //MainStaticClass.write_event_in_log("Проверка обновления в интернет завершена", " Старт программы ", "0");
 
-                if (new_version_of_the_program_exist)
-                {
-                    обновлениеПрограммыToolStripMenuItem_Click(null, null);
-                }
+                //if (new_version_of_the_program_exist)
+                //{
+                //    обновлениеПрограммыToolStripMenuItem_Click(null, null);
+                //}
 
                 //if (MainStaticClass.GetWorkSchema != 2)
                 //{
@@ -1043,8 +1047,9 @@ namespace Cash8
                 //    this.Close();
                 //    return;
                 //}
-
+                MainStaticClass.write_event_in_log("Перед проверкой системы налогообложения", " Старт программы ", "0");
                 MainStaticClass.SystemTaxation = check_system_taxation();
+                MainStaticClass.write_event_in_log("После проверки системы налогообложения", " Старт программы ", "0");
 
                 //MainStaticClass.delete_old_checks(MainStaticClass.GetMinDateWork);
                 //MainStaticClass.delete_all_events_in_log(MainStaticClass.GetMinDateWork);

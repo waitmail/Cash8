@@ -1837,7 +1837,7 @@ namespace Cash8
                     }
                     else if (check_type.SelectedIndex == 1)
                     {
-                        lvi.SubItems[7].Text = Math.Round(Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text),2,MidpointRounding.ToEven).ToString();//Это возврат 
+                        lvi.SubItems[7].Text = Math.Round(Convert.ToDouble(lvi.SubItems[3].Text) * Convert.ToDouble(lvi.SubItems[5].Text),2,MidpointRounding.ToEven).ToString();//Это возврат 
                     }
                 }
                 else
@@ -1845,15 +1845,16 @@ namespace Cash8
                     lvi.SubItems[5].Text = (Math.Round(Convert.ToDecimal(lvi.SubItems[4].Text), 2)).ToString();//Цена со скидкой для сертификата будет равна его цене, т.е. номиналу            
                 }
 
-                lvi.SubItems[6].Text = ((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString());
-                lvi.SubItems[7].Text = Math.Round((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)),2,MidpointRounding.ToEven).ToString();
+                lvi.SubItems[6].Text = ((Convert.ToDouble(lvi.SubItems[3].Text) * Convert.ToDouble(lvi.SubItems[4].Text)).ToString());
+                lvi.SubItems[7].Text = Math.Round((Convert.ToDouble(lvi.SubItems[3].Text) * Convert.ToDouble(lvi.SubItems[5].Text)),2,MidpointRounding.ToEven).ToString();
             }
             if (lvi.SubItems[8].Text.Trim() != "0")//Это подарок и необходимо проверить цена 0.01 или нет
             {
                 if (Convert.ToDouble(lvi.SubItems[4].Text.Trim()) == 0.01)
                 {
-                    lvi.SubItems[6].Text = ((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString());
-                    lvi.SubItems[7].Text = Math.Round((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)),2,MidpointRounding.ToEven).ToString();
+                    lvi.SubItems[6].Text = ((Convert.ToDouble(lvi.SubItems[3].Text) * Convert.ToDouble(lvi.SubItems[4].Text)).ToString());
+                    //lvi.SubItems[7].Text = Math.Round((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)),2,MidpointRounding.ToEven).ToString();
+                    lvi.SubItems[7].Text = Math.Round((Convert.ToDouble(lvi.SubItems[3].Text) * Convert.ToDouble(lvi.SubItems[5].Text)), 2, MidpointRounding.ToEven).ToString();
                 }
             }
         }
