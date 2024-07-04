@@ -78,7 +78,7 @@ namespace Cash8
                     " non_cash_money1, " +
                     " sertificate_money1," +
                     " guid,"+
-                    "payment_by_sbp, "+
+                    " payment_by_sbp, "+
                     " clients.phone "+
                     " FROM checks_header LEFT JOIN clients ON checks_header.client=clients.code WHERE guid in  (" + document_guid_list.ToString() + ")  ";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
@@ -134,7 +134,7 @@ namespace Cash8
                     salesPortionsHeader.Sum_certificate1 = reader["sertificate_money1"].ToString().Replace(",", ".");
                     salesPortionsHeader.Guid = reader["guid"].ToString();
                     salesPortionsHeader.SBP = (Convert.ToBoolean(reader["payment_by_sbp"]) == true ? 1 : 0).ToString();
-                    salesPortionsHeader.ClientPhone = (reader["phone"].ToString() == "" ? "''" : reader["phone"].ToString()).Replace("+7","");
+                    salesPortionsHeader.ClientPhone = (reader["phone"].ToString() == "" ? reader["client"].ToString() : reader["phone"].ToString()).Replace("+7","");
                     salesPortions.ListSalesPortionsHeader.Add(salesPortionsHeader);
                     //Конец Новое заполнение 
                     ////////////////////////////////////////////////////////////////////////

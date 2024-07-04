@@ -166,7 +166,7 @@ namespace Cash8
             dt.Columns.Add(characteristic_name);
 
             DataColumn quantity = new DataColumn();
-            quantity.DataType = System.Type.GetType("System.Decimal");
+            quantity.DataType = System.Type.GetType("System.Double");
             quantity.ColumnName = "quantity"; //listView1.Columns.Add("Количество", 50, HorizontalAlignment.Right);
             dt.Columns.Add(quantity);
 
@@ -3310,7 +3310,7 @@ namespace Cash8
                     " name_tovar character varying(200) COLLATE pg_catalog.default,"+
                     " characteristic_guid character varying(36) COLLATE pg_catalog.default,"+
                     " characteristic_name character varying(200) COLLATE pg_catalog.default,"+
-                    " quantity integer,"+
+                    " quantity numeric(10, 2)," +
                     " price numeric(10, 2),"+
                     " price_at_a_discount numeric(10,2),"+
                     " sum numeric(10,2),"+
@@ -3342,7 +3342,7 @@ namespace Cash8
                                                              row["tovar_name"] + "','" +
                                                              row["characteristic_code"] + "','" +
                                                              row["characteristic_name"] + "'," +
-                                                             row["quantity"] + "," +
+                                                             row["quantity"].ToString().Replace(",",".") + "," +
                                                              row["price"].ToString().Replace(",", ".") + "," +
                                                              row["price_at_discount"].ToString().Replace(",", ".") + "," +
                                                              row["sum_full"].ToString().Replace(",", ".") + "," +
@@ -3371,7 +3371,7 @@ namespace Cash8
                     row["tovar_name"] = reader[1].ToString().Trim();
                     row["characteristic_code"] = reader[2].ToString();
                     row["characteristic_name"] = reader[3].ToString();
-                    row["quantity"] = reader.GetInt64(4);
+                    row["quantity"] = reader.GetDecimal(4);
                     row["price"] = reader.GetDecimal(5);
                     row["price_at_discount"] = reader.GetDecimal(6);
                     row["sum_full"] = reader.GetDecimal(7);

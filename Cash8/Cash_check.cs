@@ -2309,14 +2309,14 @@ namespace Cash8
         }
 
 
-        public decimal calculation_of_the_discount_of_the_document()
+        public Double calculation_of_the_discount_of_the_document()
         {
 
             //Учесть скидку
-            decimal total = 0;
+            Double total = 0;
             foreach (ListViewItem lvi in listView1.Items)
             {
-                total += Convert.ToDecimal(lvi.SubItems[6].Text) - Convert.ToDecimal(lvi.SubItems[7].Text);
+                total += Convert.ToDouble(lvi.SubItems[6].Text) - Convert.ToDouble(lvi.SubItems[7].Text);
             }
 
             //if (choice_of_currencies.CheckState == CheckState.Checked)
