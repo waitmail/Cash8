@@ -3310,7 +3310,7 @@ namespace Cash8
                     " name_tovar character varying(200) COLLATE pg_catalog.default,"+
                     " characteristic_guid character varying(36) COLLATE pg_catalog.default,"+
                     " characteristic_name character varying(200) COLLATE pg_catalog.default,"+
-                    " quantity numeric(10, 2)," +
+                    " quantity numeric(10, 3)," +
                     " price numeric(10, 2),"+
                     " price_at_a_discount numeric(10,2),"+
                     " sum numeric(10,2),"+
