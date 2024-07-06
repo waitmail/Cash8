@@ -977,22 +977,17 @@ namespace Cash8
             }
             if (e.KeyCode == Keys.F8)
             {
-                //if (cc.check_type.SelectedIndex == 0)
-                //{
-                    InputSertificates i_s = new InputSertificates();
-                    i_s.pay = this;
-                    //i_s.Top = 1;
-                    i_s.TopMost = true;
-                    i_s.ShowDialog();
-                    if (!i_s.closed_normally)
-                    {
-                        MessageBox.Show("Введенные сертификаты будут удалены");
-                        this.listView_sertificates.Clear();
-                    }
-                    i_s.Dispose();
-                    calculate();
-                    cash_sum.Focus();
-                //}
+                InputSertificates i_s = new InputSertificates();
+                i_s.pay = this;                
+                i_s.ShowDialog(this);
+                if (!i_s.closed_normally)
+                {
+                    MessageBox.Show("Введенные сертификаты будут удалены");
+                    this.listView_sertificates.Clear();
+                }
+                i_s.Dispose();
+                calculate();
+                cash_sum.Focus();
             }
         //    if (e.KeyCode == Keys.F6)//попытка сделать доступным полее вода списания бонусов
         //    {

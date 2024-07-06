@@ -208,14 +208,14 @@ namespace Cash8
 
 
 
-        private bool check_sertificate_active1(string sertificate_code)
+        private bool check_sertificate_active(string sertificate_code)
         {
             bool result = true;
             CancellationTokenSource cts = new CancellationTokenSource();
             CancellationToken token = cts.Token;
 
             // Запуск функции с параметром в новом потоке            
-            Task<bool> task = Task.Factory.StartNew(() => check_sertificate_active(sertificate_code));
+            Task<bool> task = Task.Factory.StartNew(() => check_sertificate_active1(sertificate_code));
 
             try
             {
@@ -236,6 +236,7 @@ namespace Cash8
                     result = false;
                     MainStaticClass.write_event_in_log("Произошли ошибка при check_sertificate_active " + sertificate_code + " Timeout ", "Документ чек", "0");
                     cts.Cancel(); // Отправка запроса на отмену задачи
+                    MessageBox.Show("Внешний таймаут при проверке активности сертификата ", "check_sertificate_active");
                 }
             }
             catch (AggregateException ae)
@@ -253,16 +254,13 @@ namespace Cash8
         }
 
 
-        private bool check_sertificate_active(string sertificate_code)
+        private bool check_sertificate_active1(string sertificate_code)
         {
             bool result = true;
 
             Cash8.DS.DS ds = MainStaticClass.get_ds();
             ds.Timeout = 5000;
-            //if (MainStaticClass.GetWorkSchema == 2)
-            //{
-            //    ds.Url = "http://10.21.200.21/DiscountSystem/Ds.asmx"; //"http://localhost:50520/DS.asmx";
-            //}
+           
             //Получить параметр для запроса на сервер 
             string nick_shop = MainStaticClass.Nick_Shop.Trim();
             if (nick_shop.Trim().Length == 0)
