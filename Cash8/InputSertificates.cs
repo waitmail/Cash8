@@ -6,6 +6,9 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using Npgsql;
+using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Cash8
 {
@@ -202,6 +205,53 @@ namespace Cash8
                 //button_cancel_Click(null, null);
             }
         }
+
+
+
+        private bool check_sertificate_active1(string sertificate_code)
+        {
+            bool result = true;
+            CancellationTokenSource cts = new CancellationTokenSource();
+            CancellationToken token = cts.Token;
+
+            // Запуск функции с параметром в новом потоке            
+            Task<bool> task = Task.Factory.StartNew(() => check_sertificate_active(sertificate_code));
+
+            try
+            {
+                // Ожидание результата функции в течение 5 секунд
+                bool isCompletedSuccessfully = task.Wait(TimeSpan.FromSeconds(5));
+
+                if (isCompletedSuccessfully)
+                {
+                    // Если задача завершена успешно, получаем результат
+                    MainStaticClass.write_event_in_log("Удачное завершение check_sertificate_active " + sertificate_code, "Документ чек", "0");
+                    result = task.Result;
+                    //Console.WriteLine("Результат функции: " + result);
+                }
+                else
+                {
+                    // Если результат не был получен в течение 5 секунд
+                    //Console.WriteLine("Функция не завершила выполнение в отведённое время.");
+                    result = false;
+                    MainStaticClass.write_event_in_log("Произошли ошибка при check_sertificate_active " + sertificate_code + " Timeout ", "Документ чек", "0");
+                    cts.Cancel(); // Отправка запроса на отмену задачи
+                }
+            }
+            catch (AggregateException ae)
+            {
+                //Обработка исключений, которые могли быть выброшены во время выполнения функции
+                foreach (var e in ae.InnerExceptions)
+                {
+                    //Console.WriteLine("Исключение: " + e.Message);
+                    MainStaticClass.write_event_in_log("Произошли ошибка при check_sertificate_active " + sertificate_code + " " + e.Message, "Документ чек", "0");
+                }
+                result = false;
+            }
+
+            return result;
+        }
+
 
         private bool check_sertificate_active(string sertificate_code)
         {

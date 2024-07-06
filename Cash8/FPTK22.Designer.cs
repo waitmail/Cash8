@@ -53,6 +53,7 @@
             this.btn_query_summary_report = new System.Windows.Forms.Button();
             this.btn_query_full_report = new System.Windows.Forms.Button();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.btn_openDrawer = new System.Windows.Forms.Button();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -61,6 +62,7 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.btn_openDrawer);
             this.groupBox4.Controls.Add(this.txtB_ofd_utility_status);
             this.groupBox4.Controls.Add(this.btn_send_fiscal);
             this.groupBox4.Controls.Add(this.btn_have_internet);
@@ -72,7 +74,7 @@
             this.groupBox4.Size = new System.Drawing.Size(443, 337);
             this.groupBox4.TabIndex = 20;
             this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Проверки";            
+            this.groupBox4.Text = "Проверки";
             // 
             // txtB_ofd_utility_status
             // 
@@ -321,6 +323,16 @@
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Банковский терминал";
             // 
+            // btn_openDrawer
+            // 
+            this.btn_openDrawer.Location = new System.Drawing.Point(7, 120);
+            this.btn_openDrawer.Name = "btn_openDrawer";
+            this.btn_openDrawer.Size = new System.Drawing.Size(155, 23);
+            this.btn_openDrawer.TabIndex = 24;
+            this.btn_openDrawer.Text = "Открыть денежный ящик";
+            this.btn_openDrawer.UseVisualStyleBackColor = true;
+            this.btn_openDrawer.Click += new System.EventHandler(this.btn_openDrawer_Click);
+            // 
             // FPTK22
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -377,5 +389,6 @@
         private System.Windows.Forms.Button btn_query_summary_report;
         private System.Windows.Forms.Button btn_query_full_report;
         private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.Button btn_openDrawer;
     }
 }

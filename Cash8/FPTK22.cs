@@ -697,7 +697,7 @@ namespace Cash8
             recharge_note = "";
             AnswerTerminal answerTerminal = new AnswerTerminal();
             send_command_acquiring_terminal(url, _str_command_, ref complete, ref answerTerminal);
-            if (complete)//ответ от терминала не удовлетворительный
+            if (complete)//ответ от терминала удовлетворительный
             {
                 if (recharge_note != "")
                 {
@@ -739,6 +739,15 @@ namespace Cash8
 
             }
         }
-       
+
+        private void btn_openDrawer_Click(object sender, EventArgs e)
+        {
+            IFptr fptr = MainStaticClass.FPTR;
+            if (!fptr.isOpened())
+            {
+                fptr.open();
+            }
+            fptr.openDrawer();
+        }
     }
 }
