@@ -128,7 +128,7 @@ namespace Cash8
             {
                 this.DialogResult = DialogResult.Cancel;
             }
-            else if (e.KeyCode == Keys.F12)
+            else if ((e.KeyCode == Keys.F12)||(numericUpDown_enter_quantity.DecimalPlaces==0 && e.KeyCode == Keys.Enter))
             {
                 if (numericUpDown_enter_quantity.Value == 0)
                 {
