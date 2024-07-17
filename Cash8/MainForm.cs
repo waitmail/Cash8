@@ -71,11 +71,12 @@ namespace Cash8
                 answer = ds.GetUsers(MainStaticClass.Nick_Shop, encrypt_string, "4");
                 //MessageBox.Show("3");
             }
-            catch
+            catch(Exception ex)
             {
+                MessageBox.Show("Произошли ошибки при при получении пользователей от веб сервиса " + ex.Message);
             }
             if (answer == "")
-            {
+            {                
                 return;
             }
 
@@ -98,7 +99,7 @@ namespace Cash8
                 command.Transaction = trans;
                 command.ExecuteNonQuery();
                 foreach (User user in users.list_users)
-                {
+                {                    
                     //delimiters = new string[] { "|" };
                     //string[] settings = str.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
                     //rezult_query = check_insert_or_update_user(s2, conn, trans, command);
