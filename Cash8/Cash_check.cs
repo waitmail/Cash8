@@ -1961,12 +1961,12 @@ namespace Cash8
         //    return total;
         //}
 
-        public decimal calculation_of_the_sum_of_the_document()
+        public Double calculation_of_the_sum_of_the_document()
         {
-            decimal total = 0;
+            Double total = 0;
             foreach (ListViewItem lvi in listView1.Items)
             {
-                total += Convert.ToDecimal(lvi.SubItems[7].Text);
+                total += Convert.ToDouble(lvi.SubItems[7].Text);
                 //MessageBox.Show("Подсчет суммы документа " + lvi.SubItems[7].Text + " общая сумма " + total.ToString()," Подсчет суммы ");
             }
 
@@ -13710,7 +13710,7 @@ namespace Cash8
                 //else
                 //{
                     pay_form.pay_sum.Text = calculation_of_the_sum_of_the_document().ToString();
-                    decimal total = calculation_of_the_sum_of_the_document();
+                    Double total = calculation_of_the_sum_of_the_document();
                     string kop = ((int)((total - (int)total) * 100)).ToString();
                     kop = (kop.Length == 2 ? kop : "0" + kop);
                     pay_form.set_kop_on_non_cash_sum_kop(kop);

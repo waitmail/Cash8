@@ -1748,19 +1748,19 @@ namespace Cash8
             
             this.button_pay.Enabled = false;
 
-            if (Math.Round(Convert.ToDecimal(cash_sum.Text.Replace(".", ",")),2) + Math.Round(Convert.ToDecimal(get_non_cash_sum(0)),2) + Math.Round(Convert.ToDecimal(sertificates_sum.Text),2) + Math.Round(Convert.ToDecimal(pay_bonus_many.Text.Replace(".", ",")),2) - Math.Round(Convert.ToDecimal(pay_sum.Text.Replace(".", ",")),2) < 0)
+            if (Math.Round(Convert.ToDouble(cash_sum.Text.Replace(".", ",")),2, MidpointRounding.ToEven) + Math.Round(Convert.ToDouble(get_non_cash_sum(0)),2, MidpointRounding.ToEven) + Math.Round(Convert.ToDouble(sertificates_sum.Text),2, MidpointRounding.ToEven) + Math.Round(Convert.ToDouble(pay_bonus_many.Text.Replace(".", ",")),2, MidpointRounding.ToEven) - Math.Round(Convert.ToDouble(pay_sum.Text.Replace(".", ",")),2, MidpointRounding.ToEven) < 0)
             {
                 MessageBox.Show("Проверьте сумму внесенной оплаты");
-                MessageBox.Show("Наличные" + Math.Round(Convert.ToDecimal(cash_sum.Text.Replace(".", ",")), 2).ToString());
-                MessageBox.Show("Карта " + Math.Round(Convert.ToDecimal(get_non_cash_sum(0)), 2).ToString());
-                MessageBox.Show("Сертификаты " + Math.Round(Convert.ToDecimal(sertificates_sum.Text), 2).ToString());
-                MessageBox.Show("Бонусы " + Math.Round(Convert.ToDecimal(pay_bonus_many.Text.Replace(".", ",")), 2).ToString());
-                MessageBox.Show("Общая сумма  " + Math.Round(Convert.ToDecimal(pay_sum.Text.Replace(".", ",")), 2));
+                MessageBox.Show("Наличные" + Math.Round(Convert.ToDouble(cash_sum.Text.Replace(".", ",")), 2).ToString());
+                MessageBox.Show("Карта " + Math.Round(Convert.ToDouble(get_non_cash_sum(0)), 2).ToString());
+                MessageBox.Show("Сертификаты " + Math.Round(Convert.ToDouble(sertificates_sum.Text), 2).ToString());
+                MessageBox.Show("Бонусы " + Math.Round(Convert.ToDouble(pay_bonus_many.Text.Replace(".", ",")), 2).ToString());
+                MessageBox.Show("Общая сумма  " + Math.Round(Convert.ToDouble(pay_sum.Text.Replace(".", ",")), 2));
 
                 return;
             }
           
-            if (Convert.ToDecimal(remainder.Text.Trim()) > 0)
+            if (Convert.ToDouble(remainder.Text.Trim()) > 0)
             {
                 if (cc.check_type.SelectedIndex != 0)
                 {
@@ -1769,14 +1769,14 @@ namespace Cash8
                 }
             }
 
-            if (Convert.ToDecimal(pay_bonus_many.Text) != 0)//При оплате бонусами бонусы не начисляются
+            if (Convert.ToDouble(pay_bonus_many.Text) != 0)//При оплате бонусами бонусы не начисляются
             {
                 bonus_on_document.Text = "0";
             }
 
-            if (Convert.ToDecimal(pay_bonus_many.Text) > 0)                 
+            if (Convert.ToDouble(pay_bonus_many.Text) > 0)                 
             {
-                if (Convert.ToDecimal(non_cash_sum.Text) + Convert.ToDecimal(sertificates_sum.Text) + Convert.ToDecimal(pay_bonus_many.Text) > Convert.ToDecimal(pay_sum.Text))
+                if (Convert.ToDouble(non_cash_sum.Text) + Convert.ToDouble(sertificates_sum.Text) + Convert.ToDouble(pay_bonus_many.Text) > Convert.ToDouble(pay_sum.Text))
                 {
                     MessageBox.Show("Сумма сертификатов + сумма по карте оплаты + сумма по бонусам превышает сумму чека ");
                     return;
@@ -1784,7 +1784,7 @@ namespace Cash8
             }
             else
             {
-                if (Convert.ToDecimal(non_cash_sum.Text) + Convert.ToDecimal(sertificates_sum.Text) > Convert.ToDecimal(pay_sum.Text))
+                if (Convert.ToDouble(non_cash_sum.Text) + Convert.ToDouble(sertificates_sum.Text) > Convert.ToDouble(pay_sum.Text))
                 {
                     MessageBox.Show(" Сумма сертификатов + сумма по карте оплаты превышает сумму чека ");
                     return;
@@ -1803,16 +1803,16 @@ namespace Cash8
 
             //Необходимо проверка на сумму документа где сумма всех форм оплаты равно сумме документа
             //Получаем общу сумму по оплате 
-            decimal _cash_summ_ = Convert.ToDecimal(cash_sum.Text) - Convert.ToDecimal(remainder.Text);
+            Double _cash_summ_ = Convert.ToDouble(cash_sum.Text) - Convert.ToDouble(remainder.Text);
             //MessageBox.Show("Наличные " + _cash_summ_.ToString());
-            decimal _non_cash_summ_ = Math.Round(Convert.ToDecimal(get_non_cash_sum(1)),2);
+            Double _non_cash_summ_ = Math.Round(Convert.ToDouble(get_non_cash_sum(1)),2);
             //MessageBox.Show("Безнал " + _non_cash_summ_.ToString());
-            decimal _sertificates_sum_ = Convert.ToDecimal(sertificates_sum.Text);
+            Double _sertificates_sum_ = Convert.ToDouble(sertificates_sum.Text);
             //MessageBox.Show("Сертификаты " + _sertificates_sum_.ToString());
             //decimal _pay_bonus_many_ = Convert.ToDecimal((int)(Convert.ToInt32(pay_bonus_many.Text)/100));
-            decimal _pay_bonus_many_ = Convert.ToDecimal(pay_bonus_many.Text);
+            Double _pay_bonus_many_ = Convert.ToDouble(pay_bonus_many.Text);
             //MessageBox.Show("Бонусы " + _pay_bonus_many_.ToString());
-            decimal sum_of_the_document = cc.calculation_of_the_sum_of_the_document();
+            Double sum_of_the_document = cc.calculation_of_the_sum_of_the_document();
             //decimal sum_of_the_document = Math.Round(Convert.ToDecimal(pay_sum.Text.Replace(".", ",")), 2);
             //MessageBox.Show("Сумма документа " + sum_of_the_document.ToString());
 

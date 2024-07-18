@@ -1479,7 +1479,7 @@ namespace Cash8
         //    }
         //}
         
-        public static bool validate_cash_sum_non_cash_sum_on_return(int id_sale, decimal cash_summ,decimal non_cash_sum)
+        public static bool validate_cash_sum_non_cash_sum_on_return(int id_sale, Double cash_summ, Double non_cash_sum)
         {
             bool result = true;
             NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
@@ -1501,16 +1501,16 @@ namespace Cash8
                 NpgsqlDataReader reader = command.ExecuteReader();                
                 while (reader.Read())
                 {
-                    if (Convert.ToDecimal(reader["cash_money"]) < cash_summ)
+                    if (Convert.ToDouble(reader["cash_money"]) < cash_summ)
                     {
                         result = false;
-                        MessageBox.Show("Вы можете вернуть наличными не более "+ Convert.ToDecimal(reader["cash_money"]).ToString());
+                        MessageBox.Show("Вы можете вернуть наличными не более "+ Convert.ToDouble(reader["cash_money"]).ToString());
                     }
-                    if (Convert.ToDecimal(reader["non_cash_money"]) < non_cash_sum)
+                    if (Convert.ToDouble(reader["non_cash_money"]) < non_cash_sum)
                     {
                         result = false;
-                        MessageBox.Show("Вы можете вернуть по безналу не более " + Convert.ToDecimal(reader["non_cash_money"]).ToString());
-                        MessageBox.Show("Преобразованное левая часть " + Convert.ToDecimal(reader["non_cash_money"]).ToString());
+                        MessageBox.Show("Вы можете вернуть по безналу не более " + Convert.ToDouble(reader["non_cash_money"]).ToString());
+                        MessageBox.Show("Преобразованное левая часть " + Convert.ToDouble(reader["non_cash_money"]).ToString());
                         MessageBox.Show("Правая часть  " + non_cash_sum.ToString());
                     }
                 }
