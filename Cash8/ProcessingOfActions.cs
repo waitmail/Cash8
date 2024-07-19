@@ -1466,9 +1466,9 @@ namespace Cash8
                         if (Convert.ToDecimal(result_query) == 0)
                         {
                             //have_action = true;//Признак того что в документе есть сработка по акции                        
-                            row["price_at_discount"] = Math.Round(Convert.ToDecimal(Convert.ToDecimal(row["price"]) - Convert.ToDecimal(row["price"]) * persent / 100), 2);//Цена со скидкой                                    
-                            row["sum_full"] = Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price"]);
-                            row["sum_at_discount"] = Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price_at_discount"]);
+                            row["price_at_discount"] = Math.Round(Convert.ToDouble(Convert.ToDouble(row["price"]) - Convert.ToDouble(row["price"]) * Convert.ToDouble(persent) / 100), 2,MidpointRounding.ToEven);//Цена со скидкой                                    
+                            row["sum_full"] = Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price"]),2,MidpointRounding.ToEven);
+                            row["sum_at_discount"] = Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price_at_discount"]),2,MidpointRounding.ToEven);
                             row["action"] = num_doc.ToString(); //Номер акционного документа                        
                             row["action2"] = num_doc.ToString();//Тип акции 
                             if (dt.Columns.Contains("promo_description"))
@@ -1479,8 +1479,8 @@ namespace Cash8
                         else
                         {
                             row["price_at_discount"] = result_query.ToString();//Цена со скидкой                                    
-                            row["sum_full"] = Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price"]);
-                            row["sum_at_discount"] = Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price_at_discount"]);
+                            row["sum_full"] = Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price"]),2,MidpointRounding.ToEven);
+                            row["sum_at_discount"] = Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price_at_discount"]),2,MidpointRounding.ToEven);
                             row["action"] = num_doc.ToString(); //Номер акционного документа                        
                             row["action2"] = num_doc.ToString();//Тип акции         
                             if (dt.Columns.Contains("promo_description"))
