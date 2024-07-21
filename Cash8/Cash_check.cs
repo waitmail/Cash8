@@ -2165,6 +2165,7 @@ namespace Cash8
 
             foreach (ListViewItem lvi in listView1.Items)
             {
+                //MainStaticClass.write_event_in_log("Надо распределить " + part.ToString(), "0", "0");
                 //MessageBox.Show("Надо распределить " + part.ToString());
                 //if ((lvi.SubItems[7].Text.Trim() == "0") && (lvi.SubItems[8].Text.Trim() == "0") && (lvi.SubItems[9].Text == "0"))
                 if (Convert.ToDecimal(lvi.SubItems[4].Text.Replace(".", ",")) > 1)
@@ -2176,8 +2177,11 @@ namespace Cash8
                     }
 
                     //MessageBox.Show(" Умножаем " + lvi.SubItems[7].Text + " на " + part.ToString());
+                    //MainStaticClass.write_event_in_log(" Умножаем " + lvi.SubItems[7].Text + " на " + part.ToString(), "0", "0");
                     //MessageBox.Show(" Надо распределить по строке без округления " + (Convert.ToDouble(lvi.SubItems[7].Text) * Convert.ToDouble(part)).ToString());
-                    part_on_string = Math.Round(Convert.ToDouble(lvi.SubItems[7].Text) * part, 2);
+                    //MainStaticClass.write_event_in_log(" Надо распределить по строке без округления " + (Convert.ToDouble(lvi.SubItems[7].Text) * Convert.ToDouble(part)).ToString(), "0", "0");
+                    part_on_string = Math.Round(Convert.ToDouble(lvi.SubItems[7].Text) * part, 2);                    
+                    //MainStaticClass.write_event_in_log(" что необходимо распределить в цикле part_on_string" + part_on_string.ToString(), "0","0");
                     //MessageBox.Show("Надо распределить по строке " + part_on_string.ToString());
                     
                     if ((part_on_string > sum) || (sum == part_on_string + (Convert.ToDouble(1) / 100)))
@@ -2235,6 +2239,7 @@ namespace Cash8
 
             if (sum != 0)//Снова цикл
             {
+                //MessageBox.Show("Новый цикл  Остаток " + sum.ToString());
 
                 //if (sum < 0)
                 //{
@@ -2252,14 +2257,14 @@ namespace Cash8
                     }
                     if (Convert.ToDecimal(lvi.SubItems[7].Text.Replace(".", ",")) > 1)
                     {
-                        if (Convert.ToDecimal(lvi.SubItems[3].Text) == 1)
+                        if (Convert.ToDouble(lvi.SubItems[3].Text) == 1)
                         {
                             lvi.SubItems[5].Text = (Convert.ToDouble(lvi.SubItems[7].Text) - sum).ToString();
                             lvi.SubItems[6].Text = (Convert.ToDouble(lvi.SubItems[4].Text) * Convert.ToDouble(lvi.SubItems[3].Text)).ToString();
                             lvi.SubItems[7].Text = (Convert.ToDouble(lvi.SubItems[5].Text) * Convert.ToDouble(lvi.SubItems[3].Text)).ToString();
                             sum = 0;
                         }
-                        else
+                        else if ((Convert.ToDecimal(lvi.SubItems[3].Text) > 1)&&(Convert.ToDecimal(lvi.SubItems[3].Text) ==(int)Convert.ToDecimal(lvi.SubItems[3].Text)))
                         {
                             lvi.SubItems[3].Text = (Convert.ToDouble(lvi.SubItems[3].Text) - 1).ToString();
                             lvi.SubItems[6].Text = (Convert.ToDouble(lvi.SubItems[4].Text) * Convert.ToDouble(lvi.SubItems[3].Text)).ToString();
@@ -2302,10 +2307,25 @@ namespace Cash8
                     }
                 }
             }
+            //else
+            //{
+            //    MessageBox.Show("Все распределилосьс первого раза");
+            //}
             if (sum != 0)//Снова цикл
             {
-                MessageBox.Show("Не распределилось");
+                MessageBox.Show("Копейки не распределились");
             }
+            //MessageBox.Show("Состояние после распределения");
+            //foreach (ListViewItem lvi in listView1.Items)
+            //{
+            //    MessageBox.Show(lvi.SubItems[0].Text + "   " + lvi.SubItems[7].Text);
+
+            //    //if (Convert.ToDecimal(lvi.SubItems[7].Text) < 0)
+            //    //{
+            //    //    less_than_zero = true;
+            //    //    break;
+            //    //}
+            //}
         }
 
 
@@ -13691,7 +13711,7 @@ namespace Cash8
                 MainStaticClass.write_event_in_log(" Попытка пересчитать чек ", "Документ чек", numdoc.ToString());
                 recalculate_all();
                 // КОНЕЦ ПРОВЕРОЧНЫЙ ПЕРЕСЧЕТ ПО АКЦИЯМ               
-               
+
                 //Если это киоск самообслуживания 
                 //if (MainStaticClass.SelfServiceKiosk == 1)//это киоск самообслуживания 
                 //{
@@ -13709,7 +13729,7 @@ namespace Cash8
                 //}
                 //else
                 //{
-                    pay_form.pay_sum.Text = calculation_of_the_sum_of_the_document().ToString();
+                pay_form.pay_sum.Text = calculation_of_the_sum_of_the_document().ToString("F", System.Globalization.CultureInfo.CurrentCulture);
                     Double total = calculation_of_the_sum_of_the_document();
                     string kop = ((int)((total - (int)total) * 100)).ToString();
                     kop = (kop.Length == 2 ? kop : "0" + kop);
@@ -13718,8 +13738,8 @@ namespace Cash8
 
             }
             else
-            {                
-                pay_form.pay_sum.Text = calculation_of_the_sum_of_the_document().ToString();
+            {
+                pay_form.pay_sum.Text = calculation_of_the_sum_of_the_document().ToString("F", System.Globalization.CultureInfo.CurrentCulture);
                 //if (MainStaticClass.SelfServiceKiosk == 1)
                 //{
                 //    pay_form.cash_sum.Enabled = false;

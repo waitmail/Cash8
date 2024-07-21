@@ -1633,23 +1633,23 @@ namespace Cash8
                             quantity_of_pieces = Convert.ToInt16(row["quantity"]);
                             if (quantity_of_pieces <= min_quantity)
                             {
-                                row["price_at_discount"] = Math.Round(Convert.ToDecimal(row["price"]) - Convert.ToDecimal(row["price"]) * persent / 100, 2);//Цена со скидкой                                            
-                                row["sum_full"] = Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price"]);
-                                row["sum_at_discount"] = ((Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price_at_discount"])).ToString());
+                                row["price_at_discount"] = Math.Round(Convert.ToDouble(row["price"]) - Convert.ToDouble(row["price"]) * Convert.ToDouble(persent) / 100, 2,MidpointRounding.ToEven);//Цена со скидкой                                            
+                                row["sum_full"] = Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price"]),2,MidpointRounding.ToEven);
+                                row["sum_at_discount"] = Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price_at_discount"]);
                                 row["action"] = num_doc.ToString(); //Номер акционного документа 
                                 min_quantity = min_quantity - quantity_of_pieces;
                             }
                             if ((quantity_of_pieces > min_quantity) && (min_quantity > 0))
                             {
-                                row["quantity"] = Convert.ToInt32(row["quantity"]) - min_quantity;
-                                row["sum_at_discount"] = ((Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price_at_discount"])).ToString());
+                                row["quantity"] = Convert.ToDouble(row["quantity"]) - min_quantity;
+                                row["sum_at_discount"] = Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price_at_discount"]),2,MidpointRounding.ToEven);
                                 
                                 //Добавляем новую строку с количеством min_quantity 
                                 row2 = dt.NewRow();
                                 row2.ItemArray = row.ItemArray;
                                 row2["quantity"] = min_quantity;
-                                row2["price_at_discount"] = Math.Round(Convert.ToDecimal(row2["price"]) - Convert.ToDecimal(row2["price"]) * persent / 100, 2);//Цена со скидкой                                            
-                                row2["sum_at_discount"] = ((Convert.ToDecimal(row2["quantity"]) * Convert.ToDecimal(row2["price_at_discount"])).ToString());
+                                row2["price_at_discount"] = Math.Round(Convert.ToDouble(row2["price"]) - Convert.ToDouble(row2["price"]) * Convert.ToDouble(persent) / 100, 2);//Цена со скидкой                                            
+                                row2["sum_at_discount"]   = Math.Round(Convert.ToDouble(row2["quantity"]) * Convert.ToDouble(row2["price_at_discount"]),2,MidpointRounding.ToEven);
                                 row2["action"] = num_doc.ToString(); //Номер акционного документа 
                                 row2["action"] = num_doc.ToString(); //Номер акционного документа 
                                 //dt.Rows.Add(row2);

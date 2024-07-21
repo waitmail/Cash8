@@ -1112,8 +1112,10 @@ namespace Cash8
                 bool less_than_zero = false;
                 foreach (ListViewItem lvi in cc.listView1.Items)
                 {
+                    //MessageBox.Show(lvi.SubItems[0].Text + "   " + lvi.SubItems[7].Text);
+
                     if (Convert.ToDecimal(lvi.SubItems[7].Text) < 0)
-                    {
+                    {                        
                         less_than_zero = true;
                         break;
                     }
@@ -1820,7 +1822,12 @@ namespace Cash8
             {
                 if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema ==3) || (MainStaticClass.GetWorkSchema == 4))
                 {
-                    sum_of_the_document = (int)sum_of_the_document;
+                    //MessageBox.Show(" Сумма документа " + sum_of_the_document.ToString());
+                    //sum_of_the_document = (int)sum_of_the_document;
+                    //sum_of_the_document = Math.Round(sum_of_the_document,0,MidpointRounding.AwayFromZero);
+                    sum_of_the_document = (int)Math.Floor(sum_of_the_document);
+                    //MessageBox.Show(" Сумма документа после преобразования к целому " + sum_of_the_document.ToString());
+                    //sum_of_the_document = Math.Round(sum_of_the_document,0);
                 }
             }
 
