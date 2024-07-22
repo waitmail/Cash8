@@ -1821,11 +1821,27 @@ namespace Cash8
             if (_non_cash_summ_ == 0)
             {
                 if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema ==3) || (MainStaticClass.GetWorkSchema == 4))
-                {
-                    //MessageBox.Show(" Сумма документа " + sum_of_the_document.ToString());
+                {                    
+                    //MessageBox.Show(" Сумма документа до преобразования " + sum_of_the_document.ToString());
                     //sum_of_the_document = (int)sum_of_the_document;
+                    //MessageBox.Show(" Сумма документа после преобразования к целому " + sum_of_the_document.ToString());                    
                     //sum_of_the_document = Math.Round(sum_of_the_document,0,MidpointRounding.AwayFromZero);
-                    sum_of_the_document = (int)Math.Floor(sum_of_the_document);
+                    //MessageBox.Show(" Сумма документа после преобразования к целому " + sum_of_the_document.ToString());
+
+                    //sum_of_the_document = (int)Math.Floor(sum_of_the_document);
+
+                    if (sum_of_the_document.ToString().IndexOf(".") != -1)
+                    {
+                        string[] parts = sum_of_the_document.ToString().Split('.');
+                        sum_of_the_document = Double.Parse(parts[0]);
+                    }
+                    else if (sum_of_the_document.ToString().IndexOf(",") != -1)
+                    {
+                        string[] parts = sum_of_the_document.ToString().Split(',');
+                        sum_of_the_document = Double.Parse(parts[0]);
+                    }
+
+                    //sum_of_the_document = Math.Truncate(sum_of_the_document);
                     //MessageBox.Show(" Сумма документа после преобразования к целому " + sum_of_the_document.ToString());
                     //sum_of_the_document = Math.Round(sum_of_the_document,0);
                 }

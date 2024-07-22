@@ -2313,7 +2313,7 @@ namespace Cash8
             //}
             if (sum != 0)//Снова цикл
             {
-                MessageBox.Show("Копейки не распределились");
+                MessageBox.Show("Сообщите в ИТ одел !!! \r\n Копейки не распределились");
             }
             //MessageBox.Show("Состояние после распределения");
             //foreach (ListViewItem lvi in listView1.Items)
