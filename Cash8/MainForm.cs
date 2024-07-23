@@ -7,8 +7,7 @@ using System.Threading;
 using Npgsql;
 using Newtonsoft.Json;
 using System.Transactions;
-
-
+using System.Threading.Tasks;
 
 
 namespace Cash8
@@ -22,7 +21,7 @@ namespace Cash8
         //Thread printThread;
         //private System.Timers.Timer timer = new System.Timers.Timer();//Таймер для печати фискального принтера
         private System.Timers.Timer timer_send_data = new System.Timers.Timer();//Таймер для печати фискального принтера
-        
+
         public class Users
         {
             public List<User> list_users { get; set; }
@@ -61,9 +60,9 @@ namespace Cash8
 
             string count_day = CryptorEngine.get_count_day();
             string key = nick_shop.Trim() + count_day.Trim() + code_shop.Trim();
-            string encrypt_string = CryptorEngine.Encrypt(nick_shop+"|"+code_shop, true, key);
-           
-            string answer="";
+            string encrypt_string = CryptorEngine.Encrypt(nick_shop + "|" + code_shop, true, key);
+
+            string answer = "";
             try
             {
                 //MessageBox.Show("2");
@@ -71,24 +70,24 @@ namespace Cash8
                 answer = ds.GetUsers(MainStaticClass.Nick_Shop, encrypt_string, "4");
                 //MessageBox.Show("3");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show("Произошли ошибки при при получении пользователей от веб сервиса " + ex.Message);
             }
             if (answer == "")
-            {                
+            {
                 return;
             }
 
 
             string decrypt_string = CryptorEngine.Decrypt(answer, true, key);
             Users users = JsonConvert.DeserializeObject<Users>(decrypt_string);
-            
+
             //string[] delimiters = new string[] { "||" };
             //string[] s = decrypt_string.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
             NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
             NpgsqlTransaction trans = null;
-           // int rezult_query = 0;
+            // int rezult_query = 0;
             //MessageBox.Show("4");
             try
             {
@@ -99,7 +98,7 @@ namespace Cash8
                 command.Transaction = trans;
                 command.ExecuteNonQuery();
                 foreach (User user in users.list_users)
-                {                    
+                {
                     //delimiters = new string[] { "|" };
                     //string[] settings = str.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
                     //rezult_query = check_insert_or_update_user(s2, conn, trans, command);
@@ -112,29 +111,29 @@ namespace Cash8
                     //command.Transaction = trans;
                     //if (Convert.ToInt16(command.ExecuteScalar()) == 0)
                     //{
-                        query = "DELETE FROM public.users	WHERE inn='" + user.user_id + "';";
+                    query = "DELETE FROM public.users	WHERE inn='" + user.user_id + "';";
                     //}
 
-                        query += "INSERT INTO users(" +
-                            " code," +
-                            " name," +
-                            " rights," +
-                            " shop," +
-                            " password_m," +
-                            " password_b," +
-                            " inn " +
-                            ")VALUES ('" +
-                            user.user_id + "','" +
-                            user.name + "'," +
-                            user.rights + ",'" +
-                            user.shop + "','" +
-                            user.password_m + "','" +
-                            user.password_b  + "','"+
-                            user.user_id + "')";
+                    query += "INSERT INTO users(" +
+                        " code," +
+                        " name," +
+                        " rights," +
+                        " shop," +
+                        " password_m," +
+                        " password_b," +
+                        " inn " +
+                        ")VALUES ('" +
+                        user.user_id + "','" +
+                        user.name + "'," +
+                        user.rights + ",'" +
+                        user.shop + "','" +
+                        user.password_m + "','" +
+                        user.password_b + "','" +
+                        user.user_id + "')";
                     //}
                     //else
                     //{
-                        
+
                     //    query += "UPDATE users  SET " +
                     //        " name='" + user.name + "'," +
                     //     " rights=" + user.rights + "," +
@@ -178,7 +177,7 @@ namespace Cash8
         }
 
 
-        private int check_insert_or_update_user(string[] settings, NpgsqlConnection conn, NpgsqlTransaction trans,NpgsqlCommand command)
+        private int check_insert_or_update_user(string[] settings, NpgsqlConnection conn, NpgsqlTransaction trans, NpgsqlCommand command)
         {
             int result = 1;
             //NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
@@ -222,12 +221,12 @@ namespace Cash8
             }
             catch (NpgsqlException ex)
             {
-                MessageBox.Show(" Произошла ошибка при обновлении пользователей "+ex.Message);
+                MessageBox.Show(" Произошла ошибка при обновлении пользователей " + ex.Message);
                 result = -1;
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Произошла ошибка при обновлении пользователей "+ex.Message);
+                MessageBox.Show("Произошла ошибка при обновлении пользователей " + ex.Message);
                 result = -1;
             }
             finally
@@ -237,7 +236,7 @@ namespace Cash8
                     conn.Close();
                 }
             }
-            
+
             return result;
 
         }
@@ -245,7 +244,7 @@ namespace Cash8
 
 
         public Main()
-        {             
+        {
             this.WindowState = FormWindowState.Maximized;
             this.KeyPreview = true;
             this.Load += new EventHandler(Main_Load);
@@ -291,8 +290,8 @@ namespace Cash8
             {
                 PrintingUsingLibraries printing = new PrintingUsingLibraries();
                 printing.getShiftStatus();
-            }           
- 
+            }
+
         }
 
         //private void getShiftStatusLibraries()
@@ -391,12 +390,12 @@ namespace Cash8
             public string new_phone_number { get; set; }
 
         }
-                
+
         private void UploadChangeStatusClients()
         {
             ChangeStatusClients changeStatusClients = new ChangeStatusClients();
             changeStatusClients.NickShop = MainStaticClass.Nick_Shop;
-            changeStatusClients.NumCash = MainStaticClass.CashDeskNumber.ToString();            
+            changeStatusClients.NumCash = MainStaticClass.CashDeskNumber.ToString();
             changeStatusClients.ListChangeStatusClient = new List<ChangeStatusClient>();
             NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
 
@@ -414,7 +413,7 @@ namespace Cash8
                     changeStatusClient.new_phone_number = reader["new_phone_number"].ToString();
                     changeStatusClients.ListChangeStatusClient.Add(changeStatusClient);
                 }
-                reader.Close();                
+                reader.Close();
 
                 if (!MainStaticClass.service_is_worker())
                 {
@@ -441,16 +440,16 @@ namespace Cash8
 
                 string count_day = CryptorEngine.get_count_day();
                 string key = nick_shop.Trim() + count_day.Trim() + code_shop.Trim();
-                string data = JsonConvert.SerializeObject(changeStatusClients , Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                string data = JsonConvert.SerializeObject(changeStatusClients, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
                 string encrypt_string = CryptorEngine.Encrypt(data, true, key);
 
-                string answer = ds.UploadChangeStatusClients(nick_shop,encrypt_string,MainStaticClass.GetWorkSchema.ToString());
+                string answer = ds.UploadChangeStatusClients(nick_shop, encrypt_string, MainStaticClass.GetWorkSchema.ToString());
                 if (answer == "1")
                 {
                     query = "DELETE FROM client_with_changed_status_to_send";
                     command = new NpgsqlCommand(query, conn);
-                    command.ExecuteNonQuery();                   
-                }                
+                    command.ExecuteNonQuery();
+                }
                 else
                 {
                     MessageBox.Show("Произошли ошибки на сервере при передаче статусов клиентов");
@@ -460,7 +459,7 @@ namespace Cash8
             }
             catch (NpgsqlException ex)
             {
-                MessageBox.Show("Ошибка при отправке покупателей с измененным статусом "+ex.Message);
+                MessageBox.Show("Ошибка при отправке покупателей с измененным статусом " + ex.Message);
             }
             catch (Exception ex)
             {
@@ -480,7 +479,7 @@ namespace Cash8
             public string NumPhone { get; set; }
             public string ClientCode { get; set; }
         }
-        
+
         public class PhonesClients : IDisposable
         {
             public string Version { get; set; }
@@ -548,8 +547,8 @@ namespace Cash8
             }
 
             string count_day = CryptorEngine.get_count_day();
-            string key = nick_shop.Trim() + count_day.Trim() + code_shop.Trim();            
-            string encrypt_string = CryptorEngine.Encrypt(code_shop, true, key);            
+            string key = nick_shop.Trim() + count_day.Trim() + code_shop.Trim();
+            string encrypt_string = CryptorEngine.Encrypt(code_shop, true, key);
 
             Cash8.DS.DS ds = MainStaticClass.get_ds();
             ds.Timeout = 200000;
@@ -575,11 +574,11 @@ namespace Cash8
         }
 
 
-        public void UpdateDatabaseAndVariable(string updateSql,string decrypt_data)
+        public void UpdateDatabaseAndVariable(string updateSql, string decrypt_data)
         {
             using (TransactionScope scope = new TransactionScope())
             {
-                
+
                 using (NpgsqlConnection conn = MainStaticClass.NpgsqlConn())
                 {
                     conn.Open();
@@ -592,7 +591,7 @@ namespace Cash8
                     MainStaticClass.EnableCdnMarkers = -1;
 
                     // Проверка условий и завершение транзакции
-                    if (rowwaffected>0)
+                    if (rowwaffected > 0)
                     {
                         scope.Complete();
                     }
@@ -605,8 +604,8 @@ namespace Cash8
         private void UploadDeletedItems()
         {
             DeletedItems deletedItems = new DeletedItems();
-            deletedItems.CodeShop     = MainStaticClass.Code_Shop;
-            deletedItems.NickShop     = MainStaticClass.Nick_Shop;
+            deletedItems.CodeShop = MainStaticClass.Code_Shop;
+            deletedItems.NickShop = MainStaticClass.Nick_Shop;
             deletedItems.ListDeletedItem = new List<DeletedItem>();
             NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
 
@@ -628,7 +627,7 @@ namespace Cash8
                     deletedItem.type_of_operation = reader["type_of_operation"].ToString();
                     deletedItem.guid = reader["guid"].ToString();
                     deletedItem.autor = MainStaticClass.CashOperatorInn;
-                    deletedItem.reason= reader["reason"].ToString();
+                    deletedItem.reason = reader["reason"].ToString();
                     deletedItems.ListDeletedItem.Add(deletedItem);
                 }
                 reader.Close();
@@ -666,7 +665,7 @@ namespace Cash8
                 string key = nick_shop.Trim() + count_day.Trim() + code_shop.Trim();
                 string data = JsonConvert.SerializeObject(deletedItems, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
                 string encrypt_string = CryptorEngine.Encrypt(data, true, key);
-                string answer = ds.UploadDeletedItems(nick_shop, encrypt_string,MainStaticClass.GetWorkSchema.ToString());
+                string answer = ds.UploadDeletedItems(nick_shop, encrypt_string, MainStaticClass.GetWorkSchema.ToString());
                 if (answer == "1")
                 {
                     query = "DELETE FROM deleted_items";
@@ -781,7 +780,7 @@ namespace Cash8
                 }
             }
         }
-                
+
         public void timer_send_data_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             MainStaticClass.SendOnlineStatus();
@@ -791,7 +790,7 @@ namespace Cash8
                 sdsp.send_sales_data_Click(null, null);
                 sdsp.Dispose();
                 UploadDeletedItems();
-                get_web_tovar_check_cdn();                
+                get_web_tovar_check_cdn();
             }
         }
 
@@ -882,7 +881,7 @@ namespace Cash8
             //    }
             //}             
         }
-        
+
         private void параметрыБазыДанныхToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SettingConnect sc = new SettingConnect();
@@ -946,7 +945,7 @@ namespace Cash8
             //    }
             //}
 
-           
+
 
             MainStaticClass.Main = this;
             this.IsMdiContainer = true;
@@ -1023,6 +1022,8 @@ namespace Cash8
                 //    t2.Start();
                 //}
                 //}
+
+                load_cdn_with_start();
 
                 if (MainStaticClass.GetWorkSchema == 1)//Это условие будет работать только для ЧД
                 {
@@ -1112,15 +1113,39 @@ namespace Cash8
                 if (MainStaticClass.CDN_Token == "")
                 {
                     MessageBox.Show("В этой кассе не заполнен CDN токен, \r\n ПРОДАЖА МАРКИРОВАННОГО ТОВАРА ОГРАНИЧЕНА/НЕВОЗМОЖНА!", "Проверка CDN");
-                }                
+                }
             }
-            
+
         }
 
-        //private void get_cdn_with_start()
-        //{
-        //    CDN.CDN_List list = MainStaticClass.CDN_List;
-        //}
+        private void get_cdn_with_start()
+        {
+            CDN.CDN_List list = MainStaticClass.CDN_List;
+        }
+
+        private void load_cdn_with_start()
+        {
+            CancellationTokenSource cts = new CancellationTokenSource();
+            CancellationToken token = cts.Token;
+
+            // Запуск функции с параметром в новом потоке            
+            Task task = Task.Factory.StartNew(() => get_cdn_with_start());
+            try
+            {
+                // Ожидание результата функции в течение 5 секунд
+                bool isCompletedSuccessfully = task.Wait(TimeSpan.FromSeconds(60));
+
+                if (!isCompletedSuccessfully)
+                {
+                    cts.Cancel();
+                }
+            }
+            catch
+            {
+            }
+        }
+    
+
 
         ///// <summary>
         ///// Первоначально применялось для 1 схемы,

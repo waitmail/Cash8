@@ -1746,12 +1746,26 @@ namespace Cash8
 
 
         private void button2_Click(object sender, EventArgs e)
-        {
-            
+        {            
             this.button_pay.Enabled = false;
+            double cash_money = Math.Round(Convert.ToDouble(cash_sum.Text.Replace(".", ",")), 2);
+            double non_cash_money = Math.Round(Convert.ToDouble(get_non_cash_sum(0)), 2);
+            double sertificate_money = Math.Round(Convert.ToDouble(sertificates_sum.Text), 2);
+            double bonus_money = Math.Round(Convert.ToDouble(pay_bonus_many.Text.Replace(".", ",")), 2);
 
-            if (Math.Round(Convert.ToDouble(cash_sum.Text.Replace(".", ",")),2, MidpointRounding.ToEven) + Math.Round(Convert.ToDouble(get_non_cash_sum(0)),2, MidpointRounding.ToEven) + Math.Round(Convert.ToDouble(sertificates_sum.Text),2, MidpointRounding.ToEven) + Math.Round(Convert.ToDouble(pay_bonus_many.Text.Replace(".", ",")),2, MidpointRounding.ToEven) - Math.Round(Convert.ToDouble(pay_sum.Text.Replace(".", ",")),2, MidpointRounding.ToEven) < 0)
+            double sum_on_document = Math.Round(Convert.ToDouble(pay_sum.Text.Replace(".", ",")), 2);
+
+            double all_cash_non_cash = cash_money + non_cash_money + sertificate_money + bonus_money;
+
+            //if (Math.Round(Convert.ToDouble(cash_sum.Text.Replace(".", ",")),2, MidpointRounding.ToEven) + Math.Round(Convert.ToDouble(get_non_cash_sum(0)),2, MidpointRounding.ToEven) + Math.Round(Convert.ToDouble(sertificates_sum.Text),2, MidpointRounding.ToEven) + Math.Round(Convert.ToDouble(pay_bonus_many.Text.Replace(".", ",")),2, MidpointRounding.ToEven) - Math.Round(Convert.ToDouble(pay_sum.Text.Replace(".", ",")),2, MidpointRounding.ToEven) < 0)
+            //if ((Math.Round(all_cash_non_cash, 2) - Math.Round(sum_on_document, 2)) < 0)
+            //MessageBox.Show("Всего оплат " + all_cash_non_cash);
+            //MessageBox.Show("all_cash_non_cash - sum_on_document=" + (Math.Round(all_cash_non_cash, 2) - Math.Round(sum_on_document, 2)));
+            if (Math.Round(all_cash_non_cash, 2) - Math.Round(sum_on_document, 2) < 0)
             {
+                //MessageBox.Show("Общая сумма оплат  " + (cash_money + non_cash_money + sertificate_money + bonus_money));
+                //double minus = (cash_money + non_cash_money + sertificate_money + bonus_money) - sum_on_document;
+                //MessageBox.Show(minus.ToString());
                 MessageBox.Show("Проверьте сумму внесенной оплаты");
                 MessageBox.Show("Наличные" + Math.Round(Convert.ToDouble(cash_sum.Text.Replace(".", ",")), 2).ToString());
                 MessageBox.Show("Карта " + Math.Round(Convert.ToDouble(get_non_cash_sum(0)), 2).ToString());
