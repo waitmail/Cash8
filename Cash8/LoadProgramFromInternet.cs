@@ -211,7 +211,7 @@ namespace Cash8
             //{
             //    ds.Url = "http://10.21.200.21/DiscountSystem/Ds.asmx";
             //}
-            ds.Timeout = 50000;
+            ds.Timeout = 10000;
 
             //Получить параметра для запроса на сервер 
             string nick_shop = MainStaticClass.Nick_Shop.Trim();

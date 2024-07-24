@@ -1407,7 +1407,7 @@ namespace Cash8
                 if (work_schema == 0)
                 {
                     work_schema = get_work_schema();
-                }
+                }                
                 return work_schema;
             }
         }

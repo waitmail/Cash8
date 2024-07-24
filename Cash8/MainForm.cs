@@ -1078,7 +1078,7 @@ namespace Cash8
                 {
                     if (MainStaticClass.SystemTaxation == 0)
                     {
-                        MessageBox.Show("В константах не определена система налогобложения, создание и печать чеков невозможна");
+                        MessageBox.Show("У вас не заполнена система налогообложения!\r\nСоздание и печать чеков невозможна!\r\nОБРАЩАЙТЕСЬ В БУХГАЛТЕРИЮ!");
                     }
                     bool restart = false; bool error = false;
 
