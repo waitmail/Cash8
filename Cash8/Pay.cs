@@ -1481,7 +1481,7 @@ namespace Cash8
             {
                 System.Net.WebRequest req = System.Net.WebRequest.Create(Url);
                 req.Method = "POST";
-                req.Timeout = 600000;
+                req.Timeout = 80000;
                 //req.Timeout = 0;
                 req.ContentType = "text/xml;charset = windows-1251";
                 //req.ContentType = "text/xml;charset = UTF-8";                
@@ -1557,7 +1557,7 @@ namespace Cash8
             catch (WebException ex)
             {
                 status = false;
-                MessageBox.Show(" Ошибка при оплате по карте  " + ex.Message, "Оплата по терминалу");
+                MessageBox.Show(" Ошибка при оплате по карте  " + ex.Message, "Оплата по терминалу");//Код ошибки  "+ ((System.Net.Sockets.SocketException)ex.InnerException).ErrorCode
                 answerTerminal.error = true;
                 if (ex.Message.IndexOf("404") != -1)
                 {

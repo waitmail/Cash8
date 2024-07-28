@@ -1092,6 +1092,8 @@ namespace Cash8
             queries.Add("ALTER TABLE public.constants ADD COLUMN scale_serial_port character varying(20) COLLATE pg_catalog.default");
             queries.Add("ALTER TABLE public.constants ADD COLUMN get_weight_automatically boolean DEFAULT false;");
             queries.Add("ALTER TABLE public.constants RENAME COLUMN fn_sreial_port TO fn_serial_port;");
+            queries.Add("ALTER TABLE public.constants ADD COLUMN variant_connect_fn smallint NOT NULL DEFAULT 1;");
+            queries.Add("ALTER TABLE public.constants ADD COLUMN fn_ipaddr character varying(20) COLLATE pg_catalog.default;");
 
             //queries.Add("CREATE INDEX _guid ON public.checks_table USING btree (guid COLLATE pg_catalog.default ASC NULLS LAST) TABLESPACE pg_default;");
 

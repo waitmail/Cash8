@@ -90,6 +90,7 @@ namespace Cash8
         private static int version_fn = 0;
         private static string version_fn_real = "";
         private static string fn_serial_port = "";
+        private static int variant_connect_fn = -1;
 
         //private static bool use_text_print;
         //private static int width_of_symbols;
@@ -122,7 +123,82 @@ namespace Cash8
         private static string fiscal_drive_number = "";//номер фискального регистратора 
         private static int get_weight_automatically = -1;
         private static string scale_serial_port = "";
+        private static string fn_ipaddr = "";
 
+        public static string GetFnIpaddr
+        {
+            get
+            {
+                if (fn_ipaddr == "")
+                {
+                    NpgsqlConnection conn = null;
+                    NpgsqlCommand command = null;
+                    conn = MainStaticClass.NpgsqlConn();
+                    try
+                    {
+                        conn.Open();
+                        string query = "SELECT fn_ipaddr FROM constants";
+                        command = new NpgsqlCommand(query, conn);
+                        fn_ipaddr = command.ExecuteScalar().ToString();
+                    }
+                    catch (NpgsqlException ex)
+                    {
+                        MessageBox.Show("Ошибка при чтении fn_ipaddr" + ex.ToString());
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Ошибка при чтении fn_ipaddr" + ex.ToString());
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                }
+                return fn_ipaddr;
+            }
+
+        }
+
+        public static int GetVariantConnectFN
+        {
+            get
+            {
+                if (variant_connect_fn == -1)
+                {
+                    NpgsqlConnection conn = null;
+                    NpgsqlCommand command = null;
+                    conn = MainStaticClass.NpgsqlConn();
+                    try
+                    {
+                        conn.Open();
+                        string query = "SELECT variant_connect_fn FROM constants";
+                        command = new NpgsqlCommand(query, conn);
+                        variant_connect_fn = (Convert.ToBoolean(command.ExecuteScalar()) ? 1 : 0);
+                    }
+                    catch (NpgsqlException ex)
+                    {
+                        MessageBox.Show("Ошибка при чтении variant_connect_fn" + ex.ToString());
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Ошибка при чтении variant_connect_fn" + ex.ToString());
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                }
+                return variant_connect_fn;
+
+            }
+
+        }
 
 
         public static int GetWeightAutomatically
@@ -2510,13 +2586,27 @@ namespace Cash8
 
         private static void setConnectSetting(IFptr fptr)
         {
-            fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_MODEL, AtolConstants.LIBFPTR_MODEL_ATOL_AUTO.ToString());
-            fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_PORT, AtolConstants.LIBFPTR_PORT_COM.ToString());
-            //fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_PORT, AtolConstants.LIBFPTR_PORT_TCPIP.ToString());
-            fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_COM_FILE, MainStaticClass.FnSerialPort);
-            //fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_IPADDRESS, "10.21.200.46");
-            //fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_IPPORT, "5555");            
-            fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_BAUDRATE, AtolConstants.LIBFPTR_PORT_BR_115200.ToString());
+            if (MainStaticClass.GetVariantConnectFN == 1)
+            {
+                fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_MODEL, AtolConstants.LIBFPTR_MODEL_ATOL_AUTO.ToString());
+                fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_PORT, AtolConstants.LIBFPTR_PORT_COM.ToString());
+                //fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_PORT, AtolConstants.LIBFPTR_PORT_TCPIP.ToString());
+                fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_COM_FILE, MainStaticClass.FnSerialPort);
+                //fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_IPADDRESS, "10.21.200.46");
+                //fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_IPPORT, "5555");            
+                fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_BAUDRATE, AtolConstants.LIBFPTR_PORT_BR_115200.ToString());
+            }
+            else if (MainStaticClass.GetVariantConnectFN == 2)
+            {
+                fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_MODEL, AtolConstants.LIBFPTR_MODEL_ATOL_AUTO.ToString());
+                //fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_PORT, AtolConstants.LIBFPTR_PORT_COM.ToString());
+                fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_PORT, AtolConstants.LIBFPTR_PORT_TCPIP.ToString());
+                //fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_COM_FILE, MainStaticClass.FnSerialPort);
+                string[] ip_adress = GetFnIpaddr.Split(':');
+                fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_IPADDRESS, ip_adress[0]);
+                fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_IPPORT, ip_adress[1]);            
+                //fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_BAUDRATE, AtolConstants.LIBFPTR_PORT_BR_115200.ToString());
+            }
             fptr.applySingleSettings();
         }
 

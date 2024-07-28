@@ -329,6 +329,7 @@ namespace Cash8
 
             string fn_serial_port = (comboBox_fn_port.Items.Count == 0 ? "" : (comboBox_fn_port.SelectedIndex == -1 ? "" : comboBox_fn_port.SelectedItem.ToString()));
             string scale_serial_port = (comboBox_scale_port.Items.Count == 0 ? "" : (comboBox_scale_port.SelectedIndex == -1 ? "" : comboBox_scale_port.SelectedItem.ToString()));
+            string variant_connect_fn = comboBox_variant_connect_fn.SelectedIndex.ToString();
 
 
             try
@@ -359,7 +360,8 @@ namespace Cash8
                     "printing_using_libraries=" + printing_using_libraries + "," +
                     "fn_serial_port = '" + fn_serial_port + "'," +
                     "scale_serial_port = '" + scale_serial_port + "'," +
-                    "get_weight_automatically=" + get_weight_automatically;
+                    "get_weight_automatically=" + get_weight_automatically+","+
+                    "variant_connect_fn = " + variant_connect_fn;
 
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 int resul_update = command.ExecuteNonQuery();
@@ -388,7 +390,8 @@ namespace Cash8
                         "printing_using_libraries," +
                         "fn_serial_port," +
                         "scale_serial_port," +
-                        "get_weight_automatically) VALUES(" +
+                        "get_weight_automatically,"+
+                        "variant_connect_fn) VALUES(" +
                         cash_desk_number.Text + ",'" +
                         nick_shop.Text + "'," +
                         get_use_debug() + ",'" +
@@ -411,7 +414,8 @@ namespace Cash8
                         printing_using_libraries + ",'" +
                         comboBox_fn_port.SelectedItem.ToString() + "','" +
                         scale_serial_port + "'," +
-                        get_weight_automatically + ")";
+                        get_weight_automatically + ","+
+                        variant_connect_fn+")";
 
                     command = new NpgsqlCommand(query, conn);
                     command.ExecuteNonQuery();
