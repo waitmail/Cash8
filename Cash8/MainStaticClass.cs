@@ -162,6 +162,34 @@ namespace Cash8
 
         }
 
+        public static bool fractional_exists(ListView listView1)
+        {
+            bool fractional = false;
+            double sum_of_the_document = 0;
+            foreach (ListViewItem lvi in listView1.Items)
+            {
+                if (lvi.SubItems[3].Text.IndexOf(".") != -1)
+                {
+                    string[] parts = lvi.SubItems[3].Text.ToString().Split('.');
+                    sum_of_the_document = Double.Parse(parts[1]);
+                }
+                else if (lvi.SubItems[3].Text.IndexOf(",") != -1)
+                {
+                    string[] parts = lvi.SubItems[3].Text.ToString().Split(',');
+                    sum_of_the_document = Double.Parse(parts[1]);
+                }
+                if (Convert.ToDouble(sum_of_the_document) != 0)
+                {
+                    fractional = true;
+                }
+                if (fractional)
+                {
+                    break;
+                }
+            }
+            return fractional;
+        }
+
         public static int GetVariantConnectFN
         {
             get

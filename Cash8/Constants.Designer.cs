@@ -66,9 +66,9 @@
             this.comboBox_variant_connect_fn = new System.Windows.Forms.ComboBox();
             this.btn_trst_connection = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
             this.txtB_fn_ipaddr = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
             this.groupBox_acquiring_terminal.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -417,6 +417,7 @@
             this.comboBox_variant_connect_fn.Name = "comboBox_variant_connect_fn";
             this.comboBox_variant_connect_fn.Size = new System.Drawing.Size(154, 24);
             this.comboBox_variant_connect_fn.TabIndex = 83;
+            this.comboBox_variant_connect_fn.SelectedIndexChanged += new System.EventHandler(this.comboBox_variant_connect_fn_SelectedIndexChanged);
             // 
             // btn_trst_connection
             // 
@@ -444,15 +445,13 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Настроки прямой печати";
             // 
-            // label7
+            // txtB_fn_ipaddr
             // 
-            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label7.Location = new System.Drawing.Point(14, 57);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(137, 22);
-            this.label7.TabIndex = 86;
-            this.label7.Text = "USB ==> COM";
-            this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.txtB_fn_ipaddr.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.txtB_fn_ipaddr.Location = new System.Drawing.Point(177, 95);
+            this.txtB_fn_ipaddr.Name = "txtB_fn_ipaddr";
+            this.txtB_fn_ipaddr.Size = new System.Drawing.Size(154, 22);
+            this.txtB_fn_ipaddr.TabIndex = 88;
             // 
             // label9
             // 
@@ -464,13 +463,15 @@
             this.label9.Text = "ETHERNET";
             this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // txtB_fn_ipaddr
+            // label7
             // 
-            this.txtB_fn_ipaddr.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.txtB_fn_ipaddr.Location = new System.Drawing.Point(177, 95);
-            this.txtB_fn_ipaddr.Name = "txtB_fn_ipaddr";
-            this.txtB_fn_ipaddr.Size = new System.Drawing.Size(154, 22);
-            this.txtB_fn_ipaddr.TabIndex = 88;
+            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label7.Location = new System.Drawing.Point(14, 57);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(137, 22);
+            this.label7.TabIndex = 86;
+            this.label7.Text = "USB ==> COM";
+            this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // Constants
             // 

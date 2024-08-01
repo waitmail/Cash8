@@ -123,7 +123,8 @@ namespace Cash8
                     " path_for_web_service,currency,unloading_period,last_date_download_bonus_clients," +
                     " envd,pass_promo,print_m,system_taxation,work_schema,version_fn,enable_stock_processing_in_memory," +
                     " id_acquirer_terminal,ip_address_acquiring_terminal,self_service_kiosk,enable_cdn_markers, " +
-                    " webservice_authorize,printing_using_libraries,fn_serial_port,get_weight_automatically,scale_serial_port FROM constants";
+                    " webservice_authorize,printing_using_libraries,fn_serial_port,get_weight_automatically,scale_serial_port,"+
+                    " variant_connect_fn,fn_ipaddr FROM constants";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
@@ -156,19 +157,36 @@ namespace Cash8
                     this.checkBox_printing_using_libraries.CheckState = (reader["printing_using_libraries"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
                     this.checkBox_get_weight_automatically.CheckState = (reader["get_weight_automatically"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
 
-                    int index = comboBox_fn_port.Items.IndexOf(reader["fn_serial_port"].ToString());
-                    if (index == -1)
+                    comboBox_variant_connect_fn.SelectedIndex = Convert.ToInt16(reader["variant_connect_fn"]);
+                    txtB_fn_ipaddr.Text = reader["fn_ipaddr"].ToString();
+                    int index = 0;
+                    if (comboBox_variant_connect_fn.SelectedIndex == 0)
                     {
-                        btn_trst_connection.Enabled = false;
-                        if (this.checkBox_printing_using_libraries.CheckState == CheckState.Checked)
+                        index = comboBox_fn_port.Items.IndexOf(reader["fn_serial_port"].ToString());
+                        if (index == -1)
                         {
-                            MessageBox.Show(" fn_serial_port в доступных не найден ","ФР");
+                            btn_trst_connection.Enabled = false;
+                            if (this.checkBox_printing_using_libraries.CheckState == CheckState.Checked)
+                            {
+                                MessageBox.Show(" fn_serial_port в доступных не найден ", "ФР");
+                            }
+                        }
+                        else
+                        {
+                            this.comboBox_fn_port.SelectedIndex = index;
                         }
                     }
-                    else
+                    else if (comboBox_variant_connect_fn.SelectedIndex == 1)
                     {
-                        this.comboBox_fn_port.SelectedIndex = index;
-                    }
+                        if (txtB_fn_ipaddr.Text.Trim().Length == 0)
+                        {
+                            btn_trst_connection.Enabled = false;
+                            if (this.checkBox_printing_using_libraries.CheckState == CheckState.Checked)
+                            {
+                                MessageBox.Show(" ip адрес ФН не заполнен ", "ФР");
+                            }
+                        }
+                    }                    
 
                     index = comboBox_scale_port.Items.IndexOf(reader["scale_serial_port"].ToString());
                     if (index == -1)
@@ -183,7 +201,6 @@ namespace Cash8
                     {
                         this.comboBox_scale_port.SelectedIndex = index;
                     }
-                    
                 }
                 reader.Close();
                 //if (nick_shop.Text.Trim() != "A01")
@@ -330,7 +347,7 @@ namespace Cash8
             string fn_serial_port = (comboBox_fn_port.Items.Count == 0 ? "" : (comboBox_fn_port.SelectedIndex == -1 ? "" : comboBox_fn_port.SelectedItem.ToString()));
             string scale_serial_port = (comboBox_scale_port.Items.Count == 0 ? "" : (comboBox_scale_port.SelectedIndex == -1 ? "" : comboBox_scale_port.SelectedItem.ToString()));
             string variant_connect_fn = comboBox_variant_connect_fn.SelectedIndex.ToString();
-
+            string fn_ipaddr = txtB_fn_ipaddr.Text.Trim();
 
             try
             {
@@ -361,7 +378,8 @@ namespace Cash8
                     "fn_serial_port = '" + fn_serial_port + "'," +
                     "scale_serial_port = '" + scale_serial_port + "'," +
                     "get_weight_automatically=" + get_weight_automatically+","+
-                    "variant_connect_fn = " + variant_connect_fn;
+                    "variant_connect_fn = " + variant_connect_fn+","+
+                    "fn_ipaddr='"+ fn_ipaddr+"'";
 
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 int resul_update = command.ExecuteNonQuery();
@@ -391,7 +409,8 @@ namespace Cash8
                         "fn_serial_port," +
                         "scale_serial_port," +
                         "get_weight_automatically,"+
-                        "variant_connect_fn) VALUES(" +
+                        "variant_connect_fn,"+
+                        "fn_ipaddr) VALUES(" +
                         cash_desk_number.Text + ",'" +
                         nick_shop.Text + "'," +
                         get_use_debug() + ",'" +
@@ -415,7 +434,8 @@ namespace Cash8
                         comboBox_fn_port.SelectedItem.ToString() + "','" +
                         scale_serial_port + "'," +
                         get_weight_automatically + ","+
-                        variant_connect_fn+")";
+                        variant_connect_fn+",'"+
+                        fn_ipaddr+"')";
 
                     command = new NpgsqlCommand(query, conn);
                     command.ExecuteNonQuery();
@@ -497,6 +517,21 @@ namespace Cash8
             //    .FirstOrDefault().Key; // Берем первый элемент или значение по умолчанию, если таких нет
             MessageBox.Show(weigt.ToString());//+ (error ? " \r\nОшибка чтения " : "\r\nВес получен").ToString()                
         }
-    }
 
+        private void comboBox_variant_connect_fn_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBox_variant_connect_fn.SelectedIndex == 0)
+            {
+                //MessageBox.Show("0");
+                txtB_fn_ipaddr.Enabled = false;
+                comboBox_fn_port.Enabled = true;
+            }
+            else if (comboBox_variant_connect_fn.SelectedIndex == 1)
+            {
+                //MessageBox.Show("1");
+                txtB_fn_ipaddr.Enabled =true;
+                comboBox_fn_port.Enabled = false;
+            }
+        }
+    }
 }

@@ -6,6 +6,8 @@ using System.IO;
 using System.Text;
 using System.Xml.Serialization;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Threading;
 
 namespace Cash8
 {
@@ -62,6 +64,7 @@ namespace Cash8
             {
                 this.pay_bonus_many.Text = "0,00";
             }
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo("ru-RU");
         }
 
         private void non_cash_sum_kop_KeyUp(object sender, KeyEventArgs e)
@@ -566,8 +569,21 @@ namespace Cash8
 
             if (variant == 0)
             {
-                result += double.Parse(non_cash_sum.Text) + double.Parse(non_cash_sum_kop.Text) / 100;
-                //result += double.Parse(non_cash_sum_kop.Text) / 100;
+                if (!MainStaticClass.fractional_exists(cc.listView1))
+                {
+                    result += double.Parse(non_cash_sum.Text) + double.Parse(non_cash_sum_kop.Text) / 100;
+                }
+                else
+                {
+                    if (double.Parse(non_cash_sum.Text) == 0)
+                    {
+                        result += 0;
+                    }
+                    else
+                    {
+                        result += double.Parse(non_cash_sum.Text) + double.Parse(non_cash_sum_kop.Text) / 100;
+                    }
+                }                
             }
             else
             {
@@ -1078,7 +1094,7 @@ namespace Cash8
 
                             if (Convert.ToDecimal(non_cash_sum.Text) == 0)
                             {
-                                cc.distribute(total - (int)total, total);//теперь бонусы 
+                                cc.distribute(Math.Round(total - (int)total,2,MidpointRounding.ToEven), total);//теперь бонусы 
                             }
 
                         }
@@ -1832,7 +1848,7 @@ namespace Cash8
             //decimal sum_of_the_document = Math.Round(Convert.ToDecimal(pay_sum.Text.Replace(".", ",")), 2);
             //MessageBox.Show("Сумма документа " + sum_of_the_document.ToString());
 
-            if (_non_cash_summ_ == 0)
+            if ((_non_cash_summ_ == 0)&&(!MainStaticClass.fractional_exists(cc.listView1)))
             {
                 if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema ==3) || (MainStaticClass.GetWorkSchema == 4))
                 {                    

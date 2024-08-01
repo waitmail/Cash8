@@ -109,14 +109,17 @@ namespace Cash8
 
             if (MainStaticClass.GetWeightAutomatically == 1)
             {
-                Dictionary<double, int> frequencyMap = new Dictionary<double, int>();
-                if (MessageBox.Show("Ввод веса будет из весов ? ", "Истоник веса", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                if (numericUpDown_enter_quantity.DecimalPlaces == 3)
                 {
-                    double weigt = 0;
-                    weigt = MainStaticClass.GetWeight();
-                    if (weigt > 0)
+                    Dictionary<double, int> frequencyMap = new Dictionary<double, int>();
+                    if (MessageBox.Show("Ввод веса будет из весов ? ", "Истоник веса", MessageBoxButtons.YesNo) == DialogResult.Yes)
                     {
-                        this.numericUpDown_enter_quantity.Value = Convert.ToDecimal(weigt);
+                        double weigt = 0;
+                        weigt = MainStaticClass.GetWeight();
+                        if (weigt > 0)
+                        {
+                            this.numericUpDown_enter_quantity.Value = Convert.ToDecimal(weigt);
+                        }
                     }
                 }
             }

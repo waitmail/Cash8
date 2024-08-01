@@ -2159,6 +2159,11 @@ namespace Cash8
             {
                 return;
             }
+            
+            if (MainStaticClass.fractional_exists(listView1))
+            {
+                return;
+            }
 
             double part = sum / total;//как общая сумма относится к части
             double part_on_string = 0;
@@ -2180,7 +2185,7 @@ namespace Cash8
                     //MainStaticClass.write_event_in_log(" Умножаем " + lvi.SubItems[7].Text + " на " + part.ToString(), "0", "0");
                     //MessageBox.Show(" Надо распределить по строке без округления " + (Convert.ToDouble(lvi.SubItems[7].Text) * Convert.ToDouble(part)).ToString());
                     //MainStaticClass.write_event_in_log(" Надо распределить по строке без округления " + (Convert.ToDouble(lvi.SubItems[7].Text) * Convert.ToDouble(part)).ToString(), "0", "0");
-                    part_on_string = Math.Round(Convert.ToDouble(lvi.SubItems[7].Text) * part, 2);                    
+                    part_on_string = Math.Round(Convert.ToDouble(lvi.SubItems[7].Text) * part, 2,MidpointRounding.ToEven);                    
                     //MainStaticClass.write_event_in_log(" что необходимо распределить в цикле part_on_string" + part_on_string.ToString(), "0","0");
                     //MessageBox.Show("Надо распределить по строке " + part_on_string.ToString());
                     
@@ -2199,20 +2204,36 @@ namespace Cash8
                         double sum_on_string = Convert.ToDouble(lvi.SubItems[7].Text);
                         //MessageBox.Show(" Старая сумма со скидкой " + sum_on_string.ToString());
                         //получаем новую сумму со скидкой
-                        lvi.SubItems[7].Text = (Convert.ToDouble(lvi.SubItems[5].Text) * Convert.ToDouble(lvi.SubItems[3].Text)).ToString();
+                        lvi.SubItems[7].Text = Math.Round(Convert.ToDouble(lvi.SubItems[5].Text) * Convert.ToDouble(lvi.SubItems[3].Text),2,MidpointRounding.ToEven).ToString();
                         //MessageBox.Show(" Новая сумма со скидкой " + lvi.SubItems[7].Text.ToString());
                         //Получаем разницу между старой суммойц со скидкой и новой
                         double difference = Math.Round(sum_on_string - Convert.ToDouble(lvi.SubItems[7].Text),2,MidpointRounding.ToEven);
                         //MessageBox.Show(" Остаток " + difference.ToString());
 
+                        ////////////////////////////////////////////////
+                        //if (difference - part_on_string > 0)
+                        //{
+                        //    lvi.SubItems[7].Text = Math.Round(Convert.ToDouble(lvi.SubItems[5].Text) * Convert.ToDouble(lvi.SubItems[3].Text), 2, MidpointRounding.AwayFromZero).ToString();
+                        //}
+                        ////////////////////////////////////////////////
+
+                        //difference = Math.Round(sum_on_string - Convert.ToDouble(lvi.SubItems[7].Text), 2, MidpointRounding.ToEven);
+
                         //lvi.SubItems[6].Text = (Convert.ToDecimal(lvi.SubItems[6].Text) - part_on_string).ToString();
                         if (difference == part_on_string)
                         {
-                            sum = Math.Round(sum - part_on_string,2,MidpointRounding.ToEven);
+                            sum = Math.Round(sum - part_on_string, 2, MidpointRounding.ToEven);
                         }
                         else
                         {
-                            sum = Math.Round(sum - difference,2,MidpointRounding.ToEven);
+                            //if (sum >= difference)
+                            //{
+                            sum = Math.Round(sum - difference, 2, MidpointRounding.ToEven);
+                            //}
+                            //else
+                            //{
+                            //    sum = Math.Round(difference - sum, 2, MidpointRounding.ToEven);
+                            //}
                         }
                     }
                     else
@@ -2264,7 +2285,7 @@ namespace Cash8
                             lvi.SubItems[7].Text = (Convert.ToDouble(lvi.SubItems[5].Text) * Convert.ToDouble(lvi.SubItems[3].Text)).ToString();
                             sum = 0;
                         }
-                        else if ((Convert.ToDecimal(lvi.SubItems[3].Text) > 1)&&(Convert.ToDecimal(lvi.SubItems[3].Text) ==(int)Convert.ToDecimal(lvi.SubItems[3].Text)))
+                        else if ((Convert.ToDecimal(lvi.SubItems[3].Text) > 1) && (Convert.ToDecimal(lvi.SubItems[3].Text) == (int)Convert.ToDecimal(lvi.SubItems[3].Text)))
                         {
                             lvi.SubItems[3].Text = (Convert.ToDouble(lvi.SubItems[3].Text) - 1).ToString();
                             lvi.SubItems[6].Text = (Convert.ToDouble(lvi.SubItems[4].Text) * Convert.ToDouble(lvi.SubItems[3].Text)).ToString();
@@ -2293,17 +2314,20 @@ namespace Cash8
                             lvi2.SubItems.Add("0");
                             //*****************************************************************************
                             listView1.Items.Add(lvi2);
-
                             sum = 0;
                         }
-                    }
-                    //else
-                    //{
-
-                    //}
-                    if (sum == 0)//уже все распределили
-                    {
-                        break;
+                        //else if (Convert.ToDouble(lvi.SubItems[3].Text) < 1)
+                        //{
+                        //    //lvi.SubItems[5].Text = (Math.Round(Convert.ToDouble(lvi.SubItems[7].Text) / Convert.ToDouble(lvi.SubItems[3].Text),2,MidpointRounding.ToEven) - sum).ToString();
+                        //    //lvi.SubItems[6].Text = (Convert.ToDouble(lvi.SubItems[4].Text) * Convert.ToDouble(lvi.SubItems[3].Text)).ToString();
+                        //    //lvi.SubItems[7].Text = (Convert.ToDouble(lvi.SubItems[5].Text) * Convert.ToDouble(lvi.SubItems[3].Text)).ToString();
+                        //    lvi.SubItems[7].Text = (Convert.ToDouble(lvi.SubItems[7].Text) - sum).ToString();
+                        //    sum = 0;
+                        //}
+                        if (sum == 0)//уже все распределили
+                        {
+                            break;
+                        }
                     }
                 }
             }
