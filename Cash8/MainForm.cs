@@ -1482,6 +1482,42 @@ namespace Cash8
         //        }
         //    }
         //}
+               
+        ///// <summary>
+        ///// Исправление старого типа автор
+        ///// в колонке
+        ///// </summary>
+        private void check_add_field()
+        {
+            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();            
+            try
+            {
+                conn.Open();                
+                string query = "SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'constants'     AND column_name = 'fn_ipaddr'); ";
+                NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                if (! Convert.ToBoolean(command.ExecuteScalar())) //не нашли такой колонки   
+                {
+                    //check_add_field();
+                    SettingConnect sc = new SettingConnect();
+                    sc.add_field_Click(null, null);
+                    sc.Dispose();
+                    this.Close();
+                }                
+                conn.Close();
+                command.Dispose();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message, "check_add_field");
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+        }
 
 
         private bool check_envd()
@@ -1552,56 +1588,56 @@ namespace Cash8
             return result;
         }
 
-        private void check_add_field()
-        {            
-            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
-            try
-            {
-                conn.Open();
-                string query = " SELECT execute_addcolumn  FROM constants;";
-                NpgsqlCommand command = new NpgsqlCommand(query, conn);
-                object result_query = command.ExecuteScalar();
-                if (result_query.ToString() == "")
-                {
-                    SettingConnect sc = new SettingConnect();
-                    sc.add_field_Click(null, null);
-                    sc.Dispose();
+        //private void check_add_field()
+        //{            
+        //    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+        //    try
+        //    {
+        //        conn.Open();
+        //        string query = " SELECT execute_addcolumn  FROM constants;";
+        //        NpgsqlCommand command = new NpgsqlCommand(query, conn);
+        //        object result_query = command.ExecuteScalar();
+        //        if (result_query.ToString() == "")
+        //        {
+        //            SettingConnect sc = new SettingConnect();
+        //            sc.add_field_Click(null, null);
+        //            sc.Dispose();
 
-                    query = " UPDATE constants SET execute_addcolumn = 1 ";
-                    command = new NpgsqlCommand(query, conn);
-                    command.ExecuteNonQuery();
-                }
-                else
-                {
-                    if (Convert.ToInt16(result_query) == 2)
-                    {
-                        SettingConnect sc = new SettingConnect();
-                        sc.add_field_Click(null, null);
-                        sc.Dispose();
+        //            query = " UPDATE constants SET execute_addcolumn = 1 ";
+        //            command = new NpgsqlCommand(query, conn);
+        //            command.ExecuteNonQuery();
+        //        }
+        //        else
+        //        {
+        //            if (Convert.ToInt16(result_query) == 2)
+        //            {
+        //                SettingConnect sc = new SettingConnect();
+        //                sc.add_field_Click(null, null);
+        //                sc.Dispose();
 
-                        query = " UPDATE constants SET execute_addcolumn = 1 ";
-                        command = new NpgsqlCommand(query, conn);
-                        command.ExecuteNonQuery();
-                    } 
-                }
-                conn.Close();
-            }
-            catch (NpgsqlException ex)
-            {
-                MessageBox.Show(" Ошибка при добавлении полей в БД "+ex.Message);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(" Ошибка при добавлении полей в БД " + ex.Message);
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                }
-            }
-        }
+        //                query = " UPDATE constants SET execute_addcolumn = 1 ";
+        //                command = new NpgsqlCommand(query, conn);
+        //                command.ExecuteNonQuery();
+        //            } 
+        //        }
+        //        conn.Close();
+        //    }
+        //    catch (NpgsqlException ex)
+        //    {
+        //        MessageBox.Show(" Ошибка при добавлении полей в БД "+ex.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(" Ошибка при добавлении полей в БД " + ex.Message);
+        //    }
+        //    finally
+        //    {
+        //        if (conn.State == ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //        }
+        //    }
+        //}
 
         //void timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         //{      

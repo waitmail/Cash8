@@ -204,7 +204,8 @@ namespace Cash8
                         conn.Open();
                         string query = "SELECT variant_connect_fn FROM constants";
                         command = new NpgsqlCommand(query, conn);
-                        variant_connect_fn = (Convert.ToBoolean(command.ExecuteScalar()) ? 1 : 0);
+                        //variant_connect_fn = (Convert.ToBoolean(command.ExecuteScalar()) ? 1 : 0);
+                        variant_connect_fn = Convert.ToInt16(command.ExecuteScalar());
                     }
                     catch (NpgsqlException ex)
                     {
@@ -2614,7 +2615,7 @@ namespace Cash8
 
         private static void setConnectSetting(IFptr fptr)
         {
-            if (MainStaticClass.GetVariantConnectFN == 1)
+            if (MainStaticClass.GetVariantConnectFN == 0)
             {
                 fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_MODEL, AtolConstants.LIBFPTR_MODEL_ATOL_AUTO.ToString());
                 fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_PORT, AtolConstants.LIBFPTR_PORT_COM.ToString());
@@ -2624,7 +2625,7 @@ namespace Cash8
                 //fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_IPPORT, "5555");            
                 fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_BAUDRATE, AtolConstants.LIBFPTR_PORT_BR_115200.ToString());
             }
-            else if (MainStaticClass.GetVariantConnectFN == 2)
+            else if (MainStaticClass.GetVariantConnectFN == 1)
             {
                 fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_MODEL, AtolConstants.LIBFPTR_MODEL_ATOL_AUTO.ToString());
                 //fptr.setSingleSetting(AtolConstants.LIBFPTR_SETTING_PORT, AtolConstants.LIBFPTR_PORT_COM.ToString());

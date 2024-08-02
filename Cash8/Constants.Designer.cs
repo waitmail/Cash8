@@ -421,9 +421,9 @@
             // 
             // btn_trst_connection
             // 
-            this.btn_trst_connection.Location = new System.Drawing.Point(343, 18);
+            this.btn_trst_connection.Location = new System.Drawing.Point(338, 18);
             this.btn_trst_connection.Name = "btn_trst_connection";
-            this.btn_trst_connection.Size = new System.Drawing.Size(129, 23);
+            this.btn_trst_connection.Size = new System.Drawing.Size(143, 98);
             this.btn_trst_connection.TabIndex = 84;
             this.btn_trst_connection.Text = "Проверка соединения";
             this.btn_trst_connection.UseVisualStyleBackColor = true;
@@ -440,7 +440,7 @@
             this.groupBox1.Controls.Add(this.checkBox_printing_using_libraries);
             this.groupBox1.Location = new System.Drawing.Point(11, 170);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(475, 133);
+            this.groupBox1.Size = new System.Drawing.Size(486, 133);
             this.groupBox1.TabIndex = 85;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Настроки прямой печати";

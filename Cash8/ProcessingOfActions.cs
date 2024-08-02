@@ -405,7 +405,7 @@ namespace Cash8
                 conn.Open();
                 string query = "SELECT tip,num_doc,persent,comment,code_tovar,sum,barcode,marker,execution_order,sum1 FROM action_header " +
                     " WHERE '" + DateTime.Now.Date.ToString("yyy-MM-dd") + "' between date_started AND date_end " +
-                    " AND " + count_minutes.ToString() + " between time_start AND time_end  AND kind=0 AND num_doc in(" +
+                    " AND " + count_minutes.ToString() + " between time_start AND time_end  AND tip<>10 AND kind=0 AND num_doc in(" +
                     " SELECT DISTINCT action_table.num_doc FROM checks_table_temp " +
                     " LEFT JOIN action_table ON checks_table_temp.tovar = action_table.code_tovar)  order by execution_order asc, tip asc ";
 
@@ -547,14 +547,14 @@ namespace Cash8
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
                     }
-                    else if (tip_action == 10)
-                    {
-                        if (sum <= calculation_of_the_sum_of_the_document_dt())
-                        {
-                            //MessageBox.Show(reader[3].ToString());
-                            action_num_doc = num_doc; Convert.ToInt32(reader["num_doc"].ToString());
-                        }
-                    }
+                    //else if (tip_action == 10)
+                    //{
+                    //    if (sum <= calculation_of_the_sum_of_the_document_dt())
+                    //    {
+                    //        //MessageBox.Show(reader[3].ToString());
+                    //        action_num_doc = num_doc; //Convert.ToInt32(reader["num_doc"].ToString());
+                    //    }
+                    //}
                     else if (tip_action == 12)
                     {
 
@@ -1637,6 +1637,7 @@ namespace Cash8
                                 row["sum_full"] = Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price"]),2,MidpointRounding.ToEven);
                                 row["sum_at_discount"] = Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price_at_discount"]);
                                 row["action"] = num_doc.ToString(); //Номер акционного документа 
+                                row["action2"] = num_doc.ToString(); //Номер акционного документа 
                                 min_quantity = min_quantity - quantity_of_pieces;
                             }
                             if ((quantity_of_pieces > min_quantity) && (min_quantity > 0))
@@ -1651,7 +1652,7 @@ namespace Cash8
                                 row2["price_at_discount"] = Math.Round(Convert.ToDouble(row2["price"]) - Convert.ToDouble(row2["price"]) * Convert.ToDouble(persent) / 100, 2);//Цена со скидкой                                            
                                 row2["sum_at_discount"]   = Math.Round(Convert.ToDouble(row2["quantity"]) * Convert.ToDouble(row2["price_at_discount"]),2,MidpointRounding.ToEven);
                                 row2["action"] = num_doc.ToString(); //Номер акционного документа 
-                                row2["action"] = num_doc.ToString(); //Номер акционного документа 
+                                row2["action2"] = num_doc.ToString(); //Номер акционного документа 
                                 //dt.Rows.Add(row2);
 
                                 //row["action"] = num_doc.ToString(); //Номер акционного документа 

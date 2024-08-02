@@ -431,7 +431,7 @@ namespace Cash8
                         webservice_authorize + "," +
                         //static_guid_in_print+","+
                         printing_using_libraries + ",'" +
-                        comboBox_fn_port.SelectedItem.ToString() + "','" +
+                        fn_serial_port+"','"+      //comboBox_fn_port.SelectedItem.ToString() + "','" +
                         scale_serial_port + "'," +
                         get_weight_automatically + ","+
                         variant_connect_fn+",'"+
