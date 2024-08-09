@@ -176,7 +176,22 @@ namespace Cash8
             public Status status { get; set; }
             public ShiftStatus shiftStatus { get; set; }
             public DeviceInfo deviceInfo { get; set; }
+            public DeviceStatus deviceStatus { get; set; }
         }
+
+        public class DeviceStatus
+        {
+            public bool blocked { get; set; }
+            public bool coverOpened { get; set; }
+            public DateTime currentDateTime { get; set; }
+            public bool fiscal { get; set; }
+            public bool fnFiscal { get; set; }
+            public bool fnPresent { get; set; }
+            public bool paperPresent { get; set; }
+            public bool cashDrawerOpened { get; set; }
+            public string shift { get; set; }
+        }
+
 
         public class Result
         {

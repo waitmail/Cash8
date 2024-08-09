@@ -220,7 +220,9 @@ namespace Cash8
                             MessageBox.Show("Не заполнен кассир");
                             return;
                         }
-                    
+
+                    MainStaticClass.validate_date_time_with_fn(15);
+
                     new_document = true;
                     Cash_check doc = new Cash_check();
                     doc.cashier = txtB_cashier.Text;
@@ -413,8 +415,7 @@ namespace Cash8
             }
 
         }
-
-
+        
         private void get_status_send_document()
         {
             string result = "";

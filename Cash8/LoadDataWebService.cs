@@ -57,7 +57,7 @@ namespace Cash8
         /// бонусных клиентов
         /// </summary>
         /// <returns></returns>
-        private DateTime last_date_download_tovars()
+        public static DateTime last_date_download_tovars()
         {
             DateTime result = new DateTime(2000, 1, 1);
 

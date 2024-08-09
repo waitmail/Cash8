@@ -267,7 +267,11 @@ namespace Cash8
                             {
                                 if ((DateTime.Now - result.results[0].result.shiftStatus.expiredTime).TotalHours > 0)
                                 {
-                                    MessageBox.Show(" Период открытой смены превысил 24 часа !!!\r\n СНИМИТЕ Z-ОТЧЁТ. ЕСЛИ СОМНЕВАЕТЕСЬ В ЧЁМ-ТО, ТО ВСЁ РАВНО СНИМИТЕ Z-ОТЧЁТ");
+                                    //MessageBox.Show(" Период открытой смены превысил 24 часа !!!\r\n СНИМИТЕ Z-ОТЧЁТ. ЕСЛИ СОМНЕВАЕТЕСЬ В ЧЁМ-ТО, ТО ВСЁ РАВНО СНИМИТЕ Z-ОТЧЁТ");
+                                    MessageBox.Show(" Период открытой смены превысил 24 часа!\r\nСмена будет закрыта автоматически!\r\n" +
+                                                    "В ИТ отдел звонить не надо, если хотите кому нибудь позвонить, звоните в бухгалтерию");
+                                    FPTK22 fPTK22 = new FPTK22();
+                                    fPTK22.z_report_Click(null, null);
                                 }
                             }
                         }
@@ -979,9 +983,11 @@ namespace Cash8
             if (MainStaticClass.exist_table_name("constants"))
             {
                 MainStaticClass.write_event_in_log(" Старт программы ", "проверка таблицы констант", "0");
-                Text += "   " + Cash8.MainStaticClass.CashDeskNumber;
+                Text += "Касса   " + Cash8.MainStaticClass.CashDeskNumber;
                 Text += " | " + Cash8.MainStaticClass.Nick_Shop;
                 Text += " | " + Cash8.MainStaticClass.version();
+                Text += " | " + Cash8.LoadDataWebService.last_date_download_tovars().ToString("yyyy-MM-dd hh:mm:ss");
+
                 check_add_field();
                 update_unloading_period();
                 int result = MainStaticClass.get_unloading_interval();
@@ -1482,31 +1488,68 @@ namespace Cash8
         //        }
         //    }
         //}
-               
-        ///// <summary>
-        ///// Исправление старого типа автор
-        ///// в колонке
-        ///// </summary>
-        private void check_add_field()
+
+        /// <summary>
+        /// Исправление старого типа автор
+        /// в колонке
+        /// </summary>
+        private void check_correct_type_column()
         {
-            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();            
+            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+            NpgsqlTransaction tran = null;
             try
             {
-                conn.Open();                
+                conn.Open();
+                tran = conn.BeginTransaction();
+                string query = "SELECT data_type FROM information_schema.columns where table_name = 'checks_header' AND column_name = 'id_sale'";
+                NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                if (command.ExecuteScalar().ToString().Trim() != "character varying")//старый тип колонки в бд, меняем на новый
+                {
+                    SettingConnect sc = new SettingConnect();
+                    sc.add_field_Click(null, null);
+                    sc.Dispose();
+                    this.Close();
+                }
+                tran.Commit();
+                conn.Close();
+                command.Dispose();
+            }
+            catch
+            {
+                if (tran != null)
+                {
+                    tran.Rollback();
+                }
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+        }
+
+        private void check_exists_column()
+        {
+            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+            try
+            {
+                conn.Open();
                 string query = "SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'constants'     AND column_name = 'fn_ipaddr'); ";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
-                if (! Convert.ToBoolean(command.ExecuteScalar())) //не нашли такой колонки   
+                if (!Convert.ToBoolean(command.ExecuteScalar())) //не нашли такой колонки   
                 {
                     //check_add_field();
                     SettingConnect sc = new SettingConnect();
                     sc.add_field_Click(null, null);
                     sc.Dispose();
                     this.Close();
-                }                
+                }
                 conn.Close();
                 command.Dispose();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "check_add_field");
             }
@@ -1517,6 +1560,18 @@ namespace Cash8
                     conn.Close();
                 }
             }
+
+        }
+
+
+        ///// <summary>
+        ///// Исправление старого типа автор
+        ///// в колонке
+        ///// </summary>
+        private void check_add_field()
+        {
+            check_correct_type_column();
+            check_exists_column();
         }
 
 
@@ -1965,6 +2020,7 @@ namespace Cash8
             // проверкаАкцийToolStripMenuItem
             // 
             this.проверкаАкцийToolStripMenuItem.Name = "проверкаАкцийToolStripMenuItem";
+            //this.проверкаАкцийToolStripMenuItem.Text = "Проверка Акций";
             resources.ApplyResources(this.проверкаАкцийToolStripMenuItem, "проверкаАкцийToolStripMenuItem");
             this.проверкаАкцийToolStripMenuItem.Click += new System.EventHandler(this.проверкаАкцийToolStripMenuItem_Click);
             // 

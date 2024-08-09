@@ -45,6 +45,31 @@ namespace Cash8
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_REPORT_TYPE, AtolConstants.LIBFPTR_RT_LAST_DOCUMENT);
             fptr.report();
         }
+        
+        public bool validate_date_time_with_fn(int minutes)
+        {
+            bool result = true;
+
+            IFptr fptr = MainStaticClass.FPTR;            
+            if (!fptr.isOpened())
+            {
+                fptr.open();
+            }
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_DATA_TYPE, AtolConstants.LIBFPTR_DT_DATE_TIME);
+            fptr.queryData();
+
+            DateTime dateTime = fptr.getParamDateTime(AtolConstants.LIBFPTR_PARAM_DATE_TIME);
+            if (Math.Abs((dateTime - DateTime.Now).Minutes) > minutes)//Поскольку может быть как больше так и меньше 
+            {
+                MessageBox.Show(" У ВАС ОТЛИЧАЕТСЯ ВРЕМЯ МЕЖДУ КОМПЬЮТЕРОМ И ФИСКАЛЬНЫМ РЕГИСТРАТОРОМ БОЛЬШЕ ЧЕМ НА 20 МИНУТ ОТПРАВЬТЕ ЗАЯВКУ В ИТ ОТДЕЛ  ", "Проверка даты и времени");
+                MainStaticClass.write_event_in_log(" Не схождение даты и времени между ФР и компьютером больше чем на 20 минут ", "Документ", "0");
+
+                result = false;
+            }
+
+            return result;
+        }
+
 
         public void getShiftStatus()
         {
@@ -64,7 +89,10 @@ namespace Cash8
             {
                 //if ((DateTime.Now - dateTime).TotalHours > 0)
                 //{
-                MessageBox.Show(" Период открытой смены превысил 24 часа !!!\r\n СНИМИТЕ Z-ОТЧЁТ. ЕСЛИ СОМНЕВАЕТЕСЬ В ЧЁМ-ТО, ТО ВСЁ РАВНО СНИМИТЕ Z-ОТЧЁТ");
+                //MessageBox.Show(" Период открытой смены превысил 24 часа !!!\r\n СНИМИТЕ Z-ОТЧЁТ. ЕСЛИ СОМНЕВАЕТЕСЬ В ЧЁМ-ТО, ТО ВСЁ РАВНО СНИМИТЕ Z-ОТЧЁТ");
+                MessageBox.Show(" Период открытой смены превысил 24 часа!\r\nСмена будет закрыта автоматически!\r\n"+
+                    "В ИТ отдел звонить не надо, если хотите кому нибудь позвонить, звоните в бухгалтерию");
+                reportZ();
                 //}
             }
             //fptr.close();

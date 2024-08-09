@@ -198,13 +198,16 @@
             // 
             this.корректировочныеЧекиToolStripMenuItem.Name = "корректировочныеЧекиToolStripMenuItem";
             resources.ApplyResources(this.корректировочныеЧекиToolStripMenuItem, "корректировочныеЧекиToolStripMenuItem");
-            //this.корректировочныеЧекиToolStripMenuItem.Click += new System.EventHandler(this.корректировочныеЧекиToolStripMenuItem_Click_1);
+            // 
+            // проверкаАкцийToolStripMenuItem
+            // 
+            this.проверкаАкцийToolStripMenuItem.Name = "проверкаАкцийToolStripMenuItem";
+            resources.ApplyResources(this.проверкаАкцийToolStripMenuItem, "проверкаАкцийToolStripMenuItem");
             // 
             // выгрузкаДанныхПоБонусамToolStripMenuItem
             // 
-            //this.выгрузкаДанныхПоБонусамToolStripMenuItem.Name = "выгрузкаДанныхПоБонусамToolStripMenuItem";
-            //resources.ApplyResources(this.выгрузкаДанныхПоБонусамToolStripMenuItem, "выгрузкаДанныхПоБонусамToolStripMenuItem");
-            //this.выгрузкаДанныхПоБонусамToolStripMenuItem.Click += new System.EventHandler(this.выгрузкаДанныхПоБонусамToolStripMenuItem_Click);
+            this.выгрузкаДанныхПоБонусамToolStripMenuItem.Name = "выгрузкаДанныхПоБонусамToolStripMenuItem";
+            resources.ApplyResources(this.выгрузкаДанныхПоБонусамToolStripMenuItem, "выгрузкаДанныхПоБонусамToolStripMenuItem");
             // 
             // выгрузкаПродажToolStripMenuItem
             // 

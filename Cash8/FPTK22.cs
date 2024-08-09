@@ -170,8 +170,10 @@ namespace Cash8
             {                
                 return;
             }
-            
-            
+
+
+            MainStaticClass.validate_date_time_with_fn(13);
+
             avans.Enabled = false;
             if (MainStaticClass.PrintingUsingLibraries == 0)
             {
@@ -294,7 +296,7 @@ namespace Cash8
             }
         }
 
-        private void z_report_Click(object sender, EventArgs e)
+        public void z_report_Click(object sender, EventArgs e)
         {
             if (MainStaticClass.PrintingUsingLibraries == 0)
             {

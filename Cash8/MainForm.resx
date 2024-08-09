@@ -117,10 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="menuStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>0, 0</value>
-  </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="menuStrip.TrayLocation" type="System.Drawing.Point, System.Drawing">
+    <value>0, 0</value>
+  </data>
   <data name="номенклатураToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>193, 22</value>
   </data>
@@ -193,11 +193,8 @@
   <data name="параметрыБазыДанныхToolStripMenuItem.Text" xml:space="preserve">
     <value>Параметры базы данных</value>
   </data>
-  <data name="проверкаАкцийToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="загрузкаДанныхToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>252, 22</value>
-  </data>
-  <data name="проверкаАкцийToolStripMenuItem.Text" xml:space="preserve">
-    <value>Проверка акций</value>
   </data>
   <data name="корректировочныеЧекиToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>252, 22</value>
@@ -205,11 +202,11 @@
   <data name="корректировочныеЧекиToolStripMenuItem.Text" xml:space="preserve">
     <value>Корректировочные Чеки</value>
   </data>
-  <data name="выгрузкаДанныхПоБонусамToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="проверкаАкцийToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>252, 22</value>
   </data>
-  <data name="выгрузкаДанныхПоБонусамToolStripMenuItem.Text" xml:space="preserve">
-    <value>Выгрузка данных по бонусам</value>
+  <data name="выгрузкаДанныхПоБонусамToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>252, 22</value>
   </data>
   <data name="выгрузкаПродажToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>252, 22</value>
@@ -266,14 +263,18 @@
   <data name="&gt;&gt;menuStrip.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+  <data name="$this.Localizable" type="System.Boolean, mscorlib">
     <value>True</value>
-  </metadata>
+  </data>
   <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
     <value>6, 13</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
     <value>553, 464</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
+    <value>CenterScreen</value>
   </data>
   <data name="&gt;&gt;справочникиToolStripMenuItem.Name" xml:space="preserve">
     <value>справочникиToolStripMenuItem</value>
@@ -389,6 +390,12 @@
   <data name="&gt;&gt;корректировочныеЧекиToolStripMenuItem.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="&gt;&gt;проверкаАкцийToolStripMenuItem.Name" xml:space="preserve">
+    <value>проверкаАкцийToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;проверкаАкцийToolStripMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="&gt;&gt;выгрузкаДанныхПоБонусамToolStripMenuItem.Name" xml:space="preserve">
     <value>выгрузкаДанныхПоБонусамToolStripMenuItem</value>
   </data>
@@ -430,5 +437,8 @@
   </data>
   <data name="&gt;&gt;$this.Type" xml:space="preserve">
     <value>System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="проверкаАкцийToolStripMenuItem.Text" xml:space="preserve">
+    <value>ПРОВЕРКА АКЦИЙ</value>
   </data>
 </root>

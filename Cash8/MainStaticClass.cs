@@ -125,6 +125,54 @@ namespace Cash8
         private static string scale_serial_port = "";
         private static string fn_ipaddr = "";
 
+        public static void validate_date_time_with_fn(int minutes)
+        {
+            if (MainStaticClass.CashDeskNumber != 9)
+            {
+                if (MainStaticClass.PrintingUsingLibraries == 1)
+                {
+                    PrintingUsingLibraries usingLibraries = new PrintingUsingLibraries();
+                    usingLibraries.validate_date_time_with_fn(minutes);                    
+                }
+                else
+                {
+
+                    try
+                    {
+                        Cash8.FiscallPrintJason2.RootObject result = FiscallPrintJason2.execute_operator_type("getDeviceStatus");
+                        if (result != null)
+                        {
+                            if (result.results[0].status == "ready")//Задание выполнено успешно 
+                            {
+                                DateTime dateTime = Convert.ToDateTime(result.results[0].result.deviceStatus.currentDateTime);
+
+                                if (Math.Abs((dateTime - DateTime.Now).Minutes) > minutes)//Поскольку может быть как больше так и меньше 
+                                {
+                                    MessageBox.Show(" У ВАС ОТЛИЧАЕТСЯ ВРЕМЯ МЕЖДУ КОМПЬЮТЕРОМ И ФИСКАЛЬНЫМ РЕГИСТРАТОРОМ БОЛЬШЕ ЧЕМ НА 20 МИНУТ ОТПРАВЬТЕ ЗАЯВКУ В ИТ ОТДЕЛ ", "Проверка даты и времени");
+
+                                    MainStaticClass.write_event_in_log(" Не схождение даты и времени между ФР и компьютером больше чем на 20 минут ", "Документ", "0");
+                                }
+                            }
+                            else
+                            {
+                                MessageBox.Show(" Ошибка !!! " + result.results[0].status + " | " + result.results[0].errorDescription);
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("Общая ошибка");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(" OnKeyDown " + ex.Message);
+                    }
+                }
+            }
+        }
+
+
+
         public static string GetFnIpaddr
         {
             get
@@ -1584,7 +1632,7 @@ namespace Cash8
         //    }
         //}
         
-        public static bool validate_cash_sum_non_cash_sum_on_return(int id_sale, Double cash_summ, Double non_cash_sum)
+        public static bool validate_cash_sum_non_cash_sum_on_return(string  id_sale, Double cash_summ, Double non_cash_sum)
         {
             bool result = true;
             NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
@@ -1592,7 +1640,7 @@ namespace Cash8
             {
                 conn.Open();
                 string query = " SELECT SUM(d_c.cash_money)AS cash_money,SUM(d_c.non_cash_money)AS non_cash_money FROM" +
-                              " (SELECT cash_money, non_cash_money FROM checks_header where document_number = "+ id_sale.ToString()+
+                              " (SELECT cash_money, non_cash_money FROM checks_header where guid = "+ id_sale.ToString()+
                               "  AND checks_header.check_type = 0 AND checks_header.its_deleted = 0 "+
                               " AND checks_header.date_time_write BETWEEN '" + 
                               DateTime.Now.AddDays(-14).Date.ToString("dd-MM-yyyy") + "' AND  '" + DateTime.Now.AddDays(1).ToString("dd-MM-yyyy") + "'" +

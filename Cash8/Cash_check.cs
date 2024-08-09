@@ -74,7 +74,7 @@ namespace Cash8
         //private string cardTrack2 = "";
         private string phone = "";
         public string qr_code = "";
-        public Int32 id_sale = 0;
+        public string id_sale = "";
         public string phone_client = "";
         private int card_state = 0; // state – состояние карты, одно из значений: 1 – карта неактивна 2 – карта активирована(выдана на кассе) 3 – карта зарегистрирована(привязана к анкете клиента) 4 – карта заблокирована
         private string code_bonus_card = "";
@@ -14557,7 +14557,7 @@ namespace Cash8
                 return;
             }
 
-            id_sale = Convert.ToInt32(txtB_num_sales.Text);
+            //id_sale = Convert.ToInt32(txtB_num_sales.Text);
             NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
 
             if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema==3)|| (MainStaticClass.GetWorkSchema == 4))
@@ -14625,7 +14625,7 @@ namespace Cash8
                         listView1.Items.Add(lvi);
                     }
 
-                    query = "SELECT id_transaction_terminal,code_authorization_terminal,date_time_write,non_cash_money FROM  checks_header WHERE document_number=" + txtB_num_sales.Text;
+                    query = "SELECT id_transaction_terminal,code_authorization_terminal,date_time_write,non_cash_money,guid FROM  checks_header WHERE document_number=" + txtB_num_sales.Text;
                     command = new NpgsqlCommand(query, conn);
                     reader = command.ExecuteReader();
                     while (reader.Read())
@@ -14634,7 +14634,7 @@ namespace Cash8
                         sale_code_authorization_terminal = reader["code_authorization_terminal"].ToString();
                         sale_date = Convert.ToDateTime(reader["date_time_write"]);
                         sale_non_cash_money = Convert.ToDouble(reader["non_cash_money"]);
-
+                        id_sale = reader["guid"].ToString();
                     }
 
                     reader.Close();
