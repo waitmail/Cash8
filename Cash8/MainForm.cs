@@ -1571,7 +1571,7 @@ namespace Cash8
         private void check_add_field()
         {
             check_correct_type_column();
-            check_exists_column();
+            //check_exists_column();
         }
 
 

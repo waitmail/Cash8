@@ -2825,6 +2825,20 @@ namespace Cash8
 
             MainStaticClass.write_event_in_log("Попытка добавить новый товар в чек " + barcode, "Документ чек", numdoc.ToString());
 
+            //Здесь проверка штрихкода на весовой товар с весов ****************************************
+            bool ProductFromScales = false;
+            double WeightFromScales = 0;
+            if (barcode.Length == 13)
+            {
+                if (barcode.Substring(0, 2) == "23")//Это штрихкод с весов 
+                {
+                    WeightFromScales = Math.Round(double.Parse(barcode.Substring(8, 4))/1000,3,MidpointRounding.ToEven);//Получить вес в кг с весов
+                    barcode = Convert.ToInt32(barcode.Substring(2, 6)).ToString();//Здесь переопределяем штрихкод для дальнейшего стандартного поведения 
+                    ProductFromScales = true;                    
+                }
+            }
+            //****************************************
+
             NpgsqlConnection conn = null;
 
             try
@@ -2832,40 +2846,20 @@ namespace Cash8
                 conn = MainStaticClass.NpgsqlConn();
                 conn.Open();
                 NpgsqlCommand command = new NpgsqlCommand();
-                command.Connection = conn;
-                //select  COUNT(*),tovar.code,tovar.name from  barcode left join tovar ON barcode.tovar_code=tovar.code where barcode='3700074253582' group by tovar.code,tovar.name
-                //command.CommandText = "select  tovar.code,tovar.name,tovar.retail_price from  barcode left join tovar ON barcode.tovar_code=tovar.code where barcode='" + inputbarcode.Text + "'";
-                //if (inputbarcode.Text.Length > 6)
+                command.Connection = conn;                
                 if (barcode.Length > 6)
-                {
-                    //command.CommandText = "select tovar.code,tovar.name,tovar.retail_price from  barcode left join tovar ON barcode.tovar_code=tovar.code where barcode='" + inputbarcode.Text + "' ";
+                {                    
                     command.CommandText = "select tovar.code,tovar.name,tovar.retail_price,characteristic.name,characteristic.guid,characteristic.retail_price_characteristic,tovar.its_certificate,tovar.its_marked,tovar.cdn_check,tovar.fractional " +
                         " from  barcode left join tovar ON barcode.tovar_code=tovar.code " +
                     " left join characteristic ON tovar.code = characteristic.tovar_code " +
-                    " where barcode='" + barcode + "' AND its_deleted=0  AND (retail_price<>0 OR characteristic.retail_price_characteristic<>0)";
-                    //if (MainStaticClass.Use_Trassir > 0)
-                    //{
-                    //    string s = MainStaticClass.get_string_message_for_trassir("POSNG_POSITION_ADD_BY_SCANNER", numdoc.ToString(), MainStaticClass.Cash_Operator, DateTime.Now.Date.ToString("MM'/'dd'/'yyyy"), DateTime.Now.ToString("HH:mm:ss"), "", "1", "", barcode, "", MainStaticClass.CashDeskNumber.ToString(), "");
-                    //    MainStaticClass.send_data_trassir(s);
-                    //}
-                    //
+                    " where barcode='" + barcode + "' AND its_deleted=0  AND (retail_price<>0 OR characteristic.retail_price_characteristic<>0)";                   
 
                 }
                 else
-                {
-                    //command.CommandText = "select tovar.code,tovar.name,tovar.retail_price from  tovar where tovar.code='" + inputbarcode.Text + "'";
+                {                    
                     command.CommandText = "select tovar.code,tovar.name,tovar.retail_price, characteristic.name,characteristic.guid,characteristic.retail_price_characteristic,tovar.its_certificate,tovar.its_marked,tovar.cdn_check,tovar.fractional " +
                         " FROM tovar left join characteristic  ON tovar.code = characteristic.tovar_code where tovar.its_deleted=0 AND tovar.its_certificate=0 AND  (retail_price<>0 OR characteristic.retail_price_characteristic<>0) " +
                         " AND tovar.code='" + barcode + "'";
-                    //if (MainStaticClass.Use_Trassir > 0)
-                    //{
-                    //    string s = MainStaticClass.get_string_message_for_trassir("POSNG_POSITION_ADD_BY_ARTICLE", numdoc.ToString(), MainStaticClass.Cash_Operator, DateTime.Now.Date.ToString("MM'/'dd'/'yyyy"), DateTime.Now.ToString("HH:mm:ss"), "", "1", "", "", barcode, MainStaticClass.CashDeskNumber.ToString(), "");
-                    //    MainStaticClass.send_data_trassir(s);
-                    //}
-
-                    //command.CommandText = " select tovar.code,tovar.name,tovar.retail_price, characteristic.name,characteristic.guid,characteristic.retail_price_characteristic FROM tovar left join characteristic " +
-                    //                      " ON tovar.code = characteristic.tovar_code where tovar.code='" + barcode + "' AND its_deleted=0 AND retail_price<>0 OR characteristic.retail_price_characteristic<>0";
-
                 }
 
                 int its_certificate = 0;
@@ -2990,32 +2984,32 @@ namespace Cash8
                     }
 
                 }
-                else if (its_certificate == 2)//Это продажа бонусной карты проверяем, что в шапке нет другой карты
-                {
-                    if (check_availability_card_sale())
-                    {
-                        MessageBox.Show("В строках чека уже есть бонусная карта на продажу");
-                        return;
-                    }
-                    //if (get_status_promo_card(barcode) != 1)
-                    //{
-                    //    MessageBox.Show("Данная бонусная карта уже активирована и повторно продана быть не может");
-                    //    return;
-                    //}
-                    if (client.Tag != null)
-                    {
-                        if (client.Tag.ToString() != barcode)
-                        {
-                            MessageBox.Show("В чеке уже выбран клиент с другой бонусной2 картой, продажа бонусной карты в этом чеке невозможна");
-                            return;
-                        }
-                        if (card_state != 1)//Проверяем статус карты он должен быть 1 т.е. не активирована
-                        {
-                            MessageBox.Show("Эта карта имеет неверный статус в процессиноговом центре и продана быть не может ");
-                            return;
-                        }
-                    }
-                }
+                //else if (its_certificate == 2)//Это продажа бонусной карты проверяем, что в шапке нет другой карты
+                //{
+                //    if (check_availability_card_sale())
+                //    {
+                //        MessageBox.Show("В строках чека уже есть бонусная карта на продажу");
+                //        return;
+                //    }
+                //    //if (get_status_promo_card(barcode) != 1)
+                //    //{
+                //    //    MessageBox.Show("Данная бонусная карта уже активирована и повторно продана быть не может");
+                //    //    return;
+                //    //}
+                //    if (client.Tag != null)
+                //    {
+                //        if (client.Tag.ToString() != barcode)
+                //        {
+                //            MessageBox.Show("В чеке уже выбран клиент с другой бонусной2 картой, продажа бонусной карты в этом чеке невозможна");
+                //            return;
+                //        }
+                //        if (card_state != 1)//Проверяем статус карты он должен быть 1 т.е. не активирована
+                //        {
+                //            MessageBox.Show("Эта карта имеет неверный статус в процессиноговом центре и продана быть не может ");
+                //            return;
+                //        }
+                //    }
+                //}
 
                 //Подсчет суммы по документу
                 if (listView2.Items.Count == 1)//1 товар найден
@@ -3383,7 +3377,14 @@ namespace Cash8
                             listView1.Items[this.listView1.Items.Count - 1].Selected = true;
                             listView1.Items[this.listView1.Items.Count - 1].Focused  = true;
                             //SendKeys.Send("Enter");                            
-                            show_quantity_control(true);                           
+                            if (!ProductFromScales)
+                            {
+                                show_quantity_control(true);
+                            }
+                            else
+                            {
+                                listView1.Items[this.listView1.Items.Count - 1].SubItems[3].Text = WeightFromScales.ToString();
+                            }
                         }
 
 
@@ -3464,8 +3465,15 @@ namespace Cash8
                             listView1.Focus();
                             listView1.Select();
                             listView1.Items[this.listView1.Items.Count - 1].Selected = true;
-                            listView1.Items[this.listView1.Items.Count - 1].Focused = true;                            
-                            show_quantity_control(true);
+                            listView1.Items[this.listView1.Items.Count - 1].Focused = true;
+                            if (!ProductFromScales)
+                            {
+                                show_quantity_control(true);
+                            }
+                            else
+                            {
+                                listView1.Items[this.listView1.Items.Count - 1].SubItems[3].Text = WeightFromScales.ToString();
+                            }
                         }                        
                         update_record_last_tovar(lvi.SubItems[1].Text, lvi.SubItems[4].Text);
                     }

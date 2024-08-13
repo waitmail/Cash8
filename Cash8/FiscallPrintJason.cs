@@ -303,7 +303,7 @@ namespace Cash8
         public class Errors
         {
             public int fnCommandCode { get; set; }
-            public int documentNumber { get; set; }
+            public int documentNumber { get; set; }            
             public Fn fn { get; set; }
             public Ofd ofd { get; set; }
             public Network network { get; set; }
