@@ -916,6 +916,8 @@ namespace Cash8
             {
                 checkBox_payment_by_sbp.Checked = true;                
             }
+            //WaitNonCashPay waitNonCashPay = new WaitNonCashPay();
+            //waitNonCashPay.ShowDialog();
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -1172,6 +1174,15 @@ namespace Cash8
                         string _str_command_sale_ = str_command_sale.Replace("sum", money);
                         _str_command_sale_ = _str_command_sale_.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
                         //MessageBox.Show(_str_command_sale_);
+
+                        ///////////////////////////////////////////////////////
+                        //WaitNonCashPay waitNonCashPay = new WaitNonCashPay();
+                        //waitNonCashPay.Url = url;
+                        //waitNonCashPay.Data = _str_command_sale_;
+                        //waitNonCashPay.ShowDialog();
+                        //return;
+                        //////////////////////////////////////////////////////
+
                         AnswerTerminal answerTerminal = new AnswerTerminal();
                         send_command_acquiring_terminal(url, _str_command_sale_, ref complete, ref answerTerminal);
                         if (!complete)//ответ от терминала не удовлетворительный
@@ -1493,6 +1504,7 @@ namespace Cash8
         public void send_command_acquiring_terminal(string Url, string Data, ref bool status,ref AnswerTerminal answerTerminal)
         {
             //string Out = String.Empty;
+            
             try
             {
                 System.Net.WebRequest req = System.Net.WebRequest.Create(Url);

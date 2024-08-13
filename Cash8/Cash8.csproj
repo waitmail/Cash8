@@ -231,6 +231,12 @@
     <Compile Include="ReasonsDeletionCheck.Designer.cs">
       <DependentUpon>ReasonsDeletionCheck.cs</DependentUpon>
     </Compile>
+    <Compile Include="WaitNonCashPay.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WaitNonCashPay.Designer.cs">
+      <DependentUpon>WaitNonCashPay.cs</DependentUpon>
+    </Compile>
     <Compile Include="WortWithMarkingV3.cs" />
     <Compile Include="СheckKmArray.cs" />
     <EmbeddedResource Include="Cash_check.resx">
@@ -319,6 +325,9 @@
     </Compile>
     <EmbeddedResource Include="Tovar_Not_Found.resx">
       <DependentUpon>Tovar_Not_Found.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WaitNonCashPay.resx">
+      <DependentUpon>WaitNonCashPay.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
