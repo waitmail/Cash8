@@ -1078,7 +1078,7 @@ namespace Cash8
                 if (cc.client.Tag != null)
                 {
                     //***********************************************   
-                    if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema ==3) || (MainStaticClass.GetWorkSchema == 4))
+                    if ((MainStaticClass.GetWorkSchema == 1) || (MainStaticClass.GetWorkSchema == 3) || (MainStaticClass.GetWorkSchema == 4))
                     {
                         if (Convert.ToDecimal(pay_bonus_many.Text) > 0)
                         {
@@ -1096,7 +1096,7 @@ namespace Cash8
 
                             if (Convert.ToDecimal(non_cash_sum.Text) == 0)
                             {
-                                cc.distribute(Math.Round(total - (int)total,2,MidpointRounding.ToEven), total);//теперь бонусы 
+                                cc.distribute(Math.Round(total - (int)total, 2, MidpointRounding.ToEven), total);//теперь бонусы 
                             }
 
                         }
@@ -1111,11 +1111,11 @@ namespace Cash8
                 }
                 else
                 {
-                    if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema ==3) || (MainStaticClass.GetWorkSchema == 4))
+                    if ((MainStaticClass.GetWorkSchema == 1) || (MainStaticClass.GetWorkSchema == 3) || (MainStaticClass.GetWorkSchema == 4))
                     {
                         if (Convert.ToDecimal(non_cash_sum.Text) == 0)
                         {
-                            cc.distribute(Math.Round(total - (int)total,2,MidpointRounding.ToEven), total);//распределение без бонусов , здесь нет клиента нет бонусов
+                            cc.distribute(Math.Round(total - (int)total, 2, MidpointRounding.ToEven), total);//распределение без бонусов , здесь нет клиента нет бонусов
                         }
                     }
                 }
@@ -1133,7 +1133,7 @@ namespace Cash8
                     //MessageBox.Show(lvi.SubItems[0].Text + "   " + lvi.SubItems[7].Text);
 
                     if (Convert.ToDecimal(lvi.SubItems[7].Text) < 0)
-                    {                        
+                    {
                         less_than_zero = true;
                         break;
                     }
@@ -1175,21 +1175,36 @@ namespace Cash8
                         _str_command_sale_ = _str_command_sale_.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
                         //MessageBox.Show(_str_command_sale_);
 
-                        ///////////////////////////////////////////////////////
-                        //WaitNonCashPay waitNonCashPay = new WaitNonCashPay();
-                        //waitNonCashPay.Url = url;
-                        //waitNonCashPay.Data = _str_command_sale_;
-                        //waitNonCashPay.ShowDialog();
-                        //return;
-                        //////////////////////////////////////////////////////
-
                         AnswerTerminal answerTerminal = new AnswerTerminal();
-                        send_command_acquiring_terminal(url, _str_command_sale_, ref complete, ref answerTerminal);
+
+                        //if (MainStaticClass.Nick_Shop == "A01")
+                        //{
+                        WaitNonCashPay waitNonCashPay = new WaitNonCashPay();
+                        waitNonCashPay.Url = url;
+                        waitNonCashPay.Data = _str_command_sale_;
+                        waitNonCashPay.cc = this.cc;
+                        waitNonCashPay.ShowDialog();
+                        if (waitNonCashPay.commandResult != null)
+                        {
+                            answerTerminal = waitNonCashPay.commandResult.AnswerTerminal;
+                            complete = waitNonCashPay.commandResult.Status;
+                        }
+                        //else
+                        //{
+                        //    MessageBox.Show("Результат команды не получен.\r\nНеудачная попытка опалты", "Неудачная попытка опалты");
+                        //    return;
+                        //}                            
+                        //}
+                        //else
+                        //{                            
+                        //    send_command_acquiring_terminal(url, _str_command_sale_, ref complete, ref answerTerminal);
+                        //}
+
                         if (!complete)//ответ от терминала не удовлетворительный
                         {
                             calculate();
                             cc.recharge_note = "";
-                            MessageBox.Show(" Неудачная попытка получения оплаты ","Оплата по терминалу");
+                            MessageBox.Show(" Неудачная попытка получения оплаты ", "Оплата по терминалу");
                             return;
                         }
                         else
@@ -1207,13 +1222,13 @@ namespace Cash8
                         _str_sale_sbp = _str_sale_sbp.Replace("guid", cc.guid);
                         ////MessageBox.Show(_str_command_sale_);
                         AnswerTerminal answerTerminal = new AnswerTerminal();
-                        send_command_acquiring_terminal(url, _str_sale_sbp, ref complete, ref answerTerminal);                        
+                        send_command_acquiring_terminal(url, _str_sale_sbp, ref complete, ref answerTerminal);
                         if (!complete)//ответ от терминала не удовлетворительный, значит операция в обработке необходим дополнительный запрос
-                        {                            
+                        {
                             string _str_payment_status_sale_sbp = str_payment_status_sale_sbp.Replace("sum", money);
                             _str_payment_status_sale_sbp = _str_payment_status_sale_sbp.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
-                            _str_payment_status_sale_sbp = _str_payment_status_sale_sbp.Replace("sale_code_authorization_terminal", cc.guid);                            
-                            while (1==1)
+                            _str_payment_status_sale_sbp = _str_payment_status_sale_sbp.Replace("sale_code_authorization_terminal", cc.guid);
+                            while (1 == 1)
                             {
                                 answerTerminal = new AnswerTerminal();
                                 send_command_acquiring_terminal(url, _str_payment_status_sale_sbp, ref complete, ref answerTerminal);
@@ -1231,7 +1246,7 @@ namespace Cash8
                                         }
                                     }
 
-                                        if (answerTerminal.сode_response_in_15_field == "R10")
+                                    if (answerTerminal.сode_response_in_15_field == "R10")
                                     {
                                         MessageBox.Show(" Операция отклонена ", "Оплата по терминалу");
                                         break;
@@ -1252,7 +1267,7 @@ namespace Cash8
                                         {
                                             MessageBox.Show(" Не получен ответ на запрос QR - кода ", "Оплата по терминалу");
                                             break;
-                                        }                                    
+                                        }
                                     }
                                     else if (answerTerminal.сode_response_in_15_field == "R13")
                                     {
@@ -1285,7 +1300,7 @@ namespace Cash8
                             {
                                 calculate();
                                 cc.recharge_note = "";
-                                MessageBox.Show(" Неудачная попытка получения оплаты ","СБП");
+                                MessageBox.Show(" Неудачная попытка получения оплаты ", "СБП");
                                 return;
                             }
                         }
@@ -1296,7 +1311,7 @@ namespace Cash8
                         }
                     }
                 }
-                
+
                 //Получить сумму наличных
                 //если это возврат и если сумма безнала меньше 1 тогда копейки прибавить к наличным
                 string sum_cash_pay = (Convert.ToDecimal(cash_sum.Text) - Convert.ToDecimal(remainder.Text)).ToString().Replace(",", ".");
@@ -1330,7 +1345,7 @@ namespace Cash8
                 }
 
                 //здесь надо понимать возврат сегодняшний или более ранний
-                
+
                 if ((MainStaticClass.IpAddressAcquiringTerminal.Trim() != "") && (MainStaticClass.IdAcquirerTerminal.Trim() != "") && (Convert.ToDouble(non_cash_sum.Text) > 0))
                 {
                     string url = "http://" + MainStaticClass.IpAddressAcquiringTerminal;
@@ -1439,7 +1454,7 @@ namespace Cash8
                     if (!complete)//ответ от терминала не удовлетворительный
                     {
                         calculate();
-                        MessageBox.Show(" Неудачная попытка возврата оплаты ","СБП");
+                        MessageBox.Show(" Неудачная попытка возврата оплаты ", "СБП");
                         return;
                     }
                     else
@@ -1454,9 +1469,8 @@ namespace Cash8
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }
-        }
+        }     
 
-               
         public class AnswerTerminal
         {
             public string code_authorization { get; set; }

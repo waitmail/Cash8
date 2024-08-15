@@ -1640,12 +1640,12 @@ namespace Cash8
             {
                 conn.Open();
                 string query = " SELECT SUM(d_c.cash_money)AS cash_money,SUM(d_c.non_cash_money)AS non_cash_money FROM" +
-                              " (SELECT cash_money, non_cash_money FROM checks_header where guid = "+ id_sale.ToString()+
+                              " (SELECT cash_money, non_cash_money FROM checks_header where guid = '"+ id_sale.ToString()+"'"+
                               "  AND checks_header.check_type = 0 AND checks_header.its_deleted = 0 "+
                               " AND checks_header.date_time_write BETWEEN '" + 
                               DateTime.Now.AddDays(-14).Date.ToString("dd-MM-yyyy") + "' AND  '" + DateTime.Now.AddDays(1).ToString("dd-MM-yyyy") + "'" +
                               " UNION ALL " +
-                              " SELECT - coalesce(SUM(cash_money),0), - coalesce(SUM(non_cash_money),0) FROM checks_header where id_sale = " + id_sale.ToString()+
+                              " SELECT - coalesce(SUM(cash_money),0), - coalesce(SUM(non_cash_money),0) FROM checks_header where id_sale = '" + id_sale.ToString()+"'"+
                               " AND checks_header.check_type = 1 AND checks_header.its_deleted = 0 "+
                               " AND checks_header.date_time_write BETWEEN '" + 
                               DateTime.Now.AddDays(-14).Date.ToString("dd-MM-yyyy") + "' AND  '" + DateTime.Now.AddDays(1).ToString("dd-MM-yyyy") + "') AS d_c ";//--delta_calculations
