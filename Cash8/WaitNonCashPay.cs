@@ -527,9 +527,9 @@ namespace Cash8
         {
             InitializeComponent();
             this.Load += WaitNonCashPay_Load;
-            this.FormClosing += WaitNonCashPay_FormClosing;           
+            this.FormClosing += WaitNonCashPay_FormClosing;
         }
-        
+
         private void WaitNonCashPay_FormClosing(object sender, FormClosingEventArgs e)
         {
             //if (!isOperationCompleted)
@@ -553,7 +553,7 @@ namespace Cash8
 
             // Запуск асинхронной процедуры с таймаутом
             var commandTask = send_command_acquiring_terminal(this.Url, this.Data, cts.Token);
-            var timeoutTask = Task.Delay(TimeSpan.FromSeconds(timeout));
+            var timeoutTask = Task.Delay(TimeSpan.FromSeconds(timeout+1));
 
             var completedTask = await Task.WhenAny(commandTask, timeoutTask);
 
@@ -583,7 +583,7 @@ namespace Cash8
         {
             labelTimer.Location = new System.Drawing.Point(
             progressBarNonCashPay.Location.X + (progressBarNonCashPay.Width - labelTimer.Width) / 2,
-            progressBarNonCashPay.Location.Y + (progressBarNonCashPay.Height - labelTimer.Height) / 2+50
+            progressBarNonCashPay.Location.Y + (progressBarNonCashPay.Height - labelTimer.Height) / 2 + 50
             );
             labelTimer.BringToFront();
         }
@@ -621,11 +621,14 @@ namespace Cash8
                 {
                     progressBarNonCashPay.Invoke((MethodInvoker)delegate
                     {
-                        progressBarNonCashPay.Value = (int)((double)timeElapsed / timeout * 100);
-                        labelTimer.Text = $"{timeElapsed} сек."; // Обновление текста Label
+                        if (timeElapsed <= timeout)
+                        {
+                            progressBarNonCashPay.Value = timeElapsed;//(int)((double)timeElapsed / timeout * 100);
+                            labelTimer.Text = $"{timeElapsed} сек."; // Обновление текста Label
+                        }
                         //CenterLabelOverProgressBar(); // Центрирование Label
                     });
-                }
+                }                
             }
             else
             {

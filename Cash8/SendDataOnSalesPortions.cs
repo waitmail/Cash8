@@ -37,7 +37,32 @@ namespace Cash8
                 }
                 this.Close();
             }
-        }        
+        }
+
+        private string get_numDocOnGuid(string guid)
+        {
+            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+            string result = "";
+            try
+            {
+                string query = "SELECT document_number FROM checks_header where guid='" + guid + "'";
+                conn.Open();
+                NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                result = command.ExecuteScalar().ToString();
+                conn.Close();
+                command.Dispose();
+            }
+            catch (Exception ex)
+            {
+
+            }
+            finally
+            {
+
+            }
+
+            return result;
+        }
 
         private void getdata_h()
         {
@@ -122,7 +147,8 @@ namespace Cash8
                     salesPortionsHeader.Id_transaction = reader["id_transaction"].ToString();
                     salesPortionsHeader.Id_transaction_sale = reader["id_transaction_sale"].ToString();
                     salesPortionsHeader.SumCashRemainder = reader["remainder"].ToString().Replace(",",".");
-                    salesPortionsHeader.NumOrder = reader["id_sale"].ToString();
+                    salesPortionsHeader.NumOrder4 = reader["id_sale"].ToString();
+                    salesPortionsHeader.NumOrder = get_numDocOnGuid(reader["id_sale"].ToString());
                     salesPortionsHeader.VizaD = reader["viza_d"].ToString();
                     if (salesPortionsHeader.VizaD == "")
                     {
@@ -653,6 +679,7 @@ namespace Cash8
             public string ClientInfo_name { get; set; }
             public string SumCashRemainder { get; set; }
             public string NumOrder { get; set; }
+            public string NumOrder4 { get; set; }
             public string VizaD { get; set; }
             public string SystemTaxation { get; set; }
             public string Guid { get; set; }

@@ -51,6 +51,7 @@
             this.pay_bonus_many = new System.Windows.Forms.TextBox();
             this.pay_bonus = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
+            this.checkBox_do_not_send_payment_to_the_terminal = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -159,6 +160,7 @@
             // 
             this.panel1.AutoSize = true;
             this.panel1.BackColor = System.Drawing.SystemColors.Control;
+            this.panel1.Controls.Add(this.checkBox_do_not_send_payment_to_the_terminal);
             this.panel1.Controls.Add(this.checkBox_payment_by_sbp);
             this.panel1.Controls.Add(this.label9);
             this.panel1.Controls.Add(this.non_cash_sum_kop);
@@ -396,6 +398,18 @@
             this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.label6.Visible = false;
             // 
+            // checkBox_do_not_send_payment_to_the_terminal
+            // 
+            this.checkBox_do_not_send_payment_to_the_terminal.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.checkBox_do_not_send_payment_to_the_terminal.AutoSize = true;
+            this.checkBox_do_not_send_payment_to_the_terminal.Location = new System.Drawing.Point(768, 363);
+            this.checkBox_do_not_send_payment_to_the_terminal.Name = "checkBox_do_not_send_payment_to_the_terminal";
+            this.checkBox_do_not_send_payment_to_the_terminal.Size = new System.Drawing.Size(15, 14);
+            this.checkBox_do_not_send_payment_to_the_terminal.TabIndex = 20;
+            this.checkBox_do_not_send_payment_to_the_terminal.UseVisualStyleBackColor = true;
+            this.checkBox_do_not_send_payment_to_the_terminal.Visible = false;
+            this.checkBox_do_not_send_payment_to_the_terminal.CheckedChanged += new System.EventHandler(this.checkBox_do_not_send_payment_to_the_terminal_CheckedChanged);
+            // 
             // Pay
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -440,5 +454,6 @@
         public System.Windows.Forms.TextBox non_cash_sum_kop;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.CheckBox checkBox_payment_by_sbp;
+        private System.Windows.Forms.CheckBox checkBox_do_not_send_payment_to_the_terminal;
     }
 }

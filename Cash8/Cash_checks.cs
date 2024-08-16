@@ -23,6 +23,7 @@ namespace Cash8
         private int count_pages = 0;
         private System.Timers.Timer timer = new System.Timers.Timer(60000);
         private DateTime timer_execute = DateTime.Now;
+        private ToolTip toolTip = new ToolTip();
 
         public Cash_checks()
         {
@@ -353,6 +354,12 @@ namespace Cash8
             {                
                 fill.BackColor= System.Drawing.Color.FromArgb(255, 255, 192);
             }
+
+            toolTip.ToolTipTitle = " Когда флажок выбран ";
+            toolTip.ToolTipIcon = ToolTipIcon.Info;
+            toolTip.IsBalloon = true; // Для отображения подсказки в виде "баллона"
+
+            toolTip.SetToolTip(this.checkBox_show_3_last_checks, "Отображать последние 3 чека");
         }
 
         protected override void OnClosed(EventArgs e)
@@ -757,6 +764,12 @@ namespace Cash8
         {
             KeyEventArgs e_key = new KeyEventArgs(Keys.Insert);
             OnKeyDown(e_key);
+        }
+
+        private void btn_check_actions_Click(object sender, EventArgs e)
+        {
+            CheckActions checkActions = new CheckActions();
+            checkActions.ShowDialog();
         }
     }
 }
