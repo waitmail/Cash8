@@ -408,7 +408,6 @@
             this.checkBox_do_not_send_payment_to_the_terminal.TabIndex = 20;
             this.checkBox_do_not_send_payment_to_the_terminal.UseVisualStyleBackColor = true;
             this.checkBox_do_not_send_payment_to_the_terminal.Visible = false;
-            this.checkBox_do_not_send_payment_to_the_terminal.CheckedChanged += new System.EventHandler(this.checkBox_do_not_send_payment_to_the_terminal_CheckedChanged);
             // 
             // Pay
             // 
