@@ -64,8 +64,12 @@ namespace Cash8
                     {
                         query = "SELECT code,name FROM clients where phone='" + txtB_client_code.Text.Trim() + "'";
                     }
+                    else
+                    {
+                        query = "SELECT code,name FROM clients where code='" + txtB_client_code.Text.Trim() + "'";
+                    }
                 }
-                if (query == "")
+                else                 
                 {
                     query = "SELECT code,name FROM clients where code='" + txtB_client_code.Text.Trim() + "'";
                 }
@@ -82,24 +86,28 @@ namespace Cash8
                         find_card = true;
                         txtB_client.Tag = reader["code"].ToString();
                         txtB_client.Text = reader["name"].ToString();
+                        txtB_client_code.Enabled = false;
                         break;
                     }
                     if (!find_card)
                     {
+                        MessageBox.Show("Клиент " + txtB_client_code.Text.Trim() + " не найден ");
                         foreach (DataRow row in dt1.Rows)
                         {
-                            row["price_at_discount"] = Convert.ToDecimal(row["price"]);
+                            row["price_at_discount"] = Convert.ToDecimal(row["price"]);                            
                         }
                     }
                     else
                     {
-                        if (find_phone)
-                        {
-                            MessageBox.Show("Клиент с "+(find_phone ? "кодом" : " номером телефона ") + txtB_client_code.Text.Trim()+ "не найден ");
-                        }
+                        //if (find_phone)
+                        //{
+                        //    MessageBox.Show("Клиент с "+(find_phone ? "кодом" : " номером телефона ") + txtB_client_code.Text.Trim()+ "не найден ");
+                        //}
                         foreach (DataRow row in dt1.Rows)
                         {
-                            row["price_at_discount"] = Convert.ToDecimal(row["price"]) - Convert.ToDecimal(row["price"]) * Convert.ToDecimal(0.05);
+                            row["price_at_discount"] = Math.Round(Convert.ToDecimal(row["price"]) - Convert.ToDecimal(row["price"]) * Convert.ToDecimal(0.05), 2);
+                            row["sum_full"] = Convert.ToDecimal(row["price"]) * Convert.ToDecimal(row["quantity"]);
+                            row["sum_at_discount"] = Convert.ToDecimal(row["price_at_discount"]) * Convert.ToDecimal(row["quantity"]);
                         }
                     }
                     txtB_client_code.Text = "";
@@ -125,9 +133,9 @@ namespace Cash8
 
         private void CheckActions_Resize(object sender, EventArgs e)
         {
-            dataGridView_tovar.Size = new Size(this.Width - 20, (this.Height - 80) / 2);
-            dataGridView_tovar_execute.Size = new Size(this.Width - 20, (this.Height - 180) / 2);
-            dataGridView_tovar_execute.Location = new Point(10, dataGridView_tovar_execute.Height + 130);
+            //dataGridView_tovar.Size = new Size(this.Width - 20, (this.Height - 80) / 2);
+            //dataGridView_tovar_execute.Size = new Size(this.Width - 20, (this.Height - 180) / 2);
+            //dataGridView_tovar_execute.Location = new Point(10, dataGridView_tovar_execute.Height + 130);
         }
 
         private void CheckActions_Load(object sender, EventArgs e)
@@ -394,7 +402,7 @@ namespace Cash8
                         {
                             if ((txtB_client.Tag.ToString() != ""))
                             {
-                                row["price_at_discount"] = Convert.ToDecimal(row["price"]) * Convert.ToDecimal(0.05);
+                                row["price_at_discount"] = Math.Round(Convert.ToDecimal(row["price"]) - Convert.ToDecimal(row["price"]) * Convert.ToDecimal(0.05),2);
                             }
                         }
                         else

@@ -35,8 +35,12 @@
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.txtB_client_code = new System.Windows.Forms.TextBox();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_tovar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_tovar_execute)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // txtB_input_code_or_barcode
@@ -55,22 +59,23 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridView_tovar.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView_tovar.Location = new System.Drawing.Point(9, 65);
+            this.dataGridView_tovar.Location = new System.Drawing.Point(3, 3);
             this.dataGridView_tovar.Name = "dataGridView_tovar";
             this.dataGridView_tovar.ReadOnly = true;
-            this.dataGridView_tovar.Size = new System.Drawing.Size(763, 222);
+            this.dataGridView_tovar.Size = new System.Drawing.Size(688, 238);
             this.dataGridView_tovar.TabIndex = 1;
             // 
             // dataGridView_tovar_execute
             // 
             this.dataGridView_tovar_execute.AllowUserToAddRows = false;
-            this.dataGridView_tovar_execute.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.dataGridView_tovar_execute.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridView_tovar_execute.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView_tovar_execute.Location = new System.Drawing.Point(9, 305);
+            this.dataGridView_tovar_execute.Location = new System.Drawing.Point(3, 247);
             this.dataGridView_tovar_execute.Name = "dataGridView_tovar_execute";
             this.dataGridView_tovar_execute.ReadOnly = true;
-            this.dataGridView_tovar_execute.Size = new System.Drawing.Size(763, 241);
+            this.dataGridView_tovar_execute.Size = new System.Drawing.Size(688, 238);
             this.dataGridView_tovar_execute.TabIndex = 2;
             // 
             // txtB_client
@@ -105,29 +110,62 @@
             // txtB_client_code
             // 
             this.txtB_client_code.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.txtB_client_code.Location = new System.Drawing.Point(540, 23);
+            this.txtB_client_code.Location = new System.Drawing.Point(552, 23);
             this.txtB_client_code.MaxLength = 13;
             this.txtB_client_code.Name = "txtB_client_code";
-            this.txtB_client_code.Size = new System.Drawing.Size(232, 29);
+            this.txtB_client_code.Size = new System.Drawing.Size(154, 29);
             this.txtB_client_code.TabIndex = 8;
+            // 
+            // dataGridView1
+            // 
+            this.dataGridView1.AllowUserToAddRows = false;
+            this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Location = new System.Drawing.Point(3, 491);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.ReadOnly = true;
+            this.dataGridView1.Size = new System.Drawing.Size(688, 239);
+            this.dataGridView1.TabIndex = 9;
+            // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel1.ColumnCount = 1;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.Controls.Add(this.dataGridView1, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.dataGridView_tovar_execute, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.dataGridView_tovar, 0, 0);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(12, 65);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 3;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 245F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(694, 733);
+            this.tableLayoutPanel1.TabIndex = 10;
             // 
             // CheckActions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(784, 562);
+            this.ClientSize = new System.Drawing.Size(715, 807);
+            this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.txtB_client_code);
             this.Controls.Add(this.textBox3);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.txtB_client);
-            this.Controls.Add(this.dataGridView_tovar_execute);
-            this.Controls.Add(this.dataGridView_tovar);
             this.Controls.Add(this.txtB_input_code_or_barcode);
             this.KeyPreview = true;
             this.Name = "CheckActions";
             this.Text = "Проверка акций";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_tovar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_tovar_execute)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.tableLayoutPanel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -142,5 +180,7 @@
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.TextBox textBox3;
         private System.Windows.Forms.TextBox txtB_client_code;
+        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
     }
 }

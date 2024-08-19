@@ -13936,7 +13936,7 @@ namespace Cash8
         {
             if (listView1.Items.Count == 0)
             {
-                MessageBox.Show(" Нет строк ", " Проверки переда записью документа ");
+                MessageBox.Show(" Нет строк ", " Проверки перед записью документа ");
                 return;
             }
 
