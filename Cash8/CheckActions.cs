@@ -30,6 +30,9 @@ namespace Cash8
             this.Resize += CheckActions_Resize;
             txtB_client_code.KeyPress += TxtB_client_code_KeyPress;
             dataGridView_tovar_execute.DataSourceChanged += DataGridView_tovar_execute_DataSourceChanged;
+            dataGridView_tovar_execute.DefaultCellStyle.Font = new Font("Arial", 14);
+            dataGridView_tovar.DefaultCellStyle.Font = new Font("Arial", 14);
+
         }
 
         private void DataGridView_tovar_execute_DataSourceChanged(object sender, EventArgs e)
@@ -129,6 +132,17 @@ namespace Cash8
                     }
                 }
             }
+            calculate();
+        }
+
+        private void calculate()
+        {
+            decimal d = 0;
+            foreach (DataRow row in dt1.Rows)
+            {
+                d  += Convert.ToDecimal(row["price_at_discount"]) * Convert.ToDecimal(row["quantity"]);
+            }
+            txtxB_summ.Text = d.ToString();
         }
 
         private void CheckActions_Resize(object sender, EventArgs e)
@@ -443,6 +457,7 @@ namespace Cash8
                     conn.Close();                    
                 }
             }
+            calculate();
         }
 
         private void TxtB_input_code_or_barcode_KeyPress(object sender, KeyPressEventArgs e)

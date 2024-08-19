@@ -37,6 +37,7 @@
             this.txtB_client_code = new System.Windows.Forms.TextBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.txtxB_summ = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_tovar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_tovar_execute)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -62,7 +63,7 @@
             this.dataGridView_tovar.Location = new System.Drawing.Point(3, 3);
             this.dataGridView_tovar.Name = "dataGridView_tovar";
             this.dataGridView_tovar.ReadOnly = true;
-            this.dataGridView_tovar.Size = new System.Drawing.Size(688, 238);
+            this.dataGridView_tovar.Size = new System.Drawing.Size(922, 238);
             this.dataGridView_tovar.TabIndex = 1;
             // 
             // dataGridView_tovar_execute
@@ -75,7 +76,7 @@
             this.dataGridView_tovar_execute.Location = new System.Drawing.Point(3, 247);
             this.dataGridView_tovar_execute.Name = "dataGridView_tovar_execute";
             this.dataGridView_tovar_execute.ReadOnly = true;
-            this.dataGridView_tovar_execute.Size = new System.Drawing.Size(688, 238);
+            this.dataGridView_tovar_execute.Size = new System.Drawing.Size(922, 238);
             this.dataGridView_tovar_execute.TabIndex = 2;
             // 
             // txtB_client
@@ -126,7 +127,7 @@
             this.dataGridView1.Location = new System.Drawing.Point(3, 491);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.Size = new System.Drawing.Size(688, 239);
+            this.dataGridView1.Size = new System.Drawing.Size(922, 239);
             this.dataGridView1.TabIndex = 9;
             // 
             // tableLayoutPanel1
@@ -145,14 +146,26 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 245F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(694, 733);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(928, 733);
             this.tableLayoutPanel1.TabIndex = 10;
+            // 
+            // txtxB_summ
+            // 
+            this.txtxB_summ.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.txtxB_summ.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.txtxB_summ.Location = new System.Drawing.Point(724, 26);
+            this.txtxB_summ.Name = "txtxB_summ";
+            this.txtxB_summ.ReadOnly = true;
+            this.txtxB_summ.Size = new System.Drawing.Size(211, 26);
+            this.txtxB_summ.TabIndex = 11;
+            this.txtxB_summ.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // CheckActions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(715, 807);
+            this.ClientSize = new System.Drawing.Size(949, 807);
+            this.Controls.Add(this.txtxB_summ);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.txtB_client_code);
             this.Controls.Add(this.textBox3);
@@ -182,5 +195,6 @@
         private System.Windows.Forms.TextBox txtB_client_code;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.TextBox txtxB_summ;
     }
 }
