@@ -1171,9 +1171,9 @@ namespace Cash8
 
                             AnswerTerminal answerTerminal = new AnswerTerminal();
 
-                            //if (MainStaticClass.Nick_Shop == "A01")
+                            //if ((MainStaticClass.Nick_Shop == "A01")|| (MainStaticClass.Nick_Shop == "E50"))
                             //{
-                            WaitNonCashPay waitNonCashPay = new WaitNonCashPay();
+                                WaitNonCashPay waitNonCashPay = new WaitNonCashPay();
                             waitNonCashPay.Url = url;
                             waitNonCashPay.Data = _str_command_sale_;
                             waitNonCashPay.cc = this.cc;
@@ -1186,6 +1186,7 @@ namespace Cash8
                             else
                             {
                                 MessageBox.Show("Результат команды не получен.\r\nНеудачная попытка опалты", "Неудачная попытка опалты");
+                                calculate();
                                 return;
                             }
                             //}

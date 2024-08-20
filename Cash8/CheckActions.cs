@@ -30,8 +30,8 @@ namespace Cash8
             this.Resize += CheckActions_Resize;
             txtB_client_code.KeyPress += TxtB_client_code_KeyPress;
             dataGridView_tovar_execute.DataSourceChanged += DataGridView_tovar_execute_DataSourceChanged;
-            dataGridView_tovar_execute.DefaultCellStyle.Font = new Font("Arial", 14);
-            dataGridView_tovar.DefaultCellStyle.Font = new Font("Arial", 14);
+            dataGridView_tovar_execute.DefaultCellStyle.Font = new Font("Arial", 12);
+            dataGridView_tovar.DefaultCellStyle.Font = new Font("Arial", 12);
 
         }
 
@@ -208,7 +208,7 @@ namespace Cash8
             dataGridView_tovar.Columns["tovar_name"].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
             // Устанавливаем перенос текста по словам для конкретной колонки
             dataGridView_tovar.Columns["tovar_name"].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-            dataGridView_tovar.Columns["tovar_name"].Width = 200;
+            dataGridView_tovar.Columns["tovar_name"].Width = 240;
 
             // Устанавливаем автоматическое изменение высоты строк
             dataGridView_tovar_execute.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
@@ -216,7 +216,7 @@ namespace Cash8
             dataGridView_tovar_execute.Columns["tovar_name"].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
             // Устанавливаем перенос текста по словам для конкретной колонки
             dataGridView_tovar.Columns["tovar_name"].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-            dataGridView_tovar_execute.Columns["tovar_name"].Width = 200;
+            dataGridView_tovar_execute.Columns["tovar_name"].Width = 240;
 
             foreach (DataGridViewColumn col in dataGridView_tovar.Columns)
             {
@@ -356,6 +356,93 @@ namespace Cash8
             return dt;
         }
 
+        /// <summary>
+        /// DataTable для 
+        /// показа участия в 
+        /// механикических акциях 
+        /// </summary>
+        /// <returns></returns>
+        private DataTable participation_mechanical_action()
+        {
+            DataTable dt = new DataTable();
+
+            DataColumn num_doc = new DataColumn();
+            num_doc.DataType = System.Type.GetType("System.Double");
+            num_doc.ColumnName = "num_doc";
+            dt.Columns.Add(num_doc);
+
+            DataColumn tip = new DataColumn();
+            tip.DataType = System.Type.GetType("System.Int32");
+            tip.ColumnName = "tip";
+            dt.Columns.Add(tip);
+
+            DataColumn comment = new DataColumn();
+            comment.DataType = System.Type.GetType("System.String");
+            comment.ColumnName = "comment";
+            dt.Columns.Add(comment);
+            
+            return dt;
+        }
+
+        private void get_participation_mechanical_action(string tovar_code)
+        {
+            NpgsqlConnection conn = null;
+            DataTable dt = participation_mechanical_action();
+
+            try
+            {
+                conn = MainStaticClass.NpgsqlConn();
+                conn.Open();
+                NpgsqlCommand command = new NpgsqlCommand();
+                command.Connection = conn;
+
+                string query = @"
+                            SELECT action_header.num_doc, action_header.comment, action_header.tip 
+                            FROM action_table 
+                            LEFT JOIN action_header ON action_table.num_doc = action_header.num_doc 
+                            WHERE @date_time between date_started and date_end
+                            AND
+                            ((LENGTH(@tovar_code) <= 6 AND action_table.code_tovar = @tovar_code) 
+                            OR 
+                            (LENGTH(@tovar_code) > 6 AND action_table.code_tovar IN 
+                            (SELECT tovar_code FROM public.barcode WHERE barcode = @tovar_code)))";
+
+                command.CommandText = query;
+                command.Parameters.AddWithValue("@tovar_code", tovar_code);
+                command.Parameters.AddWithValue("@date_time", DateTime.Now.ToString("yyyy-MM-dd"));
+
+                // Выполнение запроса и заполнение DataTable
+                using (NpgsqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        DataRow row = dt.NewRow();
+                        row["num_doc"] = reader["num_doc"];
+                        row["tip"] = reader["tip"];
+                        row["comment"] = reader["comment"];
+                        dt.Rows.Add(row);
+                    }
+                }
+                dataGridView_participation_mechanical_action.DataSource = dt;
+
+            }
+            catch (NpgsqlException ex)
+            {
+                MessageBox.Show("get_participation_mechanical_action" + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("get_participation_mechanical_action" + ex.Message);
+            }
+            finally
+            {
+                if (conn != null)
+                {
+                    conn.Close();
+                }
+            }
+
+        }
 
         /*Поиск товара по штрихкоду
         * и добвление его в табличную часть
@@ -393,6 +480,7 @@ namespace Cash8
 
                 while (reader.Read())
                 {
+                    get_participation_mechanical_action(barcode);
                     ТоварНайден = true;
                     DataRow row = null;
 
