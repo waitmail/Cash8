@@ -16,6 +16,8 @@ namespace Cash8
     {
         private DataTable dt1 = null;
         private DataTable dt2 = null;
+        private DataTable dt3 = null;
+
         public ArrayList action_barcode_list = new ArrayList();//Доступ из формы ввода акционного штрихкода 
 
         public CheckActions()
@@ -24,14 +26,17 @@ namespace Cash8
             this.txtB_input_code_or_barcode.KeyPress += TxtB_input_code_or_barcode_KeyPress;
             dt1 = create_dt(1);
             dt2 = create_dt(2);
+            dt3 = create_dt_participation_mechanical_action();
 
-           
+
+
             this.Load += CheckActions_Load;
             this.Resize += CheckActions_Resize;
             txtB_client_code.KeyPress += TxtB_client_code_KeyPress;
             dataGridView_tovar_execute.DataSourceChanged += DataGridView_tovar_execute_DataSourceChanged;
             dataGridView_tovar_execute.DefaultCellStyle.Font = new Font("Arial", 12);
             dataGridView_tovar.DefaultCellStyle.Font = new Font("Arial", 12);
+            dataGridView_participation_mechanical_action.DefaultCellStyle.Font = new Font("Arial", 12);
 
         }
 
@@ -138,9 +143,10 @@ namespace Cash8
         private void calculate()
         {
             decimal d = 0;
-            foreach (DataRow row in dt1.Rows)
+            foreach (DataRow row in dt2.Rows)
             {
-                d  += Convert.ToDecimal(row["price_at_discount"]) * Convert.ToDecimal(row["quantity"]);
+                //d  += Convert.ToDecimal(row["sum_at_discount"]) * Convert.ToDecimal(row["quantity"]);
+                d += Convert.ToDecimal(row["sum_at_discount"]);
             }
             txtxB_summ.Text = d.ToString();
         }
@@ -170,7 +176,7 @@ namespace Cash8
                 { "action2", "Уч. в акции"},
                 { "marking", "Марк./сертиф."},
                 { "promo_description", "Акция"}
-                
+
             };
 
             this.dataGridView_tovar.DataSource = dt1;
@@ -234,17 +240,41 @@ namespace Cash8
                 }
             }
 
+            dataGridView_participation_mechanical_action.DataSource = dt3;
 
-                // Устанавливаем автоматическое изменение высоты строк для конкретной колонки
-                //dataGridView_tovar_execute.Columns["tovar_name"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+             columnHeaders = new Dictionary<string, string>
+            {
+                {"num_doc", "N"},
+                {"tip", "Тип"},
+                { "comment", "Примечание"},
+                { "execution_order", "Приоритет"}
+            };
 
-                // Устанавливаем автоматическое изменение высоты строк для конкретной колонки
-                //dataGridView_tovar_execute.Columns["tovar_name"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-
-                // Устанавливаем автоматическое изменение высоты строк для конкретной колонки
-                //dataGridView_tovar.Columns["tovar_name"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-
+            foreach (KeyValuePair<string, string> entry in columnHeaders)
+            {
+                if (dataGridView_participation_mechanical_action.Columns.Contains(entry.Key))
+                {
+                    dataGridView_participation_mechanical_action.Columns[entry.Key].HeaderText = entry.Value;
+                }             
             }
+
+            // Устанавливаем автоматическое изменение высоты строк
+            dataGridView_participation_mechanical_action.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            // Устанавливаем перенос текста по словам для конкретной колонки
+            dataGridView_participation_mechanical_action.Columns["comment"].DefaultCellStyle.WrapMode = DataGridViewTriState.True;            
+            dataGridView_participation_mechanical_action.Columns["comment"].Width = 340;
+
+
+            // Устанавливаем автоматическое изменение высоты строк для конкретной колонки
+            //dataGridView_tovar_execute.Columns["tovar_name"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+
+            // Устанавливаем автоматическое изменение высоты строк для конкретной колонки
+            //dataGridView_tovar_execute.Columns["tovar_name"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+
+            // Устанавливаем автоматическое изменение высоты строк для конкретной колонки
+            //dataGridView_tovar.Columns["tovar_name"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+
+        }
 
         public DataTable create_dt(int variant)
         {
@@ -362,7 +392,7 @@ namespace Cash8
         /// механикических акциях 
         /// </summary>
         /// <returns></returns>
-        private DataTable participation_mechanical_action()
+        private DataTable create_dt_participation_mechanical_action()
         {
             DataTable dt = new DataTable();
 
@@ -372,7 +402,7 @@ namespace Cash8
             dt.Columns.Add(num_doc);
 
             DataColumn tip = new DataColumn();
-            tip.DataType = System.Type.GetType("System.Int32");
+            tip.DataType = System.Type.GetType("System.Int16");
             tip.ColumnName = "tip";
             dt.Columns.Add(tip);
 
@@ -380,14 +410,20 @@ namespace Cash8
             comment.DataType = System.Type.GetType("System.String");
             comment.ColumnName = "comment";
             dt.Columns.Add(comment);
-            
+
+            DataColumn execution_order = new DataColumn();
+            execution_order.DataType = System.Type.GetType("System.Int16");
+            execution_order.ColumnName = "execution_order";
+            dt.Columns.Add(execution_order);            
+
+
             return dt;
         }
 
         private void get_participation_mechanical_action(string tovar_code)
         {
             NpgsqlConnection conn = null;
-            DataTable dt = participation_mechanical_action();
+            dt3.Rows.Clear();
 
             try
             {
@@ -397,7 +433,8 @@ namespace Cash8
                 command.Connection = conn;
 
                 string query = @"
-                            SELECT action_header.num_doc, action_header.comment, action_header.tip 
+                            SELECT action_header.num_doc, action_header.comment, action_header.tip,
+                            action_header.execution_order 
                             FROM action_table 
                             LEFT JOIN action_header ON action_table.num_doc = action_header.num_doc 
                             WHERE @date_time between date_started and date_end
@@ -405,7 +442,7 @@ namespace Cash8
                             ((LENGTH(@tovar_code) <= 6 AND action_table.code_tovar = @tovar_code) 
                             OR 
                             (LENGTH(@tovar_code) > 6 AND action_table.code_tovar IN 
-                            (SELECT tovar_code FROM public.barcode WHERE barcode = @tovar_code)))";
+                            (SELECT tovar_code FROM public.barcode WHERE barcode = @tovar_code))) order by execution_order";
 
                 command.CommandText = query;
                 command.Parameters.AddWithValue("@tovar_code", tovar_code);
@@ -416,15 +453,16 @@ namespace Cash8
                 {
                     while (reader.Read())
                     {
-                        DataRow row = dt.NewRow();
+                        DataRow row = dt3.NewRow();
                         row["num_doc"] = reader["num_doc"];
                         row["tip"] = reader["tip"];
-                        row["comment"] = reader["comment"];
-                        dt.Rows.Add(row);
+                        row["comment"] = reader["comment"].ToString().Trim(); ;
+                        row["execution_order"] = reader["execution_order"];
+                        
+                        dt3.Rows.Add(row);
                     }
                 }
-                dataGridView_participation_mechanical_action.DataSource = dt;
-
+                //dataGridView_participation_mechanical_action.DataSource = dt3;
             }
             catch (NpgsqlException ex)
             {
