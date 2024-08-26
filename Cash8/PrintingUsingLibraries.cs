@@ -59,15 +59,19 @@ namespace Cash8
             fptr.queryData();
             if (fptr.errorCode() != 0)
             {
-                MessageBox.Show(" При проерке даты и времени в ФН произошла ошибка \r\n" + fptr.errorDescription(), " Проверка даты и времени в фн ");
-            }
-            DateTime dateTime = fptr.getParamDateTime(AtolConstants.LIBFPTR_PARAM_DATE_TIME);
-            if (Math.Abs((dateTime - DateTime.Now).Minutes) > minutes)//Поскольку может быть как больше так и меньше 
-            {
-                MessageBox.Show(" У ВАС ОТЛИЧАЕТСЯ ВРЕМЯ МЕЖДУ КОМПЬЮТЕРОМ И ФИСКАЛЬНЫМ РЕГИСТРАТОРОМ БОЛЬШЕ ЧЕМ НА 20 МИНУТ ОТПРАВЬТЕ ЗАЯВКУ В ИТ ОТДЕЛ  ", " Проверка даты и времени в фн ");
-                MainStaticClass.write_event_in_log(" Не схождение даты и времени между ФР и компьютером больше чем на 20 минут ", "Документ", "0");
-
+                MessageBox.Show(" При проверке даты и времени в ФН произошла ошибка \r\n" + fptr.errorDescription(), " Проверка даты и времени в фн ");
                 result = false;
+            }
+            else
+            {
+                DateTime dateTime = fptr.getParamDateTime(AtolConstants.LIBFPTR_PARAM_DATE_TIME);
+                if (Math.Abs((dateTime - DateTime.Now).Minutes) > minutes)//Поскольку может быть как больше так и меньше 
+                {
+                    MessageBox.Show(" У ВАС ОТЛИЧАЕТСЯ ВРЕМЯ МЕЖДУ КОМПЬЮТЕРОМ И ФИСКАЛЬНЫМ РЕГИСТРАТОРОМ БОЛЬШЕ ЧЕМ НА 20 МИНУТ ОТПРАВЬТЕ ЗАЯВКУ В ИТ ОТДЕЛ  ", " Проверка даты и времени в фн ");
+                    MainStaticClass.write_event_in_log(" Не схождение даты и времени между ФР и компьютером больше чем на 20 минут ", "Документ", "0");
+
+                    result = false;
+                }
             }
 
             return result;
@@ -522,10 +526,15 @@ namespace Cash8
 
 
             if (fptr.openReceipt() != 0)
-            {
+            {                
                 MessageBox.Show(string.Format("Ошибка при открытии чека.\nОшибка {0}: {1}", fptr.errorCode(), fptr.errorDescription()),
                         "Ошибка откртия чека", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 //fptr.close();
+                if (fptr.errorCode() == 82)
+                {
+                    fptr.cancelReceipt();
+                    MessageBox.Show("Попробуйте распечатать чек еще раз", "Ошибка при печати чека");
+                }
                 return;
             }
 
@@ -757,6 +766,7 @@ namespace Cash8
             }
             else
             {
+                MessageBox.Show("При печати чека произошли ошибки,печать чека будет отменена", "Печать чека");
                 fptr.cancelReceipt();
             }
         } 
@@ -1082,6 +1092,11 @@ namespace Cash8
                 MessageBox.Show(string.Format("Ошибка при открытии чека.\nОшибка {0}: {1}", fptr.errorCode(), fptr.errorDescription()),
                         "Ошибка откртия чека", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 //fptr.close();
+                if (fptr.errorCode() == 82)
+                {
+                    fptr.cancelReceipt();
+                    MessageBox.Show("Попробуйте распечатать чек еще раз", "Ошибка при печати чека");
+                }
                 return;
             }
 
@@ -1296,6 +1311,7 @@ namespace Cash8
             }
             else
             {
+                MessageBox.Show("При печати чека произошли ошибки,печать чека будет отменена", "Печать чека");
                     fptr.cancelReceipt();                
             }
         }
