@@ -69,6 +69,7 @@
             this.txtB_fn_ipaddr = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
+            this.comboBox_acquiring_bank = new System.Windows.Forms.ComboBox();
             this.groupBox_acquiring_terminal.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -132,7 +133,7 @@
             // 
             this.use_debug.AutoSize = true;
             this.use_debug.Enabled = false;
-            this.use_debug.Location = new System.Drawing.Point(11, 78);
+            this.use_debug.Location = new System.Drawing.Point(533, 434);
             this.use_debug.Name = "use_debug";
             this.use_debug.Size = new System.Drawing.Size(191, 17);
             this.use_debug.TabIndex = 22;
@@ -214,7 +215,7 @@
             // checkBox_print_m
             // 
             this.checkBox_print_m.AutoSize = true;
-            this.checkBox_print_m.Location = new System.Drawing.Point(11, 103);
+            this.checkBox_print_m.Location = new System.Drawing.Point(536, 402);
             this.checkBox_print_m.Name = "checkBox_print_m";
             this.checkBox_print_m.Size = new System.Drawing.Size(170, 17);
             this.checkBox_print_m.TabIndex = 61;
@@ -226,19 +227,21 @@
             this.comboBox_system_taxation.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_system_taxation.FormattingEnabled = true;
             this.comboBox_system_taxation.Items.AddRange(new object[] {
-            "Не выбрано",
+            "НЕ ВЫБРАНО",
             "ОСН",
-            "УСН",
-            " УСН + ПАТЕНТ"});
-            this.comboBox_system_taxation.Location = new System.Drawing.Point(353, 87);
+            "УСН (ДОХОДЫ МИНУС РАСХОДЫ)",
+            "УСН (ДОХОДЫ МИНУС РАСХОДЫ) + ПАТЕНТ",
+            "УСН ДОХОДЫ",
+            "УСН ДОХОДЫ + ПАТЕНТ"});
+            this.comboBox_system_taxation.Location = new System.Drawing.Point(127, 77);
             this.comboBox_system_taxation.Name = "comboBox_system_taxation";
-            this.comboBox_system_taxation.Size = new System.Drawing.Size(120, 21);
+            this.comboBox_system_taxation.Size = new System.Drawing.Size(370, 21);
             this.comboBox_system_taxation.TabIndex = 63;
             this.comboBox_system_taxation.SelectedIndexChanged += new System.EventHandler(this.comboBox_system_taxation_SelectedIndexChanged);
             // 
             // lbl_system_taxation
             // 
-            this.lbl_system_taxation.Location = new System.Drawing.Point(247, 78);
+            this.lbl_system_taxation.Location = new System.Drawing.Point(12, 77);
             this.lbl_system_taxation.Name = "lbl_system_taxation";
             this.lbl_system_taxation.Size = new System.Drawing.Size(100, 31);
             this.lbl_system_taxation.TabIndex = 64;
@@ -292,7 +295,7 @@
             // label5
             // 
             this.label5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label5.Location = new System.Drawing.Point(514, 190);
+            this.label5.Location = new System.Drawing.Point(514, 243);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(100, 31);
             this.label5.TabIndex = 72;
@@ -300,7 +303,7 @@
             // 
             // txtB_id_acquiring_terminal
             // 
-            this.txtB_id_acquiring_terminal.Location = new System.Drawing.Point(149, 59);
+            this.txtB_id_acquiring_terminal.Location = new System.Drawing.Point(149, 112);
             this.txtB_id_acquiring_terminal.MaxLength = 8;
             this.txtB_id_acquiring_terminal.Name = "txtB_id_acquiring_terminal";
             this.txtB_id_acquiring_terminal.Size = new System.Drawing.Size(72, 20);
@@ -308,7 +311,7 @@
             // 
             // label6
             // 
-            this.label6.Location = new System.Drawing.Point(514, 228);
+            this.label6.Location = new System.Drawing.Point(514, 281);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(72, 46);
             this.label6.TabIndex = 74;
@@ -316,7 +319,7 @@
             // 
             // txtB_ip_address_acquiring_terminal
             // 
-            this.txtB_ip_address_acquiring_terminal.Location = new System.Drawing.Point(595, 247);
+            this.txtB_ip_address_acquiring_terminal.Location = new System.Drawing.Point(595, 300);
             this.txtB_ip_address_acquiring_terminal.MaxLength = 21;
             this.txtB_ip_address_acquiring_terminal.Name = "txtB_ip_address_acquiring_terminal";
             this.txtB_ip_address_acquiring_terminal.Size = new System.Drawing.Size(129, 20);
@@ -324,10 +327,11 @@
             // 
             // groupBox_acquiring_terminal
             // 
+            this.groupBox_acquiring_terminal.Controls.Add(this.comboBox_acquiring_bank);
             this.groupBox_acquiring_terminal.Controls.Add(this.txtB_id_acquiring_terminal);
-            this.groupBox_acquiring_terminal.Location = new System.Drawing.Point(503, 140);
+            this.groupBox_acquiring_terminal.Location = new System.Drawing.Point(503, 137);
             this.groupBox_acquiring_terminal.Name = "groupBox_acquiring_terminal";
-            this.groupBox_acquiring_terminal.Size = new System.Drawing.Size(253, 178);
+            this.groupBox_acquiring_terminal.Size = new System.Drawing.Size(253, 232);
             this.groupBox_acquiring_terminal.TabIndex = 77;
             this.groupBox_acquiring_terminal.TabStop = false;
             this.groupBox_acquiring_terminal.Text = "Настройки эквайриногов терминала";
@@ -473,6 +477,19 @@
             this.label7.Text = "USB ==> COM";
             this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // comboBox_acquiring_bank
+            // 
+            this.comboBox_acquiring_bank.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox_acquiring_bank.FormattingEnabled = true;
+            this.comboBox_acquiring_bank.Items.AddRange(new object[] {
+            "НЕ ВЫБРАНО",
+            "РНКБ",
+            "СБЕР"});
+            this.comboBox_acquiring_bank.Location = new System.Drawing.Point(14, 51);
+            this.comboBox_acquiring_bank.Name = "comboBox_acquiring_bank";
+            this.comboBox_acquiring_bank.Size = new System.Drawing.Size(207, 21);
+            this.comboBox_acquiring_bank.TabIndex = 74;
+            // 
             // Constants
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -505,9 +522,9 @@
             this.Controls.Add(this.write);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.cash_desk_number);
-            this.Controls.Add(this.groupBox_acquiring_terminal);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.groupBox_acquiring_terminal);
             this.Name = "Constants";
             this.Text = "Константы";
             this.groupBox_acquiring_terminal.ResumeLayout(false);
@@ -565,5 +582,6 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox txtB_fn_ipaddr;
+        private System.Windows.Forms.ComboBox comboBox_acquiring_bank;
     }
 }

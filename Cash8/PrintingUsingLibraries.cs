@@ -378,6 +378,10 @@ namespace Cash8
             {
                 fptr.setParam(1055, AtolConstants.LIBFPTR_TT_USN_INCOME_OUTCOME);
             }
+            else if (MainStaticClass.SystemTaxation == 4)
+            {
+                fptr.setParam(1055, AtolConstants.LIBFPTR_TT_USN_INCOME);
+            }
 
             if ((check.check_type.SelectedIndex == 1) || !check.itsnew)//старый механизм работы с макрировкой, для возвратов так же пока старая схема
             {
@@ -424,7 +428,7 @@ namespace Cash8
 
                                 fptr.beginMarkingCodeValidation();
                             }
-                                                        
+
                             DateTime start_check = DateTime.Now;
                             uint validationError = 0;
                             while (true)
@@ -895,7 +899,14 @@ namespace Cash8
             }
             else if (variant == 1)
             {
-                fptr.setParam(1055, AtolConstants.LIBFPTR_TT_USN_INCOME_OUTCOME);
+                if (MainStaticClass.SystemTaxation == 3)
+                {
+                    fptr.setParam(1055, AtolConstants.LIBFPTR_TT_USN_INCOME_OUTCOME);
+                }
+                else if (MainStaticClass.SystemTaxation == 5)
+                {
+                    fptr.setParam(1055, AtolConstants.LIBFPTR_TT_USN_INCOME);
+                }
             }
             else
             {

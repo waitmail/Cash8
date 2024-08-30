@@ -1536,8 +1536,8 @@ namespace Cash8
             try
             {
                 conn.Open();
-                string query = "SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'constants'     AND column_name = 'fn_ipaddr'); ";
-                NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                string query = "SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'constants'     AND column_name = 'acquiring_bank'); ";
+                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 if (!Convert.ToBoolean(command.ExecuteScalar())) //не нашли такой колонки   
                 {
                     //check_add_field();
@@ -1570,8 +1570,8 @@ namespace Cash8
         ///// </summary>
         private void check_add_field()
         {
-            check_correct_type_column();
-            //check_exists_column();
+            //check_correct_type_column();
+            check_exists_column();
         }
 
 

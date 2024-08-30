@@ -124,7 +124,7 @@ namespace Cash8
                     " envd,pass_promo,print_m,system_taxation,work_schema,version_fn,enable_stock_processing_in_memory," +
                     " id_acquirer_terminal,ip_address_acquiring_terminal,self_service_kiosk,enable_cdn_markers, " +
                     " webservice_authorize,printing_using_libraries,fn_serial_port,get_weight_automatically,scale_serial_port,"+
-                    " variant_connect_fn,fn_ipaddr FROM constants";
+                    " variant_connect_fn,fn_ipaddr,acquiring_bank FROM constants";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
@@ -201,6 +201,7 @@ namespace Cash8
                     {
                         this.comboBox_scale_port.SelectedIndex = index;
                     }
+                    this.comboBox_acquiring_bank.SelectedIndex = Convert.ToInt16(reader["acquiring_bank"]);
                 }
                 reader.Close();
                 //if (nick_shop.Text.Trim() != "A01")
@@ -346,6 +347,8 @@ namespace Cash8
 
             string fn_serial_port = (comboBox_fn_port.Items.Count == 0 ? "" : (comboBox_fn_port.SelectedIndex == -1 ? "" : comboBox_fn_port.SelectedItem.ToString()));
             string scale_serial_port = (comboBox_scale_port.Items.Count == 0 ? "" : (comboBox_scale_port.SelectedIndex == -1 ? "" : comboBox_scale_port.SelectedItem.ToString()));
+            //string acquiring_bank  = (comboBox_acquiring_bank.Items.Count == 0 ? "" : (comboBox_acquiring_bank.SelectedIndex == -1 ? "" : comboBox_acquiring_bank.SelectedItem.ToString()));
+            
             string variant_connect_fn = comboBox_variant_connect_fn.SelectedIndex.ToString();
             string fn_ipaddr = txtB_fn_ipaddr.Text.Trim();
 
@@ -379,7 +382,8 @@ namespace Cash8
                     "scale_serial_port = '" + scale_serial_port + "'," +
                     "get_weight_automatically=" + get_weight_automatically+","+
                     "variant_connect_fn = " + variant_connect_fn+","+
-                    "fn_ipaddr='"+ fn_ipaddr+"'";
+                    "fn_ipaddr='"+ fn_ipaddr+"'"+","+
+                    "acquiring_bank= "+comboBox_acquiring_bank.SelectedIndex.ToString();
 
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 int resul_update = command.ExecuteNonQuery();
@@ -410,7 +414,8 @@ namespace Cash8
                         "scale_serial_port," +
                         "get_weight_automatically,"+
                         "variant_connect_fn,"+
-                        "fn_ipaddr) VALUES(" +
+                        "fn_ipaddr,"+
+                        "acquiring_bank) VALUES(" +
                         cash_desk_number.Text + ",'" +
                         nick_shop.Text + "'," +
                         get_use_debug() + ",'" +
@@ -435,7 +440,8 @@ namespace Cash8
                         scale_serial_port + "'," +
                         get_weight_automatically + ","+
                         variant_connect_fn+",'"+
-                        fn_ipaddr+"')";
+                        fn_ipaddr+"',"+
+                        comboBox_acquiring_bank.SelectedIndex.ToString()+")";
 
                     command = new NpgsqlCommand(query, conn);
                     command.ExecuteNonQuery();

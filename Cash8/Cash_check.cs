@@ -3137,7 +3137,7 @@ namespace Cash8
                                             {
                                                 if (!qr_code_lenght.Contains(this.qr_code.Trim().Length))
                                                 {
-                                                    MessageBox.Show(qr_code + "\r\n Ваш код маркировки имеет длину " + qr_code.Length.ToString() + " символов при этом он не входит в допустимый диапазок ", "Проверка qr-кода на допустимую длину");
+                                                    MessageBox.Show(qr_code + "\r\n Ваш код маркировки имеет длину " + qr_code.Length.ToString() + " символов при этом он не входит в допустимый диапазон ", "Проверка qr-кода на допустимую длину");
                                                     //MessageBox.Show("Длина введенного qr-кода не входит в диапазон допустимых ! \r\n ТОВАР В ЧЕК ДОБАВЛЕНЕ НЕ БУДЕТ!!! ", "Проверки введенного qr кода");
                                                     MainStaticClass.write_event_in_log("Длина введенного кода маркировки не входит в диапазон допустимых, он имеет длину " + qr_code.Length.ToString(), "Документ чек", numdoc.ToString());
                                                     error = true;
@@ -4389,13 +4389,14 @@ namespace Cash8
                 first_start_com_barcode_scaner();
                 selection_goods = true;
                 inputbarcode.Focus();
-                //список допустимых длин qr кодов
-                qr_code_lenght.Add(37);
-                qr_code_lenght.Add(83);
-                qr_code_lenght.Add(127);
-                qr_code_lenght.Add(115);
+                //список допустимых длин qr кодов                
                 qr_code_lenght.Add(30);
-                qr_code_lenght.Add(32);               
+                qr_code_lenght.Add(32);
+                qr_code_lenght.Add(37);
+                qr_code_lenght.Add(40);
+                qr_code_lenght.Add(83);
+                qr_code_lenght.Add(115);
+                qr_code_lenght.Add(127);
             }
             else
             {
@@ -4745,6 +4746,10 @@ namespace Cash8
         /// <returns></returns>
         public bool write_new_document(string pay, string sum_doc, string remainder, string pay_bonus_many, bool last_rewrite, string cash_money, string non_cash_money, string sertificate_money, string its_deleted)
         {
+            if ((sum_doc == "")|| (sum_doc == "0"))
+            {
+                sum_doc = calculation_of_the_sum_of_the_document().ToString();
+            }
             bonuses_it_is_written_off = Convert.ToDecimal(pay_bonus_many);
             bool result = false;
 
@@ -7285,7 +7290,18 @@ namespace Cash8
                 check.electronically = true;
             }
 
-            check.taxationType = (MainStaticClass.SystemTaxation == 1 ? "osn" : "usnIncomeOutcome");
+            if (MainStaticClass.SystemTaxation == 1)
+            {
+                check.taxationType = "osn";
+            }
+            else if (MainStaticClass.SystemTaxation == 2)
+            {
+                check.taxationType = "usnIncomeOutcome";
+            }
+            else if (MainStaticClass.SystemTaxation == 4)
+            {
+                check.taxationType = "usnIncome";
+            }                
 
             check.ignoreNonFiscalPrintErrors = false;
             //check.ignoreNonFiscalPrintErrors = true;
@@ -7910,7 +7926,14 @@ namespace Cash8
             }
             else if (variant == 1)
             {
-                check.taxationType = "usnIncomeOutcome";
+                if (MainStaticClass.SystemTaxation == 3)
+                {
+                    check.taxationType = "usnIncomeOutcome";
+                }
+                else if (MainStaticClass.SystemTaxation == 5)
+                {
+                    check.taxationType = "usnIncome";
+                }
             }
             else
             {
@@ -10493,7 +10516,7 @@ namespace Cash8
             {
                 if (MainStaticClass.Use_Fiscall_Print)
                 {
-                    if (MainStaticClass.SystemTaxation != 3)
+                    if ((MainStaticClass.SystemTaxation != 3)&&(MainStaticClass.SystemTaxation != 5))
                     {
                         if (!itc_printed())
                         {
@@ -10507,7 +10530,7 @@ namespace Cash8
                             }
                         }
                     }
-                    else if (MainStaticClass.SystemTaxation == 3)
+                    else if ((MainStaticClass.SystemTaxation == 3) || (MainStaticClass.SystemTaxation == 5))
                     {
                         if (!itc_printed()|| !itc_printed_p())
                         {
