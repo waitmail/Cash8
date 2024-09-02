@@ -3541,6 +3541,13 @@ namespace Cash8
                 mark_str = mark_str.Insert(38, GS1);
             }
 
+            if (mark_str.Length == 40)
+            {
+                //lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
+                mark_str = mark_str.Insert(24, GS1);
+                mark_str = mark_str.Insert(31, GS1);
+            }
+
             if (mark_str.Length == 37 && mark_str.Substring(16, 2) == "21")
             {
                 //lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
