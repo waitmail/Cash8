@@ -231,6 +231,11 @@
     <Compile Include="ReasonsDeletionCheck.Designer.cs">
       <DependentUpon>ReasonsDeletionCheck.cs</DependentUpon>
     </Compile>
+    <Compile Include="SberNative\AuthAnswer.cs" />
+    <Compile Include="SberNative\AuthAnswer13.cs" />
+    <Compile Include="SberNative\CommandWrapper.cs" />
+    <Compile Include="SberNative\Pilot.cs" />
+    <Compile Include="SberNative\TransactionType.cs" />
     <Compile Include="WaitNonCashPay.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -389,6 +394,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="SberDll\pinpad.ini">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Web References\DS\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
@@ -414,6 +422,24 @@
   <ItemGroup>
     <None Include="Web References\DS\DS.disco" />
     <None Include="Web References\DS\DS.wsdl" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="SberDll\gate.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SberDll\pilot_nt.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SberDll\sbrf.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SberDll\SBRFCOM.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SberDll\sb_kernel.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

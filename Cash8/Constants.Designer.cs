@@ -34,7 +34,6 @@
             this._close_ = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.nick_shop = new System.Windows.Forms.TextBox();
-            this.use_debug = new System.Windows.Forms.CheckBox();
             this.path_for_web_service = new System.Windows.Forms.TextBox();
             this.label15 = new System.Windows.Forms.Label();
             this.currency = new System.Windows.Forms.TextBox();
@@ -56,6 +55,7 @@
             this.label6 = new System.Windows.Forms.Label();
             this.txtB_ip_address_acquiring_terminal = new System.Windows.Forms.TextBox();
             this.groupBox_acquiring_terminal = new System.Windows.Forms.GroupBox();
+            this.comboBox_acquiring_bank = new System.Windows.Forms.ComboBox();
             this.checkBox_webservice_authorize = new System.Windows.Forms.CheckBox();
             this.checkBox_get_weight_automatically = new System.Windows.Forms.CheckBox();
             this.comboBox_scale_port = new System.Windows.Forms.ComboBox();
@@ -69,7 +69,6 @@
             this.txtB_fn_ipaddr = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
-            this.comboBox_acquiring_bank = new System.Windows.Forms.ComboBox();
             this.groupBox_acquiring_terminal.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -128,17 +127,6 @@
             this.nick_shop.Name = "nick_shop";
             this.nick_shop.Size = new System.Drawing.Size(75, 20);
             this.nick_shop.TabIndex = 5;
-            // 
-            // use_debug
-            // 
-            this.use_debug.AutoSize = true;
-            this.use_debug.Enabled = false;
-            this.use_debug.Location = new System.Drawing.Point(533, 434);
-            this.use_debug.Name = "use_debug";
-            this.use_debug.Size = new System.Drawing.Size(191, 17);
-            this.use_debug.TabIndex = 22;
-            this.use_debug.Text = "Отключить бонусную программу";
-            this.use_debug.UseVisualStyleBackColor = true;
             // 
             // path_for_web_service
             // 
@@ -336,6 +324,19 @@
             this.groupBox_acquiring_terminal.TabStop = false;
             this.groupBox_acquiring_terminal.Text = "Настройки эквайриногов терминала";
             // 
+            // comboBox_acquiring_bank
+            // 
+            this.comboBox_acquiring_bank.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox_acquiring_bank.FormattingEnabled = true;
+            this.comboBox_acquiring_bank.Items.AddRange(new object[] {
+            "НЕ ВЫБРАНО",
+            "РНКБ",
+            "СБЕР"});
+            this.comboBox_acquiring_bank.Location = new System.Drawing.Point(14, 51);
+            this.comboBox_acquiring_bank.Name = "comboBox_acquiring_bank";
+            this.comboBox_acquiring_bank.Size = new System.Drawing.Size(207, 21);
+            this.comboBox_acquiring_bank.TabIndex = 74;
+            // 
             // checkBox_webservice_authorize
             // 
             this.checkBox_webservice_authorize.AutoSize = true;
@@ -477,19 +478,6 @@
             this.label7.Text = "USB ==> COM";
             this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // comboBox_acquiring_bank
-            // 
-            this.comboBox_acquiring_bank.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox_acquiring_bank.FormattingEnabled = true;
-            this.comboBox_acquiring_bank.Items.AddRange(new object[] {
-            "НЕ ВЫБРАНО",
-            "РНКБ",
-            "СБЕР"});
-            this.comboBox_acquiring_bank.Location = new System.Drawing.Point(14, 51);
-            this.comboBox_acquiring_bank.Name = "comboBox_acquiring_bank";
-            this.comboBox_acquiring_bank.Size = new System.Drawing.Size(207, 21);
-            this.comboBox_acquiring_bank.TabIndex = 74;
-            // 
             // Constants
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -515,7 +503,6 @@
             this.Controls.Add(this.currency);
             this.Controls.Add(this.path_for_web_service);
             this.Controls.Add(this.label15);
-            this.Controls.Add(this.use_debug);
             this.Controls.Add(this.nick_shop);
             this.Controls.Add(this.label2);
             this.Controls.Add(this._close_);
@@ -547,7 +534,6 @@
         private System.Windows.Forms.Button _close_;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox nick_shop;
-        private System.Windows.Forms.CheckBox use_debug;
         private System.Windows.Forms.TextBox path_for_web_service;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.TextBox currency;

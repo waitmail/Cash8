@@ -124,6 +124,7 @@ namespace Cash8
         private static int get_weight_automatically = -1;
         private static string scale_serial_port = "";
         private static string fn_ipaddr = "";
+        private static int acquiring_bank = -1;
 
         public static void validate_date_time_with_fn(int minutes)
         {
@@ -169,8 +170,42 @@ namespace Cash8
                 }
             }
         }
-
-
+               
+        public static int GetAcquiringBank
+        {
+            get
+            {
+                if (acquiring_bank == -1)
+                {
+                    NpgsqlConnection conn = null;
+                    NpgsqlCommand command = null;
+                    conn = MainStaticClass.NpgsqlConn();
+                    try
+                    {
+                        conn.Open();
+                        string query = "SELECT acquiring_bank FROM constants";
+                        command = new NpgsqlCommand(query, conn);
+                        acquiring_bank = Convert.ToInt16(command.ExecuteScalar());
+                    }
+                    catch (NpgsqlException ex)
+                    {
+                        MessageBox.Show("Ошибка при чтении fn_ipaddr" + ex.ToString());
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Ошибка при чтении fn_ipaddr" + ex.ToString());
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                }
+                return acquiring_bank;
+            }
+        }
 
         public static string GetFnIpaddr
         {
@@ -184,17 +219,17 @@ namespace Cash8
                     try
                     {
                         conn.Open();
-                        string query = "SELECT fn_ipaddr FROM constants";
+                        string query = "SELECT acquiring_bank FROM constants";
                         command = new NpgsqlCommand(query, conn);
                         fn_ipaddr = command.ExecuteScalar().ToString();
                     }
                     catch (NpgsqlException ex)
                     {
-                        MessageBox.Show("Ошибка при чтении fn_ipaddr" + ex.ToString());
+                        MessageBox.Show("Ошибка при чтении acquiring_bank" + ex.ToString());
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Ошибка при чтении fn_ipaddr" + ex.ToString());
+                        MessageBox.Show("Ошибка при чтении acquiring_bank" + ex.ToString());
                     }
                     finally
                     {

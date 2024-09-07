@@ -119,7 +119,7 @@ namespace Cash8
             {
                 conn = MainStaticClass.NpgsqlConn();
                 conn.Open();
-                string query = "SELECT nick_shop,cash_desk_number,use_debug,code_shop," +
+                string query = "SELECT nick_shop,cash_desk_number,code_shop," +
                     " path_for_web_service,currency,unloading_period,last_date_download_bonus_clients," +
                     " envd,pass_promo,print_m,system_taxation,work_schema,version_fn,enable_stock_processing_in_memory," +
                     " id_acquirer_terminal,ip_address_acquiring_terminal,self_service_kiosk,enable_cdn_markers, " +
@@ -132,10 +132,10 @@ namespace Cash8
                     this.nick_shop.Text = reader["nick_shop"].ToString();
                     this.cash_desk_number.Text = reader["cash_desk_number"].ToString();
                     m_cash_desk_number = Convert.ToInt32(reader["cash_desk_number"]);
-                    if (Convert.ToBoolean(reader["use_debug"]))
-                    {
-                        this.use_debug.CheckState = CheckState.Checked;
-                    }
+                    //if (Convert.ToBoolean(reader["use_debug"]))
+                    //{
+                    //    this.use_debug.CheckState = CheckState.Checked;
+                    //}
                     //this.code_shop.Text = reader["code_shop"].ToString();
                     this.path_for_web_service.Text = reader["path_for_web_service"].ToString();
                     this.currency.Text = reader["currency"].ToString();
@@ -360,7 +360,7 @@ namespace Cash8
                 string query = "UPDATE constants SET " +
                     "cash_desk_number =" + cash_desk_number.Text + "," +
                     "nick_shop ='" + nick_shop.Text + "'," +
-                    "use_debug =" + get_use_debug() + "," +
+                    //"use_debug =" + get_use_debug() + "," +
                     "path_for_web_service ='" + path_for_web_service.Text + "'," +
                     "currency ='" + currency.Text + "'," +
                     "unloading_period =" + unloading_period.Text + "," +
@@ -391,7 +391,7 @@ namespace Cash8
                 {
                     query = "INSERT INTO constants(cash_desk_number," +
                         "nick_shop," +
-                        "use_debug," +
+                        //"use_debug," +
                         "path_for_web_service," +
                         "currency," +
                         "unloading_period," +
@@ -418,7 +418,7 @@ namespace Cash8
                         "acquiring_bank) VALUES(" +
                         cash_desk_number.Text + ",'" +
                         nick_shop.Text + "'," +
-                        get_use_debug() + ",'" +
+                        //get_use_debug() + ",'" +
                         path_for_web_service.Text + "','" +
                         currency.Text + "','" +
                         unloading_period.Text + "','" +
@@ -458,17 +458,17 @@ namespace Cash8
             }
         }
 
-        private string get_use_debug()
-        {
-            if (use_debug.CheckState == CheckState.Checked)
-            {
-                return true.ToString();
-            }
-            else
-            {
-                return false.ToString();
-            }
-        }
+        //private string get_use_debug()
+        //{
+        //    if (use_debug.CheckState == CheckState.Checked)
+        //    {
+        //        return true.ToString();
+        //    }
+        //    else
+        //    {
+        //        return false.ToString();
+        //    }
+        //}
 
         private void comboBox_system_taxation_SelectedIndexChanged(object sender, EventArgs e)
         {

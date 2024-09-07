@@ -1081,7 +1081,7 @@ namespace Cash8
                 }
                 //Получаем копейки которые необходимо распределить
                 double total = Convert.ToDouble(pay_sum.Text);
-                double bonus = Convert.ToDouble(pay_bonus_many.Text);
+                //double bonus = Convert.ToDouble(pay_bonus_many.Text);
 
                 //if (!MainStaticClass.get_use_debug())
                 //{                    
@@ -1091,26 +1091,26 @@ namespace Cash8
                     //***********************************************   
                     if ((MainStaticClass.GetWorkSchema == 1) || (MainStaticClass.GetWorkSchema == 3) || (MainStaticClass.GetWorkSchema == 4))
                     {
-                        if (Convert.ToDecimal(pay_bonus_many.Text) > 0)
-                        {
-                            if (Convert.ToDecimal(non_cash_sum.Text) == 0)
-                            {
-                                cc.distribute(Convert.ToDouble(pay_bonus_many.Text) + (total - (int)total), total);//теперь бонусы 
-                            }
-                            else
-                            {
-                                cc.distribute(Convert.ToDouble(pay_bonus_many.Text), total);//теперь бонусы 
-                            }
-                        }
-                        else
-                        {
+                        //if (Convert.ToDecimal(pay_bonus_many.Text) > 0)
+                        //{
+                        //    if (Convert.ToDecimal(non_cash_sum.Text) == 0)
+                        //    {
+                        //        cc.distribute(Convert.ToDouble(pay_bonus_many.Text) + (total - (int)total), total);//теперь бонусы 
+                        //    }
+                        //    else
+                        //    {
+                        //        cc.distribute(Convert.ToDouble(pay_bonus_many.Text), total);//теперь бонусы 
+                        //    }
+                        //}
+                        //else
+                        //{
 
-                            if (Convert.ToDecimal(non_cash_sum.Text) == 0)
-                            {
-                                cc.distribute(Math.Round(total - (int)total, 2, MidpointRounding.ToEven), total);//теперь бонусы 
-                            }
-
+                        if (Convert.ToDecimal(non_cash_sum.Text) == 0)
+                        {
+                            cc.distribute(Math.Round(total - (int)total, 2, MidpointRounding.ToEven), total);
                         }
+
+                        //}
                     }
                     //else if (MainStaticClass.GetWorkSchema == 2)
                     //{
@@ -1154,160 +1154,182 @@ namespace Cash8
                 {
                     MessageBox.Show(" При распределении расчетов получилась отрицательная сумма в строке, попробуйте ввести суммы оплаты еще раз");
                     return;
-                }               
+                }
 
                 //параметры подключение терминала заполнены и сумма по карте к оплате заполнена
+
                 if ((MainStaticClass.IpAddressAcquiringTerminal.Trim() != "") && (MainStaticClass.IdAcquirerTerminal.Trim() != "") && (Convert.ToDouble(non_cash_sum.Text) > 0))
                 {
                     if (checkBox_do_not_send_payment_to_the_terminal.CheckState == CheckState.Unchecked)
                     {
-                        if ((checkBox_payment_by_sbp.CheckState != CheckState.Checked) && (checkBox_do_not_send_payment_to_the_terminal.CheckState == CheckState.Unchecked))
+                        string money = ((Convert.ToDouble(this.non_cash_sum.Text.Trim()) + Convert.ToDouble(non_cash_sum_kop.Text) / 100) * 100).ToString();
+
+                        if (MainStaticClass.GetAcquiringBank == 1) //РНКБ
                         {
-                            string url = "http://" + MainStaticClass.IpAddressAcquiringTerminal;
-                            string money = ((Convert.ToDouble(this.non_cash_sum.Text.Trim()) + Convert.ToDouble(non_cash_sum_kop.Text) / 100) * 100).ToString();
-                            string _str_command_sale_ = str_command_sale.Replace("sum", money);
-                            _str_command_sale_ = _str_command_sale_.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
-                            //MessageBox.Show(_str_command_sale_);
+                            //if ((checkBox_payment_by_sbp.CheckState != CheckState.Checked) && (checkBox_do_not_send_payment_to_the_terminal.CheckState == CheckState.Unchecked))
+                            if (checkBox_payment_by_sbp.CheckState != CheckState.Checked)
+                            {
+                                string url = "http://" + MainStaticClass.IpAddressAcquiringTerminal;
+                                //string money = ((Convert.ToDouble(this.non_cash_sum.Text.Trim()) + Convert.ToDouble(non_cash_sum_kop.Text) / 100) * 100).ToString();
+                                string _str_command_sale_ = str_command_sale.Replace("sum", money);
+                                _str_command_sale_ = _str_command_sale_.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
+                                //MessageBox.Show(_str_command_sale_);
 
-                            AnswerTerminal answerTerminal = new AnswerTerminal();
+                                AnswerTerminal answerTerminal = new AnswerTerminal();
 
-                            //if ((MainStaticClass.Nick_Shop == "A01")|| (MainStaticClass.Nick_Shop == "E50"))
-                            //{
+                                //if ((MainStaticClass.Nick_Shop == "A01")|| (MainStaticClass.Nick_Shop == "E50"))
+                                //{
                                 WaitNonCashPay waitNonCashPay = new WaitNonCashPay();
-                            waitNonCashPay.Url = url;
-                            waitNonCashPay.Data = _str_command_sale_;
-                            waitNonCashPay.cc = this.cc;
-                            waitNonCashPay.ShowDialog();
-                            if (waitNonCashPay.commandResult != null)
-                            {
-                                answerTerminal = waitNonCashPay.commandResult.AnswerTerminal;
-                                complete = waitNonCashPay.commandResult.Status;
-                            }
-                            else
-                            {
-                                MessageBox.Show("Результат команды не получен.\r\nНеудачная попытка опалты", "Неудачная попытка опалты");
-                                calculate();
-                                return;
-                            }
-                            //}
-                            //else
-                            //{
-                            //    send_command_acquiring_terminal(url, _str_command_sale_, ref complete, ref answerTerminal);
-                            //}
-
-                            if (!complete)//ответ от терминала не удовлетворительный
-                            {
-                                calculate();
-                                cc.recharge_note = "";
-                                MessageBox.Show(" Неудачная попытка получения оплаты ", "Оплата по терминалу");
-                                return;
-                            }
-                            else
-                            {
-                                cc.code_authorization_terminal = answerTerminal.code_authorization;     //13 поле
-                                cc.id_transaction_terminal = answerTerminal.number_reference;  //14 поле
-                            }
-                        }
-                        else
-                        {
-                            //if(checkBox_do_not_send_payment_to_the_terminal.CheckState == CheckState.Unchecked)
-                            string url = "http://" + MainStaticClass.IpAddressAcquiringTerminal;
-                            string money = ((Convert.ToDouble(this.non_cash_sum.Text.Trim()) + Convert.ToDouble(non_cash_sum_kop.Text) / 100) * 100).ToString();
-                            string _str_sale_sbp = str_sale_sbp.Replace("sum", money);
-                            _str_sale_sbp = _str_sale_sbp.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
-                            _str_sale_sbp = _str_sale_sbp.Replace("guid", cc.guid);
-                            ////MessageBox.Show(_str_command_sale_);
-                            AnswerTerminal answerTerminal = new AnswerTerminal();
-                            send_command_acquiring_terminal(url, _str_sale_sbp, ref complete, ref answerTerminal);
-                            if (!complete)//ответ от терминала не удовлетворительный, значит операция в обработке необходим дополнительный запрос
-                            {
-                                string _str_payment_status_sale_sbp = str_payment_status_sale_sbp.Replace("sum", money);
-                                _str_payment_status_sale_sbp = _str_payment_status_sale_sbp.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
-                                _str_payment_status_sale_sbp = _str_payment_status_sale_sbp.Replace("sale_code_authorization_terminal", cc.guid);
-                                while (1 == 1)
+                                waitNonCashPay.Url = url;
+                                waitNonCashPay.Data = _str_command_sale_;
+                                waitNonCashPay.cc = this.cc;
+                                waitNonCashPay.ShowDialog();
+                                if (waitNonCashPay.commandResult != null)
                                 {
-                                    answerTerminal = new AnswerTerminal();
-                                    send_command_acquiring_terminal(url, _str_payment_status_sale_sbp, ref complete, ref answerTerminal);
-                                    if (complete)//получен ответ об успешной оплате, прерываем цикл
-                                    {
-                                        break;
-                                    }
-                                    else
-                                    {
-                                        if (answerTerminal.сode_response_in_15_field == "R00")//Операция в обработке 
-                                        {
-                                            if (answerTerminal.сode_response_in_39_field == "0")
-                                            {
-                                                continue;
-                                            }
-                                        }
-
-                                        if (answerTerminal.сode_response_in_15_field == "R10")
-                                        {
-                                            MessageBox.Show(" Операция отклонена ", "Оплата по терминалу");
-                                            break;
-                                        }
-                                        else if (answerTerminal.сode_response_in_15_field == "R11")
-                                        {
-                                            MessageBox.Show(" Операции по QR коду не существует. ", "Оплата по терминалу");
-                                            break;
-                                        }
-                                        else if (answerTerminal.сode_response_in_15_field == "R12")
-                                        {
-                                            if (answerTerminal.сode_response_in_39_field == "0")
-                                            {
-                                                MessageBox.Show(" Не получен ответ на запрос статуса ", "Оплата по терминалу");
-                                                break;
-                                            }
-                                            else if (answerTerminal.сode_response_in_39_field == "16")
-                                            {
-                                                MessageBox.Show(" Не получен ответ на запрос QR - кода ", "Оплата по терминалу");
-                                                break;
-                                            }
-                                        }
-                                        else if (answerTerminal.сode_response_in_15_field == "R13")
-                                        {
-                                            MessageBox.Show(" Запрос статуса не отправлен ", "Оплата по терминалу");
-                                            break;
-                                        }
-                                        else if (answerTerminal.сode_response_in_15_field == "R14")
-                                        {
-                                            MessageBox.Show(" Операция не добавлена в базу транзакций терминала ", "Оплата по терминалу");
-                                            break;
-                                        }
-                                        if (answerTerminal.error)
-                                        {
-                                            if (answerTerminal.error_code != 404)
-                                            {
-                                                if (MessageBox.Show(" Продолжать опрос об оплате клиента по СБП ", "Продолжать опрос об оплате клиента по СБП", MessageBoxButtons.YesNo) == DialogResult.No)
-                                                {
-                                                    //пользователь отказался от дальнейшего ожидания информации об оплате
-                                                    break;
-                                                }
-                                            }
-                                            else
-                                            {
-                                                break;
-                                            }
-                                        }
-                                    }
+                                    answerTerminal = waitNonCashPay.commandResult.AnswerTerminal;
+                                    complete = waitNonCashPay.commandResult.Status;
                                 }
-                                if (!complete)//если не удалось получить информацию об успешной оплате
+                                else
+                                {
+                                    MessageBox.Show("Результат команды не получен.\r\nНеудачная попытка опалты", "Неудачная попытка опалты");
+                                    calculate();
+                                    return;
+                                }
+                                //}
+                                //else
+                                //{
+                                //    send_command_acquiring_terminal(url, _str_command_sale_, ref complete, ref answerTerminal);
+                                //}
+
+                                if (!complete)//ответ от терминала не удовлетворительный
                                 {
                                     calculate();
                                     cc.recharge_note = "";
-                                    MessageBox.Show(" Неудачная попытка получения оплаты ", "СБП");
+                                    MessageBox.Show(" Неудачная попытка получения оплаты ", "Оплата по терминалу");
                                     return;
                                 }
+                                else
+                                {
+                                    cc.code_authorization_terminal = answerTerminal.code_authorization;     //13 поле
+                                    cc.id_transaction_terminal = answerTerminal.number_reference;  //14 поле
+                                }
                             }
-                            else//был сразу получен успешный ответ по по оплате СБП
+                            else
                             {
-                                cc.code_authorization_terminal = answerTerminal.code_authorization;     //13 поле
-                                cc.id_transaction_terminal = answerTerminal.number_reference;           //14 поле
+                                //if(checkBox_do_not_send_payment_to_the_terminal.CheckState == CheckState.Unchecked)
+                                string url = "http://" + MainStaticClass.IpAddressAcquiringTerminal;
+                                //string money = ((Convert.ToDouble(this.non_cash_sum.Text.Trim()) + Convert.ToDouble(non_cash_sum_kop.Text) / 100) * 100).ToString();
+                                string _str_sale_sbp = str_sale_sbp.Replace("sum", money);
+                                _str_sale_sbp = _str_sale_sbp.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
+                                _str_sale_sbp = _str_sale_sbp.Replace("guid", cc.guid);
+                                ////MessageBox.Show(_str_command_sale_);
+                                AnswerTerminal answerTerminal = new AnswerTerminal();
+                                send_command_acquiring_terminal(url, _str_sale_sbp, ref complete, ref answerTerminal);
+                                if (!complete)//ответ от терминала не удовлетворительный, значит операция в обработке необходим дополнительный запрос
+                                {
+                                    string _str_payment_status_sale_sbp = str_payment_status_sale_sbp.Replace("sum", money);
+                                    _str_payment_status_sale_sbp = _str_payment_status_sale_sbp.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
+                                    _str_payment_status_sale_sbp = _str_payment_status_sale_sbp.Replace("sale_code_authorization_terminal", cc.guid);
+                                    while (1 == 1)
+                                    {
+                                        answerTerminal = new AnswerTerminal();
+                                        send_command_acquiring_terminal(url, _str_payment_status_sale_sbp, ref complete, ref answerTerminal);
+                                        if (complete)//получен ответ об успешной оплате, прерываем цикл
+                                        {
+                                            break;
+                                        }
+                                        else
+                                        {
+                                            if (answerTerminal.сode_response_in_15_field == "R00")//Операция в обработке 
+                                            {
+                                                if (answerTerminal.сode_response_in_39_field == "0")
+                                                {
+                                                    continue;
+                                                }
+                                            }
+
+                                            if (answerTerminal.сode_response_in_15_field == "R10")
+                                            {
+                                                MessageBox.Show(" Операция отклонена ", "Оплата по терминалу");
+                                                break;
+                                            }
+                                            else if (answerTerminal.сode_response_in_15_field == "R11")
+                                            {
+                                                MessageBox.Show(" Операции по QR коду не существует. ", "Оплата по терминалу");
+                                                break;
+                                            }
+                                            else if (answerTerminal.сode_response_in_15_field == "R12")
+                                            {
+                                                if (answerTerminal.сode_response_in_39_field == "0")
+                                                {
+                                                    MessageBox.Show(" Не получен ответ на запрос статуса ", "Оплата по терминалу");
+                                                    break;
+                                                }
+                                                else if (answerTerminal.сode_response_in_39_field == "16")
+                                                {
+                                                    MessageBox.Show(" Не получен ответ на запрос QR - кода ", "Оплата по терминалу");
+                                                    break;
+                                                }
+                                            }
+                                            else if (answerTerminal.сode_response_in_15_field == "R13")
+                                            {
+                                                MessageBox.Show(" Запрос статуса не отправлен ", "Оплата по терминалу");
+                                                break;
+                                            }
+                                            else if (answerTerminal.сode_response_in_15_field == "R14")
+                                            {
+                                                MessageBox.Show(" Операция не добавлена в базу транзакций терминала ", "Оплата по терминалу");
+                                                break;
+                                            }
+                                            if (answerTerminal.error)
+                                            {
+                                                if (answerTerminal.error_code != 404)
+                                                {
+                                                    if (MessageBox.Show(" Продолжать опрос об оплате клиента по СБП ", "Продолжать опрос об оплате клиента по СБП", MessageBoxButtons.YesNo) == DialogResult.No)
+                                                    {
+                                                        //пользователь отказался от дальнейшего ожидания информации об оплате
+                                                        break;
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if (!complete)//если не удалось получить информацию об успешной оплате
+                                    {
+                                        calculate();
+                                        cc.recharge_note = "";
+                                        MessageBox.Show(" Неудачная попытка получения оплаты ", "СБП");
+                                        return;
+                                    }
+                                }
+                                else//был сразу получен успешный ответ по по оплате СБП
+                                {
+                                    cc.code_authorization_terminal = answerTerminal.code_authorization;     //13 поле
+                                    cc.id_transaction_terminal = answerTerminal.number_reference;           //14 поле
+                                }
                             }
+                        }
+                        else if (MainStaticClass.GetAcquiringBank == 2)//СБЕР
+                        {
+                            try
+                            {
+                                AuthAnswer13 authAnswer = CommandWrapper.Authorization(Convert.ToInt32(money));
+                                cc.id_transaction_terminal = authAnswer.RRN;
+                                //Trace.WriteLine("Списание произвели. RRN:{authAnswer.RRN}. CardNumber:{authAnswer.CardID}");
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show("Произошла ошибка при попытке оплаты по терминалу \r\n"+ex.Message);
+                                return;
+                            }                            
                         }
                     }
                 }
+
 
                 //Получить сумму наличных
                 //если это возврат и если сумма безнала меньше 1 тогда копейки прибавить к наличным
@@ -1327,7 +1349,7 @@ namespace Cash8
                     this.Close();
                 }
             }
-            else
+            else//ЭТО ВОЗВРАТ
             {
 
                 string sum_cash_pay = (Convert.ToDecimal(cash_sum.Text) - Convert.ToDecimal(remainder.Text)).ToString().Replace(",", ".");
@@ -1347,120 +1369,140 @@ namespace Cash8
                 {
                     if (checkBox_do_not_send_payment_to_the_terminal.CheckState == CheckState.Unchecked)
                     {
-                        string url = "http://" + MainStaticClass.IpAddressAcquiringTerminal;
                         string money = ((Convert.ToDouble(this.non_cash_sum.Text.Trim()) + Convert.ToDouble(non_cash_sum_kop.Text) / 100) * 100).ToString();
-                        //Поскольку нет автоматической конвертации отмены в возврат, то необходимо 2 варианта печати для возвратов                     
-                        DateTime today = DateTime.Today;
-                        AnswerTerminal answerTerminal = new AnswerTerminal();
-                        if (checkBox_payment_by_sbp.CheckState != CheckState.Checked)
+
+                        if (MainStaticClass.GetAcquiringBank == 1)//РНКБ
                         {
-                            if (cc.sale_date.CompareTo(today) < 0)
+                            string url = "http://" + MainStaticClass.IpAddressAcquiringTerminal;
+                            //string money = ((Convert.ToDouble(this.non_cash_sum.Text.Trim()) + Convert.ToDouble(non_cash_sum_kop.Text) / 100) * 100).ToString();
+                            //Поскольку нет автоматической конвертации отмены в возврат, то необходимо 2 варианта печати для возвратов                     
+                            DateTime today = DateTime.Today;
+                            AnswerTerminal answerTerminal = new AnswerTerminal();
+                            if (checkBox_payment_by_sbp.CheckState != CheckState.Checked)
                             {
-                                string _str_return_sale_ = str_return_sale.Replace("sum", money);
-                                _str_return_sale_ = _str_return_sale_.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
-                                _str_return_sale_ = _str_return_sale_.Replace("sale_code_authorization_terminal", cc.sale_code_authorization_terminal);
-                                _str_return_sale_ = _str_return_sale_.Replace("number_reference", cc.sale_id_transaction_terminal);
-                                send_command_acquiring_terminal(url, _str_return_sale_, ref complete, ref answerTerminal);
-                            }
-                            else
-                            {
-                                string _str_return_sale_ = str_cancel_sale.Replace("sum", money);
-                                _str_return_sale_ = _str_return_sale_.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
-                                _str_return_sale_ = _str_return_sale_.Replace("sale_code_authorization_terminal", cc.sale_code_authorization_terminal);
-                                _str_return_sale_ = _str_return_sale_.Replace("number_reference", cc.sale_id_transaction_terminal);
-                                if (money.Trim() != (cc.sale_non_cash_money * 100).ToString().Trim())//Это частичная отмена.
+                                if (cc.sale_date.CompareTo(today) < 0)
                                 {
-                                    _str_return_sale_ = _str_return_sale_.Replace("sale_non_cash_money", (cc.sale_non_cash_money * 100).ToString());
+                                    string _str_return_sale_ = str_return_sale.Replace("sum", money);
+                                    _str_return_sale_ = _str_return_sale_.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
+                                    _str_return_sale_ = _str_return_sale_.Replace("sale_code_authorization_terminal", cc.sale_code_authorization_terminal);
+                                    _str_return_sale_ = _str_return_sale_.Replace("number_reference", cc.sale_id_transaction_terminal);
+                                    send_command_acquiring_terminal(url, _str_return_sale_, ref complete, ref answerTerminal);
                                 }
                                 else
                                 {
-                                    _str_return_sale_ = _str_return_sale_.Replace(@"<field id=""01"">sale_non_cash_money</field>", "");
-                                }
-
-                                send_command_acquiring_terminal(url, _str_return_sale_, ref complete, ref answerTerminal);
-                            }
-                        }
-                        else
-                        {
-                            string _str_return_sale_sbp_ = str_return_sale_sbp.Replace("sum", money);
-                            _str_return_sale_sbp_ = _str_return_sale_sbp_.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
-                            _str_return_sale_sbp_ = _str_return_sale_sbp_.Replace("sale_code_authorization_terminal", cc.sale_id_transaction_terminal);// cc.sale_code_authorization_terminal);
-                            _str_return_sale_sbp_ = _str_return_sale_sbp_.Replace("guid", cc.guid_sales);
-                            send_command_acquiring_terminal(url, _str_return_sale_sbp_, ref complete, ref answerTerminal);
-                            if (!complete)//ответ от терминала не удовлетворительный
-                            {
-                                string _str_payment_status_return_sale_sbp_ = str_payment_status_return_sale_sbp.Replace("sum", money);
-                                _str_payment_status_return_sale_sbp_ = _str_payment_status_return_sale_sbp_.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
-                                _str_payment_status_return_sale_sbp_ = _str_payment_status_return_sale_sbp_.Replace("sale_code_authorization_terminal", cc.sale_id_transaction_terminal);// cc.sale_code_authorization_terminal);
-                                _str_payment_status_return_sale_sbp_ = _str_payment_status_return_sale_sbp_.Replace("guid", cc.guid_sales);
-                                //send_command_acquiring_terminal(url, _str_payment_status_return_sale_sbp_, ref complete, ref answerTerminal);
-                                while (1 == 1)
-                                {
-                                    answerTerminal = new AnswerTerminal();
-                                    send_command_acquiring_terminal(url, _str_payment_status_return_sale_sbp_, ref complete, ref answerTerminal);
-                                    if (complete)//получен ответ об успешной оплате, прерываем цикл
+                                    string _str_return_sale_ = str_cancel_sale.Replace("sum", money);
+                                    _str_return_sale_ = _str_return_sale_.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
+                                    _str_return_sale_ = _str_return_sale_.Replace("sale_code_authorization_terminal", cc.sale_code_authorization_terminal);
+                                    _str_return_sale_ = _str_return_sale_.Replace("number_reference", cc.sale_id_transaction_terminal);
+                                    if (money.Trim() != (cc.sale_non_cash_money * 100).ToString().Trim())//Это частичная отмена.
                                     {
-                                        break;
+                                        _str_return_sale_ = _str_return_sale_.Replace("sale_non_cash_money", (cc.sale_non_cash_money * 100).ToString());
                                     }
                                     else
                                     {
-                                        if (answerTerminal.сode_response_in_15_field == "R10")
+                                        _str_return_sale_ = _str_return_sale_.Replace(@"<field id=""01"">sale_non_cash_money</field>", "");
+                                    }
+
+                                    send_command_acquiring_terminal(url, _str_return_sale_, ref complete, ref answerTerminal);
+                                }
+                            }
+                            else
+                            {
+                                string _str_return_sale_sbp_ = str_return_sale_sbp.Replace("sum", money);
+                                _str_return_sale_sbp_ = _str_return_sale_sbp_.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
+                                _str_return_sale_sbp_ = _str_return_sale_sbp_.Replace("sale_code_authorization_terminal", cc.sale_id_transaction_terminal);// cc.sale_code_authorization_terminal);
+                                _str_return_sale_sbp_ = _str_return_sale_sbp_.Replace("guid", cc.guid_sales);
+                                send_command_acquiring_terminal(url, _str_return_sale_sbp_, ref complete, ref answerTerminal);
+                                if (!complete)//ответ от терминала не удовлетворительный
+                                {
+                                    string _str_payment_status_return_sale_sbp_ = str_payment_status_return_sale_sbp.Replace("sum", money);
+                                    _str_payment_status_return_sale_sbp_ = _str_payment_status_return_sale_sbp_.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
+                                    _str_payment_status_return_sale_sbp_ = _str_payment_status_return_sale_sbp_.Replace("sale_code_authorization_terminal", cc.sale_id_transaction_terminal);// cc.sale_code_authorization_terminal);
+                                    _str_payment_status_return_sale_sbp_ = _str_payment_status_return_sale_sbp_.Replace("guid", cc.guid_sales);
+                                    //send_command_acquiring_terminal(url, _str_payment_status_return_sale_sbp_, ref complete, ref answerTerminal);
+                                    while (1 == 1)
+                                    {
+                                        answerTerminal = new AnswerTerminal();
+                                        send_command_acquiring_terminal(url, _str_payment_status_return_sale_sbp_, ref complete, ref answerTerminal);
+                                        if (complete)//получен ответ об успешной оплате, прерываем цикл
                                         {
-                                            MessageBox.Show(" Операция отклонена ");
                                             break;
                                         }
-                                        else if (answerTerminal.сode_response_in_15_field == "R11")
+                                        else
                                         {
-                                            MessageBox.Show(" Операции по QR коду не существует. ");
-                                            break;
-                                        }
-                                        else if (answerTerminal.сode_response_in_15_field == "R12")
-                                        {
-                                            if (answerTerminal.сode_response_in_39_field == "0")
+                                            if (answerTerminal.сode_response_in_15_field == "R10")
                                             {
-                                                MessageBox.Show(" Не получен ответ на запрос статуса ");
+                                                MessageBox.Show(" Операция отклонена ");
                                                 break;
                                             }
-                                            else if (answerTerminal.сode_response_in_39_field == "16")
+                                            else if (answerTerminal.сode_response_in_15_field == "R11")
                                             {
-                                                MessageBox.Show(" Не получен ответ на запрос QR - кода ");
+                                                MessageBox.Show(" Операции по QR коду не существует. ");
                                                 break;
                                             }
-                                        }
-                                        else if (answerTerminal.сode_response_in_15_field == "R13")
-                                        {
-                                            MessageBox.Show(" Запрос статуса не отправлен ");
-                                            break;
-                                        }
-                                        else if (answerTerminal.сode_response_in_15_field == "R14")
-                                        {
-                                            MessageBox.Show(" Операция не добавлена в базу транзакций терминала ");
-                                            break;
-                                        }
-                                        if (answerTerminal.error)
-                                        {
-                                            if (MessageBox.Show(" Продолжать опрос по возврату оплаты по СБП ", "Опрос по возврату оплаты по СБП", MessageBoxButtons.YesNo) == DialogResult.No)
+                                            else if (answerTerminal.сode_response_in_15_field == "R12")
                                             {
-                                                //пользователь отказался от дальнейшего ожидания информации об оплате
+                                                if (answerTerminal.сode_response_in_39_field == "0")
+                                                {
+                                                    MessageBox.Show(" Не получен ответ на запрос статуса ");
+                                                    break;
+                                                }
+                                                else if (answerTerminal.сode_response_in_39_field == "16")
+                                                {
+                                                    MessageBox.Show(" Не получен ответ на запрос QR - кода ");
+                                                    break;
+                                                }
+                                            }
+                                            else if (answerTerminal.сode_response_in_15_field == "R13")
+                                            {
+                                                MessageBox.Show(" Запрос статуса не отправлен ");
                                                 break;
+                                            }
+                                            else if (answerTerminal.сode_response_in_15_field == "R14")
+                                            {
+                                                MessageBox.Show(" Операция не добавлена в базу транзакций терминала ");
+                                                break;
+                                            }
+                                            if (answerTerminal.error)
+                                            {
+                                                if (MessageBox.Show(" Продолжать опрос по возврату оплаты по СБП ", "Опрос по возврату оплаты по СБП", MessageBoxButtons.YesNo) == DialogResult.No)
+                                                {
+                                                    //пользователь отказался от дальнейшего ожидания информации об оплате
+                                                    break;
+                                                }
                                             }
                                         }
                                     }
                                 }
                             }
+                            if (!complete)//ответ от терминала не удовлетворительный
+                            {
+                                calculate();
+                                MessageBox.Show(" Неудачная попытка возврата оплаты ", "СБП");
+                                return;
+                            }
+                            else
+                            {
+                                cc.code_authorization_terminal = answerTerminal.code_authorization;//13 поле
+                                cc.id_transaction_terminal = answerTerminal.number_reference;  //14 поле
+                            }
                         }
-                        if (!complete)//ответ от терминала не удовлетворительный
+                        else if (MainStaticClass.GetAcquiringBank == 2)//СБЕР
                         {
-                            calculate();
-                            MessageBox.Show(" Неудачная попытка возврата оплаты ", "СБП");
-                            return;
+                            try
+                            {
+                                //AuthAnswer13 authAnswer = CommandWrapper.Authorization(Convert.ToInt32(money));
+                                //cc.id_transaction_terminal = authAnswer.RRN;
+                                //Trace.WriteLine("Списание произвели. RRN:{authAnswer.RRN}. CardNumber:{authAnswer.CardID}");
+                                CommandWrapper.ReturnAmountToCard(Convert.ToInt32(money), cc.sale_id_transaction_terminal);
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show("Произошла ошибка при попытке возврата средств по терминалу \r\n" + ex.Message);
+                                return;
+                            }
                         }
-                        else
-                        {
-                            cc.code_authorization_terminal = answerTerminal.code_authorization;//13 поле
-                            cc.id_transaction_terminal = answerTerminal.number_reference;  //14 поле
-                        }
-                    }
+                    }                    
                 }
 
                 cc.sale_cancellation_Click(sum_cash_pay, non_sum_cash_pay);
