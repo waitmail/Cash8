@@ -44,6 +44,10 @@ namespace Cash8
             fptr.operatorLogin();
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_REPORT_TYPE, AtolConstants.LIBFPTR_RT_LAST_DOCUMENT);
             fptr.report();
+            if (MainStaticClass.GetVariantConnectFN == 1)
+            {
+                fptr.close();
+            }
         }
         
         public bool validate_date_time_with_fn(int minutes)
@@ -73,6 +77,10 @@ namespace Cash8
                     result = false;
                 }
             }
+            if (MainStaticClass.GetVariantConnectFN == 1)
+            {
+                fptr.close();
+            }
 
             return result;
         }
@@ -97,10 +105,17 @@ namespace Cash8
                 //if ((DateTime.Now - dateTime).TotalHours > 0)
                 //{
                 //MessageBox.Show(" Период открытой смены превысил 24 часа !!!\r\n СНИМИТЕ Z-ОТЧЁТ. ЕСЛИ СОМНЕВАЕТЕСЬ В ЧЁМ-ТО, ТО ВСЁ РАВНО СНИМИТЕ Z-ОТЧЁТ");
-                MessageBox.Show(" Период открытой смены превысил 24 часа!\r\nСмена будет закрыта автоматически!\r\n"+
+                MessageBox.Show(" Период открытой смены превысил 24 часа!\r\nСмена будет закрыта автоматически!\r\n" +
                     "В ИТ отдел звонить не надо, если хотите кому нибудь позвонить, звоните в бухгалтерию");
                 reportZ();
                 //}
+            }
+            else
+            {
+                if (MainStaticClass.GetVariantConnectFN == 1)
+                {
+                    fptr.close();
+                }
             }
             //fptr.close();
         }
@@ -162,6 +177,10 @@ namespace Cash8
             }
 
             //fptr.close();
+            if (MainStaticClass.GetVariantConnectFN == 1)
+            {
+                fptr.close();
+            }
 
             return fn_info;
         }
@@ -192,6 +211,10 @@ namespace Cash8
             }
 
             //fptr.close();
+            if (MainStaticClass.GetVariantConnectFN == 1)
+            {
+                fptr.close();
+            }
             return result;
         }
 
@@ -218,6 +241,10 @@ namespace Cash8
 
 
             //fptr.close();
+            if (MainStaticClass.GetVariantConnectFN == 1)
+            {
+                fptr.close();
+            }
 
             result = cashSum.ToString().Replace(",", ".");
             return result;
@@ -241,6 +268,10 @@ namespace Cash8
                 MessageBox.Show("Ошибка при инкасации  " + fptr.errorDescription());
             }
             //fptr.close();
+            if (MainStaticClass.GetVariantConnectFN == 1)
+            {
+                fptr.close();
+            }
         }
 
         public void cashIncome(double sumCashIn)
@@ -260,6 +291,10 @@ namespace Cash8
                 MessageBox.Show("Ошибка при внесении  " + fptr.errorDescription());
             }
             //fptr.close();
+            if (MainStaticClass.GetVariantConnectFN == 1)
+            {
+                fptr.close();
+            }
         }
 
         public void reportX()
@@ -280,6 +315,10 @@ namespace Cash8
                     "Ошибка при X отчете", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             //fptr.close();
+            if (MainStaticClass.GetVariantConnectFN == 1)
+            {
+                fptr.close();
+            }
         }
 
         public void reportZ()
@@ -298,6 +337,10 @@ namespace Cash8
             {
                 MessageBox.Show(string.Format("Ошибка при закрытии смены.\nОшибка {0}: {1}", fptr.errorCode(), fptr.errorDescription()),
                     "Ошибка закрытия смены", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            if (MainStaticClass.GetVariantConnectFN == 1)
+            {
+                fptr.close();
             }
             //fptr.close();
         }
@@ -773,6 +816,11 @@ namespace Cash8
                 MessageBox.Show("При печати чека произошли ошибки,печать чека будет отменена", "Печать чека");
                 fptr.cancelReceipt();
             }
+
+            if (MainStaticClass.GetVariantConnectFN == 1)
+            {
+                fptr.close();
+            }
         } 
 
         private void print_fiscal_advertisement(IFptr fptr)
@@ -972,6 +1020,10 @@ namespace Cash8
                 {
                     //здесь необходимо поставить флаг распечатан
                     check.its_print_p(variant);
+                    if (MainStaticClass.GetVariantConnectFN == 1)
+                    {
+                        fptr.close();
+                    }
                     return;
                 }
 
@@ -1324,6 +1376,11 @@ namespace Cash8
             {
                 MessageBox.Show("При печати чека произошли ошибки,печать чека будет отменена", "Печать чека");
                     fptr.cancelReceipt();                
+            }
+
+            if (MainStaticClass.GetVariantConnectFN == 1)
+            {
+                fptr.close();
             }
         }
 

@@ -96,7 +96,7 @@ namespace Cash8
             return authAnswer;
         }
 
-        public static void ReturnAmountToCard(int amount, string RRN)
+        public static AuthAnswer13 ReturnAmountToCard(int amount, string RRN)
         {
             AuthAnswer13 authAnswer = new AuthAnswer13
             {
@@ -109,7 +109,8 @@ namespace Cash8
                 RRN = RRN
             };
 
-            Authorization(authAnswer, RequestCancelWithoutCard);
+            authAnswer = Authorization(authAnswer, RequestCancelWithoutCard);
+            return authAnswer;
         }
 
         static AuthAnswer13 Authorization(AuthAnswer13 answer, string track2)

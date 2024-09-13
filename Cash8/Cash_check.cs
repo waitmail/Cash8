@@ -4770,7 +4770,7 @@ namespace Cash8
             sum1[1] = 0;
             sum1[2] = 0;
 
-            if (MainStaticClass.SystemTaxation == 3)
+            if ((MainStaticClass.SystemTaxation == 3)||(MainStaticClass.SystemTaxation == 5))
             {
                 if (last_rewrite)
                 {

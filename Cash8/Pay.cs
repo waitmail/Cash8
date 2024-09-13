@@ -885,42 +885,45 @@ namespace Cash8
             calculate();
 
 
-            if (MainStaticClass.GetWorkSchema == 2)
-            {
-                if (cc.check_type.SelectedIndex == 0)
-                {
-                    continue_sales();//Для получения бонусов по документу и записи его в документ
-                }
-                label4.Visible = true;
-                bonus_on_document.Visible = true;
-                label5.Visible = true;
-                bonus_total_in_centr.Visible = true;
-                label6.Visible = true;
-                pay_bonus.Visible = true;
-                pay_bonus_many.Visible = true;
-                if (pay_bonus.Enabled)
-                {
-                    if (bonus_total_in_centr.Text.Trim() != "")
-                    {
-                        if (Convert.ToInt64(bonus_total_in_centr.Text) == 0)
-                        {
-                            pay_bonus.Enabled = false;
-                        }
-                    }
-                    else
-                    {
-                        pay_bonus.Enabled = false;
-                    }
-                }
-            }
+            //if (MainStaticClass.GetWorkSchema == 2)
+            //{
+            //    //if (cc.check_type.SelectedIndex == 0)
+            //    //{
+            //    //    continue_sales();//Для получения бонусов по документу и записи его в документ
+            //    //}
+            //    label4.Visible = true;
+            //    bonus_on_document.Visible = true;
+            //    label5.Visible = true;
+            //    bonus_total_in_centr.Visible = true;
+            //    label6.Visible = true;
+            //    pay_bonus.Visible = true;
+            //    pay_bonus_many.Visible = true;
+            //    if (pay_bonus.Enabled)
+            //    {
+            //        if (bonus_total_in_centr.Text.Trim() != "")
+            //        {
+            //            if (Convert.ToInt64(bonus_total_in_centr.Text) == 0)
+            //            {
+            //                pay_bonus.Enabled = false;
+            //            }
+            //        }
+            //        else
+            //        {
+            //            pay_bonus.Enabled = false;
+            //        }
+            //    }
+            //}
             //if (MainStaticClass.Nick_Shop == "A01")
             //{
             //    
             //}
             if ((MainStaticClass.IpAddressAcquiringTerminal.Trim() != "") && (MainStaticClass.IdAcquirerTerminal.Trim() != ""))
             {
-                checkBox_payment_by_sbp.Visible = true;
-                checkBox_do_not_send_payment_to_the_terminal.Visible = true;
+                if (MainStaticClass.GetAcquiringBank == 1)//РНКБ
+                {
+                    checkBox_payment_by_sbp.Visible = true;
+                    checkBox_do_not_send_payment_to_the_terminal.Visible = true;
+                }
             }
 
             if (cc.payment_by_sbp_sales)
@@ -1323,9 +1326,16 @@ namespace Cash8
                             }
                             catch (Exception ex)
                             {
-                                MessageBox.Show("Произошла ошибка при попытке оплаты по терминалу \r\n"+ex.Message);
+                                MessageBox.Show("Произошла ошибка при попытке оплаты по терминалу \r\n" + ex.Message);
+                                calculate();
                                 return;
-                            }                            
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show(" У вас в константах не выбран банк эквайринга");
+                            calculate();
+                            return;
                         }
                     }
                 }
@@ -1494,15 +1504,23 @@ namespace Cash8
                                 //AuthAnswer13 authAnswer = CommandWrapper.Authorization(Convert.ToInt32(money));
                                 //cc.id_transaction_terminal = authAnswer.RRN;
                                 //Trace.WriteLine("Списание произвели. RRN:{authAnswer.RRN}. CardNumber:{authAnswer.CardID}");
-                                CommandWrapper.ReturnAmountToCard(Convert.ToInt32(money), cc.sale_id_transaction_terminal);
+                                AuthAnswer13 authAnswer = CommandWrapper.ReturnAmountToCard(Convert.ToInt32(money), cc.sale_id_transaction_terminal);
+                                cc.id_transaction_terminal = authAnswer.RRN;
                             }
                             catch (Exception ex)
                             {
                                 MessageBox.Show("Произошла ошибка при попытке возврата средств по терминалу \r\n" + ex.Message);
+                                calculate();
                                 return;
                             }
                         }
-                    }                    
+                        else
+                        {
+                            MessageBox.Show(" У вас в константах не выбран банк эквайринга");
+                            calculate();
+                            return;
+                        }
+                    }
                 }
 
                 cc.sale_cancellation_Click(sum_cash_pay, non_sum_cash_pay);
@@ -1655,9 +1673,9 @@ namespace Cash8
             }
         }
 
-        private bool continue_sales()
-        {
-            bool result = true;
+        //private bool continue_sales()
+        //{
+        //    bool result = true;
 
             //if (MainStaticClass.PassPromo != "")//Пароль не пустой бонусная магазин включен в бнусную систему
             //{
@@ -1762,8 +1780,8 @@ namespace Cash8
             //    //    }
             //    }
             //}
-            return result;
-        }
+        //    return result;
+        //}
 
 
         ///// <summary>

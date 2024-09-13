@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 using System.Net;
 using System.IO;
@@ -66,7 +67,10 @@ namespace Cash8
             if ((MainStaticClass.IpAddressAcquiringTerminal.Trim() != "") && (MainStaticClass.IdAcquirerTerminal.Trim() != ""))
             {
                 btn_reconciliation_of_totals.Enabled = true;
-                btn_query_summary_report.Enabled = true;
+                if (MainStaticClass.GetAcquiringBank == 1)
+                {
+                    btn_query_summary_report.Enabled = true;
+                }
                 btn_query_full_report.Enabled = true;
             }
 
@@ -589,53 +593,88 @@ namespace Cash8
 
         private void btn_reconciliation_of_totals_Click(object sender, EventArgs e)
         {
-            string url = "http://" + MainStaticClass.IpAddressAcquiringTerminal;
-            string _str_command_ = @"<?xml version=""1.0"" encoding=""utf-8""?><request><field id=""25"">59</field><field id=""27"">id_terminal</field></request>";
-            _str_command_ = _str_command_.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
-            recharge_note = "";
-            AnswerTerminal answerTerminal = new AnswerTerminal();
-            send_command_acquiring_terminal(url, _str_command_, ref complete, ref answerTerminal);
-            if (complete)//ответ от терминала не удовлетворительный
+            if (MainStaticClass.GetAcquiringBank == 1) //РНКБ
             {
-                if (recharge_note != "")
+                string url = "http://" + MainStaticClass.IpAddressAcquiringTerminal;
+                string _str_command_ = @"<?xml version=""1.0"" encoding=""utf-8""?><request><field id=""25"">59</field><field id=""27"">id_terminal</field></request>";
+                _str_command_ = _str_command_.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
+                recharge_note = "";
+                AnswerTerminal answerTerminal = new AnswerTerminal();
+                send_command_acquiring_terminal(url, _str_command_, ref complete, ref answerTerminal);
+                if (complete)//ответ от терминала не удовлетворительный
                 {
-                    if (MainStaticClass.PrintingUsingLibraries == 0)
+                    if (recharge_note != "")
                     {
-                        FiscallPrintJason2.NonFiscallDocument nonFiscallDocument = new FiscallPrintJason2.NonFiscallDocument();
-                        nonFiscallDocument.type = "nonFiscal";
-                        nonFiscallDocument.printFooter = false;
-
-                        FiscallPrintJason2.ItemNonFiscal itemNonFiscal = new FiscallPrintJason2.ItemNonFiscal();
-                        nonFiscallDocument.items = new List<FiscallPrintJason2.ItemNonFiscal>();
-
-                        itemNonFiscal.type = "text";
-                        itemNonFiscal.text = recharge_note.Replace("0xDF^^", "");
-                        itemNonFiscal.alignment = "center";
-                        nonFiscallDocument.items.Add(itemNonFiscal);
-                        FiscallPrintJason2.print_not_fiscal_document(nonFiscallDocument);
-                        recharge_note = "";
-                    }
-                    else
-                    {
-                        IFptr fptr = MainStaticClass.FPTR;
-                        if (!fptr.isOpened())
+                        if (MainStaticClass.PrintingUsingLibraries == 0)
                         {
-                            fptr.open();
-                        }
-                        fptr.beginNonfiscalDocument();
-                        string s = recharge_note.Replace("0xDF^^", "");
-                        fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
-                        fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, s);
-                        fptr.printText();
-                        fptr.endNonfiscalDocument();
-                        recharge_note = "";
+                            FiscallPrintJason2.NonFiscallDocument nonFiscallDocument = new FiscallPrintJason2.NonFiscallDocument();
+                            nonFiscallDocument.type = "nonFiscal";
+                            nonFiscallDocument.printFooter = false;
 
+                            FiscallPrintJason2.ItemNonFiscal itemNonFiscal = new FiscallPrintJason2.ItemNonFiscal();
+                            nonFiscallDocument.items = new List<FiscallPrintJason2.ItemNonFiscal>();
+
+                            itemNonFiscal.type = "text";
+                            itemNonFiscal.text = recharge_note.Replace("0xDF^^", "");
+                            itemNonFiscal.alignment = "center";
+                            nonFiscallDocument.items.Add(itemNonFiscal);
+                            FiscallPrintJason2.print_not_fiscal_document(nonFiscallDocument);
+                            recharge_note = "";
+                        }
+                        else
+                        {
+                            IFptr fptr = MainStaticClass.FPTR;
+                            if (!fptr.isOpened())
+                            {
+                                fptr.open();
+                            }
+                            fptr.beginNonfiscalDocument();
+                            string s = recharge_note.Replace("0xDF^^", "");
+                            fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
+                            fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, s);
+                            fptr.printText();
+                            fptr.endNonfiscalDocument();
+                            recharge_note = "";
+
+                        }
                     }
+                }
+                else
+                {
+
+                }
+            }
+            else if (MainStaticClass.GetAcquiringBank == 2) //СБЕР
+            {
+                try
+                {
+                    string s = Regex.Replace(CommandWrapper.CloseDay(), @"~S\u0001", "").Trim();
+                    IFptr fptr = MainStaticClass.FPTR;
+                    if (!fptr.isOpened())
+                    {
+                        fptr.open();
+                    }
+
+                    fptr.beginNonfiscalDocument();
+
+                    fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, s);
+                    fptr.setParam(AtolConstants.LIBFPTR_PARAM_DEFER, AtolConstants.LIBFPTR_DEFER_POST);
+                    fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
+                    fptr.printText();
+                    fptr.endNonfiscalDocument();
+                    if (MainStaticClass.GetVariantConnectFN == 1)
+                    {
+                        fptr.close();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Ошибки при сверке итогов " + ex.Message);
                 }
             }
             else
             {
-
+                MessageBox.Show(" У вас в константах не выбран банк эквайринга");
             }
         }
 
@@ -693,52 +732,85 @@ namespace Cash8
 
         private void btn_query_full_report_Click(object sender, EventArgs e)
         {
-            string url = "http://" + MainStaticClass.IpAddressAcquiringTerminal;
-            string _str_command_ = @"<?xml version=""1.0"" encoding=""utf-8""?><request><field id=""25"">63</field><field id=""27"">id_terminal</field><field id=""65"">21</field></request>";
-            _str_command_ = _str_command_.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
-            recharge_note = "";
-            AnswerTerminal answerTerminal = new AnswerTerminal();
-            send_command_acquiring_terminal(url, _str_command_, ref complete, ref answerTerminal);
-            if (complete)//ответ от терминала удовлетворительный
+            if (MainStaticClass.GetAcquiringBank == 1) //РНКБ
             {
-                if (recharge_note != "")
+                string url = "http://" + MainStaticClass.IpAddressAcquiringTerminal;
+                string _str_command_ = @"<?xml version=""1.0"" encoding=""utf-8""?><request><field id=""25"">63</field><field id=""27"">id_terminal</field><field id=""65"">21</field></request>";
+                _str_command_ = _str_command_.Replace("id_terminal", MainStaticClass.IdAcquirerTerminal);
+                recharge_note = "";
+                AnswerTerminal answerTerminal = new AnswerTerminal();
+                send_command_acquiring_terminal(url, _str_command_, ref complete, ref answerTerminal);
+                if (complete)//ответ от терминала удовлетворительный
                 {
-                    if (MainStaticClass.PrintingUsingLibraries == 0)
+                    if (recharge_note != "")
                     {
-                        FiscallPrintJason2.NonFiscallDocument nonFiscallDocument = new FiscallPrintJason2.NonFiscallDocument();
-                        nonFiscallDocument.type = "nonFiscal";
-                        nonFiscallDocument.printFooter = false;
-
-                        FiscallPrintJason2.ItemNonFiscal itemNonFiscal = new FiscallPrintJason2.ItemNonFiscal();
-                        nonFiscallDocument.items = new List<FiscallPrintJason2.ItemNonFiscal>();
-
-                        itemNonFiscal.type = "text";
-                        itemNonFiscal.text = recharge_note.Replace("0xDF^^", "");
-                        itemNonFiscal.alignment = "center";
-                        nonFiscallDocument.items.Add(itemNonFiscal);
-                        FiscallPrintJason2.print_not_fiscal_document(nonFiscallDocument);
-                        recharge_note = "";
-                    }
-                    else
-                    {
-                        IFptr fptr = MainStaticClass.FPTR;
-                        if (!fptr.isOpened())
+                        if (MainStaticClass.PrintingUsingLibraries == 0)
                         {
-                            fptr.open();
+                            FiscallPrintJason2.NonFiscallDocument nonFiscallDocument = new FiscallPrintJason2.NonFiscallDocument();
+                            nonFiscallDocument.type = "nonFiscal";
+                            nonFiscallDocument.printFooter = false;
+
+                            FiscallPrintJason2.ItemNonFiscal itemNonFiscal = new FiscallPrintJason2.ItemNonFiscal();
+                            nonFiscallDocument.items = new List<FiscallPrintJason2.ItemNonFiscal>();
+
+                            itemNonFiscal.type = "text";
+                            itemNonFiscal.text = recharge_note.Replace("0xDF^^", "");
+                            itemNonFiscal.alignment = "center";
+                            nonFiscallDocument.items.Add(itemNonFiscal);
+                            FiscallPrintJason2.print_not_fiscal_document(nonFiscallDocument);
+                            recharge_note = "";
                         }
-                        fptr.beginNonfiscalDocument();
-                        string s = recharge_note.Replace("0xDF^^", "");
-                        fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
-                        fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, s);
-                        fptr.printText();
-                        fptr.endNonfiscalDocument();
-                        recharge_note = "";
+                        else
+                        {
+                            IFptr fptr = MainStaticClass.FPTR;
+                            if (!fptr.isOpened())
+                            {
+                                fptr.open();
+                            }
+                            fptr.beginNonfiscalDocument();
+                            string s = recharge_note.Replace("0xDF^^", "");
+                            fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
+                            fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, s);
+                            fptr.printText();
+                            fptr.endNonfiscalDocument();
+                            recharge_note = "";
+                        }
                     }
+                }
+                else
+                {
+
+                }
+            }
+            else if (MainStaticClass.GetAcquiringBank == 2) //СБЕР
+            {
+                try
+                {
+                    string s = Regex.Replace(CommandWrapper.GetFullReport(), @"~S\u0001", "").Trim();
+                    IFptr fptr = MainStaticClass.FPTR;
+                    if (!fptr.isOpened())
+                    {
+                        fptr.open();
+                    }
+                    fptr.beginNonfiscalDocument();
+                    fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, s);
+                    fptr.setParam(AtolConstants.LIBFPTR_PARAM_DEFER, AtolConstants.LIBFPTR_DEFER_POST);
+                    fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
+                    fptr.printText();
+                    fptr.endNonfiscalDocument();
+                    if (MainStaticClass.GetVariantConnectFN == 1)
+                    {
+                        fptr.close();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Ошибки при полном отчете  " + ex.Message);
                 }
             }
             else
-            {                
-
+            {
+                MessageBox.Show(" У вас в константах не выбран банк эквайринга");
             }
         }
 
