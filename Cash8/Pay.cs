@@ -923,9 +923,9 @@ namespace Cash8
             {
                 if (MainStaticClass.GetAcquiringBank == 1)//РНКБ
                 {
-                    checkBox_payment_by_sbp.Visible = true;
-                    checkBox_do_not_send_payment_to_the_terminal.Visible = true;
+                    checkBox_payment_by_sbp.Visible = true;                    
                 }
+                checkBox_do_not_send_payment_to_the_terminal.Visible = true;
             }
 
             if (cc.payment_by_sbp_sales)
