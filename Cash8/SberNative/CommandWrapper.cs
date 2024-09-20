@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Cash8
 {
@@ -16,6 +17,7 @@ namespace Cash8
         private const int TIMEOUT_CANCEL = 2002;
         // Строка для работы функционала "Возврат без карты", будет работать при соответствующей настройке терминала
         private static readonly string RequestCancelWithoutCard = "QSELECT";
+        public static string return_slip = "";
 
         public static int TestPinPad()
         {
@@ -116,8 +118,9 @@ namespace Cash8
         static AuthAnswer13 Authorization(AuthAnswer13 answer, string track2)
         {
             CheckError(() => Pilot.CardAuthorize(track2, ref answer));
-            var slip = GlobalFree(answer.ans);
+            var slip = GlobalFree(answer.ans);             
             Trace.WriteLine(slip);
+            return_slip = Regex.Replace(slip, @"~S\u0001", "").Trim();
             return answer;
         }
 

@@ -8,6 +8,8 @@ using System.Xml.Serialization;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
+using Atol.Drivers10.Fptr;
+using AtolConstants = Atol.Drivers10.Fptr.Constants;
 
 namespace Cash8
 {
@@ -1320,8 +1322,35 @@ namespace Cash8
                         {
                             try
                             {
+                                CommandWrapper.return_slip = "";
                                 AuthAnswer13 authAnswer = CommandWrapper.Authorization(Convert.ToInt32(money));
                                 cc.id_transaction_terminal = authAnswer.RRN;
+                                if (CommandWrapper.return_slip.Trim().Length != 0)
+                                {
+                                    IFptr fptr = MainStaticClass.FPTR;
+                                    if (!fptr.isOpened())
+                                    {
+                                        fptr.open();
+                                    }
+
+                                    fptr.beginNonfiscalDocument();
+                                    fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, CommandWrapper.return_slip);
+                                    fptr.setParam(AtolConstants.LIBFPTR_PARAM_DEFER, AtolConstants.LIBFPTR_DEFER_POST);
+                                    fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
+                                    fptr.printText();
+                                    fptr.endNonfiscalDocument();
+                                    if (MainStaticClass.GetVariantConnectFN == 1)
+                                    {
+                                        fptr.close();
+                                    }
+                                }
+                                else
+                                {
+                                    MessageBox.Show(" Не удалось получить слип с терминала ", "Неудачная попытка полаты по терминалу");
+                                    calculate();
+                                    return;
+                                }
+                                //authAnswer.
                                 //Trace.WriteLine("Списание произвели. RRN:{authAnswer.RRN}. CardNumber:{authAnswer.CardID}");
                             }
                             catch (Exception ex)
@@ -1504,8 +1533,36 @@ namespace Cash8
                                 //AuthAnswer13 authAnswer = CommandWrapper.Authorization(Convert.ToInt32(money));
                                 //cc.id_transaction_terminal = authAnswer.RRN;
                                 //Trace.WriteLine("Списание произвели. RRN:{authAnswer.RRN}. CardNumber:{authAnswer.CardID}");
+                                CommandWrapper.return_slip = "";
                                 AuthAnswer13 authAnswer = CommandWrapper.ReturnAmountToCard(Convert.ToInt32(money), cc.sale_id_transaction_terminal);
                                 cc.id_transaction_terminal = authAnswer.RRN;
+
+                                if (CommandWrapper.return_slip.Trim().Length != 0)
+                                {
+                                    IFptr fptr = MainStaticClass.FPTR;
+                                    if (!fptr.isOpened())
+                                    {
+                                        fptr.open();
+                                    }
+
+                                    fptr.beginNonfiscalDocument();
+                                    fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, CommandWrapper.return_slip);
+                                    fptr.setParam(AtolConstants.LIBFPTR_PARAM_DEFER, AtolConstants.LIBFPTR_DEFER_POST);
+                                    fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
+                                    fptr.printText();
+                                    fptr.endNonfiscalDocument();
+                                    if (MainStaticClass.GetVariantConnectFN == 1)
+                                    {
+                                        fptr.close();
+                                    }
+                                }
+                                else
+                                {
+                                    MessageBox.Show(" Не удалось получить слип с терминала ", "Неудачная возврата средств по терминалу");
+                                    calculate();
+                                    return;
+                                }
+
                             }
                             catch (Exception ex)
                             {
