@@ -64,6 +64,7 @@ namespace Cash8
                 get_summ_in_cashe.Enabled = false;
                 x_report.Enabled = false;
             }
+
             if ((MainStaticClass.IpAddressAcquiringTerminal.Trim() != "") && (MainStaticClass.IdAcquirerTerminal.Trim() != ""))
             {
                 btn_reconciliation_of_totals.Enabled = true;
