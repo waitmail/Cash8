@@ -4222,9 +4222,9 @@ namespace Cash8
                 listView1.Columns.Add("Сумма", 10, HorizontalAlignment.Right);
             //}
             listView1.Columns.Add("Сумма со скидкой", 150, HorizontalAlignment.Right);
-            listView1.Columns.Add("Акция", 10);
-            listView1.Columns.Add("Подарок", 10);
-            listView1.Columns.Add("Акция2", 10);
+            listView1.Columns.Add("АкцСк", 10);
+            listView1.Columns.Add("АкцПод", 10);
+            listView1.Columns.Add("АкцУч", 10);
             listView1.Columns.Add("БонусРег", 1);//bonus_standard бонусы, начисленные по стандартным значениям для производителей/марок/товаров
             listView1.Columns.Add("БонусАкц", 1);//bonus_promotion бонусы, начисленные по бонусным акциям
             listView1.Columns.Add("БонусАкцияБ", 1);//promotion_b_mover номер акции, указывается для товаров-инициаторов сработки            

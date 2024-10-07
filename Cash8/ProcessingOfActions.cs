@@ -2447,15 +2447,16 @@ namespace Cash8
                                 row["price_at_discount"] = get_price_action(num_doc);
                                 row["sum_full"] = (Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price"])).ToString();
                                 row["sum_at_discount"] = (Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price_at_discount"])).ToString();
-                                if (Convert.ToDecimal(row["price"]) != Convert.ToDecimal(row["price_at_discount"]))
-                                {
-                                    row["action"] = num_doc.ToString();
-                                }
-                                else
-                                {
+                                //if (Convert.ToDecimal(row["price"]) != Convert.ToDecimal(row["price_at_discount"]))
+                                //{
+                                //    row["action"] = num_doc.ToString();
+                                //}
+                                //else
+                                //{
                                     row["action"] = "0";
-                                }
-                                row["gift"] = "0";
+                                //}
+                                //row["gift"] = "0";
+                                row["gift"] = num_doc.ToString();
                                 row["action2"] = num_doc.ToString();
                                 row["bonus_reg"] = 0;
                                 row["bonus_action"] = 0;
@@ -2485,6 +2486,7 @@ namespace Cash8
                                     row["action"] = "0";
                                 }
                                 row["gift"] = "0";
+                                //row["gift"] = num_doc.ToString();
                                 row["action2"] = num_doc.ToString();
                                 row["bonus_reg"] = 0;
                                 row["bonus_action"] = 0;
@@ -2514,6 +2516,7 @@ namespace Cash8
                                 row["action"] = "0";
                             }
                             row["gift"] = "0";
+                            //row["gift"] = num_doc.ToString();
                             row["action2"] = num_doc.ToString();
                             row["bonus_reg"] = 0;
                             row["bonus_action"] = 0;
