@@ -125,6 +125,7 @@ namespace Cash8
         private static string scale_serial_port = "";
         private static string fn_ipaddr = "";
         private static int acquiring_bank = -1;
+        private static int do_not_prompt_marking_code = -1;
 
         public static void validate_date_time_with_fn(int minutes)
         {
@@ -170,7 +171,7 @@ namespace Cash8
                 }
             }
         }
-               
+        
         public static int GetAcquiringBank
         {
             get
@@ -207,6 +208,46 @@ namespace Cash8
             }
         }
 
+        /// <summary>
+        /// Возвращает флажок 
+        /// запрашивать ли код маркировки        
+        /// </summary>
+        public static int GetDoNotPromptMarkingCode
+        {
+            get
+            {
+                if (do_not_prompt_marking_code == -1)
+                {
+                    NpgsqlConnection conn = null;
+                    NpgsqlCommand command = null;
+                    conn = MainStaticClass.NpgsqlConn();
+                    try
+                    {
+                        conn.Open();
+                        string query = "SELECT do_not_prompt_marking_code FROM constants";
+                        command = new NpgsqlCommand(query, conn);
+                        do_not_prompt_marking_code = Convert.ToInt16(command.ExecuteScalar());
+                    }
+                    catch (NpgsqlException ex)
+                    {
+                        MessageBox.Show("Ошибка при чтении do_not_prompt_marking_code" + ex.ToString());
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Ошибка при чтении do_not_prompt_marking_code" + ex.ToString());
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                }
+                return do_not_prompt_marking_code;
+            }
+        }
+
         public static string GetFnIpaddr
         {
             get
@@ -219,17 +260,17 @@ namespace Cash8
                     try
                     {
                         conn.Open();
-                        string query = "SELECT acquiring_bank FROM constants";
+                        string query = "SELECT fn_ipaddr FROM constants";
                         command = new NpgsqlCommand(query, conn);
                         fn_ipaddr = command.ExecuteScalar().ToString();
                     }
                     catch (NpgsqlException ex)
                     {
-                        MessageBox.Show("Ошибка при чтении acquiring_bank" + ex.ToString());
+                        MessageBox.Show("Ошибка при чтении fn_ipaddr " + ex.ToString());
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Ошибка при чтении acquiring_bank" + ex.ToString());
+                        MessageBox.Show("Ошибка при чтении fn_ipaddr " + ex.ToString());
                     }
                     finally
                     {

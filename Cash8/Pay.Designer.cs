@@ -36,6 +36,7 @@
             this.button1 = new System.Windows.Forms.Button();
             this.button_pay = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.checkBox_do_not_send_payment_to_the_terminal = new System.Windows.Forms.CheckBox();
             this.checkBox_payment_by_sbp = new System.Windows.Forms.CheckBox();
             this.label9 = new System.Windows.Forms.Label();
             this.non_cash_sum_kop = new System.Windows.Forms.TextBox();
@@ -51,7 +52,6 @@
             this.pay_bonus_many = new System.Windows.Forms.TextBox();
             this.pay_bonus = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.checkBox_do_not_send_payment_to_the_terminal = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -188,6 +188,19 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(800, 600);
             this.panel1.TabIndex = 0;
+            // 
+            // checkBox_do_not_send_payment_to_the_terminal
+            // 
+            this.checkBox_do_not_send_payment_to_the_terminal.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.checkBox_do_not_send_payment_to_the_terminal.AutoSize = true;
+            this.checkBox_do_not_send_payment_to_the_terminal.Location = new System.Drawing.Point(762, 361);
+            this.checkBox_do_not_send_payment_to_the_terminal.Name = "checkBox_do_not_send_payment_to_the_terminal";
+            this.checkBox_do_not_send_payment_to_the_terminal.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.checkBox_do_not_send_payment_to_the_terminal.Size = new System.Drawing.Size(32, 17);
+            this.checkBox_do_not_send_payment_to_the_terminal.TabIndex = 20;
+            this.checkBox_do_not_send_payment_to_the_terminal.Text = "?";
+            this.checkBox_do_not_send_payment_to_the_terminal.UseVisualStyleBackColor = true;
+            this.checkBox_do_not_send_payment_to_the_terminal.Visible = false;
             // 
             // checkBox_payment_by_sbp
             // 
@@ -397,17 +410,6 @@
             this.label6.Text = "БОНУСЫ";
             this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.label6.Visible = false;
-            // 
-            // checkBox_do_not_send_payment_to_the_terminal
-            // 
-            this.checkBox_do_not_send_payment_to_the_terminal.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.checkBox_do_not_send_payment_to_the_terminal.AutoSize = true;
-            this.checkBox_do_not_send_payment_to_the_terminal.Location = new System.Drawing.Point(768, 363);
-            this.checkBox_do_not_send_payment_to_the_terminal.Name = "checkBox_do_not_send_payment_to_the_terminal";
-            this.checkBox_do_not_send_payment_to_the_terminal.Size = new System.Drawing.Size(15, 14);
-            this.checkBox_do_not_send_payment_to_the_terminal.TabIndex = 20;
-            this.checkBox_do_not_send_payment_to_the_terminal.UseVisualStyleBackColor = true;
-            this.checkBox_do_not_send_payment_to_the_terminal.Visible = false;
             // 
             // Pay
             // 

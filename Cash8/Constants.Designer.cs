@@ -69,6 +69,7 @@
             this.txtB_fn_ipaddr = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
+            this.checkBox_do_not_prompt_marking_code = new System.Windows.Forms.CheckBox();
             this.groupBox_acquiring_terminal.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -478,11 +479,22 @@
             this.label7.Text = "USB ==> COM";
             this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // checkBox_do_not_prompt_marking_code
+            // 
+            this.checkBox_do_not_prompt_marking_code.AutoSize = true;
+            this.checkBox_do_not_prompt_marking_code.Location = new System.Drawing.Point(188, 126);
+            this.checkBox_do_not_prompt_marking_code.Name = "checkBox_do_not_prompt_marking_code";
+            this.checkBox_do_not_prompt_marking_code.Size = new System.Drawing.Size(196, 17);
+            this.checkBox_do_not_prompt_marking_code.TabIndex = 90;
+            this.checkBox_do_not_prompt_marking_code.Text = "Не запрашивать код маркировки";
+            this.checkBox_do_not_prompt_marking_code.UseVisualStyleBackColor = true;
+            // 
             // Constants
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 562);
+            this.Controls.Add(this.checkBox_do_not_prompt_marking_code);
             this.Controls.Add(this.checkBox_webservice_authorize);
             this.Controls.Add(this.txtB_ip_address_acquiring_terminal);
             this.Controls.Add(this.label6);
@@ -569,5 +581,6 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox txtB_fn_ipaddr;
         private System.Windows.Forms.ComboBox comboBox_acquiring_bank;
+        private System.Windows.Forms.CheckBox checkBox_do_not_prompt_marking_code;
     }
 }

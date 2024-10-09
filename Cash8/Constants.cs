@@ -124,7 +124,7 @@ namespace Cash8
                     " envd,pass_promo,print_m,system_taxation,work_schema,version_fn,enable_stock_processing_in_memory," +
                     " id_acquirer_terminal,ip_address_acquiring_terminal,self_service_kiosk,enable_cdn_markers, " +
                     " webservice_authorize,printing_using_libraries,fn_serial_port,get_weight_automatically,scale_serial_port,"+
-                    " variant_connect_fn,fn_ipaddr,acquiring_bank FROM constants";
+                    " variant_connect_fn,fn_ipaddr,acquiring_bank,do_not_prompt_marking_code FROM constants";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
@@ -156,6 +156,7 @@ namespace Cash8
                     this.checkBox_webservice_authorize.CheckState = (reader["webservice_authorize"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
                     this.checkBox_printing_using_libraries.CheckState = (reader["printing_using_libraries"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
                     this.checkBox_get_weight_automatically.CheckState = (reader["get_weight_automatically"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
+                    this.checkBox_do_not_prompt_marking_code.CheckState = (reader["do_not_prompt_marking_code"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
 
                     comboBox_variant_connect_fn.SelectedIndex = Convert.ToInt16(reader["variant_connect_fn"]);
                     txtB_fn_ipaddr.Text = reader["fn_ipaddr"].ToString();
@@ -344,6 +345,7 @@ namespace Cash8
             //string static_guid_in_print = (checkBox_static_guid_in_print.CheckState == CheckState.Unchecked ? "false" : "true");
             string printing_using_libraries = (checkBox_printing_using_libraries.CheckState == CheckState.Unchecked ? "false" : "true");
             string get_weight_automatically = (checkBox_get_weight_automatically.CheckState == CheckState.Unchecked ? "false" : "true");
+            string do_not_prompt_marking_code = (checkBox_do_not_prompt_marking_code.CheckState == CheckState.Unchecked ? "false" : "true");
 
             string fn_serial_port = (comboBox_fn_port.Items.Count == 0 ? "" : (comboBox_fn_port.SelectedIndex == -1 ? "" : comboBox_fn_port.SelectedItem.ToString()));
             string scale_serial_port = (comboBox_scale_port.Items.Count == 0 ? "" : (comboBox_scale_port.SelectedIndex == -1 ? "" : comboBox_scale_port.SelectedItem.ToString()));
@@ -383,7 +385,8 @@ namespace Cash8
                     "get_weight_automatically=" + get_weight_automatically+","+
                     "variant_connect_fn = " + variant_connect_fn+","+
                     "fn_ipaddr='"+ fn_ipaddr+"'"+","+
-                    "acquiring_bank= "+comboBox_acquiring_bank.SelectedIndex.ToString();
+                    "acquiring_bank= "+comboBox_acquiring_bank.SelectedIndex.ToString()+","+
+                    "do_not_prompt_marking_code="+ do_not_prompt_marking_code;
 
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 int resul_update = command.ExecuteNonQuery();
@@ -415,7 +418,8 @@ namespace Cash8
                         "get_weight_automatically,"+
                         "variant_connect_fn,"+
                         "fn_ipaddr,"+
-                        "acquiring_bank) VALUES(" +
+                        "acquiring_bank,"+
+                        "do_not_prompt_marking_code) VALUES(" +
                         cash_desk_number.Text + ",'" +
                         nick_shop.Text + "'," +
                         //get_use_debug() + ",'" +
@@ -441,7 +445,8 @@ namespace Cash8
                         get_weight_automatically + ","+
                         variant_connect_fn+",'"+
                         fn_ipaddr+"',"+
-                        comboBox_acquiring_bank.SelectedIndex.ToString()+")";
+                        comboBox_acquiring_bank.SelectedIndex.ToString()+","+
+                        do_not_prompt_marking_code + ")";
 
                     command = new NpgsqlCommand(query, conn);
                     command.ExecuteNonQuery();

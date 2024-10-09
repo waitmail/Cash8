@@ -1096,6 +1096,7 @@ namespace Cash8
             queries.Add("ALTER TABLE public.constants ADD COLUMN fn_ipaddr character varying(20) COLLATE pg_catalog.default;");
             queries.Add("ALTER TABLE checks_header ALTER COLUMN id_sale TYPE character varying(36) USING id_sale::character varying(36)");
             queries.Add("ALTER TABLE public.constants    ADD COLUMN acquiring_bank smallint DEFAULT 0;");
+            queries.Add("ALTER TABLE public.constants ADD COLUMN do_not_prompt_marking_code boolean NOT NULL DEFAULT false; COMMENT ON COLUMN public.constants.do_not_prompt_marking_code IS 'Не запрашивать код марикровки';");
 
             //queries.Add("CREATE INDEX _guid ON public.checks_table USING btree (guid COLLATE pg_catalog.default ASC NULLS LAST) TABLESPACE pg_default;");
 

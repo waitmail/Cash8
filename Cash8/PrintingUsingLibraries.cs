@@ -425,98 +425,100 @@ namespace Cash8
             {
                 fptr.setParam(1055, AtolConstants.LIBFPTR_TT_USN_INCOME);
             }
-
-            if ((check.check_type.SelectedIndex == 1) || !check.itsnew)//старый механизм работы с макрировкой, для возвратов так же пока старая схема
+            if (MainStaticClass.GetDoNotPromptMarkingCode == 0)
             {
-                fptr.clearMarkingCodeValidationResult();
-                foreach (ListViewItem lvi in check.listView1.Items)
+                if ((check.check_type.SelectedIndex == 1) || !check.itsnew)//старый механизм работы с макрировкой, для возвратов так же пока старая схема
                 {
-                    if (lvi.SubItems[14].Text.Trim().Length > 13)
+                    fptr.clearMarkingCodeValidationResult();
+                    foreach (ListViewItem lvi in check.listView1.Items)
                     {
-                        if (cdn_check(lvi.SubItems[0].Text.Trim(), check.numdoc.ToString()))
+                        if (lvi.SubItems[14].Text.Trim().Length > 13)
                         {
-                            continue;
-                        }
-                        byte[] textAsBytes = System.Text.Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'"));
-                        string mark = Convert.ToBase64String(textAsBytes);
-                        if (check.check_type.SelectedIndex == 1 || !check.itsnew)
-                        {
-                            //string mark = Convert.ToBase64String(textAsBytes);
-                            uint status = 2;
-
-                            // Запускаем проверку КМ
-                            fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_TYPE, AtolConstants.LIBFPTR_MCT12_AUTO);
-                            fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE, mark);
-                            fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, status);
-                            fptr.setParam(AtolConstants.LIBFPTR_PARAM_QUANTITY, 1.000);
-                            fptr.setParam(AtolConstants.LIBFPTR_PARAM_MEASUREMENT_UNIT, AtolConstants.LIBFPTR_IU_PIECE);
-                            fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_PROCESSING_MODE, 0);
-                            if (fptr.errorCode() != 0)
+                            if (cdn_check(lvi.SubItems[0].Text.Trim(), check.numdoc.ToString()))
                             {
-                                string error_decription = "Код ошибки = " + fptr.errorCode().ToString() + ";\r\nОписание ошибки " + fptr.errorDescription() + ";\r\n" + fptr.errorDescription();
-                                MessageBox.Show(error_decription, "Ошибки перед проверкой кода маркировки");
-                                MainStaticClass.write_event_in_log(error_decription + " " + mark, "check_marking_code", check.numdoc.ToString());
+                                continue;
                             }
-                            fptr.beginMarkingCodeValidation();
-                            if (fptr.errorCode() == 401)
+                            byte[] textAsBytes = System.Text.Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'"));
+                            string mark = Convert.ToBase64String(textAsBytes);
+                            if (check.check_type.SelectedIndex == 1 || !check.itsnew)
                             {
-                                fptr.declineMarkingCode();
+                                //string mark = Convert.ToBase64String(textAsBytes);
+                                uint status = 2;
 
+                                // Запускаем проверку КМ
                                 fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_TYPE, AtolConstants.LIBFPTR_MCT12_AUTO);
                                 fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE, mark);
                                 fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, status);
                                 fptr.setParam(AtolConstants.LIBFPTR_PARAM_QUANTITY, 1.000);
                                 fptr.setParam(AtolConstants.LIBFPTR_PARAM_MEASUREMENT_UNIT, AtolConstants.LIBFPTR_IU_PIECE);
                                 fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_PROCESSING_MODE, 0);
-
-                                fptr.beginMarkingCodeValidation();
-                            }
-
-                            DateTime start_check = DateTime.Now;
-                            uint validationError = 0;
-                            while (true)
-                            {
-                                fptr.getMarkingCodeValidationStatus();
-                                check.cdn_markers_result_check.Clear();//если мы здесь предыдущие проверки очищаем
-                                if (fptr.getParamBool(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_VALIDATION_READY))
+                                if (fptr.errorCode() != 0)
                                 {
-                                    break;
+                                    string error_decription = "Код ошибки = " + fptr.errorCode().ToString() + ";\r\nОписание ошибки " + fptr.errorDescription() + ";\r\n" + fptr.errorDescription();
+                                    MessageBox.Show(error_decription, "Ошибки перед проверкой кода маркировки");
+                                    MainStaticClass.write_event_in_log(error_decription + " " + mark, "check_marking_code", check.numdoc.ToString());
                                 }
-                                //else
-                                //{
-                                //    MainStaticClass.write_event_in_log(fptr.getParamBool(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_VALIDATION_READY).ToString() + " " + mark, "check_marking_code", check.numdoc.ToString());
-                                //}
-                                if ((DateTime.Now - start_check).Seconds > 2)
+                                fptr.beginMarkingCodeValidation();
+                                if (fptr.errorCode() == 401)
                                 {
-                                    if (fptr.errorCode() != 0)
+                                    fptr.declineMarkingCode();
+
+                                    fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_TYPE, AtolConstants.LIBFPTR_MCT12_AUTO);
+                                    fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE, mark);
+                                    fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, status);
+                                    fptr.setParam(AtolConstants.LIBFPTR_PARAM_QUANTITY, 1.000);
+                                    fptr.setParam(AtolConstants.LIBFPTR_PARAM_MEASUREMENT_UNIT, AtolConstants.LIBFPTR_IU_PIECE);
+                                    fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_PROCESSING_MODE, 0);
+
+                                    fptr.beginMarkingCodeValidation();
+                                }
+
+                                DateTime start_check = DateTime.Now;
+                                uint validationError = 0;
+                                while (true)
+                                {
+                                    fptr.getMarkingCodeValidationStatus();
+                                    check.cdn_markers_result_check.Clear();//если мы здесь предыдущие проверки очищаем
+                                    if (fptr.getParamBool(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_VALIDATION_READY))
                                     {
-                                        validationError = Convert.ToUInt16(fptr.errorCode());
-                                        //MainStaticClass.write_event_in_log("Таймаут при проверке маркировки " + mark, "check_marking_code", check.numdoc.ToString());
                                         break;
                                     }
+                                    //else
+                                    //{
+                                    //    MainStaticClass.write_event_in_log(fptr.getParamBool(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_VALIDATION_READY).ToString() + " " + mark, "check_marking_code", check.numdoc.ToString());
+                                    //}
+                                    if ((DateTime.Now - start_check).Seconds > 2)
+                                    {
+                                        if (fptr.errorCode() != 0)
+                                        {
+                                            validationError = Convert.ToUInt16(fptr.errorCode());
+                                            //MainStaticClass.write_event_in_log("Таймаут при проверке маркировки " + mark, "check_marking_code", check.numdoc.ToString());
+                                            break;
+                                        }
 
-                                    //MessageBox.Show("check_marking_code таймаут при проверки qr кода " + mark);
-                                    //MainStaticClass.write_event_in_log("Таймаут при проверки маркировки " + mark, "check_marking_code", check.numdoc.ToString());
-                                    //validationError = 421;
-                                    //break;
+                                        //MessageBox.Show("check_marking_code таймаут при проверки qr кода " + mark);
+                                        //MainStaticClass.write_event_in_log("Таймаут при проверки маркировки " + mark, "check_marking_code", check.numdoc.ToString());
+                                        //validationError = 421;
+                                        //break;
+                                    }
                                 }
-                            }
-                            //**************************************************************************
-                            validationError = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_ERROR);
-                            //uint validationResult = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_RESULT);
-                            if ((validationError != 0) && (validationError != 402) && (validationError != 421))
-                            {
-                                error = true;
-                                string error_decription = "Код ошибки = " + validationError + ";\r\nОписание ошибки " + fptr.errorDescription() + ";\r\n" + fptr.getParamString(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_ERROR_DESCRIPTION);
-                                MessageBox.Show(error_decription, "Ошибки при проверке кода маркировки");
-                                MainStaticClass.write_event_in_log(error_decription + " " + mark, "check_marking_code", check.numdoc.ToString());
-                            }
-                            else
-                            {
-                                // Подтверждаем реализацию товара с указанным КМ
-                                uint validationResult = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_RESULT);
-                                check.cdn_markers_result_check[mark] = validationResult;
-                                fptr.acceptMarkingCode();
+                                //**************************************************************************
+                                validationError = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_ERROR);
+                                //uint validationResult = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_RESULT);
+                                if ((validationError != 0) && (validationError != 402) && (validationError != 421))
+                                {
+                                    error = true;
+                                    string error_decription = "Код ошибки = " + validationError + ";\r\nОписание ошибки " + fptr.errorDescription() + ";\r\n" + fptr.getParamString(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_ERROR_DESCRIPTION);
+                                    MessageBox.Show(error_decription, "Ошибки при проверке кода маркировки");
+                                    MainStaticClass.write_event_in_log(error_decription + " " + mark, "check_marking_code", check.numdoc.ToString());
+                                }
+                                else
+                                {
+                                    // Подтверждаем реализацию товара с указанным КМ
+                                    uint validationResult = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_RESULT);
+                                    check.cdn_markers_result_check[mark] = validationResult;
+                                    fptr.acceptMarkingCode();
+                                }
                             }
                         }
                     }

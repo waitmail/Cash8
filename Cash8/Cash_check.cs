@@ -3078,7 +3078,7 @@ namespace Cash8
                         bool cdn_vrifyed = false;
                         string mark_str = "";
                         //bool its_marked = (check_sign_marker_code(select_tovar.Tag.ToString()) > 0);
-                        if (its_marked > 0)
+                        if ((its_marked > 0)&&(MainStaticClass.GetDoNotPromptMarkingCode==0))
                         {
                             if (!Console.CapsLock)
                             {
