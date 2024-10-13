@@ -96,8 +96,8 @@ namespace Cash8
         public string tax_order = "";
         public bool external_fix = false;
         public double sale_non_cash_money = 0;
-        public bool payment_by_sbp = false;
-        public bool payment_by_sbp_sales = false;       
+        public bool payment_by_sbp = false;//когда либо оплата либо возврат по сбп
+        public bool payment_by_sbp_sales = false;// для возвратов чтобы был контроль, что оплата была по сбп       
 
         //public Dictionary<string, Cash_check.CdnMarkerDateTime> cdn_markers_date_time = new Dictionary<string, Cash_check.CdnMarkerDateTime>();
 
@@ -1145,7 +1145,7 @@ namespace Cash8
                                " checks_header.sertificate_money,checks_header.non_cash_money,checks_header.cash_money,checks_header.bonuses_it_is_counted, " +
                                " checks_header.bonuses_it_is_written_off, " +
                                " checks_table.bonus_standard,checks_table.bonus_promotion,checks_table.promotion_b_mover,checks_table.item_marker,checks_header.requisite," +
-                               "checks_header.its_deleted,checks_header.system_taxation,checks_header.guid AS checks_header_guid,checks_header.guid1 AS checks_header_guid " +
+                               "checks_header.its_deleted,checks_header.system_taxation,checks_header.guid AS checks_header_guid,checks_header.guid1 AS checks_header_guid,payment_by_sbp " +
                                " FROM checks_header left join checks_table ON checks_header.document_number=checks_table.document_number " +
                                " left join clients ON checks_header.client  = clients.code " +
                                " left join tovar ON checks_table.tovar_code = tovar.code " +
@@ -1214,7 +1214,7 @@ namespace Cash8
                         //this.bonus_on_document = Convert.ToDecimal(reader["bonuses_it_is_counted"]);                       
                         this.bonuses_it_is_written_off = Convert.ToDecimal(reader["bonuses_it_is_written_off"]);
                         this.txtB_bonus_money.Text = this.bonuses_it_is_written_off.ToString();
-
+                        this.payment_by_sbp_sales = Convert.ToBoolean(reader["payment_by_sbp"]);
                         //if (reader["requisite"].ToString() == "1")
                         //{
                         //    this.checkBox_club.Checked = true;
@@ -4840,7 +4840,8 @@ namespace Cash8
                                         "non_cash_money1,"+
                                         "sertificate_money1,"+
                                         "guid," +
-                                        "guid1) VALUES(" +
+                                        "guid1,"+
+                                        "payment_by_sbp) VALUES(" +
 
                                         "@document_number," +
                                         "@date_time_start," +
@@ -4879,7 +4880,8 @@ namespace Cash8
                                         "@non_cash_money1," +
                                         "@sertificate_money1,"+
                                         "@guid," +
-                                        "@guid1)", conn);
+                                        "@guid1?"+
+                                        "@payment_by_sbp)", conn);
 
                 command.Parameters.AddWithValue("document_number", numdoc.ToString());
                 command.Parameters.AddWithValue("date_time_start", date_time_start.Text.Replace("Чек", ""));
@@ -4932,6 +4934,8 @@ namespace Cash8
                 command.Parameters.AddWithValue("sertificate_money1", sum1[2].ToString().Replace(",", "."));
                 command.Parameters.AddWithValue("guid", guid);
                 command.Parameters.AddWithValue("guid1", guid1);
+                command.Parameters.AddWithValue("payment_by_sbp", payment_by_sbp);
+                
 
 
                 string sent_to_processing_center = "0";
@@ -13799,7 +13803,7 @@ namespace Cash8
                 //}
 
             }
-            else
+            else//Это возврат
             {
                 pay_form.pay_sum.Text = calculation_of_the_sum_of_the_document().ToString("F", System.Globalization.CultureInfo.CurrentCulture);
                 //if (MainStaticClass.SelfServiceKiosk == 1)

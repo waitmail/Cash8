@@ -1216,7 +1216,7 @@ namespace Cash8
                                 else
                                 {
                                     cc.code_authorization_terminal = answerTerminal.code_authorization;     //13 поле
-                                    cc.id_transaction_terminal = answerTerminal.number_reference;  //14 поле
+                                    cc.id_transaction_terminal = answerTerminal.number_reference;  //14 поле                                    
                                 }
                             }
                             else
@@ -1310,11 +1310,18 @@ namespace Cash8
                                         MessageBox.Show(" Неудачная попытка получения оплаты ", "СБП");
                                         return;
                                     }
+                                    else
+                                    {
+                                        cc.code_authorization_terminal = answerTerminal.code_authorization;     //13 поле
+                                        cc.id_transaction_terminal = answerTerminal.number_reference;           //14 поле
+                                        cc.payment_by_sbp = (checkBox_payment_by_sbp.CheckState == CheckState.Checked ? true : false);
+                                    }
                                 }
                                 else//был сразу получен успешный ответ по по оплате СБП
                                 {
                                     cc.code_authorization_terminal = answerTerminal.code_authorization;     //13 поле
                                     cc.id_transaction_terminal = answerTerminal.number_reference;           //14 поле
+                                    cc.payment_by_sbp = (checkBox_payment_by_sbp.CheckState == CheckState.Checked ? true : false);
                                 }
                             }
                         }
@@ -1375,7 +1382,7 @@ namespace Cash8
                 string sum_cash_pay = (Convert.ToDecimal(cash_sum.Text) - Convert.ToDecimal(remainder.Text)).ToString().Replace(",", ".");
                 string non_sum_cash_pay = (get_non_cash_sum(1)).ToString().Replace(",", ".");
                 cc.print_to_button = 0;
-                cc.payment_by_sbp = (checkBox_payment_by_sbp.CheckState == CheckState.Checked ? true : false);
+                //cc.payment_by_sbp = (checkBox_payment_by_sbp.CheckState == CheckState.Checked ? true : false);//Перенес выше в секцию РНКБ, здесь было до появления сбера
                 if (cc.it_is_paid(cash_sum.Text, cc.calculation_of_the_sum_of_the_document().ToString().Replace(",", "."), remainder.Text.Replace(",", "."),
                 (pay_bonus_many.Text.Trim() == "" ? "0" : pay_bonus_many.Text.Trim()),
                 true,
@@ -1523,7 +1530,8 @@ namespace Cash8
                             else
                             {
                                 cc.code_authorization_terminal = answerTerminal.code_authorization;//13 поле
-                                cc.id_transaction_terminal = answerTerminal.number_reference;  //14 поле
+                                cc.id_transaction_terminal = answerTerminal.number_reference;  //14 поле 
+                                cc.payment_by_sbp = (checkBox_payment_by_sbp.CheckState == CheckState.Checked ? true : false);
                             }
                         }
                         else if (MainStaticClass.GetAcquiringBank == 2)//СБЕР
@@ -2469,12 +2477,13 @@ namespace Cash8
 
         private void checkBox_payment_by_sbp_CheckedChanged(object sender, EventArgs e)
         {
-            if (cc.payment_by_sbp_sales)
+            if (cc.payment_by_sbp_sales)//Продажа была по СБП
             {
                 if (checkBox_payment_by_sbp.CheckState != CheckState.Checked)
                 {                    
                     non_cash_sum.Text = "0";
                     calculate();
+                    MessageBox.Show("При продаже была оплата по сбп, при возврате должно быть так же!", "Контроль СБП");
                 }
             }
         }
