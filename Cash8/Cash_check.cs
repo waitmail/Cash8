@@ -23,11 +23,11 @@ namespace Cash8
         //public int bonus_is_on_earlier = 0;
         //private int bonus_is_on_now = 0;
         public bool enable_delete = false;
-        private string[] print_data;
+        //private string[] print_data;
         private bool selection_goods = false;
         public bool have_action = false;
         private StringBuilder print_string = new StringBuilder();
-        private int count_pages = 0;
+        //private int count_pages = 0;
         public int to_print_certainly = 0;
         public int to_print_certainly_p = 0;
         //Флаг закрытия документа
@@ -43,7 +43,7 @@ namespace Cash8
         public Int64 numdoc = 0;
         private bool inpun_client_barcode = false;
         //public Nomenklatura tovar;
-        private int curpos = 0;
+        //private int curpos = 0;
         public bool itsnew = true;
         //private bool input_edit_barcode = false;
         //private string num_cash = "";
@@ -56,7 +56,7 @@ namespace Cash8
         public string p_discount = "0";
         Thread workerThread = null;
         private DateTime start_action = DateTime.Now;
-        private Int32 total_seconnds = 0;
+        //private Int32 total_seconnds = 0;
         private DataTable table = new DataTable();
         private int action_num_doc = 0;
         public string cashier = "";
@@ -72,17 +72,17 @@ namespace Cash8
         public int bonuses_it_is_counted = 0;
         private Pay pay_form = new Pay();
         //private string cardTrack2 = "";
-        private string phone = "";
+        //private string phone = "";
         public string qr_code = "";
         public string id_sale = "";
         public string phone_client = "";
-        private int card_state = 0; // state – состояние карты, одно из значений: 1 – карта неактивна 2 – карта активирована(выдана на кассе) 3 – карта зарегистрирована(привязана к анкете клиента) 4 – карта заблокирована
+        //private int card_state = 0; // state – состояние карты, одно из значений: 1 – карта неактивна 2 – карта активирована(выдана на кассе) 3 – карта зарегистрирована(привязана к анкете клиента) 4 – карта заблокирована
         private string code_bonus_card = "";
         public string spendAllowed = "";
         public string message_processing = "";
         public bool change_bonus_card = false;
-        private bool client_plastic_scaned = false;//клиент определен по платиковой карте или по номеру платиковой карты
-        AnswerAddingKmArrayToTableTested answerAddingKmArrayToTableTested = null;
+        //private bool client_plastic_scaned = false;//клиент определен по платиковой карте или по номеру платиковой карты
+        //AnswerAddingKmArrayToTableTested answerAddingKmArrayToTableTested = null;
         public string id_transaction_terminal     = "";
         public string code_authorization_terminal = "";
         public string sale_id_transaction_terminal = "";
@@ -1193,7 +1193,7 @@ namespace Cash8
                         this.user.Text = reader["users_name"].ToString();//.GetString(8);
                         //this.user.Text = MainStaticClass.Cash_Operator; //reader["users_name"].ToString();//.GetString(8);
                         this.pay.Text = "Напечатать F8";
-                        if (Convert.ToInt32(reader["system_taxation"]) == 3)
+                        if ((Convert.ToInt32(reader["system_taxation"]) == 3) ||(Convert.ToInt32(reader["system_taxation"]) == 5))
                         {
                             checkBox_to_print_repeatedly_p.Visible = true;
                         }
@@ -2918,6 +2918,14 @@ namespace Cash8
                     }
                     //КОНЕЦ Надо проверить может уже сертификат есть в чеке                    
                 }
+                if (!fractional)
+                {
+                    if (WeightFromScales != 0)
+                    {
+                        MessageBox.Show("Товар с кодом/штрихкодком " + barcode + " не является весовым и в чек добавлен не будет ");
+                        return;
+                    }
+                }
 
                 if (find_sertificate)
                 {
@@ -3375,7 +3383,7 @@ namespace Cash8
                             listView1.Focus();
                             listView1.Select();
                             listView1.Items[this.listView1.Items.Count - 1].Selected = true;
-                            listView1.Items[this.listView1.Items.Count - 1].Focused  = true;
+                            listView1.Items[this.listView1.Items.Count - 1].Focused = true;
                             //SendKeys.Send("Enter");                            
                             if (!ProductFromScales)
                             {
@@ -3386,6 +3394,13 @@ namespace Cash8
                                 listView1.Items[this.listView1.Items.Count - 1].SubItems[3].Text = WeightFromScales.ToString();
                             }
                         }
+                        //else
+                        //{
+                        //    if (WeightFromScales != 0)
+                        //    {
+                        //        MessageBox.Show("В штрихкоде был указан не весовой товар, количество");
+                        //    }
+                        //}
 
 
                         //if ((!error) || ((code_marking_error == 402) || (code_marking_error == 421) || cdn_vrifyed))//Если с qr кодом все хорошо тогда добавляем позицию иначе не добавляем 
@@ -4409,7 +4424,7 @@ namespace Cash8
             {
                 if (MainStaticClass.Use_Fiscall_Print)
                 {
-                    if (MainStaticClass.SystemTaxation != 3)
+                    if ((MainStaticClass.SystemTaxation != 3)&& (MainStaticClass.SystemTaxation != 5))
                     {
                         if (this.itc_printed())
                         {
@@ -4417,7 +4432,7 @@ namespace Cash8
                             this.checkBox_to_print_repeatedly.Enabled = false;
                         }
                     }
-                    else if (MainStaticClass.SystemTaxation == 3)
+                    else if ((MainStaticClass.SystemTaxation == 3)|| (MainStaticClass.SystemTaxation == 5))
                     {
                         if (this.itc_printed())
                         {                            
@@ -4880,7 +4895,7 @@ namespace Cash8
                                         "@non_cash_money1," +
                                         "@sertificate_money1,"+
                                         "@guid," +
-                                        "@guid1?"+
+                                        "@guid1,"+
                                         "@payment_by_sbp)", conn);
 
                 command.Parameters.AddWithValue("document_number", numdoc.ToString());
@@ -8335,7 +8350,7 @@ namespace Cash8
             }
             else if (MainStaticClass.GetVersionFn == 2)
             {
-                if (MainStaticClass.SystemTaxation != 3)
+                if ((MainStaticClass.SystemTaxation != 3)&& (MainStaticClass.SystemTaxation != 5))
                 {
                     if (MainStaticClass.PrintingUsingLibraries == 0)
                     {
@@ -9061,7 +9076,7 @@ namespace Cash8
                 }
             }
 
-            bool error = false;
+            //bool error = false;
 
             if (to_print_certainly == 1)
             {
@@ -9385,13 +9400,13 @@ namespace Cash8
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show(ex.Message);
+                        MessageBox.Show(ex.Message, "fiscall_print_disburse_2_3");
                     }
                 }                
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message);
-                    error = true;
+                    MessageBox.Show(ex.Message, "fiscall_print_disburse_2_3");
+                    //error = true;
                 }
                 finally
                 {
@@ -10435,39 +10450,39 @@ namespace Cash8
                     return;
                 }
             }
-            else if (MainStaticClass.SystemTaxation == 3)
-            {
-                if (check_type.SelectedIndex==1)//Комбинированный тип налогообложения необходимо проверить чтобы не было вместе маркированного и не маркированного товара
-                {
-                    //int marker = 0;
-                    //int not_marker = 0;
-                    //bool error = false;
-                    //foreach (ListViewItem lvi in listView1.Items)
-                    //{
-                    //    if (Convert.ToDouble(lvi.SubItems[7].Text) != 0)
-                    //    {
-                    //        if (lvi.SubItems[14].Text.Trim().Length <= 13)//Код маркировки не заполнен
-                    //        {
-                    //            not_marker++;
-                    //        }
-                    //        else
-                    //        {
-                    //            marker++;
-                    //        }
-                    //    }
-                    //    if ((marker != 0) && (not_marker != 0))
-                    //    {
-                    //        error = true;
-                    //        break;
-                    //    }
-                    //}
-                    //if (error)
-                    //{
-                    //    MessageBox.Show("При данном типе налогообложения необходимо возвращать товар раздельно т.е. маркированный товар одним чеком, а не маркированный товар другим чеком.");
-                    //    return;
-                    //}
-                }
-            }
+            //else if ((MainStaticClass.SystemTaxation == 3)|| (MainStaticClass.SystemTaxation == 5))
+            //{
+            //    if (check_type.SelectedIndex==1)//Комбинированный тип налогообложения необходимо проверить чтобы не было вместе маркированного и не маркированного товара
+            //    {
+            //        //int marker = 0;
+            //        //int not_marker = 0;
+            //        //bool error = false;
+            //        //foreach (ListViewItem lvi in listView1.Items)
+            //        //{
+            //        //    if (Convert.ToDouble(lvi.SubItems[7].Text) != 0)
+            //        //    {
+            //        //        if (lvi.SubItems[14].Text.Trim().Length <= 13)//Код маркировки не заполнен
+            //        //        {
+            //        //            not_marker++;
+            //        //        }
+            //        //        else
+            //        //        {
+            //        //            marker++;
+            //        //        }
+            //        //    }
+            //        //    if ((marker != 0) && (not_marker != 0))
+            //        //    {
+            //        //        error = true;
+            //        //        break;
+            //        //    }
+            //        //}
+            //        //if (error)
+            //        //{
+            //        //    MessageBox.Show("При данном типе налогообложения необходимо возвращать товар раздельно т.е. маркированный товар одним чеком, а не маркированный товар другим чеком.");
+            //        //    return;
+            //        //}
+            //    }
+            //}
 
 
 

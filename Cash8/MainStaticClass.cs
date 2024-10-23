@@ -85,7 +85,7 @@ namespace Cash8
         private static DateTime last_send_last_successful_sending;
         private static DateTime last_write_check;
         private static DateTime min_date_work = new DateTime(2023, 09, 01);
-        private static bool use_old_processiing_actions = true;
+        //private static bool use_old_processiing_actions = true;
         private static int work_schema = 0;
         private static int version_fn = 0;
         private static string version_fn_real = "";

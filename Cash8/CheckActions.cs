@@ -59,7 +59,7 @@ namespace Cash8
         {
             if (e.KeyChar == (char)Keys.Enter)
             {
-                bool find_phone = false;
+                //bool find_phone = false;
                 if ((txtB_client_code.Text.Trim().Length != 10) && (txtB_client_code.Text.Trim().Length != 13))
                 {
                     MessageBox.Show("Код клиента имеет неправильную длину");

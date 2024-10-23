@@ -1127,7 +1127,7 @@ namespace Cash8
                 fptr.setParam(AtolConstants.LIBFPTR_PARAM_RECEIPT_TYPE, AtolConstants.LIBFPTR_RT_SELL_RETURN);
             }
 
-            bool closing = false;
+           // bool closing = false;
 
             // Открытие чека (с передачей телефона получателя)
             if (check.check_type.SelectedIndex == 0)

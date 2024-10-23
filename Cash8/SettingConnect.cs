@@ -480,11 +480,11 @@ namespace Cash8
                 }
                 conn.Close();
             }
-            catch (NpgsqlException ex)
+            catch(NpgsqlException ex)
             {
                 //MessageBox.Show(ex.Message,query);
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 //MessageBox.Show(ex.Message, query);
             }
