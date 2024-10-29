@@ -176,7 +176,7 @@ namespace Cash8
 
         protected override void OnKeyDown(KeyEventArgs e)
         {
-            base.OnKeyDown(e);
+            //base.OnKeyDown(e);
             if (e.KeyCode == Keys.F4 && e.Alt)
             {
                 e.Handled = true;
@@ -189,18 +189,21 @@ namespace Cash8
                     MessageBox.Show(" У ВАС УСТАНОВЛЕНА НЕПРАВИЛЬНАЯ ДАТА НА КОМПЬЮТЕРЕ !!! ДАЛЬНЕЙШАЯ РАБОТА С ЧЕКАМИ НЕВОЗМОЖНА !!!");
                     return;
                 }
-                if (MainStaticClass.CashDeskNumber != 9)
+                if (MainStaticClass.GetDoNotPromptMarkingCode == 0)
                 {
-                    bool restart = false; bool errors = false;
-                    MainStaticClass.check_version_fn(ref restart, ref errors);
-                    if (errors)
+                    if (MainStaticClass.CashDeskNumber != 9)
                     {
-                        return;
-                    }
-                    if (restart)
-                    {
-                        MessageBox.Show("У вас неверно была установлена версия ФН,НЕОБХОДИМ ПЕРЕЗАПУСК КАССОВОЙ ПРОГРАММЫ !!!");
-                        this.Close();
+                        bool restart = false; bool errors = false;
+                        MainStaticClass.check_version_fn(ref restart, ref errors);
+                        if (errors)
+                        {
+                            return;
+                        }
+                        if (restart)
+                        {
+                            MessageBox.Show("У вас неверно была установлена версия ФН,НЕОБХОДИМ ПЕРЕЗАПУСК КАССОВОЙ ПРОГРАММЫ !!!");
+                            this.Close();
+                        }
                     }
                     if (MainStaticClass.SystemTaxation == 0)
                     {
@@ -208,6 +211,7 @@ namespace Cash8
                         return;
                     }
                 }
+
                 //Проверка на заполненность обяз реквизитов
                 if (all_is_filled())
                 {

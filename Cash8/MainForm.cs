@@ -1079,22 +1079,24 @@ namespace Cash8
                 //{
                 //    MainStaticClass.UseOldProcessiingActions = false;
                 //}
-
-                if (MainStaticClass.CashDeskNumber != 9)
+                if (MainStaticClass.GetDoNotPromptMarkingCode == 0)
                 {
-                    if (MainStaticClass.SystemTaxation == 0)
+                    if (MainStaticClass.CashDeskNumber != 9)
                     {
-                        MessageBox.Show("У вас не заполнена система налогообложения!\r\nСоздание и печать чеков невозможна!\r\nОБРАЩАЙТЕСЬ В БУХГАЛТЕРИЮ!");
-                    }
-                    bool restart = false; bool error = false;
-
-                    MainStaticClass.check_version_fn(ref restart, ref error);
-                    if (!error)
-                    {
-                        if (restart)
+                        if (MainStaticClass.SystemTaxation == 0)
                         {
-                            MessageBox.Show("У вас неверно была установлена версия ФН, необходим перезапуск программы");
-                            this.Close();
+                            MessageBox.Show("У вас не заполнена система налогообложения!\r\nСоздание и печать чеков невозможна!\r\nОБРАЩАЙТЕСЬ В БУХГАЛТЕРИЮ!");
+                        }
+                        bool restart = false; bool error = false;
+
+                        MainStaticClass.check_version_fn(ref restart, ref error);
+                        if (!error)
+                        {
+                            if (restart)
+                            {
+                                MessageBox.Show("У вас неверно была установлена версия ФН, необходим перезапуск программы");
+                                this.Close();
+                            }
                         }
                     }
                 }

@@ -1236,6 +1236,7 @@ namespace Cash8
                         "\r\n " + fptr.errorDescription().ToString());
                     error = true;
                     fptr.cancelReceipt();
+                    //fptr.resetError();
                     break;
                 }
             }

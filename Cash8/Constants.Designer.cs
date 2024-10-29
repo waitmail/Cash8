@@ -484,9 +484,10 @@
             this.checkBox_do_not_prompt_marking_code.AutoSize = true;
             this.checkBox_do_not_prompt_marking_code.Location = new System.Drawing.Point(188, 126);
             this.checkBox_do_not_prompt_marking_code.Name = "checkBox_do_not_prompt_marking_code";
-            this.checkBox_do_not_prompt_marking_code.Size = new System.Drawing.Size(196, 17);
+            this.checkBox_do_not_prompt_marking_code.Size = new System.Drawing.Size(309, 17);
             this.checkBox_do_not_prompt_marking_code.TabIndex = 90;
-            this.checkBox_do_not_prompt_marking_code.Text = "Не запрашивать код маркировки";
+            this.checkBox_do_not_prompt_marking_code.Text = "Не запрашивать код  маркир (ТОЛЬКО ЕСЛИ НЕТ ФН)";
+            this.checkBox_do_not_prompt_marking_code.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_do_not_prompt_marking_code.UseVisualStyleBackColor = true;
             // 
             // Constants
