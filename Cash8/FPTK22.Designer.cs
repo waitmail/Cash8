@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.btn_openDrawer = new System.Windows.Forms.Button();
             this.txtB_ofd_utility_status = new System.Windows.Forms.TextBox();
             this.btn_send_fiscal = new System.Windows.Forms.Button();
             this.btn_have_internet = new System.Windows.Forms.Button();
@@ -53,7 +54,8 @@
             this.btn_query_summary_report = new System.Windows.Forms.Button();
             this.btn_query_full_report = new System.Windows.Forms.Button();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.btn_openDrawer = new System.Windows.Forms.Button();
+            this.btn_date_mark = new System.Windows.Forms.Button();
+            this.txtB_last_send_mark = new System.Windows.Forms.TextBox();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -62,6 +64,8 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.txtB_last_send_mark);
+            this.groupBox4.Controls.Add(this.btn_date_mark);
             this.groupBox4.Controls.Add(this.btn_openDrawer);
             this.groupBox4.Controls.Add(this.txtB_ofd_utility_status);
             this.groupBox4.Controls.Add(this.btn_send_fiscal);
@@ -71,10 +75,20 @@
             this.groupBox4.Controls.Add(this.txtB_have_internet);
             this.groupBox4.Location = new System.Drawing.Point(438, 12);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(443, 337);
+            this.groupBox4.Size = new System.Drawing.Size(443, 457);
             this.groupBox4.TabIndex = 20;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Проверки";
+            // 
+            // btn_openDrawer
+            // 
+            this.btn_openDrawer.Location = new System.Drawing.Point(7, 125);
+            this.btn_openDrawer.Name = "btn_openDrawer";
+            this.btn_openDrawer.Size = new System.Drawing.Size(155, 23);
+            this.btn_openDrawer.TabIndex = 24;
+            this.btn_openDrawer.Text = "Открыть денежный ящик";
+            this.btn_openDrawer.UseVisualStyleBackColor = true;
+            this.btn_openDrawer.Click += new System.EventHandler(this.btn_openDrawer_Click);
             // 
             // txtB_ofd_utility_status
             // 
@@ -88,7 +102,7 @@
             // 
             // btn_send_fiscal
             // 
-            this.btn_send_fiscal.Location = new System.Drawing.Point(7, 154);
+            this.btn_send_fiscal.Location = new System.Drawing.Point(6, 154);
             this.btn_send_fiscal.Name = "btn_send_fiscal";
             this.btn_send_fiscal.Size = new System.Drawing.Size(155, 23);
             this.btn_send_fiscal.TabIndex = 22;
@@ -323,21 +337,32 @@
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Банковский терминал";
             // 
-            // btn_openDrawer
+            // btn_date_mark
             // 
-            this.btn_openDrawer.Location = new System.Drawing.Point(7, 120);
-            this.btn_openDrawer.Name = "btn_openDrawer";
-            this.btn_openDrawer.Size = new System.Drawing.Size(155, 23);
-            this.btn_openDrawer.TabIndex = 24;
-            this.btn_openDrawer.Text = "Открыть денежный ящик";
-            this.btn_openDrawer.UseVisualStyleBackColor = true;
-            this.btn_openDrawer.Click += new System.EventHandler(this.btn_openDrawer_Click);
+            this.btn_date_mark.Location = new System.Drawing.Point(6, 350);
+            this.btn_date_mark.Name = "btn_date_mark";
+            this.btn_date_mark.Size = new System.Drawing.Size(154, 75);
+            this.btn_date_mark.TabIndex = 25;
+            this.btn_date_mark.Text = "Дата последней удачной отправки маркировки";
+            this.btn_date_mark.UseVisualStyleBackColor = true;
+            this.btn_date_mark.Click += new System.EventHandler(this.btn_date_mark_Click);
+            // 
+            // txtB_last_send_mark
+            // 
+            this.txtB_last_send_mark.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.txtB_last_send_mark.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.txtB_last_send_mark.Location = new System.Drawing.Point(168, 381);
+            this.txtB_last_send_mark.Name = "txtB_last_send_mark";
+            this.txtB_last_send_mark.ReadOnly = true;
+            this.txtB_last_send_mark.Size = new System.Drawing.Size(269, 29);
+            this.txtB_last_send_mark.TabIndex = 26;
+            this.txtB_last_send_mark.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // FPTK22
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(893, 405);
+            this.ClientSize = new System.Drawing.Size(893, 481);
             this.Controls.Add(this.txtB_fn_info);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.print_last_check);
@@ -390,5 +415,7 @@
         private System.Windows.Forms.Button btn_query_full_report;
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.Button btn_openDrawer;
+        private System.Windows.Forms.TextBox txtB_last_send_mark;
+        private System.Windows.Forms.Button btn_date_mark;
     }
 }

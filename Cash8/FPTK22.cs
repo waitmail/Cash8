@@ -77,6 +77,8 @@ namespace Cash8
 
             get_fiscall_info();
 
+            btn_date_mark_Click(null, null);
+
             //Не отправлено документов
         }
 
@@ -817,12 +819,60 @@ namespace Cash8
 
         private void btn_openDrawer_Click(object sender, EventArgs e)
         {
-            IFptr fptr = MainStaticClass.FPTR;
-            if (!fptr.isOpened())
+            if (MainStaticClass.PrintingUsingLibraries == 1)
             {
-                fptr.open();
+                try
+                {
+                    IFptr fptr = MainStaticClass.FPTR;
+                    if (!fptr.isOpened())
+                    {
+                        fptr.open();
+                    }
+                    fptr.openDrawer();
+                    if (MainStaticClass.GetVariantConnectFN == 1)
+                    {
+                        fptr.close();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Ошибки при попытке открыть денежный ящик  " + ex.Message);
+                }
             }
-            fptr.openDrawer();
+        }
+
+        private void btn_date_mark_Click(object sender, EventArgs e)
+        {
+            if (MainStaticClass.PrintingUsingLibraries == 1)
+            {
+                try
+                {
+                    IFptr fptr = MainStaticClass.FPTR;
+                    if (!fptr.isOpened())
+                    {
+                        fptr.open();
+                    }
+
+                    fptr.setParam(AtolConstants.LIBFPTR_PARAM_DATA_TYPE, AtolConstants.LIBFPTR_DT_LAST_SENT_ISM_NOTICE_DATE_TIME);
+                    fptr.queryData();
+
+                    DateTime dateTime = fptr.getParamDateTime(AtolConstants.LIBFPTR_PARAM_DATE_TIME);
+                    txtB_last_send_mark.Text = dateTime.ToString("dd-MM-yyyy HH:mm:ss");
+                    if (MainStaticClass.GetVariantConnectFN == 1)
+                    {
+                        fptr.close();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Ошибки при получении даты о последней успешной отправке маркировки в ИСМ  " + ex.Message);
+                }
+            }
+            else
+            {
+                btn_date_mark.Visible = false;
+                txtB_last_send_mark.Visible = false;
+            }
         }
     }
 }

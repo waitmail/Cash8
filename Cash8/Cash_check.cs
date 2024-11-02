@@ -14623,6 +14623,23 @@ namespace Cash8
                 {
                     string query = "";
 
+                    
+
+                    conn.Open();
+
+                    query = "SELECT id_transaction_terminal,code_authorization_terminal,date_time_write,non_cash_money,guid FROM  checks_header WHERE document_number=" + txtB_num_sales.Text;
+                    NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                    NpgsqlDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        sale_id_transaction_terminal = reader["id_transaction_terminal"].ToString();
+                        sale_code_authorization_terminal = reader["code_authorization_terminal"].ToString();
+                        sale_date = Convert.ToDateTime(reader["date_time_write"]);
+                        sale_non_cash_money = Convert.ToDouble(reader["non_cash_money"]);
+                        id_sale = reader["guid"].ToString();
+                    }
+
+
                     query = " SELECT dt.tovar_code, dt.name,SUM(dt.quantity)AS quantity, dt.price, dt.price_at_a_discount, SUM(dt.sum) AS sum," +
                                    "  SUM(dt.sum_at_a_discount) AS sum_at_a_discount, dt.id_transaction,dt.client,dt.item_marker" +
                                    " FROM " +
@@ -14631,21 +14648,20 @@ namespace Cash8
                                    " FROM " +
                                    " checks_table LEFT JOIN tovar ON checks_table.tovar_code = tovar.code " +
                                    " LEFT JOIN checks_header ON checks_table.document_number = checks_header.document_number " +
-                                   " WHERE checks_table.document_number = '" + txtB_num_sales.Text.Trim() + "' AND checks_header.check_type = 0 AND checks_header.its_deleted = 0 " +
+                                   " WHERE checks_table.guid = '" + id_sale + "' AND checks_header.check_type = 0 AND checks_header.its_deleted = 0 " +
                                    " AND checks_header.date_time_write BETWEEN '" + DateTime.Now.AddDays(-14).Date.ToString("dd-MM-yyyy") + "' AND  '" + DateTime.Now.AddDays(1).ToString("dd-MM-yyyy") + "'" +
                                    " UNION ALL " +
                                    " SELECT tovar_code, tovar.name, -quantity, price, price_at_a_discount, -sum, -sum_at_a_discount, checks_header.id_transaction," +
                                    " checks_header.client, item_marker FROM checks_table LEFT JOIN tovar ON checks_table.tovar_code = tovar.code " +
                                    " LEFT JOIN checks_header ON checks_table.document_number = checks_header.document_number " +
-                                   " WHERE checks_header.id_sale = '" + txtB_num_sales.Text.Trim() + "'  AND checks_header.check_type = 1 AND checks_header.its_deleted = 0 " +
+                                   " WHERE checks_header.id_sale = '" + id_sale + "'  AND checks_header.check_type = 1 AND checks_header.its_deleted = 0 " +
                                    " AND checks_header.date_time_write BETWEEN '" + DateTime.Now.AddDays(-14).Date.ToString("dd-MM-yyyy") + "' AND  '" + DateTime.Now.AddDays(1).ToString("dd-MM-yyyy") + "' )AS dt " +
                                    " GROUP BY " +
                                    "dt.tovar_code, dt.name, dt.price, dt.price_at_a_discount, dt.id_transaction,dt.client,dt.item_marker " +
                                    " HAVING SUM(dt.quantity) > 0 ";
 
-                    conn.Open();
-                    NpgsqlCommand command = new NpgsqlCommand(query, conn);
-                    NpgsqlDataReader reader = command.ExecuteReader();
+                    command = new NpgsqlCommand(query, conn);
+                    reader = command.ExecuteReader();
                     while (reader.Read())
                     {
                         //if (its_sertificate(reader[0].ToString()))
@@ -14682,17 +14698,17 @@ namespace Cash8
                         listView1.Items.Add(lvi);
                     }
 
-                    query = "SELECT id_transaction_terminal,code_authorization_terminal,date_time_write,non_cash_money,guid FROM  checks_header WHERE document_number=" + txtB_num_sales.Text;
-                    command = new NpgsqlCommand(query, conn);
-                    reader = command.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        sale_id_transaction_terminal = reader["id_transaction_terminal"].ToString();
-                        sale_code_authorization_terminal = reader["code_authorization_terminal"].ToString();
-                        sale_date = Convert.ToDateTime(reader["date_time_write"]);
-                        sale_non_cash_money = Convert.ToDouble(reader["non_cash_money"]);
-                        id_sale = reader["guid"].ToString();
-                    }
+                    //query = "SELECT id_transaction_terminal,code_authorization_terminal,date_time_write,non_cash_money,guid FROM  checks_header WHERE document_number=" + txtB_num_sales.Text;
+                    //command = new NpgsqlCommand(query, conn);
+                    //reader = command.ExecuteReader();
+                    //while (reader.Read())
+                    //{
+                    //    sale_id_transaction_terminal = reader["id_transaction_terminal"].ToString();
+                    //    sale_code_authorization_terminal = reader["code_authorization_terminal"].ToString();
+                    //    sale_date = Convert.ToDateTime(reader["date_time_write"]);
+                    //    sale_non_cash_money = Convert.ToDouble(reader["non_cash_money"]);
+                    //    id_sale = reader["guid"].ToString();
+                    //}
 
                     reader.Close();
                     conn.Close();
