@@ -10406,6 +10406,18 @@ namespace Cash8
                
         private void pay_Click(object sender, EventArgs e)
         {
+            if (itsnew)
+            {
+                if (listView1.Items.Count < 3)
+                {
+                    MessageBox.Show("В чеке менее 3 строк, предложить покупателю доп.товар", "В чеке менее 3 строк");
+                    //Tovar_Not_Found tovar_Not_Found = new Tovar_Not_Found();
+                    //tovar_Not_Found.textBox1.Text = "В чеке менее 3 строк, предложить покупателю доп.товар";
+                    //tovar_Not_Found.textBox1.Font= new Font("Microsoft Sans Serif", 18);
+                    //tovar_Not_Found.ShowDialog();
+                }
+            }
+
             recharge_note = "";
             print_to_button = 1;
             if (listView1.Items.Count == 0)
