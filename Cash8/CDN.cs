@@ -527,9 +527,12 @@ namespace Cash8
                         string s = "ТОВАР НЕ МОЖЕТ БЫТЬ ПРОДАН!\r\n";
                         if (!answer_check_mark.codes[0].isOwner)
                         {
-                            //MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + " Вы не являетесь владельцем " + s, "CDN проверка");
-                            sb.AppendLine("Вы не являетесь владельцем!".ToUpper());
-                            MainStaticClass.write_event_in_log("CDN Код маркировки " + mark_str_cdn + " Вы не являетесь владельцем ", "Документ чек", numdoc.ToString());
+                            if ((answer_check_mark.codes[0].groupIds[0] != 23)&& (answer_check_mark.codes[0].groupIds[0] != 8))
+                            {
+                                //MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + " Вы не являетесь владельцем " + s, "CDN проверка");
+                                sb.AppendLine("Вы не являетесь владельцем!".ToUpper());
+                                MainStaticClass.write_event_in_log("CDN Код маркировки " + mark_str_cdn + " Вы не являетесь владельцем ", "Документ чек", numdoc.ToString());
+                            }
                         }
                         if (!answer_check_mark.codes[0].found)
                         {
