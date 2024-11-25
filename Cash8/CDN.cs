@@ -508,6 +508,8 @@ namespace Cash8
                             using (var reader = new StreamReader(responseStream))
                             {
                                 string responseFromServer = reader.ReadToEnd();
+                                //Записываем лог 
+                                MainStaticClass.write_cdn_log(responseFromServer, numdoc.ToString());
                                 answer_check_mark = JsonConvert.DeserializeObject<AnswerCheckMark>(responseFromServer);
                                 MainStaticClass.write_event_in_log(host.host + " Успешное получение данных ", "Документ чек", numdoc.ToString());
                             }
@@ -623,6 +625,9 @@ namespace Cash8
                 {
                     //MessageBox.Show("check_marker_code " + host.host + " " + ex.Message);
                     MainStaticClass.write_event_in_log("check_marker_code " + host.host+" "+ex.Message, "Документ чек", numdoc.ToString());
+
+                    MainStaticClass.write_cdn_log("check_marker_code " + host.host + " " + ex.Message, numdoc.ToString());
+
                     if (ex.Status == WebExceptionStatus.Timeout || ex.Status == WebExceptionStatus.ConnectionClosed)
                     {
                         //request = (HttpWebRequest)WebRequest.Create(url);
@@ -642,6 +647,8 @@ namespace Cash8
                         result_check = false; //ошибка работы с интернет не является ошибкой кода маркировки
                         error = true;
                         MessageBox.Show("WebException check_marker_code " + host.host + " " + ex.Message, "check_marker_code");
+
+                        MainStaticClass.write_cdn_log("WebException check_marker_code " + host.host + " " + ex.Message, numdoc.ToString());
                     }
                     //MainStaticClass.write_event_in_log("WebException при проверке кода маркировки check_marker_code "+ ex.Message, "Документ чек", numdoc.ToString());
                 }
@@ -649,6 +656,7 @@ namespace Cash8
                 {
                     MessageBox.Show("Exception check_marker_code " + host.host + " " + ex.Message, "check_marker_code");
                     MainStaticClass.write_event_in_log("check_marker_code " + host.host + " " + ex.Message, "Документ чек", numdoc.ToString());
+                    MainStaticClass.write_cdn_log("check_marker_code " + host.host + " " + ex.Message, numdoc.ToString());
                     //host.dateTime = DateTime.Now.AddMinutes(15);
                     error = true;
                 }

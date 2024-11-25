@@ -4117,6 +4117,46 @@ namespace Cash8
         }
 
 
+        public static void write_cdn_log(string description, string numdoc)
+        {
+            NpgsqlConnection conn = null;
+            NpgsqlCommand command = null;
+            try
+            {
+                conn = MainStaticClass.NpgsqlConn();
+                conn.Open();                
+                string query = "INSERT INTO cdn_log(date,cdn_answer,numdoc,num_cash) VALUES(@date,@cdn_answer,@numdoc,@num_cash)";
+                command = new NpgsqlCommand(query, conn);
+
+                NpgsqlParameter parameter = new NpgsqlParameter("date", DateTime.Now.ToString("yyy-MM-dd HH:mm:ss"));
+                command.Parameters.Add(parameter);
+
+                parameter = new NpgsqlParameter("cdn_answer", description);
+                command.Parameters.Add(parameter);
+
+                parameter = new NpgsqlParameter("numdoc", numdoc);
+                command.Parameters.Add(parameter);
+
+                parameter = new NpgsqlParameter("num_cash", MainStaticClass.CashDeskNumber);
+                command.Parameters.Add(parameter);
+
+                command.ExecuteNonQuery();
+                command.Dispose();
+                conn.Close();
+            }
+            catch (NpgsqlException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+                conn.Dispose();
+            }
+        }
 
 
 
