@@ -159,38 +159,6 @@
           </s:sequence>
         </s:complexType>
       </s:element>
-      <s:element name="ChangeStatusWorkerOnline">
-        <s:complexType>
-          <s:sequence>
-            <s:element minOccurs="0" maxOccurs="1" name="nick_shop" type="s:string" />
-            <s:element minOccurs="0" maxOccurs="1" name="data" type="s:string" />
-            <s:element minOccurs="0" maxOccurs="1" name="scheme" type="s:string" />
-          </s:sequence>
-        </s:complexType>
-      </s:element>
-      <s:element name="ChangeStatusWorkerOnlineResponse">
-        <s:complexType>
-          <s:sequence>
-            <s:element minOccurs="0" maxOccurs="1" name="ChangeStatusWorkerOnlineResult" type="s:string" />
-          </s:sequence>
-        </s:complexType>
-      </s:element>
-      <s:element name="ChangeStatusWorkerOffline">
-        <s:complexType>
-          <s:sequence>
-            <s:element minOccurs="0" maxOccurs="1" name="nick_shop" type="s:string" />
-            <s:element minOccurs="0" maxOccurs="1" name="data" type="s:string" />
-            <s:element minOccurs="0" maxOccurs="1" name="scheme" type="s:string" />
-          </s:sequence>
-        </s:complexType>
-      </s:element>
-      <s:element name="ChangeStatusWorkerOfflineResponse">
-        <s:complexType>
-          <s:sequence>
-            <s:element minOccurs="1" maxOccurs="1" name="ChangeStatusWorkerOfflineResult" type="s:int" />
-          </s:sequence>
-        </s:complexType>
-      </s:element>
       <s:element name="UploadChangeStatusClients">
         <s:complexType>
           <s:sequence>
@@ -319,6 +287,22 @@
           </s:sequence>
         </s:complexType>
       </s:element>
+      <s:element name="UploadCDNLogsPortionJason">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="nick_shop" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="data" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="scheme" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UploadCDNLogsPortionJasonResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="UploadCDNLogsPortionJasonResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
       <s:element name="UploadDataOnSalesPortionJason">
         <s:complexType>
           <s:sequence>
@@ -419,18 +403,6 @@
   <wsdl:message name="GetStatusSertificatSoapOut">
     <wsdl:part name="parameters" element="tns:GetStatusSertificatResponse" />
   </wsdl:message>
-  <wsdl:message name="ChangeStatusWorkerOnlineSoapIn">
-    <wsdl:part name="parameters" element="tns:ChangeStatusWorkerOnline" />
-  </wsdl:message>
-  <wsdl:message name="ChangeStatusWorkerOnlineSoapOut">
-    <wsdl:part name="parameters" element="tns:ChangeStatusWorkerOnlineResponse" />
-  </wsdl:message>
-  <wsdl:message name="ChangeStatusWorkerOfflineSoapIn">
-    <wsdl:part name="parameters" element="tns:ChangeStatusWorkerOffline" />
-  </wsdl:message>
-  <wsdl:message name="ChangeStatusWorkerOfflineSoapOut">
-    <wsdl:part name="parameters" element="tns:ChangeStatusWorkerOfflineResponse" />
-  </wsdl:message>
   <wsdl:message name="UploadChangeStatusClientsSoapIn">
     <wsdl:part name="parameters" element="tns:UploadChangeStatusClients" />
   </wsdl:message>
@@ -478,6 +450,12 @@
   </wsdl:message>
   <wsdl:message name="GetDataForCasheV8JasonUpdateOnlySoapOut">
     <wsdl:part name="parameters" element="tns:GetDataForCasheV8JasonUpdateOnlyResponse" />
+  </wsdl:message>
+  <wsdl:message name="UploadCDNLogsPortionJasonSoapIn">
+    <wsdl:part name="parameters" element="tns:UploadCDNLogsPortionJason" />
+  </wsdl:message>
+  <wsdl:message name="UploadCDNLogsPortionJasonSoapOut">
+    <wsdl:part name="parameters" element="tns:UploadCDNLogsPortionJasonResponse" />
   </wsdl:message>
   <wsdl:message name="UploadDataOnSalesPortionJasonSoapIn">
     <wsdl:part name="parameters" element="tns:UploadDataOnSalesPortionJason" />
@@ -536,14 +514,6 @@
       <wsdl:input message="tns:GetStatusSertificatSoapIn" />
       <wsdl:output message="tns:GetStatusSertificatSoapOut" />
     </wsdl:operation>
-    <wsdl:operation name="ChangeStatusWorkerOnline">
-      <wsdl:input message="tns:ChangeStatusWorkerOnlineSoapIn" />
-      <wsdl:output message="tns:ChangeStatusWorkerOnlineSoapOut" />
-    </wsdl:operation>
-    <wsdl:operation name="ChangeStatusWorkerOffline">
-      <wsdl:input message="tns:ChangeStatusWorkerOfflineSoapIn" />
-      <wsdl:output message="tns:ChangeStatusWorkerOfflineSoapOut" />
-    </wsdl:operation>
     <wsdl:operation name="UploadChangeStatusClients">
       <wsdl:input message="tns:UploadChangeStatusClientsSoapIn" />
       <wsdl:output message="tns:UploadChangeStatusClientsSoapOut" />
@@ -575,6 +545,10 @@
     <wsdl:operation name="GetDataForCasheV8JasonUpdateOnly">
       <wsdl:input message="tns:GetDataForCasheV8JasonUpdateOnlySoapIn" />
       <wsdl:output message="tns:GetDataForCasheV8JasonUpdateOnlySoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="UploadCDNLogsPortionJason">
+      <wsdl:input message="tns:UploadCDNLogsPortionJasonSoapIn" />
+      <wsdl:output message="tns:UploadCDNLogsPortionJasonSoapOut" />
     </wsdl:operation>
     <wsdl:operation name="UploadDataOnSalesPortionJason">
       <wsdl:input message="tns:UploadDataOnSalesPortionJasonSoapIn" />
@@ -686,24 +660,6 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="ChangeStatusWorkerOnline">
-      <soap:operation soapAction="http://tempuri.org/ChangeStatusWorkerOnline" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="ChangeStatusWorkerOffline">
-      <soap:operation soapAction="http://tempuri.org/ChangeStatusWorkerOffline" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
     <wsdl:operation name="UploadChangeStatusClients">
       <soap:operation soapAction="http://tempuri.org/UploadChangeStatusClients" style="document" />
       <wsdl:input>
@@ -769,6 +725,15 @@
     </wsdl:operation>
     <wsdl:operation name="GetDataForCasheV8JasonUpdateOnly">
       <soap:operation soapAction="http://tempuri.org/GetDataForCasheV8JasonUpdateOnly" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UploadCDNLogsPortionJason">
+      <soap:operation soapAction="http://tempuri.org/UploadCDNLogsPortionJason" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -896,24 +861,6 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="ChangeStatusWorkerOnline">
-      <soap12:operation soapAction="http://tempuri.org/ChangeStatusWorkerOnline" style="document" />
-      <wsdl:input>
-        <soap12:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap12:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="ChangeStatusWorkerOffline">
-      <soap12:operation soapAction="http://tempuri.org/ChangeStatusWorkerOffline" style="document" />
-      <wsdl:input>
-        <soap12:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap12:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
     <wsdl:operation name="UploadChangeStatusClients">
       <soap12:operation soapAction="http://tempuri.org/UploadChangeStatusClients" style="document" />
       <wsdl:input>
@@ -979,6 +926,15 @@
     </wsdl:operation>
     <wsdl:operation name="GetDataForCasheV8JasonUpdateOnly">
       <soap12:operation soapAction="http://tempuri.org/GetDataForCasheV8JasonUpdateOnly" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UploadCDNLogsPortionJason">
+      <soap12:operation soapAction="http://tempuri.org/UploadCDNLogsPortionJason" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

@@ -85,6 +85,7 @@ namespace Cash8
         private static DateTime last_send_last_successful_sending;
         private static DateTime last_write_check;
         private static DateTime min_date_work = new DateTime(2023, 09, 01);
+        private static DateTime min_date_work_logs = new DateTime(2024, 09, 01);        
         //private static bool use_old_processiing_actions = true;
         private static int work_schema = 0;
         private static int version_fn = 0;
@@ -1771,6 +1772,14 @@ namespace Cash8
             get
             {
                 return min_date_work;
+            }
+        }
+
+        public static DateTime GetMinDateWorkLogs
+        {
+            get
+            {
+                return min_date_work_logs;
             }
         }
 
@@ -4117,7 +4126,7 @@ namespace Cash8
         }
 
 
-        public static void write_cdn_log(string description, string numdoc)
+        public static void write_cdn_log(string description, string numdoc,string mark)
         {
             NpgsqlConnection conn = null;
             NpgsqlCommand command = null;
@@ -4125,7 +4134,7 @@ namespace Cash8
             {
                 conn = MainStaticClass.NpgsqlConn();
                 conn.Open();                
-                string query = "INSERT INTO cdn_log(date,cdn_answer,numdoc,num_cash) VALUES(@date,@cdn_answer,@numdoc,@num_cash)";
+                string query = "INSERT INTO cdn_log(date,cdn_answer,numdoc,num_cash,mark) VALUES(@date,@cdn_answer,@numdoc,@num_cash,@mark)";
                 command = new NpgsqlCommand(query, conn);
 
                 NpgsqlParameter parameter = new NpgsqlParameter("date", DateTime.Now.ToString("yyy-MM-dd HH:mm:ss"));
@@ -4138,6 +4147,9 @@ namespace Cash8
                 command.Parameters.Add(parameter);
 
                 parameter = new NpgsqlParameter("num_cash", MainStaticClass.CashDeskNumber);
+                command.Parameters.Add(parameter);
+
+                parameter = new NpgsqlParameter("mark", mark);
                 command.Parameters.Add(parameter);
 
                 command.ExecuteNonQuery();

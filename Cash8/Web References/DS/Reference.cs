@@ -51,10 +51,6 @@ namespace Cash8.DS {
         
         private System.Threading.SendOrPostCallback GetStatusSertificatOperationCompleted;
         
-        private System.Threading.SendOrPostCallback ChangeStatusWorkerOnlineOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback ChangeStatusWorkerOfflineOperationCompleted;
-        
         private System.Threading.SendOrPostCallback UploadChangeStatusClientsOperationCompleted;
         
         private System.Threading.SendOrPostCallback UploadPhoneClientsOperationCompleted;
@@ -70,6 +66,8 @@ namespace Cash8.DS {
         private System.Threading.SendOrPostCallback OnlineCasheV8SuccessfullyOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetDataForCasheV8JasonUpdateOnlyOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback UploadCDNLogsPortionJasonOperationCompleted;
         
         private System.Threading.SendOrPostCallback UploadDataOnSalesPortionJasonOperationCompleted;
         
@@ -147,12 +145,6 @@ namespace Cash8.DS {
         public event GetStatusSertificatCompletedEventHandler GetStatusSertificatCompleted;
         
         /// <remarks/>
-        public event ChangeStatusWorkerOnlineCompletedEventHandler ChangeStatusWorkerOnlineCompleted;
-        
-        /// <remarks/>
-        public event ChangeStatusWorkerOfflineCompletedEventHandler ChangeStatusWorkerOfflineCompleted;
-        
-        /// <remarks/>
         public event UploadChangeStatusClientsCompletedEventHandler UploadChangeStatusClientsCompleted;
         
         /// <remarks/>
@@ -175,6 +167,9 @@ namespace Cash8.DS {
         
         /// <remarks/>
         public event GetDataForCasheV8JasonUpdateOnlyCompletedEventHandler GetDataForCasheV8JasonUpdateOnlyCompleted;
+        
+        /// <remarks/>
+        public event UploadCDNLogsPortionJasonCompletedEventHandler UploadCDNLogsPortionJasonCompleted;
         
         /// <remarks/>
         public event UploadDataOnSalesPortionJasonCompletedEventHandler UploadDataOnSalesPortionJasonCompleted;
@@ -524,72 +519,6 @@ namespace Cash8.DS {
         }
         
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/ChangeStatusWorkerOnline", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public string ChangeStatusWorkerOnline(string nick_shop, string data, string scheme) {
-            object[] results = this.Invoke("ChangeStatusWorkerOnline", new object[] {
-                        nick_shop,
-                        data,
-                        scheme});
-            return ((string)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void ChangeStatusWorkerOnlineAsync(string nick_shop, string data, string scheme) {
-            this.ChangeStatusWorkerOnlineAsync(nick_shop, data, scheme, null);
-        }
-        
-        /// <remarks/>
-        public void ChangeStatusWorkerOnlineAsync(string nick_shop, string data, string scheme, object userState) {
-            if ((this.ChangeStatusWorkerOnlineOperationCompleted == null)) {
-                this.ChangeStatusWorkerOnlineOperationCompleted = new System.Threading.SendOrPostCallback(this.OnChangeStatusWorkerOnlineOperationCompleted);
-            }
-            this.InvokeAsync("ChangeStatusWorkerOnline", new object[] {
-                        nick_shop,
-                        data,
-                        scheme}, this.ChangeStatusWorkerOnlineOperationCompleted, userState);
-        }
-        
-        private void OnChangeStatusWorkerOnlineOperationCompleted(object arg) {
-            if ((this.ChangeStatusWorkerOnlineCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.ChangeStatusWorkerOnlineCompleted(this, new ChangeStatusWorkerOnlineCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/ChangeStatusWorkerOffline", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public int ChangeStatusWorkerOffline(string nick_shop, string data, string scheme) {
-            object[] results = this.Invoke("ChangeStatusWorkerOffline", new object[] {
-                        nick_shop,
-                        data,
-                        scheme});
-            return ((int)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void ChangeStatusWorkerOfflineAsync(string nick_shop, string data, string scheme) {
-            this.ChangeStatusWorkerOfflineAsync(nick_shop, data, scheme, null);
-        }
-        
-        /// <remarks/>
-        public void ChangeStatusWorkerOfflineAsync(string nick_shop, string data, string scheme, object userState) {
-            if ((this.ChangeStatusWorkerOfflineOperationCompleted == null)) {
-                this.ChangeStatusWorkerOfflineOperationCompleted = new System.Threading.SendOrPostCallback(this.OnChangeStatusWorkerOfflineOperationCompleted);
-            }
-            this.InvokeAsync("ChangeStatusWorkerOffline", new object[] {
-                        nick_shop,
-                        data,
-                        scheme}, this.ChangeStatusWorkerOfflineOperationCompleted, userState);
-        }
-        
-        private void OnChangeStatusWorkerOfflineOperationCompleted(object arg) {
-            if ((this.ChangeStatusWorkerOfflineCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.ChangeStatusWorkerOfflineCompleted(this, new ChangeStatusWorkerOfflineCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/UploadChangeStatusClients", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public string UploadChangeStatusClients(string nick_shop, string data, string scheme) {
             object[] results = this.Invoke("UploadChangeStatusClients", new object[] {
@@ -852,6 +781,39 @@ namespace Cash8.DS {
             if ((this.GetDataForCasheV8JasonUpdateOnlyCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetDataForCasheV8JasonUpdateOnlyCompleted(this, new GetDataForCasheV8JasonUpdateOnlyCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/UploadCDNLogsPortionJason", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public bool UploadCDNLogsPortionJason(string nick_shop, string data, string scheme) {
+            object[] results = this.Invoke("UploadCDNLogsPortionJason", new object[] {
+                        nick_shop,
+                        data,
+                        scheme});
+            return ((bool)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void UploadCDNLogsPortionJasonAsync(string nick_shop, string data, string scheme) {
+            this.UploadCDNLogsPortionJasonAsync(nick_shop, data, scheme, null);
+        }
+        
+        /// <remarks/>
+        public void UploadCDNLogsPortionJasonAsync(string nick_shop, string data, string scheme, object userState) {
+            if ((this.UploadCDNLogsPortionJasonOperationCompleted == null)) {
+                this.UploadCDNLogsPortionJasonOperationCompleted = new System.Threading.SendOrPostCallback(this.OnUploadCDNLogsPortionJasonOperationCompleted);
+            }
+            this.InvokeAsync("UploadCDNLogsPortionJason", new object[] {
+                        nick_shop,
+                        data,
+                        scheme}, this.UploadCDNLogsPortionJasonOperationCompleted, userState);
+        }
+        
+        private void OnUploadCDNLogsPortionJasonOperationCompleted(object arg) {
+            if ((this.UploadCDNLogsPortionJasonCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.UploadCDNLogsPortionJasonCompleted(this, new UploadCDNLogsPortionJasonCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -1228,58 +1190,6 @@ namespace Cash8.DS {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
-    public delegate void ChangeStatusWorkerOnlineCompletedEventHandler(object sender, ChangeStatusWorkerOnlineCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class ChangeStatusWorkerOnlineCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal ChangeStatusWorkerOnlineCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
-    public delegate void ChangeStatusWorkerOfflineCompletedEventHandler(object sender, ChangeStatusWorkerOfflineCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class ChangeStatusWorkerOfflineCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal ChangeStatusWorkerOfflineCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public int Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((int)(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
     public delegate void UploadChangeStatusClientsCompletedEventHandler(object sender, UploadChangeStatusClientsCompletedEventArgs e);
     
     /// <remarks/>
@@ -1482,6 +1392,32 @@ namespace Cash8.DS {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((byte[])(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
+    public delegate void UploadCDNLogsPortionJasonCompletedEventHandler(object sender, UploadCDNLogsPortionJasonCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class UploadCDNLogsPortionJasonCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal UploadCDNLogsPortionJasonCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public bool Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[0]));
             }
         }
     }

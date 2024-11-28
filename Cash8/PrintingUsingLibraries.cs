@@ -751,6 +751,14 @@ namespace Cash8
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_DEFER, AtolConstants.LIBFPTR_DEFER_POST);
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_LEFT);
             fptr.printText();
+
+            fptr.setParam(1085, "НомЧекВнутр");
+            fptr.setParam(1086, s);
+            fptr.utilFormTlv();
+            byte[] userAttribute = fptr.getParamByteArray(AtolConstants.LIBFPTR_PARAM_TAG_VALUE);                        
+            fptr.setNonPrintableParam(1084, userAttribute);
+
+
             print_fiscal_advertisement(fptr);
             // Закрытие чека
             fptr.closeReceipt();
@@ -1313,6 +1321,12 @@ namespace Cash8
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_LEFT);
             fptr.printText();
             print_fiscal_advertisement(fptr);
+
+            fptr.setParam(1085, "НомЧекВнутр");
+            fptr.setParam(1086, s);
+            fptr.utilFormTlv();
+            byte[] userAttribute = fptr.getParamByteArray(AtolConstants.LIBFPTR_PARAM_TAG_VALUE);
+            fptr.setNonPrintableParam(1084, userAttribute);
 
             // Закрытие чека
             fptr.closeReceipt();

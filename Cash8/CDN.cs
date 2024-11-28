@@ -433,13 +433,15 @@ namespace Cash8
             }
             else
             {
-                StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < cdn_list.hosts.Count; i++)
-                {
-                    sb.Append(cdn_list.hosts[i].host + " latensy = " + cdn_list.hosts[i].latensy.ToString()+";");
-                   //MainStaticClass.write_event_in_log(cdn_list.hosts[i].host+ " latensy = "+ cdn_list.hosts[i].latensy.ToString(), "Документ чек", numdoc.ToString());
-                }
-                MainStaticClass.write_event_in_log(sb.ToString(), "Документ чек", numdoc.ToString());
+                //StringBuilder sb = new StringBuilder();
+                //for (int i = 0; i < cdn_list.hosts.Count; i++)
+                //{
+                //    //sb.Append(cdn_list.hosts[i].host + " latensy = " + cdn_list.hosts[i].latensy.ToString()+";");
+                //    //MainStaticClass.write_event_in_log(cdn_list.hosts[i].host+ " latensy = "+ cdn_list.hosts[i].latensy.ToString(), "Документ чек", numdoc.ToString());
+                    
+                //}
+                //MainStaticClass.write_event_in_log(sb.ToString(), "Документ чек", numdoc.ToString());
+                //MainStaticClass.write_cdn_log(sb.ToString(), numdoc.ToString(),codes[0].ToString());
             }
 
             //cdn_list.hosts.Count
@@ -509,7 +511,7 @@ namespace Cash8
                             {
                                 string responseFromServer = reader.ReadToEnd();
                                 //Записываем лог 
-                                MainStaticClass.write_cdn_log(responseFromServer, numdoc.ToString());
+                                MainStaticClass.write_cdn_log(responseFromServer, numdoc.ToString(), codes[0].ToString());
                                 answer_check_mark = JsonConvert.DeserializeObject<AnswerCheckMark>(responseFromServer);
                                 MainStaticClass.write_event_in_log(host.host + " Успешное получение данных ", "Документ чек", numdoc.ToString());
                             }
@@ -624,9 +626,9 @@ namespace Cash8
                 catch (WebException ex)
                 {
                     //MessageBox.Show("check_marker_code " + host.host + " " + ex.Message);
-                    MainStaticClass.write_event_in_log("check_marker_code " + host.host+" "+ex.Message, "Документ чек", numdoc.ToString());
+                    //MainStaticClass.write_event_in_log("check_marker_code " + host.host+" "+ex.Message, "Документ чек", numdoc.ToString());
 
-                    MainStaticClass.write_cdn_log("check_marker_code " + host.host + " " + ex.Message, numdoc.ToString());
+                    MainStaticClass.write_cdn_log("check_marker_code " + host.host + " " + ex.Message, numdoc.ToString(),codes[0].ToString());
 
                     if (ex.Status == WebExceptionStatus.Timeout || ex.Status == WebExceptionStatus.ConnectionClosed)
                     {
@@ -648,15 +650,15 @@ namespace Cash8
                         error = true;
                         MessageBox.Show("WebException check_marker_code " + host.host + " " + ex.Message, "check_marker_code");
 
-                        MainStaticClass.write_cdn_log("WebException check_marker_code " + host.host + " " + ex.Message, numdoc.ToString());
+                        MainStaticClass.write_cdn_log("WebException check_marker_code " + host.host + " " + ex.Message, numdoc.ToString(),codes[0].ToString());
                     }
                     //MainStaticClass.write_event_in_log("WebException при проверке кода маркировки check_marker_code "+ ex.Message, "Документ чек", numdoc.ToString());
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show("Exception check_marker_code " + host.host + " " + ex.Message, "check_marker_code");
-                    MainStaticClass.write_event_in_log("check_marker_code " + host.host + " " + ex.Message, "Документ чек", numdoc.ToString());
-                    MainStaticClass.write_cdn_log("check_marker_code " + host.host + " " + ex.Message, numdoc.ToString());
+                    //MainStaticClass.write_event_in_log("check_marker_code " + host.host + " " + ex.Message, "Документ чек", numdoc.ToString());
+                    MainStaticClass.write_cdn_log("check_marker_code " + host.host + " " + ex.Message, numdoc.ToString(),codes[0].ToString());
                     //host.dateTime = DateTime.Now.AddMinutes(15);
                     error = true;
                 }

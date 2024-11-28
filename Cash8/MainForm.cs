@@ -795,6 +795,7 @@ namespace Cash8
                 sdsp.Dispose();
                 UploadDeletedItems();
                 get_web_tovar_check_cdn();
+                SendCdnLogs();
             }
         }
 
@@ -931,10 +932,98 @@ namespace Cash8
             }
 
         }
+        
+        public class CdnLogs
+        {
+            public List<CdnLog> ListCdnLog { get; set; }
+        }
 
+        public class CdnLog
+        {
+            //public string Shop { get; set; }
+            public string NumCash { get; set; }
+            public string CdnAnswer { get; set; }
+            public string DateShop { get; set; }
+            public string NumDoc { get; set; }
+            public string Mark { get; set; }
+        }
+        
+        private void SendCdnLogs()
+        {
+            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+            try
+            {
+                string query = "SELECT num_cash, date, cdn_answer, numdoc, is_sent, mark FROM cdn_log WHERE is_sent=0;";
+                conn.Open();
+                NpgsqlCommand command = new NpgsqlCommand(query,conn);
+                NpgsqlDataReader reader = command.ExecuteReader();
+                CdnLogs logs = new CdnLogs();
+                logs.ListCdnLog = new List<CdnLog>();
+                while (reader.Read())
+                {
+                    CdnLog log = new CdnLog();
+                    log.CdnAnswer = reader["cdn_answer"].ToString();
+                    log.Mark = reader["mark"].ToString();
+                    log.NumCash = MainStaticClass.CashDeskNumber.ToString();
+                    log.NumDoc = reader["numdoc"].ToString();                    
+                    log.DateShop = Convert.ToDateTime(reader["date"]).ToString("dd-MM-yyyy HH:mm:ss");
+                    logs.ListCdnLog.Add(log);
+                }
+                if (logs.ListCdnLog.Count > 0)
+                {
+                    Cash8.DS.DS ds = MainStaticClass.get_ds();
+                    ds.Timeout = 180000;
+
+                    //Получить параметра для запроса на сервер 
+                    string nick_shop = MainStaticClass.Nick_Shop.Trim();
+                    if (nick_shop.Trim().Length == 0)
+                    {
+                        return;
+                    }
+                    string code_shop = MainStaticClass.Code_Shop.Trim();
+                    if (code_shop.Trim().Length == 0)
+                    {
+                        return;
+                    }
+                    string count_day = CryptorEngine.get_count_day();
+                    string key = nick_shop.Trim() + count_day.Trim() + code_shop.Trim();
+                    bool result_web_quey = false;
+                    string data = JsonConvert.SerializeObject(logs, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                    string data_crypt = CryptorEngine.Encrypt(data, true, key);
+
+                    result_web_quey = ds.UploadCDNLogsPortionJason(nick_shop, data_crypt, MainStaticClass.GetWorkSchema.ToString());
+
+                    if (result_web_quey)
+                    {
+                        foreach (CdnLog log in logs.ListCdnLog)
+                        {
+                            query = "UPDATE cdn_log SET is_sent = 1 WHERE date='" + log.DateShop + "';";
+                            command = new NpgsqlCommand(query, conn);
+                            command.ExecuteNonQuery();
+                        }
+                    }
+                }
+            }
+            catch (NpgsqlException)
+            {
+
+            }
+            catch (Exception)
+            {
+
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+        }
 
         private void Main_Load(object sender, System.EventArgs e)
         {
+
 
             //if (File.Exists(Application.StartupPath + "/UpdateNpgsql/Npgsql.dll"))
             //{
@@ -1060,7 +1149,7 @@ namespace Cash8
                 MainStaticClass.write_event_in_log("После проверки системы налогообложения", " Старт программы ", "0");
 
                 //MainStaticClass.delete_old_checks(MainStaticClass.GetMinDateWork);
-                //MainStaticClass.delete_all_events_in_log(MainStaticClass.GetMinDateWork);
+                MainStaticClass.delete_all_events_in_log(MainStaticClass.GetMinDateWorkLogs);
 
                 if (MainStaticClass.Use_Fiscall_Print)
                 {
@@ -1123,6 +1212,8 @@ namespace Cash8
                     MessageBox.Show("В этой кассе не заполнен CDN токен, \r\n ПРОДАЖА МАРКИРОВАННОГО ТОВАРА ОГРАНИЧЕНА/НЕВОЗМОЖНА!", "Проверка CDN");
                 }
             }
+
+            //SendCdnLogs();
 
         }
 
@@ -1538,8 +1629,43 @@ namespace Cash8
             try
             {
                 conn.Open();
-                string query = "SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'constants'     AND column_name = 'do_not_prompt_marking_code'); ";
+                string query = "SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'cdn_log' AND column_name = 'mark'); ";                
+                
                  NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                if (!Convert.ToBoolean(command.ExecuteScalar())) //не нашли такой колонки   
+                {
+                    //check_add_field();
+                    SettingConnect sc = new SettingConnect();
+                    sc.add_field_Click(null, null);
+                    sc.Dispose();
+                    this.Close();
+                }
+                conn.Close();
+                command.Dispose();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "check_add_field");
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+        }
+
+        private void check_exists_table()
+        {
+            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+            try
+            {
+                conn.Open();                
+                string query = "SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'cdn_log'); ";
+
+                NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 if (!Convert.ToBoolean(command.ExecuteScalar())) //не нашли такой колонки   
                 {
                     //check_add_field();
@@ -1573,8 +1699,11 @@ namespace Cash8
         private void check_add_field()
         {
             //check_correct_type_column();
-            check_exists_column();
+            check_exists_table();
+            check_exists_column();            
         }
+
+
 
 
         private bool check_envd()
