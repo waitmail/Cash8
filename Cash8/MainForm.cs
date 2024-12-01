@@ -946,6 +946,8 @@ namespace Cash8
             public string DateShop { get; set; }
             public string NumDoc { get; set; }
             public string Mark { get; set; }
+            public string Status { get; set; }
+            
         }
         
         private void SendCdnLogs()
@@ -953,7 +955,7 @@ namespace Cash8
             NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
             try
             {
-                string query = "SELECT num_cash, date, cdn_answer, numdoc, is_sent, mark FROM cdn_log WHERE is_sent=0;";
+                string query = "SELECT num_cash, date, cdn_answer, numdoc, is_sent, mark,status FROM cdn_log WHERE is_sent=0;";
                 conn.Open();
                 NpgsqlCommand command = new NpgsqlCommand(query,conn);
                 NpgsqlDataReader reader = command.ExecuteReader();
@@ -963,10 +965,11 @@ namespace Cash8
                 {
                     CdnLog log = new CdnLog();
                     log.CdnAnswer = reader["cdn_answer"].ToString();
-                    log.Mark = reader["mark"].ToString();
-                    log.NumCash = MainStaticClass.CashDeskNumber.ToString();
-                    log.NumDoc = reader["numdoc"].ToString();                    
+                    log.Mark     = reader["mark"].ToString();
+                    log.NumCash  = MainStaticClass.CashDeskNumber.ToString();
+                    log.NumDoc   = reader["numdoc"].ToString();                    
                     log.DateShop = Convert.ToDateTime(reader["date"]).ToString("dd-MM-yyyy HH:mm:ss");
+                    log.NumDoc   = reader["status"].ToString();
                     logs.ListCdnLog.Add(log);
                 }
                 if (logs.ListCdnLog.Count > 0)

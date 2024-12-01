@@ -1098,7 +1098,8 @@ namespace Cash8
             queries.Add("ALTER TABLE public.constants    ADD COLUMN acquiring_bank smallint DEFAULT 0;");
             queries.Add("ALTER TABLE public.constants ADD COLUMN do_not_prompt_marking_code boolean NOT NULL DEFAULT false; COMMENT ON COLUMN public.constants.do_not_prompt_marking_code IS 'Не запрашивать код марикровки';");
             queries.Add("CREATE TABLE IF NOT EXISTS public.cdn_log (num_cash smallint NOT NULL,date timestamp without time zone NOT NULL,cdn_answer character varying COLLATE pg_catalog.default NOT NULL,numdoc character varying COLLATE pg_catalog.default,is_sent smallint DEFAULT 0)WITH(    OIDS = FALSE)TABLESPACE pg_default;        ALTER TABLE public.cdn_log            OWNER to postgres; COMMENT ON COLUMN public.cdn_log.is_sent    IS '0 - не отправлен 1 - отправлен'; ");
-            queries.Add("ALTER TABLE public.cdn_log ADD COLUMN mark character varying(300) COLLATE pg_catalog.default;");
+            queries.Add("ALTER TABLE public.cdn_log ADD COLUMN mark character varying(300) COLLATE pg_catalog.default;");            
+            queries.Add("ALTER TABLE public.cdn_log ADD COLUMN status smallint NOT NULL DEFAULT 0;COMMENT ON COLUMN public.cdn_log.status IS '1 - Ответ от cdn 2 - Отладочная информация 3 - Ошибка при работе с CDN';");
 
 
             foreach (string str in queries)

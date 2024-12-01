@@ -4125,8 +4125,15 @@ namespace Cash8
             return result;
         }
 
-
-        public static void write_cdn_log(string description, string numdoc,string mark)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="description"></param>
+        /// <param name="numdoc"></param>
+        /// <param name="mark"></param>
+        /// <param name="guid"></param>
+        /// <param name="status">1 - Ответ от cdn 2 - Отладочная информация 3 - Ошибка при работе с CDN</param> 
+        public static void write_cdn_log(string description, string numdoc,string mark,string status)
         {
             NpgsqlConnection conn = null;
             NpgsqlCommand command = null;
@@ -4134,7 +4141,7 @@ namespace Cash8
             {
                 conn = MainStaticClass.NpgsqlConn();
                 conn.Open();                
-                string query = "INSERT INTO cdn_log(date,cdn_answer,numdoc,num_cash,mark) VALUES(@date,@cdn_answer,@numdoc,@num_cash,@mark)";
+                string query = "INSERT INTO cdn_log(date,cdn_answer,numdoc,num_cash,mark,status) VALUES(@date,@cdn_answer,@numdoc,@num_cash,@mark,@status)";
                 command = new NpgsqlCommand(query, conn);
 
                 NpgsqlParameter parameter = new NpgsqlParameter("date", DateTime.Now.ToString("yyy-MM-dd HH:mm:ss"));
@@ -4150,6 +4157,9 @@ namespace Cash8
                 command.Parameters.Add(parameter);
 
                 parameter = new NpgsqlParameter("mark", mark);
+                command.Parameters.Add(parameter);               
+
+                parameter = new NpgsqlParameter("status", status);
                 command.Parameters.Add(parameter);
 
                 command.ExecuteNonQuery();
