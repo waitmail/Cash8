@@ -1322,11 +1322,11 @@ namespace Cash8
             fptr.printText();
             print_fiscal_advertisement(fptr);
 
-            fptr.setParam(1085, "НомЧекВнутр");
+            fptr.setParam(1085, "NumCheckShop");
             fptr.setParam(1086, s);
             fptr.utilFormTlv();
             byte[] userAttribute = fptr.getParamByteArray(AtolConstants.LIBFPTR_PARAM_TAG_VALUE);
-            fptr.setNonPrintableParam(1084, userAttribute);
+            fptr.setParam(1084, userAttribute);            
 
             // Закрытие чека
             fptr.closeReceipt();

@@ -932,7 +932,7 @@ namespace Cash8
             }
 
         }
-        
+
         public class CdnLogs
         {
             public List<CdnLog> ListCdnLog { get; set; }
@@ -947,9 +947,8 @@ namespace Cash8
             public string NumDoc { get; set; }
             public string Mark { get; set; }
             public string Status { get; set; }
-            
         }
-        
+
         private void SendCdnLogs()
         {
             NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
@@ -957,7 +956,7 @@ namespace Cash8
             {
                 string query = "SELECT num_cash, date, cdn_answer, numdoc, is_sent, mark,status FROM cdn_log WHERE is_sent=0;";
                 conn.Open();
-                NpgsqlCommand command = new NpgsqlCommand(query,conn);
+                NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();
                 CdnLogs logs = new CdnLogs();
                 logs.ListCdnLog = new List<CdnLog>();
@@ -965,11 +964,11 @@ namespace Cash8
                 {
                     CdnLog log = new CdnLog();
                     log.CdnAnswer = reader["cdn_answer"].ToString();
-                    log.Mark     = reader["mark"].ToString();
-                    log.NumCash  = MainStaticClass.CashDeskNumber.ToString();
-                    log.NumDoc   = reader["numdoc"].ToString();                    
+                    log.Mark = reader["mark"].ToString();
+                    log.NumCash = MainStaticClass.CashDeskNumber.ToString();
+                    log.NumDoc = reader["numdoc"].ToString();
                     log.DateShop = Convert.ToDateTime(reader["date"]).ToString("dd-MM-yyyy HH:mm:ss");
-                    log.NumDoc   = reader["status"].ToString();
+                    log.Status = reader["status"].ToString();
                     logs.ListCdnLog.Add(log);
                 }
                 if (logs.ListCdnLog.Count > 0)
@@ -1024,9 +1023,56 @@ namespace Cash8
             }
         }
 
+        private void guid_to_lover()
+        {
+            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+            try
+            {
+                string query = "SELECT code_shop	FROM public.constants;";
+                conn.Open();
+                NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                NpgsqlDataReader reader = command.ExecuteReader();
+                string code_shop = "";
+                while (reader.Read())
+                {
+                    code_shop = reader["code_shop"].ToString();
+                }
+                if (code_shop != "")
+                {
+                    code_shop = code_shop.ToLower();
+                    query = "UPDATE constants SET code_shop='" + code_shop + "'";
+                    command = new NpgsqlCommand(query, conn);
+                    command.ExecuteNonQuery();
+                }
+                conn.Close();
+                command.Dispose();
+            }
+            catch (NpgsqlException ex)
+            {
+                MessageBox.Show("Ошибка при изменение реквизита " + ex.Message);
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("Ошибка при изменение реквизита " + ex.Message);
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+        }
+            
+    
+
         private void Main_Load(object sender, System.EventArgs e)
         {
 
+            if (DateTime.Now > new DateTime(2024, 12, 16, 0, 0, 0))
+            {
+                guid_to_lover();
+            }
 
             //if (File.Exists(Application.StartupPath + "/UpdateNpgsql/Npgsql.dll"))
             //{
