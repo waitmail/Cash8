@@ -170,16 +170,16 @@ namespace Cash8
             CDN_List list = get_cdn_info();
             if (list != null)
             {
-                if (list != null)
-                {
-                    StringBuilder sb = new StringBuilder();
-                    for (int i = 0; i < list.hosts.Count; i++)
-                    {
-                        sb.Append(list.hosts[i].host + ";   ");
-                    }
-                    //MainStaticClass.write_event_in_log(sb.ToString(), "CDN сервера ", "0");
-                    MainStaticClass.write_cdn_log(sb.ToString(), "0", "", "2");
-                }
+                //if (list != null)
+                //{
+                //    //StringBuilder sb = new StringBuilder();
+                //    //for (int i = 0; i < list.hosts.Count; i++)
+                //    //{
+                //    //    sb.Append(list.hosts[i].host + ";   ");
+                //    //}
+                //    //MainStaticClass.write_event_in_log(sb.ToString(), "CDN сервера ", "0");
+                //   //MainStaticClass.write_cdn_log(sb.ToString(), "0", "", "2");
+                //}
                 list = get_cdn_list_health(list);
             }
             return list;
@@ -270,14 +270,16 @@ namespace Cash8
                     }
                     else
                     {
-                        MainStaticClass.write_event_in_log("Произошли ошибка при опросе досутности CDN серверов, код ошибки  " + list.code + ", описание ошибки " + list.description, "Документ чек", "0");
+                        //MainStaticClass.write_event_in_log("Произошли ошибка при опросе досутности CDN серверов, код ошибки  " + list.code + ", описание ошибки " + list.description, "Документ чек", "0");
                         //MessageBox.Show("Произошли ошибка при опросе досутности CDN серверов, код ошибки  " + list.code + " , описание ошибки " + list.description);
+                        MainStaticClass.write_cdn_log("Произошли ошибка при опросе досутности CDN серверов, код ошибки  " + list.code + ", описание ошибки " + list.description, "0", "", "3");
                     }
                 }
                 catch (Exception ex)
                 {
                     //MessageBox.Show("Произошли ошибки при опросе досутности CDN серверов " + ex.Message);
-                    MainStaticClass.write_event_in_log("Произошли ошибки при опросе досутности CDN серверов " + ex.Message, "Документ чек", "0");
+                    //MainStaticClass.write_event_in_log("Произошли ошибки при опросе досутности CDN серверов " + ex.Message, "Документ чек", "0");
+                    MainStaticClass.write_cdn_log("Произошли ошибки при опросе досутности CDN серверов " + ex.Message, "0", "", "3");
                 }
             }
 
@@ -381,8 +383,9 @@ namespace Cash8
             }
             catch (Exception ex)
             {
-                MainStaticClass.write_event_in_log("Проверка доступности CDN cdn_health_check "+ url_sdn +"  "+ ex.Message, "Документ чек", "0");
+                //MainStaticClass.write_event_in_log("Проверка доступности CDN cdn_health_check "+ url_sdn +"  "+ ex.Message, "Документ чек", "0");
                 //MessageBox.Show("Произошла ошибка " + ex.Message + " при запросе о доступности для CDN площадки " + url, "Получение списка CDN серверов");
+                MainStaticClass.write_cdn_log("Проверка доступности CDN cdn_health_check " + url_sdn + "  " + ex.Message, "0", "", "3");
             }
 
             return cDNHealth;
@@ -398,13 +401,15 @@ namespace Cash8
             if (cdn_list == null)
             {
                 //MessageBox.Show("Список CDN серверов пустой");
-                MainStaticClass.write_event_in_log("Список CDN серверов пустой check_marker_code ", "Документ чек", numdoc.ToString());
+                //MainStaticClass.write_event_in_log("Список CDN серверов пустой check_marker_code ", "Документ чек", numdoc.ToString());
+                MainStaticClass.write_cdn_log("Список CDN серверов пустой check_marker_code" , numdoc.ToString(), codes[0].ToString(), "3");
                 result_check = true;
                 return result_check;
             }
             else
             {
-                MainStaticClass.write_event_in_log("Список CDN серверов успешно получен check_marker_code ", "Документ чек", numdoc.ToString());
+                //MainStaticClass.write_event_in_log("Список CDN серверов успешно получен check_marker_code ", "Документ чек", numdoc.ToString());
+                MainStaticClass.write_cdn_log("Список CDN серверов успешно получен check_marker_code ", numdoc.ToString(), codes[0].ToString(), "2");
             }
             
             cdn_list.hosts = cdn_list.hosts.Where(h => h.dateTime < DateTime.Now).OrderBy(h => h.latensy).ToList();

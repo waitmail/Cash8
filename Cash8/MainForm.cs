@@ -14,13 +14,8 @@ namespace Cash8
 {
     public partial class Main : Form
     {
-        public MenuStrip menuStrip = new System.Windows.Forms.MenuStrip();
-        //public delegate void load_bonus_clients();
-
-
-        //Thread printThread;
-        //private System.Timers.Timer timer = new System.Timers.Timer();//Таймер для печати фискального принтера
-        private System.Timers.Timer timer_send_data = new System.Timers.Timer();//Таймер для печати фискального принтера
+        public MenuStrip menuStrip = new System.Windows.Forms.MenuStrip();        
+        private System.Timers.Timer timer_send_data = new System.Timers.Timer();
 
         public class Users
         {
@@ -39,11 +34,9 @@ namespace Cash8
 
 
         private void get_users()
-        {
-            //MessageBox.Show("1");
+        {            
             Cash8.DS.DS ds = MainStaticClass.get_ds();
-            ds.Timeout = 10000;
-            //Получить параметра для запроса на сервер 
+            ds.Timeout = 5000;            
             string nick_shop = MainStaticClass.Nick_Shop.Trim();
             if (nick_shop.Trim().Length == 0)
             {
@@ -64,31 +57,23 @@ namespace Cash8
 
             string answer = "";
             try
-            {
-                //MessageBox.Show("2");
-                //answer = ds.GetUsers(MainStaticClass.Nick_Shop, encrypt_string,MainStaticClass.GetWorkSchema.ToString());
-                answer = ds.GetUsers(MainStaticClass.Nick_Shop, encrypt_string, "4");
-                //MessageBox.Show("3");
+            {                
+                answer = ds.GetUsers(MainStaticClass.Nick_Shop, encrypt_string, "4");             
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Произошли ошибки при при получении пользователей от веб сервиса " + ex.Message);
+                MessageBox.Show("Произошли ошибки при при получении пользователей от веб сервиса " + ex.Message+".","Синхронизация пользователей");
             }
             if (answer == "")
             {
                 return;
             }
 
-
             string decrypt_string = CryptorEngine.Decrypt(answer, true, key);
-            Users users = JsonConvert.DeserializeObject<Users>(decrypt_string);
-
-            //string[] delimiters = new string[] { "||" };
-            //string[] s = decrypt_string.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
+            Users users = JsonConvert.DeserializeObject<Users>(decrypt_string);           
             NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
             NpgsqlTransaction trans = null;
-            // int rezult_query = 0;
-            //MessageBox.Show("4");
+            
             try
             {
                 conn.Open();
@@ -98,22 +83,9 @@ namespace Cash8
                 command.Transaction = trans;
                 command.ExecuteNonQuery();
                 foreach (User user in users.list_users)
-                {
-                    //delimiters = new string[] { "|" };
-                    //string[] settings = str.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
-                    //rezult_query = check_insert_or_update_user(s2, conn, trans, command);
-                    //if (rezult_query == -1)
-                    //{
-                    //    break;
-                    //}
-                    //query = "SELECT COUNT(*) FROM users where code='"+ user.user_id+"'";
-                    //command = new NpgsqlCommand(query, conn);
-                    //command.Transaction = trans;
-                    //if (Convert.ToInt16(command.ExecuteScalar()) == 0)
-                    //{
+                {                   
                     query = "DELETE FROM public.users	WHERE inn='" + user.user_id + "';";
-                    //}
-
+                   
                     query += "INSERT INTO users(" +
                         " code," +
                         " name," +
@@ -130,31 +102,15 @@ namespace Cash8
                         user.password_m + "','" +
                         user.password_b + "','" +
                         user.user_id + "')";
-                    //}
-                    //else
-                    //{
-
-                    //    query += "UPDATE users  SET " +
-                    //        " name='" + user.name + "'," +
-                    //     " rights=" + user.rights + "," +
-                    //     " shop='" + user.shop + "'," +
-                    //     " password_m='" + user.password_m + "'," +
-                    //     " password_b='" + user.password_b + "', " +
-                    //     " inn='" + user.user_id + "' " +                         
-                    //     " WHERE code='" + user.user_id+"'";
-                    //}
+                  
                     command = new NpgsqlCommand(query, conn);
                     command.Transaction = trans;
                     command.ExecuteNonQuery();
                 }
-                //if (rezult_query != -1)
-                //{
-                //    if (trans != null)
-                //    {
+              
                 trans.Commit();
                 conn.Close();
-                //    }
-                //}
+              
             }
             catch (NpgsqlException ex)
             {
@@ -172,8 +128,7 @@ namespace Cash8
                 {
                     conn.Close();
                 }
-            }
-            //MessageBox.Show("100");
+            }            
         }
 
 
@@ -1069,10 +1024,7 @@ namespace Cash8
         private void Main_Load(object sender, System.EventArgs e)
         {
 
-            if (DateTime.Now > new DateTime(2024, 12, 16, 0, 0, 0))
-            {
-                guid_to_lover();
-            }
+           
 
             //if (File.Exists(Application.StartupPath + "/UpdateNpgsql/Npgsql.dll"))
             //{
@@ -1104,6 +1056,11 @@ namespace Cash8
             else
             {
                 Cash8.MainStaticClass.loadConfig(Application.StartupPath + "/Setting.gaa");
+            }
+
+            if (DateTime.Now > new DateTime(2024, 12, 16, 0, 0, 0))
+            {
+                guid_to_lover();
             }
 
             MainStaticClass.write_event_in_log("Перед проверкой обновления в интернет", " Старт программы ", "0");
@@ -1428,95 +1385,95 @@ namespace Cash8
         //}
 
 
-        private void get_login_and_pass_on_bonus_programm()
-        {
-            if (!MainStaticClass.service_is_worker())
-            {
-                //MessageBox.Show("Веб сервис недоступен");
-                return;
-            }
+        //private void get_login_and_pass_on_bonus_programm()
+        //{
+        //    if (!MainStaticClass.service_is_worker())
+        //    {
+        //        //MessageBox.Show("Веб сервис недоступен");
+        //        return;
+        //    }
 
-            //Получить параметра для запроса на сервер 
-            string nick_shop = MainStaticClass.Nick_Shop.Trim();
-            if (nick_shop.Trim().Length == 0)
-            {
-                MessageBox.Show(" Не удалось получить название магазина ");
-                return;
-            }
+        //    //Получить параметра для запроса на сервер 
+        //    string nick_shop = MainStaticClass.Nick_Shop.Trim();
+        //    if (nick_shop.Trim().Length == 0)
+        //    {
+        //        MessageBox.Show(" Не удалось получить название магазина ");
+        //        return;
+        //    }
 
-            string code_shop = MainStaticClass.Code_Shop.Trim();
-            if (code_shop.Trim().Length == 0)
-            {
-                MessageBox.Show(" Не удалось получить код магазина ");
-                return;
-            }
-            string count_day = CryptorEngine.get_count_day();
-            string key = nick_shop.Trim() + count_day.Trim() + nick_shop.Trim();
-            LoginPassPromo passPromo = new LoginPassPromo();
-            passPromo.CashDeskNumber = MainStaticClass.CashDeskNumber.ToString();
-            passPromo.PassPromoForCashDeskNumber = "";
+        //    string code_shop = MainStaticClass.Code_Shop.Trim();
+        //    if (code_shop.Trim().Length == 0)
+        //    {
+        //        MessageBox.Show(" Не удалось получить код магазина ");
+        //        return;
+        //    }
+        //    string count_day = CryptorEngine.get_count_day();
+        //    string key = nick_shop.Trim() + count_day.Trim() + nick_shop.Trim();
+        //    LoginPassPromo passPromo = new LoginPassPromo();
+        //    passPromo.CashDeskNumber = MainStaticClass.CashDeskNumber.ToString();
+        //    passPromo.PassPromoForCashDeskNumber = "";
 
-            string data = JsonConvert.SerializeObject(passPromo, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-            string data_encrypt = CryptorEngine.Encrypt(data, true, key);
-            try
-            {
-                using (Cash8.DS.DS ds = MainStaticClass.get_ds())
-                {
-                    ds.Timeout = 10000;
-                    string result_web_query = ds.GetParametersOnBonusProgram(nick_shop, data_encrypt, MainStaticClass.GetWorkSchema.ToString());
-                    string decrypt_data = CryptorEngine.Decrypt(result_web_query, true, key);
-                    if (decrypt_data != "-1")
-                    {
-                        passPromo = JsonConvert.DeserializeObject<LoginPassPromo>(decrypt_data);
-                        if (passPromo.PassPromoForCashDeskNumber != "")
-                        {
-                            update_login_and_pass_promo(passPromo.LoginPromoForCashDeskNumber, passPromo.PassPromoForCashDeskNumber);
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
+        //    string data = JsonConvert.SerializeObject(passPromo, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+        //    string data_encrypt = CryptorEngine.Encrypt(data, true, key);
+        //    try
+        //    {
+        //        using (Cash8.DS.DS ds = MainStaticClass.get_ds())
+        //        {
+        //            ds.Timeout = 10000;
+        //            string result_web_query = ds.GetParametersOnBonusProgram(nick_shop, data_encrypt, MainStaticClass.GetWorkSchema.ToString());
+        //            string decrypt_data = CryptorEngine.Decrypt(result_web_query, true, key);
+        //            if (decrypt_data != "-1")
+        //            {
+        //                passPromo = JsonConvert.DeserializeObject<LoginPassPromo>(decrypt_data);
+        //                if (passPromo.PassPromoForCashDeskNumber != "")
+        //                {
+        //                    update_login_and_pass_promo(passPromo.LoginPromoForCashDeskNumber, passPromo.PassPromoForCashDeskNumber);
+        //                }
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //}
 
 
-        private void update_login_and_pass_promo(string login_promo,string pass_promo)
-        {
-            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
-            try
-            {
-                conn.Open();
-                string query = "UPDATE constants SET pass_promo='" + pass_promo+"', login_promo = '"+login_promo+"'";
-                NpgsqlCommand command = new NpgsqlCommand(query, conn);
-                command.ExecuteNonQuery();
-                command.Dispose();
-                conn.Close();
-            }
-            catch (NpgsqlException ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                }
-            }
-        }
+        //private void update_login_and_pass_promo(string login_promo,string pass_promo)
+        //{
+        //    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+        //    try
+        //    {
+        //        conn.Open();
+        //        string query = "UPDATE constants SET pass_promo='" + pass_promo+"', login_promo = '"+login_promo+"'";
+        //        NpgsqlCommand command = new NpgsqlCommand(query, conn);
+        //        command.ExecuteNonQuery();
+        //        command.Dispose();
+        //        conn.Close();
+        //    }
+        //    catch (NpgsqlException ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //    finally
+        //    {
+        //        if (conn.State == ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //        }
+        //    }
+        //}
         
-        public class LoginPassPromo
-        {
-            public string PassPromoForCashDeskNumber { get; set; }
-            public string CashDeskNumber { get; set; }
-            public string LoginPromoForCashDeskNumber { get; set; }
-        }
+        //public class LoginPassPromo
+        //{
+        //    public string PassPromoForCashDeskNumber { get; set; }
+        //    public string CashDeskNumber { get; set; }
+        //    public string LoginPromoForCashDeskNumber { get; set; }
+        //}
 
         /// <summary>
         /// Проверка таблицы failed_input_phone
@@ -1678,7 +1635,7 @@ namespace Cash8
             try
             {
                 conn.Open();
-                string query = "SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'cdn_log' AND column_name = 'mark'); ";                
+                string query = "SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'cdn_log' AND column_name = 'status'); ";                
                 
                  NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 if (!Convert.ToBoolean(command.ExecuteScalar())) //не нашли такой колонки   

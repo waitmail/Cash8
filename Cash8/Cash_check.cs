@@ -14,6 +14,8 @@ using Newtonsoft.Json;
 using System.Net;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
+using Atol.Drivers10.Fptr;
+using AtolConstants = Atol.Drivers10.Fptr.Constants;
 
 namespace Cash8
 {
@@ -4419,6 +4421,23 @@ namespace Cash8
                 qr_code_lenght.Add(83);
                 qr_code_lenght.Add(115);
                 qr_code_lenght.Add(127);
+
+                if (MainStaticClass.PrintingUsingLibraries == 1)
+                {
+                    IFptr fptr = MainStaticClass.FPTR;
+
+                    if (!fptr.isOpened())
+                    {
+                        fptr.open();
+                    }
+
+                    fptr.setParam(AtolConstants.LIBFPTR_PARAM_DATA_TYPE, AtolConstants.LIBFPTR_DT_SHIFT_STATE);
+                    fptr.queryData();
+                    if (AtolConstants.LIBFPTR_SS_CLOSED == fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_SHIFT_STATE))
+                    {
+                        MessageBox.Show("У вас закрыта смена вы не сможете продавать маркированный товар, будете получать ошибку 422.Необходимо сделать внесение наличных в кассу. ", "Проверка состояния смены");
+                    }
+                }
             }
             else
             {

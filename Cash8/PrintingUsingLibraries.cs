@@ -511,6 +511,7 @@ namespace Cash8
                                     string error_decription = "Код ошибки = " + validationError + ";\r\nОписание ошибки " + fptr.errorDescription() + ";\r\n" + fptr.getParamString(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_ERROR_DESCRIPTION);
                                     MessageBox.Show(error_decription, "Ошибки при проверке кода маркировки");
                                     MainStaticClass.write_event_in_log(error_decription + " " + mark, "check_marking_code", check.numdoc.ToString());
+                                    check_validation_error_422(validationError);
                                 }
                                 else
                                 {
@@ -751,15 +752,17 @@ namespace Cash8
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_DEFER, AtolConstants.LIBFPTR_DEFER_POST);
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_LEFT);
             fptr.printText();
-
-            fptr.setParam(1085, "НомЧекВнутр");
-            fptr.setParam(1086, s);
-            fptr.utilFormTlv();
-            byte[] userAttribute = fptr.getParamByteArray(AtolConstants.LIBFPTR_PARAM_TAG_VALUE);                        
-            fptr.setNonPrintableParam(1084, userAttribute);
-
-
+                        
             print_fiscal_advertisement(fptr);
+
+            //MessageBox.Show(fptr.errorCode().ToString());
+            fptr.setParam(1085, "NumCheckShop");
+            fptr.setParam(1086, s);
+            fptr.utilFormTlv();           
+            byte[] userAttribute = fptr.getParamByteArray(AtolConstants.LIBFPTR_PARAM_TAG_VALUE);
+            fptr.setNonPrintableParam(1084, userAttribute);
+            //MessageBox.Show(fptr.errorCode().ToString());
+
             // Закрытие чека
             fptr.closeReceipt();
 
@@ -831,7 +834,28 @@ namespace Cash8
             {
                 fptr.close();
             }
-        } 
+        }
+
+
+        private void check_validation_error_422(uint validationError)
+        {
+            if (validationError == 422)
+            {
+                IFptr fptr = MainStaticClass.FPTR;
+                //setConnectSetting(fptr);
+                if (!fptr.isOpened())
+                {
+                    fptr.open();
+                }
+
+                fptr.setParam(AtolConstants.LIBFPTR_PARAM_DATA_TYPE, AtolConstants.LIBFPTR_DT_SHIFT_STATE);
+                fptr.queryData();
+                if (AtolConstants.LIBFPTR_SS_CLOSED == fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_SHIFT_STATE))
+                {
+                    MessageBox.Show("У вас закрыта смена вы не сможете продавать маркированный товар, будете получать ошибку 422.Необходимо сделать внесение наличных в кассу. ", "Проверка состояния смены");
+                }
+            }
+        }
 
         private void print_fiscal_advertisement(IFptr fptr)
         {
@@ -1112,6 +1136,7 @@ namespace Cash8
                                 MessageBox.Show(error_decription, "Ошибки при проверке кода маркировки");
                                 MainStaticClass.write_event_in_log(error_decription+" "+ mark, "check_marking_code", check.numdoc.ToString());
                                 fptr.declineMarkingCode();
+                                check_validation_error_422(validationError);
                             }
                             else
                             {
@@ -1236,7 +1261,7 @@ namespace Cash8
                     fptr.setParam(1212, 2);//подакцизеый товар
                 }
                 //fptr.registration();
-                fptr.resetError();
+                //fptr.resetError();
                 fptr.registration();
                 if (fptr.errorCode() > 0)
                 {
@@ -1324,9 +1349,9 @@ namespace Cash8
 
             fptr.setParam(1085, "NumCheckShop");
             fptr.setParam(1086, s);
-            fptr.utilFormTlv();
+            fptr.utilFormTlv();           
             byte[] userAttribute = fptr.getParamByteArray(AtolConstants.LIBFPTR_PARAM_TAG_VALUE);
-            fptr.setParam(1084, userAttribute);            
+            fptr.setNonPrintableParam(1084, userAttribute);            
 
             // Закрытие чека
             fptr.closeReceipt();
@@ -1446,7 +1471,8 @@ namespace Cash8
             if (!fptr.isOpened())
             {
                 fptr.open();
-            }
+            }          
+
 
             fptr.setParam(1021, MainStaticClass.Cash_Operator);
             fptr.setParam(1203, MainStaticClass.CashOperatorInn);
@@ -1503,6 +1529,7 @@ namespace Cash8
                 MessageBox.Show(error_decription, "Проверка кода маркировки");
                 MainStaticClass.write_event_in_log(error_decription,"Документ", num_doc);
                 fptr.declineMarkingCode();
+                check_validation_error_422(validationError);
             }
             else
             {
