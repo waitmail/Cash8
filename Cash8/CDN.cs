@@ -24,12 +24,17 @@ namespace Cash8
         //string token      = "c09faf94-383f-4fcf-a2da-2e786a585d8e";//боевой токен
         public int error_timeout = 0;//это счетчик ошибок при проверке кодов маркировки поможет понять что например нет интрнета
 
+
+        //Если при проверке продукции через CDN-площадку 3 раза подряд не удаётся получить ответ на
+        //запрос в течение 1.5 секунд, то необходимо пометить в своей информационной системе эту
+        //площадку на 15 минут как недоступную и переключиться на следующую по приоритету в списке
+        //CDN-площадку
         public class Host
         {
             public string host { get; set; }
             public int avgTimeMs { get; set; }
             public long latensy { get; set; }
-            public DateTime dateTime { get; set; }
+            public DateTime dateTime { get; set; }//здесь ставится время по которому идет отбор доступных,
         }
 
         public class CDN_List
@@ -171,17 +176,7 @@ namespace Cash8
             ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
             CDN_List list = get_cdn_info();
             if (list != null)
-            {
-                //if (list != null)
-                //{
-                //    //StringBuilder sb = new StringBuilder();
-                //    //for (int i = 0; i < list.hosts.Count; i++)
-                //    //{
-                //    //    sb.Append(list.hosts[i].host + ";   ");
-                //    //}
-                //    //MainStaticClass.write_event_in_log(sb.ToString(), "CDN сервера ", "0");
-                //   //MainStaticClass.write_cdn_log(sb.ToString(), "0", "", "2");
-                //}
+            {              
                 list = get_cdn_list_health(list);
             }
             return list;
@@ -421,6 +416,20 @@ namespace Cash8
             string body = JsonConvert.SerializeObject(check_mark, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             body = body.Replace("\\u001d", @"u001d");
             error = false; result_check = false;
+
+            //if (!CDN_list.sorted)
+            //{
+                //обновить кеш 
+
+            cdn_list.hosts = cdn_list.hosts.Where(h => h.dateTime < DateTime.Now).OrderBy(h => h.latensy).ToList();
+
+            //    update_cash_cdn(CDN_list);
+            //}
+            //else
+            //{
+
+            //}
+
             for (int i = 0; i < cdn_list.hosts.Count; i++)
             {
                 Host host = cdn_list.hosts[i];
@@ -585,12 +594,14 @@ namespace Cash8
                         error = true;
                         MessageBox.Show("WebException check_marker_code " + host.host + " " + ex.Message, "check_marker_code");
                         MainStaticClass.write_cdn_log("WebException check_marker_code " + host.host + " " + ex.Message, numdoc.ToString(), codes[0].ToString(), "3");
-                    }                    
+                    }
+                    MainStaticClass.UpdateHostDateTimeCdnHost(host.host, DateTime.Now.AddMinutes(15));
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show("Exception check_marker_code " + host.host + " " + ex.Message, "check_marker_code");                    
-                    MainStaticClass.write_cdn_log("check_marker_code " + host.host + " " + ex.Message, numdoc.ToString(), codes[0].ToString(), "3");                    
+                    MainStaticClass.write_cdn_log("check_marker_code " + host.host + " " + ex.Message, numdoc.ToString(), codes[0].ToString(), "3");
+                    MainStaticClass.UpdateHostDateTimeCdnHost(host.host, DateTime.Now.AddMinutes(15));
                     error = true;
                 }
                 if (!error)

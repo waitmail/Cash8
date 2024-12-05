@@ -426,6 +426,26 @@ namespace Cash8
             }
         }
 
+
+        private static CDN.CDN_List DeepCopy(CDN.CDN_List original)
+        {
+            CDN.CDN_List copy = new CDN.CDN_List
+            {
+                sorted = original.sorted,
+                code = original.code,
+                description = original.description,
+                createDateTime = original.createDateTime,
+                hosts = original.hosts.Select(h => new CDN.Host
+                {
+                    host = h.host,
+                    avgTimeMs = h.avgTimeMs,
+                    latensy = h.latensy,
+                    dateTime = h.dateTime
+                }).ToList()
+            };
+            return copy;
+        }
+
         public static Cash8.CDN.CDN_List CDN_List
         {
             get
@@ -433,20 +453,37 @@ namespace Cash8
                 if (CDN_list == null)
                 {
                     CDN cdn = new CDN();
-                    CDN_list = cdn.get_cdn_list();
-                    if (!CDN_list.sorted)
-                    {
-                        //обновить кеш 
-                        CDN_list.hosts = CDN_list.hosts.Where(h => h.dateTime < DateTime.Now).OrderBy(h => h.latensy).ToList();
-                        update_cash_cdn(CDN_list);
-                    }
+                    CDN_list = cdn.get_cdn_list();                    
+                    //обновить кеш                     
+                    update_cash_cdn(CDN_list);                    
                 }                
 
-                return CDN_list;
+                return DeepCopy(CDN_list);//Здесь отдаем копию там дальше будут отборы, а сохранять нужно весь список 
             }
             set
             {
                 CDN_list = null;//Если CDN сервера недоступны, то таким образом мы обнуляем весь список 
+            }
+        }
+
+
+        // Если при проверке продукции через CDN-площадку 3 раза подряд не удаётся получить ответ на
+        //запрос в течение 1.5 секунд, то необходимо пометить в своей информационной системе эту
+        //площадку на 15 минут как недоступную и переключиться на следующую по приоритету в списке
+        //CDN-площадку
+        public static void UpdateHostDateTimeCdnHost(string hostName, DateTime newDateTime)
+        {
+            // Найти хост с указанным именем
+            CDN.Host hostToUpdate = CDN_list.hosts.FirstOrDefault(h => h.host == hostName);
+
+            // Если хост найден, обновить его dateTime
+            if (hostToUpdate != null)
+            {
+                hostToUpdate.dateTime = newDateTime;
+            }
+            else
+            {
+                MessageBox.Show("При попытке присвоить новое значение dateTime в классе   CDN.Host произошло исключение  Host not found.");
             }
         }
 
