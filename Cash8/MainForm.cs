@@ -750,7 +750,7 @@ namespace Cash8
                 sdsp.Dispose();
                 UploadDeletedItems();
                 get_web_tovar_check_cdn();
-                SendCdnLogs();
+                send_cdn_logs();
             }
         }
 
@@ -904,7 +904,7 @@ namespace Cash8
             public string Status { get; set; }
         }
 
-        private void SendCdnLogs()
+        private void send_cdn_logs()
         {
             NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
             try
@@ -1218,9 +1218,6 @@ namespace Cash8
                     MessageBox.Show("В этой кассе не заполнен CDN токен, \r\n ПРОДАЖА МАРКИРОВАННОГО ТОВАРА ОГРАНИЧЕНА/НЕВОЗМОЖНА!", "Проверка CDN");
                 }
             }
-
-            //SendCdnLogs();
-
         }
 
         private void get_cdn_with_start()
@@ -1669,7 +1666,7 @@ namespace Cash8
             try
             {
                 conn.Open();                
-                string query = "SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'cdn_log'); ";
+                string query = "SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'cdn_cash'); ";
 
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 if (!Convert.ToBoolean(command.ExecuteScalar())) //не нашли такой колонки   

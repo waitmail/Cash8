@@ -434,32 +434,14 @@ namespace Cash8
                 {
                     CDN cdn = new CDN();
                     CDN_list = cdn.get_cdn_list();
-                    //if (CDN_list != null)
-                    //{
-                    //    StringBuilder sb = new StringBuilder();
-                    //    for (int i = 0; i < CDN_list.hosts.Count; i++)
-                    //    {
-                    //        sb.Append(CDN_list.hosts[i].host + ";");
-                    //    }
-                    //    MainStaticClass.write_event_in_log(sb.ToString(), "CDN сервера ", "0");
-                    //}
-                }
-                //else
-                //{
-                //    if ((CDN_list.createDateTime - DateTime.Now).Hours > 6)//Обновление списка если прошло уже больше 6-ти часов 
-                //    {
-                //        CDN cdn = new CDN();
-                //        CDN_list = cdn.get_cdn_list();
-                //    }
-                //    //else
-                //    //{
-                //    //    if ((CDN_list.createDateTime - DateTime.Now).Hours > 0)//прошел 1 час опросим доступность серверов
-                //    //    {
-                //    //        CDN cdn = new CDN();
-                //    //        CDN_list = cdn.get_cdn_list(CDN_list);
-                //    //    }
-                //    //}
-                //}
+                    if (!CDN_list.sorted)
+                    {
+                        //обновить кеш 
+                        CDN_list.hosts = CDN_list.hosts.Where(h => h.dateTime < DateTime.Now).OrderBy(h => h.latensy).ToList();
+                        update_cash_cdn(CDN_list);
+                    }
+                }                
+
                 return CDN_list;
             }
             set
@@ -467,6 +449,64 @@ namespace Cash8
                 CDN_list = null;//Если CDN сервера недоступны, то таким образом мы обнуляем весь список 
             }
         }
+
+        private static void update_cash_cdn(CDN.CDN_List cdn_list)
+        {
+            using (NpgsqlConnection conn = MainStaticClass.NpgsqlConn())
+            {
+                NpgsqlCommand command = null;
+
+                try
+                {
+                    conn.Open();
+
+                    foreach (CDN.Host host in cdn_list.hosts)
+                    {
+                        using (command = new NpgsqlCommand())
+                        {
+                            command.Connection = conn;
+
+                            // Обновление
+                            command.CommandText = "UPDATE cdn_cash SET latensy = @latensy, date = @date WHERE host = @host";
+                            command.Parameters.AddWithValue("@date", DateTime.Now);
+                            command.Parameters.AddWithValue("@latensy", host.latensy);
+                            command.Parameters.AddWithValue("@host", host.host);
+
+                            int rowsaffected = command.ExecuteNonQuery();
+
+                            // Вставка, если обновление не затронуло ни одной строки
+                            if (rowsaffected == 0)
+                            {
+                                command.CommandText = "INSERT INTO cdn_cash(host, latensy, date) VALUES (@host, @latensy, @date)";
+                                command.Parameters.Clear();
+                                command.Parameters.AddWithValue("@date", DateTime.Now);
+                                command.Parameters.AddWithValue("@latensy", host.latensy);
+                                command.Parameters.AddWithValue("@host", host.host);
+
+                                command.ExecuteNonQuery();
+                            }
+                        }
+                    }
+                }
+                catch (NpgsqlException ex)
+                {
+                    MessageBox.Show("Ошибка при обновлении кеша cdn update_cash_cdn: " + ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Ошибка при обновлении кеша cdn update_cash_cdn: " + ex.Message);
+                }
+                finally
+                {
+                    if (conn.State == System.Data.ConnectionState.Open)
+                    {
+                        conn.Close();
+                    }
+                    command.Dispose();
+                }
+            }
+        }
+
 
 
         public static string check_fractional_tovar(string tovar_code)
