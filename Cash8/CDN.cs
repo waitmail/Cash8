@@ -39,7 +39,6 @@ namespace Cash8
 
         public class CDN_List
         {
-            public bool sorted { get; set; }
             public int code { get; set; }
             public string description { get; set; }
             public List<Host> hosts { get; set; }
@@ -131,6 +130,7 @@ namespace Cash8
                             //MessageBox.Show("Response: " + sdn_list);
                             //txtB_result.Text = sdn_list;
                             list = JsonConvert.DeserializeObject<CDN_List>(sdn_list);
+                            list.createDateTime = DateTime.Now;
                         }
                     }
                 }
@@ -143,8 +143,61 @@ namespace Cash8
                 MessageBox.Show("Ошибка при запросе списка CDN площадок " + ex.Message);                
             }
 
+            if (list == null)//Необходимо заполнить его из кеша
+            {
+                list = load_cash_cdn();
+                MainStaticClass.write_cdn_log("Cписок CDN успешно загружен из кеша load_cash_cdn ", "0", "", "2");
+            }
+
             return list;
         }
+
+        private CDN.CDN_List load_cash_cdn()
+        {
+            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+            NpgsqlCommand command = null;
+            CDN.CDN_List list = new CDN_List();
+            list.createDateTime = DateTime.Now;
+            list.hosts = new List<Host>();
+            list.code = 0;
+            
+            try
+            {
+
+                string query = "SELECT host, latensy, date FROM public.cdn_cash;";
+                conn.Open();
+                command = new NpgsqlCommand(query, conn);
+                NpgsqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    Host host = new Host();
+                    host.host = reader["host"].ToString();
+                    list.hosts.Add(host);
+                }
+            }
+            catch (NpgsqlException ex)
+            {
+                MessageBox.Show("Произошла ошибка при попытке загрузить список CDN из кеша" + ex.Message, "Загрузка списка CDN из кеша" );
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Произошла ошибка при попытке загрузить список CDN из кеша" + ex.Message, "Загрузка списка CDN из кеша" );
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+                if (command != null)
+                {
+                    command.Dispose();
+                }
+            }
+
+            return list;
+        }
+
 
         public class CDNHealth
         {
@@ -179,6 +232,8 @@ namespace Cash8
             {              
                 list = get_cdn_list_health(list);
             }
+            //Проверить если доступные сдн, может быть так что весь список серверов недоступен если так то запросить новый список серверов  
+
             return list;
         }
 
@@ -227,6 +282,7 @@ namespace Cash8
 
         /// <summary>
         /// Возращает список cdn серверов с данными по доступу к ним
+        /// если нет доступа то устанваливается время текущее  + 15 мин.
         /// </summary>
         /// <returns></returns>
         public CDN_List get_cdn_list_health(CDN_List list)
@@ -234,8 +290,7 @@ namespace Cash8
             if (list != null)
             {
                 try
-                {
-                    list.sorted = false;
+                {                    
                     CDNHealth cDNHealth = null;
                     if (list.code == 0)//ответ без ошибок 
                     {
@@ -416,20 +471,9 @@ namespace Cash8
             string body = JsonConvert.SerializeObject(check_mark, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             body = body.Replace("\\u001d", @"u001d");
             error = false; result_check = false;
-
-            //if (!CDN_list.sorted)
-            //{
-                //обновить кеш 
-
+            
             cdn_list.hosts = cdn_list.hosts.Where(h => h.dateTime < DateTime.Now).OrderBy(h => h.latensy).ToList();
-
-            //    update_cash_cdn(CDN_list);
-            //}
-            //else
-            //{
-
-            //}
-
+            
             for (int i = 0; i < cdn_list.hosts.Count; i++)
             {
                 Host host = cdn_list.hosts[i];

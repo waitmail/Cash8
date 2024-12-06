@@ -489,6 +489,7 @@
             this.checkBox_do_not_prompt_marking_code.Text = "Не запрашивать код  маркир (ТОЛЬКО ЕСЛИ НЕТ ФН)";
             this.checkBox_do_not_prompt_marking_code.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_do_not_prompt_marking_code.UseVisualStyleBackColor = true;
+            this.checkBox_do_not_prompt_marking_code.Visible = false;
             // 
             // Constants
             // 

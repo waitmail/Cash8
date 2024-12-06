@@ -427,8 +427,9 @@ namespace Cash8
             }
             if (MainStaticClass.GetDoNotPromptMarkingCode == 0)
             {
-                if ((check.check_type.SelectedIndex == 1) || !check.itsnew)//старый механизм работы с макрировкой, для возвратов так же пока старая схема
-                {
+                if ((check.check_type.SelectedIndex == 1) || (!check.itsnew && check.reopened))//старый механизм работы с макрировкой, для возвратов так же пока старая схема
+                //if ((check.check_type.SelectedIndex == 1) || (!check.itsnew))//старый механизм работы с макрировкой, для возвратов так же пока старая схема
+                  {
                     fptr.clearMarkingCodeValidationResult();
                     foreach (ListViewItem lvi in check.listView1.Items)
                     {
@@ -438,8 +439,9 @@ namespace Cash8
                             {
                                 continue;
                             }
-                            byte[] textAsBytes = System.Text.Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'"));
-                            string mark = Convert.ToBase64String(textAsBytes);
+                            //byte[] textAsBytes = System.Text.Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'"));
+                            //string mark = Convert.ToBase64String(textAsBytes);
+                            string mark = lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'");
                             if (check.check_type.SelectedIndex == 1 || !check.itsnew)
                             {
                                 //string mark = Convert.ToBase64String(textAsBytes);
@@ -447,7 +449,7 @@ namespace Cash8
 
                                 // Запускаем проверку КМ
                                 fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_TYPE, AtolConstants.LIBFPTR_MCT12_AUTO);
-                                fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE, mark);
+                                fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE, mark);                                
                                 fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, status);
                                 fptr.setParam(AtolConstants.LIBFPTR_PARAM_QUANTITY, 1.000);
                                 fptr.setParam(AtolConstants.LIBFPTR_PARAM_MEASUREMENT_UNIT, AtolConstants.LIBFPTR_IU_PIECE);
@@ -647,10 +649,11 @@ namespace Cash8
                     {
                         if (!cdn_check(lvi.SubItems[0].Text.Trim(), check.numdoc.ToString()))
                         {
-                            string marker_code = lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'");
-                            byte[] textAsBytes = System.Text.Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'"));
-                            string mark = Convert.ToBase64String(textAsBytes);
-                            fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE, mark);
+                            //string marker_code = lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'");
+                            //byte[] textAsBytes = System.Text.Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'"));
+                            //string mark = Convert.ToBase64String(textAsBytes);
+                            string mark = lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'");
+                            fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE, mark);                            
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, 2);
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_TYPE, AtolConstants.LIBFPTR_MCT12_AUTO);
                             uint result_check = 0;
@@ -1059,11 +1062,10 @@ namespace Cash8
                         fptr.close();
                     }
                     return;
-                }
+                }              
 
-                if (check.check_type.SelectedIndex == 1 || !check.itsnew) //|| MainStaticClass.SystemTaxation == 3)//старый механизм работы с макрировкой, для возвратов так же пока старая схема
+                if (check.check_type.SelectedIndex == 1 || (!check.itsnew && check.reopened)) //|| MainStaticClass.SystemTaxation == 3)//старый механизм работы с макрировкой, для возвратов так же пока старая схема
                 {
-                    
                     fptr.clearMarkingCodeValidationResult();
                     check.cdn_markers_result_check.Clear();//если мы здесь предыдущие проверки очищаем
                     foreach (ListViewItem lvi in check.listView1.Items)
@@ -1075,8 +1077,9 @@ namespace Cash8
                                 continue;
                             }                            
 
-                            byte[] textAsBytes = System.Text.Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'"));
-                            string mark = Convert.ToBase64String(textAsBytes);
+                            //byte[] textAsBytes = System.Text.Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'"));
+                            //string mark = Convert.ToBase64String(textAsBytes);
+                            string mark = lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'");
                             //if ((MainStaticClass.Version2Marking == 0) || (check.check_type.SelectedIndex == 1) || !check.itsnew || MainStaticClass.SystemTaxation==3)
                             //{
                             //string mark = Convert.ToBase64String(textAsBytes);
@@ -1084,7 +1087,7 @@ namespace Cash8
 
                             // Запускаем проверку КМ
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_TYPE, AtolConstants.LIBFPTR_MCT12_AUTO);
-                            fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE, mark);
+                            fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE, mark);                            
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, status);
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_QUANTITY, 1.000);
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_MEASUREMENT_UNIT, AtolConstants.LIBFPTR_IU_PIECE);
@@ -1240,12 +1243,13 @@ namespace Cash8
                     {
                         if (!cdn_check(lvi.SubItems[0].Text.Trim(), check.numdoc.ToString()))
                         {
-                            string marker_code = lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'");
-                            byte[] textAsBytes = System.Text.Encoding.Default.GetBytes(marker_code);
-                            string mark = Convert.ToBase64String(textAsBytes);
-                            fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE, mark);
-                            fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, 2);
+                            //string marker_code = lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'");
+                            //byte[] textAsBytes = System.Text.Encoding.Default.GetBytes(marker_code);
+                            //string mark = Convert.ToBase64String(textAsBytes);
+                            string mark = lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'");
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_TYPE, AtolConstants.LIBFPTR_MCT12_AUTO);
+                            fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE, mark);                            
+                            fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, 2);                            
                             uint result_check = 0;
                             if (check.cdn_markers_result_check.ContainsKey(mark))
                             {

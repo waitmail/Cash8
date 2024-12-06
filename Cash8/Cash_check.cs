@@ -111,6 +111,7 @@ namespace Cash8
         //список допустимых длин qr кодов
         List<int> qr_code_lenght = new List<int>();
         ToolTip toolTip = null;
+        public bool reopened = false;
         //(HttpWebRequest)WebRequest.Create("url");
         //request.KeepAlive = true;
         //request.Method = "GET"; // Или другой метод, который вы используете
@@ -3183,11 +3184,11 @@ namespace Cash8
                                                         }
                                                         CDN cdn = new CDN();
                                                         List<string> codes = new List<string>();
-                                                        mark_str_cdn = mark_str.Replace("\u001d", @"\u001d");                                                        
-                                                        codes.Add(mark_str_cdn);                                                        
+                                                        mark_str_cdn = mark_str.Replace("\u001d", @"\u001d");
+                                                        codes.Add(mark_str_cdn);
                                                         mark_str_cdn = mark_str_cdn.Replace("'", "\'");
                                                         Dictionary<string, string> d_tovar = new Dictionary<string, string>();
-                                                        d_tovar[lvi.SubItems[1].Text] = lvi.SubItems[0].Text;                                                        
+                                                        d_tovar[lvi.SubItems[1].Text] = lvi.SubItems[0].Text;
                                                         result_check_cdn = cdn.check_marker_code(codes, mark_str, this.numdoc, ref request, mark_str_cdn, d_tovar, ref timeout_check_cdn);
                                                         if ((!result_check_cdn) && (!timeout_check_cdn))//не прошел проверку и таймаута не было 
                                                         {
@@ -3294,7 +3295,8 @@ namespace Cash8
                                                 else
                                                 {
                                                     PrintingUsingLibraries printingUsingLibraries = new PrintingUsingLibraries();
-                                                    if (!printingUsingLibraries.check_marking_code(imc, this.numdoc.ToString(), ref this.cdn_markers_result_check))
+                                                    //if (!printingUsingLibraries.check_marking_code(imc, this.numdoc.ToString(), ref this.cdn_markers_result_check))
+                                                    if (!printingUsingLibraries.check_marking_code(mark_str, this.numdoc.ToString(), ref this.cdn_markers_result_check))
                                                     {
                                                         error = true;
                                                     }
@@ -4354,6 +4356,7 @@ namespace Cash8
             }
             else
             {
+                reopened = true;
                 checkBox_print_check.Enabled = false;                
                 //Документ не новый поэтому запретим в нем ввод и изменение                
                 last_tovar.Enabled = false;

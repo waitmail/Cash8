@@ -427,11 +427,10 @@ namespace Cash8
         }
 
 
-        private static CDN.CDN_List DeepCopy(CDN.CDN_List original)
+        private static CDN.CDN_List DeepCopyCDN_List(CDN.CDN_List original)
         {
             CDN.CDN_List copy = new CDN.CDN_List
-            {
-                sorted = original.sorted,
+            {                
                 code = original.code,
                 description = original.description,
                 createDateTime = original.createDateTime,
@@ -453,12 +452,12 @@ namespace Cash8
                 if (CDN_list == null)
                 {
                     CDN cdn = new CDN();
-                    CDN_list = cdn.get_cdn_list();                    
+                    CDN_list = cdn.get_cdn_list();                      
                     //обновить кеш                     
                     update_cash_cdn(CDN_list);                    
                 }                
 
-                return DeepCopy(CDN_list);//Здесь отдаем копию там дальше будут отборы, а сохранять нужно весь список 
+                return DeepCopyCDN_List(CDN_list);//Здесь отдаем копию там дальше будут отборы, а сохранять нужно весь оргинальный список 
             }
             set
             {
@@ -539,7 +538,10 @@ namespace Cash8
                     {
                         conn.Close();
                     }
-                    command.Dispose();
+                    if (command != null)
+                    {
+                        command.Dispose();
+                    }
                 }
             }
         }
