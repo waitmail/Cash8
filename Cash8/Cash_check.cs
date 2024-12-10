@@ -3295,7 +3295,7 @@ namespace Cash8
                                                 else
                                                 {
                                                     PrintingUsingLibraries printingUsingLibraries = new PrintingUsingLibraries();
-                                                    //if (!printingUsingLibraries.check_marking_code(imc, this.numdoc.ToString(), ref this.cdn_markers_result_check))
+                                                    //if (!printingUsingLibraries.check_marking_code(imc, this.numdoc.ToString(), ref this.cdn_markers_result_check))                                                    
                                                     if (!printingUsingLibraries.check_marking_code(mark_str, this.numdoc.ToString(), ref this.cdn_markers_result_check))
                                                     {
                                                         error = true;
@@ -4385,6 +4385,7 @@ namespace Cash8
                     {
                         this.pay.Enabled = false;
                     }
+                    //itsnew = true;
                 }
                 else if (status == 2)
                 {
@@ -10430,13 +10431,16 @@ namespace Cash8
         {
             if (itsnew)
             {
-                if (listView1.Items.Count < 3)
+                if (check_type.SelectedIndex == 0)
                 {
-                    MessageBox.Show("В чеке менее 3 строк, предложить покупателю доп.товар", "В чеке менее 3 строк");
-                    //Tovar_Not_Found tovar_Not_Found = new Tovar_Not_Found();
-                    //tovar_Not_Found.textBox1.Text = "В чеке менее 3 строк, предложить покупателю доп.товар";
-                    //tovar_Not_Found.textBox1.Font= new Font("Microsoft Sans Serif", 18);
-                    //tovar_Not_Found.ShowDialog();
+                    if (listView1.Items.Count < 3)
+                    {
+                        MessageBox.Show("В чеке менее 3 строк, предложить покупателю доп.товар", "В чеке менее 3 строк");
+                        //Tovar_Not_Found tovar_Not_Found = new Tovar_Not_Found();
+                        //tovar_Not_Found.textBox1.Text = "В чеке менее 3 строк, предложить покупателю доп.товар";
+                        //tovar_Not_Found.textBox1.Font= new Font("Microsoft Sans Serif", 18);
+                        //tovar_Not_Found.ShowDialog();
+                    }
                 }
             }
 
@@ -13844,13 +13848,13 @@ namespace Cash8
                 //}
                 //else
                 //{
+
                 pay_form.pay_sum.Text = calculation_of_the_sum_of_the_document().ToString("F", System.Globalization.CultureInfo.CurrentCulture);
                     Double total = calculation_of_the_sum_of_the_document();
                     string kop = ((int)((total - (int)total) * 100)).ToString();
                     kop = (kop.Length == 2 ? kop : "0" + kop);
-                    pay_form.set_kop_on_non_cash_sum_kop(kop);
-                //}
-
+                    pay_form.set_kop_on_non_cash_sum_kop(kop);                
+                write_new_document("0", calculation_of_the_sum_of_the_document().ToString(), "0", "0", false, "0", "0", "0", "0");//нужно для того чтобы в окне оплаты взять сумму из БД
             }
             else//Это возврат
             {

@@ -10,6 +10,7 @@ using System.Globalization;
 using System.Threading;
 using Atol.Drivers10.Fptr;
 using AtolConstants = Atol.Drivers10.Fptr.Constants;
+using Npgsql;
 
 namespace Cash8
 {
@@ -1998,33 +1999,41 @@ namespace Cash8
             //decimal sum_of_the_document = Math.Round(Convert.ToDecimal(pay_sum.Text.Replace(".", ",")), 2);
             //MessageBox.Show("Сумма документа " + sum_of_the_document.ToString());
 
-            if ((_non_cash_summ_ == 0)&&(!MainStaticClass.fractional_exists(cc.listView1)))
+            if ((_non_cash_summ_ == 0) && (!MainStaticClass.fractional_exists(cc.listView1)))
             {
-                if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema ==3) || (MainStaticClass.GetWorkSchema == 4))
-                {                    
-                    //MessageBox.Show(" Сумма документа до преобразования " + sum_of_the_document.ToString());
-                    //sum_of_the_document = (int)sum_of_the_document;
-                    //MessageBox.Show(" Сумма документа после преобразования к целому " + sum_of_the_document.ToString());                    
-                    //sum_of_the_document = Math.Round(sum_of_the_document,0,MidpointRounding.AwayFromZero);
-                    //MessageBox.Show(" Сумма документа после преобразования к целому " + sum_of_the_document.ToString());
+                //if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema ==3) || (MainStaticClass.GetWorkSchema == 4))
+                //{                    
+                //MessageBox.Show(" Сумма документа до преобразования " + sum_of_the_document.ToString());
+                //sum_of_the_document = (int)sum_of_the_document;
+                //MessageBox.Show(" Сумма документа после преобразования к целому " + sum_of_the_document.ToString());                    
+                //sum_of_the_document = Math.Round(sum_of_the_document,0,MidpointRounding.AwayFromZero);
+                //MessageBox.Show(" Сумма документа после преобразования к целому " + sum_of_the_document.ToString());
 
-                    //sum_of_the_document = (int)Math.Floor(sum_of_the_document);
+                //sum_of_the_document = (int)Math.Floor(sum_of_the_document);
 
-                    if (sum_of_the_document.ToString().IndexOf(".") != -1)
-                    {
-                        string[] parts = sum_of_the_document.ToString().Split('.');
-                        sum_of_the_document = Double.Parse(parts[0]);
-                    }
-                    else if (sum_of_the_document.ToString().IndexOf(",") != -1)
-                    {
-                        string[] parts = sum_of_the_document.ToString().Split(',');
-                        sum_of_the_document = Double.Parse(parts[0]);
-                    }
-
-                    //sum_of_the_document = Math.Truncate(sum_of_the_document);
-                    //MessageBox.Show(" Сумма документа после преобразования к целому " + sum_of_the_document.ToString());
-                    //sum_of_the_document = Math.Round(sum_of_the_document,0);
+                if (sum_of_the_document.ToString().IndexOf(".") != -1)
+                {
+                    string[] parts = sum_of_the_document.ToString().Split('.');
+                    sum_of_the_document = Double.Parse(parts[0]);
                 }
+                else if (sum_of_the_document.ToString().IndexOf(",") != -1)
+                {
+                    string[] parts = sum_of_the_document.ToString().Split(',');
+                    sum_of_the_document = Double.Parse(parts[0]);
+                }
+
+
+                double sum_sum_at_a_discount = get_sum_sum_at_a_discount();
+
+                if (Math.Abs(sum_sum_at_a_discount - sum_of_the_document) > 0 && sum_sum_at_a_discount != 0)
+                {
+                    sum_of_the_document = sum_sum_at_a_discount;
+                }
+
+                //sum_of_the_document = Math.Truncate(sum_of_the_document);
+                //MessageBox.Show(" Сумма документа после преобразования к целому " + sum_of_the_document.ToString());
+                //sum_of_the_document = Math.Round(sum_of_the_document,0);
+                //}
             }
 
             if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema == 3) || (MainStaticClass.GetWorkSchema == 4))
@@ -2082,6 +2091,42 @@ namespace Cash8
             }
 
             it_is_paid();
+        }
+
+        private double get_sum_sum_at_a_discount()
+        {
+            double result = 0;
+
+            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+            NpgsqlCommand command = null;
+            try
+            {
+                string query = "SELECT FLOOR(SUM(sum_at_a_discount)) FROM public.checks_table WHERE document_number = " + cc.numdoc.ToString();
+                conn.Open();
+                command = new NpgsqlCommand(query, conn);
+                result = Convert.ToDouble(command.ExecuteScalar());
+            }
+            catch (NpgsqlException ex)
+            {
+                MessageBox.Show("Ошибка при получении целой части суммы документа  get_sum_sum_at_a_discount " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ошибка при получении целой части суммы документа  get_sum_sum_at_a_discount " + ex.Message);
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+                if (command != null)
+                {
+                    command.Dispose();
+                }
+            }
+
+            return result;
         }
 
         private void button1_Click(object sender, EventArgs e)
