@@ -70,6 +70,8 @@
             this.label9 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.checkBox_do_not_prompt_marking_code = new System.Windows.Forms.CheckBox();
+            this.txtB_constant_conversion_to_kilograms = new System.Windows.Forms.TextBox();
+            this.label10 = new System.Windows.Forms.Label();
             this.groupBox_acquiring_terminal.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -368,12 +370,14 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.label10);
+            this.groupBox2.Controls.Add(this.txtB_constant_conversion_to_kilograms);
             this.groupBox2.Controls.Add(this.btn_get_weight);
             this.groupBox2.Controls.Add(this.comboBox_scale_port);
             this.groupBox2.Controls.Add(this.checkBox_get_weight_automatically);
             this.groupBox2.Location = new System.Drawing.Point(17, 325);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(469, 81);
+            this.groupBox2.Size = new System.Drawing.Size(469, 112);
             this.groupBox2.TabIndex = 89;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Настройки весов";
@@ -491,6 +495,24 @@
             this.checkBox_do_not_prompt_marking_code.UseVisualStyleBackColor = true;
             this.checkBox_do_not_prompt_marking_code.Visible = false;
             // 
+            // txtB_constant_conversion_to_kilograms
+            // 
+            this.txtB_constant_conversion_to_kilograms.Location = new System.Drawing.Point(187, 68);
+            this.txtB_constant_conversion_to_kilograms.MaxLength = 4;
+            this.txtB_constant_conversion_to_kilograms.Name = "txtB_constant_conversion_to_kilograms";
+            this.txtB_constant_conversion_to_kilograms.Size = new System.Drawing.Size(127, 20);
+            this.txtB_constant_conversion_to_kilograms.TabIndex = 90;
+            this.txtB_constant_conversion_to_kilograms.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // label10
+            // 
+            this.label10.Location = new System.Drawing.Point(25, 60);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(137, 35);
+            this.label10.TabIndex = 91;
+            this.label10.Text = "Делитель для перевода веса в килограммы";
+            this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // Constants
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -531,6 +553,7 @@
             this.groupBox_acquiring_terminal.ResumeLayout(false);
             this.groupBox_acquiring_terminal.PerformLayout();
             this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
@@ -584,5 +607,7 @@
         private System.Windows.Forms.TextBox txtB_fn_ipaddr;
         private System.Windows.Forms.ComboBox comboBox_acquiring_bank;
         private System.Windows.Forms.CheckBox checkBox_do_not_prompt_marking_code;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.TextBox txtB_constant_conversion_to_kilograms;
     }
 }

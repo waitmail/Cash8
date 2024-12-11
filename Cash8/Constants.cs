@@ -25,9 +25,18 @@ namespace Cash8
             this.KeyPreview = true;
             this.unloading_period.KeyPress += new KeyPressEventHandler(unloading_period_KeyPress);
             this.cash_desk_number.KeyPress += new KeyPressEventHandler(cash_desk_number_KeyPress);
+            txtB_constant_conversion_to_kilograms.KeyPress += TxtB_constant_conversion_to_kilograms_KeyPress;
             this.Load += new EventHandler(Constants_Load);
         }
 
+        private void TxtB_constant_conversion_to_kilograms_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // Разрешаем только цифры, клавиши Backspace и Delete
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+            {
+                e.Handled = true;
+            }
+        }
 
         private void txtB_sum_KeyPress(object sender, KeyPressEventArgs e)
         {
@@ -124,7 +133,7 @@ namespace Cash8
                     " envd,pass_promo,print_m,system_taxation,work_schema,version_fn,enable_stock_processing_in_memory," +
                     " id_acquirer_terminal,ip_address_acquiring_terminal,self_service_kiosk,enable_cdn_markers, " +
                     " webservice_authorize,printing_using_libraries,fn_serial_port,get_weight_automatically,scale_serial_port,"+
-                    " variant_connect_fn,fn_ipaddr,acquiring_bank,do_not_prompt_marking_code FROM constants";
+                    " variant_connect_fn,fn_ipaddr,acquiring_bank,do_not_prompt_marking_code,constant_conversion_to_kilograms FROM constants";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
@@ -159,6 +168,7 @@ namespace Cash8
                     this.checkBox_do_not_prompt_marking_code.CheckState = (reader["do_not_prompt_marking_code"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
 
                     comboBox_variant_connect_fn.SelectedIndex = Convert.ToInt16(reader["variant_connect_fn"]);
+                    this.txtB_constant_conversion_to_kilograms.Text = reader["constant_conversion_to_kilograms"].ToString();
                     txtB_fn_ipaddr.Text = reader["fn_ipaddr"].ToString();
                     int index = 0;
                     if (comboBox_variant_connect_fn.SelectedIndex == 0)
@@ -386,7 +396,8 @@ namespace Cash8
                     "variant_connect_fn = " + variant_connect_fn+","+
                     "fn_ipaddr='"+ fn_ipaddr+"'"+","+
                     "acquiring_bank= "+comboBox_acquiring_bank.SelectedIndex.ToString()+","+
-                    "do_not_prompt_marking_code="+ do_not_prompt_marking_code;
+                    "do_not_prompt_marking_code="+ do_not_prompt_marking_code+","+
+                    "constant_conversion_to_kilograms="+ txtB_constant_conversion_to_kilograms.Text.Trim();
 
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 int resul_update = command.ExecuteNonQuery();
@@ -419,7 +430,8 @@ namespace Cash8
                         "variant_connect_fn,"+
                         "fn_ipaddr,"+
                         "acquiring_bank,"+
-                        "do_not_prompt_marking_code) VALUES(" +
+                        "do_not_prompt_marking_code,"+
+                        "constant_conversion_to_kilograms) VALUES(" +
                         cash_desk_number.Text + ",'" +
                         nick_shop.Text + "'," +
                         //get_use_debug() + ",'" +
@@ -446,7 +458,8 @@ namespace Cash8
                         variant_connect_fn+",'"+
                         fn_ipaddr+"',"+
                         comboBox_acquiring_bank.SelectedIndex.ToString()+","+
-                        do_not_prompt_marking_code + ")";
+                        do_not_prompt_marking_code +","+
+                        txtB_constant_conversion_to_kilograms.Text.Trim()+")";
 
                     command = new NpgsqlCommand(query, conn);
                     command.ExecuteNonQuery();

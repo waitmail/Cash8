@@ -571,7 +571,7 @@ namespace Cash8
                             string mark = lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'");
 
                             //bool result_check_mark = check_marking_code(mark, check.numdoc.ToString(), ref check.cdn_markers_result_check);
-                            if (!check_marking_code(mark, check.numdoc.ToString(), ref check.cdn_markers_result_check))
+                            if (!check_marking_code(mark, check.numdoc.ToString(), ref check.cdn_markers_result_check,check.check_type.SelectedIndex))
                             {
                                 error = true;
                             }
@@ -783,8 +783,15 @@ namespace Cash8
                         //string mark = Convert.ToBase64String(textAsBytes);
                         string mark = lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'");
                         fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE, mark);
-                        fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, AtolConstants.LIBFPTR_MES_PIECE_SOLD);
                         fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_TYPE, AtolConstants.LIBFPTR_MCT12_AUTO);
+                        if (check.check_type.SelectedIndex == 0)
+                        {
+                            fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, AtolConstants.LIBFPTR_MES_PIECE_SOLD);
+                        }
+                        else if (check.check_type.SelectedIndex == 1)
+                        {
+                            fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, AtolConstants.LIBFPTR_MES_PIECE_RETURN);
+                        }                        
                         uint result_check = 0;
                         if (check.cdn_markers_result_check.ContainsKey(mark))
                         {
@@ -1091,7 +1098,7 @@ namespace Cash8
                             //byte[] textAsBytes = System.Text.Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'"));
                             //string mark = Convert.ToBase64String(textAsBytes);
                             string mark = lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'");
-                            bool result_check_mark = check_marking_code(mark, check.numdoc.ToString(), ref check.cdn_markers_result_check);
+                            bool result_check_mark = check_marking_code(mark, check.numdoc.ToString(), ref check.cdn_markers_result_check,check.check_type.SelectedIndex);
                             if (!result_check_mark)
                             {
                                 error = true;
@@ -1267,10 +1274,18 @@ namespace Cash8
                         //string marker_code = lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'");
                         //byte[] textAsBytes = System.Text.Encoding.Default.GetBytes(marker_code);
                         //string mark = Convert.ToBase64String(textAsBytes);
-                        string mark = lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'");
-                        fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_TYPE, AtolConstants.LIBFPTR_MCT12_AUTO);
+                        string mark = lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'");                        
                         fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE, mark);
-                        fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, AtolConstants.LIBFPTR_MES_PIECE_SOLD);
+                        fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_TYPE, AtolConstants.LIBFPTR_MCT12_AUTO);
+                        //fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, AtolConstants.LIBFPTR_MES_PIECE_SOLD);
+                        if (check.check_type.SelectedIndex == 0)
+                        {
+                            fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, AtolConstants.LIBFPTR_MES_PIECE_SOLD);
+                        }
+                        else if (check.check_type.SelectedIndex == 1)
+                        {
+                            fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, AtolConstants.LIBFPTR_MES_PIECE_RETURN);
+                        }
                         uint result_check = 0;
                         if (check.cdn_markers_result_check.ContainsKey(mark))
                         {
@@ -1456,7 +1471,7 @@ namespace Cash8
         }
 
 
-        private void start_and_restart_beginMarkingCodeValidation(string mark)
+        private void start_and_restart_beginMarkingCodeValidation(string mark, int check_type)
         {
             IFptr fptr = MainStaticClass.FPTR;
 
@@ -1465,15 +1480,27 @@ namespace Cash8
                 fptr.open();
             }
 
-            //uint status = 2;
+            uint status = 2;
 
             // Запускаем проверку КМ
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_TYPE, AtolConstants.LIBFPTR_MCT12_AUTO);
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE, mark);
-            fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, AtolConstants.LIBFPTR_MES_PIECE_SOLD);
-            fptr.setParam(AtolConstants.LIBFPTR_PARAM_QUANTITY, 1.000);
-            fptr.setParam(AtolConstants.LIBFPTR_PARAM_MEASUREMENT_UNIT, AtolConstants.LIBFPTR_IU_PIECE);
+            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS,status);
+
+            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_QUANTITY, 1.000);
+            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_MEASUREMENT_UNIT, AtolConstants.LIBFPTR_IU_PIECE);
+
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_PROCESSING_MODE, 0);
+            if (check_type == 0)
+            {
+                fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, AtolConstants.LIBFPTR_MES_PIECE_SOLD);//LIBFPTR_MES_PIECE_SOLD
+            }
+            else if (check_type == 1)
+            {
+                fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, AtolConstants.LIBFPTR_MES_PIECE_RETURN);
+            }
+
+            
             //fptr.resetError();
             fptr.beginMarkingCodeValidation();
             if (fptr.errorCode() == 401)//процедура проверки кода уже запущена 
@@ -1483,9 +1510,10 @@ namespace Cash8
 
                 fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_TYPE, AtolConstants.LIBFPTR_MCT12_AUTO);
                 fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE, mark);
-                fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, AtolConstants.LIBFPTR_MES_PIECE_SOLD);
-                fptr.setParam(AtolConstants.LIBFPTR_PARAM_QUANTITY, 1.000);
-                fptr.setParam(AtolConstants.LIBFPTR_PARAM_MEASUREMENT_UNIT, AtolConstants.LIBFPTR_IU_PIECE);
+                //fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, AtolConstants.LIBFPTR_MES_PIECE_SOLD);
+                fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, status);
+                //fptr.setParam(AtolConstants.LIBFPTR_PARAM_QUANTITY, 1.000);
+                //fptr.setParam(AtolConstants.LIBFPTR_PARAM_MEASUREMENT_UNIT, AtolConstants.LIBFPTR_IU_PIECE);
                 fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_PROCESSING_MODE, 0);
 
                 fptr.beginMarkingCodeValidation();
@@ -1493,7 +1521,7 @@ namespace Cash8
         }
 
 
-        public bool check_marking_code(string mark,string num_doc, ref Dictionary<string, uint> cdn_markers_result_check)
+        public bool check_marking_code(string mark,string num_doc, ref Dictionary<string, uint> cdn_markers_result_check,int check_type)
         //public bool check_marking_code(string mark, string num_doc,Cash_check check)
         {
             bool result = true;
@@ -1536,7 +1564,7 @@ namespace Cash8
             //    fptr.beginMarkingCodeValidation();
             //}
 
-            start_and_restart_beginMarkingCodeValidation(mark);
+            start_and_restart_beginMarkingCodeValidation(mark, check_type);
 
             uint validationError = Convert.ToUInt16(fptr.errorCode());
             //fptr.resetError();

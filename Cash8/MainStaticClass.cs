@@ -610,6 +610,40 @@ namespace Cash8
             return weigt;
         }
 
+        private static double get_constant_conversion_to_kilograms()
+        {
+            double result = 0;
+
+            NpgsqlConnection conn = null;
+            NpgsqlCommand command = null;
+            conn = MainStaticClass.NpgsqlConn();
+            try
+            {
+                conn.Open();
+                string query = "SELECT constant_conversion_to_kilograms FROM constants";
+                command = new NpgsqlCommand(query, conn);
+                result = Convert.ToDouble(command.ExecuteScalar());
+            }
+            catch (NpgsqlException ex)
+            {
+                MessageBox.Show("Ошибка при чтении constant_conversion_to_kilograms" + ex.ToString());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ошибка при чтении constant_conversion_to_kilograms" + ex.ToString());
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+
+            return result;
+        }
+
         private static double TryGetWeight()
         {
             //error = false;
@@ -637,7 +671,16 @@ namespace Cash8
                     {
                         // используем BitConverter для выделения нужных байт из ответного сообщения
                         int b = BitConverter.ToInt32(buffer, 7);
-                        result = b / 10000.0; // Перевод в килограммы
+                        //result = b / 10000.0; // Перевод в килограммы
+                        double constant_conversion_to_kilograms = get_constant_conversion_to_kilograms();
+                        if (constant_conversion_to_kilograms == 0)
+                        {
+                            result = b / 10000.0; // Перевод в килограммы
+                        }
+                        else
+                        {
+                            result = b / constant_conversion_to_kilograms; // Перевод в килограммы
+                        }
                     }
                     //else
                     //{

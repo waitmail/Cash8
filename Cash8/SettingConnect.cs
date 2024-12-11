@@ -1101,6 +1101,7 @@ namespace Cash8
             queries.Add("ALTER TABLE public.cdn_log ADD COLUMN mark character varying(300) COLLATE pg_catalog.default;");            
             queries.Add("ALTER TABLE public.cdn_log ADD COLUMN status smallint NOT NULL DEFAULT 0;COMMENT ON COLUMN public.cdn_log.status IS '1 - Ответ от cdn 2 - Отладочная информация 3 - Ошибка при работе с CDN';");
             queries.Add("CREATE TABLE IF NOT EXISTS public.cdn_cash(host character varying(100) COLLATE pg_catalog.default,latensy bigint,date timestamp without time zone)WITH(OIDS = FALSE)TABLESPACE pg_default; ALTER TABLE public.cdn_cash OWNER to postgres;");
+            queries.Add("ALTER TABLE public.constants ADD COLUMN constant_conversion_to_kilograms integer NOT NULL DEFAULT 0;");
 
 
             foreach (string str in queries)

@@ -3296,7 +3296,7 @@ namespace Cash8
                                                 {
                                                     PrintingUsingLibraries printingUsingLibraries = new PrintingUsingLibraries();
                                                     //if (!printingUsingLibraries.check_marking_code(imc, this.numdoc.ToString(), ref this.cdn_markers_result_check))                                                    
-                                                    if (!printingUsingLibraries.check_marking_code(mark_str, this.numdoc.ToString(), ref this.cdn_markers_result_check))
+                                                    if (!printingUsingLibraries.check_marking_code(mark_str, this.numdoc.ToString(), ref this.cdn_markers_result_check,this.check_type.SelectedIndex))
                                                     {
                                                         error = true;
                                                     }
