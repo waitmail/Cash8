@@ -11,6 +11,7 @@ using System.Drawing.Printing;
 using Atol.Drivers10.Fptr;
 using AtolConstants = Atol.Drivers10.Fptr.Constants;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Cash8
 {
@@ -292,8 +293,36 @@ namespace Cash8
         }
 
 
+        private bool check_ip_addr()
+        {
+            bool result = true;
+
+            string pattern = @"^(\d{1,3}(\.\d{1,3}){3}:\d+)?$";
+            bool isValid = Regex.IsMatch(txtB_fn_ipaddr.Text, pattern) && !txtB_fn_ipaddr.Text.Contains(",");
+
+            if (checkBox_printing_using_libraries.Checked && comboBox_variant_connect_fn.SelectedIndex == 1)
+            {
+                // Если условие истинно, строка не должна быть пустой
+                isValid = isValid && !string.IsNullOrEmpty(txtB_fn_ipaddr.Text);
+            }
+
+            if (!isValid)
+            {
+                MessageBox.Show("Строка ип адрес:порт не соответствует формату!", "Проверка ввода ип адреса");
+                result = false;
+            }
+
+            return result;
+        }
+
+
+
         private void write_Click(object sender, EventArgs e)
         {
+            if (!check_ip_addr())
+            {
+                return;
+            }
             if (this.cash_desk_number.Text.Trim().Length == 0)
             {
                 MessageBox.Show("Не заполнен номер кассы");

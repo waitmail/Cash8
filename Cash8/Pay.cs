@@ -1915,6 +1915,7 @@ namespace Cash8
         private void button2_Click(object sender, EventArgs e)
         {            
             this.button_pay.Enabled = false;
+                       
             double cash_money = Math.Round(Convert.ToDouble(cash_sum.Text.Replace(".", ",")), 2);
             double non_cash_money = Math.Round(Convert.ToDouble(get_non_cash_sum(0)), 2);
             double sertificate_money = Math.Round(Convert.ToDouble(sertificates_sum.Text), 2);
