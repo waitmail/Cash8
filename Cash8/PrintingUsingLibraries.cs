@@ -552,7 +552,7 @@ namespace Cash8
             }
             if (MainStaticClass.GetDoNotPromptMarkingCode == 0)
             {
-                if (check.check_type.SelectedIndex == 1 ||  check.reopened)//для возвратов старая схема
+                if (check.check_type.SelectedIndex == 1 ||  check.reopened)//для возвратов и красных чеков старая схема
                 {
                     fptr.clearMarkingCodeValidationResult();
 
@@ -1001,9 +1001,9 @@ namespace Cash8
                         fptr.close();
                     }
                     return;
-                }              
+                }
 
-                if (check.check_type.SelectedIndex == 1 || check.reopened)//|| MainStaticClass.SystemTaxation == 3 ||  MainStaticClass.SystemTaxation == 5 //старый механизм работы с макрировкой, для возвратов так же пока старая схема
+                if (check.check_type.SelectedIndex == 1 || check.reopened)//для возвратов и красных чеков старая схема
                 {
                     fptr.clearMarkingCodeValidationResult();
                     check.cdn_markers_result_check.Clear();//если мы здесь предыдущие проверки очищаем

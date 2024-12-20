@@ -2155,205 +2155,205 @@ namespace Cash8
         /// по товарам
         /// </summary>
         /// <param name="sum"></param>
-        public void distribute(double sum, double total)
-        {
+        //public void distribute(double sum, double total)
+        //{
 
-            if (sum == 0)
-            {
-                return;
-            }
+        //    if (sum == 0)
+        //    {
+        //        return;
+        //    }
             
-            if (MainStaticClass.fractional_exists(listView1))
-            {
-                return;
-            }
+        //    if (MainStaticClass.fractional_exists(listView1))
+        //    {
+        //        return;
+        //    }
 
-            double part = sum / total;//как общая сумма относится к части
-            double part_on_string = 0;
+        //    double part = sum / total;//как общая сумма относится к части
+        //    double part_on_string = 0;
 
-            foreach (ListViewItem lvi in listView1.Items)
-            {
-                //MainStaticClass.write_event_in_log("Надо распределить " + part.ToString(), "0", "0");
-                //MessageBox.Show("Надо распределить " + part.ToString());
-                //if ((lvi.SubItems[7].Text.Trim() == "0") && (lvi.SubItems[8].Text.Trim() == "0") && (lvi.SubItems[9].Text == "0"))
-                if (Convert.ToDecimal(lvi.SubItems[4].Text.Replace(".", ",")) > 1)
-                //if (decimal.Parse(lvi.SubItems[3].Text.Replace(".",",")) > 1)
-                {
-                    if (its_certificate(lvi.SubItems[0].Text) == "1")//Сертификаты с копейками не работают
-                    {
-                        continue;
-                    }
+        //    foreach (ListViewItem lvi in listView1.Items)
+        //    {
+        //        //MainStaticClass.write_event_in_log("Надо распределить " + part.ToString(), "0", "0");
+        //        //MessageBox.Show("Надо распределить " + part.ToString());
+        //        //if ((lvi.SubItems[7].Text.Trim() == "0") && (lvi.SubItems[8].Text.Trim() == "0") && (lvi.SubItems[9].Text == "0"))
+        //        if (Convert.ToDecimal(lvi.SubItems[4].Text.Replace(".", ",")) > 1)
+        //        //if (decimal.Parse(lvi.SubItems[3].Text.Replace(".",",")) > 1)
+        //        {
+        //            if (its_certificate(lvi.SubItems[0].Text) == "1")//Сертификаты с копейками не работают
+        //            {
+        //                continue;
+        //            }
 
-                    //MessageBox.Show(" Умножаем " + lvi.SubItems[7].Text + " на " + part.ToString());
-                    //MainStaticClass.write_event_in_log(" Умножаем " + lvi.SubItems[7].Text + " на " + part.ToString(), "0", "0");
-                    //MessageBox.Show(" Надо распределить по строке без округления " + (Convert.ToDouble(lvi.SubItems[7].Text) * Convert.ToDouble(part)).ToString());
-                    //MainStaticClass.write_event_in_log(" Надо распределить по строке без округления " + (Convert.ToDouble(lvi.SubItems[7].Text) * Convert.ToDouble(part)).ToString(), "0", "0");
-                    part_on_string = Math.Round(Convert.ToDouble(lvi.SubItems[7].Text) * part, 2,MidpointRounding.ToEven);                    
-                    //MainStaticClass.write_event_in_log(" что необходимо распределить в цикле part_on_string" + part_on_string.ToString(), "0","0");
-                    //MessageBox.Show("Надо распределить по строке " + part_on_string.ToString());
+        //            //MessageBox.Show(" Умножаем " + lvi.SubItems[7].Text + " на " + part.ToString());
+        //            //MainStaticClass.write_event_in_log(" Умножаем " + lvi.SubItems[7].Text + " на " + part.ToString(), "0", "0");
+        //            //MessageBox.Show(" Надо распределить по строке без округления " + (Convert.ToDouble(lvi.SubItems[7].Text) * Convert.ToDouble(part)).ToString());
+        //            //MainStaticClass.write_event_in_log(" Надо распределить по строке без округления " + (Convert.ToDouble(lvi.SubItems[7].Text) * Convert.ToDouble(part)).ToString(), "0", "0");
+        //            part_on_string = Math.Round(Convert.ToDouble(lvi.SubItems[7].Text) * part, 2,MidpointRounding.ToEven);                    
+        //            //MainStaticClass.write_event_in_log(" что необходимо распределить в цикле part_on_string" + part_on_string.ToString(), "0","0");
+        //            //MessageBox.Show("Надо распределить по строке " + part_on_string.ToString());
                     
-                    if ((part_on_string > sum) || (sum == part_on_string + (Convert.ToDouble(1) / 100)))
-                    {
-                        part_on_string = sum;
-                    }
+        //            if ((part_on_string > sum) || (sum == part_on_string + (Convert.ToDouble(1) / 100)))
+        //            {
+        //                part_on_string = sum;
+        //            }
 
-                    //MessageBox.Show("Распределяемое по строке " + part_on_string.ToString());
+        //            //MessageBox.Show("Распределяемое по строке " + part_on_string.ToString());
 
-                    if ((Convert.ToDouble(lvi.SubItems[7].Text) > part_on_string) && (Convert.ToDecimal(lvi.SubItems[7].Text) > 1))
-                    {
-                        //получаем новую цену соскидкой
-                        lvi.SubItems[5].Text = (Math.Round((Convert.ToDouble(lvi.SubItems[7].Text) - part_on_string) / Convert.ToDouble(Convert.ToDouble(lvi.SubItems[3].Text)), 2)).ToString();
-                        //Запоминаем старую сумму со скидкой
-                        double sum_on_string = Convert.ToDouble(lvi.SubItems[7].Text);
-                        //MessageBox.Show(" Старая сумма со скидкой " + sum_on_string.ToString());
-                        //получаем новую сумму со скидкой
-                        lvi.SubItems[7].Text = Math.Round(Convert.ToDouble(lvi.SubItems[5].Text) * Convert.ToDouble(lvi.SubItems[3].Text),2,MidpointRounding.ToEven).ToString();
-                        //MessageBox.Show(" Новая сумма со скидкой " + lvi.SubItems[7].Text.ToString());
-                        //Получаем разницу между старой суммойц со скидкой и новой
-                        double difference = Math.Round(sum_on_string - Convert.ToDouble(lvi.SubItems[7].Text),2,MidpointRounding.ToEven);
-                        //MessageBox.Show(" Остаток " + difference.ToString());
+        //            if ((Convert.ToDouble(lvi.SubItems[7].Text) > part_on_string) && (Convert.ToDecimal(lvi.SubItems[7].Text) > 1))
+        //            {
+        //                //получаем новую цену соскидкой
+        //                lvi.SubItems[5].Text = (Math.Round((Convert.ToDouble(lvi.SubItems[7].Text) - part_on_string) / Convert.ToDouble(Convert.ToDouble(lvi.SubItems[3].Text)), 2)).ToString();
+        //                //Запоминаем старую сумму со скидкой
+        //                double sum_on_string = Convert.ToDouble(lvi.SubItems[7].Text);
+        //                //MessageBox.Show(" Старая сумма со скидкой " + sum_on_string.ToString());
+        //                //получаем новую сумму со скидкой
+        //                lvi.SubItems[7].Text = Math.Round(Convert.ToDouble(lvi.SubItems[5].Text) * Convert.ToDouble(lvi.SubItems[3].Text),2,MidpointRounding.ToEven).ToString();
+        //                //MessageBox.Show(" Новая сумма со скидкой " + lvi.SubItems[7].Text.ToString());
+        //                //Получаем разницу между старой суммойц со скидкой и новой
+        //                double difference = Math.Round(sum_on_string - Convert.ToDouble(lvi.SubItems[7].Text),2,MidpointRounding.ToEven);
+        //                //MessageBox.Show(" Остаток " + difference.ToString());
 
-                        ////////////////////////////////////////////////
-                        //if (difference - part_on_string > 0)
-                        //{
-                        //    lvi.SubItems[7].Text = Math.Round(Convert.ToDouble(lvi.SubItems[5].Text) * Convert.ToDouble(lvi.SubItems[3].Text), 2, MidpointRounding.AwayFromZero).ToString();
-                        //}
-                        ////////////////////////////////////////////////
+        //                ////////////////////////////////////////////////
+        //                //if (difference - part_on_string > 0)
+        //                //{
+        //                //    lvi.SubItems[7].Text = Math.Round(Convert.ToDouble(lvi.SubItems[5].Text) * Convert.ToDouble(lvi.SubItems[3].Text), 2, MidpointRounding.AwayFromZero).ToString();
+        //                //}
+        //                ////////////////////////////////////////////////
 
-                        //difference = Math.Round(sum_on_string - Convert.ToDouble(lvi.SubItems[7].Text), 2, MidpointRounding.ToEven);
+        //                //difference = Math.Round(sum_on_string - Convert.ToDouble(lvi.SubItems[7].Text), 2, MidpointRounding.ToEven);
 
-                        //lvi.SubItems[6].Text = (Convert.ToDecimal(lvi.SubItems[6].Text) - part_on_string).ToString();
-                        if (difference == part_on_string)
-                        {
-                            sum = Math.Round(sum - part_on_string, 2, MidpointRounding.ToEven);
-                        }
-                        else
-                        {
-                            //if (sum >= difference)
-                            //{
-                            sum = Math.Round(sum - difference, 2, MidpointRounding.ToEven);
-                            //}
-                            //else
-                            //{
-                            //    sum = Math.Round(difference - sum, 2, MidpointRounding.ToEven);
-                            //}
-                        }
-                    }
-                    else
-                    {
-                        //sum = sum - part_on_string;//вычитаем из общей суммы распределения , то что распределилось по строке
-                        //if (Convert.ToDecimal(lvi.SubItems[6].Text) > part_on_string)//если в строке сумма больше распределения то вычитаем ее
-                        //{
-                        //    lvi.SubItems[6].Text = (Convert.ToDecimal(lvi.SubItems[6].Text) - part_on_string).ToString();
-                        //    part_on_string = 0;
-                        //}
-                        //else
-                        //{
-                        //    //lvi.SubItems[6].Text = (Convert.ToDecimal(1) / 100).ToString();
-                        //    part_on_string = part_on_string + (Convert.ToDecimal(1) / 100) - Convert.ToDecimal(lvi.SubItems[6].Text);
-                        //    sum += part_on_string;
-                        //}
-                    }
-                }
-                if (sum == 0)//уже все распределили
-                {
-                    break;
-                }
-            }
+        //                //lvi.SubItems[6].Text = (Convert.ToDecimal(lvi.SubItems[6].Text) - part_on_string).ToString();
+        //                if (difference == part_on_string)
+        //                {
+        //                    sum = Math.Round(sum - part_on_string, 2, MidpointRounding.ToEven);
+        //                }
+        //                else
+        //                {
+        //                    //if (sum >= difference)
+        //                    //{
+        //                    sum = Math.Round(sum - difference, 2, MidpointRounding.ToEven);
+        //                    //}
+        //                    //else
+        //                    //{
+        //                    //    sum = Math.Round(difference - sum, 2, MidpointRounding.ToEven);
+        //                    //}
+        //                }
+        //            }
+        //            else
+        //            {
+        //                //sum = sum - part_on_string;//вычитаем из общей суммы распределения , то что распределилось по строке
+        //                //if (Convert.ToDecimal(lvi.SubItems[6].Text) > part_on_string)//если в строке сумма больше распределения то вычитаем ее
+        //                //{
+        //                //    lvi.SubItems[6].Text = (Convert.ToDecimal(lvi.SubItems[6].Text) - part_on_string).ToString();
+        //                //    part_on_string = 0;
+        //                //}
+        //                //else
+        //                //{
+        //                //    //lvi.SubItems[6].Text = (Convert.ToDecimal(1) / 100).ToString();
+        //                //    part_on_string = part_on_string + (Convert.ToDecimal(1) / 100) - Convert.ToDecimal(lvi.SubItems[6].Text);
+        //                //    sum += part_on_string;
+        //                //}
+        //            }
+        //        }
+        //        if (sum == 0)//уже все распределили
+        //        {
+        //            break;
+        //        }
+        //    }
 
-            if (sum != 0)//Снова цикл
-            {
-                //MessageBox.Show("Новый цикл  Остаток " + sum.ToString());
+        //    if (sum != 0)//Снова цикл
+        //    {
+        //        //MessageBox.Show("Новый цикл  Остаток " + sum.ToString());
 
-                //if (sum < 0)
-                //{
-                //    sum = sum * -1;
-                //}
+        //        //if (sum < 0)
+        //        //{
+        //        //    sum = sum * -1;
+        //        //}
 
-                foreach (ListViewItem lvi in listView1.Items)
-                {
-                    //                 if //(Convert.ToDecimal(lvi.SubItems[6].Text) > Convert.ToDecimal(1) / 100)
-                    //                   (Convert.ToDecimal(lvi.SubItems[3].Text)>1)
-                    //if (Convert.ToDecimal(lvi.SubItems[4].Text.Replace(".", ",")) > 1)
-                    if (its_certificate(lvi.SubItems[0].Text) == "1")//Сертификаты с копейками не работают
-                    {
-                        continue;
-                    }
-                    if (Convert.ToDecimal(lvi.SubItems[7].Text.Replace(".", ",")) > 1)
-                    {
-                        if (Convert.ToDouble(lvi.SubItems[3].Text) == 1)
-                        {
-                            lvi.SubItems[5].Text = (Convert.ToDouble(lvi.SubItems[7].Text) - sum).ToString();
-                            lvi.SubItems[6].Text = (Convert.ToDouble(lvi.SubItems[4].Text) * Convert.ToDouble(lvi.SubItems[3].Text)).ToString();
-                            lvi.SubItems[7].Text = (Convert.ToDouble(lvi.SubItems[5].Text) * Convert.ToDouble(lvi.SubItems[3].Text)).ToString();
-                            sum = 0;
-                        }
-                        else if ((Convert.ToDecimal(lvi.SubItems[3].Text) > 1) && (Convert.ToDecimal(lvi.SubItems[3].Text) == (int)Convert.ToDecimal(lvi.SubItems[3].Text)))
-                        {
-                            lvi.SubItems[3].Text = (Convert.ToDouble(lvi.SubItems[3].Text) - 1).ToString();
-                            lvi.SubItems[6].Text = (Convert.ToDouble(lvi.SubItems[4].Text) * Convert.ToDouble(lvi.SubItems[3].Text)).ToString();
-                            lvi.SubItems[7].Text = (Convert.ToDouble(lvi.SubItems[5].Text) * Convert.ToDouble(lvi.SubItems[3].Text)).ToString();
-                            //уменьшаем кол-во на единицу , пересчитываем сумму 
+        //        foreach (ListViewItem lvi in listView1.Items)
+        //        {
+        //            //                 if //(Convert.ToDecimal(lvi.SubItems[6].Text) > Convert.ToDecimal(1) / 100)
+        //            //                   (Convert.ToDecimal(lvi.SubItems[3].Text)>1)
+        //            //if (Convert.ToDecimal(lvi.SubItems[4].Text.Replace(".", ",")) > 1)
+        //            if (its_certificate(lvi.SubItems[0].Text) == "1")//Сертификаты с копейками не работают
+        //            {
+        //                continue;
+        //            }
+        //            if (Convert.ToDecimal(lvi.SubItems[7].Text.Replace(".", ",")) > 1)
+        //            {
+        //                if (Convert.ToDouble(lvi.SubItems[3].Text) == 1)
+        //                {
+        //                    lvi.SubItems[5].Text = (Convert.ToDouble(lvi.SubItems[7].Text) - sum).ToString();
+        //                    lvi.SubItems[6].Text = (Convert.ToDouble(lvi.SubItems[4].Text) * Convert.ToDouble(lvi.SubItems[3].Text)).ToString();
+        //                    lvi.SubItems[7].Text = (Convert.ToDouble(lvi.SubItems[5].Text) * Convert.ToDouble(lvi.SubItems[3].Text)).ToString();
+        //                    sum = 0;
+        //                }
+        //                else if ((Convert.ToDecimal(lvi.SubItems[3].Text) > 1) && (Convert.ToDecimal(lvi.SubItems[3].Text) == (int)Convert.ToDecimal(lvi.SubItems[3].Text)))
+        //                {
+        //                    lvi.SubItems[3].Text = (Convert.ToDouble(lvi.SubItems[3].Text) - 1).ToString();
+        //                    lvi.SubItems[6].Text = (Convert.ToDouble(lvi.SubItems[4].Text) * Convert.ToDouble(lvi.SubItems[3].Text)).ToString();
+        //                    lvi.SubItems[7].Text = (Convert.ToDouble(lvi.SubItems[5].Text) * Convert.ToDouble(lvi.SubItems[3].Text)).ToString();
+        //                    //уменьшаем кол-во на единицу , пересчитываем сумму 
 
-                            //затем добавляем новый элемент
-                            ListViewItem lvi2 = new ListViewItem(lvi.SubItems[0].Text);
-                            lvi2.Tag = lvi.SubItems[0].Text;
-                            lvi2.SubItems.Add(lvi.SubItems[1].Text);
-                            lvi2.SubItems.Add(lvi.SubItems[2].Text);
-                            //lvi2.SubItems.Add(lvi.SubItems[3].Text);
-                            lvi2.SubItems[2].Tag = lvi.SubItems[2].Tag;
-                            lvi2.SubItems.Add("1");
-                            lvi2.SubItems.Add(lvi.SubItems[4].Text);
-                            lvi2.SubItems.Add((Convert.ToDouble(lvi.SubItems[5].Text) - sum).ToString());
-                            lvi2.SubItems.Add((Convert.ToDouble(lvi2.SubItems[4].Text) * Convert.ToDouble(lvi2.SubItems[3].Text)).ToString());
-                            lvi2.SubItems.Add((Convert.ToDouble(lvi2.SubItems[5].Text) * Convert.ToDouble(lvi2.SubItems[3].Text)).ToString());
-                            lvi2.SubItems.Add(lvi.SubItems[8].Text);
-                            lvi2.SubItems.Add(lvi.SubItems[9].Text);
-                            lvi2.SubItems.Add(lvi.SubItems[10].Text);
-                            //*****************************************************************************
-                            lvi2.SubItems.Add("0");
-                            lvi2.SubItems.Add("0");
-                            lvi2.SubItems.Add("0");
-                            lvi2.SubItems.Add("0");
-                            //*****************************************************************************
-                            listView1.Items.Add(lvi2);
-                            sum = 0;
-                        }
-                        //else if (Convert.ToDouble(lvi.SubItems[3].Text) < 1)
-                        //{
-                        //    //lvi.SubItems[5].Text = (Math.Round(Convert.ToDouble(lvi.SubItems[7].Text) / Convert.ToDouble(lvi.SubItems[3].Text),2,MidpointRounding.ToEven) - sum).ToString();
-                        //    //lvi.SubItems[6].Text = (Convert.ToDouble(lvi.SubItems[4].Text) * Convert.ToDouble(lvi.SubItems[3].Text)).ToString();
-                        //    //lvi.SubItems[7].Text = (Convert.ToDouble(lvi.SubItems[5].Text) * Convert.ToDouble(lvi.SubItems[3].Text)).ToString();
-                        //    lvi.SubItems[7].Text = (Convert.ToDouble(lvi.SubItems[7].Text) - sum).ToString();
-                        //    sum = 0;
-                        //}
-                        if (sum == 0)//уже все распределили
-                        {
-                            break;
-                        }
-                    }
-                }
-            }
-            //else
-            //{
-            //    MessageBox.Show("Все распределилосьс первого раза");
-            //}
-            if (sum != 0)//Снова цикл
-            {
-                MessageBox.Show("Сообщите в ИТ одел !!! \r\n Копейки не распределились");
-            }
-            //MessageBox.Show("Состояние после распределения");
-            //foreach (ListViewItem lvi in listView1.Items)
-            //{
-            //    MessageBox.Show(lvi.SubItems[0].Text + "   " + lvi.SubItems[7].Text);
+        //                    //затем добавляем новый элемент
+        //                    ListViewItem lvi2 = new ListViewItem(lvi.SubItems[0].Text);
+        //                    lvi2.Tag = lvi.SubItems[0].Text;
+        //                    lvi2.SubItems.Add(lvi.SubItems[1].Text);
+        //                    lvi2.SubItems.Add(lvi.SubItems[2].Text);
+        //                    //lvi2.SubItems.Add(lvi.SubItems[3].Text);
+        //                    lvi2.SubItems[2].Tag = lvi.SubItems[2].Tag;
+        //                    lvi2.SubItems.Add("1");
+        //                    lvi2.SubItems.Add(lvi.SubItems[4].Text);
+        //                    lvi2.SubItems.Add((Convert.ToDouble(lvi.SubItems[5].Text) - sum).ToString());
+        //                    lvi2.SubItems.Add((Convert.ToDouble(lvi2.SubItems[4].Text) * Convert.ToDouble(lvi2.SubItems[3].Text)).ToString());
+        //                    lvi2.SubItems.Add((Convert.ToDouble(lvi2.SubItems[5].Text) * Convert.ToDouble(lvi2.SubItems[3].Text)).ToString());
+        //                    lvi2.SubItems.Add(lvi.SubItems[8].Text);
+        //                    lvi2.SubItems.Add(lvi.SubItems[9].Text);
+        //                    lvi2.SubItems.Add(lvi.SubItems[10].Text);
+        //                    //*****************************************************************************
+        //                    lvi2.SubItems.Add("0");
+        //                    lvi2.SubItems.Add("0");
+        //                    lvi2.SubItems.Add("0");
+        //                    lvi2.SubItems.Add("0");
+        //                    //*****************************************************************************
+        //                    listView1.Items.Add(lvi2);
+        //                    sum = 0;
+        //                }
+        //                //else if (Convert.ToDouble(lvi.SubItems[3].Text) < 1)
+        //                //{
+        //                //    //lvi.SubItems[5].Text = (Math.Round(Convert.ToDouble(lvi.SubItems[7].Text) / Convert.ToDouble(lvi.SubItems[3].Text),2,MidpointRounding.ToEven) - sum).ToString();
+        //                //    //lvi.SubItems[6].Text = (Convert.ToDouble(lvi.SubItems[4].Text) * Convert.ToDouble(lvi.SubItems[3].Text)).ToString();
+        //                //    //lvi.SubItems[7].Text = (Convert.ToDouble(lvi.SubItems[5].Text) * Convert.ToDouble(lvi.SubItems[3].Text)).ToString();
+        //                //    lvi.SubItems[7].Text = (Convert.ToDouble(lvi.SubItems[7].Text) - sum).ToString();
+        //                //    sum = 0;
+        //                //}
+        //                if (sum == 0)//уже все распределили
+        //                {
+        //                    break;
+        //                }
+        //            }
+        //        }
+        //    }
+        //    //else
+        //    //{
+        //    //    MessageBox.Show("Все распределилосьс первого раза");
+        //    //}
+        //    if (sum != 0)//Снова цикл
+        //    {
+        //        MessageBox.Show("Сообщите в ИТ одел !!! \r\n Копейки не распределились");
+        //    }
+        //    //MessageBox.Show("Состояние после распределения");
+        //    //foreach (ListViewItem lvi in listView1.Items)
+        //    //{
+        //    //    MessageBox.Show(lvi.SubItems[0].Text + "   " + lvi.SubItems[7].Text);
 
-            //    //if (Convert.ToDecimal(lvi.SubItems[7].Text) < 0)
-            //    //{
-            //    //    less_than_zero = true;
-            //    //    break;
-            //    //}
-            //}
-        }
+        //    //    //if (Convert.ToDecimal(lvi.SubItems[7].Text) < 0)
+        //    //    //{
+        //    //    //    less_than_zero = true;
+        //    //    //    break;
+        //    //    //}
+        //    //}
+        //}
 
 
         public Double calculation_of_the_discount_of_the_document()
@@ -8344,8 +8344,8 @@ namespace Cash8
 
                         if (MainStaticClass.PrintingUsingLibraries == 0)
                         {
-                            this.fiscall_print_pay_2_3(pay, 0, this.guid);
                             this.fiscall_print_pay_2_3(pay, 1, this.guid1);
+                            this.fiscall_print_pay_2_3(pay, 0, this.guid);                            
                         }
                         else
                         {
@@ -13788,10 +13788,10 @@ namespace Cash8
                 //{
 
                 pay_form.pay_sum.Text = calculation_of_the_sum_of_the_document().ToString("F", System.Globalization.CultureInfo.CurrentCulture);
-                    Double total = calculation_of_the_sum_of_the_document();
-                    string kop = ((int)((total - (int)total) * 100)).ToString();
-                    kop = (kop.Length == 2 ? kop : "0" + kop);
-                    pay_form.set_kop_on_non_cash_sum_kop(kop);                
+                    //Double total = calculation_of_the_sum_of_the_document();
+                    //string kop = ((int)((total - (int)total) * 100)).ToString();
+                    //kop = (kop.Length == 2 ? kop : "0" + kop);
+                    //pay_form.set_kop_on_non_cash_sum_kop(kop);                
                 write_new_document("0", calculation_of_the_sum_of_the_document().ToString(), "0", "0", false, "0", "0", "0", "0");//нужно для того чтобы в окне оплаты взять сумму из БД
             }
             else//Это возврат

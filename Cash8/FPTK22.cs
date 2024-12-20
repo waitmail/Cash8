@@ -63,6 +63,7 @@ namespace Cash8
             {
                 get_summ_in_cashe.Enabled = false;
                 x_report.Enabled = false;
+                z_report.Enabled = false;
             }
 
             if ((MainStaticClass.IpAddressAcquiringTerminal.Trim() != "") && (MainStaticClass.IdAcquirerTerminal.Trim() != ""))

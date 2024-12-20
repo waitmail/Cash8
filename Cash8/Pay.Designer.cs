@@ -237,7 +237,7 @@
             this.non_cash_sum_kop.Size = new System.Drawing.Size(54, 56);
             this.non_cash_sum_kop.TabIndex = 18;
             this.non_cash_sum_kop.Text = "0";
-            this.non_cash_sum_kop.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.non_cash_sum_kop.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;            
             // 
             // non_cash_sum
             // 

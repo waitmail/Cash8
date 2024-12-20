@@ -87,19 +87,23 @@ namespace Cash8
 
         void non_cash_sum_kop_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema ==3) || (MainStaticClass.GetWorkSchema == 4))
+            //if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema ==3) || (MainStaticClass.GetWorkSchema == 4))
+            //{
+            //    e.Handled = true;
+            //}
+            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != (char)Keys.Back && e.KeyChar != (char)Keys.Delete)
             {
                 e.Handled = true;
             }
         }
 
-        public void set_kop_on_non_cash_sum_kop(string kop)
-        {
-            if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema ==3) || (MainStaticClass.GetWorkSchema == 4))
-            {
-                non_cash_sum_kop.Text = kop;
-            }
-        }
+        //public void set_kop_on_non_cash_sum_kop(string kop)
+        //{
+        //    if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema ==3) || (MainStaticClass.GetWorkSchema == 4))
+        //    {
+        //        non_cash_sum_kop.Text = kop;
+        //    }
+        //}
 
         private void non_cash_KeyUp(object sender, KeyEventArgs e)
         {
@@ -569,280 +573,417 @@ namespace Cash8
         {
             return System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator.ToString();
         }
-        
+
         /// <summary>
         /// Если вариант 0 тогда считаем просто сумму в независимости от того есть ли целая часть 
         /// иначе считаем сумму только в том случае если есть целая часть иначе ноль
         /// </summary>
         /// <param name="variant"></param>
         /// <returns></returns>
-        private double get_non_cash_sum(int variant)
+        //private double get_non_cash_sum(int variant)
+        //{
+        //    double result = 0;
+
+        //    if (variant == 0)
+        //    {
+        //        if (!MainStaticClass.fractional_exists(cc.listView1))
+        //        {
+        //            result += double.Parse(non_cash_sum.Text) + double.Parse(non_cash_sum_kop.Text) / 100;
+        //        }
+        //        else
+        //        {
+        //            if (double.Parse(non_cash_sum.Text) == 0)
+        //            {
+        //                result += 0;
+        //            }
+        //            else
+        //            {
+        //                result += double.Parse(non_cash_sum.Text) + double.Parse(non_cash_sum_kop.Text) / 100;
+        //            }
+        //        }                
+        //    }
+        //    else
+        //    {
+        //        if (double.Parse(non_cash_sum.Text) != 0)
+        //        {
+        //            result += double.Parse(non_cash_sum.Text) + double.Parse(non_cash_sum_kop.Text) / 100;
+        //        }
+        //    }
+
+        //    return result;
+        //}
+
+        private double get_non_cash_sum()
         {
             double result = 0;
 
-            if (variant == 0)
-            {
-                if (!MainStaticClass.fractional_exists(cc.listView1))
-                {
-                    result += double.Parse(non_cash_sum.Text) + double.Parse(non_cash_sum_kop.Text) / 100;
-                }
-                else
-                {
-                    if (double.Parse(non_cash_sum.Text) == 0)
-                    {
-                        result += 0;
-                    }
-                    else
-                    {
-                        result += double.Parse(non_cash_sum.Text) + double.Parse(non_cash_sum_kop.Text) / 100;
-                    }
-                }                
-            }
-            else
-            {
-                if (double.Parse(non_cash_sum.Text) != 0)
-                {
-                    result += double.Parse(non_cash_sum.Text) + double.Parse(non_cash_sum_kop.Text) / 100;
-                }
-            }
-           
+            result += double.Parse(non_cash_sum.Text) + double.Parse(non_cash_sum_kop.Text.Trim().Length==0 ? "0" : non_cash_sum_kop.Text) / 100;           
+
             return result;
         }
 
+        //private void calculate()
+        //{
+        //    //MessageBox.Show(this.cash_sum.SelectionStart.ToString(), "Старт 1");
+        //    //int selection_start = this.cash_sum.SelectionStart;
+
+        //    try
+        //    {
+        //        //if (MainStaticClass.SelfServiceKiosk == 0)
+        //        //{
+        //        if (this.cash_sum.Text.Length == 0)
+        //        {
+        //            if (numberDecimalSeparator() == ".")
+        //            {
+        //                this.cash_sum.Text = "0";
+        //                this.non_cash_sum.Text = "0";
+        //                this.sertificates_sum.Text = "0";
+
+        //            }
+        //            else
+        //            {
+        //                //if (MainStaticClass.SelfServiceKiosk == 0)
+        //                //{                            
+        //                    this.non_cash_sum.Text = "0";                            
+        //                //}
+        //                this.sertificates_sum.Text = "0";
+        //                this.cash_sum.Text = "0";
+        //            }
+        //        }
+        //        //}
+
+        //        this.cash_sum.Text = Convert.ToDouble(this.cash_sum.Text).ToString("F", System.Globalization.CultureInfo.CurrentCulture);
+        //        //if (Convert.ToDecimal(pay_bonus_many.Text) == 0)//Если нет бонусов то проверить 
+        //        //{
+        //        //    decimal total = Convert.ToDecimal(pay_sum.Text);
+        //        //    string kop = ((int)((total - (int)total) * 100)).ToString();
+        //        //    kop = (kop.Length == 2 ? kop : "0" + kop);
+        //        //    set_kop_on_non_cash_sum_kop(kop);
+        //        //}
+
+        //        if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema ==3) || (MainStaticClass.GetWorkSchema == 4))
+        //        {
+
+        //            this.remainder.Text = Math.Round(
+        //                (double.Parse(cash_sum.Text) +
+        //                double.Parse(pay_bonus_many.Text) +
+        //                get_non_cash_sum() +
+        //                double.Parse(sertificates_sum.Text) - double.Parse(pay_sum.Text)), 2).ToString("F", System.Globalization.CultureInfo.CurrentCulture);
+        //        }
+        //        //else if (MainStaticClass.GetWorkSchema == 2)
+        //        //{
+        //        //    this.remainder.Text = (double.Parse(cash_sum.Text) +
+        //        //        double.Parse(pay_bonus_many.Text) +
+        //        //        get_non_cash_sum(0) +
+        //        //        double.Parse(sertificates_sum.Text) - double.Parse(pay_sum.Text)).ToString("F", System.Globalization.CultureInfo.CurrentCulture);
+        //        //}
+
+        //        if (Math.Round(double.Parse(cash_sum.Text.Replace(".", ",")) + double.Parse(non_cash_sum.Text) +
+        //            double.Parse(sertificates_sum.Text) + double.Parse(pay_bonus_many.Text) + Convert.ToDouble(double.Parse(non_cash_sum_kop.Text) / 100),2,MidpointRounding.ToEven) - double.Parse(pay_sum.Text.Replace(".", ",")) < 0)
+        //        {
+        //            this.button_pay.Enabled = false;
+        //        }
+        //        else
+        //        {
+        //            //Здесь еще должна быть проверка на оплату бонусами если клиент обозначен по номеру телефона
+        //            if (Convert.ToDecimal(pay_bonus_many.Text) > 0)
+        //            {
+        //                if (cc.client.Tag.ToString().Length == 11)
+        //                {
+        //                    if (code_it_is_confirmed)
+        //                    {
+        //                        this.button_pay.Enabled = true;
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    this.button_pay.Enabled = true;
+        //                }
+        //            }
+        //            else
+        //            {
+        //                this.button_pay.Enabled = true;
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(" calculate "+ex.Message);
+        //    }
+
+        //    //int start = cash_sum.SelectionStart;
+        //    //string _sum_ = cash_sum.Text;
+        //    //cash_sum.Text = "";
+        //    //cash_sum.Text = _sum_;
+        //    //cash_sum.SelectionStart = start;
+        //    cash_sum.Update();
+        //    //MessageBox.Show(this.cash_sum.SelectionStart.ToString(), "Старт 2");
+        //    //if (this.cash_sum.Text.Trim().Length-1 == selection_start)
+        //    //{
+        //    //    //this.cash_sum.SelectionStart += selection_start;
+        //    //    MessageBox.Show(this.cash_sum.Text.Trim().Length.ToString() + " " + selection_start.ToString());
+        //    //}
+        //    //this.cash_sum.SelectedText = "";
+        //}
+
         private void calculate()
         {
-
             try
             {
-                //if (MainStaticClass.SelfServiceKiosk == 0)
-                //{
                 if (this.cash_sum.Text.Length == 0)
                 {
-                    if (numberDecimalSeparator() == ".")
-                    {
-                        this.cash_sum.Text = "0";
-                        this.non_cash_sum.Text = "0";
-                        this.sertificates_sum.Text = "0";
-
-                    }
-                    else
-                    {
-                        //if (MainStaticClass.SelfServiceKiosk == 0)
-                        //{                            
-                            this.non_cash_sum.Text = "0";                            
-                        //}
-                        this.sertificates_sum.Text = "0";
-                        this.cash_sum.Text = "0";
-                    }
+                    this.cash_sum.Text = "0";
                 }
-                //}
 
                 this.cash_sum.Text = Convert.ToDouble(this.cash_sum.Text).ToString("F", System.Globalization.CultureInfo.CurrentCulture);
-                if (Convert.ToDecimal(pay_bonus_many.Text) == 0)//Если нет бонусов то проверить 
-                {
-                    decimal total = Convert.ToDecimal(pay_sum.Text);
-                    string kop = ((int)((total - (int)total) * 100)).ToString();
-                    kop = (kop.Length == 2 ? kop : "0" + kop);
-                    set_kop_on_non_cash_sum_kop(kop);
-                }
 
-                if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema ==3) || (MainStaticClass.GetWorkSchema == 4))
-                {
-
-                    this.remainder.Text = Math.Round(
-                        (double.Parse(cash_sum.Text) +
-                        double.Parse(pay_bonus_many.Text) +
-                        get_non_cash_sum(0) +
-                        double.Parse(sertificates_sum.Text) - double.Parse(pay_sum.Text)), 2).ToString("F", System.Globalization.CultureInfo.CurrentCulture);
-                }
-                else if (MainStaticClass.GetWorkSchema == 2)
-                {
-                    this.remainder.Text = (double.Parse(cash_sum.Text) +
-                        double.Parse(pay_bonus_many.Text) +
-                        get_non_cash_sum(0) +
-                        double.Parse(sertificates_sum.Text) - double.Parse(pay_sum.Text)).ToString("F", System.Globalization.CultureInfo.CurrentCulture);
-                }
+                this.remainder.Text = Math.Round(
+                (double.Parse(cash_sum.Text) +
+                double.Parse(pay_bonus_many.Text) +
+                get_non_cash_sum() +
+                double.Parse(sertificates_sum.Text) - double.Parse(pay_sum.Text)), 2).ToString("F", System.Globalization.CultureInfo.CurrentCulture);
 
                 if (Math.Round(double.Parse(cash_sum.Text.Replace(".", ",")) + double.Parse(non_cash_sum.Text) +
-                    double.Parse(sertificates_sum.Text) + double.Parse(pay_bonus_many.Text) + Convert.ToDouble(double.Parse(non_cash_sum_kop.Text) / 100),2,MidpointRounding.ToEven) - double.Parse(pay_sum.Text.Replace(".", ",")) < 0)
+                double.Parse(sertificates_sum.Text) + double.Parse(pay_bonus_many.Text) + 
+                Convert.ToDouble(double.Parse(non_cash_sum_kop.Text.Trim().Length==0 ? "0" : non_cash_sum_kop.Text) / 100), 2, MidpointRounding.ToEven) - double.Parse(pay_sum.Text.Replace(".", ",")) < 0)
                 {
                     this.button_pay.Enabled = false;
                 }
                 else
                 {
-                    //Здесь еще должна быть проверка на оплату бонусами если клиент обозначен по номеру телефона
-                    if (Convert.ToDecimal(pay_bonus_many.Text) > 0)
-                    {
-                        if (cc.client.Tag.ToString().Length == 11)
-                        {
-                            if (code_it_is_confirmed)
-                            {
-                                this.button_pay.Enabled = true;
-                            }
-                        }
-                        else
-                        {
-                            this.button_pay.Enabled = true;
-                        }
-                    }
-                    else
-                    {
-                        this.button_pay.Enabled = true;
-                    }
+                    this.button_pay.Enabled = true;
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(" calculate "+ex.Message);
+                MessageBox.Show("calculate " + ex.Message);
             }
 
-            int start = cash_sum.SelectionStart;
-            string _sum_ = cash_sum.Text;
-            cash_sum.Text = "";
-            cash_sum.Text = _sum_;
-            cash_sum.SelectionStart = start;
             cash_sum.Update();
-
         }
-        
+
         private void cash_sum_KeyUp(object sender, KeyEventArgs e)
         {
             try
             {
                 if (this.cash_sum.Text.Length == 0)
                 {
-                    if (numberDecimalSeparator() == ".")
-                    {
-                        if (MainStaticClass.get_currency() == "руб.")//зарпет на ввод запятой и точек можно только цифры или бекспейс
-                        {
-                            this.cash_sum.Text = "0";
-                        }
-                        else
-                        {
-                            this.cash_sum.Text = "0.00";
-                        }
-                    }
-                    else
-                    {
-                        if (MainStaticClass.get_currency() == "руб.")//зарпет на ввод запятой и точек можно только цифры или бекспейс
-                        {
-                            this.cash_sum.Text = "0";
-                        }
-                        else
-                        {
-                            this.cash_sum.Text = "0,00";
-                        }                       
-                    }
+                    this.cash_sum.Text = "0" + MainStaticClass.NumberDecimalSeparator() + "00";
                 }
-                calculate();
-                if (MainStaticClass.get_currency() == "руб.")
-                {
 
-                }
-                else
-                {
-                    if (curpos < 0)
-                    {
-                        cash_sum.SelectionStart = 0;
-                        curpos = 0;
-                        //MessageBox.Show("0");
-                    }
-                    else
-                    {
-                        cash_sum.SelectionStart = curpos;
-                        //MessageBox.Show("1");
-                    }
-                }
-			}
+                calculate();
+            }
             catch (Exception ex)
             {
-                MessageBox.Show(" cash_sum_KeyUp "+ex.Message);
+                MessageBox.Show("cash_sum_KeyUp " + ex.Message);
             }
-            int start = cash_sum.SelectionStart;
-            string _sum_ = cash_sum.Text;
-            cash_sum.Text = "";
-            cash_sum.Text = _sum_;
-            cash_sum.SelectionStart = start;
-            cash_sum.Update();
-            if (MainStaticClass.get_currency() == "руб.")
-            {
+        }
 
-            }
-            else
-            {
-                cash_sum.SelectionStart = curpos;
-            }
-        }      
-        
+
+        //private void cash_sum_KeyUp(object sender, KeyEventArgs e)
+        //{
+        //    try
+        //    {
+        //        if (this.cash_sum.Text.Length == 0)
+        //        {
+        //            if (numberDecimalSeparator() == ".")
+        //            {
+        //                //if (MainStaticClass.get_currency() == "руб.")//зарпет на ввод запятой и точек можно только цифры или бекспейс
+        //                //{
+        //                //    this.cash_sum.Text = "0";
+        //                //}
+        //                //else
+        //                //{
+        //                    this.cash_sum.Text = "0.00";
+        //                //}
+        //            }
+        //            else
+        //            {
+        //                //if (MainStaticClass.get_currency() == "руб.")//зарпет на ввод запятой и точек можно только цифры или бекспейс
+        //                //{
+        //                //    this.cash_sum.Text = "0";
+        //                //}
+        //                //else
+        //                //{
+        //                    this.cash_sum.Text = "0,00";
+        //                //}                       
+        //            }
+        //        }
+
+        //        //int selection_start = this.cash_sum.SelectionStart;
+        //        calculate();
+        //        //this.cash_sum.SelectionStart = selection_start;
+
+        //        //if (MainStaticClass.get_currency() == "руб.")
+        //        //{
+
+        //        //}
+        //        //else
+        //        //{
+        //        //    if (curpos < 0)
+        //        //    {
+        //        //        cash_sum.SelectionStart = 0;
+        //        //        curpos = 0;
+        //        //        //MessageBox.Show("0");
+        //        //    }
+        //        //    else
+        //        //    {
+        //        //        cash_sum.SelectionStart = curpos;
+        //        //        //MessageBox.Show("1");
+        //        //    }
+        //        //}
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(" cash_sum_KeyUp "+ex.Message);
+        //    }
+        //    //int start = cash_sum.SelectionStart;
+        //    //string _sum_ = cash_sum.Text;
+        //    //cash_sum.Text = "";
+        //    //cash_sum.Text = _sum_;
+        //    //cash_sum.SelectionStart = start;
+        //    //cash_sum.Update();
+        //    ////if (MainStaticClass.get_currency() == "руб.")
+        //    ////{
+
+        //    ////}
+        //    ////else
+        //    ////{
+        //    //    cash_sum.SelectionStart = curpos;
+        //    ////}
+        //}
+
+        //private void cash_sum_KeyPress(object sender, KeyPressEventArgs e)
+        //{
+
+        //    if ((Char.IsDigit(e.KeyChar)))
+        //    {
+        //        if (firs_input)
+        //        {
+        //            firs_input = false;
+        //            cash_sum.Text = e.KeyChar + cash_sum.Text.Substring(1, cash_sum.Text.Length - 1);
+        //            e.Handled = true;
+        //            cash_sum.SelectionStart = 1;
+        //            curpos = 1;
+        //        }
+        //    }
+
+        //    if (!(Char.IsDigit(e.KeyChar)) && (e.KeyChar != (char)Keys.Back))
+        //    {
+        //        e.Handled = true;
+        //    }                
+
+        //    if (!(Char.IsDigit(e.KeyChar)))
+        //    {
+        //        if ((e.KeyChar == '.') || (e.KeyChar == ','))
+        //        {
+
+        //            cash_sum.SelectionStart = cash_sum.Text.IndexOf(MainStaticClass.NumberDecimalSeparator()) + 1;
+        //            curpos = cash_sum.SelectionStart; e.Handled = true;
+        //        }
+
+        //        if (e.KeyChar != (char)Keys.Back)
+        //        {
+
+        //            e.Handled = true;
+        //        }
+        //    }           
+
+        //    if (e.Handled == false)
+        //    {
+        //        if (e.KeyChar != (char)Keys.Back)
+        //        {
+        //            curpos = cash_sum.SelectionStart;
+        //            curpos++;
+        //        }
+        //        else
+        //        {
+        //            if (cash_sum.SelectionStart != 0)
+        //            {
+        //                if (cash_sum.Text.Substring(cash_sum.SelectionStart - 1, 1) == ".")
+        //                {
+        //                    e.Handled = true;
+        //                    cash_sum.SelectionStart -= 1;
+        //                    curpos = cash_sum.SelectionStart;
+        //                }
+        //                else if ((cash_sum.SelectionStart == 2) && (!e.Handled))
+        //                {
+        //                    curpos = 1;
+        //                }
+        //                else
+        //                {
+        //                    curpos = cash_sum.SelectionStart - 1;
+        //                }
+        //            }
+
+        //        }
+        //    }
+
+        //    this.cash_sum.Update();
+        //}
+
         private void cash_sum_KeyPress(object sender, KeyPressEventArgs e)
         {
-           
-            if ((Char.IsDigit(e.KeyChar)))
+            if (Char.IsDigit(e.KeyChar))
             {
+                int selectionStart = cash_sum.SelectionStart;
                 if (firs_input)
                 {
                     firs_input = false;
-                    cash_sum.Text = e.KeyChar + cash_sum.Text.Substring(1, cash_sum.Text.Length - 1);
+                    cash_sum.Text = e.KeyChar + cash_sum.Text.Substring(1);
                     e.Handled = true;
                     cash_sum.SelectionStart = 1;
-                    curpos = 1;
-                }
-            }
-            if (MainStaticClass.get_currency() == "руб.")//зарпет на ввод запятой и точек можно только цифры или бекспейс
-            {
-                if (!(Char.IsDigit(e.KeyChar)) && (e.KeyChar != (char)Keys.Back))
-                {
-                    e.Handled = true;
-                }                
-            }
-            if (!(Char.IsDigit(e.KeyChar)))
-            {
-                if ((e.KeyChar == '.') || (e.KeyChar == ','))
-                {
-
-                    cash_sum.SelectionStart = cash_sum.Text.IndexOf(MainStaticClass.NumberDecimalSeparator()) + 1;
-                    curpos = cash_sum.SelectionStart; e.Handled = true;
-                }
-
-                if (e.KeyChar != (char)Keys.Back)
-                {
-
-                    e.Handled = true;
-                }
-            }           
-
-            if (e.Handled == false)
-            {
-                if (e.KeyChar != (char)Keys.Back)
-                {
-                    curpos = cash_sum.SelectionStart;
-                    curpos++;
                 }
                 else
                 {
-                    if (cash_sum.SelectionStart != 0)
-                    {
-                        if (cash_sum.Text.Substring(cash_sum.SelectionStart - 1, 1) == ".")
-                        {
-                            e.Handled = true;
-                            cash_sum.SelectionStart -= 1;
-                            curpos = cash_sum.SelectionStart;
-                        }
-                        else if ((cash_sum.SelectionStart == 2) && (!e.Handled))
-                        {
-                            curpos = 1;
-                        }
-                        else
-                        {
-                            curpos = cash_sum.SelectionStart - 1;
-                        }
-                    }
-
+                    cash_sum.Text = cash_sum.Text.Insert(selectionStart, e.KeyChar.ToString());
+                    cash_sum.SelectionStart = selectionStart + 1;
+                    e.Handled = true;
                 }
+            }
+            else if (e.KeyChar == '.' || e.KeyChar == ',')
+            {
+                if (!cash_sum.Text.Contains(MainStaticClass.NumberDecimalSeparator()))
+                {
+                    int selectionStart = cash_sum.SelectionStart;
+                    cash_sum.Text = cash_sum.Text.Insert(selectionStart, MainStaticClass.NumberDecimalSeparator());
+                    cash_sum.SelectionStart = selectionStart + 1;
+                    e.Handled = true;
+                }
+                else
+                {
+                    cash_sum.SelectionStart = cash_sum.Text.IndexOf(MainStaticClass.NumberDecimalSeparator()) + 1;
+                    e.Handled = true;
+                }
+            }
+            else if (e.KeyChar != (char)Keys.Back)
+            {
+                e.Handled = true;
+            }
+
+            // Ensure two digits after the decimal point
+            if (cash_sum.Text.Contains(MainStaticClass.NumberDecimalSeparator()))
+            {
+                int decimalIndex = cash_sum.Text.IndexOf(MainStaticClass.NumberDecimalSeparator());
+                if (cash_sum.Text.Length - decimalIndex - 1 < 2)
+                {
+                    cash_sum.Text = cash_sum.Text.Substring(0, decimalIndex + 1) + cash_sum.Text.Substring(decimalIndex + 1).PadRight(2, '0');
+                    cash_sum.SelectionStart = decimalIndex + 1;
+                }
+            }
+
+            // Correct cursor position if it moves to the start
+            if (cash_sum.SelectionStart == 0)
+            {
+                cash_sum.SelectionStart = cash_sum.Text.Length;
             }
 
             this.cash_sum.Update();
         }
+
+       
+
+
 
         private void Pay_Load(object sender, EventArgs e)
         {
@@ -853,7 +994,8 @@ namespace Cash8
             //}
             //else
             //{
-                this.cash_sum.Text = "";
+            this.cash_sum.Text = "";// cc.calculation_of_the_sum_of_the_document().ToString();
+            this.cash_sum.SelectionLength = 0;
             //}
             this.cash_sum.Focus();
             cash_sum.SelectionStart = 0;
@@ -865,6 +1007,7 @@ namespace Cash8
             this.Size = new System.Drawing.Size(SystemInformation.PrimaryMonitorSize.Width, SystemInformation.PrimaryMonitorSize.Height);
             this.pay_bonus_many.Text = "0";
             this.pay_bonus.Text = "0";
+            this.sertificates_sum.Text = "0";
             //this.non_cash_sum.Text = "0";
             //this.non_cash_sum_kop.Text = "0";
             //this.cash_sum.Text = "";
@@ -881,7 +1024,7 @@ namespace Cash8
 
             //if (MainStaticClass.SelfServiceKiosk == 0)//это не киоск самообслуживания )
             //{
-                this.non_cash_sum.Text = "0";
+            this.non_cash_sum.Text = "0";
                 this.non_cash_sum_kop.Text = "0";               
             //}
 
@@ -942,10 +1085,49 @@ namespace Cash8
             base.OnClosing(e);
             cc.Visible = true;
         }
-        
+
+
+        private void set_non_Cash_pay()
+        {
+            cash_sum.Text = "";
+            double sum_of_the_document = get_sum_sum_at_a_discount();
+            string sumString = sum_of_the_document.ToString("F2", System.Globalization.CultureInfo.InvariantCulture);
+            string[] parts = sumString.Split('.');
+
+            non_cash_sum.Text = parts[0];
+            non_cash_sum_kop.Text = parts.Length > 1 ? parts[1] : "00";
+        }
+
+        private void set_Cash_pay()
+        {
+            cash_sum.Text = "";
+
+            double sum_of_the_document = get_sum_sum_at_a_discount();
+            var culture = new System.Globalization.CultureInfo("ru-RU"); // Например, для русской культуры            
+            string sumString = sum_of_the_document.ToString("F2", culture);           
+
+            non_cash_sum.Text = "0";
+            non_cash_sum_kop.Text = "00";
+
+            cash_sum.Text = sumString;
+            cash_sum.Focus();
+        }
+
+
+
         protected override void OnKeyDown(KeyEventArgs e)
         {
             base.OnKeyDown(e);
+            if (e.KeyCode == Keys.R)
+            {
+                set_non_Cash_pay();
+            }
+
+            if (e.KeyCode == Keys.Y)
+            {
+                set_Cash_pay();
+            }
+
             if (e.KeyCode == Keys.F4 && e.Alt)
             {
                 e.Handled = true;
@@ -999,14 +1181,17 @@ namespace Cash8
             if (e.KeyCode == Keys.Delete)
             {
                 if (cash_sum.Focused)
-                {                 
-                    if (cash_sum.Text.Substring(cash_sum.SelectionStart, 1) == ".")
+                {
+                    if (cash_sum.Text.Trim().Length > 0)
                     {
-                        e.Handled = true;
-                    }
-                    else
-                    {
-                        curpos--;
+                        if (cash_sum.Text.Substring(cash_sum.SelectionStart, 1) == ".")
+                        {
+                            e.Handled = true;
+                        }
+                        else
+                        {
+                            curpos--;
+                        }
                     }
                 }
             }
@@ -1092,50 +1277,50 @@ namespace Cash8
                 //if (!MainStaticClass.get_use_debug())
                 //{                    
 
-                if (cc.client.Tag != null)
-                {
-                    //***********************************************   
-                    if ((MainStaticClass.GetWorkSchema == 1) || (MainStaticClass.GetWorkSchema == 3) || (MainStaticClass.GetWorkSchema == 4))
-                    {
-                        //if (Convert.ToDecimal(pay_bonus_many.Text) > 0)
-                        //{
-                        //    if (Convert.ToDecimal(non_cash_sum.Text) == 0)
-                        //    {
-                        //        cc.distribute(Convert.ToDouble(pay_bonus_many.Text) + (total - (int)total), total);//теперь бонусы 
-                        //    }
-                        //    else
-                        //    {
-                        //        cc.distribute(Convert.ToDouble(pay_bonus_many.Text), total);//теперь бонусы 
-                        //    }
-                        //}
-                        //else
-                        //{
+                //if (cc.client.Tag != null)
+                //{
+                //    //***********************************************   
+                //    if ((MainStaticClass.GetWorkSchema == 1) || (MainStaticClass.GetWorkSchema == 3) || (MainStaticClass.GetWorkSchema == 4))
+                //    {
+                //        //if (Convert.ToDecimal(pay_bonus_many.Text) > 0)
+                //        //{
+                //        //    if (Convert.ToDecimal(non_cash_sum.Text) == 0)
+                //        //    {
+                //        //        cc.distribute(Convert.ToDouble(pay_bonus_many.Text) + (total - (int)total), total);//теперь бонусы 
+                //        //    }
+                //        //    else
+                //        //    {
+                //        //        cc.distribute(Convert.ToDouble(pay_bonus_many.Text), total);//теперь бонусы 
+                //        //    }
+                //        //}
+                //        //else
+                //        //{
 
-                        if (Convert.ToDecimal(non_cash_sum.Text) == 0)
-                        {
-                            cc.distribute(Math.Round(total - (int)total, 2, MidpointRounding.ToEven), total);
-                        }
+                //        if (Convert.ToDecimal(non_cash_sum.Text) == 0)
+                //        {
+                //            cc.distribute(Math.Round(total - (int)total, 2, MidpointRounding.ToEven), total);
+                //        }
 
-                        //}
-                    }
-                    //else if (MainStaticClass.GetWorkSchema == 2)
-                    //{
-                    //    if (Convert.ToDecimal(pay_bonus_many.Text) > 0)
-                    //    {
-                    //        cc.distribute(Convert.ToDouble(pay_bonus_many.Text), total);//теперь бонусы 
-                    //    }                       
-                    //}
-                }
-                else
-                {
-                    if ((MainStaticClass.GetWorkSchema == 1) || (MainStaticClass.GetWorkSchema == 3) || (MainStaticClass.GetWorkSchema == 4))
-                    {
-                        if (Convert.ToDecimal(non_cash_sum.Text) == 0)
-                        {
-                            cc.distribute(Math.Round(total - (int)total, 2, MidpointRounding.ToEven), total);//распределение без бонусов , здесь нет клиента нет бонусов
-                        }
-                    }
-                }
+                //        //}
+                //    }
+                //    //else if (MainStaticClass.GetWorkSchema == 2)
+                //    //{
+                //    //    if (Convert.ToDecimal(pay_bonus_many.Text) > 0)
+                //    //    {
+                //    //        cc.distribute(Convert.ToDouble(pay_bonus_many.Text), total);//теперь бонусы 
+                //    //    }                       
+                //    //}
+                //}
+                //else
+                //{
+                //    if ((MainStaticClass.GetWorkSchema == 1) || (MainStaticClass.GetWorkSchema == 3) || (MainStaticClass.GetWorkSchema == 4))
+                //    {
+                //        if (Convert.ToDecimal(non_cash_sum.Text) == 0)
+                //        {
+                //            cc.distribute(Math.Round(total - (int)total, 2, MidpointRounding.ToEven), total);//распределение без бонусов , здесь нет клиента нет бонусов
+                //        }
+                //    }
+                //}
 
                 if (Convert.ToDecimal(pay_sum.Text) - (Convert.ToDecimal(cash_sum.Text) - Convert.ToDecimal(remainder.Text) + Convert.ToDecimal(sertificates_sum.Text) + Convert.ToDecimal(pay_bonus_many.Text) + Convert.ToDecimal(non_cash_sum.Text)) > 1)
                 {
@@ -1381,7 +1566,7 @@ namespace Cash8
                 //Получить сумму наличных
                 //если это возврат и если сумма безнала меньше 1 тогда копейки прибавить к наличным
                 string sum_cash_pay = (Convert.ToDecimal(cash_sum.Text) - Convert.ToDecimal(remainder.Text)).ToString().Replace(",", ".");
-                string non_sum_cash_pay = (get_non_cash_sum(1)).ToString().Replace(",", ".");
+                string non_sum_cash_pay = (get_non_cash_sum()).ToString().Replace(",", ".");
                 cc.print_to_button = 0;
                 //cc.payment_by_sbp = (checkBox_payment_by_sbp.CheckState == CheckState.Checked ? true : false);//Перенес выше в секцию РНКБ, здесь было до появления сбера
                 if (cc.it_is_paid(cash_sum.Text, cc.calculation_of_the_sum_of_the_document().ToString().Replace(",", "."), remainder.Text.Replace(",", "."),
@@ -1400,12 +1585,12 @@ namespace Cash8
             {
 
                 string sum_cash_pay = (Convert.ToDecimal(cash_sum.Text) - Convert.ToDecimal(remainder.Text)).ToString().Replace(",", ".");
-                string non_sum_cash_pay = (get_non_cash_sum(1)).ToString().Replace(",", ".");
+                string non_sum_cash_pay = (get_non_cash_sum()).ToString().Replace(",", ".");
                 if (cc.check_type.SelectedIndex == 1)
                 {
-                    if (get_non_cash_sum(1) < 1)
+                    if (get_non_cash_sum() < 1)
                     {
-                        sum_cash_pay = (Convert.ToDecimal(cash_sum.Text) - Convert.ToDecimal(remainder.Text) + Convert.ToDecimal(get_non_cash_sum(0))).ToString().Replace(",", ".");
+                        sum_cash_pay = (Convert.ToDecimal(cash_sum.Text) - Convert.ToDecimal(remainder.Text) + Convert.ToDecimal(get_non_cash_sum())).ToString().Replace(",", ".");
                         non_sum_cash_pay = "0";
                     }
                 }
@@ -1917,7 +2102,7 @@ namespace Cash8
             this.button_pay.Enabled = false;
                        
             double cash_money = Math.Round(Convert.ToDouble(cash_sum.Text.Replace(".", ",")), 2);
-            double non_cash_money = Math.Round(Convert.ToDouble(get_non_cash_sum(0)), 2);
+            double non_cash_money = Math.Round(Convert.ToDouble(get_non_cash_sum()), 2);
             double sertificate_money = Math.Round(Convert.ToDouble(sertificates_sum.Text), 2);
             double bonus_money = Math.Round(Convert.ToDouble(pay_bonus_many.Text.Replace(".", ",")), 2);
 
@@ -1936,7 +2121,7 @@ namespace Cash8
                 //MessageBox.Show(minus.ToString());
                 MessageBox.Show("Проверьте сумму внесенной оплаты");
                 MessageBox.Show("Наличные" + Math.Round(Convert.ToDouble(cash_sum.Text.Replace(".", ",")), 2).ToString());
-                MessageBox.Show("Карта " + Math.Round(Convert.ToDouble(get_non_cash_sum(0)), 2).ToString());
+                MessageBox.Show("Карта " + Math.Round(Convert.ToDouble(get_non_cash_sum()), 2).ToString());
                 MessageBox.Show("Сертификаты " + Math.Round(Convert.ToDouble(sertificates_sum.Text), 2).ToString());
                 MessageBox.Show("Бонусы " + Math.Round(Convert.ToDouble(pay_bonus_many.Text.Replace(".", ",")), 2).ToString());
                 MessageBox.Show("Общая сумма  " + Math.Round(Convert.ToDouble(pay_sum.Text.Replace(".", ",")), 2));
@@ -1989,7 +2174,7 @@ namespace Cash8
             //Получаем общу сумму по оплате 
             Double _cash_summ_ = Convert.ToDouble(cash_sum.Text) - Convert.ToDouble(remainder.Text);
             //MessageBox.Show("Наличные " + _cash_summ_.ToString());
-            Double _non_cash_summ_ = Math.Round(Convert.ToDouble(get_non_cash_sum(1)),2);
+            Double _non_cash_summ_ = Math.Round(Convert.ToDouble(get_non_cash_sum()),2);
             //MessageBox.Show("Безнал " + _non_cash_summ_.ToString());
             Double _sertificates_sum_ = Convert.ToDouble(sertificates_sum.Text);
             //MessageBox.Show("Сертификаты " + _sertificates_sum_.ToString());
@@ -2000,42 +2185,42 @@ namespace Cash8
             //decimal sum_of_the_document = Math.Round(Convert.ToDecimal(pay_sum.Text.Replace(".", ",")), 2);
             //MessageBox.Show("Сумма документа " + sum_of_the_document.ToString());
 
-            if ((_non_cash_summ_ == 0) && (!MainStaticClass.fractional_exists(cc.listView1)))
-            {
-                //if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema ==3) || (MainStaticClass.GetWorkSchema == 4))
-                //{                    
-                //MessageBox.Show(" Сумма документа до преобразования " + sum_of_the_document.ToString());
-                //sum_of_the_document = (int)sum_of_the_document;
-                //MessageBox.Show(" Сумма документа после преобразования к целому " + sum_of_the_document.ToString());                    
-                //sum_of_the_document = Math.Round(sum_of_the_document,0,MidpointRounding.AwayFromZero);
-                //MessageBox.Show(" Сумма документа после преобразования к целому " + sum_of_the_document.ToString());
+            //if ((_non_cash_summ_ == 0) && (!MainStaticClass.fractional_exists(cc.listView1)))
+            //{
+            //    //if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema ==3) || (MainStaticClass.GetWorkSchema == 4))
+            //    //{                    
+            //    //MessageBox.Show(" Сумма документа до преобразования " + sum_of_the_document.ToString());
+            //    //sum_of_the_document = (int)sum_of_the_document;
+            //    //MessageBox.Show(" Сумма документа после преобразования к целому " + sum_of_the_document.ToString());                    
+            //    //sum_of_the_document = Math.Round(sum_of_the_document,0,MidpointRounding.AwayFromZero);
+            //    //MessageBox.Show(" Сумма документа после преобразования к целому " + sum_of_the_document.ToString());
 
-                //sum_of_the_document = (int)Math.Floor(sum_of_the_document);
+            //    //sum_of_the_document = (int)Math.Floor(sum_of_the_document);
 
-                if (sum_of_the_document.ToString().IndexOf(".") != -1)
-                {
-                    string[] parts = sum_of_the_document.ToString().Split('.');
-                    sum_of_the_document = Double.Parse(parts[0]);
-                }
-                else if (sum_of_the_document.ToString().IndexOf(",") != -1)
-                {
-                    string[] parts = sum_of_the_document.ToString().Split(',');
-                    sum_of_the_document = Double.Parse(parts[0]);
-                }
+            //    if (sum_of_the_document.ToString().IndexOf(".") != -1)
+            //    {
+            //        string[] parts = sum_of_the_document.ToString().Split('.');
+            //        sum_of_the_document = Double.Parse(parts[0]);
+            //    }
+            //    else if (sum_of_the_document.ToString().IndexOf(",") != -1)
+            //    {
+            //        string[] parts = sum_of_the_document.ToString().Split(',');
+            //        sum_of_the_document = Double.Parse(parts[0]);
+            //    }
 
 
-                double sum_sum_at_a_discount = get_sum_sum_at_a_discount();
+            //    double sum_sum_at_a_discount = get_sum_sum_at_a_discount();
 
-                if (Math.Abs(sum_sum_at_a_discount - sum_of_the_document) > 0 && sum_sum_at_a_discount != 0)
-                {
-                    sum_of_the_document = sum_sum_at_a_discount;
-                }
+            //    if (Math.Abs(sum_sum_at_a_discount - sum_of_the_document) > 0 && sum_sum_at_a_discount != 0)
+            //    {
+            //        sum_of_the_document = sum_sum_at_a_discount;
+            //    }
 
-                //sum_of_the_document = Math.Truncate(sum_of_the_document);
-                //MessageBox.Show(" Сумма документа после преобразования к целому " + sum_of_the_document.ToString());
-                //sum_of_the_document = Math.Round(sum_of_the_document,0);
-                //}
-            }
+            //    //sum_of_the_document = Math.Truncate(sum_of_the_document);
+            //    //MessageBox.Show(" Сумма документа после преобразования к целому " + sum_of_the_document.ToString());
+            //    //sum_of_the_document = Math.Round(sum_of_the_document,0);
+            //    //}
+            //}
 
             if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema == 3) || (MainStaticClass.GetWorkSchema == 4))
             {
@@ -2102,7 +2287,8 @@ namespace Cash8
             NpgsqlCommand command = null;
             try
             {
-                string query = "SELECT FLOOR(SUM(sum_at_a_discount)) FROM public.checks_table WHERE document_number = " + cc.numdoc.ToString();
+                //string query = "SELECT FLOOR(SUM(sum_at_a_discount)) FROM public.checks_table WHERE document_number = " + cc.numdoc.ToString();
+                string query = "SELECT SUM(sum_at_a_discount) FROM public.checks_table WHERE document_number = " + cc.numdoc.ToString();
                 conn.Open();
                 command = new NpgsqlCommand(query, conn);
                 result = Convert.ToDouble(command.ExecuteScalar());
@@ -2533,5 +2719,6 @@ namespace Cash8
                 }
             }
         }
+       
     }
 }
