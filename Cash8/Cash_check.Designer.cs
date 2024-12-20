@@ -85,6 +85,7 @@
             this.txtB_num_doc = new System.Windows.Forms.TextBox();
             this.checkBox_print_check = new System.Windows.Forms.CheckBox();
             this.checkBox_payment_by_sbp = new System.Windows.Forms.CheckBox();
+            this.txtB_search_product = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_enter_quantity)).BeginInit();
             this.panel2.SuspendLayout();
@@ -160,7 +161,7 @@
             // 
             this.panel1.BackColor = System.Drawing.Color.LightSalmon;
             this.panel1.Controls.Add(this.numericUpDown_enter_quantity);
-            this.panel1.Location = new System.Drawing.Point(558, 18);
+            this.panel1.Location = new System.Drawing.Point(545, 34);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(174, 66);
             this.panel1.TabIndex = 21;
@@ -189,9 +190,9 @@
             this.panel2.BackColor = System.Drawing.Color.ForestGreen;
             this.panel2.Controls.Add(this.listView2);
             this.panel2.Controls.Add(this.select_tovar);
-            this.panel2.Location = new System.Drawing.Point(16, 34);
+            this.panel2.Location = new System.Drawing.Point(16, 32);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(745, 243);
+            this.panel2.Size = new System.Drawing.Size(745, 220);
             this.panel2.TabIndex = 23;
             this.panel2.Visible = false;
             // 
@@ -388,10 +389,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Location = new System.Drawing.Point(8, 175);
+            this.tabControl1.Location = new System.Drawing.Point(8, 228);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(791, 363);
+            this.tabControl1.Size = new System.Drawing.Size(791, 310);
             this.tabControl1.TabIndex = 46;
             // 
             // tabPage1
@@ -402,7 +403,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(783, 337);
+            this.tabPage1.Size = new System.Drawing.Size(783, 284);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Товары";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -417,7 +418,7 @@
             this.listView1.Location = new System.Drawing.Point(3, 3);
             this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(780, 334);
+            this.listView1.Size = new System.Drawing.Size(780, 281);
             this.listView1.TabIndex = 4;
             this.listView1.UseCompatibleStateImageBehavior = false;
             // 
@@ -699,11 +700,24 @@
             this.checkBox_payment_by_sbp.UseVisualStyleBackColor = true;
             this.checkBox_payment_by_sbp.Visible = false;
             // 
+            // txtB_search_product
+            // 
+            this.txtB_search_product.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtB_search_product.Enabled = false;
+            this.txtB_search_product.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.txtB_search_product.Location = new System.Drawing.Point(12, 195);
+            this.txtB_search_product.MaxLength = 300;
+            this.txtB_search_product.Name = "txtB_search_product";
+            this.txtB_search_product.Size = new System.Drawing.Size(773, 22);
+            this.txtB_search_product.TabIndex = 80;
+            // 
             // Cash_check
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 600);
+            this.Controls.Add(this.txtB_search_product);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.checkBox_payment_by_sbp);
             this.Controls.Add(this.checkBox_print_check);
@@ -824,5 +838,6 @@
         public System.Windows.Forms.TextBox txtB_cash_money;
         public System.Windows.Forms.CheckBox checkBox_payment_by_sbp;
         private System.Windows.Forms.NumericUpDown numericUpDown_enter_quantity;
+        private System.Windows.Forms.TextBox txtB_search_product;
     }
 }

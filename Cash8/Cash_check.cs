@@ -152,15 +152,7 @@ namespace Cash8
         /// </summary>
         /// <param name="mode"></param>
         public void SendDataToCustomerScreen(int mode, int show_price, int calculate_actionc)
-        {
-            //if (MainStaticClass.GetWorkSchema == 2)
-            //{
-            //    return;
-            //}
-            //if (MainStaticClass.OneMonitorsConnected == 1)
-            //{
-            //    return;
-            //}
+        {           
             try
             {
                 //if ((MainStaticClass.UseOldProcessiingActions) || (!itsnew))
@@ -241,6 +233,7 @@ namespace Cash8
             this.return_rouble.KeyPress += new KeyPressEventHandler(return_rouble_KeyPress);
             this.return_kop.KeyPress += new KeyPressEventHandler(return_kop_KeyPress);
             this.listView1.KeyPress += new KeyPressEventHandler(listView1_KeyPress);
+            this.txtB_search_product.KeyPress += TxtB_search_product_KeyPress; 
             this.listView1.KeyDown += ListView1_KeyDown;            
             this.txtB_client_phone.KeyPress += new KeyPressEventHandler(txtB_client_phone_KeyPress);
             if (MainStaticClass.Code_right_of_user == 1)
@@ -261,341 +254,107 @@ namespace Cash8
             //textBox.KeyPress += TextBox_KeyPress;
         }
 
-        //private void TextBox_KeyPress(object sender, KeyPressEventArgs e)
-        //{
-        //    TextBox textBox = sender as TextBox;
-
-        //    //MessageBox.Show(e.KeyChar.ToString(), "Нажатие");
-        //    // Замена точки на запятую
-        //    if (e.KeyChar == '.')
-        //    {
-        //        //textBox.Focus();
-        //        //SendKeys.Send(",");
-        //        //e.Handled = true;
-        //        e.Handled = true; // предотвращаем ввод точки
-        //        if (textBox.Text.IndexOf(",") == -1)
-        //        {
-        //            //MessageBox.Show(" Это точка и сейчас преобразуется в запятую ");
-        //            textBox.Text += ','; // добавляем запятую в текстовое поле
-        //            textBox.SelectionStart = textBox.Text.Length; // перемещаем курсор в конец текста
-        //        }
-        //        return;
-        //    }
-        //    else
-        //    {
-        //        //MessageBox.Show(" Это не точка, код символа " + Convert.ToInt32(e.KeyChar).ToString());
-        //    }
-
-        //    // Проверка, что введенный символ - это цифра, управляющий символ или запятая
-        //    if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && e.KeyChar != ',' && e.KeyChar != '.')
-        //    {
-        //        e.Handled = true;
-        //    }
-        //    else
-        //    {
-        //        // Обработка ввода, если уже есть запятая в тексте
-        //        if (textBox.Text.Contains(","))
-        //        {
-        //            if ((e.KeyChar == '.') || (e.KeyChar == ','))
-        //            {
-        //                e.Handled = true;
-        //                return;
-        //            }
-        //            // Проверка количества знаков после запятой
-        //            string[] parts = textBox.Text.Split(',');
-        //            if (parts.Length == 2 && parts[1].Length >= numericUpDown_enter_quantity.DecimalPlaces)
-        //            {
-        //                // Если курсор находится после запятой и количество знаков после запятой уже равно или больше установленного
-        //                if (textBox.SelectionStart > textBox.Text.IndexOf(',') && parts[1].Length >= 3)
-        //                {
-        //                    // Заменяем следующий символ, если не выделено символов для замены
-        //                    if (textBox.SelectionLength == 0 && parts[1].Length == 3)
-        //                    {
-        //                        int selectionStart = textBox.SelectionStart;
-        //                        if (selectionStart >= 0 && selectionStart < textBox.Text.Length)
-        //                        {
-        //                            // Удаляем символ в позиции selectionStart, если это возможно
-        //                            textBox.Text = textBox.Text.Remove(selectionStart, 1);
-        //                            // Вставляем новый символ в ту же позицию
-        //                            textBox.Text = textBox.Text.Insert(selectionStart, e.KeyChar.ToString());
-        //                            textBox.SelectionStart = selectionStart + 1; // Сдвигаем курсор
-        //                            e.Handled = true;
-        //                        }
-        //                        textBox.SelectionStart = selectionStart + 1; // Сдвигаем курсор
-        //                        e.Handled = true;
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
-
-        //private void TextBox_KeyPress(object sender, KeyPressEventArgs e)
-        //{
-        //    TextBox textBox = sender as TextBox;
-        //    //// Проверяем, что введенный символ - это цифра или управляющий символ
-        //    //if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
-        //    //{
-        //    //    e.Handled = true;
-        //    //}
-        //    //else
-        //    //{
-        //    //    // Проверяем количество знаков после запятой
-        //    //    if (textBox.Text.Contains(","))
-        //    //    {
-        //    //        int commaPosition = textBox.Text.IndexOf(',');
-        //    //        int decimalCount = textBox.Text.Length - commaPosition - 1;
-        //    //        // Если курсор находится после запятой и количество знаков после запятой уже три или больше
-        //    //        if (textBox.SelectionStart > commaPosition && decimalCount > 3)
-        //    //        {
-        //    //            e.Handled = true;
-        //    //        }
-        //    //    }
-        //    //}
-
-        //    //if ((Keys)e.KeyChar == Keys.Back)
-        //    //{
-        //    //    e.Handled = true;
-        //    //}
-        //    if (e.KeyChar == '.')
-        //    {
-        //        textBox.Focus();
-        //        SendKeys.Send(",");
-        //        e.Handled = true;
-        //        return;
-        //    }
-
-        //    if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
-        //    {
-        //        if (e.KeyChar.ToString() == ",")
-        //        {
-        //            if (textBox.Text.Contains(","))
-        //            {
-        //                e.Handled = true;
-        //            }
-        //        }
-        //    }
-        //    else
-        //    {
-
-        //        if (textBox.Text.Contains(","))
-        //        {
-
-        //            if (textBox.Text.Split(',').Length == 2)
-        //            {
-        //                if (textBox.Text.Split(',')[1].Length < numericUpDown_enter_quantity.DecimalPlaces)
-        //                {
-        //                    return;
-        //                }
-        //            }
-
-        //            if (textBox.SelectionStart >= textBox.Text.Length)
-        //            {
-        //                e.Handled = true;
-        //            }
-        //            else
-        //            {
-        //                int commaPosition = textBox.Text.IndexOf(',');
-        //                int decimalCount = textBox.Text.Length - commaPosition - 1;
-        //                if (textBox.SelectionStart > commaPosition && decimalCount >= 3)
-        //                {
-        //                    // Если курсор находится после запятой и количество знаков после запятой уже три или больше
-        //                    if (textBox.SelectionLength == 0 && decimalCount == 3)
-        //                    {
-        //                        // Заменяем следующий символ, если не выделено символов для замены
-        //                        int selectionStart = textBox.SelectionStart;
-        //                        textBox.Text = textBox.Text.Remove(selectionStart, 1).Insert(selectionStart, e.KeyChar.ToString());
-        //                        textBox.SelectionStart = selectionStart + 1; // Сдвигаем курсор
-        //                        e.Handled = true;
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
+        /// <summary>        
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TxtB_search_product_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == 13)//Нажата клавиша enter
+            {
+                find_product();
+            }
+        }
 
 
-        //private void NumericUpDown_enter_quantity_ValueChanged(object sender, EventArgs e)
-        //{
-        //    numericUpDown_enter_quantity.Value = Decimal.Round(numericUpDown_enter_quantity.Value, 3);
-        //}
+        /// <summary>
+        /// Проверки введенного кода маркировки
+        /// </summary>
+        /// <param name="search_param"></param>
+        /// <returns></returns>
+        private bool search_param_product(ref string search_param)
+        {
 
-        //private void enter_quantity_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
-        //{
+            bool result = true;
 
-        //    if (e.KeyChar == 27)
-        //    {
-        //        this.enter_quantity.Visible = false;
-        //        this.panel1.Visible = false;
-        //        return;
-        //    }
+            if (Console.CapsLock)
+            {
+                MessageBox.Show("У вас нажата клавиша CapsLock, ввод кода маркировки невозможен.Номенклатура не будет добавлена.", "Проверка qr-кода");                
+                result = false;
+            }
 
-        //    if (e.KeyChar == 13)
-        //    {
-        //        if ((this.enter_quantity.Text.Length == 0) || (Convert.ToDecimal(this.enter_quantity.Text) == 0))
-        //        {
-        //            MessageBox.Show("Количество не может быть пустым");
-        //            return;
-        //        }
+            if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
+            {
+                MessageBox.Show("У вас нажата клавиша Shift, ввод кода маркировки невозможен.Номенклатура не будет добавлена.", "Проверка qr-кода");
+                result = false;
+            }
 
-        //        if (Convert.ToInt32(this.listView1.SelectedItems[0].SubItems[3].Text) > Convert.ToInt32(this.enter_quantity.Text))
-        //        {
-        //            //MessageBox.Show("Не администраторам запрещено менять количество на меньшее");
-        //            ///////////////////////////////////////////////////////////////
-        //            if (MainStaticClass.Code_right_of_user != 1)
-        //            {
-        //                enable_delete = false;
-        //                Interface_switching isw = new Interface_switching();
-        //                isw.caller_type = 3;
-        //                isw.cc = this;
-        //                isw.not_change_Cash_Operator = true;
-        //                isw.ShowDialog();
-        //                isw.Dispose();
+            if (search_param.Substring(0, 4).IndexOf("HTTP") != -1)
+            {                
+                MessageBox.Show("Считан не верный qr код, он содержит последовательность HTTP", "Проверка qr-кода");
+                result = false;
+            }
 
-        //                if (!enable_delete)
-        //                {
-        //                    MessageBox.Show("Вам запрещено менять количество на меньшее");
-        //                    //this.enter_quantity.Text = "0";
-        //                    return;
-        //                }
-        //            }
+                if (!qr_code_lenght.Contains(search_param.Length))
+            {
+                MessageBox.Show(qr_code + "\r\n Ваш код маркировки имеет длину " + qr_code.Length.ToString() + " символов при этом он не входит в допустимый диапазон ", "Проверка qr-кода");
+                result = false;
+            }
 
-        //            insert_incident_record(listView1.SelectedItems[0].SubItems[0].Text, (Convert.ToInt32(listView1.SelectedItems[0].SubItems[3].Text) - Convert.ToInt32(this.enter_quantity.Text)).ToString(), "1");
+            int num_pos = this.qr_code.IndexOf("\\");
+            if (num_pos > 0)
+            {
+                if (search_param.Substring(num_pos + 1, 5) == "u001d")//необходимо из строки вырезать этот символ
+                {
+                    search_param = search_param.Substring(0, num_pos) + search_param.Substring(num_pos + 1 + 5, search_param.Length - (num_pos + 1 + 5));
+                    num_pos = search_param.IndexOf("\\");
+                    if (num_pos > 0)
+                    {
+                        search_param = search_param.Substring(0, num_pos) + search_param.Substring(num_pos + 1 + 5, search_param.Length - (num_pos + 1 + 5));
+                    }
+                }
+            }
 
-        //        }
-        //        else if (Convert.ToInt32(this.listView1.SelectedItems[0].SubItems[3].Text) < Convert.ToInt32(this.enter_quantity.Text))
-        //        {
 
-        //            //Проверка на сертификат 
-        //            if (its_sertificate(this.listView1.SelectedItems[0].SubItems[0].Text.Trim()))
-        //            {
-        //                MessageBox.Show("Каждый сертификат продается отдельной строкой");
-        //                return;
-        //            }
-        //        }
+            return result;
+        }
 
-        //        this.listView1.SelectedItems[0].SubItems[3].Text = Convert.ToInt16(this.enter_quantity.Text).ToString();                
-        //        recalculate_all();
-        //        calculation_of_the_sum_of_the_document();                
-        //        this.enter_quantity.Visible = false;
-        //        this.panel1.Visible = false;
-        //        this.listView1.Select();                
-        //        this.listView1.Items[this.listView1.SelectedIndices[0]].Selected = true;
-        //        write_new_document("0", "0", "0", "0", false, "0", "0", "0", "0");
-        //    }
+        private void find_product()
+        {
+            string search_param = txtB_search_product.Text.Trim();
+            txtB_search_product.Text = string.Empty;
+            int Length = search_param.Length;
+            string gtin = string.Empty;
+            if (Length == 0)
+            {
+                return;
+            }
 
-        //    if ((enter_quantity.Text.Length == 0))
-        //    {
-        //        if (e.KeyChar == 48)
-        //        {
-        //            e.Handled = true;
-        //        }
-        //    }
+            
 
-        //    if (!(Char.IsDigit(e.KeyChar)))
-        //    {
+            if (Length > 13)//попробуем получить gtin
+            {
+                if (!search_param_product(ref search_param))
+                {
+                    return;
+                }
 
-        //        if (e.KeyChar != (char)Keys.Back)
-        //        {
-        //            e.Handled = true;
-        //        }
-        //    }
+                if (Length > 18)
+                {                    
+                    if ((search_param.Substring(0, 2) == "01") && (search_param.Substring(16, 2) == "21"))
+                    {
+                        gtin = search_param.Substring(3, 13);
+                        find_barcode_or_code_in_tovar(gtin);
+                    }
+                }                
+            }
+            else //Length <= 13)
+            {
+                find_barcode_or_code_in_tovar(search_param);
+            }
+        }
 
-        //    //if (!(Char.IsDigit(e.KeyChar)) && !((e.KeyChar == '.') && (enter_quantity.Text.IndexOf(".") == -1) && (enter_quantity.Text.Length != 0)))
-        //    //{
-        //    //    if (e.KeyChar != (char)Keys.Back)
-        //    //    {
-        //    //        e.Handled = true;
-        //    //    }
-        //    //}
-
-        //    //if (!(Char.IsDigit(e.KeyChar)) && !((e.KeyChar == '.') && (enter_quantity.Text.IndexOf(".") == -1)))
-        //    //{
-        //    //    if (e.KeyChar != (char)Keys.Back)
-        //    //    {
-        //    //        e.Handled = true;
-        //    //    }
-        //    //}
-
-        //    SendDataToCustomerScreen(1, 0,1);
-        //}
-
-        //private void NumericUpDown_enter_quantity_KeyPress(object sender, KeyPressEventArgs e)
-        //{
-
-        //    if (e.KeyChar == 27)
-        //    {
-        //        this.numericUpDown_enter_quantity.Visible = false;
-        //        this.panel1.Visible = false;
-        //        return;
-        //    }
-
-        //    if (e.KeyChar == 13)
-        //    {
-        //        if (this.numericUpDown_enter_quantity.Value == 0)
-        //        {
-        //            MessageBox.Show("Количество не может быть пустым");
-        //            return;
-        //        }
-
-        //        if (Convert.ToDecimal(this.listView1.SelectedItems[0].SubItems[3].Text) > this.numericUpDown_enter_quantity.Value)
-        //        {
-        //            //MessageBox.Show("Не администраторам запрещено менять количество на меньшее");
-        //            ///////////////////////////////////////////////////////////////
-        //            if (MainStaticClass.Code_right_of_user != 1)
-        //            {
-        //                enable_delete = false;
-        //                Interface_switching isw = new Interface_switching();
-        //                isw.caller_type = 3;
-        //                isw.cc = this;
-        //                isw.not_change_Cash_Operator = true;
-        //                isw.ShowDialog();
-        //                isw.Dispose();
-
-        //                if (!enable_delete)
-        //                {
-        //                    MessageBox.Show("Вам запрещено менять количество на меньшее");
-        //                    //this.enter_quantity.Text = "0";
-        //                    return;
-        //                }
-        //            }
-        //            ReasonsDeletionCheck reasons = new ReasonsDeletionCheck();
-        //            DialogResult dialogResult = reasons.ShowDialog();
-        //            if (dialogResult == DialogResult.OK)
-        //            {
-        //                insert_incident_record(listView1.SelectedItems[0].SubItems[0].Text, Math.Round(Convert.ToDecimal(listView1.SelectedItems[0].SubItems[3].Text) - this.numericUpDown_enter_quantity.Value, 2, MidpointRounding.ToEven).ToString().Replace(",", "."), "1",reasons.reason);
-        //            }
-        //            else
-        //            {
-        //                return;
-        //            }
-
-        //        }
-        //        else if (Convert.ToDecimal(this.listView1.SelectedItems[0].SubItems[3].Text) < this.numericUpDown_enter_quantity.Value)
-        //        {
-
-        //            //Проверка на сертификат 
-        //            if (its_sertificate(this.listView1.SelectedItems[0].SubItems[0].Text.Trim()))
-        //            {
-        //                MessageBox.Show("Каждый сертификат продается отдельной строкой");
-        //                return;
-        //            }
-        //        }
-
-        //        this.listView1.SelectedItems[0].SubItems[3].Text = Convert.ToDecimal(this.numericUpDown_enter_quantity.Value).ToString();
-        //        recalculate_all();
-        //        calculation_of_the_sum_of_the_document();
-        //        this.numericUpDown_enter_quantity.Visible = false;
-        //        this.panel1.Visible = false;
-        //        this.listView1.Select();
-        //        this.listView1.Items[this.listView1.SelectedIndices[0]].Selected = true;
-        //        write_new_document("0", "0", "0", "0", false, "0", "0", "0", "0");
-        //    }
-
-        //    SendDataToCustomerScreen(1, 0, 1);
-        //}
-              
-
+        
         private void TxtB_total_sum_KeyPress(object sender, KeyPressEventArgs e)
         {
             e.Handled = true;
@@ -2680,10 +2439,8 @@ namespace Cash8
          */
         private void update_record_last_tovar(string tovar, string price)
         {
-            this.last_tovar.Text = tovar;
-            //this.last_cena.Text = price;
+            this.last_tovar.Text = tovar;            
         }
-
 
 
         private string get_tovar_code(string barcode)
