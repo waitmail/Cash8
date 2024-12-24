@@ -86,6 +86,7 @@
             this.checkBox_print_check = new System.Windows.Forms.CheckBox();
             this.checkBox_payment_by_sbp = new System.Windows.Forms.CheckBox();
             this.txtB_search_product = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_enter_quantity)).BeginInit();
             this.panel2.SuspendLayout();
@@ -428,7 +429,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(783, 337);
+            this.tabPage2.Size = new System.Drawing.Size(783, 284);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Сертификаты";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -704,19 +705,29 @@
             // 
             this.txtB_search_product.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtB_search_product.Enabled = false;
-            this.txtB_search_product.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.txtB_search_product.Location = new System.Drawing.Point(12, 195);
+            this.txtB_search_product.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.txtB_search_product.Location = new System.Drawing.Point(175, 191);
             this.txtB_search_product.MaxLength = 300;
             this.txtB_search_product.Name = "txtB_search_product";
-            this.txtB_search_product.Size = new System.Drawing.Size(773, 22);
+            this.txtB_search_product.Size = new System.Drawing.Size(610, 29);
             this.txtB_search_product.TabIndex = 80;
+            this.txtB_search_product.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // label2
+            // 
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label2.Location = new System.Drawing.Point(12, 191);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(157, 29);
+            this.label2.TabIndex = 81;
+            this.label2.Text = "Код\\ШК\\Код Марк.";
             // 
             // Cash_check
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 600);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.txtB_search_product);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.checkBox_payment_by_sbp);
@@ -839,5 +850,6 @@
         public System.Windows.Forms.CheckBox checkBox_payment_by_sbp;
         private System.Windows.Forms.NumericUpDown numericUpDown_enter_quantity;
         private System.Windows.Forms.TextBox txtB_search_product;
+        private System.Windows.Forms.Label label2;
     }
 }

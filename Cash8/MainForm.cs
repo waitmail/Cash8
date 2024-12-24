@@ -36,7 +36,7 @@ namespace Cash8
         private void get_users()
         {            
             Cash8.DS.DS ds = MainStaticClass.get_ds();
-            ds.Timeout = 5000;            
+            ds.Timeout = 3000;            
             string nick_shop = MainStaticClass.Nick_Shop.Trim();
             if (nick_shop.Trim().Length == 0)
             {
@@ -1006,7 +1006,7 @@ namespace Cash8
             {
                 MessageBox.Show("Ошибка при изменение реквизита " + ex.Message);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show("Ошибка при изменение реквизита " + ex.Message);
             }
@@ -1018,14 +1018,12 @@ namespace Cash8
                 }
             }
         }
-            
-    
 
-        private void Main_Load(object sender, System.EventArgs e)
+
+
+        private async void Main_Load(object sender, System.EventArgs e)
         {
-
-           
-
+            
             //if (File.Exists(Application.StartupPath + "/UpdateNpgsql/Npgsql.dll"))
             //{
             //    if (File.ReadAllBytes(Application.StartupPath + "/UpdateNpgsql/Npgsql.dll").Length > 0)
@@ -1077,6 +1075,11 @@ namespace Cash8
 
             if (MainStaticClass.exist_table_name("constants"))
             {
+
+                //InventoryManager.FillDictionaryProductData();
+                LoadCdnWithStartAsync();
+                InventoryManager.FillDictionaryProductDataAsync();
+
                 MainStaticClass.write_event_in_log(" Старт программы ", "проверка таблицы констант", "0");
                 Text += "Касса   " + Cash8.MainStaticClass.CashDeskNumber;
                 Text += " | " + Cash8.MainStaticClass.Nick_Shop;
@@ -1113,9 +1116,10 @@ namespace Cash8
 
                 //if (MainStaticClass.GetWorkSchema != 2)
                 //{
-                Thread t = new Thread(load_bonus_clients);
-                t.IsBackground = true;
-                t.Start();
+                //Thread t = new Thread(load_bonus_clients);
+                //t.IsBackground = true;
+                //t.Start();
+                Task.Run(() => load_bonus_clients());
                 //if (MainStaticClass.EnableCdnMarkers == 1)
                 //{
                 //    Thread t2 = new Thread(get_cdn_with_start);
@@ -1124,7 +1128,9 @@ namespace Cash8
                 //}
                 //}
 
-                load_cdn_with_start();
+                //load_cdn_with_start();
+
+                //await LoadCdnWithStartAsync();//Загрузка cdn асинхронно 
 
                 if (MainStaticClass.GetWorkSchema == 1)//Это условие будет работать только для ЧД
                 {
@@ -1220,33 +1226,60 @@ namespace Cash8
             }
         }
 
+
+
+        //private void load_cdn_with_start()
+        //{
+        //    CancellationTokenSource cts = new CancellationTokenSource();
+        //    CancellationToken token = cts.Token;
+
+        //    // Запуск функции с параметром в новом потоке            
+        //    Task task = Task.Factory.StartNew(() => get_cdn_with_start());
+        //    try
+        //    {
+        //        // Ожидание результата функции в течение 5 секунд
+        //        bool isCompletedSuccessfully = task.Wait(TimeSpan.FromSeconds(60));
+
+        //        if (!isCompletedSuccessfully)
+        //        {
+        //            cts.Cancel();
+        //        }
+        //    }
+        //    catch
+        //    {
+        //    }
+        //}
+
         private void get_cdn_with_start()
         {
             CDN.CDN_List list = MainStaticClass.CDN_List;
         }
 
-        private void load_cdn_with_start()
+        private async Task LoadCdnWithStartAsync()
         {
             CancellationTokenSource cts = new CancellationTokenSource();
             CancellationToken token = cts.Token;
 
-            // Запуск функции с параметром в новом потоке            
-            Task task = Task.Factory.StartNew(() => get_cdn_with_start());
             try
             {
-                // Ожидание результата функции в течение 5 секунд
-                bool isCompletedSuccessfully = task.Wait(TimeSpan.FromSeconds(60));
+                // Запуск функции с параметром в новом потоке
+                Task task = Task.Run(() => get_cdn_with_start(), token);
+
+                // Ожидание результата функции в течение 60 секунд
+                bool isCompletedSuccessfully = await Task.WhenAny(task, Task.Delay(TimeSpan.FromSeconds(60), token)) == task;
 
                 if (!isCompletedSuccessfully)
                 {
                     cts.Cancel();
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                // Обработка исключений
+                MessageBox.Show($"При загрузке CDN произошла ошибка: {ex.Message}");
             }
         }
-    
+
 
 
         ///// <summary>
@@ -1464,7 +1497,7 @@ namespace Cash8
         //        }
         //    }
         //}
-        
+
         //public class LoginPassPromo
         //{
         //    public string PassPromoForCashDeskNumber { get; set; }

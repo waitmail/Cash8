@@ -47,7 +47,7 @@
             this.bonus_total_in_centr = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.bonus_on_document = new System.Windows.Forms.TextBox();
-            this.cash_sum = new System.Windows.Forms.TextBox();
+            this.txtB_cash_sum = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.pay_bonus_many = new System.Windows.Forms.TextBox();
             this.pay_bonus = new System.Windows.Forms.TextBox();
@@ -173,7 +173,7 @@
             this.panel1.Controls.Add(this.bonus_total_in_centr);
             this.panel1.Controls.Add(this.label5);
             this.panel1.Controls.Add(this.bonus_on_document);
-            this.panel1.Controls.Add(this.cash_sum);
+            this.panel1.Controls.Add(this.txtB_cash_sum);
             this.panel1.Controls.Add(this.label4);
             this.panel1.Controls.Add(this.pay_sum);
             this.panel1.Controls.Add(this.pay_bonus_many);
@@ -206,7 +206,7 @@
             // 
             this.checkBox_payment_by_sbp.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.checkBox_payment_by_sbp.Font = new System.Drawing.Font("Microsoft Sans Serif", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.checkBox_payment_by_sbp.Location = new System.Drawing.Point(338, 351);
+            this.checkBox_payment_by_sbp.Location = new System.Drawing.Point(282, 354);
             this.checkBox_payment_by_sbp.Name = "checkBox_payment_by_sbp";
             this.checkBox_payment_by_sbp.Size = new System.Drawing.Size(96, 43);
             this.checkBox_payment_by_sbp.TabIndex = 19;
@@ -237,7 +237,7 @@
             this.non_cash_sum_kop.Size = new System.Drawing.Size(54, 56);
             this.non_cash_sum_kop.TabIndex = 18;
             this.non_cash_sum_kop.Text = "0";
-            this.non_cash_sum_kop.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;            
+            this.non_cash_sum_kop.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // non_cash_sum
             // 
@@ -256,10 +256,10 @@
             this.label8.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label8.AutoSize = true;
             this.label8.BackColor = System.Drawing.SystemColors.Control;
-            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 27.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label8.Location = new System.Drawing.Point(16, 351);
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label8.Location = new System.Drawing.Point(6, 358);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(314, 42);
+            this.label8.Size = new System.Drawing.Size(270, 37);
             this.label8.TabIndex = 16;
             this.label8.Text = "КАРТА ОПЛАТЫ";
             this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -341,17 +341,17 @@
             this.bonus_on_document.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.bonus_on_document.Visible = false;
             // 
-            // cash_sum
+            // txtB_cash_sum
             // 
-            this.cash_sum.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.cash_sum.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.cash_sum.Font = new System.Drawing.Font("Microsoft Sans Serif", 32.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.cash_sum.Location = new System.Drawing.Point(439, 412);
-            this.cash_sum.MaxLength = 10;
-            this.cash_sum.Name = "cash_sum";
-            this.cash_sum.Size = new System.Drawing.Size(319, 56);
-            this.cash_sum.TabIndex = 16;
-            this.cash_sum.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtB_cash_sum.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.txtB_cash_sum.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.txtB_cash_sum.Font = new System.Drawing.Font("Microsoft Sans Serif", 32.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.txtB_cash_sum.Location = new System.Drawing.Point(439, 412);
+            this.txtB_cash_sum.MaxLength = 10;
+            this.txtB_cash_sum.Name = "txtB_cash_sum";
+            this.txtB_cash_sum.Size = new System.Drawing.Size(319, 56);
+            this.txtB_cash_sum.TabIndex = 16;
+            this.txtB_cash_sum.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // label4
             // 
@@ -440,7 +440,7 @@
         private System.Windows.Forms.Button button_pay;
         private System.Windows.Forms.Panel panel1;
         public System.Windows.Forms.TextBox pay_sum;
-        public System.Windows.Forms.TextBox cash_sum;
+        public System.Windows.Forms.TextBox txtB_cash_sum;
         private System.Windows.Forms.Label label6;
         public System.Windows.Forms.TextBox pay_bonus;
         public System.Windows.Forms.TextBox pay_bonus_many;

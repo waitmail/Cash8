@@ -43,14 +43,14 @@ namespace Cash8
         public Pay()
         {
             InitializeComponent();
-            this.cash_sum.SelectionStart = 0;
+            this.txtB_cash_sum.SelectionStart = 0;
             this.non_cash_sum.SelectionStart = 0;
             this.pay_bonus.SelectionStart = 0;
                              
             this.KeyPreview = true;
             this.Load += new EventHandler(Pay_Load);
-            this.cash_sum.KeyPress += new KeyPressEventHandler(cash_sum_KeyPress);            
-            this.cash_sum.KeyUp += new KeyEventHandler(cash_sum_KeyUp);
+            this.txtB_cash_sum.KeyPress += new KeyPressEventHandler(txtB_cash_sum_KeyPress);            
+            this.txtB_cash_sum.KeyUp += new KeyEventHandler(txtB_cash_sum_KeyUp);
             this.non_cash_sum.KeyPress += new KeyPressEventHandler(non_cash_KeyPress);
             this.non_cash_sum.KeyUp += new KeyEventHandler(non_cash_KeyUp);
             this.pay_bonus.KeyPress += new KeyPressEventHandler(pay_bonus_KeyPress);                      
@@ -76,7 +76,11 @@ namespace Cash8
 
             toolTip.SetToolTip(this.checkBox_do_not_send_payment_to_the_terminal, "Не отправлять запрос об оплате на терминал");
 
+            toolTip.ToolTipTitle = "Если нажать на клавиатуре кнопку r ";
+            toolTip.ToolTipIcon = ToolTipIcon.Info;
+            toolTip.IsBalloon = true; // Для отображения подсказки в виде "баллона"
 
+            toolTip.SetToolTip(this.non_cash_sum, "То полностью заполнится поле карты оплаты суммой документа в точисле с копейками");
 
         }
 
@@ -117,10 +121,10 @@ namespace Cash8
                         {
                             this.non_cash_sum.Text = "0";
                         }
-                        else
-                        {
-                            this.non_cash_sum.Text = "0.00";
-                        }
+                        //else
+                        //{
+                        //    this.non_cash_sum.Text = "0.00";
+                        //}
                     }
                     else
                     {
@@ -128,29 +132,29 @@ namespace Cash8
                         {
                             this.non_cash_sum.Text = "0";
                         }
-                        else
-                        {
-                            this.non_cash_sum.Text = "0,00";
-                        }
+                        //else
+                        //{
+                        //    this.non_cash_sum.Text = "0,00";
+                        //}
                     }
                 }
                 calculate();
-                if (MainStaticClass.get_currency() == "руб.")
-                {
+                //if (MainStaticClass.get_currency() == "руб.")
+                //{
 
-                }
-                else
-                {
-                    if (curpos_non_cash < 0)
-                    {
-                        non_cash_sum.SelectionStart = 0;
-                        curpos_non_cash = 0;
-                    }
-                    else
-                    {
-                        non_cash_sum.SelectionStart = curpos_non_cash;
-                    }
-                }
+                //}
+                //else
+                //{
+                //    if (curpos_non_cash < 0)
+                //    {
+                //        non_cash_sum.SelectionStart = 0;
+                //        curpos_non_cash = 0;
+                //    }
+                //    else
+                //    {
+                //        non_cash_sum.SelectionStart = curpos_non_cash;
+                //    }
+                //}
             }
             catch (Exception ex)
             {
@@ -730,20 +734,20 @@ namespace Cash8
         {
             try
             {
-                if (this.cash_sum.Text.Length == 0)
+                if (this.txtB_cash_sum.Text.Length == 0)
                 {
-                    this.cash_sum.Text = "0";
+                    this.txtB_cash_sum.Text = "0";
                 }
 
-                this.cash_sum.Text = Convert.ToDouble(this.cash_sum.Text).ToString("F", System.Globalization.CultureInfo.CurrentCulture);
+                this.txtB_cash_sum.Text = Convert.ToDouble(this.txtB_cash_sum.Text).ToString("F2", System.Globalization.CultureInfo.CurrentCulture);
 
                 this.remainder.Text = Math.Round(
-                (double.Parse(cash_sum.Text) +
+                (double.Parse(txtB_cash_sum.Text) +
                 double.Parse(pay_bonus_many.Text) +
                 get_non_cash_sum() +
                 double.Parse(sertificates_sum.Text) - double.Parse(pay_sum.Text)), 2).ToString("F", System.Globalization.CultureInfo.CurrentCulture);
 
-                if (Math.Round(double.Parse(cash_sum.Text.Replace(".", ",")) + double.Parse(non_cash_sum.Text) +
+                if (Math.Round(double.Parse(txtB_cash_sum.Text.Replace(".", ",")) + double.Parse(non_cash_sum.Text) +
                 double.Parse(sertificates_sum.Text) + double.Parse(pay_bonus_many.Text) + 
                 Convert.ToDouble(double.Parse(non_cash_sum_kop.Text.Trim().Length==0 ? "0" : non_cash_sum_kop.Text) / 100), 2, MidpointRounding.ToEven) - double.Parse(pay_sum.Text.Replace(".", ",")) < 0)
                 {
@@ -759,16 +763,34 @@ namespace Cash8
                 MessageBox.Show("calculate " + ex.Message);
             }
 
-            cash_sum.Update();
+            txtB_cash_sum.Update();
         }
 
-        private void cash_sum_KeyUp(object sender, KeyEventArgs e)
+        //private void cash_sum_KeyUp(object sender, KeyEventArgs e)
+        //{
+        //    try
+        //    {
+        //        if (this.txtB_cash_sum.Text.Length == 0)
+        //        {
+        //            this.txtB_cash_sum.Text = "0" + MainStaticClass.NumberDecimalSeparator() + "00";
+        //        }
+
+        //        calculate();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show("cash_sum_KeyUp " + ex.Message);
+        //    }
+        //}
+
+        private void txtB_cash_sum_KeyUp(object sender, KeyEventArgs e)
         {
             try
             {
-                if (this.cash_sum.Text.Length == 0)
+                if (this.txtB_cash_sum.Text.Length == 0)
                 {
-                    this.cash_sum.Text = "0" + MainStaticClass.NumberDecimalSeparator() + "00";
+                    //this.txtB_cash_sum.Text = "0" + MainStaticClass.NumberDecimalSeparator() + "00";
+                    this.txtB_cash_sum.Text = "0";
                 }
 
                 calculate();
@@ -922,37 +944,103 @@ namespace Cash8
         //    this.cash_sum.Update();
         //}
 
-        private void cash_sum_KeyPress(object sender, KeyPressEventArgs e)
+        //private void cash_sum_KeyPress(object sender, KeyPressEventArgs e)
+        //{
+        //    if (Char.IsDigit(e.KeyChar))
+        //    {
+        //        int selectionStart = txtB_cash_sum.SelectionStart;
+        //        if (firs_input)
+        //        {
+        //            firs_input = false;
+        //            txtB_cash_sum.Text = e.KeyChar + txtB_cash_sum.Text.Substring(1);
+        //            e.Handled = true;
+        //            txtB_cash_sum.SelectionStart = 1;
+        //        }
+        //        else
+        //        {
+        //            txtB_cash_sum.Text = txtB_cash_sum.Text.Insert(selectionStart, e.KeyChar.ToString());
+        //            txtB_cash_sum.SelectionStart = selectionStart + 1;
+        //            e.Handled = true;
+        //        }
+        //    }
+        //    else if (e.KeyChar == '.' || e.KeyChar == ',')
+        //    {
+        //        if (!txtB_cash_sum.Text.Contains(MainStaticClass.NumberDecimalSeparator()))
+        //        {
+        //            int selectionStart = txtB_cash_sum.SelectionStart;
+        //            txtB_cash_sum.Text = txtB_cash_sum.Text.Insert(selectionStart, MainStaticClass.NumberDecimalSeparator());
+        //            txtB_cash_sum.SelectionStart = selectionStart + 1;
+        //            e.Handled = true;
+        //        }
+        //        else
+        //        {
+        //            txtB_cash_sum.SelectionStart = txtB_cash_sum.Text.IndexOf(MainStaticClass.NumberDecimalSeparator()) + 1;
+        //            e.Handled = true;
+        //        }
+        //    }
+        //    else if (e.KeyChar != (char)Keys.Back)
+        //    {
+        //        e.Handled = true;
+        //    }
+
+        //    // Ensure two digits after the decimal point
+        //    if (txtB_cash_sum.Text.Contains(MainStaticClass.NumberDecimalSeparator()))
+        //    {
+        //        int decimalIndex = txtB_cash_sum.Text.IndexOf(MainStaticClass.NumberDecimalSeparator());
+        //        if (txtB_cash_sum.Text.Length - decimalIndex - 1 < 2)
+        //        {
+        //            txtB_cash_sum.Text = txtB_cash_sum.Text.Substring(0, decimalIndex + 1) + txtB_cash_sum.Text.Substring(decimalIndex + 1).PadRight(2, '0');
+        //            txtB_cash_sum.SelectionStart = decimalIndex + 1;
+        //        }
+        //    }
+
+        //    // Correct cursor position if it moves to the start
+        //    if (txtB_cash_sum.SelectionStart == 0)
+        //    {
+        //        txtB_cash_sum.SelectionStart = txtB_cash_sum.Text.Length;
+        //    }
+
+        //    this.txtB_cash_sum.Update();
+        //}
+
+        private void txtB_cash_sum_KeyPress(object sender, KeyPressEventArgs e)
         {
+
+            // Разрешаем вводить цифры, Delete и Backspace
+            if (!char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar))
+            {
+                e.Handled = true;
+            }
+
             if (Char.IsDigit(e.KeyChar))
             {
-                int selectionStart = cash_sum.SelectionStart;
+                int selectionStart = txtB_cash_sum.SelectionStart;
                 if (firs_input)
                 {
                     firs_input = false;
-                    cash_sum.Text = e.KeyChar + cash_sum.Text.Substring(1);
+                    txtB_cash_sum.Text = e.KeyChar + txtB_cash_sum.Text.Substring(1);
                     e.Handled = true;
-                    cash_sum.SelectionStart = 1;
+                    txtB_cash_sum.SelectionStart = 1;
                 }
                 else
                 {
-                    cash_sum.Text = cash_sum.Text.Insert(selectionStart, e.KeyChar.ToString());
-                    cash_sum.SelectionStart = selectionStart + 1;
+                    txtB_cash_sum.Text = txtB_cash_sum.Text.Insert(selectionStart, e.KeyChar.ToString());
+                    txtB_cash_sum.SelectionStart = selectionStart + 1;
                     e.Handled = true;
                 }
             }
             else if (e.KeyChar == '.' || e.KeyChar == ',')
             {
-                if (!cash_sum.Text.Contains(MainStaticClass.NumberDecimalSeparator()))
+                if (!txtB_cash_sum.Text.Contains(MainStaticClass.NumberDecimalSeparator()))
                 {
-                    int selectionStart = cash_sum.SelectionStart;
-                    cash_sum.Text = cash_sum.Text.Insert(selectionStart, MainStaticClass.NumberDecimalSeparator());
-                    cash_sum.SelectionStart = selectionStart + 1;
+                    int selectionStart = txtB_cash_sum.SelectionStart;
+                    txtB_cash_sum.Text = txtB_cash_sum.Text.Insert(selectionStart, MainStaticClass.NumberDecimalSeparator());
+                    txtB_cash_sum.SelectionStart = selectionStart + 1;
                     e.Handled = true;
                 }
                 else
                 {
-                    cash_sum.SelectionStart = cash_sum.Text.IndexOf(MainStaticClass.NumberDecimalSeparator()) + 1;
+                    txtB_cash_sum.SelectionStart = txtB_cash_sum.Text.IndexOf(MainStaticClass.NumberDecimalSeparator()) + 1;
                     e.Handled = true;
                 }
             }
@@ -961,29 +1049,25 @@ namespace Cash8
                 e.Handled = true;
             }
 
-            // Ensure two digits after the decimal point
-            if (cash_sum.Text.Contains(MainStaticClass.NumberDecimalSeparator()))
+            //Ensure two digits after the decimal point
+            if (txtB_cash_sum.Text.Contains(MainStaticClass.NumberDecimalSeparator()))
             {
-                int decimalIndex = cash_sum.Text.IndexOf(MainStaticClass.NumberDecimalSeparator());
-                if (cash_sum.Text.Length - decimalIndex - 1 < 2)
+                int decimalIndex = txtB_cash_sum.Text.IndexOf(MainStaticClass.NumberDecimalSeparator());
+                if (txtB_cash_sum.Text.Length - decimalIndex - 1 < 2)
                 {
-                    cash_sum.Text = cash_sum.Text.Substring(0, decimalIndex + 1) + cash_sum.Text.Substring(decimalIndex + 1).PadRight(2, '0');
-                    cash_sum.SelectionStart = decimalIndex + 1;
+                    txtB_cash_sum.Text = txtB_cash_sum.Text.Substring(0, decimalIndex + 1) + txtB_cash_sum.Text.Substring(decimalIndex + 1).PadRight(2, '0');
+                    txtB_cash_sum.SelectionStart = decimalIndex + 1;
                 }
             }
 
             // Correct cursor position if it moves to the start
-            if (cash_sum.SelectionStart == 0)
+            if (txtB_cash_sum.SelectionStart == 0)
             {
-                cash_sum.SelectionStart = cash_sum.Text.Length;
+                txtB_cash_sum.SelectionStart = txtB_cash_sum.Text.Length;
             }
 
-            this.cash_sum.Update();
+            this.txtB_cash_sum.Update();
         }
-
-       
-
-
 
         private void Pay_Load(object sender, EventArgs e)
         {
@@ -994,11 +1078,11 @@ namespace Cash8
             //}
             //else
             //{
-            this.cash_sum.Text = "";// cc.calculation_of_the_sum_of_the_document().ToString();
-            this.cash_sum.SelectionLength = 0;
+            this.txtB_cash_sum.Text = ""; cc.calculation_of_the_sum_of_the_document().ToString();
+            this.txtB_cash_sum.SelectionLength = 0;
             //}
-            this.cash_sum.Focus();
-            cash_sum.SelectionStart = 0;
+            this.txtB_cash_sum.Focus();
+            //txtB_cash_sum.SelectionStart = 0;
             non_cash_sum.SelectionStart = 0;
             pay_bonus.SelectionStart = 0;
             this.panel1.Size = new System.Drawing.Size(SystemInformation.PrimaryMonitorSize.Width - 100, SystemInformation.PrimaryMonitorSize.Height - 100);
@@ -1089,7 +1173,7 @@ namespace Cash8
 
         private void set_non_Cash_pay()
         {
-            cash_sum.Text = "";
+            txtB_cash_sum.Text = "";
             double sum_of_the_document = get_sum_sum_at_a_discount();
             string sumString = sum_of_the_document.ToString("F2", System.Globalization.CultureInfo.InvariantCulture);
             string[] parts = sumString.Split('.');
@@ -1100,7 +1184,7 @@ namespace Cash8
 
         private void set_Cash_pay()
         {
-            cash_sum.Text = "";
+            txtB_cash_sum.Text = "";
 
             double sum_of_the_document = get_sum_sum_at_a_discount();
             var culture = new System.Globalization.CultureInfo("ru-RU"); // Например, для русской культуры            
@@ -1109,8 +1193,8 @@ namespace Cash8
             non_cash_sum.Text = "0";
             non_cash_sum_kop.Text = "00";
 
-            cash_sum.Text = sumString;
-            cash_sum.Focus();
+            txtB_cash_sum.Text = sumString;         
+            txtB_cash_sum.Focus();
         }
 
 
@@ -1145,7 +1229,7 @@ namespace Cash8
             }           
             if (e.KeyValue == 37)
             {             
-                if (cash_sum.Focused)
+                if (txtB_cash_sum.Focused)
                 {
                     if (curpos > 0)
                     {
@@ -1163,9 +1247,9 @@ namespace Cash8
             }
             if (e.KeyValue == 39)
             {               
-                if (cash_sum.Focused)
+                if (txtB_cash_sum.Focused)
                 {
-                    if (curpos < cash_sum.Text.Length - 1)
+                    if (curpos < txtB_cash_sum.Text.Length - 1)
                     {
                         curpos++;
                     }
@@ -1180,11 +1264,11 @@ namespace Cash8
             }
             if (e.KeyCode == Keys.Delete)
             {
-                if (cash_sum.Focused)
+                if (txtB_cash_sum.Focused)
                 {
-                    if (cash_sum.Text.Trim().Length > 0)
+                    if (txtB_cash_sum.Text.Trim().Length > 0)
                     {
-                        if (cash_sum.Text.Substring(cash_sum.SelectionStart, 1) == ".")
+                        if (txtB_cash_sum.Text.Substring(txtB_cash_sum.SelectionStart, 1) == ".")
                         {
                             e.Handled = true;
                         }
@@ -1207,7 +1291,7 @@ namespace Cash8
                 }
                 i_s.Dispose();
                 calculate();
-                cash_sum.Focus();
+                txtB_cash_sum.Focus();
             }
         //    if (e.KeyCode == Keys.F6)//попытка сделать доступным полее вода списания бонусов
         //    {
@@ -1265,7 +1349,7 @@ namespace Cash8
                 //    return;
                 //}
 
-                if ((Convert.ToDecimal(cash_sum.Text) - Convert.ToDecimal(remainder.Text)) < 0)
+                if ((Convert.ToDecimal(txtB_cash_sum.Text) - Convert.ToDecimal(remainder.Text)) < 0)
                 {
                     MessageBox.Show("Ошибка при определении суммы наличных");
                     return;
@@ -1322,7 +1406,7 @@ namespace Cash8
                 //    }
                 //}
 
-                if (Convert.ToDecimal(pay_sum.Text) - (Convert.ToDecimal(cash_sum.Text) - Convert.ToDecimal(remainder.Text) + Convert.ToDecimal(sertificates_sum.Text) + Convert.ToDecimal(pay_bonus_many.Text) + Convert.ToDecimal(non_cash_sum.Text)) > 1)
+                if (Convert.ToDecimal(pay_sum.Text) - (Convert.ToDecimal(txtB_cash_sum.Text) - Convert.ToDecimal(remainder.Text) + Convert.ToDecimal(sertificates_sum.Text) + Convert.ToDecimal(pay_bonus_many.Text) + Convert.ToDecimal(non_cash_sum.Text)) > 1)
                 {
                     MessageBox.Show(" Неверно внесенные суммы ");
                     return;
@@ -1565,11 +1649,11 @@ namespace Cash8
 
                 //Получить сумму наличных
                 //если это возврат и если сумма безнала меньше 1 тогда копейки прибавить к наличным
-                string sum_cash_pay = (Convert.ToDecimal(cash_sum.Text) - Convert.ToDecimal(remainder.Text)).ToString().Replace(",", ".");
+                string sum_cash_pay = (Convert.ToDecimal(txtB_cash_sum.Text) - Convert.ToDecimal(remainder.Text)).ToString().Replace(",", ".");
                 string non_sum_cash_pay = (get_non_cash_sum()).ToString().Replace(",", ".");
                 cc.print_to_button = 0;
                 //cc.payment_by_sbp = (checkBox_payment_by_sbp.CheckState == CheckState.Checked ? true : false);//Перенес выше в секцию РНКБ, здесь было до появления сбера
-                if (cc.it_is_paid(cash_sum.Text, cc.calculation_of_the_sum_of_the_document().ToString().Replace(",", "."), remainder.Text.Replace(",", "."),
+                if (cc.it_is_paid(txtB_cash_sum.Text, cc.calculation_of_the_sum_of_the_document().ToString().Replace(",", "."), remainder.Text.Replace(",", "."),
                 (pay_bonus_many.Text.Trim() == "" ? "0" : pay_bonus_many.Text.Trim()),
                 true,
             sum_cash_pay,
@@ -1584,13 +1668,13 @@ namespace Cash8
             else//ЭТО ВОЗВРАТ
             {
 
-                string sum_cash_pay = (Convert.ToDecimal(cash_sum.Text) - Convert.ToDecimal(remainder.Text)).ToString().Replace(",", ".");
+                string sum_cash_pay = (Convert.ToDecimal(txtB_cash_sum.Text) - Convert.ToDecimal(remainder.Text)).ToString().Replace(",", ".");
                 string non_sum_cash_pay = (get_non_cash_sum()).ToString().Replace(",", ".");
                 if (cc.check_type.SelectedIndex == 1)
                 {
                     if (get_non_cash_sum() < 1)
                     {
-                        sum_cash_pay = (Convert.ToDecimal(cash_sum.Text) - Convert.ToDecimal(remainder.Text) + Convert.ToDecimal(get_non_cash_sum())).ToString().Replace(",", ".");
+                        sum_cash_pay = (Convert.ToDecimal(txtB_cash_sum.Text) - Convert.ToDecimal(remainder.Text) + Convert.ToDecimal(get_non_cash_sum())).ToString().Replace(",", ".");
                         non_sum_cash_pay = "0";
                     }
                 }
@@ -2101,7 +2185,7 @@ namespace Cash8
         {            
             this.button_pay.Enabled = false;
                        
-            double cash_money = Math.Round(Convert.ToDouble(cash_sum.Text.Replace(".", ",")), 2);
+            double cash_money = Math.Round(Convert.ToDouble(txtB_cash_sum.Text.Replace(".", ",")), 2);
             double non_cash_money = Math.Round(Convert.ToDouble(get_non_cash_sum()), 2);
             double sertificate_money = Math.Round(Convert.ToDouble(sertificates_sum.Text), 2);
             double bonus_money = Math.Round(Convert.ToDouble(pay_bonus_many.Text.Replace(".", ",")), 2);
@@ -2120,7 +2204,7 @@ namespace Cash8
                 //double minus = (cash_money + non_cash_money + sertificate_money + bonus_money) - sum_on_document;
                 //MessageBox.Show(minus.ToString());
                 MessageBox.Show("Проверьте сумму внесенной оплаты");
-                MessageBox.Show("Наличные" + Math.Round(Convert.ToDouble(cash_sum.Text.Replace(".", ",")), 2).ToString());
+                MessageBox.Show("Наличные" + Math.Round(Convert.ToDouble(txtB_cash_sum.Text.Replace(".", ",")), 2).ToString());
                 MessageBox.Show("Карта " + Math.Round(Convert.ToDouble(get_non_cash_sum()), 2).ToString());
                 MessageBox.Show("Сертификаты " + Math.Round(Convert.ToDouble(sertificates_sum.Text), 2).ToString());
                 MessageBox.Show("Бонусы " + Math.Round(Convert.ToDouble(pay_bonus_many.Text.Replace(".", ",")), 2).ToString());
@@ -2172,7 +2256,7 @@ namespace Cash8
 
             //Необходимо проверка на сумму документа где сумма всех форм оплаты равно сумме документа
             //Получаем общу сумму по оплате 
-            Double _cash_summ_ = Convert.ToDouble(cash_sum.Text) - Convert.ToDouble(remainder.Text);
+            Double _cash_summ_ = Convert.ToDouble(txtB_cash_sum.Text) - Convert.ToDouble(remainder.Text);
             //MessageBox.Show("Наличные " + _cash_summ_.ToString());
             Double _non_cash_summ_ = Math.Round(Convert.ToDouble(get_non_cash_sum()),2);
             //MessageBox.Show("Безнал " + _non_cash_summ_.ToString());
@@ -2352,7 +2436,7 @@ namespace Cash8
             this.bonus_total_in_centr = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.bonus_on_document = new System.Windows.Forms.TextBox();
-            this.cash_sum = new System.Windows.Forms.TextBox();
+            this.txtB_cash_sum = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.pay_bonus_many = new System.Windows.Forms.TextBox();
             this.pay_bonus = new System.Windows.Forms.TextBox();
@@ -2476,7 +2560,7 @@ namespace Cash8
             this.panel1.Controls.Add(this.bonus_total_in_centr);
             this.panel1.Controls.Add(this.label5);
             this.panel1.Controls.Add(this.bonus_on_document);
-            this.panel1.Controls.Add(this.cash_sum);
+            this.panel1.Controls.Add(this.txtB_cash_sum);
             this.panel1.Controls.Add(this.label4);
             this.panel1.Controls.Add(this.pay_sum);
             this.panel1.Controls.Add(this.pay_bonus_many);
@@ -2620,15 +2704,15 @@ namespace Cash8
             // 
             // cash_sum
             // 
-            this.cash_sum.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.cash_sum.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.cash_sum.Font = new System.Drawing.Font("Microsoft Sans Serif", 32.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.cash_sum.Location = new System.Drawing.Point(495, 441);
-            this.cash_sum.MaxLength = 10;
-            this.cash_sum.Name = "cash_sum";
-            this.cash_sum.Size = new System.Drawing.Size(319, 56);
-            this.cash_sum.TabIndex = 16;
-            this.cash_sum.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtB_cash_sum.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.txtB_cash_sum.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.txtB_cash_sum.Font = new System.Drawing.Font("Microsoft Sans Serif", 32.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.txtB_cash_sum.Location = new System.Drawing.Point(495, 441);
+            this.txtB_cash_sum.MaxLength = 10;
+            this.txtB_cash_sum.Name = "cash_sum";
+            this.txtB_cash_sum.Size = new System.Drawing.Size(319, 56);
+            this.txtB_cash_sum.TabIndex = 16;
+            this.txtB_cash_sum.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // label4
             // 

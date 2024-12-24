@@ -262,7 +262,14 @@ namespace Cash8
         {
             if (e.KeyChar == 13)//Нажата клавиша enter
             {
-                find_product();
+                if (InventoryManager.complete)
+                {
+                    find_product();
+                }
+                else
+                {
+                    MessageBox.Show("Система еще не готова, пробуйте ввести товар в чек повторно.");
+                }
             }
         }
 
@@ -279,7 +286,7 @@ namespace Cash8
 
             if (Console.CapsLock)
             {
-                MessageBox.Show("У вас нажата клавиша CapsLock, ввод кода маркировки невозможен.Номенклатура не будет добавлена.", "Проверка qr-кода");                
+                MessageBox.Show("У вас нажата клавиша CapsLock, ввод кода маркировки невозможен.Номенклатура не будет добавлена.", "Проверка qr-кода");
                 result = false;
             }
 
@@ -290,14 +297,14 @@ namespace Cash8
             }
 
             if (search_param.Substring(0, 4).IndexOf("HTTP") != -1)
-            {                
+            {
                 MessageBox.Show("Считан не верный qr код, он содержит последовательность HTTP", "Проверка qr-кода");
                 result = false;
             }
 
-                if (!qr_code_lenght.Contains(search_param.Length))
+            if (!qr_code_lenght.Contains(search_param.Length))
             {
-                MessageBox.Show(qr_code + "\r\n Ваш код маркировки имеет длину " + qr_code.Length.ToString() + " символов при этом он не входит в допустимый диапазон ", "Проверка qr-кода");
+                MessageBox.Show(qr_code + "\r\n Ваш код маркировки имеет длину " + search_param.Length.ToString() + " символов при этом он не входит в допустимый диапазон ", "Проверка qr-кода");
                 result = false;
             }
 
@@ -334,7 +341,7 @@ namespace Cash8
 
             if (Length > 13)//попробуем получить gtin
             {
-                if (!search_param_product(ref search_param))
+                if (!search_param_product(ref search_param))//выполнить все проверки по длине и структуре кода маркировки
                 {
                     return;
                 }
@@ -344,13 +351,14 @@ namespace Cash8
                     if ((search_param.Substring(0, 2) == "01") && (search_param.Substring(16, 2) == "21"))
                     {
                         gtin = search_param.Substring(3, 13);
-                        find_barcode_or_code_in_tovar(gtin);
+                        //search_param = add_gs1(search_param);
+                        find_barcode_or_code_in_tovar_new(gtin, search_param);                        
                     }
                 }                
             }
             else //Length <= 13)
             {
-                find_barcode_or_code_in_tovar(search_param);
+                find_barcode_or_code_in_tovar_new(search_param,"");
             }
         }
 
@@ -1138,7 +1146,8 @@ namespace Cash8
                     }
                     else
                     {
-                        this.inputbarcode.Focus();
+                        //this.inputbarcode.Focus();
+                        this.txtB_search_product.Focus();
                     }
                 }
                 else if (e.KeyCode == Keys.F6)
@@ -2552,6 +2561,7 @@ namespace Cash8
          */
         public void find_barcode_or_code_in_tovar(string barcode)
         {
+            //DateTime start = DateTime.Now;
             //Повторная проверка если документ не новый или уже вызвано окно оплаты подбор товара не работает
             if (!itsnew)
             {
@@ -2572,6 +2582,12 @@ namespace Cash8
                 return;
             }
             //Если кассир не увидел предупреждение предупредим его
+
+
+
+           
+            
+
 
             if (this.listView2.Visible)
             {
@@ -3193,7 +3209,8 @@ namespace Cash8
                     }
                     if (!fractional)
                     {
-                        inputbarcode.Focus();
+                        //inputbarcode.Focus();
+                        this.txtB_search_product.Focus();
                     }
                     calculation_of_the_sum_of_the_document();
                 }
@@ -3235,17 +3252,549 @@ namespace Cash8
                     // conn.Dispose();
                 }
             }
-
+            //MessageBox.Show((DateTime.Now - start).Milliseconds.ToString());
             write_new_document("0", "0", "0", "0", false, "0", "0", "0", "0");
         }
         //5010182990247
 
 
-            /// <summary>
-            /// Добавить разделитель групп
-            /// </summary>
-            /// <param name="mark_str"></param>
-            /// <returns></returns>
+        public void find_barcode_or_code_in_tovar_new(string barcode, string marking_code)
+        {
+            //DateTime start = DateTime.Now;
+            //Повторная проверка если документ не новый или уже вызвано окно оплаты подбор товара не работает
+            if (!itsnew)
+            {
+                return;
+            }
+
+            if (this.check_type.SelectedIndex > 0)
+            {
+                if (barcode.Trim().Length > 6)
+                {
+                    MessageBox.Show("Поиск товара прерван ! Длина кода превышает 6 символов ");
+                    return;
+                }
+            }
+
+            MainStaticClass.write_event_in_log("Попытка добавить новый товар в чек " + barcode, "Документ чек", numdoc.ToString());
+
+            //Здесь проверка штрихкода на весовой товар с весов ****************************************
+            bool ProductFromScales = false;
+            double WeightFromScales = 0;
+            if (barcode.Length == 13)
+            {
+                if (barcode.Substring(0, 2) == "23")//Это штрихкод с весов 
+                {
+                    WeightFromScales = Math.Round(double.Parse(barcode.Substring(8, 4)) / 1000, 3, MidpointRounding.ToEven);//Получить вес в кг с весов
+                    barcode = Convert.ToInt32(barcode.Substring(2, 6)).ToString();//Здесь переопределяем штрихкод для дальнейшего стандартного поведения 
+                    ProductFromScales = true;
+                }
+            }
+            //****************************************
+            
+            ProductData productData = InventoryManager.GetItem(Convert.ToInt64(barcode));
+            
+
+            if (productData.IsEmpty())//товар не найден
+            {
+                last_tovar.Text = barcode;
+                Tovar_Not_Found t_n_f = new Tovar_Not_Found();
+                t_n_f.ShowDialog();
+                t_n_f.Dispose();
+                return;
+            }
+
+            //int its_certificate = 0;
+            //int its_marked = 0;
+            //listView2.Items.Clear();
+
+
+            //ListViewItem lvi = new ListViewItem(productData.Code.ToString());//Внутренний код товара
+            //lvi.Tag = productData.Code.ToString();// reader.GetInt32(0);//Внутренний код товара
+            //lvi.SubItems.Add(productData.GetName());// reader[1].ToString().Trim());//Наименование
+            //select_tovar.Text = productData.GetName();// reader[1].ToString().Trim();
+            //select_tovar.Tag = productData.Code.ToString();// reader.GetInt64(0).ToString();
+            //lvi.SubItems.Add("");//Характеристика
+            //lvi.SubItems.Add(productData.Price.ToString());// reader.GetDecimal(2).ToString());//Цена                    
+            //lvi.SubItems[1].Text = productData.GetName();// reader.GetDecimal(5).ToString();                    
+
+            //listView2.Items.Add(lvi);
+            bool find_sertificate = false;
+            //Надо проверить может уже сертификат есть в чеке      
+            if (productData.isCertificate())
+            {
+                foreach (ListViewItem _lvi_ in listView1.Items)
+                {
+                    if (_lvi_.SubItems[14].Text == barcode)
+                    {
+                        find_sertificate = true;
+                        break;
+                    }
+                }
+            }
+
+            if (find_sertificate)
+            {
+                MessageBox.Show("Этот сертификат уже добавлен в чек");
+                return;
+            }
+
+            //КОНЕЦ Надо проверить может уже сертификат есть в чеке                                    
+
+            if (!productData.IsFractional())
+            {
+                if (WeightFromScales != 0)
+                {
+                    MessageBox.Show("Товар с кодом/штрихкодком " + barcode + " не является весовым и в чек добавлен не будет ");
+                    return;
+                }
+            }
+
+
+
+            //Проверка по сертификату
+            if (productData.isCertificate())
+            {
+                if (!check_sertificate_for_sales(barcode))
+                {
+                    return;
+                }
+                Cash8.DS.DS ds = MainStaticClass.get_ds();
+                ds.Timeout = 60000;
+                //Получить параметр для запроса на сервер 
+                string nick_shop = MainStaticClass.Nick_Shop.Trim();
+                if (nick_shop.Trim().Length == 0)
+                {
+                    MessageBox.Show(" Не удалось получить название магазина ");
+                    return;
+                }
+                string code_shop = MainStaticClass.Code_Shop.Trim();
+                if (code_shop.Trim().Length == 0)
+                {
+                    MessageBox.Show(" Не удалось получить код магазина ");
+                    return;
+                }
+                string count_day = CryptorEngine.get_count_day();
+                string key = nick_shop.Trim() + count_day.Trim() + code_shop.Trim();
+
+                string sertificate_code = barcode;
+                string encrypt_data = CryptorEngine.Encrypt(sertificate_code, true, key);
+                string status = "";
+                try
+                {
+                    status = ds.GetStatusSertificat(MainStaticClass.Nick_Shop, encrypt_data, MainStaticClass.GetWorkSchema.ToString());
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(" Произошли ошибки при работе с сертификатами " + ex.Message);
+                    return;
+                }
+                if (status == "-1")
+                {
+                    MessageBox.Show("Произошли ошибки при работе с сертификатами");
+                    return;
+                }
+                else
+                {
+                    string decrypt_data = CryptorEngine.Decrypt(status, true, key);
+                    if (decrypt_data == "1")
+                    {
+                        MessageBox.Show("Сертификат уже активирован");
+                        return;
+                    }
+                }
+
+            }
+
+            //Подсчет суммы по документу
+            //if (listView2.Items.Count == 1)//1 товар найден
+            //{
+            ListViewItem lvi = null;
+            if ((!productData.IsMarked()) && (!productData.isCertificate()) && (!productData.IsFractional())) // && ((MainStaticClass.GetWorkSchema == 1) || (MainStaticClass.GetWorkSchema == 3)))
+            {
+                lvi = exist_tovar_in_listView(listView1, Convert.ToInt64(productData.Code.ToString()), "");
+            }
+
+
+            if (lvi == null)
+            {
+                //select_tovar.Tag.ToString()
+                lvi = new ListViewItem(productData.Code.ToString());// select_tovar.Tag.ToString());
+                lvi.Tag = productData.Code.ToString();// select_tovar.Tag.ToString();
+                lvi.SubItems.Add(productData.GetName());// select_tovar.Text);//Наименование
+                lvi.SubItems.Add("");// listView2.Items[0].Text);//Характеиристика                         
+
+                lvi.SubItems[2].Tag = "";
+                if (!productData.IsFractional())
+                {
+                    lvi.SubItems.Add("1");
+                }
+                else
+                {
+                    lvi.SubItems.Add("0,001");
+                }
+                lvi.SubItems.Add(productData.Price.ToString());//Цена 
+
+                if (productData.isCertificate())
+                {
+                    lvi.SubItems.Add(Math.Round(Convert.ToDouble(productData.Price) - Convert.ToDouble(productData.Price) * Discount, 2).ToString());//Цена со скидкой
+                }
+                else
+                {
+                    lvi.SubItems.Add(Math.Round(Convert.ToDecimal(productData.Price), 2).ToString());//Цена со скидкой 
+                }
+                lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString());//Сумма
+                lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)).ToString()); //Сумма со скидкой                        
+                lvi.SubItems.Add("0"); //Номер акционного документа скидка
+                lvi.SubItems.Add("0"); //Номер акционного документа подарок
+                lvi.SubItems.Add("0"); //Номер акционного документа дополнительное поле пометка что участвовало в акции, но скидка может быть
+                lvi.SubItems.Add("0");//Бонус
+                lvi.SubItems.Add("0");//Бонус1
+                lvi.SubItems.Add("0");//Бонус2
+                                      //if (its_certificate == 0)
+                if (!productData.isCertificate())
+                {
+                    lvi.SubItems.Add("0");//Маркер
+                }
+                else// (its_certificate == 1)
+                {
+                    lvi.SubItems.Add(barcode);//Это сертификат и при продаже мы добавляем его штрихкод 
+                }
+
+                bool error = false;
+                int code_marking_error = 0;
+                bool cdn_vrifyed = false;
+                string mark_str = "";
+
+                if ((productData.IsMarked()) && (MainStaticClass.GetDoNotPromptMarkingCode == 0))
+                {
+                    if (marking_code == "")
+                    {
+                        this.qr_code = "";
+                        Input_action_barcode input_Action_Barcode = new Input_action_barcode();
+                        input_Action_Barcode.call_type = 6;
+                        input_Action_Barcode.caller = this;
+                        if (DialogResult.Cancel == input_Action_Barcode.ShowDialog())
+                        {
+                            error = true;
+                        }
+                        else
+                        {
+                            marking_code = this.qr_code;//пока что для обратной совместимости потом уберу эту переменную и все будет через marking_code
+                        }
+                    }
+
+                    if (!error)
+                    {
+
+                        //if (this.qr_code != "")//Был введен qr код необходимо его внести в чек
+                        if (marking_code != "")//Был введен qr код необходимо его внести в чек
+                        {
+                            //перед тем как добавить qr код в чек необходимо его проверить
+                            string mark_str_cdn = "";
+                            if (MainStaticClass.Version2Marking == 1)
+                            {
+                                WortWithMarkingV3 markingV3 = new WortWithMarkingV3();
+                                //mark_str = this.qr_code.Trim();
+                                mark_str = add_gs1(marking_code);
+                                bool result_check_cdn = false;
+                                bool timeout_check_cdn = false;//таймаут при проверке по cdn
+
+                                //*******************************************************************************************************************************
+                                foreach (ListViewItem listViewItem4 in this.listView1.Items)
+                                {
+                                    if (listViewItem4.SubItems[14].Text == mark_str)
+                                    {
+                                        MessageBox.Show("Номенклатура с введенным кодом маркировки который вы пытались добавить уже существует в чеке. \r\n Номенклатура не будет добавлена.", "Проверка при вводе кода маркировки");
+                                        error = true;
+                                        break;
+                                    }
+                                }
+
+                                if (!error)
+                                {
+
+                                    if (productData.IsCDNCheck())
+                                    {
+                                        if (MainStaticClass.CashDeskNumber != 9 && MainStaticClass.EnableCdnMarkers == 1)
+                                        {
+                                            if (MainStaticClass.CDN_Token == "")
+                                            {
+                                                MessageBox.Show("В этой кассе не заполнен CDN токен, \r\n ПРОДАЖА ДАННОГО ТОВАРА НЕВОЗМОЖНА ! ", "Проверка CDN");
+                                                return;
+                                            }
+                                            CDN cdn = new CDN();
+                                            List<string> codes = new List<string>();
+                                            mark_str_cdn = mark_str.Replace("\u001d", @"\u001d");
+                                            codes.Add(mark_str_cdn);
+                                            mark_str_cdn = mark_str_cdn.Replace("'", "\'");
+                                            Dictionary<string, string> d_tovar = new Dictionary<string, string>();
+                                            d_tovar[lvi.SubItems[1].Text] = lvi.SubItems[0].Text;
+                                            result_check_cdn = cdn.check_marker_code(codes, mark_str, this.numdoc, ref request, mark_str_cdn, d_tovar, ref timeout_check_cdn);
+                                            if ((!result_check_cdn) && (!timeout_check_cdn))//не прошел проверку и таймаута не было 
+                                            {
+                                                return;
+                                            }
+                                            else
+                                            {
+                                                cdn_vrifyed = true;
+                                            }
+                                        }
+                                    }
+                                    //}
+
+                                    byte[] textAsBytes = Encoding.Default.GetBytes(mark_str);
+                                    string imc = Convert.ToBase64String(textAsBytes);
+
+                                    if (MainStaticClass.PrintingUsingLibraries == 0)
+                                    {
+                                        if (!cdn_vrifyed)
+                                        {
+                                            WortWithMarkingV3.Root root = markingV3.beginMarkingCodeValidation("auto", imc, "itemPieceSold", 1, "piece", 0, false);
+                                            if (root.results[0].errorCode != 0)
+                                            {
+                                                markingV3.cancelMarkingCodeValidation();//прерываем валидацию
+                                                code_marking_error = root.results[0].errorCode;
+                                                if ((code_marking_error != 421) && (code_marking_error != 402))
+                                                {
+                                                    MainStaticClass.write_event_in_log("beginMarkingCodeValidation " + root.results[0].errorDescription + " " + code_marking_error, "Документ", numdoc.ToString());
+                                                    error = true;//не прошли проверку товар не добавляем в чек
+                                                }
+                                            }
+                                            else
+                                            {
+                                                root = markingV3.getMarkingCodeValidationStatus();
+                                                if (root.results[0].result != null)
+                                                {
+                                                    if (root.results[0].result.driverError != null)
+                                                    {
+                                                        if (root.results[0].result.driverError.code != 0)
+                                                        {
+                                                            markingV3.cancelMarkingCodeValidation();//прерываем валидацию
+                                                            code_marking_error = root.results[0].result.driverError.code;
+                                                            if ((code_marking_error != 421) && (code_marking_error != 402))
+                                                            {
+                                                                //markingV3.cancelMarkingCodeValidation();//прерываем валидацию
+                                                                MessageBox.Show("getMarkingCodeValidationStatus " + root.results[0].result.driverError.description, "Ошибка при начале проверки кода маркировки");
+                                                                error = true;//не прошли проверку товар не добавляем в чек
+                                                            }
+                                                        }
+                                                        else//проверяем статус и если все хорошо отправляем принять 
+                                                        {
+                                                            //if (root.results[0].result.ready)
+                                                            //{
+                                                            if (root.results[0].result.onlineValidation.itemInfoCheckResult.imcCheckFlag &&
+                                                                root.results[0].result.onlineValidation.itemInfoCheckResult.imcCheckResult &&
+                                                                root.results[0].result.onlineValidation.itemInfoCheckResult.imcStatusInfo &&
+                                                                root.results[0].result.onlineValidation.itemInfoCheckResult.imcEstimatedStatusCorrect)
+                                                            {
+                                                                //Все признаки успех, значит M+
+                                                                markingV3.acceptMarkingCode();
+                                                                MainStaticClass.write_event_in_log("acceptMarkingCode  " + lvi.SubItems[0].Text, "Документ чек", numdoc.ToString());
+                                                            }
+                                                            else// сообщим детально об ошибке 
+                                                            {
+                                                                if (!root.results[0].result.onlineValidation.itemInfoCheckResult.imcCheckFlag)
+                                                                {
+                                                                    MessageBox.Show("Код маркировки не был проверен ФН и(или) ОИСМП");
+                                                                }
+                                                                if (!root.results[0].result.onlineValidation.itemInfoCheckResult.imcCheckResult)
+                                                                {
+                                                                    MessageBox.Show("Результат проверки КП КМ отрицательный или код маркировки не был проверен");
+                                                                }
+                                                                if (!root.results[0].result.onlineValidation.itemInfoCheckResult.imcStatusInfo)
+                                                                {
+                                                                    MessageBox.Show("Сведения о статусе товара от ОИСМП не получены");
+                                                                }
+                                                                if (!root.results[0].result.onlineValidation.itemInfoCheckResult.imcEstimatedStatusCorrect)
+                                                                {
+                                                                    MessageBox.Show("От ОИСМП получены сведения, что планируемый статус товара некорректен или сведения о статусе товара от ОИСМП не получены");
+                                                                }
+
+                                                                error = true;
+                                                                markingV3.cancelMarkingCodeValidation();//прерываем валидацию
+                                                            }
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        MainStaticClass.write_event_in_log("root.results[0].result.driverError == null  " + lvi.SubItems[0].Text, "Документ чек", numdoc.ToString());
+                                                        markingV3.cancelMarkingCodeValidation();//прерываем валидацию
+                                                        code_marking_error = 421;
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    error = true;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        PrintingUsingLibraries printingUsingLibraries = new PrintingUsingLibraries();
+                                        if (!printingUsingLibraries.check_marking_code(mark_str, this.numdoc.ToString(), ref this.cdn_markers_result_check, this.check_type.SelectedIndex))
+                                        {
+                                            error = true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            foreach (ListViewItem listViewItem4 in this.listView1.Items)
+                            {
+                                if (listViewItem4.SubItems[14].Text == this.qr_code)
+                                {
+                                    error = true;
+                                    MessageBox.Show("Номенклатура с введенным кодом маркировки который вы пытались добавить уже существует в чеке. \r\n Номенклатура не будет добавлена.");
+                                    break;
+                                }
+                            }
+                        }
+                        if (error)
+                        {
+                            return;
+                        }
+                        if (mark_str != "")
+                        {
+                            lvi.SubItems[14].Text = mark_str;//добавим в чек qr код                                        
+                        }
+                        else
+                        {
+                            lvi.SubItems[14].Text = this.qr_code;//добавим в чек qr код                                        
+                        }
+                        this.qr_code = "";//обнулим переменную
+                                          //}
+                    }
+                    else
+                    {
+                        //MessageBox.Show("У вас нажата клавиша CapsLock, ввод кода маркировки невозможен.Номенклатура не будет добавлена.");
+                        //Не добавляем позицию в чек
+                        error = true;
+                    }
+
+                    if ((!error) || ((code_marking_error == 402) || (code_marking_error == 421) || cdn_vrifyed))//Если с qr кодом все хорошо тогда добавляем позицию иначе не добавляем 
+                    {
+                        listView1.Items.Add(lvi);
+
+                        MainStaticClass.write_event_in_log("Товар добавлен " + barcode, "Документ чек", numdoc.ToString());
+                        if (cdn_vrifyed && MainStaticClass.PrintingUsingLibraries == 0)
+                        {
+                            km_adding_to_buffer_index(listView1.Items.Count - 1);
+                            MainStaticClass.write_event_in_log("cdn_vrifyed = " + cdn_vrifyed + ", на фискальном регистраторе не проверяем ", "Документ чек", numdoc.ToString());
+                        }
+                    }
+                    else
+                    {
+                        MainStaticClass.write_event_in_log("Отказ от ввода qr кода, товар не добавлен", "Документ чек", numdoc.ToString());
+                        last_tovar.Text = barcode;
+                        Tovar_Not_Found t_n_f = new Tovar_Not_Found();
+                        t_n_f.textBox1.Text = "Код маркировки не прошел проверку";
+                        t_n_f.textBox1.Font = new Font("Microsoft Sans Serif", 22);
+                        t_n_f.label1.Text = " Код ошибки code_marking_error = " + code_marking_error.ToString();
+                        t_n_f.ShowDialog();
+                        t_n_f.Dispose();
+                        return;
+                    }
+                }
+                else
+                {
+                    listView1.Items.Add(lvi);
+                }
+
+                if (productData.IsFractional())
+                {
+                    listView1.Focus();
+                    listView1.Select();
+                    listView1.Items[this.listView1.Items.Count - 1].Selected = true;
+                    listView1.Items[this.listView1.Items.Count - 1].Focused = true;
+
+                    if (!ProductFromScales)
+                    {
+                        show_quantity_control(true);
+                    }
+                    else
+                    {
+                        listView1.Items[this.listView1.Items.Count - 1].SubItems[3].Text = WeightFromScales.ToString();
+                    }
+                }
+
+                SendDataToCustomerScreen(1, 0, 1);
+
+                if (!productData.IsFractional())
+                {
+                    listView1.Select();
+                    listView1.Items[this.listView1.Items.Count - 1].Selected = true;
+                }
+
+                update_record_last_tovar(listView1.Items[this.listView1.Items.Count - 1].SubItems[1].Text, listView1.Items[this.listView1.Items.Count - 1].SubItems[3].Text);
+            }
+            else
+            {
+                if (!productData.IsFractional())
+                {
+                    lvi.SubItems[3].Text = (Convert.ToDecimal(lvi.SubItems[3].Text) + 1).ToString();
+                    calculate_on_string(lvi);
+                    lvi.Selected = true;
+                    listView1.Select();
+                }
+                else
+                {
+                    listView1.Focus();
+                    listView1.Select();
+                    listView1.Items[this.listView1.Items.Count - 1].Selected = true;
+                    listView1.Items[this.listView1.Items.Count - 1].Focused = true;
+                    if (!ProductFromScales)
+                    {
+                        show_quantity_control(true);
+                    }
+                    else
+                    {
+                        listView1.Items[this.listView1.Items.Count - 1].SubItems[3].Text = WeightFromScales.ToString();
+                    }
+                }
+                update_record_last_tovar(lvi.SubItems[1].Text, lvi.SubItems[4].Text);
+            }
+
+            if (!productData.IsFractional())
+            {
+                //inputbarcode.Focus();
+                this.txtB_search_product.Focus();
+            }
+            calculation_of_the_sum_of_the_document();
+
+            //}
+            //else if (listView2.Items.Count > 1)//Найденных товаров больше одного необходимо показать список выбра пользователю
+            //{
+            //    this.panel2.Visible = true;
+            //    this.panel2.BringToFront();
+            //    this.listView2.Visible = true;
+            //    listView2.Select();
+            //    listView2.Items[0].Selected = true;
+            //    listView2.Items[0].Focused = true;
+            //}
+            //else if (listView2.Items.Count == 0)
+            //{
+            //    //stop_com_barcode_scaner();
+            //    last_tovar.Text = barcode;
+            //    Tovar_Not_Found t_n_f = new Tovar_Not_Found();
+            //    t_n_f.ShowDialog();
+            //    t_n_f.Dispose();
+            //    //start_com_barcode_scaner();
+            //}
+            //MessageBox.Show((DateTime.Now - start).Milliseconds.ToString());
+            write_new_document("0", "0", "0", "0", false, "0", "0", "0", "0");
+        }
+
+
+
+        /// <summary>
+        /// Добавить разделитель групп
+        /// </summary>
+        /// <param name="mark_str"></param>
+        /// <returns></returns>
         private string add_gs1(string mark_str)
         {
             string GS1 = Char.ConvertFromUtf32(29);
@@ -3363,37 +3912,37 @@ namespace Cash8
             }
         }
 
-        private int check_sign_marker_code(string code_tovar)
-        {
-            int result = 0;
+        //private int check_sign_marker_code(string code_tovar)
+        //{
+        //    int result = 0;
 
-            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
-            try
-            {
-                conn.Open();
-                string query = "SELECT its_marked FROM tovar where code=" + code_tovar;
-                NpgsqlCommand command = new NpgsqlCommand(query, conn);
-                result = Convert.ToInt32(command.ExecuteScalar());
-                conn.Close();
-            }
-            catch (NpgsqlException ex)
-            {
-                MessageBox.Show(" ВНИМАНИЕ !!! Ошибка при получении признака маркировки " + ex.Message);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(" ВНИМАНИЕ !!! Ошибка при получении признака маркировки " + ex.Message);
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                }
-            }
+        //    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+        //    try
+        //    {
+        //        conn.Open();
+        //        string query = "SELECT its_marked FROM tovar where code=" + code_tovar;
+        //        NpgsqlCommand command = new NpgsqlCommand(query, conn);
+        //        result = Convert.ToInt32(command.ExecuteScalar());
+        //        conn.Close();
+        //    }
+        //    catch (NpgsqlException ex)
+        //    {
+        //        MessageBox.Show(" ВНИМАНИЕ !!! Ошибка при получении признака маркировки " + ex.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(" ВНИМАНИЕ !!! Ошибка при получении признака маркировки " + ex.Message);
+        //    }
+        //    finally
+        //    {
+        //        if (conn.State == ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //        }
+        //    }
 
-            return result;
-        }
+        //    return result;
+        //}
         private void listView2_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
         {
             if (!itsnew)
@@ -3653,7 +4202,8 @@ namespace Cash8
                         //        this.client_barcode.Text = "";
                         //    }
                         //}
-                        this.inputbarcode.Focus();
+                        //this.inputbarcode.Focus();
+                        this.txtB_search_product.Focus();
                         btn_inpute_phone_client.Enabled = true;
                     }
                     else//думалось заполнить телефонный номер в форму , но это наверное лишнее
@@ -3698,7 +4248,8 @@ namespace Cash8
                     MainStaticClass.write_event_in_log(" Сегодня днюха у " + barcode, " Документ ", numdoc.ToString());
                 }
                 MainStaticClass.write_event_in_log(" Проверка на день рождения окончание " + barcode, " Документ ", numdoc.ToString());
-                this.inputbarcode.Focus();
+                //this.inputbarcode.Focus();
+                this.txtB_search_product.Focus();
                 this.client_barcode.Text = "";
                 this.btn_inpute_phone_client.Enabled = false;                           
             }
@@ -3986,7 +4537,8 @@ namespace Cash8
             dc = new DataColumn("Action2", System.Type.GetType("System.Int32"));
             table.Columns.Add(dc);
                        
-            this.inputbarcode.Focus();
+            //this.inputbarcode.Focus();
+            this.txtB_search_product.Focus();
 
             //Для дублей 
 
@@ -4035,7 +4587,8 @@ namespace Cash8
                 txtB_cash_money.Visible = false;
                 txtB_bonus_money.Visible = false;
 
-                inputbarcode.Focus();
+                //inputbarcode.Focus();
+                this.txtB_search_product.Focus();
 
 
                 this.date_time_start.Text = "Чек   " + DateTime.Now.ToString("yyy-MM-dd HH:mm:ss");
@@ -4111,7 +4664,8 @@ namespace Cash8
             {
                 first_start_com_barcode_scaner();
                 selection_goods = true;
-                inputbarcode.Focus();
+                //inputbarcode.Focus();
+                this.txtB_search_product.Focus();
                 //список допустимых длин qr кодов                
                 qr_code_lenght.Add(30);
                 qr_code_lenght.Add(32);
@@ -13350,7 +13904,8 @@ namespace Cash8
             }
             write_new_document("0", "0", "0", "0", false, "0", "0", "0", "0");
             SendDataToCustomerScreen(1, 0,1);
-            inputbarcode.Focus();
+            //inputbarcode.Focus();
+            this.txtB_search_product.Focus();
         }
 
         /*
@@ -13569,7 +14124,7 @@ namespace Cash8
                 //}
             }
 
-            pay_form.cash_sum.Focus();
+            pay_form.txtB_cash_sum.Focus();
             //pay_form.TopMost = true;
             //pay_form.Show(); //для тестов пока так
             //Для бонусной программы проверяем заполненность пароля для передачи данных провайдеру
@@ -13638,7 +14193,8 @@ namespace Cash8
             {
                 this.Close();
             }
-            inputbarcode.Focus();
+            //inputbarcode.Focus();
+            this.txtB_search_product.Focus();
             pay_form = new Pay();
 
 

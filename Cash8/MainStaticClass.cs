@@ -18,6 +18,7 @@ using Atol.Drivers10.Fptr;
 using AtolConstants = Atol.Drivers10.Fptr.Constants;
 using System.IO.Ports;
 
+
 namespace Cash8
 {
 
@@ -127,11 +128,23 @@ namespace Cash8
         private static string fn_ipaddr = "";
         private static int acquiring_bank = -1;
         private static int do_not_prompt_marking_code = -1;
+        //private static Dictionary<int, Cash8.ProductData> dictionaryProductData = new Dictionary<int, Cash8.ProductData>();
+        
+
+
+        //public static Dictionary DictionaryProductData
+        //{
+        //    get
+        //    {
+
+        //    }
+
+        //}
 
         public static void validate_date_time_with_fn(int minutes)
         {
             if (MainStaticClass.CashDeskNumber != 9)
-            {
+            {               
                 if (MainStaticClass.PrintingUsingLibraries == 1)
                 {
                     PrintingUsingLibraries usingLibraries = new PrintingUsingLibraries();

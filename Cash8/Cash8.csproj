@@ -182,6 +182,7 @@
     <Compile Include="Interface_switching.Designer.cs">
       <DependentUpon>Interface_switching.cs</DependentUpon>
     </Compile>
+    <Compile Include="InventoryManager.cs" />
     <Compile Include="LoadDataWebService.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -223,6 +224,7 @@
     <Compile Include="PreInspectionResponse.cs" />
     <Compile Include="PrintingUsingLibraries.cs" />
     <Compile Include="ProcessingOfActions.cs" />
+    <Compile Include="ProductData.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReasonsDeletionCheck.cs">
