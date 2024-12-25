@@ -80,7 +80,7 @@ namespace Cash8
             toolTip.ToolTipIcon = ToolTipIcon.Info;
             toolTip.IsBalloon = true; // Для отображения подсказки в виде "баллона"
 
-            toolTip.SetToolTip(this.non_cash_sum, "То полностью заполнится поле карты оплаты суммой документа в точисле с копейками");
+            toolTip.SetToolTip(this.non_cash_sum, "То полностью заполнится поле карты оплаты суммой документа в том числе с копейками");
 
         }
 

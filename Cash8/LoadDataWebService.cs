@@ -291,9 +291,9 @@ namespace Cash8
                     //query=" DELETE FROM clients WHERE code="+str1[0]+";";
                     //query += "INSERT INTO clients(code,name, sum, date_of_birth,discount_types_code,its_work)VALUES(" + str + ")";
 
-                    query = "UPDATE clients SET "+//code='" + client.code + "'," +
+                    query = "UPDATE clients SET " +//code='" + client.code + "'," +
                         " phone='" + client.phone + "'," +
-                        " name='" + client.name + "'," +                        
+                        " name='" + client.name + "'," +
                         " date_of_birth='" + client.holiday + "'," +
                         //" discount_types_code=" + str1[4] + "," +
                         " its_work='" + client.use_blocked + "'," +
@@ -301,7 +301,7 @@ namespace Cash8
                         //" attribute=" + str1[8] + "," +
                         //" bonus_is_on=" + str1[9] + "," +
                         " reason_for_blocking='" + client.reason_for_blocking + "'," +
-                        " notify_security='" + client.notify_security +"' "+
+                        " notify_security='" + client.notify_security + "' " +
                         " WHERE code='" + client.code + "';";
 
                     local_last_date_download_bonus_clients = client.datetime_update;
@@ -312,7 +312,7 @@ namespace Cash8
                     if (rowsaffected == 0)
                     {
                         query = "INSERT INTO clients(code,phone,name, date_of_birth,its_work,reason_for_blocking,notify_security)VALUES('" +
-                            client.code+ "','" +
+                            client.code + "','" +
                             client.phone + "','" +
                             client.name + "','" +
                             client.holiday + "','" +
@@ -334,7 +334,7 @@ namespace Cash8
                     }
                 }
 
-                query = "UPDATE constants SET last_date_download_bonus_clients='" + local_last_date_download_bonus_clients+"'";
+                query = "UPDATE constants SET last_date_download_bonus_clients='" + local_last_date_download_bonus_clients + "'";
                 command = new NpgsqlCommand(query, conn);
                 command.Transaction = tran;
                 command.ExecuteNonQuery();
@@ -386,7 +386,6 @@ namespace Cash8
             }
 
             return result;
-
         }
 
 
@@ -874,7 +873,7 @@ namespace Cash8
         }
 
 
-        private void btn_new_load_Click(object sender, EventArgs e)
+        private void new_load()
         {
             //btn_new_load.Enabled = false;
             if (!MainStaticClass.service_is_worker())
@@ -884,7 +883,7 @@ namespace Cash8
             }
 
             check_temp_tables();
-            
+
             //Получить параметра для запроса на сервер 
             string nick_shop = MainStaticClass.Nick_Shop.Trim();
             if (nick_shop.Trim().Length == 0)
@@ -912,26 +911,26 @@ namespace Cash8
                 string data = JsonConvert.SerializeObject(queryPacketData, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
                 data_encrypt = CryptorEngine.Encrypt(data, true, key);
             }
-            
+
             List<string> queries = new List<string>();//Список запросов                                          
             using (LoadPacketData loadPacketData = getLoadPacketDataFull(nick_shop, data_encrypt, key))
-            {                
+            {
                 if (!loadPacketData.PacketIsFull)
                 {
-                    MessageBox.Show(loadPacketData.Exception+"\r\n Неудачная попытка получения данных");
+                    MessageBox.Show(loadPacketData.Exception + "\r\n Неудачная попытка получения данных");
                     return;
-                }                
+                }
                 if (loadPacketData.Exchange)
                 {
                     MessageBox.Show("Пакет данных получен во время обновления данных на сервере, загрузка прервана");
                     return;
-                }                
+                }
 
                 queries.Add("Delete from action_table");
                 queries.Add("Delete from action_header");
                 queries.Add("Delete from advertisement");
-                queries.Add("UPDATE constants SET threshold="+loadPacketData.Threshold.ToString());
-                queries.Add("UPDATE constants SET cdn_token='" + loadPacketData.TokenMark.ToString()+"'");                
+                queries.Add("UPDATE constants SET threshold=" + loadPacketData.Threshold.ToString());
+                queries.Add("UPDATE constants SET cdn_token='" + loadPacketData.TokenMark.ToString() + "'");
 
 
                 if (loadPacketData.ListPromoText != null)
@@ -958,11 +957,11 @@ namespace Cash8
                                                         tovar.Nds + "," +
                                                         tovar.ItsCertificate + "," +
                                                         tovar.PercentBonus + ",'" +
-                                                        tovar.TnVed +"',"+ 
-                                                        tovar.ItsMarked+","+
-                                                        tovar.ItsExcise+","+
-                                                        tovar.CdnCheck+","+
-                                                        tovar.Fractional+")");
+                                                        tovar.TnVed + "'," +
+                                                        tovar.ItsMarked + "," +
+                                                        tovar.ItsExcise + "," +
+                                                        tovar.CdnCheck + "," +
+                                                        tovar.Fractional + ")");
                     }
                     loadPacketData.ListTovar.Clear();
                     loadPacketData.ListTovar = null;
@@ -1003,7 +1002,7 @@ namespace Cash8
                 queries.Add("DELETE FROM sertificates");
 
                 if (loadPacketData.ListSertificate.Count > 0)
-                {                    
+                {
                     foreach (Sertificate sertificate in loadPacketData.ListSertificate)
                     {
                         queries.Add(" INSERT INTO sertificates(code, code_tovar, rating, is_active)VALUES (" +
@@ -1021,7 +1020,7 @@ namespace Cash8
                 {
                     foreach (ActionHeader actionHeader in loadPacketData.ListActionHeader)
                     {
-                        queries.Add("INSERT INTO action_header(date_started,date_end,num_doc,tip,barcode,persent,sum,comment,marker,action_by_discount,time_start,time_end," +                        
+                        queries.Add("INSERT INTO action_header(date_started,date_end,num_doc,tip,barcode,persent,sum,comment,marker,action_by_discount,time_start,time_end," +
                         " bonus_promotion, with_old_promotion, monday, tuesday, wednesday, thursday, friday, saturday, sunday, promo_code, sum_bonus,execution_order,gift_price,kind,sum1)VALUES ('" +
                         actionHeader.DateStarted + "','" +
                         actionHeader.DateEnd + "'," +
@@ -1046,11 +1045,11 @@ namespace Cash8
                         actionHeader.Saturday + "," +
                         actionHeader.Sunday + "," +
                         actionHeader.PromoCode + "," +
-                        actionHeader.SumBonus +","+
-                        actionHeader.ExecutionOrder + ","+
-                        actionHeader.GiftPrice+","+
-                        actionHeader.Kind+ ","+
-                        actionHeader.sum1+")");
+                        actionHeader.SumBonus + "," +
+                        actionHeader.ExecutionOrder + "," +
+                        actionHeader.GiftPrice + "," +
+                        actionHeader.Kind + "," +
+                        actionHeader.sum1 + ")");
                     }
                     if (loadPacketData.ListActionTable.Count > 0)
                     {
@@ -1091,10 +1090,10 @@ namespace Cash8
 
             //queries.Add("UPDATE date_sync SET tovar='" + DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd")+"'");
             //queries.Add("INSERT INTO date_sync(tovar) VALUES('" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss") + "')");
-            
+
             NpgsqlConnection conn = null;
             NpgsqlTransaction tran = null;
-            string s = "";            
+            string s = "";
             try
             {
                 conn = MainStaticClass.NpgsqlConn();
@@ -1109,7 +1108,7 @@ namespace Cash8
                     command.ExecuteNonQuery();
                 }
                 //Обновление даты последнего обновления 
-                string query = "UPDATE date_sync SET tovar = '" + DateTime.Now.ToString("yyyy-MM-dd")+"'";
+                string query = "UPDATE date_sync SET tovar = '" + DateTime.Now.ToString("yyyy-MM-dd") + "'";
                 command = new NpgsqlCommand(query, conn);
                 command.Transaction = tran;
                 if (command.ExecuteNonQuery() == 0)
@@ -1127,12 +1126,12 @@ namespace Cash8
                 {
                     MessageBox.Show("Не удалось отправить информацию об успешной загрузке");
                     MainStaticClass.write_event_in_log("Не удалось отправить информацию об успешной загрузке ", "Загрузка данных", "0");
-                }                
+                }
                 conn.Close();
                 command.Dispose();
                 command = null;
                 tran = null;
-                MessageBox.Show("Загрузка успешно завершена");                
+                MessageBox.Show("Загрузка успешно завершена");
             }
             catch (NpgsqlException ex)
             {
@@ -1150,7 +1149,7 @@ namespace Cash8
                 MessageBox.Show(ex.Message, "Ошибка при импорте данных");
                 MessageBox.Show(s);
                 if (tran != null)
-                {                    
+                {
                     tran.Rollback();
                 }
 
@@ -1166,6 +1165,307 @@ namespace Cash8
             }
             GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
             GC.WaitForPendingFinalizers();
+
+            //btn_new_load.Enabled = true;
+        }
+
+        private void btn_new_load_Click(object sender, EventArgs e)
+        {
+            InventoryManager.ClearDictionaryProductData();
+            GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
+            GC.WaitForPendingFinalizers();
+            new_load();
+            InventoryManager.FillDictionaryProductDataAsync();
+            //btn_new_load.Enabled = false;
+            //if (!MainStaticClass.service_is_worker())
+            //{
+            //    MessageBox.Show("Веб сервис недоступен");
+            //    return;
+            //}
+
+            //check_temp_tables();
+
+            ////Получить параметра для запроса на сервер 
+            //string nick_shop = MainStaticClass.Nick_Shop.Trim();
+            //if (nick_shop.Trim().Length == 0)
+            //{
+            //    MessageBox.Show(" Не удалось получить название магазина ");
+            //    return;
+            //}
+
+            //string code_shop = MainStaticClass.Code_Shop.Trim();
+            //if (code_shop.Trim().Length == 0)
+            //{
+            //    MessageBox.Show(" Не удалось получить код магазина ");
+            //    return;
+            //}
+            //string count_day = CryptorEngine.get_count_day();
+            //string key = nick_shop.Trim() + count_day.Trim() + code_shop.Trim();
+            //string data_encrypt = "";
+            //using (QueryPacketData queryPacketData = new QueryPacketData())
+            //{
+            //    queryPacketData.NickShop = nick_shop;
+            //    queryPacketData.CodeShop = code_shop;
+            //    queryPacketData.LastDateDownloadTovar = last_date_download_tovars().ToString("dd-MM-yyyy");
+            //    queryPacketData.NumCash = MainStaticClass.CashDeskNumber.ToString();
+            //    queryPacketData.Version = MainStaticClass.version().Replace(".", "");
+            //    string data = JsonConvert.SerializeObject(queryPacketData, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            //    data_encrypt = CryptorEngine.Encrypt(data, true, key);
+            //}
+
+            //List<string> queries = new List<string>();//Список запросов                                          
+            //using (LoadPacketData loadPacketData = getLoadPacketDataFull(nick_shop, data_encrypt, key))
+            //{                
+            //    if (!loadPacketData.PacketIsFull)
+            //    {
+            //        MessageBox.Show(loadPacketData.Exception+"\r\n Неудачная попытка получения данных");
+            //        return;
+            //    }                
+            //    if (loadPacketData.Exchange)
+            //    {
+            //        MessageBox.Show("Пакет данных получен во время обновления данных на сервере, загрузка прервана");
+            //        return;
+            //    }                
+
+            //    queries.Add("Delete from action_table");
+            //    queries.Add("Delete from action_header");
+            //    queries.Add("Delete from advertisement");
+            //    queries.Add("UPDATE constants SET threshold="+loadPacketData.Threshold.ToString());
+            //    queries.Add("UPDATE constants SET cdn_token='" + loadPacketData.TokenMark.ToString()+"'");                
+
+
+            //    if (loadPacketData.ListPromoText != null)
+            //    {
+            //        if (loadPacketData.ListPromoText.Count > 0)
+            //        {
+            //            foreach (PromoText promoText in loadPacketData.ListPromoText)
+            //            {
+            //                queries.Add("INSERT INTO advertisement(advertisement_text,num_str)VALUES ('" + promoText.AdvertisementText + "'," + promoText.NumStr + ")");
+            //            }
+            //            loadPacketData.ListPromoText.Clear();
+            //            loadPacketData.ListPromoText = null;
+            //        }
+            //    }
+            //    if (loadPacketData.ListTovar.Count > 0)
+            //    {
+            //        foreach (Tovar tovar in loadPacketData.ListTovar)
+            //        {
+            //            queries.Add("INSERT INTO tovar2(code,name,retail_price,its_deleted,nds,its_certificate,percent_bonus,tnved,its_marked,its_excise,cdn_check,fractional) VALUES(" +
+            //                                            tovar.Code + ",'" +
+            //                                            tovar.Name + "'," +
+            //                                            tovar.RetailPrice + "," +
+            //                                            tovar.ItsDeleted + "," +
+            //                                            tovar.Nds + "," +
+            //                                            tovar.ItsCertificate + "," +
+            //                                            tovar.PercentBonus + ",'" +
+            //                                            tovar.TnVed +"',"+ 
+            //                                            tovar.ItsMarked+","+
+            //                                            tovar.ItsExcise+","+
+            //                                            tovar.CdnCheck+","+
+            //                                            tovar.Fractional+")");
+            //        }
+            //        loadPacketData.ListTovar.Clear();
+            //        loadPacketData.ListTovar = null;
+            //    }
+
+            //    queries.Add("UPDATE tovar SET its_deleted=1,retail_price=0;");
+            //    queries.Add("INSERT INTO tovar SELECT F.code, F.name, F.retail_price, F.its_deleted, F.nds, F.its_certificate, F.percent_bonus, F.tnved,F.its_marked,F.its_excise,F.cdn_check,F.fractional FROM(SELECT tovar2.code AS code, tovar.code AS code2, tovar2.name, tovar2.retail_price, tovar2.its_deleted, tovar2.nds, tovar2.its_certificate, tovar2.percent_bonus, tovar2.tnved,tovar2.its_marked,tovar2.its_excise,tovar2.cdn_check,tovar2.fractional  FROM tovar2 left join tovar on tovar2.code = tovar.code)AS F WHERE code2 ISNULL;");
+            //    queries.Add("UPDATE tovar SET name = tovar2.name,retail_price = tovar2.retail_price, its_deleted=tovar2.its_deleted,nds=tovar2.nds,its_certificate = tovar2.its_certificate,percent_bonus = tovar2.percent_bonus,tnved = tovar2.tnved,its_marked = tovar2.its_marked,its_excise=tovar2.its_excise,cdn_check = tovar2.cdn_check,fractional=tovar2.fractional FROM tovar2 where tovar.code=tovar2.code;");
+            //    queries.Add("DELETE FROM barcode;");
+            //    if (loadPacketData.ListBarcode.Count > 0)
+            //    {
+            //        foreach (Barcode barcode in loadPacketData.ListBarcode)
+            //        {
+            //            queries.Add("INSERT INTO barcode(tovar_code,barcode) VALUES(" + barcode.TovarCode + ",'" + barcode.BarCode + "')");
+            //        }
+            //        loadPacketData.ListBarcode.Clear();
+            //        loadPacketData.ListBarcode = null;
+
+            //    }
+            //    if (loadPacketData.ListCharacteristic != null)
+            //    {
+            //        if (loadPacketData.ListCharacteristic.Count > 0)
+            //        {
+            //            queries.Add("DELETE FROM characteristic");
+            //            foreach (Characteristic characteristic in loadPacketData.ListCharacteristic)
+            //            {
+            //                queries.Add("INSERT INTO characteristic(tovar_code, guid, name, retail_price_characteristic) VALUES(" +
+            //                    characteristic.CodeTovar + ",'" +
+            //                    characteristic.Guid + "','" +
+            //                    characteristic.Name + "'," +
+            //                    characteristic.RetailPrice + ")");
+            //            }
+            //            loadPacketData.ListCharacteristic.Clear();
+            //            loadPacketData.ListCharacteristic = null;
+            //        }
+            //    }
+
+            //    queries.Add("DELETE FROM sertificates");
+
+            //    if (loadPacketData.ListSertificate.Count > 0)
+            //    {                    
+            //        foreach (Sertificate sertificate in loadPacketData.ListSertificate)
+            //        {
+            //            queries.Add(" INSERT INTO sertificates(code, code_tovar, rating, is_active)VALUES (" +
+            //                sertificate.Code + "," +
+            //                sertificate.CodeTovar + "," +
+            //                sertificate.Rating + "," +
+            //                sertificate.IsActive + ")");
+            //        }
+            //        loadPacketData.ListSertificate.Clear();
+            //        loadPacketData.ListSertificate = null;
+            //    }
+
+
+            //    if (loadPacketData.ListActionHeader.Count > 0)
+            //    {
+            //        foreach (ActionHeader actionHeader in loadPacketData.ListActionHeader)
+            //        {
+            //            queries.Add("INSERT INTO action_header(date_started,date_end,num_doc,tip,barcode,persent,sum,comment,marker,action_by_discount,time_start,time_end," +                        
+            //            " bonus_promotion, with_old_promotion, monday, tuesday, wednesday, thursday, friday, saturday, sunday, promo_code, sum_bonus,execution_order,gift_price,kind,sum1)VALUES ('" +
+            //            actionHeader.DateStarted + "','" +
+            //            actionHeader.DateEnd + "'," +
+            //            actionHeader.NumDoc + "," +
+            //            actionHeader.Tip + ",'" +
+            //            actionHeader.Barcode + "'," +
+            //            actionHeader.Persent + "," +
+            //            actionHeader.sum + ",'" +
+            //            actionHeader.Comment + "'," +
+            //            //actionHeader.CodeTovar + "," +
+            //            actionHeader.Marker + "," +
+            //            actionHeader.ActionByDiscount + "," +
+            //            actionHeader.TimeStart + "," +
+            //            actionHeader.TimeEnd + "," +
+            //            actionHeader.BonusPromotion + "," +
+            //            actionHeader.WithOldPromotion + "," +
+            //            actionHeader.Monday + "," +
+            //            actionHeader.Tuesday + "," +
+            //            actionHeader.Wednesday + "," +
+            //            actionHeader.Thursday + "," +
+            //            actionHeader.Friday + "," +
+            //            actionHeader.Saturday + "," +
+            //            actionHeader.Sunday + "," +
+            //            actionHeader.PromoCode + "," +
+            //            actionHeader.SumBonus +","+
+            //            actionHeader.ExecutionOrder + ","+
+            //            actionHeader.GiftPrice+","+
+            //            actionHeader.Kind+ ","+
+            //            actionHeader.sum1+")");
+            //        }
+            //        if (loadPacketData.ListActionTable.Count > 0)
+            //        {
+            //            foreach (ActionTable actionTable in loadPacketData.ListActionTable)
+            //            {
+            //                queries.Add("INSERT INTO action_table(num_doc, num_list, code_tovar, price)VALUES(" +
+            //                    actionTable.NumDoc + "," +
+            //                    actionTable.NumList + "," +
+            //                    actionTable.CodeTovar + "," +
+            //                    actionTable.Price + ")");
+            //            }
+            //        }
+            //        loadPacketData.ListActionHeader.Clear();
+            //        loadPacketData.ListActionTable.Clear();
+            //        loadPacketData.ListActionHeader = null;
+            //        loadPacketData.ListActionTable = null;
+            //    }
+            //    else
+            //    {
+            //        MessageBox.Show("Нет данных по акциям");
+            //    }
+
+            //    queries.Add("Delete from action_clients");
+
+            //    if (loadPacketData.ListActionClients.Count > 0)
+            //    {
+            //        foreach (ActionClients actionClients in loadPacketData.ListActionClients)
+            //        {
+            //            queries.Add("INSERT INTO action_clients(num_doc, code_client) VALUES(" +
+            //                actionClients.NumDoc + "," +
+            //                actionClients.CodeClient + ")");
+            //        }
+            //        loadPacketData.ListActionClients.Clear();
+            //        loadPacketData.ListActionClients = null;
+            //    }
+            //    ;
+            //}
+
+            ////queries.Add("UPDATE date_sync SET tovar='" + DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd")+"'");
+            ////queries.Add("INSERT INTO date_sync(tovar) VALUES('" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss") + "')");
+
+            //NpgsqlConnection conn = null;
+            //NpgsqlTransaction tran = null;
+            //string s = "";            
+            //try
+            //{
+            //    conn = MainStaticClass.NpgsqlConn();
+            //    conn.Open();
+            //    tran = conn.BeginTransaction();
+            //    NpgsqlCommand command = null;
+            //    foreach (string str in queries)
+            //    {
+            //        s = str;
+            //        command = new NpgsqlCommand(str, conn);
+            //        command.Transaction = tran;
+            //        command.ExecuteNonQuery();
+            //    }
+            //    //Обновление даты последнего обновления 
+            //    string query = "UPDATE date_sync SET tovar = '" + DateTime.Now.ToString("yyyy-MM-dd")+"'";
+            //    command = new NpgsqlCommand(query, conn);
+            //    command.Transaction = tran;
+            //    if (command.ExecuteNonQuery() == 0)
+            //    {
+            //        query = "INSERT INTO date_sync(tovar) VALUES('" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss") + "')";
+            //        command = new NpgsqlCommand(query, conn);
+            //        command.Transaction = tran;
+            //        command.ExecuteNonQuery();
+            //    }
+
+            //    queries.Clear();
+            //    queries = null;
+            //    tran.Commit();
+            //    if (!MainStaticClass.SendResultGetData())
+            //    {
+            //        MessageBox.Show("Не удалось отправить информацию об успешной загрузке");
+            //        MainStaticClass.write_event_in_log("Не удалось отправить информацию об успешной загрузке ", "Загрузка данных", "0");
+            //    }                
+            //    conn.Close();
+            //    command.Dispose();
+            //    command = null;
+            //    tran = null;
+            //    MessageBox.Show("Загрузка успешно завершена");                
+            //}
+            //catch (NpgsqlException ex)
+            //{
+            //    string error = ex.Message;
+            //    MessageBox.Show(error, "Ошибка при импорте данных");
+            //    MessageBox.Show(s);
+            //    if (tran != null)
+            //    {
+            //        tran.Rollback();
+            //    }
+
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show(ex.Message, "Ошибка при импорте данных");
+            //    MessageBox.Show(s);
+            //    if (tran != null)
+            //    {                    
+            //        tran.Rollback();
+            //    }
+
+            //}
+            //finally
+            //{
+            //    if (conn.State == ConnectionState.Open)
+            //    {
+            //        conn.Close();
+            //        conn.Dispose();
+            //        conn = null;
+            //    }
+            //}
+            //GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
+            //GC.WaitForPendingFinalizers();
 
             //btn_new_load.Enabled = true;
         }
@@ -1186,7 +1486,7 @@ namespace Cash8
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void btn_update_only_Click(object sender, EventArgs e)
-        {
+        {            
             if (!MainStaticClass.service_is_worker())
             {
                 MessageBox.Show("Веб сервис недоступен");

@@ -230,6 +230,7 @@
             // 
             this.non_cash_sum_kop.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.non_cash_sum_kop.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.non_cash_sum_kop.Enabled = false;
             this.non_cash_sum_kop.Font = new System.Drawing.Font("Microsoft Sans Serif", 32.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.non_cash_sum_kop.Location = new System.Drawing.Point(704, 339);
             this.non_cash_sum_kop.MaxLength = 2;

@@ -268,7 +268,7 @@ namespace Cash8
                 }
                 else
                 {
-                    MessageBox.Show("Система еще не готова, пробуйте ввести товар в чек повторно.");
+                    MessageBox.Show("Система еще не готова, обработано записей  "+ InventoryManager.rowCountCurrent.ToString()+" из "+ InventoryManager.rowCount.ToString() +"пробуйте ввести товар в чек повторно.");
                 }
             }
         }

@@ -12,90 +12,111 @@ namespace Cash8
     {
         private static Dictionary<long, ProductData> dictionaryProductData = new Dictionary<long, ProductData>();
         public static bool complete = false;
+        public static int rowCount = 0;
+        public static int rowCountCurrent = 0;
 
         public static Dictionary<long, ProductData> DictionaryProductData
         {
             get => dictionaryProductData;
         }
 
+        public static void ClearDictionaryProductData()
+        {
+            complete = false;
+            dictionaryProductData.Clear();
+        }
+        
+        public static async Task FillDictionaryProductDataAsync()
+        {
+            await Task.Run(() =>
+            {
+                try
+                {
+                    FillDictionaryProductData();
+                }
+                catch (Exception ex)
+                {
+                    // Перехват исключения и передача его в основной поток
+                    if (Application.OpenForms.Count > 0)
+                    {
+                        var mainForm = Application.OpenForms[0];
+                        mainForm.Invoke(new MethodInvoker(() =>
+                        {
+                            MessageBox.Show($"Произошла ошибка: {ex.Message}", "Работа с кешем товаров");
+                        }));
+                    }
+                }
+            });
+        }
+        
         public static bool FillDictionaryProductData()
         {
             bool result = true;
-          
+
             dictionaryProductData.Clear();
 
             using (var conn = MainStaticClass.NpgsqlConn())
             {
                 try
-                {
+                {                    
+                    string countQuery = "SELECT COUNT(*) FROM tovar " +
+                        "LEFT JOIN barcode ON tovar.code=barcode.tovar_code " +
+                        "WHERE tovar.its_deleted = 0 AND tovar.retail_price<>0";
+
+                    conn.Open();
+                    using (var countCommand = new NpgsqlCommand(countQuery, conn))
+                    {
+                        rowCount = Convert.ToInt32(countCommand.ExecuteScalar());
+                    }
+
                     string query = "SELECT tovar.code, tovar.name, tovar.retail_price, tovar.its_certificate, tovar.its_marked, tovar.cdn_check, tovar.fractional, barcode.barcode FROM tovar " +
                     "LEFT JOIN barcode ON tovar.code=barcode.tovar_code WHERE tovar.its_deleted = 0 AND tovar.retail_price<>0";
-                    conn.Open();
+
                     using (var command = new NpgsqlCommand(query, conn))
-                    using (var reader = command.ExecuteReader())
                     {
-                        while (reader.Read())
+                        using (var reader = command.ExecuteReader())
                         {
-                            long code = Convert.ToInt64(reader["code"]);
-
-                            ProductFlags flags = ProductFlags.None;
-                            // Создаем флаги на основе значений из базы данных                            
-                            if (Convert.ToBoolean(reader["its_certificate"])) flags |= ProductFlags.Certificate;
-                            if (Convert.ToBoolean(reader["its_marked"])) flags |= ProductFlags.Marked;
-                            if (Convert.ToBoolean(reader["cdn_check"])) flags |= ProductFlags.CDNCheck;
-                            if (Convert.ToBoolean(reader["fractional"])) flags |= ProductFlags.Fractional;
-
-                            if (!dictionaryProductData.TryGetValue(code, out _))
+                            rowCountCurrent = 0;
+                            while (reader.Read())
                             {
-                                var productData = new ProductData(
-                                code,
-                                reader["name"].ToString().Trim(),
-                                Convert.ToDecimal(reader["retail_price"]),
-                                flags
-                                );
+                                rowCountCurrent++;
+                                long code = Convert.ToInt64(reader["code"]);
 
-                                AddItem(code, productData);
-                            }
+                                ProductFlags flags = ProductFlags.None;
+                                // Создаем флаги на основе значений из базы данных                            
+                                if (Convert.ToBoolean(reader["its_certificate"])) flags |= ProductFlags.Certificate;
+                                if (Convert.ToBoolean(reader["its_marked"])) flags |= ProductFlags.Marked;
+                                if (Convert.ToBoolean(reader["cdn_check"])) flags |= ProductFlags.CDNCheck;
+                                if (Convert.ToBoolean(reader["fractional"])) flags |= ProductFlags.Fractional;
 
-                            //// Создаем флаги на основе значений из базы данных
-                            //ProductFlags flags = ProductFlags.None;
-                            //if (Convert.ToBoolean(reader["its_certificate"])) flags |= ProductFlags.Certificate;
-                            //if (Convert.ToBoolean(reader["its_marked"])) flags |= ProductFlags.Marked;
-                            //if (Convert.ToBoolean(reader["cdn_check"])) flags |= ProductFlags.CDNCheck;
-                            //if (Convert.ToBoolean(reader["fractional"])) flags |= ProductFlags.Fractional;
+                                if (!dictionaryProductData.TryGetValue(code, out _))
+                                {
+                                    var productData = new ProductData(code, reader["name"].ToString().Trim(), Convert.ToDecimal(reader["retail_price"]), flags);
 
-                            //var productData = new ProductData(
-                            //code,
-                            //reader["name"].ToString().Trim(),
-                            //Convert.ToDecimal(reader["retail_price"]),
-                            //flags
-                            //);
+                                    AddItem(code, productData);
+                                }
 
-                            //AddItem(code, productData);
-
-                            string barcode = reader["barcode"].ToString().Trim();
-                            //if (barcode == "4627140440150")
-                            //{
-                            //    MessageBox.Show("1");
-                            //}
-                            if (!(string.IsNullOrEmpty(barcode) || dictionaryProductData.TryGetValue(Convert.ToInt64(barcode), out _)))
-                            {
-                                //continue;                                
-                                var productData = new ProductData(Convert.ToInt64(code), reader["name"].ToString().Trim(), Convert.ToDecimal(reader["retail_price"]), flags);
-                                AddItem(Convert.ToInt64(barcode), productData);
+                                string barcode = reader["barcode"].ToString().Trim();
+                                if (!(string.IsNullOrEmpty(barcode) || dictionaryProductData.TryGetValue(Convert.ToInt64(barcode), out _)))
+                                {
+                                    var productData = new ProductData(Convert.ToInt64(code), reader["name"].ToString().Trim(), Convert.ToDecimal(reader["retail_price"]), flags);
+                                    AddItem(Convert.ToInt64(barcode), productData);
+                                }
                             }
                         }
                     }
                 }
                 catch (NpgsqlException ex)
                 {
-                    MessageBox.Show($"Произошли ошибки при заполнении словаря данными о товарах: {ex.Message}");
-                    result = false;
+                    //MessageBox.Show($"Произошли ошибки при заполнении словаря данными о товарах: {ex.Message}", "Заполнение кеша товаров");
+                    throw new Exception($"При заполнении словаря данными о товарах: {ex.Message}", ex);
+                    //result = false;
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Произошли ошибки при заполнении словаря данными о товарах: {ex.Message}");
-                    result = false;
+                    //MessageBox.Show($"Произошли ошибки при заполнении словаря данными о товарах: {ex.Message}", "Заполенние кеша товаров");
+                    throw new Exception($"При заполнении словаря данными о товарах: {ex.Message}", ex);
+                    //result = false;
                 }
                 finally
                 {
@@ -107,12 +128,12 @@ namespace Cash8
                 complete = result;
                 return result;
             }
-        }
+        }       
 
-        public static async Task FillDictionaryProductDataAsync()
-        {
-            Task.Run(() => InventoryManager.FillDictionaryProductData());
-        }
+        //public static async Task FillDictionaryProductDataAsync()
+        //{
+        //    Task.Run(() => InventoryManager.FillDictionaryProductData());
+        //}
 
         public static void AddItem(long id, ProductData data)
         {
