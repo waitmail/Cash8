@@ -129,12 +129,7 @@ namespace Cash8
                 return result;
             }
         }       
-
-        //public static async Task FillDictionaryProductDataAsync()
-        //{
-        //    Task.Run(() => InventoryManager.FillDictionaryProductData());
-        //}
-
+        
         public static void AddItem(long id, ProductData data)
         {
             if (!dictionaryProductData.ContainsKey(id))

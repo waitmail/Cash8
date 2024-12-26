@@ -1132,6 +1132,11 @@ namespace Cash8
                 command = null;
                 tran = null;
                 MessageBox.Show("Загрузка успешно завершена");
+                if (CheckFirstLoadData())
+                {
+                    MessageBox.Show(" Это была первая загрузка данных, для применения новых параметров программа будет закрыта");
+                    Application.Exit();
+                }
             }
             catch (NpgsqlException ex)
             {
@@ -1169,8 +1174,43 @@ namespace Cash8
             //btn_new_load.Enabled = true;
         }
 
+        private bool CheckFirstLoadData()
+        {
+            bool result = false;
+
+            try
+            {
+                using (var conn = MainStaticClass.NpgsqlConn())
+                {
+                    conn.Open();
+                    string query = "SELECT tovar FROM public.date_sync";
+                    using (var command = new NpgsqlCommand(query, conn))
+                    {
+                        object resultQuery = command.ExecuteScalar();
+                        if (resultQuery != null && DateTime.TryParse(resultQuery.ToString(), out DateTime date))
+                        {
+                            if (date < new DateTime(2001, 1, 1))
+                            {
+                                result = true;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex) when (ex is NpgsqlException || ex is InvalidOperationException || ex is FormatException)
+            {
+                MessageBox.Show("Произошла ошибка при определении первой загрузки: " + ex.Message);
+            }
+
+            return result;
+        }
+
+
+
+
         private void btn_new_load_Click(object sender, EventArgs e)
         {
+            //MainStaticClass.
             InventoryManager.ClearDictionaryProductData();
             GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
             GC.WaitForPendingFinalizers();

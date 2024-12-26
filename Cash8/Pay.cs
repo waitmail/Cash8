@@ -76,11 +76,11 @@ namespace Cash8
 
             toolTip.SetToolTip(this.checkBox_do_not_send_payment_to_the_terminal, "Не отправлять запрос об оплате на терминал");
 
-            toolTip.ToolTipTitle = "Если нажать на клавиатуре кнопку r ";
-            toolTip.ToolTipIcon = ToolTipIcon.Info;
-            toolTip.IsBalloon = true; // Для отображения подсказки в виде "баллона"
+            //toolTip.ToolTipTitle = "Если нажать на клавиатуре кнопку r ";
+            //toolTip.ToolTipIcon = ToolTipIcon.Info;
+            //toolTip.IsBalloon = true; // Для отображения подсказки в виде "баллона"
 
-            toolTip.SetToolTip(this.non_cash_sum, "То полностью заполнится поле карты оплаты суммой документа в том числе с копейками");
+            //toolTip.SetToolTip(this.non_cash_sum, "То полностью заполнится поле карты оплаты суммой документа в том числе с копейками");
 
         }
 
@@ -99,6 +99,9 @@ namespace Cash8
             {
                 e.Handled = true;
             }
+
+        
+
         }
 
         //public void set_kop_on_non_cash_sum_kop(string kop)
@@ -179,7 +182,17 @@ namespace Cash8
 
         private void non_cash_KeyPress(object sender, KeyPressEventArgs e)
         {
-            
+
+            if (Convert.ToInt16(non_cash_sum_kop.Text) == 0)
+            {
+                double total = get_sum_sum_at_a_discount();
+                if (total != (int)total)
+                {
+                    e.Handled = true;
+                    MessageBox.Show("У вас не заполнены копейки, нажмите клавишу к(r) и затем продолжите ввод целой части по карте оплаты.", "Проверки при оплате картой");
+                    return;
+                }
+            }
 
             if ((Char.IsDigit(e.KeyChar)))
             {
@@ -2184,6 +2197,10 @@ namespace Cash8
         private void button2_Click(object sender, EventArgs e)
         {            
             this.button_pay.Enabled = false;
+
+            //Проверить заполнены копейки или нет 
+
+
                        
             double cash_money = Math.Round(Convert.ToDouble(txtB_cash_sum.Text.Replace(".", ",")), 2);
             double non_cash_money = Math.Round(Convert.ToDouble(get_non_cash_sum()), 2);
@@ -2404,7 +2421,9 @@ namespace Cash8
         {
             if (cc.check_type.SelectedIndex == 0)
             {
-                MessageBox.Show("Список введённых подарков будет очищен.При следующем переходе в окно оплаты необходимо повторить их ввод, если программа предложит это сделать.");
+                MessageBox.Show("Список введённых подарков будет очищен." +
+                    "При следующем переходе в окно оплаты необходимо повторить их ввод, если программа предложит это сделать");//.\r\n"+
+                    //"ТАК ЖЕ ОЧЕНЬ ВАЖНО ПРИ ОПЛАТЕ ТЕРМИНАЛОМ ЗАПОЛНИТЬ СУММУ ПО КНОПКЕ, ЧТОБЫ ЗАПОЛНИЛИСЬ КОПЕЙКИ.");
             }
             cc.cancel_action();
             cc.listView_sertificates.Items.Clear();
