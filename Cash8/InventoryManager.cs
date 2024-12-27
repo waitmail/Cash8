@@ -12,8 +12,8 @@ namespace Cash8
     {
         private static Dictionary<long, ProductData> dictionaryProductData = new Dictionary<long, ProductData>();
         public static bool complete = false;
-        public static int rowCount = 0;
-        public static int rowCountCurrent = 0;
+        //public static int rowCount = 0;
+        //public static int rowCountCurrent = 0;
 
         public static Dictionary<long, ProductData> DictionaryProductData
         {
@@ -59,15 +59,15 @@ namespace Cash8
             {
                 try
                 {                    
-                    string countQuery = "SELECT COUNT(*) FROM tovar " +
-                        "LEFT JOIN barcode ON tovar.code=barcode.tovar_code " +
-                        "WHERE tovar.its_deleted = 0 AND tovar.retail_price<>0";
+                    //string countQuery = "SELECT COUNT(*) FROM tovar " +
+                    //    "LEFT JOIN barcode ON tovar.code=barcode.tovar_code " +
+                    //    "WHERE tovar.its_deleted = 0 AND tovar.retail_price<>0";
 
                     conn.Open();
-                    using (var countCommand = new NpgsqlCommand(countQuery, conn))
-                    {
-                        rowCount = Convert.ToInt32(countCommand.ExecuteScalar());
-                    }
+                    //using (var countCommand = new NpgsqlCommand(countQuery, conn))
+                    //{
+                    //    rowCount = Convert.ToInt32(countCommand.ExecuteScalar());
+                    //}
 
                     string query = "SELECT tovar.code, tovar.name, tovar.retail_price, tovar.its_certificate, tovar.its_marked, tovar.cdn_check, tovar.fractional, barcode.barcode FROM tovar " +
                     "LEFT JOIN barcode ON tovar.code=barcode.tovar_code WHERE tovar.its_deleted = 0 AND tovar.retail_price<>0";
@@ -76,10 +76,10 @@ namespace Cash8
                     {
                         using (var reader = command.ExecuteReader())
                         {
-                            rowCountCurrent = 0;
+                            //rowCountCurrent = 0;
                             while (reader.Read())
                             {
-                                rowCountCurrent++;
+                                //rowCountCurrent++;
                                 long code = Convert.ToInt64(reader["code"]);
 
                                 ProductFlags flags = ProductFlags.None;

@@ -255,22 +255,15 @@ namespace Cash8
             //textBox.KeyPress += TextBox_KeyPress;
         }
 
-        /// <summary>        
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        ///// <summary>        
+        ///// </summary>
+        ///// <param name="sender"></param>
+        ///// <param name="e"></param>
         private void TxtB_search_product_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == 13)//Нажата клавиша enter
             {
-                if (InventoryManager.complete)
-                {
-                    find_product();
-                }
-                else
-                {
-                    MessageBox.Show("Система еще не готова, обработано записей  "+ InventoryManager.rowCountCurrent.ToString()+" из "+ InventoryManager.rowCount.ToString() +"пробуйте ввести товар в чек повторно.");
-                }
+                find_product();             
             }
         }
 
@@ -336,9 +329,7 @@ namespace Cash8
             if (Length == 0)
             {
                 return;
-            }
-
-            
+            }            
 
             if (Length > 13)//попробуем получить gtin
             {
@@ -1063,10 +1054,10 @@ namespace Cash8
             //}
         }
 
-        public void ProcessPermanentChoice(string barcode)
-        {
-            this.find_barcode_or_code_in_tovar(barcode);
-        }
+        //public void ProcessPermanentChoice(string barcode)
+        //{
+        //    //this.find_barcode_or_code_in_tovar(barcode);
+        //}
 
         //protected override void OnFormClosing(FormClosingEventArgs e)
         //{
@@ -1203,10 +1194,10 @@ namespace Cash8
 
                 else if (e.KeyCode == Keys.Escape)
                 {
-                    if (listView2.Focused)
-                    {
-                        return;
-                    }
+                    //if (listView2.Focused)
+                    //{
+                    //    return;
+                    //}
                     if (listView1.Items.Count == 0)
                     {
                         if (MainStaticClass.Use_Usb_to_Com_Barcode_Scaner)
@@ -1659,41 +1650,41 @@ namespace Cash8
             }
         }
 
-        private void inputbarcode_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
-        {
-            this.inputbarcode.Text = this.inputbarcode.Text.Replace("\r\n", "");
-            if (e.KeyChar == 13)
-            {
-                if (this.inputbarcode.Text.Length == 0)//||(this.inputbarcode.Text=="\r\n"))//тут еще проверка на минимальность символов
-                {
-                    //MessageBox.Show("Штрихкод не найден");
-                    Tovar_Not_Found t_n_f = new Tovar_Not_Found();
-                    t_n_f.ShowDialog();
-                    t_n_f.Dispose();
-                    return;
-                }
-                find_barcode_or_code_in_tovar(this.inputbarcode.Text);
-                if (listView1.Items.Count > 0)
-                {
-                    btn_inpute_phone_client.Enabled = false;
-                }
-                inputbarcode.Text = "";
-                //this.listView1.Items[this.listView1.Items.Count - 1].Selected = true;
-                //this.listView1.Items[this.listView1.Items.Count - 1].Focused = true;
-                //this.listView1.EnsureVisible(this.listView1.Items.Count - 1);
-                return;
-            }
+        //private void inputbarcode_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
+        //{
+        //    this.inputbarcode.Text = this.inputbarcode.Text.Replace("\r\n", "");
+        //    if (e.KeyChar == 13)
+        //    {
+        //        if (this.inputbarcode.Text.Length == 0)//||(this.inputbarcode.Text=="\r\n"))//тут еще проверка на минимальность символов
+        //        {
+        //            //MessageBox.Show("Штрихкод не найден");
+        //            Tovar_Not_Found t_n_f = new Tovar_Not_Found();
+        //            t_n_f.ShowDialog();
+        //            t_n_f.Dispose();
+        //            return;
+        //        }
+        //        find_barcode_or_code_in_tovar(this.inputbarcode.Text);
+        //        if (listView1.Items.Count > 0)
+        //        {
+        //            btn_inpute_phone_client.Enabled = false;
+        //        }
+        //        inputbarcode.Text = "";
+        //        //this.listView1.Items[this.listView1.Items.Count - 1].Selected = true;
+        //        //this.listView1.Items[this.listView1.Items.Count - 1].Focused = true;
+        //        //this.listView1.EnsureVisible(this.listView1.Items.Count - 1);
+        //        return;
+        //    }
 
-            if (!(Char.IsDigit(e.KeyChar)))
-            {
-                if (e.KeyChar != (char)Keys.Back)
-                {
+        //    if (!(Char.IsDigit(e.KeyChar)))
+        //    {
+        //        if (e.KeyChar != (char)Keys.Back)
+        //        {
 
-                    e.Handled = true;
-                }
-            }
+        //            e.Handled = true;
+        //        }
+        //    }
 
-        }
+        //}
 
         //private decimal calculation_of_the_sum_of_the_document()        
         //{
@@ -2556,707 +2547,74 @@ namespace Cash8
             return result;
         }
 
-        /*Поиск товара по штрихкоду
-         * и добвление его в табличную часть
-         * стандартное добавление товара
-         */
-        public void find_barcode_or_code_in_tovar(string barcode)
+        private ProductData GetProductDataInDB(string barcode)
         {
-        //    //DateTime start = DateTime.Now;
-        //    //Повторная проверка если документ не новый или уже вызвано окно оплаты подбор товара не работает
-        //    if (!itsnew)
-        //    {
-        //        return;
-        //    }
+            NpgsqlConnection conn = null;
+            ProductData productData = new ProductData(0, "", 0, ProductFlags.None);
 
-        //    if (this.check_type.SelectedIndex > 0)
-        //    {
-        //        if (barcode.Trim().Length > 6)
-        //        {
-        //            MessageBox.Show("Поиск товара прерван ! Длина кода превышает 6 символов ");
-        //            return;
-        //        }
-        //    }
+            try
+            {
+                conn = MainStaticClass.NpgsqlConn();
+                conn.Open();
+                NpgsqlCommand command = new NpgsqlCommand();
+                command.Connection = conn;
+                if (barcode.Length > 6)
+                {
+                    command.CommandText = "select tovar.code,tovar.name,tovar.retail_price,characteristic.name,characteristic.guid,characteristic.retail_price_characteristic,tovar.its_certificate,tovar.its_marked,tovar.cdn_check,tovar.fractional " +
+                        " from  barcode left join tovar ON barcode.tovar_code=tovar.code " +
+                    " left join characteristic ON tovar.code = characteristic.tovar_code " +
+                    " where barcode='" + barcode + "' AND its_deleted=0  AND (retail_price<>0 OR characteristic.retail_price_characteristic<>0)";
 
-        //    if (!selection_goods)
-        //    {
-        //        return;
-        //    }
-        //    //Если кассир не увидел предупреждение предупредим его
+                }
+                else
+                {
+                    command.CommandText = "select tovar.code,tovar.name,tovar.retail_price, characteristic.name,characteristic.guid,characteristic.retail_price_characteristic,tovar.its_certificate,tovar.its_marked,tovar.cdn_check,tovar.fractional " +
+                        " FROM tovar left join characteristic  ON tovar.code = characteristic.tovar_code where tovar.its_deleted=0 AND tovar.its_certificate=0 AND  (retail_price<>0 OR characteristic.retail_price_characteristic<>0) " +
+                        " AND tovar.code='" + barcode + "'";
+                }
+                NpgsqlDataReader reader = command.ExecuteReader();
+                //bool find = false;
+                while (reader.Read())
+                {
+                    //find = true;
+                    Int64 code = Convert.ToInt64(reader["code"].ToString());
+                    string name = reader["name"].ToString();
+                    decimal price = Convert.ToDecimal(reader["retail_price"]);
 
+                    ProductFlags flags = ProductFlags.None;
+                    if (Convert.ToBoolean(reader["its_certificate"])) flags |= ProductFlags.Certificate;
+                    if (Convert.ToBoolean(reader["its_marked"])) flags |= ProductFlags.Marked;
+                    if (Convert.ToBoolean(reader["cdn_check"])) flags |= ProductFlags.CDNCheck;
+                    if (Convert.ToBoolean(reader["fractional"])) flags |= ProductFlags.Fractional;
+                    productData = new ProductData(code, name, price, flags);
+                }
+                //if (!find)
+                //{
+                //    last_tovar.Text = barcode;
+                //    Tovar_Not_Found t_n_f = new Tovar_Not_Found();
+                //    t_n_f.ShowDialog();
+                //    t_n_f.Dispose();
+                //}
+            }
+            catch (NpgsqlException ex)
+            {
+                MessageBox.Show(@"Произошла ошибка при получении товара по коду\штрихкоду " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(@"Произошла ошибка при получении товара по коду\штрихкоду " + ex.Message);
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
 
+            }
 
-           
-            
-
-
-        //    if (this.listView2.Visible)
-        //    {
-        //        this.panel2.BackColor = Color.Red;
-        //        MessageBox.Show("НЕ ЗАВЕРШЕН ПРЕДЫДУЩИЙ ВЫБОР ТОВАРА !!!", "ВНИМАНИЕ ОПЕРАТОР !!!");
-        //        this.panel2.BackColor = Color.ForestGreen;
-        //        listView2.Focus();
-        //        listView2.Items[0].Selected = true;
-        //        return;
-        //    }
-
-        //    MainStaticClass.write_event_in_log("Попытка добавить новый товар в чек " + barcode, "Документ чек", numdoc.ToString());
-
-        //    //Здесь проверка штрихкода на весовой товар с весов ****************************************
-        //    bool ProductFromScales = false;
-        //    double WeightFromScales = 0;
-        //    if (barcode.Length == 13)
-        //    {
-        //        if (barcode.Substring(0, 2) == "23")//Это штрихкод с весов 
-        //        {
-        //            WeightFromScales = Math.Round(double.Parse(barcode.Substring(8, 4))/1000,3,MidpointRounding.ToEven);//Получить вес в кг с весов
-        //            barcode = Convert.ToInt32(barcode.Substring(2, 6)).ToString();//Здесь переопределяем штрихкод для дальнейшего стандартного поведения 
-        //            ProductFromScales = true;                    
-        //        }
-        //    }
-        //    //****************************************
-
-        //    NpgsqlConnection conn = null;
-
-        //    try
-        //    {
-        //        conn = MainStaticClass.NpgsqlConn();
-        //        conn.Open();
-        //        NpgsqlCommand command = new NpgsqlCommand();
-        //        command.Connection = conn;                
-        //        if (barcode.Length > 6)
-        //        {                    
-        //            command.CommandText = "select tovar.code,tovar.name,tovar.retail_price,characteristic.name,characteristic.guid,characteristic.retail_price_characteristic,tovar.its_certificate,tovar.its_marked,tovar.cdn_check,tovar.fractional " +
-        //                " from  barcode left join tovar ON barcode.tovar_code=tovar.code " +
-        //            " left join characteristic ON tovar.code = characteristic.tovar_code " +
-        //            " where barcode='" + barcode + "' AND its_deleted=0  AND (retail_price<>0 OR characteristic.retail_price_characteristic<>0)";                   
-
-        //        }
-        //        else
-        //        {                    
-        //            command.CommandText = "select tovar.code,tovar.name,tovar.retail_price, characteristic.name,characteristic.guid,characteristic.retail_price_characteristic,tovar.its_certificate,tovar.its_marked,tovar.cdn_check,tovar.fractional " +
-        //                " FROM tovar left join characteristic  ON tovar.code = characteristic.tovar_code where tovar.its_deleted=0 AND tovar.its_certificate=0 AND  (retail_price<>0 OR characteristic.retail_price_characteristic<>0) " +
-        //                " AND tovar.code='" + barcode + "'";
-        //        }
-
-        //        int its_certificate = 0;
-        //        int its_marked = 0;
-        //        NpgsqlDataReader reader = command.ExecuteReader();
-        //        listView2.Items.Clear();
-        //        bool find_sertificate = false;
-        //        bool cdn_check = false;
-        //        bool fractional = false;
-        //        //string tovar_code = ""; 
-
-
-        //        while (reader.Read())
-        //        {
-        //            cdn_check = Convert.ToBoolean(reader["cdn_check"]);
-        //            fractional= Convert.ToBoolean(reader["fractional"]);
-        //            //Сначала добавляем в предварительный список listView2 для того чтобы дать выбор если таких товаров будет несколько
-        //            //ListViewItem lvi = new ListViewItem(reader[1].ToString());
-
-        //            //if (reader[3].ToString().Trim() == "3")
-        //            //{
-        //            //    its_bonus_card = true;
-        //            //}
-        //            ListViewItem lvi = new ListViewItem(reader[3].ToString().Trim());//Внутренний код товара
-        //            //lvi.Tag = reader.GetInt32(0);//Внутренний код товара
-        //            //lvi.SubItems.Add(reader[1].ToString().Trim());//Наименование
-        //            select_tovar.Text = reader[1].ToString().Trim();
-        //            select_tovar.Tag = reader.GetInt64(0).ToString();
-        //            //tovar_code = reader.GetInt64(0).ToString();
-
-        //            //lvi.SubItems.Add(reader[3].ToString().Trim());//Характеристика
-        //            lvi.Tag = reader[4].ToString().Trim();//GUID характеристики
-
-        //            lvi.SubItems.Add(reader.GetDecimal(2).ToString());//Цена
-        //            if (reader[5].ToString() != "")
-        //            {
-        //                lvi.SubItems[1].Text = reader.GetDecimal(5).ToString();
-        //            }
-        //            its_certificate = Convert.ToInt16(reader["its_certificate"]);
-        //            //its_marked = reader["its_marked"].ToString().Length > 13 ? 1 : 0;
-        //            its_marked = Convert.ToInt16(reader["its_marked"]);
-        //            listView2.Items.Add(lvi);
-
-        //            //Надо проверить может уже сертификат есть в чеке      
-        //            if (its_certificate == 1)
-        //            {
-        //                foreach (ListViewItem _lvi_ in listView1.Items)
-        //                {
-        //                    //if (_lvi_.SubItems[0].Text == reader.GetInt64(0).ToString())
-        //                    if (_lvi_.SubItems[14].Text == barcode)
-        //                    {
-        //                        find_sertificate = true;
-        //                        break;
-        //                    }
-        //                }
-        //            }
-        //            //КОНЕЦ Надо проверить может уже сертификат есть в чеке                    
-        //        }
-        //        if (!fractional)
-        //        {
-        //            if (WeightFromScales != 0)
-        //            {
-        //                MessageBox.Show("Товар с кодом/штрихкодком " + barcode + " не является весовым и в чек добавлен не будет ");
-        //                return;
-        //            }
-        //        }
-
-        //        if (find_sertificate)
-        //        {
-        //            MessageBox.Show("Этот сертификат уже добавлен в чек");
-        //            return;
-        //        }
-
-        //        //if (its_bonus_card)
-        //        //{
-        //        //    MessageBox.Show("Этот бонусная карта и добавлена в чек может быть только по нажатию на F9 ");
-        //        //    return;
-        //        //}
-
-        //        //Проверка по сертификату
-        //        if (its_certificate == 1)
-        //        {
-        //            if (!check_sertificate_for_sales(barcode))
-        //            {
-        //                return;
-        //            }
-        //            Cash8.DS.DS ds = MainStaticClass.get_ds();
-        //            ds.Timeout = 60000;
-        //            //Получить параметр для запроса на сервер 
-        //            string nick_shop = MainStaticClass.Nick_Shop.Trim();
-        //            if (nick_shop.Trim().Length == 0)
-        //            {
-        //                MessageBox.Show(" Не удалось получить название магазина ");
-        //                return;
-        //            }
-        //            string code_shop = MainStaticClass.Code_Shop.Trim();
-        //            if (code_shop.Trim().Length == 0)
-        //            {
-        //                MessageBox.Show(" Не удалось получить код магазина ");
-        //                return;
-        //            }
-        //            string count_day = CryptorEngine.get_count_day();
-        //            string key = nick_shop.Trim() + count_day.Trim() + code_shop.Trim();
-        //            //string sertificate_code = get_tovar_code(barcode);
-        //            string sertificate_code = barcode;
-        //            string encrypt_data = CryptorEngine.Encrypt(sertificate_code, true, key);
-        //            string status = "";
-        //            try
-        //            {
-        //                status = ds.GetStatusSertificat(MainStaticClass.Nick_Shop, encrypt_data, MainStaticClass.GetWorkSchema.ToString());
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                MessageBox.Show(" Произошли ошибки при работе с сертификатами " + ex.Message);
-        //                return;
-        //            }
-        //            if (status == "-1")
-        //            {
-        //                MessageBox.Show("Произошли ошибки при работе с сертификатами");
-        //                return;
-        //            }
-        //            else
-        //            {
-        //                string decrypt_data = CryptorEngine.Decrypt(status, true, key);
-        //                if (decrypt_data == "1")
-        //                {
-        //                    MessageBox.Show("Сертификат уже активирован");
-        //                    return;
-        //                }
-        //            }
-
-        //        }
-        //        //else if (its_certificate == 2)//Это продажа бонусной карты проверяем, что в шапке нет другой карты
-        //        //{
-        //        //    if (check_availability_card_sale())
-        //        //    {
-        //        //        MessageBox.Show("В строках чека уже есть бонусная карта на продажу");
-        //        //        return;
-        //        //    }
-        //        //    //if (get_status_promo_card(barcode) != 1)
-        //        //    //{
-        //        //    //    MessageBox.Show("Данная бонусная карта уже активирована и повторно продана быть не может");
-        //        //    //    return;
-        //        //    //}
-        //        //    if (client.Tag != null)
-        //        //    {
-        //        //        if (client.Tag.ToString() != barcode)
-        //        //        {
-        //        //            MessageBox.Show("В чеке уже выбран клиент с другой бонусной2 картой, продажа бонусной карты в этом чеке невозможна");
-        //        //            return;
-        //        //        }
-        //        //        if (card_state != 1)//Проверяем статус карты он должен быть 1 т.е. не активирована
-        //        //        {
-        //        //            MessageBox.Show("Эта карта имеет неверный статус в процессиноговом центре и продана быть не может ");
-        //        //            return;
-        //        //        }
-        //        //    }
-        //        //}
-
-        //        //Подсчет суммы по документу
-        //        if (listView2.Items.Count == 1)//1 товар найден
-        //        {
-        //            ListViewItem lvi = null;
-        //            if ((its_marked == 0) && (its_certificate == 0) && (!fractional) && ((MainStaticClass.GetWorkSchema == 1) || (MainStaticClass.GetWorkSchema == 3)))
-        //            {
-        //                lvi = exist_tovar_in_listView(listView1, Convert.ToInt64(select_tovar.Tag), listView2.Items[0].Tag);
-        //            }
-        //            if (lvi == null)
-        //            {
-        //                //select_tovar.Tag.ToString()
-        //                lvi = new ListViewItem(select_tovar.Tag.ToString());
-        //                lvi.Tag = select_tovar.Tag.ToString();
-        //                lvi.SubItems.Add(select_tovar.Text);//Наименование
-        //                lvi.SubItems.Add(listView2.Items[0].Text);//Характеиристика                         
-
-        //                if (listView2.Items[0].Tag == null)
-        //                {
-        //                    lvi.SubItems[2].Tag = "";  // listView2.Items[0].Tag;//GUID характеристики   
-        //                }
-        //                else
-        //                {
-        //                    lvi.SubItems[2].Tag = listView2.Items[0].Tag;//GUID характеристики   
-        //                }
-        //                if (!fractional)
-        //                {
-        //                    lvi.SubItems.Add("1");
-        //                }
-        //                else
-        //                {
-        //                    lvi.SubItems.Add("0,001");                            
-        //                }
-        //                lvi.SubItems.Add(listView2.Items[0].SubItems[1].Text);//Цена 
-        //                                                                      //Проверка на сертификат               
-        //                if (this.its_certificate(select_tovar.Tag.ToString()) != "1")
-        //                {
-        //                    lvi.SubItems.Add(Math.Round(Convert.ToDouble(lvi.SubItems[4].Text) - Convert.ToDouble(lvi.SubItems[4].Text) * Discount, 2).ToString());//Цена со скидкой
-        //                }
-        //                else
-        //                {
-        //                    lvi.SubItems.Add(Math.Round(Convert.ToDecimal(lvi.SubItems[4].Text), 2).ToString());//Цена со скидкой 
-        //                }
-        //                lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString());//Сумма
-        //                lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)).ToString()); //Сумма со скидкой                        
-        //                lvi.SubItems.Add("0"); //Номер акционного документа скидка
-        //                lvi.SubItems.Add("0"); //Номер акционного документа подарок
-        //                lvi.SubItems.Add("0"); //Номер акционного документа дополнительное поле пометка что участвовало в акции, но скидка может быть
-        //                lvi.SubItems.Add("0");//Бонус
-        //                lvi.SubItems.Add("0");//Бонус1
-        //                lvi.SubItems.Add("0");//Бонус2
-        //                if (its_certificate == 0)
-        //                {
-        //                    lvi.SubItems.Add("0");//Маркер
-        //                }
-        //                else if (its_certificate == 1)
-        //                {
-        //                    lvi.SubItems.Add(barcode);//Это сертификат и при продаже мы добавляем его штрихкод 
-        //                }
-        //                //listView1.Items.Add(lvi);
-        //                //listView1.Select();
-        //                //listView1.Items[this.listView1.Items.Count - 1].Selected = true;
-        //                //update_record_last_tovar(listView1.Items[this.listView1.Items.Count - 1].SubItems[1].Text, listView1.Items[this.listView1.Items.Count - 1].SubItems[3].Text);
-        //                bool error = false;
-        //                int code_marking_error = 0;
-        //                bool cdn_vrifyed = false;
-        //                string mark_str = "";
-        //                //bool its_marked = (check_sign_marker_code(select_tovar.Tag.ToString()) > 0);
-        //                if ((its_marked > 0)&&(MainStaticClass.GetDoNotPromptMarkingCode==0))
-        //                {
-        //                    if (!Console.CapsLock)
-        //                    {
-        //                        if ((Control.ModifierKeys & Keys.Shift) != Keys.Shift)
-        //                        {
-        //                            this.qr_code = "";
-        //                            Input_action_barcode input_Action_Barcode = new Input_action_barcode();
-        //                            input_Action_Barcode.call_type = 6;
-        //                            input_Action_Barcode.caller = this;
-        //                            if (DialogResult.Cancel == input_Action_Barcode.ShowDialog())
-        //                            {
-        //                                error = true;
-        //                            }
-        //                            if (this.qr_code != "")//Был введен qr код необходимо его внести в чек
-        //                            {
-
-        //                                if (this.qr_code.ToUpper().Substring(0, 4).IndexOf("HTTP") != -1)
-        //                                {
-        //                                    error = true;
-        //                                    MessageBox.Show("Считан не верный qr код");
-        //                                    MainStaticClass.write_event_in_log("HTTP не верный qr код  " + barcode, "Документ чек", numdoc.ToString());
-        //                                    this.qr_code = "";
-
-        //                                }
-        //                                else
-        //                                {
-        //                                    //здесь проверка на известные ошибки \u001d                                        
-        //                                    int num_pos = this.qr_code.IndexOf("\\");
-        //                                    if (num_pos > 0)
-        //                                    {
-        //                                        if (this.qr_code.Substring(num_pos + 1, 5) == "u001d")//необходимо из строки вырезать этот символ
-        //                                        {
-        //                                            this.qr_code = this.qr_code.Substring(0, num_pos) + this.qr_code.Substring(num_pos + 1 + 5, this.qr_code.Length - (num_pos + 1 + 5));
-        //                                            num_pos = this.qr_code.IndexOf("\\");
-        //                                            if (num_pos > 0)
-        //                                            {
-        //                                                this.qr_code = this.qr_code.Substring(0, num_pos) + this.qr_code.Substring(num_pos + 1 + 5, this.qr_code.Length - (num_pos + 1 + 5));
-        //                                            }
-        //                                        }
-        //                                    }
-
-        //                                    if (this.qr_code != "")
-        //                                    {
-        //                                        if (this.qr_code.ToUpper().Substring(0, 4).IndexOf("HTTP") != -1)
-        //                                        {
-        //                                            error = true;
-        //                                            MessageBox.Show("Считан не верный код маркировки");
-        //                                            MainStaticClass.write_event_in_log("HTTP не верный код маркировки  " + this.qr_code, "Документ чек", numdoc.ToString());
-        //                                        }
-        //                                    }
-
-        //                                    //перед тем как добавить qr код в чек необходимо его проверить
-        //                                    //string mark_str = "";
-        //                                    string mark_str_cdn = "";
-        //                                    if (this.qr_code.Trim().Length > 13)
-        //                                    {
-        //                                        if (!qr_code_lenght.Contains(this.qr_code.Trim().Length))
-        //                                        {
-        //                                            MessageBox.Show(qr_code + "\r\n Ваш код маркировки имеет длину " + qr_code.Length.ToString() + " символов при этом он не входит в допустимый диапазон ", "Проверка qr-кода на допустимую длину");
-        //                                            //MessageBox.Show("Длина введенного qr-кода не входит в диапазон допустимых ! \r\n ТОВАР В ЧЕК ДОБАВЛЕНЕ НЕ БУДЕТ!!! ", "Проверки введенного qr кода");
-        //                                            MainStaticClass.write_event_in_log("Длина введенного кода маркировки не входит в диапазон допустимых, он имеет длину " + qr_code.Length.ToString(), "Документ чек", numdoc.ToString());
-        //                                            error = true;
-        //                                            return;
-        //                                        }
-        //                                    }
-        //                                    if (MainStaticClass.Version2Marking == 1)
-        //                                    {
-        //                                        WortWithMarkingV3 markingV3 = new WortWithMarkingV3();
-        //                                        mark_str = this.qr_code.Trim();
-        //                                        mark_str = add_gs1(mark_str);
-        //                                        bool result_check_cdn = false;
-        //                                        bool timeout_check_cdn = false;//таймаут при проверке по cdn
-
-        //                                        //*******************************************************************************************************************************
-        //                                        foreach (ListViewItem listViewItem4 in this.listView1.Items)
-        //                                        {
-        //                                            if (listViewItem4.SubItems[14].Text == mark_str)
-        //                                            {
-        //                                                MessageBox.Show("Номенклатура с введенным кодом маркировки который вы пытались добавить уже существует в чеке. \r\n Номенклатура не будет добавлена.");
-        //                                                error = true;
-        //                                                break;
-        //                                            }
-        //                                        }
-        //                                        if (cdn_check)
-        //                                        {
-        //                                            if (MainStaticClass.CashDeskNumber != 9 && MainStaticClass.EnableCdnMarkers == 1)
-        //                                            {
-        //                                                if (MainStaticClass.CDN_Token == "")
-        //                                                {
-        //                                                    MessageBox.Show("В этой кассе не заполнен CDN токен, \r\n ПРОДАЖА ДАННОГО ТОВАРА НЕВОЗМОЖНА ! ", "Проверка CDN");
-        //                                                    return;
-        //                                                }
-        //                                                CDN cdn = new CDN();
-        //                                                List<string> codes = new List<string>();
-        //                                                mark_str_cdn = mark_str.Replace("\u001d", @"\u001d");
-        //                                                codes.Add(mark_str_cdn);
-        //                                                mark_str_cdn = mark_str_cdn.Replace("'", "\'");
-        //                                                Dictionary<string, string> d_tovar = new Dictionary<string, string>();
-        //                                                d_tovar[lvi.SubItems[1].Text] = lvi.SubItems[0].Text;
-        //                                                result_check_cdn = cdn.check_marker_code(codes, mark_str, this.numdoc, ref request, mark_str_cdn, d_tovar, ref timeout_check_cdn);
-        //                                                if ((!result_check_cdn) && (!timeout_check_cdn))//не прошел проверку и таймаута не было 
-        //                                                {
-        //                                                    return;
-        //                                                }
-        //                                                else
-        //                                                {
-        //                                                    cdn_vrifyed = true;
-        //                                                }
-        //                                            }
-        //                                        }
-        //                                        // && MainStaticClass.PrintingUsingLibraries==0
-        //                                        //if (!cdn_vrifyed)
-        //                                        //{
-        //                                        byte[] textAsBytes = Encoding.Default.GetBytes(mark_str);
-        //                                        string imc = Convert.ToBase64String(textAsBytes);
-
-        //                                        if (MainStaticClass.PrintingUsingLibraries == 0)
-        //                                        {
-        //                                            if (!cdn_vrifyed)
-        //                                            {
-        //                                                WortWithMarkingV3.Root root = markingV3.beginMarkingCodeValidation("auto", imc, "itemPieceSold", 1, "piece", 0, false);
-        //                                                if (root.results[0].errorCode != 0)
-        //                                                {
-        //                                                    markingV3.cancelMarkingCodeValidation();//прерываем валидацию
-        //                                                    code_marking_error = root.results[0].errorCode;
-        //                                                    if ((code_marking_error != 421) && (code_marking_error != 402))
-        //                                                    {
-        //                                                        MainStaticClass.write_event_in_log("beginMarkingCodeValidation " + root.results[0].errorDescription + " " + code_marking_error, "Документ", numdoc.ToString());
-        //                                                        error = true;//не прошли проверку товар не добавляем в чек
-        //                                                    }
-        //                                                }
-        //                                                else
-        //                                                {
-        //                                                    root = markingV3.getMarkingCodeValidationStatus();
-        //                                                    if (root.results[0].result != null)
-        //                                                    {
-        //                                                        if (root.results[0].result.driverError != null)
-        //                                                        {
-        //                                                            if (root.results[0].result.driverError.code != 0)
-        //                                                            {
-        //                                                                markingV3.cancelMarkingCodeValidation();//прерываем валидацию
-        //                                                                code_marking_error = root.results[0].result.driverError.code;
-        //                                                                //if (code_marking_error != 0)
-        //                                                                //{
-        //                                                                if ((code_marking_error != 421) && (code_marking_error != 402))
-        //                                                                {
-        //                                                                    //markingV3.cancelMarkingCodeValidation();//прерываем валидацию
-        //                                                                    MessageBox.Show("getMarkingCodeValidationStatus " + root.results[0].result.driverError.description, "Ошибка при начале проверки кода маркировки");
-        //                                                                    error = true;//не прошли проверку товар не добавляем в чек
-        //                                                                }
-        //                                                            }
-        //                                                            else//проверяем статус и если все хорошо отправляем принять 
-        //                                                            {
-        //                                                                //if (root.results[0].result.ready)
-        //                                                                //{
-        //                                                                if (root.results[0].result.onlineValidation.itemInfoCheckResult.imcCheckFlag &&
-        //                                                                    root.results[0].result.onlineValidation.itemInfoCheckResult.imcCheckResult &&
-        //                                                                    root.results[0].result.onlineValidation.itemInfoCheckResult.imcStatusInfo &&
-        //                                                                    root.results[0].result.onlineValidation.itemInfoCheckResult.imcEstimatedStatusCorrect)
-        //                                                                {
-        //                                                                    //Все признаки успех, значит M+
-        //                                                                    markingV3.acceptMarkingCode();
-        //                                                                    MainStaticClass.write_event_in_log("acceptMarkingCode  " + lvi.SubItems[0].Text, "Документ чек", numdoc.ToString());
-        //                                                                }
-        //                                                                else// сообщим детально об ошибке 
-        //                                                                {
-        //                                                                    if (!root.results[0].result.onlineValidation.itemInfoCheckResult.imcCheckFlag)
-        //                                                                    {
-        //                                                                        MessageBox.Show("Код маркировки не был проверен ФН и(или) ОИСМП");
-        //                                                                    }
-        //                                                                    if (!root.results[0].result.onlineValidation.itemInfoCheckResult.imcCheckResult)
-        //                                                                    {
-        //                                                                        MessageBox.Show("Результат проверки КП КМ отрицательный или код маркировки не был проверен");
-        //                                                                    }
-        //                                                                    if (!root.results[0].result.onlineValidation.itemInfoCheckResult.imcStatusInfo)
-        //                                                                    {
-        //                                                                        MessageBox.Show("Сведения о статусе товара от ОИСМП не получены");
-        //                                                                    }
-        //                                                                    if (!root.results[0].result.onlineValidation.itemInfoCheckResult.imcEstimatedStatusCorrect)
-        //                                                                    {
-        //                                                                        MessageBox.Show("От ОИСМП получены сведения, что планируемый статус товара некорректен или сведения о статусе товара от ОИСМП не получены");
-        //                                                                    }
-
-        //                                                                    error = true;
-        //                                                                    markingV3.cancelMarkingCodeValidation();//прерываем валидацию
-        //                                                                }
-        //                                                            }
-        //                                                        }
-        //                                                        else
-        //                                                        {
-        //                                                            MainStaticClass.write_event_in_log("root.results[0].result.driverError == null  " + lvi.SubItems[0].Text, "Документ чек", numdoc.ToString());
-        //                                                            markingV3.cancelMarkingCodeValidation();//прерываем валидацию
-        //                                                            code_marking_error = 421;
-        //                                                        }
-        //                                                    }
-        //                                                    else
-        //                                                    {
-        //                                                        error = true;
-        //                                                    }
-        //                                                }
-        //                                            }
-        //                                        }
-        //                                        else
-        //                                        {
-        //                                            PrintingUsingLibraries printingUsingLibraries = new PrintingUsingLibraries();                                                    
-        //                                            if (!printingUsingLibraries.check_marking_code(mark_str, this.numdoc.ToString(), ref this.cdn_markers_result_check,this.check_type.SelectedIndex))
-        //                                            {
-        //                                                error = true;
-        //                                            }
-        //                                        }                                                
-        //                                    }
-        //                                    else
-        //                                    {
-        //                                        foreach (ListViewItem listViewItem4 in this.listView1.Items)
-        //                                        {
-        //                                            if (listViewItem4.SubItems[14].Text == this.qr_code)
-        //                                            {
-        //                                                error = true;
-        //                                                MessageBox.Show("Номенклатура с введенным кодом маркировки который вы пытались добавить уже существует в чеке. \r\n Номенклатура не будет добавлена.");
-        //                                                break;
-        //                                            }
-        //                                        }
-        //                                    }
-        //                                    if (error)
-        //                                    {
-        //                                        return;
-        //                                    }
-        //                                    if (mark_str != "")
-        //                                    {
-        //                                        lvi.SubItems[14].Text = mark_str;//добавим в чек qr код                                        
-        //                                    }
-        //                                    else
-        //                                    {
-        //                                        lvi.SubItems[14].Text = this.qr_code;//добавим в чек qr код                                        
-        //                                    }                                            
-        //                                    this.qr_code = "";//обнулим переменную
-        //                                }
-        //                            }
-        //                        }
-        //                        else
-        //                        {
-        //                            MessageBox.Show("У вас нажата клавиша Shift, ввод кода маркировки невозможен.Номенклатура не будет добавлена.");
-        //                            //Не добавляем позицию в чек
-        //                            error = true;
-        //                        }
-        //                    }
-        //                    else
-        //                    {
-        //                        MessageBox.Show("У вас нажата клавиша CapsLock, ввод кода маркировки невозможен.Номенклатура не будет добавлена.");
-        //                        //Не добавляем позицию в чек
-        //                        error = true;
-
-        //                    }
-
-        //                    if ((!error) || ((code_marking_error == 402) || (code_marking_error == 421) || cdn_vrifyed))//Если с qr кодом все хорошо тогда добавляем позицию иначе не добавляем 
-        //                    {
-        //                        listView1.Items.Add(lvi);                               
-
-        //                        MainStaticClass.write_event_in_log("Товар добавлен " + barcode, "Документ чек", numdoc.ToString());                                
-        //                        if (cdn_vrifyed && MainStaticClass.PrintingUsingLibraries == 0)
-        //                        {                                    
-        //                            km_adding_to_buffer_index(listView1.Items.Count - 1);
-        //                            MainStaticClass.write_event_in_log("cdn_vrifyed = " + cdn_vrifyed + ", на фискальном регистраторе не проверяем ", "Документ чек", numdoc.ToString());
-        //                        }
-        //                    }
-        //                    else
-        //                    {
-        //                        MainStaticClass.write_event_in_log("Отказ от ввода qr кода, товар не добавлен", "Документ чек", numdoc.ToString());
-        //                        last_tovar.Text = barcode;
-        //                        Tovar_Not_Found t_n_f = new Tovar_Not_Found();
-        //                        t_n_f.textBox1.Text = "Код маркировки не прошел проверку";
-        //                        t_n_f.textBox1.Font = new Font("Microsoft Sans Serif", 22);
-        //                        t_n_f.label1.Text = " Код ошибки code_marking_error = " + code_marking_error.ToString();
-        //                        t_n_f.ShowDialog();
-        //                        t_n_f.Dispose();
-        //                        return;
-        //                    }
-        //                }
-        //                else
-        //                {
-        //                    listView1.Items.Add(lvi);
-        //                }
-
-        //                if (fractional)
-        //                {
-        //                    listView1.Focus();
-        //                    listView1.Select();
-        //                    listView1.Items[this.listView1.Items.Count - 1].Selected = true;
-        //                    listView1.Items[this.listView1.Items.Count - 1].Focused = true;
-        //                    //SendKeys.Send("Enter");                            
-        //                    if (!ProductFromScales)
-        //                    {
-        //                        show_quantity_control(true);
-        //                    }
-        //                    else
-        //                    {
-        //                        listView1.Items[this.listView1.Items.Count - 1].SubItems[3].Text = WeightFromScales.ToString();
-        //                    }
-        //                }
-                       
-        //                SendDataToCustomerScreen(1, 0, 1);
-        //                if ((MainStaticClass.GetWorkSchema == 1) || (MainStaticClass.GetWorkSchema == 3))
-        //                {
-        //                    if (!fractional)
-        //                    {
-        //                        listView1.Select();
-        //                        listView1.Items[this.listView1.Items.Count - 1].Selected = true;
-        //                    }
-        //                    //inputbarcode.Focus();//01.08.2022 Теперь здесь для Визы автоматом переност фокуса
-        //                }
-        //                else if (MainStaticClass.GetWorkSchema == 2)
-        //                {
-        //                    //inputbarcode.Focus();
-        //                }
-
-        //                update_record_last_tovar(listView1.Items[this.listView1.Items.Count - 1].SubItems[1].Text, listView1.Items[this.listView1.Items.Count - 1].SubItems[3].Text);
-                        
-        //            }
-        //            else
-        //            {
-        //                if (!fractional)
-        //                {
-        //                    lvi.SubItems[3].Text = (Convert.ToDecimal(lvi.SubItems[3].Text) + 1).ToString();
-        //                    calculate_on_string(lvi);
-        //                    lvi.Selected = true;
-        //                    listView1.Select();
-        //                }
-        //                else
-        //                {
-        //                    listView1.Focus();
-        //                    listView1.Select();
-        //                    listView1.Items[this.listView1.Items.Count - 1].Selected = true;
-        //                    listView1.Items[this.listView1.Items.Count - 1].Focused = true;
-        //                    if (!ProductFromScales)
-        //                    {
-        //                        show_quantity_control(true);
-        //                    }
-        //                    else
-        //                    {
-        //                        listView1.Items[this.listView1.Items.Count - 1].SubItems[3].Text = WeightFromScales.ToString();
-        //                    }
-        //                }                        
-        //                update_record_last_tovar(lvi.SubItems[1].Text, lvi.SubItems[4].Text);
-        //            }
-        //            if (!fractional)
-        //            {
-        //                //inputbarcode.Focus();
-        //                this.txtB_search_product.Focus();
-        //            }
-        //            calculation_of_the_sum_of_the_document();
-        //        }
-        //        else if (listView2.Items.Count > 1)//Найденных товаров больше одного необходимо показать список выбра пользователю
-        //        {
-        //            this.panel2.Visible = true;
-        //            this.panel2.BringToFront();
-        //            this.listView2.Visible = true;
-        //            listView2.Select();
-        //            listView2.Items[0].Selected = true;
-        //            listView2.Items[0].Focused = true;
-        //        }
-        //        else if (listView2.Items.Count == 0)
-        //        {
-        //            //MessageBox.Show("Не найден");
-        //            //stop_com_barcode_scaner();
-        //            last_tovar.Text = barcode;
-        //            Tovar_Not_Found t_n_f = new Tovar_Not_Found();
-        //            t_n_f.ShowDialog();
-        //            t_n_f.Dispose();
-        //            //start_com_barcode_scaner();
-        //        }
-        //        reader.Close();
-        //        conn.Close();                
-        //    }
-        //    catch (NpgsqlException ex)
-        //    {
-        //        MessageBox.Show("find_barcode_or_code_in_tovar " + ex.Message, "NpgsqlException");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show("find_barcode_or_code_in_tovar " + ex.Message, "Exception");
-        //    }
-        //    finally
-        //    {
-        //        if (conn.State == ConnectionState.Open)
-        //        {
-        //            conn.Close();
-        //            // conn.Dispose();
-        //        }
-        //    }
-        //    //MessageBox.Show((DateTime.Now - start).Milliseconds.ToString());
-        //    write_new_document("0", "0", "0", "0", false, "0", "0", "0", "0");
-        }
-        //5010182990247
+            return productData;
+        }      
 
 
         public void find_barcode_or_code_in_tovar_new(string barcode, string marking_code)
@@ -3293,7 +2651,16 @@ namespace Cash8
             }
             //****************************************
             
-            ProductData productData = InventoryManager.GetItem(Convert.ToInt64(barcode));
+            ProductData productData = new ProductData(0, "", 0, ProductFlags.None);
+
+            if (InventoryManager.complete)
+            {
+                productData = InventoryManager.GetItem(Convert.ToInt64(barcode));
+            }
+            else
+            {
+                productData = GetProductDataInDB(barcode);
+            }
             
 
             if (productData.IsEmpty())//товар не найден
@@ -3304,22 +2671,7 @@ namespace Cash8
                 t_n_f.Dispose();
                 return;
             }
-
-            //int its_certificate = 0;
-            //int its_marked = 0;
-            //listView2.Items.Clear();
-
-
-            //ListViewItem lvi = new ListViewItem(productData.Code.ToString());//Внутренний код товара
-            //lvi.Tag = productData.Code.ToString();// reader.GetInt32(0);//Внутренний код товара
-            //lvi.SubItems.Add(productData.GetName());// reader[1].ToString().Trim());//Наименование
-            //select_tovar.Text = productData.GetName();// reader[1].ToString().Trim();
-            //select_tovar.Tag = productData.Code.ToString();// reader.GetInt64(0).ToString();
-            //lvi.SubItems.Add("");//Характеристика
-            //lvi.SubItems.Add(productData.Price.ToString());// reader.GetDecimal(2).ToString());//Цена                    
-            //lvi.SubItems[1].Text = productData.GetName();// reader.GetDecimal(5).ToString();                    
-
-            //listView2.Items.Add(lvi);
+                                              
             bool find_sertificate = false;
             //Надо проверить может уже сертификат есть в чеке      
             if (productData.isCertificate())
@@ -3350,9 +2702,7 @@ namespace Cash8
                     return;
                 }
             }
-
-
-
+                       
             //Проверка по сертификату
             if (productData.isCertificate())
             {
@@ -3947,86 +3297,86 @@ namespace Cash8
 
         //    return result;
         //}
-        private void listView2_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
-        {
-            if (!itsnew)
-            {
-                return;
-            }
-            if (e.KeyChar == 13)
-            {
-                object characteristic = listView2.Items[listView2.SelectedIndices[0]].Tag;
+        //private void listView2_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
+        //{
+        //    if (!itsnew)
+        //    {
+        //        return;
+        //    }
+        //    if (e.KeyChar == 13)
+        //    {
+        //        object characteristic = listView2.Items[listView2.SelectedIndices[0]].Tag;
 
-                ListViewItem lvi = exist_tovar_in_listView(listView1, Convert.ToInt32(select_tovar.Tag), characteristic);
+        //        ListViewItem lvi = exist_tovar_in_listView(listView1, Convert.ToInt32(select_tovar.Tag), characteristic);
 
-                if (lvi == null)
-                {
-                    lvi = new ListViewItem(select_tovar.Tag.ToString());
-                    lvi.Tag = select_tovar.Tag.ToString();
-                    lvi.SubItems.Add(select_tovar.Text);//Наименование
-                    lvi.SubItems.Add(listView2.Items[listView2.SelectedIndices[0]].Text);//Характеиристика
-                    if (listView2.Items[listView2.SelectedIndices[0]].Tag == null) //GUID характеристики   
-                    {
-                        listView2.Items[listView2.SelectedIndices[0]].Tag = "";
-                    }
-                    else
-                    {
-                        lvi.SubItems[2].Tag = listView2.Items[listView2.SelectedIndices[0]].Tag;//GUID характеристики   
-                    }
+        //        if (lvi == null)
+        //        {
+        //            lvi = new ListViewItem(select_tovar.Tag.ToString());
+        //            lvi.Tag = select_tovar.Tag.ToString();
+        //            lvi.SubItems.Add(select_tovar.Text);//Наименование
+        //            lvi.SubItems.Add(listView2.Items[listView2.SelectedIndices[0]].Text);//Характеиристика
+        //            if (listView2.Items[listView2.SelectedIndices[0]].Tag == null) //GUID характеристики   
+        //            {
+        //                listView2.Items[listView2.SelectedIndices[0]].Tag = "";
+        //            }
+        //            else
+        //            {
+        //                lvi.SubItems[2].Tag = listView2.Items[listView2.SelectedIndices[0]].Tag;//GUID характеристики   
+        //            }
 
-                    int index = listView2.SelectedIndices[0];
-                    //lvi = new ListViewItem(listView2.Items[index].Text);
-                    //lvi.Tag = listView2.Items[index].Tag;
-                    //lvi.SubItems.Add(listView2.Items[index].SubItems[1].Text);//Наименование
-                    //lvi.SubItems.Add(listView2.Items[index].SubItems[2].Text);//Характеристика
-                    //lvi.SubItems[2].Tag = listView2.Items[0].SubItems[2].Tag;//GUID характеристики
-                    lvi.SubItems.Add("1");//Количество
-                    lvi.SubItems.Add(listView2.Items[index].SubItems[1].Text);//Цена                        
-                    lvi.SubItems.Add(Math.Round(Convert.ToDouble(lvi.SubItems[4].Text) - Convert.ToDouble(lvi.SubItems[4].Text) * Convert.ToDouble(Discount), 2).ToString());//Цена со скидкой
-                    lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString());//Сумма
-                    lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)).ToString()); //Сумма со скидкой                        
-                    lvi.SubItems.Add("0");//Номер акционного документа скидка
-                    lvi.SubItems.Add("0");//Номер акционного документа подарок
-                    lvi.SubItems.Add("0"); //Номер акционного документа дополнительное поле пометка что участвовало в акции, но скидка может быть
-                    listView1.Items.Add(lvi);
-                    SendDataToCustomerScreen(1, 0,1);
-                    this.listView1.Select();
-                    this.listView1.Items[this.listView1.Items.Count - 1].Selected = true;
-                    update_record_last_tovar(listView1.Items[this.listView1.Items.Count - 1].SubItems[1].Text, listView1.Items[this.listView1.Items.Count - 1].SubItems[4].Text);
+        //            int index = listView2.SelectedIndices[0];
+        //            //lvi = new ListViewItem(listView2.Items[index].Text);
+        //            //lvi.Tag = listView2.Items[index].Tag;
+        //            //lvi.SubItems.Add(listView2.Items[index].SubItems[1].Text);//Наименование
+        //            //lvi.SubItems.Add(listView2.Items[index].SubItems[2].Text);//Характеристика
+        //            //lvi.SubItems[2].Tag = listView2.Items[0].SubItems[2].Tag;//GUID характеристики
+        //            lvi.SubItems.Add("1");//Количество
+        //            lvi.SubItems.Add(listView2.Items[index].SubItems[1].Text);//Цена                        
+        //            lvi.SubItems.Add(Math.Round(Convert.ToDouble(lvi.SubItems[4].Text) - Convert.ToDouble(lvi.SubItems[4].Text) * Convert.ToDouble(Discount), 2).ToString());//Цена со скидкой
+        //            lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString());//Сумма
+        //            lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)).ToString()); //Сумма со скидкой                        
+        //            lvi.SubItems.Add("0");//Номер акционного документа скидка
+        //            lvi.SubItems.Add("0");//Номер акционного документа подарок
+        //            lvi.SubItems.Add("0"); //Номер акционного документа дополнительное поле пометка что участвовало в акции, но скидка может быть
+        //            listView1.Items.Add(lvi);
+        //            SendDataToCustomerScreen(1, 0,1);
+        //            this.listView1.Select();
+        //            this.listView1.Items[this.listView1.Items.Count - 1].Selected = true;
+        //            update_record_last_tovar(listView1.Items[this.listView1.Items.Count - 1].SubItems[1].Text, listView1.Items[this.listView1.Items.Count - 1].SubItems[4].Text);
 
 
 
-                    //lvi = new ListViewItem(listView2.Items[listView2.SelectedIndices[0]].Text);
-                    //lvi.Tag = listView2.Items[listView2.SelectedIndices[0]].Tag;
-                    //lvi.SubItems.Add("1");
-                    //lvi.SubItems.Add(listView2.Items[listView2.SelectedIndices[0]].SubItems[1].Text);//Цена                        
-                    //lvi.SubItems.Add(Math.Round(Convert.ToDecimal(lvi.SubItems[2].Text) - Convert.ToDecimal(lvi.SubItems[2].Text) * Discount, 2).ToString());//Цена со скидкой
-                    //lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[1].Text) * Convert.ToDecimal(lvi.SubItems[2].Text)).ToString());//Сумма
-                    //lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[1].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString()); //Сумма со скидкой                        
-                    //listView1.Items.Add(lvi);
-                }
-                else
-                {
-                    lvi.SubItems[3].Text = (Convert.ToInt64(lvi.SubItems[3].Text) + 1).ToString();
-                    //lvi.SubItems[4].Text = listView2.Items[listView2.SelectedIndices[0]].SubItems[3].Text;//Цена
-                    calculate_on_string(lvi);
-                    this.listView1.Select();
-                    lvi.Selected = true;
-                    update_record_last_tovar(lvi.SubItems[1].Text, lvi.SubItems[3].Text);
-                }
-                calculation_of_the_sum_of_the_document();
-                this.panel2.Visible = false;
-                this.listView2.Visible = false;
+        //            //lvi = new ListViewItem(listView2.Items[listView2.SelectedIndices[0]].Text);
+        //            //lvi.Tag = listView2.Items[listView2.SelectedIndices[0]].Tag;
+        //            //lvi.SubItems.Add("1");
+        //            //lvi.SubItems.Add(listView2.Items[listView2.SelectedIndices[0]].SubItems[1].Text);//Цена                        
+        //            //lvi.SubItems.Add(Math.Round(Convert.ToDecimal(lvi.SubItems[2].Text) - Convert.ToDecimal(lvi.SubItems[2].Text) * Discount, 2).ToString());//Цена со скидкой
+        //            //lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[1].Text) * Convert.ToDecimal(lvi.SubItems[2].Text)).ToString());//Сумма
+        //            //lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[1].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString()); //Сумма со скидкой                        
+        //            //listView1.Items.Add(lvi);
+        //        }
+        //        else
+        //        {
+        //            lvi.SubItems[3].Text = (Convert.ToInt64(lvi.SubItems[3].Text) + 1).ToString();
+        //            //lvi.SubItems[4].Text = listView2.Items[listView2.SelectedIndices[0]].SubItems[3].Text;//Цена
+        //            calculate_on_string(lvi);
+        //            this.listView1.Select();
+        //            lvi.Selected = true;
+        //            update_record_last_tovar(lvi.SubItems[1].Text, lvi.SubItems[3].Text);
+        //        }
+        //        calculation_of_the_sum_of_the_document();
+        //        this.panel2.Visible = false;
+        //        this.listView2.Visible = false;
 
-                this.last_tovar.Text = listView1.Items[this.listView1.Items.Count - 1].SubItems[1].Text;
+        //        this.last_tovar.Text = listView1.Items[this.listView1.Items.Count - 1].SubItems[1].Text;
 
-            }
-            else if (e.KeyChar == 27)
-            {
-                //this.panel2.Visible = false;
-                //this.listView2.Visible = false;
-            }
-        }
+        //    }
+        //    else if (e.KeyChar == 27)
+        //    {
+        //        //this.panel2.Visible = false;
+        //        //this.listView2.Visible = false;
+        //    }
+        //}
 
 
         private string get_date_birthday()
@@ -4543,33 +3893,7 @@ namespace Cash8
                        
             //this.inputbarcode.Focus();
             this.txtB_search_product.Focus();
-
-            //Для дублей 
-
-            // Set the view to show details.
-            listView2.View = View.Details;
-
-            // Allow the user to edit item text.
-            //listView1.LabelEdit = true;           
-
-            // Allow the user to rearrange columns.
-            listView2.AllowColumnReorder = true;
-
-            // Select the item and subitems when selection is made.
-            listView2.FullRowSelect = true;
-
-            // Display grid lines.
-            listView2.GridLines = true;
-
-            // Sort the items in the list in ascending order.
-            //listView1.Sorting = SortOrder.Ascending;
-            //listView2.Columns.Add("Код", 100, HorizontalAlignment.Left);
-            //listView2.Columns.Add("Товар", SystemInformation.PrimaryMonitorSize.Width-500, HorizontalAlignment.Left);
-            listView2.Columns.Add("Характеристика", SystemInformation.PrimaryMonitorSize.Width - 500, HorizontalAlignment.Left);
-            listView2.Columns.Add("Цена", 200, HorizontalAlignment.Right);
-            //cash.SelectionStart = 0;
-            //Здесь получаем признак документ новый или нет
-
+            
             if (MainStaticClass.GetVersionFn == 1)
             {
                 checkBox_print_check.Visible = false;
@@ -4626,7 +3950,8 @@ namespace Cash8
                     //this.type_pay.Enabled = false;
                     this.label4.Enabled = false;
                     this.check_type.Enabled = false;
-                    this.inputbarcode.Enabled = false;
+                    //this.inputbarcode.Enabled = false;
+                    this.txtB_search_product.Enabled = false;
                     this.client_barcode.Enabled = false;
                     //this.sale_cancellation.Enabled = false;
                     //this.inventory.Enabled = false;
@@ -4645,7 +3970,8 @@ namespace Cash8
                     Discount = 0;
                     this.label4.Enabled = true;
                     this.check_type.Enabled = true;
-                    this.inputbarcode.Enabled = true;
+                    //this.inputbarcode.Enabled = true;
+                    this.txtB_search_product.Enabled = true;
                     this.client_barcode.Enabled = false;
                     to_open_the_written_down_document();
                     get_old_document_Discount();
@@ -4657,11 +3983,11 @@ namespace Cash8
             this.Top = 0;
             this.Left = 0;
             this.Size = new System.Drawing.Size(SystemInformation.PrimaryMonitorSize.Width, SystemInformation.PrimaryMonitorSize.Height);
-            this.panel2.Left = 0;
-            this.listView2.Left = 20;
+            //this.panel2.Left = 0;
+            //this.listView2.Left = 20;
 
-            this.panel2.Size = new System.Drawing.Size(SystemInformation.PrimaryMonitorSize.Width, SystemInformation.PrimaryMonitorSize.Height / 2);
-            this.listView2.Size = new System.Drawing.Size(SystemInformation.PrimaryMonitorSize.Width - 50, SystemInformation.PrimaryMonitorSize.Height / 2 - 50);
+            //this.panel2.Size = new System.Drawing.Size(SystemInformation.PrimaryMonitorSize.Width, SystemInformation.PrimaryMonitorSize.Height / 2);
+            //this.listView2.Size = new System.Drawing.Size(SystemInformation.PrimaryMonitorSize.Width - 50, SystemInformation.PrimaryMonitorSize.Height / 2 - 50);
 
 
             if (itsnew)
@@ -4912,7 +4238,8 @@ namespace Cash8
                 }
                 else//Ожидается ввод штрихкода товара
                 {
-                    find_barcode_or_code_in_tovar(MainStaticClass.Barcode);
+                    //find_barcode_or_code_in_tovar(MainStaticClass.Barcode);
+                    find_barcode_or_code_in_tovar_new(MainStaticClass.Barcode,"");
                 }
                 lock (MainStaticClass.Barcode)
                 {
@@ -14338,7 +13665,8 @@ namespace Cash8
                     txtB_num_sales.Visible = true;
                     //if (MainStaticClass.Code_right_of_user != 1)
                     //{
-                    inputbarcode.Enabled = false;
+                    //inputbarcode.Enabled = false;
+                    txtB_search_product.Enabled = false;
                     client_barcode.Enabled = false;
                     txtB_client_phone.Enabled = false;
                     //}

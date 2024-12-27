@@ -2104,7 +2104,7 @@ namespace Cash8
         * на самый дешевый товар из участвующих в акции 
         * 
         */
-        private void action_4_dt(int num_doc, decimal persent, decimal sum,string comment)
+        private void action_4_dt(int num_doc, decimal persent, decimal sum, string comment)
         {
 
             if (!create_temp_tovar_table_4())
@@ -2274,9 +2274,9 @@ namespace Cash8
              * надо отметить все товарные позиции 
              * чтобы они не участвовали в других акциях 
              */
-                    marked_action_tovar_dt(num_doc,comment);
+                    marked_action_tovar_dt(num_doc, comment);
                 }
-                
+
             }
             catch (NpgsqlException ex)
             {
@@ -2294,6 +2294,133 @@ namespace Cash8
                 }
             }
         }
+
+        //private void Action4Dt(int numDoc, decimal percent, decimal sum, string comment)
+        //{
+        //    if (!create_temp_tovar_table_4())
+        //    {
+        //        return;
+        //    }
+
+        //    DataTable dt2 = dt.Copy();
+        //    dt2.Rows.Clear();
+        //    decimal quantityOnDoc = 0;
+        //    StringBuilder query = new StringBuilder();
+
+        //    try
+        //    {
+        //        using (var conn = MainStaticClass.NpgsqlConn())
+        //        {
+        //            conn.Open();
+
+        //            foreach (DataRow row in dt.Rows)
+        //            {
+        //                if (Convert.ToInt32(row["action2"]) > 0)
+        //                {
+        //                    dt2.ImportRow(row);
+        //                    continue;
+        //                }
+
+        //                string queryString = $"SELECT COUNT(*) FROM action_table WHERE code_tovar={row["tovar_code"]} AND num_doc={numDoc}";
+        //                using (var command = new NpgsqlCommand(queryString, conn))
+        //                {
+        //                    if (Convert.ToInt16(command.ExecuteScalar()) != 0)
+        //                    {
+        //                        for (int i = 0; i < Convert.ToInt32(row["quantity"]); i++)
+        //                        {
+        //                            query.AppendLine($"INSERT INTO tovar_action(code, retail_price, quantity, characteristic_name, characteristic_guid) VALUES({row["tovar_code"]}, {row["price"].ToString().Replace(",", ".")}, 1, '{row["characteristic_name"]}', '{row["characteristic_code"]}');");
+        //                        }
+        //                        quantityOnDoc += Convert.ToDecimal(row["quantity"]);
+        //                    }
+        //                    else
+        //                    {
+        //                        dt2.ImportRow(row);
+        //                    }
+        //                }
+        //            }
+
+        //            if (quantityOnDoc >= sum)
+        //            {
+        //                have_action = true;
+        //                dt.Rows.Clear();
+        //                dt.Merge(dt2);
+
+        //                using (var command = new NpgsqlCommand(query.ToString(), conn))
+        //                {
+        //                    command.ExecuteNonQuery();
+        //                }
+
+        //                query.Clear();
+        //                query.AppendLine("DELETE FROM tovar_action;");
+
+        //                int multiplicationFactor = (int)(quantityOnDoc / sum);
+        //                string selectQuery = "SELECT code, retail_price, quantity, characteristic_name, characteristic_guid FROM tovar_action ORDER BY retail_price DESC";
+        //                using (var command = new NpgsqlCommand(selectQuery, conn))
+        //                using (var reader = command.ExecuteReader())
+        //                {
+        //                    int numRecords = 1;
+        //                    while (reader.Read())
+        //                    {
+        //                        decimal retailPrice = reader.GetDecimal(1);
+        //                        decimal retailPriceDiscount = retailPrice;
+
+        //                        if (multiplicationFactor > 0 && numRecords % sum == 0)
+        //                        {
+        //                            retailPriceDiscount = Math.Round(retailPrice - retailPrice * percent / 100, 2);
+        //                            multiplicationFactor--;
+        //                        }
+
+        //                        query.AppendLine($"INSERT INTO tovar_action(code, retail_price, quantity, characteristic_name, characteristic_guid, retail_price_discount) VALUES({reader["code"]}, {retailPrice.ToString().Replace(",", ".")}, 1, '{reader["characteristic_name"]}', '{reader["characteristic_guid"]}', {retailPriceDiscount.ToString().Replace(",", ".")});");
+        //                        numRecords++;
+        //                    }
+        //                }
+
+        //                using (var command = new NpgsqlCommand(query.ToString(), conn))
+        //                {
+        //                    command.ExecuteNonQuery();
+        //                }
+
+        //                string finalQuery = @"
+        //                                    SELECT tovar_action.code, tovar.name, tovar_action.retail_price, tovar_action.retail_price_discount, SUM(quantity), characteristic_name, characteristic_guid 
+        //                                    FROM tovar_action 
+        //                                    LEFT JOIN tovar ON tovar_action.code = tovar.code 
+        //                                    GROUP BY tovar_action.code, tovar.name, tovar.retail_price, tovar_action.retail_price, characteristic_name, characteristic_guid, retail_price_discount";
+
+        //                using (var command = new NpgsqlCommand(finalQuery, conn))
+        //                using (var reader = command.ExecuteReader())
+        //                {
+        //                    while (reader.Read())
+        //                    {
+        //                        DataRow row = dt.NewRow();
+        //                        row["tovar_code"] = reader["code"];
+        //                        row["tovar_name"] = reader["name"].ToString().Trim();
+        //                        row["characteristic_name"] = reader["characteristic_name"];
+        //                        row["characteristic_code"] = reader["characteristic_guid"];
+        //                        row["quantity"] = reader["sum"].ToString().Trim();
+        //                        row["price"] = reader.GetDecimal(2).ToString();
+        //                        row["price_at_discount"] = reader.GetDecimal(3).ToString();
+        //                        row["sum_full"] = (Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price"])).ToString();
+        //                        row["sum_at_discount"] = (Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price_at_discount"])).ToString();
+        //                        row["action"] = Convert.ToDecimal(row["price"]) != Convert.ToDecimal(row["price_at_discount"]) ? numDoc.ToString() : "0";
+        //                        row["gift"] = "0";
+        //                        row["action2"] = numDoc.ToString();
+        //                        row["bonus_reg"] = 0;
+        //                        row["bonus_action"] = 0;
+        //                        row["bonus_action_b"] = 0;
+        //                        row["marking"] = "0";
+        //                        dt.Rows.Add(row);
+        //                    }
+        //                }
+
+        //                marked_action_tovar_dt(numDoc, comment);
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message, "Ошибка при обработке 4 типа акций");
+        //    }
+        //}
 
         /// <summary>
         /// Возвращает цену подарка

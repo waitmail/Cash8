@@ -33,7 +33,6 @@
             this.label3 = new System.Windows.Forms.Label();
             this.client = new System.Windows.Forms.TextBox();
             this.client_barcode = new System.Windows.Forms.TextBox();
-            this.inputbarcode = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.numericUpDown_enter_quantity = new System.Windows.Forms.NumericUpDown();
             this.panel_return = new System.Windows.Forms.Panel();
@@ -84,16 +83,12 @@
             this.checkBox_payment_by_sbp = new System.Windows.Forms.CheckBox();
             this.txtB_search_product = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.select_tovar = new System.Windows.Forms.TextBox();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.listView2 = new System.Windows.Forms.ListView();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_enter_quantity)).BeginInit();
             this.panel_return.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
-            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // comment
@@ -144,21 +139,6 @@
             this.client_barcode.TabIndex = 0;
             this.client_barcode.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.client_barcode_KeyPress);
             // 
-            // inputbarcode
-            // 
-            this.inputbarcode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.inputbarcode.BackColor = System.Drawing.SystemColors.Window;
-            this.inputbarcode.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.inputbarcode.ForeColor = System.Drawing.Color.Green;
-            this.inputbarcode.Location = new System.Drawing.Point(611, 123);
-            this.inputbarcode.MaxLength = 13;
-            this.inputbarcode.Name = "inputbarcode";
-            this.inputbarcode.Size = new System.Drawing.Size(177, 29);
-            this.inputbarcode.TabIndex = 2;
-            this.inputbarcode.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.inputbarcode.Visible = false;
-            this.inputbarcode.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.inputbarcode_KeyPress);
-            // 
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.LightSalmon;
@@ -193,7 +173,7 @@
             this.panel_return.Controls.Add(this.return_kop);
             this.panel_return.Controls.Add(this.return_rouble);
             this.panel_return.Controls.Add(this.return_quantity);
-            this.panel_return.Location = new System.Drawing.Point(45, 362);
+            this.panel_return.Location = new System.Drawing.Point(176, 74);
             this.panel_return.Name = "panel_return";
             this.panel_return.Size = new System.Drawing.Size(432, 88);
             this.panel_return.TabIndex = 42;
@@ -362,7 +342,6 @@
             // tabPage1
             // 
             this.tabPage1.Controls.Add(this.panel_return);
-            this.tabPage1.Controls.Add(this.panel2);
             this.tabPage1.Controls.Add(this.listView1);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
@@ -685,44 +664,6 @@
             this.label2.TabIndex = 81;
             this.label2.Text = "Код\\ШК\\Код Марк.";
             // 
-            // select_tovar
-            // 
-            this.select_tovar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.select_tovar.Enabled = false;
-            this.select_tovar.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.select_tovar.Location = new System.Drawing.Point(22, 18);
-            this.select_tovar.Name = "select_tovar";
-            this.select_tovar.Size = new System.Drawing.Size(698, 29);
-            this.select_tovar.TabIndex = 1;
-            // 
-            // panel2
-            // 
-            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel2.BackColor = System.Drawing.Color.ForestGreen;
-            this.panel2.Controls.Add(this.listView2);
-            this.panel2.Controls.Add(this.select_tovar);
-            this.panel2.Location = new System.Drawing.Point(16, 32);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(745, 220);
-            this.panel2.TabIndex = 23;
-            this.panel2.Visible = false;
-            // 
-            // listView2
-            // 
-            this.listView2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.listView2.HideSelection = false;
-            this.listView2.Location = new System.Drawing.Point(22, 53);
-            this.listView2.MultiSelect = false;
-            this.listView2.Name = "listView2";
-            this.listView2.Size = new System.Drawing.Size(698, 147);
-            this.listView2.TabIndex = 0;
-            this.listView2.UseCompatibleStateImageBehavior = false;
-            this.listView2.Visible = false;
-            this.listView2.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.listView2_KeyPress);
-            // 
             // Cash_check
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -763,7 +704,6 @@
             this.Controls.Add(this.num_cash);
             this.Controls.Add(this.date_time_start);
             this.Controls.Add(this.pay);
-            this.Controls.Add(this.inputbarcode);
             this.Controls.Add(this.client_barcode);
             this.Controls.Add(this.client);
             this.Controls.Add(this.label3);
@@ -783,8 +723,6 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -803,7 +741,6 @@
         private System.Windows.Forms.TextBox date_time_start;
         private System.Windows.Forms.Label status_com_scaner;
         private System.Windows.Forms.Label label4;
-        public System.Windows.Forms.TextBox inputbarcode;
         public System.Windows.Forms.TextBox client;
         public System.Windows.Forms.TextBox num_cash;
         private System.Windows.Forms.Panel panel_return;
@@ -849,8 +786,5 @@
         private System.Windows.Forms.NumericUpDown numericUpDown_enter_quantity;
         private System.Windows.Forms.TextBox txtB_search_product;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.ListView listView2;
-        private System.Windows.Forms.TextBox select_tovar;
     }
 }
