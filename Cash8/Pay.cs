@@ -179,6 +179,20 @@ namespace Cash8
             }
         }
 
+        //private bool copFilledCorrectly()
+        //{
+        //    bool result = true;
+        //    if (non_cash_sum.Text.Trim().Length > 0)
+        //    {
+        //        double total = get_sum_sum_at_a_discount();                
+        //        if (Convert.ToInt16(non_cash_sum_kop.Text) != Math.Round(total - (int)total,2)*100)
+        //        {                    
+        //            MessageBox.Show("У вас не заполнены копейки, нажмите клавишу к(r) и затем продолжите ввод целой части по карте оплаты.", "Проверки при оплате картой");
+        //            result = false;
+        //        }
+        //    }
+        //    return result;
+        //}
 
         private void non_cash_KeyPress(object sender, KeyPressEventArgs e)
         {
@@ -193,6 +207,8 @@ namespace Cash8
                     return;
                 }
             }
+            
+
 
             if ((Char.IsDigit(e.KeyChar)))
             {
@@ -205,6 +221,7 @@ namespace Cash8
                     curpos_non_cash = 1;
                 }
             }
+
             if (MainStaticClass.get_currency() == "руб.")//зарпет на ввод запятой и точек можно только цифры или бекспейс
             {
                 if (!(Char.IsDigit(e.KeyChar)) && (e.KeyChar != (char)Keys.Back) && (e.KeyChar != 37))
@@ -213,6 +230,7 @@ namespace Cash8
                 }
                 //return;
             }
+
             if (!(Char.IsDigit(e.KeyChar)))
             {
                 if ((e.KeyChar == '.') || (e.KeyChar == ','))
@@ -1192,7 +1210,8 @@ namespace Cash8
             string[] parts = sumString.Split('.');
 
             non_cash_sum.Text = parts[0];
-            non_cash_sum_kop.Text = parts.Length > 1 ? parts[1] : "00";
+            //non_cash_sum_kop.Text = parts.Length > 1 ? parts[1] : "00";
+            non_cash_sum_kop.Text = parts[1];
         }
 
         private void set_Cash_pay()
@@ -2198,10 +2217,14 @@ namespace Cash8
         {            
             this.button_pay.Enabled = false;
 
+            //if (!copFilledCorrectly())
+            //{
+            //    return;
+            //}
             //Проверить заполнены копейки или нет 
 
 
-                       
+
             double cash_money = Math.Round(Convert.ToDouble(txtB_cash_sum.Text.Replace(".", ",")), 2);
             double non_cash_money = Math.Round(Convert.ToDouble(get_non_cash_sum()), 2);
             double sertificate_money = Math.Round(Convert.ToDouble(sertificates_sum.Text), 2);

@@ -828,7 +828,18 @@ namespace Cash8
             //MessageBox.Show(fptr.errorCode().ToString());
 
             // Закрытие чека
-            fptr.closeReceipt();
+            if (fptr.errorCode() > 0)
+            {
+                MessageBox.Show("При печати чека произошли ошибки \r\n Код ошибки " + fptr.errorCode().ToString() +
+                    "\r\n " + fptr.errorDescription().ToString());
+                error = true;
+                fptr.cancelReceipt();
+                return;
+            }
+            else
+            {
+                fptr.closeReceipt();
+            }
 
             while (fptr.checkDocumentClosed() < 0)
             {
@@ -1164,6 +1175,11 @@ namespace Cash8
                 }
             }
 
+            //if (error)//Наверное нужно добавить
+            //{
+            //    return;
+            //}
+
             // Регистрация итога (отбрасываем копейки)
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_SUM, (double)check.calculation_of_the_sum_of_the_document());
             fptr.receiptTotal();
@@ -1241,10 +1257,25 @@ namespace Cash8
             fptr.setParam(1086, s);
             fptr.utilFormTlv();           
             byte[] userAttribute = fptr.getParamByteArray(AtolConstants.LIBFPTR_PARAM_TAG_VALUE);
-            fptr.setNonPrintableParam(1084, userAttribute);            
+            fptr.setNonPrintableParam(1084, userAttribute);
+
+
+
 
             // Закрытие чека
-            fptr.closeReceipt();
+            if (fptr.errorCode() > 0)
+            {
+                MessageBox.Show("При печати чека произошли ошибки \r\n Код ошибки " + fptr.errorCode().ToString() +
+                    "\r\n " + fptr.errorDescription().ToString());
+                error = true;
+                fptr.cancelReceipt();
+                return;
+            }
+            else
+            {
+                fptr.closeReceipt();
+            }
+            
 
             //while (fptr.checkDocumentClosed() < 0)
             //{
