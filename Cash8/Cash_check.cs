@@ -1596,7 +1596,7 @@ namespace Cash8
                 {
                     if (check_type.SelectedIndex == 0)
                     {
-                        lvi.SubItems[5].Text = Math.Round(Convert.ToDouble(lvi.SubItems[4].Text) - Convert.ToDouble(lvi.SubItems[4].Text) * Discount, 2).ToString();//Цена со скидкой            
+                        lvi.SubItems[5].Text = Math.Round(Convert.ToDouble(lvi.SubItems[4].Text) - Convert.ToDouble(lvi.SubItems[4].Text) * Discount, 2, MidpointRounding.ToEven).ToString();//Цена со скидкой            
                     }
                     else if (check_type.SelectedIndex == 1)
                     {
@@ -1605,7 +1605,7 @@ namespace Cash8
                 }
                 else
                 {
-                    lvi.SubItems[5].Text = (Math.Round(Convert.ToDecimal(lvi.SubItems[4].Text), 2)).ToString();//Цена со скидкой для сертификата будет равна его цене, т.е. номиналу            
+                    lvi.SubItems[5].Text = (Math.Round(Convert.ToDecimal(lvi.SubItems[4].Text), 2, MidpointRounding.ToEven)).ToString();//Цена со скидкой для сертификата будет равна его цене, т.е. номиналу            
                 }
 
                 lvi.SubItems[6].Text = ((Convert.ToDouble(lvi.SubItems[3].Text) * Convert.ToDouble(lvi.SubItems[4].Text)).ToString());
@@ -2794,8 +2794,8 @@ namespace Cash8
                 {
                     lvi.SubItems.Add(Math.Round(Convert.ToDecimal(productData.Price), 2).ToString());//Цена со скидкой 
                 }
-                lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString());//Сумма
-                lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)).ToString()); //Сумма со скидкой                        
+                lvi.SubItems.Add(Math.Round(Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[4].Text),2, MidpointRounding.ToEven).ToString());//Сумма
+                lvi.SubItems.Add(Math.Round((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)),2,MidpointRounding.ToEven).ToString()); //Сумма со скидкой                        
                 lvi.SubItems.Add("0"); //Номер акционного документа скидка
                 lvi.SubItems.Add("0"); //Номер акционного документа подарок
                 lvi.SubItems.Add("0"); //Номер акционного документа дополнительное поле пометка что участвовало в акции, но скидка может быть
