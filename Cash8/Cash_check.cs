@@ -156,6 +156,10 @@ namespace Cash8
         {           
             try
             {
+                if (listView1.Items.Count == 0)
+                {
+                    return;
+                }
                 //if ((MainStaticClass.UseOldProcessiingActions) || (!itsnew))
                 if ((mode == 1 && show_price == 1) || (mode == 0 && show_price == 0))
                 {
@@ -3796,10 +3800,10 @@ namespace Cash8
 
             this.check_type.Items.Add("Продажа");
             this.check_type.Items.Add("Возврат");
-            if (MainStaticClass.Code_right_of_user == 1 && MainStaticClass.PrintingUsingLibraries == 1)
-            {
-                this.check_type.Items.Add("КоррекцияПродажи");                
-            }
+            //if (MainStaticClass.Code_right_of_user == 1 && MainStaticClass.PrintingUsingLibraries == 1)
+            //{
+            //    this.check_type.Items.Add("КоррекцияПродажи");                
+            //}
 
             this.WindowState = FormWindowState.Maximized;
 
@@ -13258,81 +13262,49 @@ namespace Cash8
             ib.Dispose();
             return dr;
         }
+        
 
+        private void checkSumOnDocument(DataTable dt)
+        {
+            foreach (DataRow row in dt.Rows)
+            {
+                if (Convert.ToDouble(row["sum_full"]) != Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price"]))
+                {                 
+                    MainStaticClass.write_cdn_log("Обнаружено несовпадение цены и суммы в строке "+ row["tovar_code"].ToString(), numdoc.ToString(), "", "100");
+                }
+                if (Convert.ToDouble(row["sum_at_discount"]) != Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price_at_discount"]))
+                {                    
+                    MainStaticClass.write_cdn_log("Обнаружено несовпадение цены со скидкой и суммы со скидкой в строке "+ row["tovar_code"].ToString(), numdoc.ToString(), "", "100");
+                }
+                if (client.Tag is null)
+                {
+                    if (Convert.ToDouble(row["sum_full"]) != Convert.ToDouble(row["sum_at_discount"]))
+                    {
+                        if (row["action"].ToString() == "0")
+                        {                            
+                            MainStaticClass.write_cdn_log("Обнаружена непонятная скидка "+ row["tovar_code"].ToString(), numdoc.ToString(), "", "100");
+                        }                        
+                    }
+                }
+                else
+                {
+                    if (Math.Round(Convert.ToDouble(row["sum_full"])- Convert.ToDouble(row["sum_full"])/100*5,2, MidpointRounding.ToEven) != Convert.ToDouble(row["sum_at_discount"]))
+                    {
+                        if (row["action"].ToString() == "0")
+                        {                            
+                            MainStaticClass.write_cdn_log("Обнаружена непонятная скидка по карте клиента "+ row["tovar_code"].ToString(), numdoc.ToString(), "", "100");
+                        }                       
+                    }
+                }
+            }
+        }
 
-        //private int get_percent_bonus(string code)
-        //{
-        //    int result = 0;
-
-        //    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
-
-        //    try
-        //    {
-        //        conn.Open();
-        //        string query = "SELECT percent_bonus FROM tovar where code="+code;
-        //        NpgsqlCommand command = new NpgsqlCommand(query, conn);
-        //        object result_query = command.ExecuteScalar();
-        //        result = Convert.ToInt16(result_query);
-        //        conn.Close();
-        //        command.Dispose();
-        //    }
-        //    catch (NpgsqlException ex)
-        //    {
-        //        MessageBox.Show("Ошибка при получении процента бонуса "+ex.Message);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show("Ошибка при получении процента бонуса "+ex.Message);
-        //    }
-        //    finally
-        //    {
-        //        if (conn.State == ConnectionState.Open)
-        //        {
-        //            conn.Close();
-        //        }
-        //    }
-
-        //    return result;
-        //}
-
-
-        //#region buyerInfoRequest
-        //public class BuyerInfoRequest
-        //{
-        //    public string cardTrack2 { get; set; }
-        //    public string phone { get; set; }
-
-        //    public string cardNum { get; set; }
-        //}
-
-
-
-        //#endregion
-              
 
         private void show_pay_form()
         {
 
-            //string machine_name = Environment.MachineName;//имя компьютера
-            //int path_execute_actions = 0;
-
-            //if (machine_name == "GAA-IT")
-            //{
-            //    path_execute_actions = 1;
-            //}
-
             MainStaticClass.write_event_in_log("Попытка перейти в окно оплаты", "Документ чек", numdoc.ToString());
-
-            //if (listView_sertificates.Items.Count > 0)
-            //{
-            //    pay_form.listView_sertificates.Items.Clear();
-            //    foreach (ListViewItem lvi in listView_sertificates.Items)
-            //    {
-            //        pay_form.listView_sertificates.Items.Add((ListViewItem)lvi.Clone());
-            //    }
-            //}
-            //Pay pay_form = new Pay();
-            //pay_form = new Pay();
+                       
             pay_form.pay_bonus.Text = "0";
             pay_form.pay_bonus.Visible = false;
             pay_form.pay_bonus_many.Text = "0";
@@ -13341,7 +13313,7 @@ namespace Cash8
             listView_sertificates.Items.Clear();
             pay_form.listView_sertificates.Items.Clear();
             pay_form.cc = this;
-            DialogResult dr ;
+            DialogResult dr;
 
             if (this.check_type.SelectedIndex == 0)
             {
@@ -13360,175 +13332,66 @@ namespace Cash8
 
                 }
 
-                MainStaticClass.write_event_in_log(" Попытка обработать акции по штрихкодам ", "Документ чек", numdoc.ToString());
-                //if (MainStaticClass.EnableStockProcessingInMemory <= 0)
-                //{
-                //    //Акции по штрихкодам
-                //    foreach (string barcode in action_barcode_list)
-                //    {
-                //        to_define_the_action(barcode);
-                //    }
-                //    //Теперь все остальные акции
-                //    MainStaticClass.write_event_in_log(" Попытка обработать все остальные акции ", "Документ чек", numdoc.ToString());                    
-                //    to_define_the_action();//Обработка на дисконтные акции 
-                //}
-                //else
-                //{                    
-                    //Акции по штрихкодам                    
-                    DataTable dataTable = to_define_the_action_dt(true);//Обработка на дисконтные акции с использованием datatable 
-                    
-                    //рассчитанные данные в памяти по акциям теперь помещаем в листвью 
-                    listView1.Items.Clear();
-                    foreach (DataRow row in dataTable.Rows)
-                    {
-                        ListViewItem lvi = new ListViewItem(row["tovar_code"].ToString());
-                        lvi.Tag = row["tovar_code"].ToString();
-                        lvi.SubItems.Add(row["tovar_name"].ToString());//Наименование                        
-                        lvi.SubItems.Add(row["characteristic_name"].ToString());//Характеристика
-                        lvi.SubItems[2].Tag = row["characteristic_code"].ToString();
-                        lvi.SubItems.Add(row["quantity"].ToString());//Количество
-                        lvi.SubItems.Add(row["price"].ToString());//Цена без скидки
-                        lvi.SubItems.Add(row["price_at_discount"].ToString());//Цена Со скидкой
-                        lvi.SubItems.Add(row["sum_full"].ToString());//Сумма без скидки
-                        lvi.SubItems.Add(row["sum_at_discount"].ToString());//Сумма со скидкой
-                        lvi.SubItems.Add(row["action"].ToString());//Акционный документ
-                        lvi.SubItems.Add(row["gift"].ToString());//Акционный документ
-                        lvi.SubItems.Add(row["action2"].ToString());//Акционный документ
-                        lvi.SubItems.Add(row["bonus_reg"].ToString());//Бонус
-                        lvi.SubItems.Add(row["bonus_action"].ToString());//Бонус
-                        lvi.SubItems.Add(row["bonus_action_b"].ToString());//Бонус
-                        lvi.SubItems.Add(row["marking"].ToString());//Маркировка
+                MainStaticClass.write_event_in_log(" Попытка обработать акции по штрихкодам ", "Документ чек", numdoc.ToString());              
+              
+                DataTable dataTable = to_define_the_action_dt(true);//Обработка на дисконтные акции с использованием datatable 
+                checkSumOnDocument(dataTable);
+                //
 
-                        listView1.Items.Add(lvi);
-                    }
-                //}
+                //рассчитанные данные в памяти по акциям теперь помещаем в листвью 
+                listView1.Items.Clear();
+                foreach (DataRow row in dataTable.Rows)
+                {
+                    ListViewItem lvi = new ListViewItem(row["tovar_code"].ToString());
+                    lvi.Tag = row["tovar_code"].ToString();
+                    lvi.SubItems.Add(row["tovar_name"].ToString());//Наименование                        
+                    lvi.SubItems.Add(row["characteristic_name"].ToString());//Характеристика
+                    lvi.SubItems[2].Tag = row["characteristic_code"].ToString();
+                    lvi.SubItems.Add(row["quantity"].ToString());//Количество
+                    lvi.SubItems.Add(row["price"].ToString());//Цена без скидки
+                    lvi.SubItems.Add(row["price_at_discount"].ToString());//Цена Со скидкой
+                    lvi.SubItems.Add(row["sum_full"].ToString());//Сумма без скидки
+                    lvi.SubItems.Add(row["sum_at_discount"].ToString());//Сумма со скидкой
+                    lvi.SubItems.Add(row["action"].ToString());//Акционный документ
+                    lvi.SubItems.Add(row["gift"].ToString());//Акционный документ
+                    lvi.SubItems.Add(row["action2"].ToString());//Акционный документ
+                    lvi.SubItems.Add(row["bonus_reg"].ToString());//Бонус
+                    lvi.SubItems.Add(row["bonus_action"].ToString());//Бонус
+                    lvi.SubItems.Add(row["bonus_action_b"].ToString());//Бонус
+                    lvi.SubItems.Add(row["marking"].ToString());//Маркировка
 
-                //Теперь необходимо пересчитать все суммы по документу
+                    listView1.Items.Add(lvi);
+                }               
 
                 selection_goods = false;
-
-                //ПРОВЕРОЧНЫЙ ПЕРЕСЧЕТ ПО АКЦИЯМ 
+                                
                 MainStaticClass.write_event_in_log(" Попытка пересчитать чек ", "Документ чек", numdoc.ToString());
                 recalculate_all();
                 // КОНЕЦ ПРОВЕРОЧНЫЙ ПЕРЕСЧЕТ ПО АКЦИЯМ               
-
-                //Если это киоск самообслуживания 
-                //if (MainStaticClass.SelfServiceKiosk == 1)//это киоск самообслуживания 
-                //{
-                //    pay_form.cash_sum.Enabled         = false;
-                //    pay_form.non_cash_sum.Enabled     = false;
-                //    pay_form.non_cash_sum_kop.Enabled = false;
-                //    pay_form.pay_sum.Text             = calculation_of_the_sum_of_the_document().ToString();
-
-                //    double total = Convert.ToDouble(calculation_of_the_sum_of_the_document());
-                //    string kop = ((int)((total - (int)total) * 100)).ToString();
-                //    kop = (kop.Length == 2 ? kop : "0" + kop);
-                //    pay_form.set_kop_on_non_cash_sum_kop(kop);
-                //    pay_form.non_cash_sum.Text = ((int)total).ToString();
-                //    //этот блок надо переделать
-                //}
-                //else
-                //{
-
+                
                 pay_form.pay_sum.Text = calculation_of_the_sum_of_the_document().ToString("F", System.Globalization.CultureInfo.CurrentCulture);
-                    //Double total = calculation_of_the_sum_of_the_document();
-                    //string kop = ((int)((total - (int)total) * 100)).ToString();
-                    //kop = (kop.Length == 2 ? kop : "0" + kop);
-                    //pay_form.set_kop_on_non_cash_sum_kop(kop);                
+                  
                 write_new_document("0", calculation_of_the_sum_of_the_document().ToString(), "0", "0", false, "0", "0", "0", "0");//нужно для того чтобы в окне оплаты взять сумму из БД
             }
             else//Это возврат
             {
-                pay_form.pay_sum.Text = calculation_of_the_sum_of_the_document().ToString("F", System.Globalization.CultureInfo.CurrentCulture);
-                //if (MainStaticClass.SelfServiceKiosk == 1)
-                //{
-                //    pay_form.cash_sum.Enabled = false;
-                //    pay_form.non_cash_sum.Enabled = false;
-                //    pay_form.non_cash_sum_kop.Enabled = false;
-                //    pay_form.pay_sum.Text = calculation_of_the_sum_of_the_document().ToString();
-
-                //    double total = Convert.ToDouble(calculation_of_the_sum_of_the_document());
-                //    string kop = ((int)((total - (int)total) * 100)).ToString();
-                //    kop = (kop.Length == 2 ? kop : "0" + kop);
-                //    pay_form.set_kop_on_non_cash_sum_kop(kop);
-                //    pay_form.non_cash_sum.Text = ((int)total).ToString();
-                //}
+                pay_form.pay_sum.Text = calculation_of_the_sum_of_the_document().ToString("F", System.Globalization.CultureInfo.CurrentCulture);               
             }
 
             pay_form.txtB_cash_sum.Focus();
-            //pay_form.TopMost = true;
-            //pay_form.Show(); //для тестов пока так
-            //Для бонусной программы проверяем заполненность пароля для передачи данных провайдеру
-
-
-            //ДЕЙСТВИЯ ПО НОВОЙ БОНУСНОЙ ПРОГРАММЕ 
-            //if (MainStaticClass.PassPromo != "")//Пароль не пустой бонусная магазин включен в бнусную систему
-            //{
-            //    if (check_type.SelectedIndex == 0) // Это продажа
-            //    {
-            //        if (MainStaticClass.GetWorkSchema == 2)
-            //        {
-            //            if (client_plastic_scaned)
-            //            {
-            //                pay_form.pay_bonus.Enabled = true;
-            //            }
-            //            //if (!change_bonus_card)//Если это не замена карты то проверить 
-            //            //{
-            //            //Проверяем есть ли в чеке бонусная карта на продажу.
-            //            bool first = (card_state == 1);//В чек считана бонусная карта клиента со статусом 1 т.е. не активирована                       
-            //            bool second = check_availability_card_sale();
-            //            if (first != second)
-            //            {
-
-            //                if (client.Tag == null)
-            //                {
-            //                    MessageBox.Show("В шапке чека отсутсвует бонусная карта клиента со статусом 1 т.е. не активирована");
-            //                    return;
-            //                }
-            //                if (client.Tag.ToString() != code_bonus_card)
-            //                {
-            //                    if (change_bonus_card)//Это замена карты дальше не проверяем
-            //                    {
-            //                        return;
-            //                    }
-
-            //                    if (first)
-            //                    {
-            //                        MessageBox.Show("В шапке чека существует бонусная карта клиента со статусом 1 т.е. не активирована, а в строках нет данной бонусной карты,необходимо ее добавить в строки");
-            //                        cancel_action();
-            //                        return;
-            //                    }
-            //                    else
-            //                    {
-            //                        MessageBox.Show("В шапке чека отсуствует бонусная карта клиента со статусом 1 т.е. не активирована, а в строках она есть,необходимо ее добавить в шапку чека");
-            //                        cancel_action();
-            //                        return;
-            //                    }
-            //                }
-            //            }
-            //            //}
-            //        }
-            //    }
-            //}
+            
             //При переходе в окно оплаты цены должны быть отрисованы
-            SendDataToCustomerScreen(1,1,1);
-            //pay_form.Top = this.Top;
-            //pay_form.Left = this.Left;
-            //pay_form.Right = this.Right;
-
-            //pay_form.Top = this.Parent.Top
+            SendDataToCustomerScreen(1, 1, 1);
+            
             dr = pay_form.ShowDialog();
-            //pay_form.Dispose();
-          
+            
             if (dr == DialogResult.OK)
             {
                 this.Close();
             }
-            //inputbarcode.Focus();
+            
             this.txtB_search_product.Focus();
             pay_form = new Pay();
-
-
         }
 
         /// <summary>

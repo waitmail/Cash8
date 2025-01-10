@@ -94,10 +94,10 @@
             // comment
             // 
             this.comment.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.comment.Location = new System.Drawing.Point(81, 567);
+            this.comment.Location = new System.Drawing.Point(87, 567);
             this.comment.MaxLength = 50;
             this.comment.Name = "comment";
-            this.comment.Size = new System.Drawing.Size(192, 20);
+            this.comment.Size = new System.Drawing.Size(176, 20);
             this.comment.TabIndex = 3;
             this.comment.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -107,9 +107,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(6, 572);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(69, 13);
+            this.label1.Size = new System.Drawing.Size(77, 13);
             this.label1.TabIndex = 4;
-            this.label1.Text = "Коментарий";
+            this.label1.Text = "Комментарий";
             // 
             // label3
             // 
@@ -143,7 +143,7 @@
             // 
             this.panel1.BackColor = System.Drawing.Color.LightSalmon;
             this.panel1.Controls.Add(this.numericUpDown_enter_quantity);
-            this.panel1.Location = new System.Drawing.Point(545, 34);
+            this.panel1.Location = new System.Drawing.Point(560, 127);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(174, 66);
             this.panel1.TabIndex = 21;
@@ -474,7 +474,7 @@
             this.label_client_phone.AutoSize = true;
             this.label_client_phone.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.label_client_phone.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.label_client_phone.Location = new System.Drawing.Point(261, 45);
+            this.label_client_phone.Location = new System.Drawing.Point(252, 45);
             this.label_client_phone.Name = "label_client_phone";
             this.label_client_phone.Size = new System.Drawing.Size(143, 15);
             this.label_client_phone.TabIndex = 59;

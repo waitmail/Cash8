@@ -179,20 +179,48 @@ namespace Cash8
             }
         }
 
-        //private bool copFilledCorrectly()
-        //{
-        //    bool result = true;
-        //    if (non_cash_sum.Text.Trim().Length > 0)
-        //    {
-        //        double total = get_sum_sum_at_a_discount();                
-        //        if (Convert.ToInt16(non_cash_sum_kop.Text) != Math.Round(total - (int)total,2)*100)
-        //        {                    
-        //            MessageBox.Show("У вас не заполнены копейки, нажмите клавишу к(r) и затем продолжите ввод целой части по карте оплаты.", "Проверки при оплате картой");
-        //            result = false;
-        //        }
-        //    }
-        //    return result;
-        //}
+        private bool copFilledCorrectly()
+        {
+            bool result = true;
+            if (non_cash_sum.Text.Trim().Length > 0)
+            {
+                if (Convert.ToInt32(non_cash_sum.Text) == 0)
+                {
+                    if (Convert.ToInt16(non_cash_sum_kop.Text) > 0)
+                    {
+                        DialogResult dialogResult = MessageBox.Show("У вас заполнены копейки для оплаты по карте,но не заполнена целая часть суммы оплты " +
+                            " по карте, если вы выберете ДА тогда копейки будут оплачены по карте, если вы выберете НЕТ то тогда окпейки обнулятся и вам" +
+                            " будет необходимо снова выбрать сумму и форму оплты", "Проверки при оплате картой", MessageBoxButtons.YesNo);
+                        if (dialogResult == DialogResult.No)
+                        {
+                            non_cash_sum_kop.Text = "0";
+                            result = false;
+                        }
+                    }
+
+                }
+                else
+                {
+                    //double total = get_sum_sum_at_a_discount();
+                    ////if (Convert.ToInt16(non_cash_sum_kop.Text) != Math.Round(total - (int)total, 2) * 100)
+                    ////{
+                    ////    MessageBox.Show("У вас не заполнены копейки, нажмите клавишу к(r) и затем продолжите ввод целой части по карте оплаты.", "Проверки при оплате картой");
+                    ////    result = false;
+                    ////}
+                    //if (Convert.ToInt32(non_cash_sum_kop.Text) != Math.Round(total - (int)total, 2, MidpointRounding.AwayFromZero) * 100)
+                    //{
+                    //    MessageBox.Show("У вас не заполнены копейки, нажмите клавишу к(r) и затем продолжите ввод целой части по карте оплаты.", "Проверки при оплате картой");
+                    //    result = false;
+                    //}
+                }
+
+            }
+            else
+            {
+                MessageBox.Show("У вас пустое поле оплата по карте сделайте фото и создайте заявку в ит отдел.", "Проверки при оплате картой");
+            }
+            return result;
+        }
 
         private void non_cash_KeyPress(object sender, KeyPressEventArgs e)
         {
@@ -1464,11 +1492,12 @@ namespace Cash8
                 }
 
                 //параметры подключение терминала заполнены и сумма по карте к оплате заполнена
+                double notCashSum = Convert.ToDouble(this.non_cash_sum.Text.Trim()) + Convert.ToDouble(non_cash_sum_kop.Text) / 100;
 
-                if ((MainStaticClass.IpAddressAcquiringTerminal.Trim() != "") && (MainStaticClass.IdAcquirerTerminal.Trim() != "") && (Convert.ToDouble(non_cash_sum.Text) > 0))
+                if ((MainStaticClass.IpAddressAcquiringTerminal.Trim() != "") && (MainStaticClass.IdAcquirerTerminal.Trim() != "") && notCashSum > 0)
                 {
-                    if (checkBox_do_not_send_payment_to_the_terminal.CheckState == CheckState.Unchecked)
-                    {
+                    if (checkBox_do_not_send_payment_to_the_terminal.CheckState == CheckState.Unchecked)                    {
+
                         string money = ((Convert.ToDouble(this.non_cash_sum.Text.Trim()) + Convert.ToDouble(non_cash_sum_kop.Text) / 100) * 100).ToString();
 
                         if (MainStaticClass.GetAcquiringBank == 1) //РНКБ
@@ -1677,7 +1706,6 @@ namespace Cash8
                         }
                     }
                 }
-
 
                 //Получить сумму наличных
                 //если это возврат и если сумма безнала меньше 1 тогда копейки прибавить к наличным
@@ -2217,10 +2245,11 @@ namespace Cash8
         {            
             this.button_pay.Enabled = false;
 
-            //if (!copFilledCorrectly())
-            //{
-            //    return;
-            //}
+            if (!copFilledCorrectly())
+            {
+                calculate();
+                return;
+            }
             //Проверить заполнены копейки или нет 
 
 
