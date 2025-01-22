@@ -2885,7 +2885,7 @@ namespace Cash8
                                             mark_str_cdn = mark_str_cdn.Replace("'", "\'");
                                             Dictionary<string, string> d_tovar = new Dictionary<string, string>();
                                             d_tovar[lvi.SubItems[1].Text] = lvi.SubItems[0].Text;
-                                            result_check_cdn = cdn.check_marker_code(codes, mark_str, this.numdoc, ref request, mark_str_cdn, d_tovar, ref timeout_check_cdn);
+                                            result_check_cdn = cdn.cdn_check_marker_code(codes, mark_str, this.numdoc, ref request, mark_str_cdn, d_tovar, ref timeout_check_cdn);
                                             if ((!result_check_cdn) && (!timeout_check_cdn))//не прошел проверку и таймаута не было 
                                             {
                                                 return;
@@ -7969,7 +7969,6 @@ namespace Cash8
                         PrintingUsingLibraries printingUsingLibraries = new PrintingUsingLibraries();
                         {
                             printingUsingLibraries.print_sell_2_or_return_sell(this);
-
                         }
                     }                    
                 }

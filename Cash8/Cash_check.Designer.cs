@@ -143,7 +143,7 @@
             // 
             this.panel1.BackColor = System.Drawing.Color.LightSalmon;
             this.panel1.Controls.Add(this.numericUpDown_enter_quantity);
-            this.panel1.Location = new System.Drawing.Point(560, 127);
+            this.panel1.Location = new System.Drawing.Point(556, 49);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(174, 66);
             this.panel1.TabIndex = 21;
@@ -311,7 +311,7 @@
             // 
             this.check_type.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.check_type.FormattingEnabled = true;
-            this.check_type.Location = new System.Drawing.Point(67, 5);
+            this.check_type.Location = new System.Drawing.Point(70, 5);
             this.check_type.Name = "check_type";
             this.check_type.Size = new System.Drawing.Size(103, 21);
             this.check_type.TabIndex = 39;
@@ -453,7 +453,7 @@
             // 
             this.label12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(484, 160);
+            this.label12.Location = new System.Drawing.Point(474, 160);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(86, 13);
             this.label12.TabIndex = 54;
@@ -557,21 +557,21 @@
             this.txtB_name.Location = new System.Drawing.Point(205, 156);
             this.txtB_name.MaxLength = 250;
             this.txtB_name.Name = "txtB_name";
-            this.txtB_name.Size = new System.Drawing.Size(273, 20);
+            this.txtB_name.Size = new System.Drawing.Size(263, 20);
             this.txtB_name.TabIndex = 68;
             // 
             // txtB_num_sales
             // 
-            this.txtB_num_sales.Location = new System.Drawing.Point(175, 6);
+            this.txtB_num_sales.Location = new System.Drawing.Point(178, 6);
             this.txtB_num_sales.MaxLength = 10;
             this.txtB_num_sales.Name = "txtB_num_sales";
-            this.txtB_num_sales.Size = new System.Drawing.Size(98, 20);
+            this.txtB_num_sales.Size = new System.Drawing.Size(94, 20);
             this.txtB_num_sales.TabIndex = 69;
             this.txtB_num_sales.Visible = false;
             // 
             // btn_fill_on_sales
             // 
-            this.btn_fill_on_sales.Location = new System.Drawing.Point(279, 4);
+            this.btn_fill_on_sales.Location = new System.Drawing.Point(278, 4);
             this.btn_fill_on_sales.Name = "btn_fill_on_sales";
             this.btn_fill_on_sales.Size = new System.Drawing.Size(131, 23);
             this.btn_fill_on_sales.TabIndex = 70;

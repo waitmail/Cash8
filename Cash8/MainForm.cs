@@ -1077,7 +1077,7 @@ namespace Cash8
             {
 
                 //InventoryManager.FillDictionaryProductData();
-                LoadCdnWithStartAsync();
+                //LoadCdnWithStartAsync();
                 InventoryManager.FillDictionaryProductDataAsync();
 
                 MainStaticClass.write_event_in_log(" Старт программы ", "проверка таблицы констант", "0");
@@ -1091,99 +1091,35 @@ namespace Cash8
                 int result = MainStaticClass.get_unloading_interval();
                 if (result != 0)
                 {
-                    timer_send_data.Interval = result * 60000;
-                    //MessageBox.Show(timer_send_data.Interval.ToString());
+                    timer_send_data.Interval = result * 60000;               
                     timer_send_data.Start();
-                    timer_send_data.Elapsed += new System.Timers.ElapsedEventHandler(timer_send_data_Elapsed);
-                    //timer_send_data_Elapsed(null, null);//при старте сделать выгрузку               при отсутствмм связи программа вешается
+                    timer_send_data.Elapsed += new System.Timers.ElapsedEventHandler(timer_send_data_Elapsed);                   
+                }              
+                
+                UploadPhoneClients();                 
+                check_failed_input_phone();
 
-                    //Thread t2 = new Thread(load_bonus_cards);
-                    //t2.IsBackground = true;
-                    //t2.Start();               
-                }
-                //MainStaticClass.write_event_in_log("Перед проверкой обновления в интернет", " Старт программы ", "0");
-                //LoadProgramFromInternet lpfi = new LoadProgramFromInternet();
-                //lpfi.show_phone = true;
-                //lpfi.check_new_version_programm();
-                //bool new_version_of_the_program_exist = lpfi.new_version_of_the_program;
-                //lpfi.Dispose();
-                //MainStaticClass.write_event_in_log("Проверка обновления в интернет завершена", " Старт программы ", "0");
-
-                //if (new_version_of_the_program_exist)
-                //{
-                //    обновлениеПрограммыToolStripMenuItem_Click(null, null);
-                //}
-
-                //if (MainStaticClass.GetWorkSchema != 2)
-                //{
-                //Thread t = new Thread(load_bonus_clients);
-                //t.IsBackground = true;
-                //t.Start();
-                Task.Run(() => load_bonus_clients());
-                //if (MainStaticClass.EnableCdnMarkers == 1)
-                //{
-                //    Thread t2 = new Thread(get_cdn_with_start);
-                //    t2.IsBackground = true;
-                //    t2.Start();
-                //}
-                //}
-
-                //load_cdn_with_start();
-
-                //await LoadCdnWithStartAsync();//Загрузка cdn асинхронно 
-
-                if (MainStaticClass.GetWorkSchema == 1)//Это условие будет работать только для ЧД
-                {
-                    //Thread t = new Thread(load_bonus_clients);
-                    //t.IsBackground = true;
-                    //t.Start();
-
-                    UploadPhoneClients();
-                    //UploadChangeStatusClients();
-                    check_failed_input_phone();
-                }
-
-
-                MainStaticClass.write_event_in_log("Перед получением данных по пользователям", " Старт программы ", "0");
+                //MainStaticClass.write_event_in_log("Перед получением данных по пользователям", " Старт программы ", "0");
                 get_users();
-                MainStaticClass.write_event_in_log("После получения данных по пользователям", " Старт программы ", "0");
-                //MainStaticClass.Use_Envd = check_envd();
-                //if (DateTime.Now > new DateTime(2021, 1, 1) && (MainStaticClass.Use_Envd))
-                //{
-                //    MessageBox.Show("Схема ЕНВД в 1 января 2021 года не работает, необходимо это исправить");
-                //    Constants constants = new Constants();
-                //    constants.ShowDialog();                
-                //    this.Close();
-                //    return;
-                //}
-                MainStaticClass.write_event_in_log("Перед проверкой системы налогообложения", " Старт программы ", "0");
+                //MainStaticClass.write_event_in_log("После получения данных по пользователям", " Старт программы ", "0");
+              
+                //MainStaticClass.write_event_in_log("Перед проверкой системы налогообложения", " Старт программы ", "0");
                 MainStaticClass.SystemTaxation = check_system_taxation();
-                MainStaticClass.write_event_in_log("После проверки системы налогообложения", " Старт программы ", "0");
+                //MainStaticClass.write_event_in_log("После проверки системы налогообложения", " Старт программы ", "0");
 
-                //MainStaticClass.delete_old_checks(MainStaticClass.GetMinDateWork);
+                MainStaticClass.delete_old_checks(MainStaticClass.GetMinDateWork);
                 MainStaticClass.delete_all_events_in_log(MainStaticClass.GetMinDateWorkLogs);
 
                 if (MainStaticClass.Use_Fiscall_Print)
                 {
                     getShiftStatus();
                 }
-
-                //if (MainStaticClass.PassPromo == "")//Пароля нет надо его запросить
-                //{
-                //get_login_and_pass_on_bonus_programm();//Пока не работаем по бонусам со сторонними поставщиками
-                //}            
-                //check_and_update_npgsql();
-                //MainStaticClass.write_event_in_log("Перед передача удаленных строк и строк с изменением количества вниз", " Старт программы ", "0");
-                //UploadDeletedItems();//передача удаленных строк и строк с изменением количества вниз
-                //MainStaticClass.write_event_in_log("После передача удаленных строк и строк с изменением количества вниз", " Старт программы ", "0");
-                //if (MainStaticClass.Nick_Shop == "A01")//Для отладки нового механизма пока что сделаю такую заплатку
-                //{
-                //    MainStaticClass.UseOldProcessiingActions = false;
-                //}
+               
                 if (MainStaticClass.GetDoNotPromptMarkingCode == 0)
                 {
                     if (MainStaticClass.CashDeskNumber != 9)
                     {
+                        MainStaticClass.validate_date_time_with_fn(10);
                         if (MainStaticClass.SystemTaxation == 0)
                         {
                             MessageBox.Show("У вас не заполнена система налогообложения!\r\nСоздание и печать чеков невозможна!\r\nОБРАЩАЙТЕСЬ В БУХГАЛТЕРИЮ!");
@@ -1219,11 +1155,16 @@ namespace Cash8
             }
             if (MainStaticClass.CashDeskNumber != 9)//&& MainStaticClass.EnableCdnMarkers == 1
             {
+                Task.Run(() => load_bonus_clients());
                 if (MainStaticClass.CDN_Token == "")
                 {
                     MessageBox.Show("В этой кассе не заполнен CDN токен, \r\n ПРОДАЖА МАРКИРОВАННОГО ТОВАРА ОГРАНИЧЕНА/НЕВОЗМОЖНА!", "Проверка CDN");
                 }
-            }
+                else
+                {
+                    LoadCdnWithStartAsync();                    
+                }
+            }            
         }
 
        

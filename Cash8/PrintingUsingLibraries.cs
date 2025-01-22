@@ -73,8 +73,8 @@ namespace Cash8
                 DateTime dateTime = fptr.getParamDateTime(AtolConstants.LIBFPTR_PARAM_DATE_TIME);
                 if (Math.Abs((dateTime - DateTime.Now).Minutes) > minutes)//Поскольку может быть как больше так и меньше 
                 {
-                    MessageBox.Show(" У ВАС ОТЛИЧАЕТСЯ ВРЕМЯ МЕЖДУ КОМПЬЮТЕРОМ И ФИСКАЛЬНЫМ РЕГИСТРАТОРОМ БОЛЬШЕ ЧЕМ НА 20 МИНУТ ОТПРАВЬТЕ ЗАЯВКУ В ИТ ОТДЕЛ  ", " Проверка даты и времени в фн ");
-                    MainStaticClass.write_event_in_log(" Не схождение даты и времени между ФР и компьютером больше чем на 20 минут ", "Документ", "0");
+                    MessageBox.Show(" У ВАС ОТЛИЧАЕТСЯ ВРЕМЯ МЕЖДУ КОМПЬЮТЕРОМ И ФИСКАЛЬНЫМ РЕГИСТРАТОРОМ БОЛЬШЕ ЧЕМ НА"+minutes.ToString()+ " МИНУТ ОТПРАВЬТЕ ЗАЯВКУ В ИТ ОТДЕЛ  ", " Проверка даты и времени в фн ");
+                    MainStaticClass.write_event_in_log(" Не схождение даты и времени между ФР и компьютером больше чем на"+minutes.ToString()+" минут ", "Документ", "0");
 
                     result = false;
                 }
@@ -358,6 +358,7 @@ namespace Cash8
                 fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
                 fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, s);
                 fptr.printText();
+                fptr.setParam(AtolConstants.LIBFPTR_PARAM_PRINT_FOOTER,false);
                 fptr.endNonfiscalDocument();
                 check.recharge_note = "";
             }
@@ -506,9 +507,7 @@ namespace Cash8
         {
             bool error = false;
 
-            //***************************************************************************          
-
-
+            //***************************************************************************
             if (check.to_print_certainly == 1)
             {
                 MainStaticClass.delete_document_wil_be_printed(check.numdoc.ToString());
@@ -838,6 +837,7 @@ namespace Cash8
             }
             else
             {
+                print_promo();
                 fptr.closeReceipt();
             }
 
@@ -905,6 +905,8 @@ namespace Cash8
                 fptr.cancelReceipt();
             }
 
+          
+
             if (MainStaticClass.GetVariantConnectFN == 1)
             {
                 fptr.close();
@@ -941,7 +943,7 @@ namespace Cash8
                 else if (MainStaticClass.SystemTaxation == 5)
                 {
                     fptr.setParam(1055, AtolConstants.LIBFPTR_TT_USN_INCOME);
-                }
+                }                
             }
             else
             {
@@ -1273,6 +1275,7 @@ namespace Cash8
             }
             else
             {
+                print_promo();
                 fptr.closeReceipt();
             }
             
@@ -1387,6 +1390,86 @@ namespace Cash8
 
                 fptr.beginMarkingCodeValidation();
             }
+        }
+
+
+        public void print_promo()
+        {
+            if (MainStaticClass.CashDeskNumber != 9)
+            {
+                return;
+            }
+            IFptr fptr = MainStaticClass.FPTR;
+
+            if (!fptr.isOpened())
+            {
+                fptr.open();
+            }
+
+            fptr.beginNonfiscalDocument();
+            //MessageBox.Show(fptr.errorDescription());
+
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_FILENAME, @"D:\Last Cash8\Cash8\Cash8\bin\Debug\logo3.png");
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
+            fptr.printPicture();
+            //MessageBox.Show(fptr.errorDescription());
+            
+            
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_BARCODE, "123456789012");
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_BARCODE_TYPE, AtolConstants.LIBFPTR_BT_EAN_13);
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
+            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_SCALE, 2);
+            fptr.printBarcode();
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, "123456789012");
+            fptr.printText();//печать циферок штрихкода
+
+
+            fptr.lineFeed();
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, "ГИГИЕНА ЖЕНСКАЯ");
+            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_FONT_DOUBLE_WIDTH, true);
+            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_FONT_DOUBLE_HEIGHT, true);
+            fptr.printText();
+            
+
+            string a1 = "       00000    000     00  0 ";
+            string a2 = "       0  00   00 00    00 0  ";
+            string a3 = "0000     00    00 00      0   ";
+            string a4 = "       00      00 00     0 00 ";
+            string a5 = "       00000    000     0  00 ";
+
+            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
+            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, "- 20 %");
+            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_FONT, 2);
+            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_FONT_DOUBLE_WIDTH, true);
+            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_FONT_DOUBLE_HEIGHT, true);
+            fptr.lineFeed();            
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, a1);
+            fptr.printText();
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, a2);
+            fptr.printText();
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, a3);
+            fptr.printText();
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, a4);
+            fptr.printText();
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, a5);            
+            fptr.printText();
+            fptr.lineFeed();
+
+            string s = "Только с 15.01.2025 по 31.01.2025.\r\nСкидка по купону не предоставляется \r\nна акционные товары.В одном чеке \r\nможно использовать только один \r\nкупон.";
+
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);            
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT,s);
+            fptr.printText();
+            
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_PRINT_FOOTER, false);
+            fptr.endNonfiscalDocument();
         }
 
 

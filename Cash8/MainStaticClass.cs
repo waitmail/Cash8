@@ -164,8 +164,8 @@ namespace Cash8
 
                                 if (Math.Abs((dateTime - DateTime.Now).Minutes) > minutes)//Поскольку может быть как больше так и меньше 
                                 {
-                                    MessageBox.Show(" У ВАС ОТЛИЧАЕТСЯ ВРЕМЯ МЕЖДУ КОМПЬЮТЕРОМ И ФИСКАЛЬНЫМ РЕГИСТРАТОРОМ БОЛЬШЕ ЧЕМ НА 20 МИНУТ ОТПРАВЬТЕ ЗАЯВКУ В ИТ ОТДЕЛ ", "Проверка даты и времени");
-                                    MainStaticClass.write_event_in_log(" Не схождение даты и времени между ФР и компьютером больше чем на 20 минут ", "Документ", "0");
+                                    MessageBox.Show(" У ВАС ОТЛИЧАЕТСЯ ВРЕМЯ МЕЖДУ КОМПЬЮТЕРОМ И ФИСКАЛЬНЫМ РЕГИСТРАТОРОМ БОЛЬШЕ ЧЕМ НА "+ minutes.ToString()+" МИНУТ ОТПРАВЬТЕ ЗАЯВКУ В ИТ ОТДЕЛ ", "Проверка даты и времени");
+                                    MainStaticClass.write_event_in_log(" Не схождение даты и времени между ФР и компьютером больше чем на  " + minutes.ToString() +" минут ", "Документ", "0");
                                 }
                             }
                             else
@@ -2120,7 +2120,7 @@ namespace Cash8
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 command.Transaction = transaction;
                 command.ExecuteNonQuery();
-                query = "DELETE FROM checks_header where date_time_write < '" + date.ToString("yyyy.MM.dd") + "' AND is_sent=1)";
+                query = "DELETE FROM checks_header where date_time_write < '" + date.ToString("yyyy.MM.dd") + "' AND is_sent=1";
                 command = new NpgsqlCommand(query, conn);
                 command.Transaction = transaction;
                 command.ExecuteNonQuery();

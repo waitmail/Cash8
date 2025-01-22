@@ -112,12 +112,12 @@ namespace Cash8
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
                     // Вывод статус кода ответа
-                    Console.WriteLine("Status Code: " + (int)response.StatusCode);
+                    //Console.WriteLine("Status Code: " + (int)response.StatusCode);
                     int status_code = (int)response.StatusCode;
                     if (status_code != 200)
                     {
-                        MessageBox.Show("Получен неверный ответ от сервера при запросе списка CDN серверов, коl ответа = " + status_code.ToString(), "Получение списка CDN серверов");
-                        MainStaticClass.write_cdn_log("Получен неверный ответ от сервера при запросе списка CDN серверов, коl ответа = " + status_code.ToString(), "0", "", "3");
+                        MessageBox.Show("Получен неверный ответ от сервера при запросе списка CDN серверов, кодответа = " + status_code.ToString(), "Получение списка CDN серверов");
+                        MainStaticClass.write_cdn_log("Получен неверный ответ от сервера при запросе списка CDN серверов, код ответа = " + status_code.ToString(), "0", "", "3");
                         return list;
                     }
 
@@ -139,7 +139,6 @@ namespace Cash8
             {
                 //MainStaticClass.write_event_in_log("Получение списка CDN get_cdn_info " + ex.Message, "Документ чек", "0");
                 MainStaticClass.write_cdn_log("Получение списка CDN get_cdn_info " + ex.Message, "0", "", "3");
-
                 MessageBox.Show("Ошибка при запросе списка CDN площадок " + ex.Message);                
             }
 
@@ -442,7 +441,7 @@ namespace Cash8
             return cDNHealth;
         }
 
-        public bool check_marker_code(List<string> codes, string mark_str, Int64 numdoc, ref HttpWebRequest request, string mark_str_cdn, Dictionary<string, string> d_tovar, ref bool timeout)
+        public bool cdn_check_marker_code(List<string> codes, string mark_str, Int64 numdoc, ref HttpWebRequest request, string mark_str_cdn, Dictionary<string, string> d_tovar, ref bool timeout)
         {
 
             bool result_check = false;
@@ -470,9 +469,16 @@ namespace Cash8
 
             string body = JsonConvert.SerializeObject(check_mark, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             body = body.Replace("\\u001d", @"u001d");
-            error = false; result_check = false;
+            error = false;
+            //result_check = false;
             
             cdn_list.hosts = cdn_list.hosts.Where(h => h.dateTime < DateTime.Now).OrderBy(h => h.latensy).ToList();
+
+            //Если в результате все в таймаутах или недоступно тогда пробуем хоть куда то выполнить запрос.
+            if (cdn_list.hosts.Count == 0)
+            {
+                cdn_list = MainStaticClass.CDN_List;
+            }
             
             for (int i = 0; i < cdn_list.hosts.Count; i++)
             {
@@ -549,7 +555,7 @@ namespace Cash8
                                 //MessageBox.Show("Для кода маркировки " + answer_check_mark.codes[0].gtin + " нет информации о вводе в оборот." + s, "CDN проверка");
                                 //MainStaticClass.write_event_in_log("CDN Для кода маркировки " + mark_str_cdn + " нет информации о вводе в оборот.", "Документ чек", numdoc.ToString());
                                 MainStaticClass.write_cdn_log("CDN Код маркировки " + mark_str_cdn + " нет информации о вводе в оборот. ", numdoc.ToString(), codes[0].ToString(), "1");
-                                result_check = false;
+                                //result_check = false;
                             }
                         }
                         if (!answer_check_mark.codes[0].utilised)
@@ -558,7 +564,7 @@ namespace Cash8
                             //MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + " эмитирован, но нет информации о его нанесении." + s, "CDN проверка");
                             //MainStaticClass.write_event_in_log("CDN Код маркировки " + mark_str_cdn + " эмитирован, но нет информации о его нанесении.", "Документ чек", numdoc.ToString());
                             MainStaticClass.write_cdn_log("CDN Код маркировки " + mark_str_cdn + " эмитирован, но нет информации о его нанесении. ", numdoc.ToString(), codes[0].ToString(), "1");
-                            result_check = false;
+                            //result_check = false;
                         }
                         if (!answer_check_mark.codes[0].verified)
                         {
@@ -566,7 +572,7 @@ namespace Cash8
                             //MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + "  не пройдена криптографическая проверка." + s, "CDN проверка");
                             //MainStaticClass.write_event_in_log("CDN Код маркировки " + mark_str_cdn + "  не пройдена криптографическая проверка.", "Документ чек", numdoc.ToString());
                             MainStaticClass.write_cdn_log("CDN Код маркировки " + mark_str_cdn + "  не пройдена криптографическая проверка.", numdoc.ToString(), codes[0].ToString(), "1");
-                            result_check = false;
+                            //result_check = false;
                         }
                         if (answer_check_mark.codes[0].sold)
                         {
@@ -574,7 +580,7 @@ namespace Cash8
                             //MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + "  уже выведен из оборота." + s, "CDN проверка");
                             //MainStaticClass.write_event_in_log("CDN Код маркировки " + mark_str_cdn + "  уже выведен из оборота.", "Документ чек", numdoc.ToString());
                             MainStaticClass.write_cdn_log("CDN Код маркировки " + mark_str_cdn + "  уже выведен из оборота.", numdoc.ToString(), codes[0].ToString(), "1");
-                            result_check = false;
+                            //result_check = false;
                         }
                         if (answer_check_mark.codes[0].isBlocked)
                         {
@@ -582,7 +588,7 @@ namespace Cash8
                             //MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + "  заблокирован по решению ОГВ." + s, "CDN проверка");
                             //MainStaticClass.write_event_in_log("CDN Код маркировки " + mark_str_cdn + "  заблокирован по решению ОГВ.", "Документ чек", numdoc.ToString());
                             MainStaticClass.write_cdn_log("CDN Код маркировки " + mark_str_cdn + "  заблокирован по решению ОГВ.", numdoc.ToString(), codes[0].ToString(), "1");
-                            result_check = false;
+                            //result_check = false;
                         }                        
                         if (answer_check_mark.codes[0].expireDate.Year > 2000)
                         {
@@ -592,7 +598,7 @@ namespace Cash8
                                 //MessageBox.Show("У товара с кодом маркировки " + answer_check_mark.codes[0].gtin + "  истек срок годности." + s, "CDN проверка");
                                 //MainStaticClass.write_event_in_log("CDN У товара с кодом маркировки " + mark_str_cdn + "  истек срок годности.", "Документ чек", numdoc.ToString());
                                 MainStaticClass.write_cdn_log("CDN У товара с кодом маркировки " + mark_str_cdn + "  истек срок годности.", numdoc.ToString(), codes[0].ToString(), "1");
-                                result_check = false;
+                                //result_check = false;
                             }
                         }
                         if (sb.Length == 0)
@@ -634,7 +640,7 @@ namespace Cash8
                     else
                     {
                         host.dateTime = DateTime.Now.AddMinutes(15);
-                        result_check = false; //ошибка работы с интернет не является ошибкой кода маркировки
+                        //result_check = false; //ошибка работы с интернет не является ошибкой кода маркировки
                         error = true;
                         MessageBox.Show("WebException check_marker_code " + host.host + " " + ex.Message, "check_marker_code");
                         MainStaticClass.write_cdn_log("WebException check_marker_code " + host.host + " " + ex.Message, numdoc.ToString(), codes[0].ToString(), "3");
