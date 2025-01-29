@@ -1164,7 +1164,12 @@ namespace Cash8
                 {
                     LoadCdnWithStartAsync();                    
                 }
-            }            
+            }
+            if (MainStaticClass.PrintingUsingLibraries == 1)
+            {
+                PrintingUsingLibraries printingUsingLibraries = new PrintingUsingLibraries();
+                printingUsingLibraries.CheckTaxationTypes();
+            }
         }
 
        

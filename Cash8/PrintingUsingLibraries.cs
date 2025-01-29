@@ -3,7 +3,7 @@ using System.Windows.Forms;
 using AtolConstants = Atol.Drivers10.Fptr.Constants;
 using System;
 using System.Data;
-using System.Text;
+using System.Linq;
 using Npgsql;
 using System.Collections.Generic;
 
@@ -504,7 +504,7 @@ namespace Cash8
         }
 
         public void print_sell_2_or_return_sell(Cash_check check)
-        {
+        {            
             bool error = false;
 
             //***************************************************************************
@@ -837,7 +837,7 @@ namespace Cash8
             }
             else
             {
-                print_promo();
+                //print_promo();
                 fptr.closeReceipt();
             }
 
@@ -911,6 +911,7 @@ namespace Cash8
             {
                 fptr.close();
             }
+            //print_promo();
         }
 
                           
@@ -1275,7 +1276,7 @@ namespace Cash8
             }
             else
             {
-                print_promo();
+                //print_promo();
                 fptr.closeReceipt();
             }
             
@@ -1340,6 +1341,8 @@ namespace Cash8
             {
                 fptr.close();
             }
+
+            //print_promo();
         }
 
 
@@ -1390,6 +1393,51 @@ namespace Cash8
 
                 fptr.beginMarkingCodeValidation();
             }
+        }
+
+        public void CheckTaxationTypes()
+        {
+            IFptr fptr = MainStaticClass.FPTR;
+
+            if (!fptr.isOpened())
+            {
+                fptr.open();
+            }
+
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_FN_DATA_TYPE, AtolConstants.LIBFPTR_FNDT_REG_INFO);
+            fptr.fnQueryData();
+
+            uint taxationTypes = fptr.getParamInt(1062);
+
+            // Словарь для хранения соответствий между системами налогообложения и битами
+            var taxationMappings = new Dictionary<int, int[]>
+    {
+        { 1, new[] { 0 } }, // ОСН
+        { 2, new[] { 2 } }, // УСН (ДОХОДЫ МИНУС РАСХОДЫ)
+        { 3, new[] { 2, 4 } }, // УСН (ДОХОДЫ МИНУС РАСХОДЫ) + ПАТЕНТ
+        { 4, new[] { 1 } }, // УСН ДОХОДЫ
+        { 5, new[] { 1, 4 } } // УСН ДОХОДЫ + ПАТЕНТ
+    };
+
+            if (taxationMappings.TryGetValue(MainStaticClass.SystemTaxation, out var requiredBits))
+            {
+                bool isTaxationValid = requiredBits.All(bit => GetBit(taxationTypes, bit));
+
+                if (!isTaxationValid)
+                {
+                    MessageBox.Show("Система налогообложения в программе не совпадает с выбранной в Фискальном регистраторе. Вам необходимо связаться с бухгалтерией", "Проверки системы налогообложения");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Неизвестная система налогообложения", "Проверки системы налогообложения");
+            }
+        }
+
+        // Функция для получения значения конкретного бита по его индексу (начиная с 0)
+        bool GetBit(uint value, int bitIndex)
+        {
+            return (value & (1u << bitIndex)) != 0;
         }
 
 
@@ -1460,6 +1508,7 @@ namespace Cash8
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, a5);            
             fptr.printText();
+            
             fptr.lineFeed();
 
             string s = "Только с 15.01.2025 по 31.01.2025.\r\nСкидка по купону не предоставляется \r\nна акционные товары.В одном чеке \r\nможно использовать только один \r\nкупон.";
@@ -1467,9 +1516,29 @@ namespace Cash8
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);            
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT,s);
             fptr.printText();
-            
+
+            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, "" + "\"\""+ Environment.NewLine );
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT,""+ (char)22 + Environment.NewLine);
+            fptr.printText();
+
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_PRINT_FOOTER, false);
+
             fptr.endNonfiscalDocument();
+
+            //fptr.beginNonfiscalDocument();
+            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, "" + (char)22 + Environment.NewLine);
+            //fptr.printText();            
+            //fptr.endNonfiscalDocument();
+            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_RECEIPT_TYPE, AtolConstants.LIBFPTR_RT_SELL);
+            //fptr.openReceipt();
+            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_COMMODITY_NAME, "Фискальный чек");
+            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_PRICE, 0);
+            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_QUANTITY, 1);
+            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_TAX_TYPE, AtolConstants.LIBFPTR_TAX_VAT10);
+            //fptr.registration();
+            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_PAYMENT_TYPE, AtolConstants.LIBFPTR_PT_ELECTRONICALLY);
+            //fptr.closeReceipt();
+            //MessageBox.Show(fptr.errorDescription());
         }
 
 
