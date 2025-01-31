@@ -48,88 +48,154 @@ namespace Cash8
                 }
             });
         }
-        
+
+        //public static bool FillDictionaryProductData()
+        //{
+        //    bool result = true;
+
+        //    dictionaryProductData.Clear();
+
+        //    using (var conn = MainStaticClass.NpgsqlConn())
+        //    {
+        //        try
+        //        {                    
+        //            //string countQuery = "SELECT COUNT(*) FROM tovar " +
+        //            //    "LEFT JOIN barcode ON tovar.code=barcode.tovar_code " +
+        //            //    "WHERE tovar.its_deleted = 0 AND tovar.retail_price<>0";
+
+        //            conn.Open();
+        //            //using (var countCommand = new NpgsqlCommand(countQuery, conn))
+        //            //{
+        //            //    rowCount = Convert.ToInt32(countCommand.ExecuteScalar());
+        //            //}
+
+        //            string query = "SELECT tovar.code, tovar.name, tovar.retail_price, tovar.its_certificate, tovar.its_marked, tovar.cdn_check, tovar.fractional, barcode.barcode FROM tovar " +
+        //            "LEFT JOIN barcode ON tovar.code=barcode.tovar_code WHERE tovar.its_deleted = 0 AND tovar.retail_price<>0";
+
+        //            using (var command = new NpgsqlCommand(query, conn))
+        //            {
+        //                using (var reader = command.ExecuteReader())
+        //                {
+        //                    //rowCountCurrent = 0;
+        //                    while (reader.Read())
+        //                    {
+        //                        //rowCountCurrent++;
+        //                        long code = Convert.ToInt64(reader["code"]);
+
+        //                        ProductFlags flags = ProductFlags.None;
+        //                        // Создаем флаги на основе значений из базы данных                            
+        //                        if (Convert.ToBoolean(reader["its_certificate"])) flags |= ProductFlags.Certificate;
+        //                        if (Convert.ToBoolean(reader["its_marked"])) flags |= ProductFlags.Marked;
+        //                        if (Convert.ToBoolean(reader["cdn_check"])) flags |= ProductFlags.CDNCheck;
+        //                        if (Convert.ToBoolean(reader["fractional"])) flags |= ProductFlags.Fractional;
+
+        //                        if (!dictionaryProductData.TryGetValue(code, out _))
+        //                        {
+        //                            var productData = new ProductData(code, reader["name"].ToString().Trim(), Convert.ToDecimal(reader["retail_price"]), flags);
+
+        //                            AddItem(code, productData);
+        //                        }
+
+        //                        string barcode = reader["barcode"].ToString().Trim();
+        //                        if (!(string.IsNullOrEmpty(barcode) || dictionaryProductData.TryGetValue(Convert.ToInt64(barcode), out _)))
+        //                        {
+        //                            var productData = new ProductData(Convert.ToInt64(code), reader["name"].ToString().Trim(), Convert.ToDecimal(reader["retail_price"]), flags);
+        //                            AddItem(Convert.ToInt64(barcode), productData);
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        catch (NpgsqlException ex)
+        //        {
+        //            //MessageBox.Show($"Произошли ошибки при заполнении словаря данными о товарах: {ex.Message}", "Заполнение кеша товаров");
+        //            throw new Exception($"При заполнении словаря данными о товарах: {ex.Message}", ex);
+        //            //result = false;
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            //MessageBox.Show($"Произошли ошибки при заполнении словаря данными о товарах: {ex.Message}", "Заполенние кеша товаров");
+        //            throw new Exception($"При заполнении словаря данными о товарах: {ex.Message}", ex);
+        //            //result = false;
+        //        }
+        //        finally
+        //        {
+        //            if (conn.State == System.Data.ConnectionState.Open)
+        //            {
+        //                conn.Close();
+        //            }
+        //        }
+        //        complete = result;
+        //        return result;
+        //    }
+        //}       
+
         public static bool FillDictionaryProductData()
         {
-            bool result = true;
-
             dictionaryProductData.Clear();
 
             using (var conn = MainStaticClass.NpgsqlConn())
             {
                 try
-                {                    
-                    //string countQuery = "SELECT COUNT(*) FROM tovar " +
-                    //    "LEFT JOIN barcode ON tovar.code=barcode.tovar_code " +
-                    //    "WHERE tovar.its_deleted = 0 AND tovar.retail_price<>0";
-
+                {
                     conn.Open();
-                    //using (var countCommand = new NpgsqlCommand(countQuery, conn))
-                    //{
-                    //    rowCount = Convert.ToInt32(countCommand.ExecuteScalar());
-                    //}
 
-                    string query = "SELECT tovar.code, tovar.name, tovar.retail_price, tovar.its_certificate, tovar.its_marked, tovar.cdn_check, tovar.fractional, barcode.barcode FROM tovar " +
-                    "LEFT JOIN barcode ON tovar.code=barcode.tovar_code WHERE tovar.its_deleted = 0 AND tovar.retail_price<>0";
+                    string query = @"
+                SELECT tovar.code, tovar.name, tovar.retail_price, tovar.its_certificate, 
+                       tovar.its_marked, tovar.cdn_check, tovar.fractional, barcode.barcode 
+                FROM tovar 
+                LEFT JOIN barcode ON tovar.code = barcode.tovar_code 
+                WHERE tovar.its_deleted = 0 AND tovar.retail_price <> 0";
 
                     using (var command = new NpgsqlCommand(query, conn))
+                    using (var reader = command.ExecuteReader())
                     {
-                        using (var reader = command.ExecuteReader())
+                        while (reader.Read())
                         {
-                            //rowCountCurrent = 0;
-                            while (reader.Read())
+                            long code = Convert.ToInt64(reader["code"]);
+                            string name = reader["name"].ToString().Trim();
+                            decimal retailPrice = Convert.ToDecimal(reader["retail_price"]);
+                            string barcode = reader["barcode"]?.ToString().Trim();
+
+                            // Создаем флаги на основе значений из базы данных
+                            ProductFlags flags = ProductFlags.None;
+                            if (Convert.ToBoolean(reader["its_certificate"])) flags |= ProductFlags.Certificate;
+                            if (Convert.ToBoolean(reader["its_marked"])) flags |= ProductFlags.Marked;
+                            if (Convert.ToBoolean(reader["cdn_check"])) flags |= ProductFlags.CDNCheck;
+                            if (Convert.ToBoolean(reader["fractional"])) flags |= ProductFlags.Fractional;
+
+                            // Добавляем товар по его коду
+                            if (!dictionaryProductData.ContainsKey(code))
                             {
-                                //rowCountCurrent++;
-                                long code = Convert.ToInt64(reader["code"]);
+                                var productData = new ProductData(code, name, retailPrice, flags);
+                                dictionaryProductData[code] = productData;
+                            }
 
-                                ProductFlags flags = ProductFlags.None;
-                                // Создаем флаги на основе значений из базы данных                            
-                                if (Convert.ToBoolean(reader["its_certificate"])) flags |= ProductFlags.Certificate;
-                                if (Convert.ToBoolean(reader["its_marked"])) flags |= ProductFlags.Marked;
-                                if (Convert.ToBoolean(reader["cdn_check"])) flags |= ProductFlags.CDNCheck;
-                                if (Convert.ToBoolean(reader["fractional"])) flags |= ProductFlags.Fractional;
-
-                                if (!dictionaryProductData.TryGetValue(code, out _))
+                            // Добавляем товар по штрихкоду
+                            if (!string.IsNullOrEmpty(barcode) && long.TryParse(barcode, out var barcodeValue))
+                            {
+                                if (!dictionaryProductData.ContainsKey(barcodeValue))
                                 {
-                                    var productData = new ProductData(code, reader["name"].ToString().Trim(), Convert.ToDecimal(reader["retail_price"]), flags);
-
-                                    AddItem(code, productData);
-                                }
-
-                                string barcode = reader["barcode"].ToString().Trim();
-                                if (!(string.IsNullOrEmpty(barcode) || dictionaryProductData.TryGetValue(Convert.ToInt64(barcode), out _)))
-                                {
-                                    var productData = new ProductData(Convert.ToInt64(code), reader["name"].ToString().Trim(), Convert.ToDecimal(reader["retail_price"]), flags);
-                                    AddItem(Convert.ToInt64(barcode), productData);
+                                    var productData = new ProductData(code, name, retailPrice, flags);
+                                    dictionaryProductData[barcodeValue] = productData;
                                 }
                             }
                         }
                     }
+
+                    return true;
                 }
                 catch (NpgsqlException ex)
                 {
-                    //MessageBox.Show($"Произошли ошибки при заполнении словаря данными о товарах: {ex.Message}", "Заполнение кеша товаров");
-                    throw new Exception($"При заполнении словаря данными о товарах: {ex.Message}", ex);
-                    //result = false;
+                    throw new Exception($"Ошибка при заполнении словаря данными о товарах: {ex.Message}", ex);
                 }
                 catch (Exception ex)
                 {
-                    //MessageBox.Show($"Произошли ошибки при заполнении словаря данными о товарах: {ex.Message}", "Заполенние кеша товаров");
-                    throw new Exception($"При заполнении словаря данными о товарах: {ex.Message}", ex);
-                    //result = false;
+                    throw new Exception($"Ошибка при заполнении словаря данными о товарах: {ex.Message}", ex);
                 }
-                finally
-                {
-                    if (conn.State == System.Data.ConnectionState.Open)
-                    {
-                        conn.Close();
-                    }
-                }
-                complete = result;
-                return result;
             }
-        }       
-        
+        }
+
         public static void AddItem(long id, ProductData data)
         {
             if (!dictionaryProductData.ContainsKey(id))

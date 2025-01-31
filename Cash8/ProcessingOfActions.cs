@@ -1443,58 +1443,135 @@ namespace Cash8
         /// </summary>
         /// <param name="num_doc"></param>
         /// <param name="persent"></param>
-        private void action_1_dt(int num_doc, decimal persent, string comment)
+        //private void action_1_dt(int num_doc, decimal persent, string comment)//Мой старый метод
+        //{
+        //    NpgsqlConnection conn = null;
+        //    NpgsqlCommand command = null;
+        //    double result = 0;
+        //    try
+        //    {
+        //        conn = MainStaticClass.NpgsqlConn();
+        //        conn.Open();
+        //        //Поскольку документ не записан еще найти строки которые могут участвовать в акции можно только последовательным перебором 
+        //        string query = "";
+        //        foreach (DataRow row in dt.Rows)
+        //        {
+        //            if (Convert.ToInt32(row["action2"]) > 0)//Этот товар уже участвовал в акции значит его пропускаем
+        //            {
+        //                continue;
+        //            }
+
+        //            query = "SELECT price FROM action_table WHERE code_tovar=" + row["tovar_code"].ToString() + " AND num_doc=" + num_doc.ToString();
+        //            command = new NpgsqlCommand(query, conn);
+        //            object result_query = command.ExecuteScalar();
+        //            command.Dispose();
+        //            if (result_query != null)
+        //            {
+        //                if (Convert.ToDecimal(result_query) == 0)
+        //                {
+        //                    //have_action = true;//Признак того что в документе есть сработка по акции                        
+        //                    row["price_at_discount"] = Math.Round(Convert.ToDouble(Convert.ToDouble(row["price"]) - Convert.ToDouble(row["price"]) * Convert.ToDouble(persent) / 100), 2,MidpointRounding.ToEven);//Цена со скидкой                                    
+        //                    row["sum_full"] = Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price"]),2,MidpointRounding.ToEven);
+        //                    row["sum_at_discount"] = Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price_at_discount"]),2,MidpointRounding.ToEven);
+        //                    row["action"] = num_doc.ToString(); //Номер акционного документа                        
+        //                    row["action2"] = num_doc.ToString();//Тип акции 
+        //                    if (dt.Columns.Contains("promo_description"))
+        //                    {
+        //                        row["promo_description"] = comment;
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    row["price_at_discount"] = result_query.ToString();//Цена со скидкой                                    
+        //                    row["sum_full"] = Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price"]),2,MidpointRounding.ToEven);
+        //                    row["sum_at_discount"] = Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price_at_discount"]),2,MidpointRounding.ToEven);
+        //                    row["action"] = num_doc.ToString(); //Номер акционного документа                        
+        //                    row["action2"] = num_doc.ToString();//Тип акции         
+        //                    if (dt.Columns.Contains("promo_description"))
+        //                    {
+        //                        row["promo_description"] = comment;
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        conn.Close();                
+        //    }
+        //    catch (NpgsqlException ex)
+        //    {
+        //        MessageBox.Show(ex.Message + " | " + ex.Detail);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message, "ошибка при обработке 1 типа акций");
+        //    }
+        //    finally
+        //    {
+        //        if (conn.State == ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //            conn.Dispose();
+        //        }
+        //    }
+        //}
+
+        private void action_1_dt(int num_doc, decimal percent, string comment)
         {
-            NpgsqlConnection conn = null;
-            NpgsqlCommand command = null;
-            double result = 0;
             try
             {
-                conn = MainStaticClass.NpgsqlConn();
-                conn.Open();
-                //Поскольку документ не записан еще найти строки которые могут участвовать в акции можно только последовательным перебором 
-                string query = "";
-                foreach (DataRow row in dt.Rows)
+                using (var conn = MainStaticClass.NpgsqlConn())
                 {
-                    if (Convert.ToInt32(row["action2"]) > 0)//Этот товар уже участвовал в акции значит его пропускаем
+                    conn.Open();
+                    using (var transaction = conn.BeginTransaction())
                     {
-                        continue;
-                    }
+                        var query = "SELECT code_tovar, price FROM action_table WHERE num_doc = @num_doc";
+                        using (var command = new NpgsqlCommand(query, conn, transaction))
+                        {
+                            command.Parameters.AddWithValue("@num_doc", num_doc);
+                            using (var reader = command.ExecuteReader())
+                            {
+                                var actionPrices = new Dictionary<long, decimal>();
+                                while (reader.Read())
+                                {
+                                    actionPrices[reader.GetInt64(0)] = reader.GetDecimal(1);
+                                }
 
-                    query = "SELECT price FROM action_table WHERE code_tovar=" + row["tovar_code"].ToString() + " AND num_doc=" + num_doc.ToString();
-                    command = new NpgsqlCommand(query, conn);
-                    object result_query = command.ExecuteScalar();
-                    command.Dispose();
-                    if (result_query != null)
-                    {
-                        if (Convert.ToDecimal(result_query) == 0)
-                        {
-                            //have_action = true;//Признак того что в документе есть сработка по акции                        
-                            row["price_at_discount"] = Math.Round(Convert.ToDouble(Convert.ToDouble(row["price"]) - Convert.ToDouble(row["price"]) * Convert.ToDouble(persent) / 100), 2,MidpointRounding.ToEven);//Цена со скидкой                                    
-                            row["sum_full"] = Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price"]),2,MidpointRounding.ToEven);
-                            row["sum_at_discount"] = Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price_at_discount"]),2,MidpointRounding.ToEven);
-                            row["action"] = num_doc.ToString(); //Номер акционного документа                        
-                            row["action2"] = num_doc.ToString();//Тип акции 
-                            if (dt.Columns.Contains("promo_description"))
-                            {
-                                row["promo_description"] = comment;
+                                foreach (DataRow row in dt.Rows)
+                                {
+                                    if (Convert.ToInt32(row["action2"]) > 0)
+                                    {
+                                        continue;
+                                    }
+
+                                    long tovarCode = Convert.ToInt64(row["tovar_code"]);
+                                    if (actionPrices.TryGetValue(tovarCode, out var price))
+                                    {
+                                        double priceAtDiscount;
+                                        if (price == 0)
+                                        {
+                                            priceAtDiscount = Math.Round(Convert.ToDouble(row["price"]) * (1 - (double)percent / 100), 2, MidpointRounding.ToEven);
+                                        }
+                                        else
+                                        {
+                                            priceAtDiscount = Convert.ToDouble(price);
+                                        }
+
+                                        row["price_at_discount"] = priceAtDiscount;
+                                        row["sum_full"] = Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price"]), 2, MidpointRounding.ToEven);
+                                        row["sum_at_discount"] = Math.Round(Convert.ToDouble(row["quantity"]) * priceAtDiscount, 2, MidpointRounding.ToEven);
+                                        row["action"] = num_doc.ToString();
+                                        row["action2"] = num_doc.ToString();
+
+                                        if (dt.Columns.Contains("promo_description"))
+                                        {
+                                            row["promo_description"] = comment;
+                                        }
+                                    }
+                                }
                             }
                         }
-                        else
-                        {
-                            row["price_at_discount"] = result_query.ToString();//Цена со скидкой                                    
-                            row["sum_full"] = Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price"]),2,MidpointRounding.ToEven);
-                            row["sum_at_discount"] = Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price_at_discount"]),2,MidpointRounding.ToEven);
-                            row["action"] = num_doc.ToString(); //Номер акционного документа                        
-                            row["action2"] = num_doc.ToString();//Тип акции         
-                            if (dt.Columns.Contains("promo_description"))
-                            {
-                                row["promo_description"] = comment;
-                            }
-                        }
+                        transaction.Commit();
                     }
                 }
-                conn.Close();                
             }
             catch (NpgsqlException ex)
             {
@@ -1502,22 +1579,24 @@ namespace Cash8
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "ошибка при обработке 1 типа акций");
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                    conn.Dispose();
-                }
+                MessageBox.Show(ex.Message, "Ошибка при обработке 1 типа акций");
             }
         }
 
+
+        /// <summary>
+        ///Обработать акцию по 2 типу
+        ///это значит в документе должен быть товар
+        ///по вхождению в акционный список 
+        ///Здесь дается скидка на кратное количество позиций из 1-го списка
+        /// </summary>
+        /// <param name="num_doc"></param>
+        /// <param name="persent"></param>
         private void action_2_dt(int num_doc, decimal percent, string comment)
         {
             NpgsqlConnection conn = null;
-            ArrayList ar = new ArrayList(); // Список для хранения кодов товаров из первого списка акции
+            Dictionary<int, int> listQuantities = new Dictionary<int, int>(); // Количество товаров в каждом списке
+            Dictionary<long, int> firstListItems = new Dictionary<long, int>(); // Товары из первого списка
             int min_quantity = int.MaxValue; // Минимальное количество для применения скидки
 
             try
@@ -1525,25 +1604,73 @@ namespace Cash8
                 conn = MainStaticClass.NpgsqlConn();
                 conn.Open();
 
-                // Получаем списки акций
-                int[] action_list = GetActionLists(conn, num_doc);
-
-                // Обрабатываем строки и находим позицию из первого списка
-                ProcessRows(conn, num_doc, action_list, ar, ref min_quantity);
-
-                // Проверяем, сработала ли акция
-                bool the_action_has_worked = CheckActionWorked(action_list, ref min_quantity);
-
-                if (the_action_has_worked)
+                // Получаем все списки акций и товары из первого списка
+                string query = @"
+            SELECT num_list, code_tovar 
+            FROM action_table 
+            WHERE num_doc = @num_doc 
+            ORDER BY num_list, code_tovar";
+                using (NpgsqlCommand command = new NpgsqlCommand(query, conn))
                 {
-                    // Применяем скидку к позиции из первого списка
-                    ApplyDiscounts(num_doc, percent, min_quantity, ar);
-                    marked_action_tovar_dt(num_doc, comment); // Помечаем товары, участвовавшие в акции
+                    command.Parameters.AddWithValue("@num_doc", num_doc);
+                    using (NpgsqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int num_list = reader.GetInt32(0);
+                            long code_tovar = reader.GetInt64(1);
+
+                            // Заполняем словарь для первого списка
+                            if (num_list == 1)
+                            {
+                                firstListItems[code_tovar] = 0; // Инициализируем счетчик
+                            }
+
+                            // Инициализируем счетчики для каждого списка
+                            if (!listQuantities.ContainsKey(num_list))
+                            {
+                                listQuantities[num_list] = 0;
+                            }
+                        }
+                    }
                 }
+
+                // Анализируем dt для подсчета количества товаров из каждого списка
+                foreach (DataRow row in dt.Rows)
+                {
+                    if (Convert.ToInt32(row["action2"]) > 0) continue; // Пропускаем товары, уже участвовавшие в акциях
+
+                    long tovar_code = Convert.ToInt64(row["tovar_code"]);
+                    int quantity_of_pieces = Convert.ToInt32(row["quantity"]);
+
+                    // Проверяем, к какому списку принадлежит товар
+                    foreach (var num_list in listQuantities.Keys.ToList())
+                    {
+                        if (IsTovarInList(conn, num_doc, num_list, tovar_code))
+                        {
+                            listQuantities[num_list] += quantity_of_pieces;
+                        }
+                    }
+
+                    // Обновляем количество товаров из первого списка
+                    if (firstListItems.ContainsKey(tovar_code))
+                    {
+                        firstListItems[tovar_code] += quantity_of_pieces;
+                    }
+                }
+
+                // Находим минимальное количество для применения скидки
+                min_quantity = listQuantities.Values.Min();
+
+                // Применяем скидку к товарам из первого списка
+                ApplyDiscounts(num_doc, percent, min_quantity, firstListItems);
+
+                // Помечаем товары, участвовавшие в акции
+                marked_action_tovar_dt(num_doc, comment);
             }
             catch (NpgsqlException ex)
             {
-                MessageBox.Show(ex.Message + " | " + ex.Detail, "Ошибка при обработке 2 типа акций");
+                MessageBox.Show(ex.Message + " | " + ex.Detail);
             }
             catch (Exception ex)
             {
@@ -1558,97 +1685,55 @@ namespace Cash8
             }
         }
 
-        private int[] GetActionLists(NpgsqlConnection conn, int num_doc)
+        private bool IsTovarInList(NpgsqlConnection conn, int num_doc, int num_list, long tovar_code)
         {
-            string query = "SELECT COUNT(*) FROM (SELECT DISTINCT num_list FROM action_table WHERE num_doc = @num_doc) AS foo";
+            string query = @"
+        SELECT COUNT(*) 
+        FROM action_table 
+        WHERE num_doc = @num_doc 
+          AND num_list = @num_list 
+          AND code_tovar = @code_tovar";
             using (NpgsqlCommand command = new NpgsqlCommand(query, conn))
             {
                 command.Parameters.AddWithValue("@num_doc", num_doc);
-                int count = Convert.ToInt32(command.ExecuteScalar());
-                return new int[count];
+                command.Parameters.AddWithValue("@num_list", num_list);
+                command.Parameters.AddWithValue("@code_tovar", tovar_code);
+                return Convert.ToInt32(command.ExecuteScalar()) > 0;
             }
         }
 
-        private void ProcessRows(NpgsqlConnection conn, int num_doc, int[] action_list, ArrayList ar, ref int min_quantity)
-        {
-            foreach (DataRow row in dt.Rows)
-            {
-                if (Convert.ToInt32(row["action2"]) > 0) continue; // Пропускаем товары, уже участвовавшие в акции
-
-                int quantity_of_pieces = Convert.ToInt32(row["quantity"]);
-                while (quantity_of_pieces > 0)
-                {
-                    ProcessRow(conn, num_doc, row, action_list, ar, ref min_quantity);
-                    quantity_of_pieces--;
-                }
-            }
-        }
-
-        private void ProcessRow(NpgsqlConnection conn, int num_doc, DataRow row, int[] action_list, ArrayList ar, ref int min_quantity)
-        {
-            string query = "SELECT num_list FROM action_table WHERE code_tovar = @code_tovar AND num_doc = @num_doc";
-            using (NpgsqlCommand command = new NpgsqlCommand(query, conn))
-            {
-                command.Parameters.AddWithValue("@code_tovar", row["tovar_code"]);
-                command.Parameters.AddWithValue("@num_doc", num_doc);
-
-                using (NpgsqlDataReader reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        int num_list = reader.GetInt32(0);
-                        action_list[num_list - 1]++;
-
-                        // Если это первый список, добавляем товар в список для скидки
-                        if (num_list == 1)
-                        {
-                            ar.Add(row["tovar_code"].ToString());
-                        }
-
-                        // Находим минимальное количество для применения скидки
-                        min_quantity = Math.Min(min_quantity, action_list[num_list - 1]);
-                    }
-                }
-            }
-        }
-
-        private bool CheckActionWorked(int[] action_list, ref int min_quantity)
-        {
-            min_quantity = int.MaxValue;
-            foreach (int count in action_list)
-            {
-                if (count == 0) return false; // Если хотя бы один список не заполнен, акция не сработала
-                min_quantity = Math.Min(min_quantity, count);
-            }
-            return true;
-        }
-
-        private void ApplyDiscounts(int num_doc, decimal percent, int min_quantity, ArrayList ar)
+        private void ApplyDiscounts(int num_doc, decimal percent, int min_quantity, Dictionary<long, int> firstListItems)
         {
             DataRow newRow = null;
 
             foreach (DataRow row in dt.Rows)
             {
-                if (min_quantity <= 0) break;
+                if (Convert.ToInt32(row["action2"]) > 0) continue; // Пропускаем товары, уже участвовавшие в акциях
+
+                long tovar_code = Convert.ToInt64(row["tovar_code"]);
 
                 // Применяем скидку только к товарам из первого списка
-                if (ar.IndexOf(row["tovar_code"].ToString()) == -1) continue;
+                if (!firstListItems.ContainsKey(tovar_code)) continue;
 
                 int quantity_of_pieces = Convert.ToInt32(row["quantity"]);
 
-                if (quantity_of_pieces <= min_quantity)
+                // Вычисляем количество товаров, к которым можно применить скидку
+                int discountedQuantity = Math.Min(quantity_of_pieces, min_quantity);
+
+                if (discountedQuantity > 0)
                 {
-                    // Применяем скидку ко всей строке
-                    ApplyDiscountToRow(row, percent, num_doc);
-                    min_quantity -= quantity_of_pieces;
-                }
-                else
-                {
-                    // Создаем новую строку для частичного количества
-                    newRow = CreateNewRow(row, min_quantity, percent, num_doc);
-                    row["quantity"] = Convert.ToInt32(row["quantity"]) - min_quantity;
-                    row["sum_at_discount"] = Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price_at_discount"]), 2, MidpointRounding.ToEven);
-                    min_quantity = 0;
+                    if (quantity_of_pieces <= discountedQuantity)
+                    {
+                        // Применяем скидку ко всей строке
+                        ApplyDiscountToRow(row, percent, num_doc);
+                    }
+                    else
+                    {
+                        // Создаем новую строку для частичного количества
+                        newRow = CreateNewRow(row, discountedQuantity, percent, num_doc);
+                        row["quantity"] = Convert.ToInt32(row["quantity"]) - discountedQuantity;
+                        row["sum_at_discount"] = Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price_at_discount"]), 2, MidpointRounding.ToEven);
+                    }
                 }
             }
 

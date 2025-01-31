@@ -1395,49 +1395,165 @@ namespace Cash8
             }
         }
 
+
+        /// <summary>
+        ///Метод проверяет соответствие системы 
+        ///налогообложения выбраннгой в программе и задано в ФР
+        /// </summary>
+        //public void CheckTaxationTypes()
+        //{
+        //    IFptr fptr = MainStaticClass.FPTR;
+
+        //    if (!fptr.isOpened())
+        //    {
+        //        fptr.open();
+        //    }
+
+        //    fptr.setParam(AtolConstants.LIBFPTR_PARAM_FN_DATA_TYPE, AtolConstants.LIBFPTR_FNDT_REG_INFO);
+        //    fptr.fnQueryData();
+
+        //    uint taxationTypes = fptr.getParamInt(1062);
+
+        //    //1 - ОСН
+        //    //4 - Усн Доходы - Расходы
+        //    //36 - (УснДоходы - Расходы) + Патент
+        //    //2 - Усн Доходы
+        //    //34 - УснДоходы + Патент
+
+
+
+        //    if (taxationTypes == 1)
+        //    {
+        //        if (MainStaticClass.SystemTaxation != 1)
+        //        {
+        //            MessageBox.Show("Система налогообложения в программе не совпадает с выбранной в фискальном регистраторе. Вам необходимо связаться с бухгалтерией", "Проверки системы налогообложения");
+        //        }
+        //    }
+        //    else if (taxationTypes == 4)
+        //    {
+        //        if (MainStaticClass.SystemTaxation != 2)
+        //        {
+        //            MessageBox.Show("Система налогообложения в программе не совпадает с выбранной в фискальном регистраторе. Вам необходимо связаться с бухгалтерией", "Проверки системы налогообложения");
+        //        }
+        //    }
+
+        //    else if (taxationTypes == 36)
+        //    {
+        //        if (MainStaticClass.SystemTaxation != 3)
+        //        {
+        //            MessageBox.Show("Система налогообложения в программе не совпадает с выбранной в фискальном регистраторе. Вам необходимо связаться с бухгалтерией", "Проверки системы налогообложения");
+        //        }
+        //    }
+        //    else if (taxationTypes == 2)
+        //    {
+        //        if (MainStaticClass.SystemTaxation != 4)
+        //        {
+        //            MessageBox.Show("Система налогообложения в программе не совпадает с выбранной в фискальном регистраторе. Вам необходимо связаться с бухгалтерией", "Проверки системы налогообложения");
+        //        }
+        //    }
+        //    else if (taxationTypes == 34)
+        //    {
+        //        if (MainStaticClass.SystemTaxation != 5)
+        //        {
+        //            MessageBox.Show("Система налогообложения в программе не совпадает с выбранной в фискальном регистраторе. Вам необходимо связаться с бухгалтерией", "Проверки системы налогообложения");
+        //        }
+        //    }
+
+
+
+        //    //if (!taxationTypesList.Contains(taxationTypes))
+        //    //{                
+        //    //    MessageBox.Show("Система налогообложения в программе не совпадает с выбранной в фискальном регистраторе. Вам необходимо связаться с бухгалтерией", "Проверки системы налогообложения");
+        //    //}
+        //}
+
         public void CheckTaxationTypes()
         {
-            IFptr fptr = MainStaticClass.FPTR;
-
-            if (!fptr.isOpened())
+            uint taxationTypes = 0;
+            try
             {
-                fptr.open();
-            }
+                IFptr fptr = MainStaticClass.FPTR;
 
-            fptr.setParam(AtolConstants.LIBFPTR_PARAM_FN_DATA_TYPE, AtolConstants.LIBFPTR_FNDT_REG_INFO);
-            fptr.fnQueryData();
-
-            uint taxationTypes = fptr.getParamInt(1062);
-
-            // Словарь для хранения соответствий между системами налогообложения и битами
-            var taxationMappings = new Dictionary<int, int[]>
-    {
-        { 1, new[] { 0 } }, // ОСН
-        { 2, new[] { 2 } }, // УСН (ДОХОДЫ МИНУС РАСХОДЫ)
-        { 3, new[] { 2, 4 } }, // УСН (ДОХОДЫ МИНУС РАСХОДЫ) + ПАТЕНТ
-        { 4, new[] { 1 } }, // УСН ДОХОДЫ
-        { 5, new[] { 1, 4 } } // УСН ДОХОДЫ + ПАТЕНТ
-    };
-
-            if (taxationMappings.TryGetValue(MainStaticClass.SystemTaxation, out var requiredBits))
-            {
-                bool isTaxationValid = requiredBits.All(bit => GetBit(taxationTypes, bit));
-
-                if (!isTaxationValid)
+                if (!fptr.isOpened())
                 {
-                    MessageBox.Show("Система налогообложения в программе не совпадает с выбранной в Фискальном регистраторе. Вам необходимо связаться с бухгалтерией", "Проверки системы налогообложения");
+                    fptr.open();
+                }
+
+                fptr.setParam(AtolConstants.LIBFPTR_PARAM_FN_DATA_TYPE, AtolConstants.LIBFPTR_FNDT_REG_INFO);
+                fptr.fnQueryData();
+
+                if (fptr.errorCode() != 0)
+                {
+                    throw new Exception(fptr.errorDescription().ToString());
+                }
+
+                taxationTypes = fptr.getParamInt(1062);
+
+                var taxationMapping = new Dictionary<uint, int>
+        {
+            { 1, 1 },   // ОСН
+            { 4, 2 },   // УСН Доходы - Расходы
+            { 36, 3 },  // (УСНДоходы - Расходы) + Патент
+            { 2, 4 },   // УСН Доходы
+            { 34, 5 }   // УСНДоходы + Патент
+        };
+
+                if (taxationMapping.TryGetValue(taxationTypes, out int expectedSystemTaxation))
+                {
+                    if (MainStaticClass.SystemTaxation != expectedSystemTaxation)
+                    {
+                        ShowTaxationMismatchMessage(taxationTypes, MainStaticClass.SystemTaxation);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Неизвестная система налогообложения в фискальном регистраторе. Свяжитесь с бухгалтерией.", "Проверка системы налогообложения");
                 }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Неизвестная система налогообложения", "Проверки системы налогообложения");
+                MessageBox.Show("Произошла ошибка при проверке системы налогообложения. Свяжитесь с поддержкой. " + ex.Message, "Проверка системы налогообложения");
             }
         }
 
-        // Функция для получения значения конкретного бита по его индексу (начиная с 0)
-        bool GetBit(uint value, int bitIndex)
+        private void ShowTaxationMismatchMessage(uint taxationTypes, int systemTaxationInProgram)
         {
-            return (value & (1u << bitIndex)) != 0;
+            // Описание систем налогообложения в ФР
+            var taxationDescriptionsFR = new Dictionary<uint, string>
+    {
+        { 1, "ОСН" },
+        { 4, "УСН Доходы - Расходы" },
+        { 36, "УСН Доходы - Расходы + Патент" },
+        { 2, "УСН Доходы" },
+        { 34, "УСН Доходы + Патент" }
+    };
+
+            // Описание систем налогообложения в программе
+            var taxationDescriptionsProgram = new Dictionary<int, string>
+    {
+        { 1, "ОСН" },
+        { 2, "УСН Доходы - Расходы" },
+        { 3, "УСН Доходы - Расходы + Патент" },
+        { 4, "УСН Доходы" },
+        { 5, "УСН Доходы + Патент" }
+    };
+
+            // Получаем описание системы налогообложения в ФР
+            string frTaxationDescription = taxationDescriptionsFR.TryGetValue(taxationTypes, out var frDescription)
+                ? frDescription
+                : "Неизвестная система";
+
+            // Получаем описание системы налогообложения в программе
+            string programTaxationDescription = taxationDescriptionsProgram.TryGetValue(systemTaxationInProgram, out var programDescription)
+                ? programDescription
+                : "Неизвестная система";
+
+            // Формируем сообщение
+            string message = $"Система налогообложения в фискальном регистраторе: {frTaxationDescription}.\n" +
+                             $"Система налогообложения в программе: {programTaxationDescription}.\n" +
+                             "Вам необходимо связаться с бухгалтерией для устранения расхождения.";
+
+            MessageBox.Show(message, "Проверка системы налогообложения");
         }
 
 
