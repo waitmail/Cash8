@@ -1495,10 +1495,10 @@ namespace Cash8
             { 4, 2 },   // УСН Доходы - Расходы
             { 36, 3 },  // (УСНДоходы - Расходы) + Патент
             { 2, 4 },   // УСН Доходы
-            { 34, 5 }   // УСНДоходы + Патент
+            { 34, 5 }   // УСНДоходы + Патент            
         };
 
-                if (taxationMapping.TryGetValue(taxationTypes, out int expectedSystemTaxation))
+                if (taxationMapping.TryGetValue(taxationTypes, out int expectedSystemTaxation)||(taxationTypes == 32))
                 {
                     if (MainStaticClass.SystemTaxation != expectedSystemTaxation)
                     {
@@ -1524,8 +1524,9 @@ namespace Cash8
         { 1, "ОСН" },
         { 4, "УСН Доходы - Расходы" },
         { 36, "УСН Доходы - Расходы + Патент" },
-        { 2, "УСН Доходы" },
-        { 34, "УСН Доходы + Патент" }
+        { 2, "УСН Доходы" },        
+        { 34, "УСН Доходы + Патент" },
+        { 32, "Патент" }
     };
 
             // Описание систем налогообложения в программе

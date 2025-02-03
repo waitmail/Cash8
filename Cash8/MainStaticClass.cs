@@ -2146,6 +2146,62 @@ namespace Cash8
         }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="errorMessage"></param>
+        /// <param name="methodName"></param>
+        /// <param name="numDoc"></param>
+        /// <param name="cashDeskNumber"></param>
+        /// <param name="description"></param>
+        /// <returns></returns>
+        public static void create_record_error_log(string errorMessage, string methodName, long numDoc, short cashDeskNumber, string description)
+        {
+            const string sql = @"
+             INSERT INTO public.log_errors(
+                error_message,
+                date_time_record,
+                method_name,
+                num_doc,
+                cash_desk_number,
+                description
+            )
+            VALUES(
+                @errorMessage,
+                @dateTimeRecord,
+                @methodName,
+                @numDoc,
+                @cashDeskNumber,
+                @description
+            )";
+
+            try
+            {
+                using (NpgsqlConnection conn = MainStaticClass.NpgsqlConn())
+                {
+                    conn.Open();
+                    using (var command = new NpgsqlCommand(sql, conn))
+                    {
+                        // Обязательные параметры
+                        command.Parameters.AddWithValue("@errorMessage", errorMessage);
+                        command.Parameters.AddWithValue("@dateTimeRecord", DateTime.Now);
+                        command.Parameters.AddWithValue("@methodName", methodName);                        
+                        command.Parameters.AddWithValue("@numDoc", numDoc);
+                        command.Parameters.AddWithValue("@cashDeskNumber", cashDeskNumber);
+                        command.Parameters.AddWithValue("@description", description);
+
+                        command.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // Логирование ошибки записи в лог (например, в файл или консоль)
+                //Console.WriteLine($"Ошибка при записи в лог: {ex.Message}");
+                //return 0;
+            }
+        }
+
         public static string get_string_message_for_trassir(string event_type, string operation_id, string cashier, string date, string time,
                     string position, string quantity, string price, string barcode, string article, string location, string text)
         {
@@ -2196,118 +2252,6 @@ namespace Cash8
             return result;
         }
 
-
-        /*
-        public static void write_event_dssl_in_log(
-            string event_type,
-            string operation_id,
-            string cashier,
-            DateTime date,           
-            TimeSpan time,
-            int position,
-            int quantity,
-            decimal price,
-            string barcode,
-            string article,
-            string location,//Номер кассы
-            string text)//Ошибка
-
-            
-        {
-            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
-            try
-            {
-                conn.Open();
-                string query = "INSERT INTO dssl_log(event_type,operation_id, cashier, date, time, position,quantity, price, barcode, article, location, text)"+
-                    " VALUES (@event_type,@operation_id,@cashier,@date,@time,@position,@quantity,@price,@barcode,@article,@location,@text);";
-                NpgsqlCommand command = new NpgsqlCommand(query, conn);
-
-                NpgsqlParameter _event_type = new NpgsqlParameter("event_type", DbType.String);
-                _event_type.Value = event_type;
-
-                NpgsqlParameter _operation_id = new NpgsqlParameter("operation_id", DbType.String);
-                _operation_id.Value = operation_id;
-
-                NpgsqlParameter _cashier = new NpgsqlParameter("cashier", DbType.String);
-                _cashier.Value = cashier;
-
-                NpgsqlParameter _date = new NpgsqlParameter("date", DbType.Date);
-                _date.Value = date;
-
-                NpgsqlParameter _time = new NpgsqlParameter("time", DbType.Time);
-                _time.Value = time;
-
-                NpgsqlParameter _position = new NpgsqlParameter("position", DbType.Int32);
-                _position.Value = position;
-
-                NpgsqlParameter _quantity = new NpgsqlParameter("quantity", DbType.Int32);
-                _quantity.Value = quantity;
-
-                NpgsqlParameter _price = new NpgsqlParameter("price", DbType.Decimal);
-                _price.Value = price;
-
-                NpgsqlParameter _barcode = new NpgsqlParameter("barcode", DbType.String);
-                _barcode.Value = barcode;
-
-                NpgsqlParameter _article = new NpgsqlParameter("article", DbType.String);
-                _article.Value = article;
-
-                NpgsqlParameter _location = new NpgsqlParameter("location", DbType.Int16);
-                _location.Value = location;
-
-                NpgsqlParameter _text = new NpgsqlParameter("text", DbType.String);
-                _text.Value = text;
-
-                command.Parameters.Add(_event_type);
-                command.Parameters.Add(_operation_id);
-                command.Parameters.Add(_cashier);
-                command.Parameters.Add(_date);
-                command.Parameters.Add(_time);
-                command.Parameters.Add(_position);
-                command.Parameters.Add(_quantity);
-                command.Parameters.Add(_price);
-                command.Parameters.Add(_barcode);
-                command.Parameters.Add(_article);
-                command.Parameters.Add(_location);
-                command.Parameters.Add(_text);
-
-                
-
-                command.ExecuteNonQuery();
-                conn.Close();
-            }
-            catch (NpgsqlException ex)
-            {
-                MessageBox.Show(" Ошибка при записи логов dssl "+ex.Message + " | " + ex.Detail);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(" Ошибка при записи логов dssl " + ex.Message);
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                }
-            }
-        }
-         */
-
-
-
-        //public static bool Use_Envd
-        //{
-        //    get
-        //    {
-        //        return use_envd;
-        //    }
-        //    set
-        //    {
-        //        use_envd = value;
-        //    }
-        //}
-
         public static int SystemTaxation
         {
             get
@@ -2319,300 +2263,7 @@ namespace Cash8
                 system_taxation = value;
             }
         }
-        //
-
-        //public static int Start_sum_opt_price
-        //{
-        //    get
-        //    {
-        //        if (start_sum_opt_price == -1)
-        //        {
-        //            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
-        //            try
-        //            {
-        //                conn.Open();
-        //                string query = "SELECT start_sum_opt_price FROM constants";
-        //                NpgsqlCommand command = new NpgsqlCommand(query, conn);
-        //                object result_query = command.ExecuteScalar();
-        //                if (result_query.ToString() != "")
-        //                {
-        //                    start_sum_opt_price = Convert.ToInt32(result_query);
-        //                }
-        //                else
-        //                {
-        //                    start_sum_opt_price = 0;
-        //                }
-        //                conn.Close();
-        //            }
-        //            catch (NpgsqlException ex)
-        //            {
-        //                MessageBox.Show("Ошибка при получении суммы включения оптового прайса ");
-        //                start_sum_opt_price = 0;
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                MessageBox.Show("Ошибка при получении суммы включения оптового прайса ");
-        //                start_sum_opt_price = 0;
-        //            }
-        //            finally
-        //            {
-        //                if (conn.State == ConnectionState.Open)
-        //                {
-        //                    conn.Close();
-        //                }
-        //            }
-        //        }
-        //        return start_sum_opt_price;
-        //    }
-        //}
-
-
-        //public static int Show_Before_Payment_Window
-        //{
-        //    get
-        //    {
-        //        if (show_before_payment_window == -1)
-        //        {
-
-        //            NpgsqlConnection conn = null;
-        //            string query = "SELECT show_before_payment_window  FROM constants;";
-        //            try
-        //            {
-        //                conn = MainStaticClass.NpgsqlConn();
-        //                conn.Open();
-        //                NpgsqlCommand command = new NpgsqlCommand(query, conn);
-        //                object result_query = command.ExecuteScalar();
-        //                if (result_query.ToString() != "")
-        //                {
-        //                    show_before_payment_window = Convert.ToInt16(result_query);
-        //                }
-
-        //                conn.Close();
-        //            }
-        //            catch (NpgsqlException ex)
-        //            {
-        //                MessageBox.Show(ex.Message + " | " + ex.Detail, "Ошибка при получении признака показа промежуточного окна");
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                MessageBox.Show(ex.Message, "Ошибка при получении признака показа промежуточного окна");
-        //            }
-        //            if (conn.State == ConnectionState.Open)
-        //            {
-        //                conn.Close();
-        //            }
-
-        //        }
-
-        //        return show_before_payment_window; 
-        //    }
-        //}
-
-        //public static int Use_Trassir
-        //{
-        //    get
-        //    {
-        //        if (use_trassir == -1)
-        //        {
-        //            NpgsqlConnection conn = null;
-        //            string query = "SELECT use_trassir  FROM constants;";
-        //            try
-        //            {
-        //                conn = MainStaticClass.NpgsqlConn();
-        //                conn.Open();
-        //                NpgsqlCommand command = new NpgsqlCommand(query, conn);
-        //                object result_query = command.ExecuteScalar();
-        //                if (result_query.ToString()!="")
-        //                {
-        //                    use_trassir = Convert.ToInt16(result_query);
-        //                }
-
-        //                conn.Close();
-        //            }
-        //            catch (NpgsqlException ex)
-        //            {
-        //                MessageBox.Show(ex.Message + " | " + ex.Detail, "Ошибка при получении признака работы трассира");
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                MessageBox.Show(ex.Message, "Ошибка при получении признака работы трассира");
-        //            }
-        //            if (conn.State == ConnectionState.Open)
-        //            {
-        //                conn.Close();
-        //            }
-        //        }
-        //        return use_trassir;
-        //    }
-        //}
-
-
-        //public static string Ip_Addr_Trassir
-        //{
-
-        //    get
-        //    {
-        //        if (ip_addr_trassir == "")
-        //        {
-        //            NpgsqlConnection conn = null;
-        //            string query = "SELECT ip_addr_trassir  FROM constants;";
-        //            try
-        //            {
-        //                conn = MainStaticClass.NpgsqlConn();
-        //                conn.Open();
-        //                NpgsqlCommand command = new NpgsqlCommand(query, conn);
-        //                ip_addr_trassir = command.ExecuteScalar().ToString();
-        //                conn.Close();
-        //            }
-        //            catch (NpgsqlException ex)
-        //            {
-        //                MessageBox.Show(ex.Message + " | " + ex.Detail, "Ошибка при получении ip адреса трассира");
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                MessageBox.Show(ex.Message, "Ошибка при получении ip адреса трассира");
-        //            }
-        //            finally
-        //            {
-        //                if (conn.State == ConnectionState.Open)
-        //                {
-        //                    conn.Close();
-        //                }
-        //            }
-        //        }
-        //        return ip_addr_trassir.Replace(",",".");
-        //    }
-        //    set
-        //    {
-        //        ip_addr_trassir = value;
-        //    }
-
-        //}
-
-        //public static int Ip_Port_Trassir
-        //{
-
-        //    get
-        //    {
-        //        if (ip_port_trassir == -1)
-        //        {
-        //            NpgsqlConnection conn = null;
-        //            string query = "SELECT ip_port_trassir  FROM constants;";
-        //            try
-        //            {
-        //                conn = MainStaticClass.NpgsqlConn();
-        //                conn.Open();
-        //                NpgsqlCommand command = new NpgsqlCommand(query, conn);
-        //                ip_port_trassir = Convert.ToInt16(command.ExecuteScalar());
-        //                conn.Close();
-        //            }
-        //            catch (NpgsqlException ex)
-        //            {
-        //                MessageBox.Show(ex.Message + " | " + ex.Detail, "Ошибка при получении порта отправки сообщений для трассира");
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                MessageBox.Show(ex.Message, "Ошибка при получении порта отправки сообщений для трассира");
-        //            }
-        //            finally
-        //            {
-        //                if (conn.State == ConnectionState.Open)
-        //                {
-        //                    conn.Close();
-        //                }
-        //            }
-        //        }
-        //        return ip_port_trassir;
-        //    }
-
-        //}
-
-
-
-        //public static Int16 Fiscal_Num_Port
-        //{
-        //    get
-        //    {
-        //        if (fiscal_num_port == -1)
-        //        {
-        //            NpgsqlConnection conn = null;
-        //            string query = "SELECT fiscal_num_port  FROM constants;";
-        //            try
-        //            {
-        //                conn = MainStaticClass.NpgsqlConn();
-        //                conn.Open();
-        //                NpgsqlCommand command = new NpgsqlCommand(query, conn);
-        //                fiscal_num_port = Convert.ToInt16(command.ExecuteScalar());
-        //                conn.Close();
-        //            }
-        //            catch (NpgsqlException ex)
-        //            {
-        //                MessageBox.Show(ex.Message + " | " + ex.Detail, "Ошибка при получении параметров фискального принтера");
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                MessageBox.Show(ex.Message, "Ошибка при получении параметров фискального принтера");
-        //            }
-        //            if (conn.State == ConnectionState.Open)
-        //            {
-        //                conn.Close();
-        //            }
-
-        //            return fiscal_num_port;
-        //        }
-        //        else
-        //        {
-        //            return fiscal_num_port;
-        //        }
-
-        //    }
-        //    set
-        //    {
-        //        fiscal_num_port = value;
-        //    }
-        //}
-
-        //public static string Fiscal_Type_Port
-        //{
-        //    get
-        //    {
-        //        if (fiscal_type_port == "")
-        //        {
-        //            NpgsqlConnection conn = null;
-        //            string query = "SELECT fiscal_type_port  FROM constants;";
-        //            try
-        //            {
-        //                conn = MainStaticClass.NpgsqlConn();
-        //                conn.Open();
-        //                NpgsqlCommand command = new NpgsqlCommand(query, conn);
-        //                fiscal_type_port = command.ExecuteScalar().ToString();
-        //                conn.Close();
-        //            }
-        //            catch (NpgsqlException ex)
-        //            {
-        //                MessageBox.Show(ex.Message + " | " + ex.Detail, "Ошибка при получении параметров фискального принтера");
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                MessageBox.Show(ex.Message, "Ошибка при получении параметров фискального принтера");
-        //            }
-
-        //            return fiscal_type_port;
-
-        //        }
-        //        else
-        //        {
-        //            return fiscal_type_port;
-        //        }
-        //    }
-        //    set
-        //    {
-        //        fiscal_type_port = value;
-        //    }
-        //}
-
-
-
+        
 
         public static bool First_Login_Admin
         {
@@ -2626,47 +2277,6 @@ namespace Cash8
             }
         }
 
-        ///// <summary>
-        ///// Обновить статус в документе данные по накопленному бонусу отправлены успешно
-        ///// 
-        ///// </summary>
-        //public static bool update_status_sent_bonus(string num_doc)
-        //{
-
-        //    bool result = true;
-
-        //    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
-
-        //    try
-        //    {
-        //        conn.Open();
-        //        string query = " UPDATE checks_header SET discount_it_is_sent=true WHERE document_number=" + num_doc;
-        //        NpgsqlCommand command = new NpgsqlCommand(query, conn);
-        //        command.ExecuteNonQuery();
-        //        conn.Close();
-        //        command.Dispose();
-        //    }
-        //    catch (NpgsqlException ex)
-        //    {
-        //        //MyMessageBox mmb = new MyMessageBox(ex.Message, "Попытка обновить статус документа отправлено для документа " + num_doc);
-        //        result = false;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        //MyMessageBox mmb = new MyMessageBox(ex.Message, "Попытка обновить статус документа отправлено для документа " + num_doc);
-        //        //mmb.ShowDialog();
-        //        result = false;
-        //    }
-        //    finally
-        //    {
-        //        if (conn.State == ConnectionState.Open)
-        //        {
-        //            conn.Close();
-        //        }
-        //    }
-
-        //    return result;
-        //}
 
 
         /// <summary>
