@@ -303,7 +303,7 @@
           </s:sequence>
         </s:complexType>
       </s:element>
-      <s:element name="UploadDataOnSalesPortionJason">
+      <s:element name="UploadErrorLogPortionJson">
         <s:complexType>
           <s:sequence>
             <s:element minOccurs="0" maxOccurs="1" name="nick_shop" type="s:string" />
@@ -312,14 +312,14 @@
           </s:sequence>
         </s:complexType>
       </s:element>
-      <s:element name="UploadDataOnSalesPortionJasonResponse">
+      <s:element name="UploadErrorLogPortionJsonResponse">
         <s:complexType>
           <s:sequence>
-            <s:element minOccurs="1" maxOccurs="1" name="UploadDataOnSalesPortionJasonResult" type="s:boolean" />
+            <s:element minOccurs="1" maxOccurs="1" name="UploadErrorLogPortionJsonResult" type="s:boolean" />
           </s:sequence>
         </s:complexType>
       </s:element>
-      <s:element name="GetParametersOnBonusProgram">
+      <s:element name="UploadDataOnSalesPortionJson">
         <s:complexType>
           <s:sequence>
             <s:element minOccurs="0" maxOccurs="1" name="nick_shop" type="s:string" />
@@ -328,10 +328,10 @@
           </s:sequence>
         </s:complexType>
       </s:element>
-      <s:element name="GetParametersOnBonusProgramResponse">
+      <s:element name="UploadDataOnSalesPortionJsonResponse">
         <s:complexType>
           <s:sequence>
-            <s:element minOccurs="0" maxOccurs="1" name="GetParametersOnBonusProgramResult" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="UploadDataOnSalesPortionJsonResult" type="s:boolean" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -457,17 +457,17 @@
   <wsdl:message name="UploadCDNLogsPortionJasonSoapOut">
     <wsdl:part name="parameters" element="tns:UploadCDNLogsPortionJasonResponse" />
   </wsdl:message>
-  <wsdl:message name="UploadDataOnSalesPortionJasonSoapIn">
-    <wsdl:part name="parameters" element="tns:UploadDataOnSalesPortionJason" />
+  <wsdl:message name="UploadErrorLogPortionJsonSoapIn">
+    <wsdl:part name="parameters" element="tns:UploadErrorLogPortionJson" />
   </wsdl:message>
-  <wsdl:message name="UploadDataOnSalesPortionJasonSoapOut">
-    <wsdl:part name="parameters" element="tns:UploadDataOnSalesPortionJasonResponse" />
+  <wsdl:message name="UploadErrorLogPortionJsonSoapOut">
+    <wsdl:part name="parameters" element="tns:UploadErrorLogPortionJsonResponse" />
   </wsdl:message>
-  <wsdl:message name="GetParametersOnBonusProgramSoapIn">
-    <wsdl:part name="parameters" element="tns:GetParametersOnBonusProgram" />
+  <wsdl:message name="UploadDataOnSalesPortionJsonSoapIn">
+    <wsdl:part name="parameters" element="tns:UploadDataOnSalesPortionJson" />
   </wsdl:message>
-  <wsdl:message name="GetParametersOnBonusProgramSoapOut">
-    <wsdl:part name="parameters" element="tns:GetParametersOnBonusProgramResponse" />
+  <wsdl:message name="UploadDataOnSalesPortionJsonSoapOut">
+    <wsdl:part name="parameters" element="tns:UploadDataOnSalesPortionJsonResponse" />
   </wsdl:message>
   <wsdl:portType name="DSSoap">
     <wsdl:operation name="HelloWorld">
@@ -550,13 +550,13 @@
       <wsdl:input message="tns:UploadCDNLogsPortionJasonSoapIn" />
       <wsdl:output message="tns:UploadCDNLogsPortionJasonSoapOut" />
     </wsdl:operation>
-    <wsdl:operation name="UploadDataOnSalesPortionJason">
-      <wsdl:input message="tns:UploadDataOnSalesPortionJasonSoapIn" />
-      <wsdl:output message="tns:UploadDataOnSalesPortionJasonSoapOut" />
+    <wsdl:operation name="UploadErrorLogPortionJson">
+      <wsdl:input message="tns:UploadErrorLogPortionJsonSoapIn" />
+      <wsdl:output message="tns:UploadErrorLogPortionJsonSoapOut" />
     </wsdl:operation>
-    <wsdl:operation name="GetParametersOnBonusProgram">
-      <wsdl:input message="tns:GetParametersOnBonusProgramSoapIn" />
-      <wsdl:output message="tns:GetParametersOnBonusProgramSoapOut" />
+    <wsdl:operation name="UploadDataOnSalesPortionJson">
+      <wsdl:input message="tns:UploadDataOnSalesPortionJsonSoapIn" />
+      <wsdl:output message="tns:UploadDataOnSalesPortionJsonSoapOut" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="DSSoap" type="tns:DSSoap">
@@ -741,8 +741,8 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="UploadDataOnSalesPortionJason">
-      <soap:operation soapAction="http://tempuri.org/UploadDataOnSalesPortionJason" style="document" />
+    <wsdl:operation name="UploadErrorLogPortionJson">
+      <soap:operation soapAction="http://tempuri.org/UploadErrorLogPortionJson" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -750,8 +750,8 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="GetParametersOnBonusProgram">
-      <soap:operation soapAction="http://tempuri.org/GetParametersOnBonusProgram" style="document" />
+    <wsdl:operation name="UploadDataOnSalesPortionJson">
+      <soap:operation soapAction="http://tempuri.org/UploadDataOnSalesPortionJson" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -942,8 +942,8 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="UploadDataOnSalesPortionJason">
-      <soap12:operation soapAction="http://tempuri.org/UploadDataOnSalesPortionJason" style="document" />
+    <wsdl:operation name="UploadErrorLogPortionJson">
+      <soap12:operation soapAction="http://tempuri.org/UploadErrorLogPortionJson" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -951,8 +951,8 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="GetParametersOnBonusProgram">
-      <soap12:operation soapAction="http://tempuri.org/GetParametersOnBonusProgram" style="document" />
+    <wsdl:operation name="UploadDataOnSalesPortionJson">
+      <soap12:operation soapAction="http://tempuri.org/UploadDataOnSalesPortionJson" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

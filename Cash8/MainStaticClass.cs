@@ -2155,101 +2155,96 @@ namespace Cash8
         /// <param name="cashDeskNumber"></param>
         /// <param name="description"></param>
         /// <returns></returns>
-        public static void create_record_error_log(string errorMessage, string methodName, long numDoc, short cashDeskNumber, string description)
+        public static void CreateRecordErrorLog(
+     string errorMessage,
+     string methodName,
+     long numDoc,
+     short cashDeskNumber,
+     string description)
         {
+            // Валидация числовых параметров
+            if (numDoc < 0)
+                throw new ArgumentOutOfRangeException(nameof(numDoc), "Номер документа должен быть положительным числом");
+
+            if (cashDeskNumber <= 0)
+                throw new ArgumentOutOfRangeException(nameof(cashDeskNumber), "Номер кассы должен быть положительным числом");
+
+            // Обработка строковых параметров
+            string truncatedErrorMessage = TruncateString(errorMessage, 255);
+            string truncatedMethodName = TruncateString(methodName, 255);
+            string truncatedDescription = TruncateString(description, 255);
+
             const string sql = @"
-             INSERT INTO public.log_errors(
-                error_message,
-                date_time_record,
-                method_name,
-                num_doc,
-                cash_desk_number,
-                description
-            )
-            VALUES(
-                @errorMessage,
-                @dateTimeRecord,
-                @methodName,
-                @numDoc,
-                @cashDeskNumber,
-                @description
-            )";
+        INSERT INTO errors_log(
+            error_message,
+            date_time_record,
+            method_name,
+            num_doc,            
+            description
+        )
+        VALUES(
+            @errorMessage,
+            @dateTimeRecord,
+            @methodName,
+            @numDoc,            
+            @description
+        )";
 
             try
             {
-                using (NpgsqlConnection conn = MainStaticClass.NpgsqlConn())
+                using (var conn = MainStaticClass.NpgsqlConn())
                 {
                     conn.Open();
                     using (var command = new NpgsqlCommand(sql, conn))
                     {
-                        // Обязательные параметры
-                        command.Parameters.AddWithValue("@errorMessage", errorMessage);
-                        command.Parameters.AddWithValue("@dateTimeRecord", DateTime.Now);
-                        command.Parameters.AddWithValue("@methodName", methodName);                        
-                        command.Parameters.AddWithValue("@numDoc", numDoc);
-                        command.Parameters.AddWithValue("@cashDeskNumber", cashDeskNumber);
-                        command.Parameters.AddWithValue("@description", description);
+                        command.Parameters.Add("@errorMessage", NpgsqlTypes.NpgsqlDbType.Text).Value = (object)truncatedErrorMessage ?? DBNull.Value;
+                        command.Parameters.Add("@dateTimeRecord", NpgsqlTypes.NpgsqlDbType.Timestamp).Value = DateTime.Now;
+                        command.Parameters.Add("@methodName", NpgsqlTypes.NpgsqlDbType.Text).Value = (object)truncatedMethodName ?? DBNull.Value;
+                        command.Parameters.Add("@numDoc", NpgsqlTypes.NpgsqlDbType.Bigint).Value = numDoc;
+                        command.Parameters.Add("@cashDeskNumber", NpgsqlTypes.NpgsqlDbType.Smallint).Value = cashDeskNumber;
+                        command.Parameters.Add("@description", NpgsqlTypes.NpgsqlDbType.Text).Value = (object)truncatedDescription ?? DBNull.Value;
 
                         command.ExecuteNonQuery();
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // Логирование ошибки записи в лог (например, в файл или консоль)
-                //Console.WriteLine($"Ошибка при записи в лог: {ex.Message}");
-                //return 0;
+                // Логируем оригинальные значения (до обрезки)
+                var logMessage = new StringBuilder()
+                    .AppendLine($"Дата: {DateTime.Now}")
+                    .AppendLine($"Ошибка: {ex.Message}")
+                    .AppendLine($"StackTrace: {ex.StackTrace}")
+                    .AppendLine("Параметры:")
+                    .AppendLine($"- Сообщение: {errorMessage}")
+                    .AppendLine($"- Метод: {methodName}")
+                    .AppendLine($"- Документ: {numDoc}")
+                    .AppendLine($"- Касса: {cashDeskNumber}")
+                    .AppendLine($"- Описание: {description}")
+                    .AppendLine(new string('-', 50))
+                    .ToString();
+
+                var logPath = Path.Combine(Application.StartupPath, "ErrorsLog.txt");
+
+                try
+                {
+                    File.AppendAllText(logPath, logMessage);
+                }
+                catch (Exception fileEx)
+                {
+                    MessageBox.Show($"Ошибка записи в лог: {fileEx.Message}");
+                    
+                }
             }
         }
 
-        public static string get_string_message_for_trassir(string event_type, string operation_id, string cashier, string date, string time,
-                    string position, string quantity, string price, string barcode, string article, string location, string text)
+        // Вспомогательный метод для обрезки строк
+        private static string TruncateString(string value, int maxLength)
         {
-            string result = "";
-
-            result = "<?xml version=" + '"' + "1.0" + '"' + " encoding=" + '"' + "windows-1251" + '"' + "?>" + "\r\n";
-            result += "<transaction>" + "\r\n";
-            result += "<event_type>" + event_type + "</event_type>" + "\r\n";
-            result += "<operation_id>" + operation_id + "</operation_id>" + "\r\n";
-
-            if (cashier != "")
-            {
-                result += "<cashier>" + cashier + "</cashier>" + "\r\n";
-            }
-            result += "<date>" + date + "</date>" + "\r\n";
-            result += "<time>" + time + "</time>" + "\r\n";
-            if (position != "")
-            {
-                result += "<position>" + position + "</position>" + "\r\n";
-            }
-            if (quantity != "")
-            {
-                result += "<quantity>" + quantity + "</quantity>" + "\r\n";
-            }
-            if (price != "")
-            {
-                result += "<price>" + price + "</price>" + "\r\n";
-            }
-            if (barcode != "")
-            {
-                result += "<barcode>" + barcode + "</barcode>" + "\r\n";
-            }
-            if (article != "")
-            {
-                result += "<article>" + article + "</article>" + "\r\n";
-            }
-            if (location != "")
-            {
-                result += "<location>" + location + "</location>" + "\r\n";
-            }
-            if (text != "")
-            {
-                result += "<text>" + text + "</text>" + "\r\n";
-            }
-
-            result += "</transaction>";
-
-            return result;
+            if (string.IsNullOrEmpty(value)) return value;
+            return value.Length <= maxLength
+                ? value
+                : value.Substring(0, maxLength);
         }
 
         public static int SystemTaxation

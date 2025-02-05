@@ -69,9 +69,9 @@ namespace Cash8.DS {
         
         private System.Threading.SendOrPostCallback UploadCDNLogsPortionJasonOperationCompleted;
         
-        private System.Threading.SendOrPostCallback UploadDataOnSalesPortionJasonOperationCompleted;
+        private System.Threading.SendOrPostCallback UploadErrorLogPortionJsonOperationCompleted;
         
-        private System.Threading.SendOrPostCallback GetParametersOnBonusProgramOperationCompleted;
+        private System.Threading.SendOrPostCallback UploadDataOnSalesPortionJsonOperationCompleted;
         
         private bool useDefaultCredentialsSetExplicitly;
         
@@ -172,10 +172,10 @@ namespace Cash8.DS {
         public event UploadCDNLogsPortionJasonCompletedEventHandler UploadCDNLogsPortionJasonCompleted;
         
         /// <remarks/>
-        public event UploadDataOnSalesPortionJasonCompletedEventHandler UploadDataOnSalesPortionJasonCompleted;
+        public event UploadErrorLogPortionJsonCompletedEventHandler UploadErrorLogPortionJsonCompleted;
         
         /// <remarks/>
-        public event GetParametersOnBonusProgramCompletedEventHandler GetParametersOnBonusProgramCompleted;
+        public event UploadDataOnSalesPortionJsonCompletedEventHandler UploadDataOnSalesPortionJsonCompleted;
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/HelloWorld", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
@@ -818,9 +818,9 @@ namespace Cash8.DS {
         }
         
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/UploadDataOnSalesPortionJason", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public bool UploadDataOnSalesPortionJason(string nick_shop, string data, string scheme) {
-            object[] results = this.Invoke("UploadDataOnSalesPortionJason", new object[] {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/UploadErrorLogPortionJson", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public bool UploadErrorLogPortionJson(string nick_shop, string data, string scheme) {
+            object[] results = this.Invoke("UploadErrorLogPortionJson", new object[] {
                         nick_shop,
                         data,
                         scheme});
@@ -828,58 +828,58 @@ namespace Cash8.DS {
         }
         
         /// <remarks/>
-        public void UploadDataOnSalesPortionJasonAsync(string nick_shop, string data, string scheme) {
-            this.UploadDataOnSalesPortionJasonAsync(nick_shop, data, scheme, null);
+        public void UploadErrorLogPortionJsonAsync(string nick_shop, string data, string scheme) {
+            this.UploadErrorLogPortionJsonAsync(nick_shop, data, scheme, null);
         }
         
         /// <remarks/>
-        public void UploadDataOnSalesPortionJasonAsync(string nick_shop, string data, string scheme, object userState) {
-            if ((this.UploadDataOnSalesPortionJasonOperationCompleted == null)) {
-                this.UploadDataOnSalesPortionJasonOperationCompleted = new System.Threading.SendOrPostCallback(this.OnUploadDataOnSalesPortionJasonOperationCompleted);
+        public void UploadErrorLogPortionJsonAsync(string nick_shop, string data, string scheme, object userState) {
+            if ((this.UploadErrorLogPortionJsonOperationCompleted == null)) {
+                this.UploadErrorLogPortionJsonOperationCompleted = new System.Threading.SendOrPostCallback(this.OnUploadErrorLogPortionJsonOperationCompleted);
             }
-            this.InvokeAsync("UploadDataOnSalesPortionJason", new object[] {
+            this.InvokeAsync("UploadErrorLogPortionJson", new object[] {
                         nick_shop,
                         data,
-                        scheme}, this.UploadDataOnSalesPortionJasonOperationCompleted, userState);
+                        scheme}, this.UploadErrorLogPortionJsonOperationCompleted, userState);
         }
         
-        private void OnUploadDataOnSalesPortionJasonOperationCompleted(object arg) {
-            if ((this.UploadDataOnSalesPortionJasonCompleted != null)) {
+        private void OnUploadErrorLogPortionJsonOperationCompleted(object arg) {
+            if ((this.UploadErrorLogPortionJsonCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.UploadDataOnSalesPortionJasonCompleted(this, new UploadDataOnSalesPortionJasonCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+                this.UploadErrorLogPortionJsonCompleted(this, new UploadErrorLogPortionJsonCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetParametersOnBonusProgram", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public string GetParametersOnBonusProgram(string nick_shop, string data, string scheme) {
-            object[] results = this.Invoke("GetParametersOnBonusProgram", new object[] {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/UploadDataOnSalesPortionJson", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public bool UploadDataOnSalesPortionJson(string nick_shop, string data, string scheme) {
+            object[] results = this.Invoke("UploadDataOnSalesPortionJson", new object[] {
                         nick_shop,
                         data,
                         scheme});
-            return ((string)(results[0]));
+            return ((bool)(results[0]));
         }
         
         /// <remarks/>
-        public void GetParametersOnBonusProgramAsync(string nick_shop, string data, string scheme) {
-            this.GetParametersOnBonusProgramAsync(nick_shop, data, scheme, null);
+        public void UploadDataOnSalesPortionJsonAsync(string nick_shop, string data, string scheme) {
+            this.UploadDataOnSalesPortionJsonAsync(nick_shop, data, scheme, null);
         }
         
         /// <remarks/>
-        public void GetParametersOnBonusProgramAsync(string nick_shop, string data, string scheme, object userState) {
-            if ((this.GetParametersOnBonusProgramOperationCompleted == null)) {
-                this.GetParametersOnBonusProgramOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetParametersOnBonusProgramOperationCompleted);
+        public void UploadDataOnSalesPortionJsonAsync(string nick_shop, string data, string scheme, object userState) {
+            if ((this.UploadDataOnSalesPortionJsonOperationCompleted == null)) {
+                this.UploadDataOnSalesPortionJsonOperationCompleted = new System.Threading.SendOrPostCallback(this.OnUploadDataOnSalesPortionJsonOperationCompleted);
             }
-            this.InvokeAsync("GetParametersOnBonusProgram", new object[] {
+            this.InvokeAsync("UploadDataOnSalesPortionJson", new object[] {
                         nick_shop,
                         data,
-                        scheme}, this.GetParametersOnBonusProgramOperationCompleted, userState);
+                        scheme}, this.UploadDataOnSalesPortionJsonOperationCompleted, userState);
         }
         
-        private void OnGetParametersOnBonusProgramOperationCompleted(object arg) {
-            if ((this.GetParametersOnBonusProgramCompleted != null)) {
+        private void OnUploadDataOnSalesPortionJsonOperationCompleted(object arg) {
+            if ((this.UploadDataOnSalesPortionJsonCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetParametersOnBonusProgramCompleted(this, new GetParametersOnBonusProgramCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+                this.UploadDataOnSalesPortionJsonCompleted(this, new UploadDataOnSalesPortionJsonCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -1424,17 +1424,17 @@ namespace Cash8.DS {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
-    public delegate void UploadDataOnSalesPortionJasonCompletedEventHandler(object sender, UploadDataOnSalesPortionJasonCompletedEventArgs e);
+    public delegate void UploadErrorLogPortionJsonCompletedEventHandler(object sender, UploadErrorLogPortionJsonCompletedEventArgs e);
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class UploadDataOnSalesPortionJasonCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+    public partial class UploadErrorLogPortionJsonCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
         
         private object[] results;
         
-        internal UploadDataOnSalesPortionJasonCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+        internal UploadErrorLogPortionJsonCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }
@@ -1450,26 +1450,26 @@ namespace Cash8.DS {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
-    public delegate void GetParametersOnBonusProgramCompletedEventHandler(object sender, GetParametersOnBonusProgramCompletedEventArgs e);
+    public delegate void UploadDataOnSalesPortionJsonCompletedEventHandler(object sender, UploadDataOnSalesPortionJsonCompletedEventArgs e);
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetParametersOnBonusProgramCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+    public partial class UploadDataOnSalesPortionJsonCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
         
         private object[] results;
         
-        internal GetParametersOnBonusProgramCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+        internal UploadDataOnSalesPortionJsonCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }
         
         /// <remarks/>
-        public string Result {
+        public bool Result {
             get {
                 this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
+                return ((bool)(this.results[0]));
             }
         }
     }

@@ -800,7 +800,7 @@ namespace Cash8
             string data_crypt = CryptorEngine.Encrypt(data, true,key);
             try
             {
-                result_web_quey = ds.UploadDataOnSalesPortionJason(nick_shop, data_crypt,MainStaticClass.GetWorkSchema.ToString());                            
+                result_web_quey = ds.UploadDataOnSalesPortionJson(nick_shop, data_crypt,MainStaticClass.GetWorkSchema.ToString());                            
             }
             catch(Exception ex)
             {
