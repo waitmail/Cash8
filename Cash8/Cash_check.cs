@@ -2638,6 +2638,12 @@ namespace Cash8
                     return;
                 }
             }
+            else if(this.check_type.SelectedIndex<0)
+            {
+                MessageBox.Show(" Произошла ошибка при получении типа чека, чек будет закрыт попробуйте создать его заново.","Проверки при получении типа чека.");
+                MainStaticClass.WriteRecordErrorLog("Произошла ошибка при получении типа чека", "find_barcode_or_code_in_tovar_new", numdoc, MainStaticClass.CashDeskNumber, "Произошла ошибка при получении типа чека, чек будет закрыт попробуйте создать его заново");
+                this.Close();
+            }
 
             MainStaticClass.write_event_in_log("Попытка добавить новый товар в чек " + barcode, "Документ чек", numdoc.ToString());
 
@@ -3076,7 +3082,7 @@ namespace Cash8
                     }
                 }
 
-                SendDataToCustomerScreen(1, 0, 1);
+                //SendDataToCustomerScreen(1, 0, 1);
 
                 if (!productData.IsFractional())
                 {
@@ -3140,9 +3146,8 @@ namespace Cash8
             //    //start_com_barcode_scaner();
             //}
             //MessageBox.Show((DateTime.Now - start).Milliseconds.ToString());
-            write_new_document("0", "0", "0", "0", false, "0", "0", "0", "0");
+            write_new_document("0", calculation_of_the_sum_of_the_document().ToString(), "0", "0", false, "0", "0", "0", "0");//нужно для того чтобы в окне оплаты взять сумму из БД
             //Task.Run(() => WriteNewDocumentAsync("0", "0", "0", "0", false, "0", "0", "0", "0"));
-            
             //bool result = Task.Run(() => WriteNewDocumentAsync("0", "0", "0", "0", false, "0", "0", "0", "0")).GetAwaiter().GetResult();
         }
 
@@ -3928,6 +3933,12 @@ namespace Cash8
                 this.user.Text = MainStaticClass.Cash_Operator;
                 this.user.Tag = MainStaticClass.Cash_Operator_Client_Code;//gaa поменять на инн
                 numdoc = get_new_number_document();
+                if (numdoc == 0)
+                {
+                    MessageBox.Show("Ошибка при получении номера документа.", "Проверка при получении номер документа");
+                    MainStaticClass.WriteRecordErrorLog("Ошибка при получении номера документа", "Cash_check_Load", 0, MainStaticClass.CashDeskNumber, "При вводе нового документа получен нулевой номер");
+                    this.Close();
+                }
                 this.txtB_num_doc.Text = this.numdoc.ToString();
                 MainStaticClass.write_event_in_log(" Ввод нового документа ", "Документ чек", numdoc.ToString());
                 this.check_type.SelectedIndex = 0;
@@ -9714,7 +9725,8 @@ namespace Cash8
                 {
                     recalculate_all();
                     calculation_of_the_sum_of_the_document();
-                    SendDataToCustomerScreen(1, 0, 1);
+                    //SendDataToCustomerScreen(1, 0, 1);
+                    write_new_document("0", "0", "0", "0", false, "0", "0", "0", "0");
                 }
             }
         }
@@ -13237,7 +13249,7 @@ namespace Cash8
                 listView1.Items.Add(lvi);
             }
             write_new_document("0", "0", "0", "0", false, "0", "0", "0", "0");
-            SendDataToCustomerScreen(1, 0,1);
+            //SendDataToCustomerScreen(1, 0,1);
             //inputbarcode.Focus();
             this.txtB_search_product.Focus();
         }

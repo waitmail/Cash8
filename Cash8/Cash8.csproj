@@ -183,6 +183,7 @@
       <DependentUpon>Interface_switching.cs</DependentUpon>
     </Compile>
     <Compile Include="InventoryManager.cs" />
+    <Compile Include="LoadActionData.cs" />
     <Compile Include="LoadDataWebService.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -1261,14 +1261,14 @@ namespace Cash8
              catch (NpgsqlException ex)
              {
                  MessageBox.Show("Ошибка при очистке счетчика ошибочно введенных номеров телефонов" + ex.Message);
-                 MainStaticClass.CreateRecordErrorLog(ex.Message, "check_failed_input_phone",0,Convert.ToInt16(MainStaticClass.CashDeskNumber),@"MainForms Проверка таблицы failed_input_phone
+                 MainStaticClass.WriteRecordErrorLog(ex.Message, "check_failed_input_phone",0,Convert.ToInt16(MainStaticClass.CashDeskNumber),@"MainForms Проверка таблицы failed_input_phone
         при старте программы, если это сегодня первый старт
         и документов продажи еще нет, тогда очищаем таблицу");
              }
              catch (Exception ex)
              {
                  MessageBox.Show("Ошибка при очистке счетчика ошибочно введенных номеров телефонов" + ex.Message);                
-                MainStaticClass.CreateRecordErrorLog(ex.Message, "check_failed_input_phone", 0, Convert.ToInt16(MainStaticClass.CashDeskNumber), @"MainForms Проверка таблицы failed_input_phone
+                MainStaticClass.WriteRecordErrorLog(ex.Message, "check_failed_input_phone", 0, Convert.ToInt16(MainStaticClass.CashDeskNumber), @"MainForms Проверка таблицы failed_input_phone
         при старте программы, если это сегодня первый старт
         и документов продажи еще нет, тогда очищаем таблицу");
             }

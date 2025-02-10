@@ -2155,7 +2155,7 @@ namespace Cash8
         /// <param name="cashDeskNumber"></param>
         /// <param name="description"></param>
         /// <returns></returns>
-        public static void CreateRecordErrorLog(
+        public static void WriteRecordErrorLog(
      string errorMessage,
      string methodName,
      long numDoc,
@@ -4335,7 +4335,7 @@ namespace Cash8
             }
 
         }
-        public static int CashDeskNumber
+        public static Int16 CashDeskNumber
         {
             get
             {
