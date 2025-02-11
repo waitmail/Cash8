@@ -713,7 +713,7 @@ namespace Cash8
                         //start_action = DateTime.Now;
                         if (persent != 0)
                         {
-                            //action_1_dt(num_doc, persent, comment);//Дать скидку на эту позицию                                                 
+                            //action_1_dt(num_doc, persent, comment);//Дать скидку на эту позицию  
                             if (LoadActionDataInMemory.AllActionData1 == null)
                             {
                                 action_1_dt(num_doc, persent, comment);
@@ -726,9 +726,17 @@ namespace Cash8
                         else
                         {
                             //if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
-                            //{                                             
-                                action_1_dt(num_doc, comment, marker, show_messages); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
+                            //{
+                            // action_1_dt(num_doc, comment, marker, show_messages); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
                             //}
+                            if (LoadActionDataInMemory.AllActionData1 == null)
+                            {
+                                action_1_dt(num_doc, comment, marker, show_messages); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
+                            }
+                            else
+                            {
+                                action_1_dt(num_doc, comment, marker, show_messages, LoadActionDataInMemory.AllActionData1); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
+                            }
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
                     }
@@ -988,8 +996,7 @@ namespace Cash8
                         //start_action = DateTime.Now;
                         if (persent != 0)
                         {
-
-                            //action_1_dt(num_doc, persent, comment);//Дать скидку на эту позицию                                                 
+                            //action_1_dt(num_doc, persent, comment);//Дать скидку на эту позицию  
                             if (LoadActionDataInMemory.AllActionData1 == null)
                             {
                                 action_1_dt(num_doc, persent, comment);
@@ -1002,9 +1009,17 @@ namespace Cash8
                         else
                         {
                             //if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
-                            //{                                                    
-                                action_1_dt(num_doc, comment, marker, show_messages); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
+                            //{
+                            // action_1_dt(num_doc, comment, marker, show_messages); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
                             //}
+                            if (LoadActionDataInMemory.AllActionData1 == null)
+                            {
+                                action_1_dt(num_doc, comment, marker, show_messages); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
+                            }
+                            else
+                            {
+                                action_1_dt(num_doc, comment, marker, show_messages, LoadActionDataInMemory.AllActionData1); //Сообщить о подарке, а так же добавить товар в подарок если указан код товара                          
+                            }
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
                     }
@@ -1430,7 +1445,7 @@ namespace Cash8
             return dr;
         }
 
-       
+
         ///// <summary>
         ///// Показывает окно запроса штрих-кода.
         ///// </summary>
@@ -1544,28 +1559,25 @@ namespace Cash8
                 using (var conn = MainStaticClass.NpgsqlConn())
                 {
                     conn.Open();
-                    using (var transaction = conn.BeginTransaction())
+
+                    var query = "SELECT code_tovar, price FROM action_table WHERE num_doc = @num_doc";
+                    using (var command = new NpgsqlCommand(query, conn))
                     {
-                        var query = "SELECT code_tovar, price FROM action_table WHERE num_doc = @num_doc";
-                        using (var command = new NpgsqlCommand(query, conn, transaction))
+                        command.Parameters.AddWithValue("@num_doc", num_doc);
+                        using (var reader = command.ExecuteReader())
                         {
-                            command.Parameters.AddWithValue("@num_doc", num_doc);
-                            using (var reader = command.ExecuteReader())
+                            var actionPrices = new Dictionary<long, decimal>();
+                            while (reader.Read())
                             {
-                                var actionPrices = new Dictionary<long, decimal>();
-                                while (reader.Read())
-                                {
-                                    actionPrices[reader.GetInt64(0)] = reader.GetDecimal(1);
-                                }
-
-                                // Обрабатываем строки копии DataTable
-                                ProcessRows(dtCopy, actionPrices, num_doc, percent, comment);
-
-                                // Если все прошло успешно, заменяем оригинальный DataTable на измененную копию
-                                dt = dtCopy;
+                                actionPrices[reader.GetInt64(0)] = reader.GetDecimal(1);
                             }
+
+                            // Обрабатываем строки копии DataTable
+                            ProcessRows(dtCopy, actionPrices, num_doc, percent, comment);
+
+                            // Если все прошло успешно, заменяем оригинальный DataTable на измененную копию
+                            dt = dtCopy;
                         }
-                        transaction.Commit();
                     }
                 }
             }
@@ -1641,6 +1653,7 @@ namespace Cash8
                 if (!actionPricesByDoc.ContainsKey(num_doc))
                 {
                     MessageBox.Show($"Данные для документа {num_doc} не найдены.", "Обработка акций 1 типа");
+                    MainStaticClass.WriteRecordErrorLog($"Данные для документа {num_doc} не найдены.", "action_1_dt", num_doc, MainStaticClass.CashDeskNumber, "Обработка акций 1 типа скидка чтение с диска, номер документа здесь это номер ак. док.");
                     return;
                 }
 
@@ -1801,32 +1814,51 @@ namespace Cash8
                 using (var conn = MainStaticClass.NpgsqlConn())
                 {
                     conn.Open();
-                    using (var transaction = conn.BeginTransaction())
-                    {
-                        // Загружаем все товары, участвующие в акции, одним запросом
-                        var actionItems = LoadActionItems(conn, transaction, num_doc);
-                        transaction.Commit();
 
-                        // Обрабатываем строки копии DataTable
-                        ProcessRows(dtCopy, actionItems, num_doc, comment, marker, show_messages);
+                    // Загружаем все товары, участвующие в акции, одним запросом
+                    var actionItems = LoadActionItems(conn, num_doc);
 
-                        // Если все прошло успешно, заменяем оригинальный DataTable на измененную копию
-                        dt = dtCopy;
-                    }
+                    // Обрабатываем строки копии DataTable
+                    ProcessRows(dtCopy, actionItems, num_doc, comment, marker, show_messages);
+
+                    // Если все прошло успешно, заменяем оригинальный DataTable на измененную копию
+                    dt = dtCopy;
                 }
             }
             catch (NpgsqlException ex)
             {
                 MessageBox.Show(ex.Message + " | " + ex.Detail, "Ошибка базы данных");
+                MainStaticClass.WriteRecordErrorLog(ex.Message, "action_1_dt", num_doc, MainStaticClass.CashDeskNumber, "Обработка акций 1 типа подарок чтение с диска, номер документа здесь это номер ак. док.");
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка при обработке акции 1 типа");
+                MainStaticClass.WriteRecordErrorLog(ex.Message, "action_1_dt", num_doc, MainStaticClass.CashDeskNumber, "Обработка акций 1 типа подарок чтение с диска, номер документа здесь это номер ак. док.");
             }
             finally
             {
                 // Если произошла ошибка, dt остается неизменным
             }
+        }
+
+        private HashSet<long> LoadActionItems(NpgsqlConnection conn, int num_doc)
+        {
+            var actionItems = new HashSet<long>();
+
+            string query = "SELECT code_tovar FROM action_table WHERE num_doc = @num_doc";
+            using (var command = new NpgsqlCommand(query, conn))
+            {
+                command.Parameters.AddWithValue("@num_doc", num_doc);
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        actionItems.Add(reader.GetInt64(0));
+                    }
+                }
+            }
+
+            return actionItems;
         }
 
         /// <summary>
@@ -1865,6 +1897,7 @@ namespace Cash8
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка при обработке акции 1 типа");
+                MainStaticClass.WriteRecordErrorLog(ex.Message, "action_1_dt", num_doc, MainStaticClass.CashDeskNumber, "Обработка акций 1 типа подарок со словарем, номер документа здесь это номер ак. док.");
             }
             finally
             {
@@ -1996,6 +2029,7 @@ namespace Cash8
                 if (!allActionData2.ContainsKey(num_doc))
                 {
                     MessageBox.Show($"Данные для документа {num_doc} не найдены.", "Обработка акций 2 типа");
+                    MainStaticClass.WriteRecordErrorLog($"Данные для документа {num_doc} не найдены.", "action_2_dt скидка", Convert.ToInt16(num_doc), MainStaticClass.CashDeskNumber, "Обработка акций 2 типа с предварительно загруженным словарем");
                     return;
                 }
 
@@ -2230,19 +2264,72 @@ namespace Cash8
             return newRow;
         }
 
-        private void marked_action_tovar_dt(DataTable dtCopy, int num_doc, string comment)
-        {
-            // Логика для пометки товаров, участвовавших в акции
-            foreach (DataRow row in dtCopy.Rows)
-            {
-                if (dtCopy.Columns.Contains("promo_description"))
-                {
-                    row["promo_description"] = comment;
-                }
-            }
-        }
+        //private void marked_action_tovar_dt(DataTable dtCopy, int num_doc, string comment)
+        //{
+        //    // Логика для пометки товаров, участвовавших в акции
+        //    foreach (DataRow row in dtCopy.Rows)
+        //    {
+        //        if (dtCopy.Columns.Contains("promo_description"))
+        //        {
+        //            row["promo_description"] = comment;
+        //        }
+        //    }
+        //}
+
+
 
         #endregion
+
+
+        private async void marked_action_tovar_dt(DataTable dtCopy, int num_doc, string comment)
+        {
+            try
+            {
+                using (var conn = MainStaticClass.NpgsqlConn())
+                {
+                    await conn.OpenAsync();
+
+                    foreach (DataRow row in dtCopy.Rows)
+                    {
+                        if (Convert.ToInt32(row["action2"]) > 0)
+                        {
+                            continue; // Этот товар уже участвовал в акции, пропускаем
+                        }
+
+                        string query = "SELECT COUNT(*) FROM action_table WHERE code_tovar = @code_tovar AND num_doc = @num_doc";
+                        using (var command = new NpgsqlCommand(query, conn))
+                        {
+                            command.Parameters.AddWithValue("@code_tovar", row["tovar_code"]);
+                            command.Parameters.AddWithValue("@num_doc", num_doc);
+
+                            int result = Convert.ToInt32(await command.ExecuteScalarAsync());
+                            if (result == 1)
+                            {
+                                row["action2"] = num_doc.ToString();
+                                if (dtCopy.Columns.Contains("promo_description"))
+                                {
+                                    row["promo_description"] = comment;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (NpgsqlException ex)
+            {
+                MessageBox.Show(ex.Message, "Пометка товарных позиций участвующих в акции");
+                MainStaticClass.WriteRecordErrorLog(ex.Message, "marked_action_tovar_dt(DataTable dtCopy, int num_doc, string comment)", num_doc, MainStaticClass.CashDeskNumber, "Пометка товарных позиций участвующих в акции");
+                // Логирование ошибки
+                // Logger.Log(ex);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Пометка товарных позиций участвующих в акции");
+                MainStaticClass.WriteRecordErrorLog(ex.Message, "marked_action_tovar_dt(DataTable dtCopy, int num_doc, string comment)", num_doc, MainStaticClass.CashDeskNumber, "Пометка товарных позиций участвующих в акции");
+                // Логирование ошибки
+                // Logger.Log(ex);
+            }
+        }
 
 
         ///// <summary>
@@ -2824,17 +2911,116 @@ namespace Cash8
         //}
 
 
-        /** Обработать акцию по 2 типу
-       * это значит в документе должен быть товар 
-       * по вхождению в акционный список       
-       * Здесь выдается сообщение о подарке*/
+
+
+        /*
+  * Обработать акцию по 2 типу
+  * это значит в документе должен быть товар 
+  * по вхождению в акционный список 
+    * 
+  * Здесь выдается сообщение о подарке*/
+   private void action_2_dt(int num_doc, string comment, bool show_messages, Dictionary<int, LoadActionDataInMemory.ActionDataContainer> allActionData2)
+   {
+       if (!allActionData2.ContainsKey(num_doc))
+       {
+           MessageBox.Show($"Данные для документа {num_doc} не найдены.", "Обработка акций 2 типа");
+                MainStaticClass.WriteRecordErrorLog($"Данные для документа {num_doc} не найдены.", "action_2_dt(int num_doc, string comment, bool show_messages, Dictionary<int, LoadActionDataInMemory.ActionDataContainer> allActionData2)", num_doc, MainStaticClass.CashDeskNumber, "Акции 2 типа выдается сообщение о подарке");
+                return;
+       }
+
+       var container = allActionData2[num_doc];
+
+       // Создаем копии словарей для работы с текущим документом
+       var listItems = new Dictionary<int, List<long>>(container.ListItems);
+       var listQuantities = new Dictionary<int, int>(container.ListQuantities);
+
+       // Обрабатываем данные для подарков
+       ProcessGifts(num_doc, comment, listItems, listQuantities, show_messages);
+   }
+
+
+        /*
+      * Обработать акцию по 2 типу
+      * это значит в документе должен быть товар 
+      * по вхождению в акционный список 
+        * 
+      * Здесь выдается сообщение о подарке*/
+  private void action_2_dt(int num_doc, string comment, bool show_messages)
+  {
+      Dictionary<int, List<long>> listItems = new Dictionary<int, List<long>>();
+      Dictionary<int, int> listQuantities = new Dictionary<int, int>();
+
+      try
+      {
+          using (var conn = MainStaticClass.NpgsqlConn())
+          {
+              conn.Open();
+
+              // Загружаем данные из action_table
+              string query = @"
+          SELECT num_list, code_tovar 
+          FROM action_table 
+          WHERE num_doc = @num_doc 
+          ORDER BY num_list, code_tovar";
+
+              using (var command = new NpgsqlCommand(query, conn))
+              {
+                  command.Parameters.AddWithValue("@num_doc", num_doc);
+                  using (var reader = command.ExecuteReader())
+                  {
+                      while (reader.Read())
+                      {
+                          int num_list = reader.GetInt32(0);
+                          long code_tovar = reader.GetInt64(1);
+
+                          if (!listItems.ContainsKey(num_list))
+                          {
+                              listItems[num_list] = new List<long>();
+                          }
+                          listItems[num_list].Add(code_tovar);
+
+                          if (!listQuantities.ContainsKey(num_list))
+                          {
+                              listQuantities[num_list] = 0;
+                          }
+                      }
+                  }
+              }
+          }
+
+          // Обрабатываем данные для подарков
+          ProcessGifts(num_doc, comment, listItems, listQuantities, show_messages);
+      }
+      catch (NpgsqlException ex)
+      {
+          MessageBox.Show(ex.Message, "Ошибка при обработке 2 типа акций");
+          MainStaticClass.WriteRecordErrorLog(ex.Message, "action_2_dt(int num_doc, string comment, bool show_messages, Dictionary<int, LoadActionDataInMemory.ActionDataContainer> allActionData2)", num_doc, MainStaticClass.CashDeskNumber, "Акции 2 типа выдается сообщение о подарке");
+      }
+      catch (Exception ex)
+      {
+          MessageBox.Show(ex.Message, "Ошибка при обработке 2 типа акций");
+          MainStaticClass.WriteRecordErrorLog(ex.Message, "action_2_dt(int num_doc, string comment, bool show_messages, Dictionary<int, LoadActionDataInMemory.ActionDataContainer> allActionData2)", num_doc, MainStaticClass.CashDeskNumber, "Акции 2 типа выдается сообщение о подарке");
+      }
+  }
+
+
+  /** Обработать акцию по 2 типу
+* это значит в документе должен быть товар 
+* по вхождению в акционный список       
+* Здесь выдается сообщение о подарке*/
         private void ProcessGifts(int num_doc, string comment,
-                      Dictionary<int, List<long>> listItems,
-                      Dictionary<int, int> listQuantities, bool show_messages)
+                          Dictionary<int, List<long>> listItems,
+                          Dictionary<int, int> listQuantities, bool show_messages)
         {
+            // Создаем копию DataTable для работы
+            DataTable dtCopy = dt.Copy();
+
             if (!listItems.ContainsKey(1))
             {
                 MessageBox.Show("Первый список товаров отсутствует.", "Обработка акций 2 типа");
+                MainStaticClass.WriteRecordErrorLog("Первый список товаров отсутствует.", @"ProcessGifts(int num_doc, string comment,
+              Dictionary<int, List<long>> listItems,
+              Dictionary<int, int> listQuantities, bool show_messages)", num_doc, MainStaticClass.CashDeskNumber, "Акции 2 типа выдается сообщение о подарке");
                 return;
             }
 
@@ -2844,7 +3030,7 @@ namespace Cash8
                 listQuantities[key] = 0;
             }
 
-            Dictionary<long, int> firstListItems = new Dictionary<long, int>();            
+            Dictionary<long, int> firstListItems = new Dictionary<long, int>();
 
             try
             {
@@ -2854,8 +3040,8 @@ namespace Cash8
                     firstListItems[code_tovar] = 0;
                 }
 
-                // Анализируем dt для подсчета количества товаров из каждого списка
-                foreach (DataRow row in dt.Rows)
+                // Анализируем dtCopy для подсчета количества товаров из каждого списка
+                foreach (DataRow row in dtCopy.Rows)
                 {
                     if (Convert.ToInt32(row["action2"]) > 0) continue;
 
@@ -2883,100 +3069,32 @@ namespace Cash8
                 if (listQuantities.Any())
                 {
                     giftCount = listQuantities.Values.Min();
-                }              
+                }
 
                 // Выводим сообщение о количестве подарков
                 if (giftCount > 0)
                 {
                     if (show_messages)
                     {
-                        //MessageBox.Show($"Количество подарков: {giftCount}", "Акция 2 типа: Подарки");
                         MessageBox.Show($"Сработала акция, НЕОБХОДИМО выдать подарок количестве {giftCount} шт.  {comment}", "Акция 2 типа: Подарки");
-                    }
-                }               
-
-                // Помечаем товары, участвовавшие в акции
-                marked_action_tovar_dt(num_doc, comment);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Ошибка при обработке 2 типа акций");
-            }
-        }       
-
-        private void action_2_dt(int num_doc, string comment, bool show_messages, Dictionary<int, LoadActionDataInMemory.ActionDataContainer> allActionData2)
-        {
-            if (!allActionData2.ContainsKey(num_doc))
-            {
-                MessageBox.Show($"Данные для документа {num_doc} не найдены.", "Обработка акций 2 типа");
-                return;
-            }
-
-            var container = allActionData2[num_doc];
-
-            // Создаем копии словарей для работы с текущим документом
-            var listItems = new Dictionary<int, List<long>>(container.ListItems);
-            var listQuantities = new Dictionary<int, int>(container.ListQuantities);
-
-            // Обрабатываем данные для подарков
-            ProcessGifts(num_doc, comment, listItems, listQuantities, show_messages);
-        }
-        
-        private void action_2_dt(int num_doc, string comment, bool show_messages)
-        {
-            Dictionary<int, List<long>> listItems = new Dictionary<int, List<long>>();
-            Dictionary<int, int> listQuantities = new Dictionary<int, int>();
-
-            try
-            {
-                using (var conn = MainStaticClass.NpgsqlConn())
-                {
-                    conn.Open();
-
-                    // Загружаем данные из action_table
-                    string query = @"
-                SELECT num_list, code_tovar 
-                FROM action_table 
-                WHERE num_doc = @num_doc 
-                ORDER BY num_list, code_tovar";
-
-                    using (var command = new NpgsqlCommand(query, conn))
-                    {
-                        command.Parameters.AddWithValue("@num_doc", num_doc);
-                        using (var reader = command.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                int num_list = reader.GetInt32(0);
-                                long code_tovar = reader.GetInt64(1);
-
-                                if (!listItems.ContainsKey(num_list))
-                                {
-                                    listItems[num_list] = new List<long>();
-                                }
-                                listItems[num_list].Add(code_tovar);
-
-                                if (!listQuantities.ContainsKey(num_list))
-                                {
-                                    listQuantities[num_list] = 0;
-                                }
-                            }
-                        }
                     }
                 }
 
-                // Обрабатываем данные для подарков
-                ProcessGifts(num_doc, comment, listItems, listQuantities, show_messages);
-            }
-            catch (NpgsqlException ex)
-            {
-                MessageBox.Show(ex.Message + " | " + ex.Detail);
+                // Помечаем товары, участвовавшие в акции (работаем с копией)
+                marked_action_tovar_dt(dtCopy, num_doc, comment);
+
+                // Если ошибок не произошло, применяем изменения к оригинальной таблице
+                dt = dtCopy;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка при обработке 2 типа акций");
+                MainStaticClass.WriteRecordErrorLog("Ошибка при обработке акции.", @"ProcessGifts(int num_doc, string comment,
+              Dictionary<int, List<long>> listItems,
+              Dictionary<int, int> listQuantities, bool show_messages)", num_doc, MainStaticClass.CashDeskNumber, "Акции 2 типа выдается сообщение о подарке");
             }
         }
+
 
         /*Эта акция срабатывает когда сумма без скидки в документе >= сумме акции
         * тогда дается скидка на те позиции которые перечисляются в условии акции

@@ -1209,9 +1209,10 @@ namespace Cash8
 
 
         private void btn_new_load_Click(object sender, EventArgs e)
-        {
-            //MainStaticClass.
+        {            
             InventoryManager.ClearDictionaryProductData();
+            LoadActionDataInMemory.AllActionData1 = null;
+            LoadActionDataInMemory.AllActionData2 = null;
             GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
             GC.WaitForPendingFinalizers();
             new_load();
