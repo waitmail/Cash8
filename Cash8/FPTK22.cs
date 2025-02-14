@@ -458,13 +458,13 @@ namespace Cash8
                         {
                             if ((DateTime.Now - result.results[0].result.status.notSentFirstDocDateTime).Days > 3)
                             {
-                                txtB_ofd_exchange_status.Text = "Не отправлено документов " + result.results[0].result.status.notSentCount.ToString().Trim() + "\r\n" +
+                                txtB_ofd_exchange_status.Text = "В ОФД Не отправлено документов " + result.results[0].result.status.notSentCount.ToString().Trim() + "\r\n" +
                                 " начиная с даты " + result.results[0].result.status.notSentFirstDocDateTime.ToString("yyyy-MM-dd HH:mm:ss");
                                 txtB_ofd_exchange_status.BackColor = Color.Gold;
                             }
                             else
                             {
-                                txtB_ofd_exchange_status.Text = "Не отправлено документов " + result.results[0].result.status.notSentCount.ToString().Trim();
+                                txtB_ofd_exchange_status.Text = "В ОФД Не отправлено документов " + result.results[0].result.status.notSentCount.ToString().Trim();
                             }
                         }
                         else

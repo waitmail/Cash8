@@ -207,7 +207,7 @@ namespace Cash8
             if (unsentCount > 0)
             {
                 DateTime dateTime = fptr.getParamDateTime(AtolConstants.LIBFPTR_PARAM_DATE_TIME);
-                result = "Не отправлено документов " + unsentCount.ToString() + "\r\n" +
+                result = "В ОФД Не отправлено документов " + unsentCount.ToString() + "\r\n" +
                                " начиная с даты " + dateTime.ToString("yyyy-MM-dd HH:mm:ss");
 
             }
@@ -630,6 +630,7 @@ namespace Cash8
             {
                 MessageBox.Show(string.Format("Ошибка при открытии чека.\nОшибка {0}: {1}", fptr.errorCode(), fptr.errorDescription()),
                         "Ошибка откртия чека", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MainStaticClass.WriteRecordErrorLog($"Ошибка при открытии чека.\nОшибка {fptr.errorCode()}: {fptr.errorDescription()}", "print_sell_2_or_return_sell", check.numdoc, MainStaticClass.CashDeskNumber, "Ошибка при открытии чека");
                 //fptr.close();
                 if (fptr.errorCode() == 82)
                 {
@@ -736,6 +737,7 @@ namespace Cash8
                 {
                     MessageBox.Show("При печати позиции " + lvi.SubItems[0].Text.Trim() + " " + lvi.SubItems[1].Text.Trim() + " произошли ошибки \r\n Код ошибки " + fptr.errorCode().ToString() +
                         "\r\n " + fptr.errorDescription().ToString());
+                    MainStaticClass.WriteRecordErrorLog("При печати позиции " + lvi.SubItems[0].Text.Trim() + " " + lvi.SubItems[1].Text.Trim() + " произошли ошибки \r\n Код ошибки " + fptr.errorCode().ToString() + "\r\n " + fptr.errorDescription().ToString(), "print_sell_2_or_return_sell", check.numdoc, MainStaticClass.CashDeskNumber, "Ошибка при открытии чека");
                     error = true;
                     fptr.cancelReceipt();
                     break;
@@ -845,6 +847,7 @@ namespace Cash8
             {
                 // Не удалось проверить состояние документа. Вывести пользователю текст ошибки, попросить устранить неполадку и повторить запрос
                 MessageBox.Show(fptr.errorCode().ToString() + " " + fptr.errorDescription(), " Ошибка при печати чека ");
+                MainStaticClass.WriteRecordErrorLog(fptr.errorCode().ToString() + fptr.errorDescription().ToString(), "print_sell_2_or_return_sell", check.numdoc, MainStaticClass.CashDeskNumber, "Ошибка при открытии чека");
                 if (MessageBox.Show(" Продолжать попытки печати чека ", "Ошибка при печати чека", MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
                 {
                     continue;
@@ -861,6 +864,7 @@ namespace Cash8
                 // Документ не закрылся. Требуется его отменить (если это чек) и сформировать заново
                 fptr.cancelReceipt();
                 MessageBox.Show(String.Format("Не удалось напечатать документ (Ошибка \"{0}\"). Устраните неполадку и повторите.", fptr.errorDescription()));
+                MainStaticClass.WriteRecordErrorLog(String.Format("Не удалось напечатать документ (Ошибка \"{0}\"). Устраните неполадку и повторите.", fptr.errorDescription()), "print_sell_2_or_return_sell", check.numdoc, MainStaticClass.CashDeskNumber, "Ошибка при открытии чека");
                 error = true;
                 //fptr.close();
                 return;
@@ -873,6 +877,7 @@ namespace Cash8
                 {
                     // Если не удалось допечатать документ - показать пользователю ошибку и попробовать еще раз.
                     MessageBox.Show(String.Format("Не удалось напечатать документ (Ошибка \"{0}\"). Устраните неполадку и повторите.", fptr.errorDescription()));
+                    MainStaticClass.WriteRecordErrorLog(String.Format("Не удалось напечатать документ (Ошибка \"{0}\"). Устраните неполадку и повторите.", fptr.errorDescription()), "print_sell_2_or_return_sell", check.numdoc, MainStaticClass.CashDeskNumber, "Ошибка при открытии чека");
                     //*********************************
                     fptr.setParam(AtolConstants.LIBFPTR_PARAM_DATA_TYPE, AtolConstants.LIBFPTR_DT_SHORT_STATUS);
                     fptr.queryData();
@@ -902,6 +907,7 @@ namespace Cash8
             else
             {
                 MessageBox.Show("При печати чека произошли ошибки,печать чека будет отменена", "Печать чека");
+                MainStaticClass.WriteRecordErrorLog(String.Format("Не удалось напечатать документ (Ошибка \"{0}\"). Устраните неполадку и повторите.", fptr.errorDescription()), "print_sell_2_or_return_sell", check.numdoc, MainStaticClass.CashDeskNumber, "Ошибка при открытии чека");
                 fptr.cancelReceipt();
             }
 
@@ -1080,6 +1086,7 @@ namespace Cash8
             {
                 MessageBox.Show(string.Format("Ошибка при открытии чека.\nОшибка {0}: {1}", fptr.errorCode(), fptr.errorDescription()),
                         "Ошибка откртия чека", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MainStaticClass.WriteRecordErrorLog($"Ошибка при открытии чека.\nОшибка {fptr.errorCode()}: {fptr.errorDescription()}", "print_sell_2_3_or_return_sell", check.numdoc, MainStaticClass.CashDeskNumber, "Ошибка при открытии чека");
                 //fptr.close();
                 if (fptr.errorCode() == 82)
                 {
@@ -1173,6 +1180,8 @@ namespace Cash8
                         "\r\n " + fptr.errorDescription().ToString());
                     error = true;
                     fptr.cancelReceipt();
+                    MainStaticClass.WriteRecordErrorLog("При печати позиции " + lvi.SubItems[0].Text.Trim() + " " + lvi.SubItems[1].Text.Trim() + " произошли ошибки \r\n Код ошибки " + fptr.errorCode().ToString() +
+                        "\r\n " + fptr.errorDescription().ToString(), "print_sell_2_3_or_return_sell", check.numdoc, MainStaticClass.CashDeskNumber, "Ошибка при открытии чека");
                     //fptr.resetError();
                     break;
                 }
@@ -1270,6 +1279,7 @@ namespace Cash8
             {
                 MessageBox.Show("При печати чека произошли ошибки \r\n Код ошибки " + fptr.errorCode().ToString() +
                     "\r\n " + fptr.errorDescription().ToString());
+                MainStaticClass.WriteRecordErrorLog($"Ошибка при закрытии чека.\nОшибка {fptr.errorCode()}: {fptr.errorDescription()}", "print_sell_2_3_or_return_sell", check.numdoc, MainStaticClass.CashDeskNumber, "Ошибка при открытии чека");
                 error = true;
                 fptr.cancelReceipt();
                 return;
@@ -1292,6 +1302,7 @@ namespace Cash8
             {
                 // Не удалось проверить состояние документа. Вывести пользователю текст ошибки, попросить устранить неполадку и повторить запрос
                 MessageBox.Show(fptr.errorCode().ToString() + " " + fptr.errorDescription(), " Ошибка при печати чека ");
+                MainStaticClass.WriteRecordErrorLog($"Ошибка при закрытии чека.\nОшибка {fptr.errorCode()}: {fptr.errorDescription()}", "print_sell_2_3_or_return_sell", check.numdoc, MainStaticClass.CashDeskNumber, "Ошибка при открытии чека");
                 if (MessageBox.Show(" Продолжать попытки печати чека ", "Ошибка при печати чека", MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
                 {
                     continue;
@@ -1318,6 +1329,7 @@ namespace Cash8
                 {
                     // Если не удалось допечатать документ - показать пользователю ошибку и попробовать еще раз.
                     MessageBox.Show(String.Format("Не удалось напечатать документ (Ошибка \"{0}\"). Устраните неполадку и повторите.", fptr.errorDescription()));
+                    MainStaticClass.WriteRecordErrorLog(String.Format("Не удалось напечатать документ (Ошибка \"{0}\"). Устраните неполадку и повторите.", fptr.errorDescription()), "print_sell_2_3_or_return_sell", check.numdoc, MainStaticClass.CashDeskNumber, "Ошибка при открытии чека");
                     continue;
                 }
             }

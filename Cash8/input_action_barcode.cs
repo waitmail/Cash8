@@ -23,6 +23,7 @@ namespace Cash8
         public Cash_check caller = null;
         public ProcessingOfActions caller2 = null;
         public CheckActions caller3 = null;
+        public DataTable dtCopy = null;
 
 
         public int call_type = 0;
@@ -196,11 +197,17 @@ namespace Cash8
                     }
                     else
                     {
-                        caller2.find_barcode_or_code_in_tovar_action_dt(this.input_barcode.Text, count, true, num_doc, mode);
+                        //if (dtCopy == null)
+                        //{
+                            //caller2.find_barcode_or_code_in_tovar_action_dt(this.input_barcode.Text, count, true, num_doc, mode);
+                        //}
+                        //else
+                        //{
+                            caller2.find_barcode_or_code_in_tovar_action_dt(this.input_barcode.Text, count, true, num_doc, mode,dtCopy);
+                        //}
                     }
 
                     this.Close();
-
                 }
             }
             else if (call_type == 3)//Проверка на удаление документа

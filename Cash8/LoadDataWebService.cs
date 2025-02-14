@@ -645,6 +645,7 @@ namespace Cash8
             public string ItsExcise { get; set; }
             public string CdnCheck { get; set; }
             public string Fractional { get; set; }
+            public string RefusalOfMarking { get; set; }
         }
 
         public class Barcode
@@ -949,7 +950,7 @@ namespace Cash8
                 {
                     foreach (Tovar tovar in loadPacketData.ListTovar)
                     {
-                        queries.Add("INSERT INTO tovar2(code,name,retail_price,its_deleted,nds,its_certificate,percent_bonus,tnved,its_marked,its_excise,cdn_check,fractional) VALUES(" +
+                        queries.Add("INSERT INTO tovar2(code,name,retail_price,its_deleted,nds,its_certificate,percent_bonus,tnved,its_marked,its_excise,cdn_check,fractional,refusal_of_marking) VALUES(" +
                                                         tovar.Code + ",'" +
                                                         tovar.Name + "'," +
                                                         tovar.RetailPrice + "," +
@@ -961,7 +962,8 @@ namespace Cash8
                                                         tovar.ItsMarked + "," +
                                                         tovar.ItsExcise + "," +
                                                         tovar.CdnCheck + "," +
-                                                        tovar.Fractional + ")");
+                                                        tovar.Fractional + "," +
+                                                        tovar.RefusalOfMarking+");");
                     }
                     loadPacketData.ListTovar.Clear();
                     loadPacketData.ListTovar = null;

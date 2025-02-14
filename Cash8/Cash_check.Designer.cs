@@ -123,19 +123,21 @@
             // client
             // 
             this.client.Enabled = false;
-            this.client.Location = new System.Drawing.Point(61, 42);
+            this.client.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.client.Location = new System.Drawing.Point(61, 35);
             this.client.MaxLength = 200;
             this.client.Name = "client";
-            this.client.Size = new System.Drawing.Size(185, 20);
+            this.client.Size = new System.Drawing.Size(214, 31);
             this.client.TabIndex = 17;
             // 
             // client_barcode
             // 
             this.client_barcode.BackColor = System.Drawing.SystemColors.Window;
-            this.client_barcode.Location = new System.Drawing.Point(415, 42);
+            this.client_barcode.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.client_barcode.Location = new System.Drawing.Point(521, 33);
             this.client_barcode.MaxLength = 13;
             this.client_barcode.Name = "client_barcode";
-            this.client_barcode.Size = new System.Drawing.Size(120, 20);
+            this.client_barcode.Size = new System.Drawing.Size(174, 35);
             this.client_barcode.TabIndex = 0;
             this.client_barcode.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.client_barcode_KeyPress);
             // 
@@ -143,7 +145,7 @@
             // 
             this.panel1.BackColor = System.Drawing.Color.LightSalmon;
             this.panel1.Controls.Add(this.numericUpDown_enter_quantity);
-            this.panel1.Location = new System.Drawing.Point(556, 49);
+            this.panel1.Location = new System.Drawing.Point(603, 110);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(174, 66);
             this.panel1.TabIndex = 21;
@@ -265,7 +267,7 @@
             this.last_tovar.BackColor = System.Drawing.SystemColors.Window;
             this.last_tovar.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.last_tovar.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.last_tovar.Location = new System.Drawing.Point(13, 68);
+            this.last_tovar.Location = new System.Drawing.Point(13, 72);
             this.last_tovar.MaxLength = 200;
             this.last_tovar.Multiline = true;
             this.last_tovar.Name = "last_tovar";
@@ -473,10 +475,11 @@
             // 
             this.label_client_phone.AutoSize = true;
             this.label_client_phone.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_client_phone.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label_client_phone.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.label_client_phone.Location = new System.Drawing.Point(252, 45);
+            this.label_client_phone.Location = new System.Drawing.Point(291, 45);
             this.label_client_phone.Name = "label_client_phone";
-            this.label_client_phone.Size = new System.Drawing.Size(143, 15);
+            this.label_client_phone.Size = new System.Drawing.Size(212, 22);
             this.label_client_phone.TabIndex = 59;
             this.label_client_phone.Text = "Код клиента / Телефон +7";
             this.label_client_phone.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -670,7 +673,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 600);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.txtB_search_product);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.checkBox_payment_by_sbp);
             this.Controls.Add(this.checkBox_print_check);
@@ -711,9 +713,10 @@
             this.Controls.Add(this.comment);
             this.Controls.Add(this.last_tovar);
             this.Controls.Add(this.txtB_total_sum);
+            this.Controls.Add(this.txtB_search_product);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "Cash_check";
-            this.Text = "Cash_check";
+            this.Text = "Продажа/Возврат";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.Cash_check_Load);
             this.panel1.ResumeLayout(false);

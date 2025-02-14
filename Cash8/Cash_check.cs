@@ -2564,7 +2564,7 @@ namespace Cash8
                 command.Connection = conn;
                 if (barcode.Length > 6)
                 {
-                    command.CommandText = "select tovar.code,tovar.name,tovar.retail_price,characteristic.name,characteristic.guid,characteristic.retail_price_characteristic,tovar.its_certificate,tovar.its_marked,tovar.cdn_check,tovar.fractional " +
+                    command.CommandText = "select tovar.code,tovar.name,tovar.retail_price,characteristic.name,characteristic.guid,characteristic.retail_price_characteristic,tovar.its_certificate,tovar.its_marked,tovar.cdn_check,tovar.fractional,tovar.refusal_of_marking " +
                         " from  barcode left join tovar ON barcode.tovar_code=tovar.code " +
                     " left join characteristic ON tovar.code = characteristic.tovar_code " +
                     " where barcode='" + barcode + "' AND its_deleted=0  AND (retail_price<>0 OR characteristic.retail_price_characteristic<>0)";
@@ -2572,7 +2572,7 @@ namespace Cash8
                 }
                 else
                 {
-                    command.CommandText = "select tovar.code,tovar.name,tovar.retail_price, characteristic.name,characteristic.guid,characteristic.retail_price_characteristic,tovar.its_certificate,tovar.its_marked,tovar.cdn_check,tovar.fractional " +
+                    command.CommandText = "select tovar.code,tovar.name,tovar.retail_price, characteristic.name,characteristic.guid,characteristic.retail_price_characteristic,tovar.its_certificate,tovar.its_marked,tovar.cdn_check,tovar.fractional,tovar.refusal_of_marking " +
                         " FROM tovar left join characteristic  ON tovar.code = characteristic.tovar_code where tovar.its_deleted=0 AND tovar.its_certificate=0 AND  (retail_price<>0 OR characteristic.retail_price_characteristic<>0) " +
                         " AND tovar.code='" + barcode + "'";
                 }
@@ -2588,6 +2588,18 @@ namespace Cash8
                     ProductFlags flags = ProductFlags.None;
                     if (Convert.ToBoolean(reader["its_certificate"])) flags |= ProductFlags.Certificate;
                     if (Convert.ToBoolean(reader["its_marked"])) flags |= ProductFlags.Marked;
+                    if (Convert.ToBoolean(reader["refusal_of_marking"]))
+                    {
+                        // Сбрасываем флаг Marked, если он был установлен ранее
+                        flags &= ~ProductFlags.Marked;
+                    }
+                    //else if (Convert.ToBoolean(reader["its_marked"]))
+                    //{
+                    //    // Устанавливаем флаг Marked, если refusal_of_marking == false и its_marked == true
+                    //    flags |= ProductFlags.Marked;
+                    //}
+
+
                     if (Convert.ToBoolean(reader["cdn_check"])) flags |= ProductFlags.CDNCheck;
                     if (Convert.ToBoolean(reader["fractional"])) flags |= ProductFlags.Fractional;
                     productData = new ProductData(code, name, price, flags);

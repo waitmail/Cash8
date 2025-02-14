@@ -1081,7 +1081,7 @@ namespace Cash8
                 //InventoryManager.FillDictionaryProductData();
                 //LoadCdnWithStartAsync();
                 //UploadErrorsLogAsync();
-
+                check_add_field();
                 InventoryManager.FillDictionaryProductDataAsync();
 
                 MainStaticClass.write_event_in_log(" Старт программы ", "проверка таблицы констант", "0");
@@ -1090,7 +1090,7 @@ namespace Cash8
                 Text += " | " + Cash8.MainStaticClass.version();
                 Text += " | " + Cash8.LoadDataWebService.last_date_download_tovars().ToString("yyyy-MM-dd hh:mm:ss");
 
-                check_add_field();
+                
                 update_unloading_period();
                 int result = MainStaticClass.get_unloading_interval();
                 if (result != 0)
@@ -1627,7 +1627,7 @@ namespace Cash8
             try
             {
                 conn.Open();
-                string query = "SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'constants' AND column_name = 'constant_conversion_to_kilograms'); ";                
+                string query = "SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'tovar' AND column_name = 'refusal_of_marking'); ";                
                 
                  NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 if (!Convert.ToBoolean(command.ExecuteScalar())) //не нашли такой колонки   
@@ -1697,7 +1697,7 @@ namespace Cash8
         private void check_add_field()
         {
             //check_correct_type_column();
-            check_exists_table();
+            //check_exists_table();
             check_exists_column();            
         }
 

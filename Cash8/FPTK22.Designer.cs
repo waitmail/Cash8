@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.txtB_last_send_mark = new System.Windows.Forms.TextBox();
+            this.btn_date_mark = new System.Windows.Forms.Button();
             this.btn_openDrawer = new System.Windows.Forms.Button();
             this.txtB_ofd_utility_status = new System.Windows.Forms.TextBox();
             this.btn_send_fiscal = new System.Windows.Forms.Button();
@@ -54,8 +56,6 @@
             this.btn_query_summary_report = new System.Windows.Forms.Button();
             this.btn_query_full_report = new System.Windows.Forms.Button();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.btn_date_mark = new System.Windows.Forms.Button();
-            this.txtB_last_send_mark = new System.Windows.Forms.TextBox();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -79,6 +79,27 @@
             this.groupBox4.TabIndex = 20;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Проверки";
+            // 
+            // txtB_last_send_mark
+            // 
+            this.txtB_last_send_mark.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.txtB_last_send_mark.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.txtB_last_send_mark.Location = new System.Drawing.Point(168, 381);
+            this.txtB_last_send_mark.Name = "txtB_last_send_mark";
+            this.txtB_last_send_mark.ReadOnly = true;
+            this.txtB_last_send_mark.Size = new System.Drawing.Size(269, 29);
+            this.txtB_last_send_mark.TabIndex = 26;
+            this.txtB_last_send_mark.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // btn_date_mark
+            // 
+            this.btn_date_mark.Location = new System.Drawing.Point(6, 350);
+            this.btn_date_mark.Name = "btn_date_mark";
+            this.btn_date_mark.Size = new System.Drawing.Size(154, 75);
+            this.btn_date_mark.TabIndex = 25;
+            this.btn_date_mark.Text = "Дата последней удачной отправки маркировки";
+            this.btn_date_mark.UseVisualStyleBackColor = true;
+            this.btn_date_mark.Click += new System.EventHandler(this.btn_date_mark_Click);
             // 
             // btn_openDrawer
             // 
@@ -336,27 +357,6 @@
             this.groupBox5.TabIndex = 25;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Банковский терминал";
-            // 
-            // btn_date_mark
-            // 
-            this.btn_date_mark.Location = new System.Drawing.Point(6, 350);
-            this.btn_date_mark.Name = "btn_date_mark";
-            this.btn_date_mark.Size = new System.Drawing.Size(154, 75);
-            this.btn_date_mark.TabIndex = 25;
-            this.btn_date_mark.Text = "Дата последней удачной отправки маркировки";
-            this.btn_date_mark.UseVisualStyleBackColor = true;
-            this.btn_date_mark.Click += new System.EventHandler(this.btn_date_mark_Click);
-            // 
-            // txtB_last_send_mark
-            // 
-            this.txtB_last_send_mark.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.txtB_last_send_mark.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.txtB_last_send_mark.Location = new System.Drawing.Point(168, 381);
-            this.txtB_last_send_mark.Name = "txtB_last_send_mark";
-            this.txtB_last_send_mark.ReadOnly = true;
-            this.txtB_last_send_mark.Size = new System.Drawing.Size(269, 29);
-            this.txtB_last_send_mark.TabIndex = 26;
-            this.txtB_last_send_mark.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // FPTK22
             // 

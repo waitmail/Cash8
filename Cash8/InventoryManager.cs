@@ -142,7 +142,7 @@ namespace Cash8
 
                     string query = @"
                 SELECT tovar.code, tovar.name, tovar.retail_price, tovar.its_certificate, 
-                       tovar.its_marked, tovar.cdn_check, tovar.fractional, barcode.barcode 
+                       tovar.its_marked, tovar.cdn_check, tovar.fractional, barcode.barcode,tovar.refusal_of_marking 
                 FROM tovar 
                 LEFT JOIN barcode ON tovar.code = barcode.tovar_code 
                 WHERE tovar.its_deleted = 0 AND tovar.retail_price <> 0";
@@ -161,6 +161,11 @@ namespace Cash8
                             ProductFlags flags = ProductFlags.None;
                             if (Convert.ToBoolean(reader["its_certificate"])) flags |= ProductFlags.Certificate;
                             if (Convert.ToBoolean(reader["its_marked"])) flags |= ProductFlags.Marked;
+                            if (Convert.ToBoolean(reader["refusal_of_marking"]))
+                            {
+                                // Сбрасываем флаг Marked, если он был установлен ранее
+                                flags &= ~ProductFlags.Marked;
+                            }
                             if (Convert.ToBoolean(reader["cdn_check"])) flags |= ProductFlags.CDNCheck;
                             if (Convert.ToBoolean(reader["fractional"])) flags |= ProductFlags.Fractional;
 

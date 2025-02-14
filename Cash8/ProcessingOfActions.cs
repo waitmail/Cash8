@@ -1336,7 +1336,7 @@ namespace Cash8
         * sum_null если true тогда сумма и сумма со скидкой 0 иначе как обычный товар
         * это для акции 
         */
-        public void find_barcode_or_code_in_tovar_action_dt(string barcode, int count, bool sum_null, int num_doc,int mode)
+        public void find_barcode_or_code_in_tovar_action_dt(string barcode, int count, bool sum_null, int num_doc,int mode,DataTable dtCopy=null)
         {
 
             NpgsqlConnection conn = null;
@@ -1362,14 +1362,22 @@ namespace Cash8
                 DataRow row = null;
                 while (reader.Read())
                 {
-                    if (mode == 0)
+                    if (dtCopy == null)
                     {
-                        row = dt.NewRow();
+                        if (mode == 0)
+                        {
+                            row = dt.NewRow();
+                        }
+                        else
+                        {
+                            row = dt_copy.NewRow();
+                        }
                     }
                     else
                     {
-                        row = dt_copy.NewRow();
+                        row = dtCopy.NewRow();
                     }
+
                     row["tovar_code"] = reader.GetInt64(0).ToString();//ListViewItem lvi = new ListViewItem(reader.GetInt32(0).ToString());                    
                     row["tovar_name"] = reader.GetString(1);//Наименование
                     row["characteristic_code"] = "";
@@ -1440,6 +1448,20 @@ namespace Cash8
             ib.call_type = call_type;
             ib.num_doc = num_doc;
             ib.mode = mode;
+            DialogResult dr = ib.ShowDialog();
+            ib.Dispose();
+            return dr;
+        }
+
+        private DialogResult show_query_window_barcode(int call_type, int count, int num_doc, int mode,DataTable dtCopy)
+        {
+            Input_action_barcode ib = new Input_action_barcode();
+            ib.count = count;
+            ib.caller2 = this;
+            ib.call_type = call_type;
+            ib.num_doc = num_doc;
+            ib.mode = mode;
+            ib.dtCopy = dtCopy;
             DialogResult dr = ib.ShowDialog();
             ib.Dispose();
             return dr;
@@ -1933,7 +1955,7 @@ namespace Cash8
 
                         if (marker == 1)
                         {
-                            var result = show_query_window_barcode(2, 1, num_doc, 1);
+                            var result = show_query_window_barcode(2, 1, num_doc, 1,dtCopy);
                             //if (result == DialogResult.OK)
                             //{
                             //    // Дополнительная логика, если требуется
@@ -4126,7 +4148,7 @@ namespace Cash8
             {
 
                 conn.Open();
-                ListView clon = new ListView();
+                //ListView clon = new ListView();
                 //int total_quantity = 0;
                 foreach (DataRow row in dt.Rows)
                 {
