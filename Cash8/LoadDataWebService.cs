@@ -35,11 +35,11 @@ namespace Cash8
             command.CommandText = "select COUNT(*) from information_schema.tables where table_schema='public' and table_name='tovar2'";
             if (Convert.ToInt16(command.ExecuteScalar()) == 0)
             {
-                command.CommandText = "CREATE TABLE tovar2(code bigint NOT NULL,name character(100) NOT NULL,  retail_price numeric(10,2) ,purchase_price numeric(10,2) ,its_deleted numeric(1) ,nds integer,its_certificate smallint,percent_bonus numeric(8,2), tnved character varying(10),its_marked smallint,its_excise smallint,cdn_check boolean,fractional boolean NOT NULL DEFAULT false) WITH (OIDS=FALSE);ALTER TABLE tovar2 OWNER TO postgres;CREATE UNIQUE INDEX _tovar2_code_  ON tovar2  USING btree  (code);";
+                command.CommandText = "CREATE TABLE tovar2(code bigint NOT NULL,name character(100) NOT NULL,  retail_price numeric(10,2) ,purchase_price numeric(10,2) ,its_deleted numeric(1) ,nds integer,its_certificate smallint,percent_bonus numeric(8,2), tnved character varying(10),its_marked smallint,its_excise smallint,cdn_check boolean,fractional boolean NOT NULL DEFAULT false, refusal_of_marking boolean NOT NULL DEFAULT false) WITH (OIDS=FALSE);ALTER TABLE tovar2 OWNER TO postgres;CREATE UNIQUE INDEX _tovar2_code_  ON tovar2  USING btree  (code);";
             }
             else
             {
-                command.CommandText = "DROP TABLE tovar2;CREATE TABLE tovar2(code bigint NOT NULL,name character(100) NOT NULL,  retail_price numeric(10,2) ,purchase_price numeric(10,2) ,its_deleted numeric(1),nds integer,its_certificate smallint,percent_bonus numeric(8,2), tnved character varying(10),its_marked smallint,its_excise smallint,cdn_check boolean,fractional boolean NOT NULL DEFAULT false) WITH (OIDS=FALSE);ALTER TABLE tovar2 OWNER TO postgres;CREATE UNIQUE INDEX _tovar2_code_  ON tovar2  USING btree  (code);";
+                command.CommandText = "DROP TABLE tovar2;CREATE TABLE tovar2(code bigint NOT NULL,name character(100) NOT NULL,  retail_price numeric(10,2) ,purchase_price numeric(10,2) ,its_deleted numeric(1),nds integer,its_certificate smallint,percent_bonus numeric(8,2), tnved character varying(10),its_marked smallint,its_excise smallint,cdn_check boolean,fractional boolean NOT NULL DEFAULT false, refusal_of_marking boolean NOT NULL DEFAULT false) WITH (OIDS=FALSE);ALTER TABLE tovar2 OWNER TO postgres;CREATE UNIQUE INDEX _tovar2_code_  ON tovar2  USING btree  (code);";
             }
             try
             {
@@ -970,8 +970,8 @@ namespace Cash8
                 }
 
                 queries.Add("UPDATE tovar SET its_deleted=1,retail_price=0;");
-                queries.Add("INSERT INTO tovar SELECT F.code, F.name, F.retail_price, F.its_deleted, F.nds, F.its_certificate, F.percent_bonus, F.tnved,F.its_marked,F.its_excise,F.cdn_check,F.fractional FROM(SELECT tovar2.code AS code, tovar.code AS code2, tovar2.name, tovar2.retail_price, tovar2.its_deleted, tovar2.nds, tovar2.its_certificate, tovar2.percent_bonus, tovar2.tnved,tovar2.its_marked,tovar2.its_excise,tovar2.cdn_check,tovar2.fractional  FROM tovar2 left join tovar on tovar2.code = tovar.code)AS F WHERE code2 ISNULL;");
-                queries.Add("UPDATE tovar SET name = tovar2.name,retail_price = tovar2.retail_price, its_deleted=tovar2.its_deleted,nds=tovar2.nds,its_certificate = tovar2.its_certificate,percent_bonus = tovar2.percent_bonus,tnved = tovar2.tnved,its_marked = tovar2.its_marked,its_excise=tovar2.its_excise,cdn_check = tovar2.cdn_check,fractional=tovar2.fractional FROM tovar2 where tovar.code=tovar2.code;");
+                queries.Add("INSERT INTO tovar SELECT F.code, F.name, F.retail_price, F.its_deleted, F.nds, F.its_certificate, F.percent_bonus, F.tnved,F.its_marked,F.its_excise,F.cdn_check,F.fractional,F.refusal_of_marking FROM(SELECT tovar2.code AS code, tovar.code AS code2, tovar2.name, tovar2.retail_price, tovar2.its_deleted, tovar2.nds, tovar2.its_certificate, tovar2.percent_bonus, tovar2.tnved,tovar2.its_marked,tovar2.its_excise,tovar2.cdn_check,tovar2.fractional,tovar2.refusal_of_marking  FROM tovar2 left join tovar on tovar2.code = tovar.code)AS F WHERE code2 ISNULL;");
+                queries.Add("UPDATE tovar SET name = tovar2.name,retail_price = tovar2.retail_price, its_deleted=tovar2.its_deleted,nds=tovar2.nds,its_certificate = tovar2.its_certificate,percent_bonus = tovar2.percent_bonus,tnved = tovar2.tnved,its_marked = tovar2.its_marked,its_excise=tovar2.its_excise,cdn_check = tovar2.cdn_check,fractional=tovar2.fractional,refusal_of_marking=tovar2.refusal_of_marking FROM tovar2 where tovar.code=tovar2.code;");
                 queries.Add("DELETE FROM barcode;");
                 if (loadPacketData.ListBarcode.Count > 0)
                 {

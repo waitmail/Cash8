@@ -2853,7 +2853,13 @@ namespace Cash8
                         }
                         else
                         {
-                            marking_code = this.qr_code;//пока что для обратной совместимости потом уберу эту переменную и все будет через marking_code
+                            marking_code = this.qr_code;//пока что для обратной совместимости потом уберу эту переменную и все будет через marking_code                            
+                            if (!qr_code_lenght.Contains(marking_code.Length))
+                            {
+                                MessageBox.Show(qr_code + "\r\n Ваш код маркировки имеет длину " + marking_code.Length.ToString() + " символов при этом он не входит в допустимый диапазон ", "Проверка qr-кода");
+                                error = true;
+                            }
+
                         }
                     }
 
@@ -2863,6 +2869,7 @@ namespace Cash8
                         //if (this.qr_code != "")//Был введен qr код необходимо его внести в чек
                         if (marking_code != "")//Был введен qr код необходимо его внести в чек
                         {
+                            //chech
                             //перед тем как добавить qr код в чек необходимо его проверить
                             string mark_str_cdn = "";
                             if (MainStaticClass.Version2Marking == 1)
