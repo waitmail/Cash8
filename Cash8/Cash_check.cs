@@ -523,7 +523,14 @@ namespace Cash8
                             listView1.Items.Remove(listView1.SelectedItems[0]);
                             if (reloadKM)
                             {
-                                reload_km_buffer();
+                                if (MainStaticClass.PrintingUsingLibraries == 0)
+                                {
+                                    reload_km_buffer();
+                                }
+                                else
+                                {
+                                    reopened = true;//Этот флаг небходим для возвратов, но подойдет и для данного случая так же
+                                }
                             }
                             calculation_of_the_sum_of_the_document();
                             write_new_document("0", calculation_of_the_sum_of_the_document().ToString().Replace(",", "."), "0", "0", false, "0", "0", "0", "0");                         

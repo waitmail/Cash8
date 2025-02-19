@@ -505,13 +505,29 @@ namespace Cash8
                         //start_action = DateTime.Now;                        
                         if (persent != 0)
                         {
-                            action_3_dt(num_doc, persent, sum, comment);//Дать скидку на все позиции из списка позицию                                                 
+                            //action_3_dt(num_doc, persent, sum, comment);//Дать скидку на все позиции из списка позицию                                                 
+                            if (LoadActionDataInMemory.AllActionData1 == null)
+                            {
+                                action_3_dt(num_doc, persent, sum, comment);
+                            }
+                            else
+                            {
+                                action_3_dt(num_doc, persent, sum, comment, LoadActionDataInMemory.AllActionData1);
+                            }
                         }
                         else
                         {
                             //if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
                             //{
-                                action_3_dt(num_doc, comment, sum, marker,show_messages); //Сообщить о подарке                           
+                                //action_3_dt(num_doc, comment, sum, marker,show_messages); //Сообщить о подарке                           
+                            if (LoadActionDataInMemory.AllActionData1 == null)
+                            {
+                                action_3_dt(num_doc, comment, sum, marker, show_messages);
+                            }
+                            else
+                            {
+                                action_3_dt(num_doc, comment, sum, marker, show_messages, LoadActionDataInMemory.AllActionData1);
+                            }
                             //}
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
@@ -3121,142 +3137,464 @@ namespace Cash8
         /*Эта акция срабатывает когда сумма без скидки в документе >= сумме акции
         * тогда дается скидка на те позиции которые перечисляются в условии акции
         */
-        private void action_3_dt(int num_doc, decimal persent, decimal sum, string comment)
+        //private void action_3_dt(int num_doc, decimal persent, decimal sum, string comment)
+        //{
+        //    NpgsqlConnection conn = null;
+        //    NpgsqlCommand command = null;
+        //    decimal sum_on_doc = 0;//сумма документа без скидок 
+        //    try
+        //    {
+        //        conn = MainStaticClass.NpgsqlConn();
+        //        conn.Open();
+        //        foreach (DataRow row in dt.Rows)
+        //        {
+        //            if (Convert.ToInt32(row["action2"]) > 0)//Этот товар уже участвовал в акции значит его пропускаем                  
+        //            {
+        //                continue;
+        //            }
+        //            string query = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + row["tovar_code"] + " AND num_doc=" + num_doc.ToString();
+        //            command = new NpgsqlCommand(query, conn);
+        //            if (Convert.ToInt16(command.ExecuteScalar()) != 0)
+        //            {
+        //                sum_on_doc += Convert.ToDecimal(row["sum_at_discount"]);
+        //            }
+        //        }
+        //        //Сумма документа без скидки больше или равна той что в условии ации
+        //        //значит акция сработала
+        //        if (sum_on_doc >= sum)
+        //        {
+        //            have_action = true;//Признак того что в документе есть сработка по акции
+
+        //            foreach (DataRow row in dt.Rows)
+        //            {
+        //                if (Convert.ToInt32(row["action2"]) > 0)//Этот товар уже участвовал в акции значит его пропускаем                  
+        //                {
+        //                    continue;
+        //                }
+        //                string query = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + row["tovar_code"] + " AND num_doc=" + num_doc.ToString();
+        //                command = new NpgsqlCommand(query, conn);
+        //                if (Convert.ToInt16(command.ExecuteScalar()) != 0)
+        //                {
+        //                    row["price_at_discount"] = (Math.Round(Convert.ToDecimal(row["price"]) - Convert.ToDecimal(row["price"]) * persent / 100, 2)).ToString();//Цена со скидкой            
+        //                    row["sum_full"] = ((Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price"])).ToString());
+        //                    row["sum_at_discount"] = ((Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price_at_discount"])).ToString());
+        //                    row["action"] = num_doc.ToString();
+        //                    row["action2"] = num_doc.ToString();
+        //                }
+        //            }
+        //        }
+        //    }
+        //    catch (NpgsqlException ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message, "ошибка при обработке 3 типа акций");
+        //    }
+        //    finally
+        //    {
+        //        if (conn.State == ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //        }
+        //    }
+
+        //}
+
+
+        /// <summary>
+        /// Эта акция срабатывает, когда сумма без скидки в документе >= сумме акции.
+        /// Тогда дается скидка на те позиции, которые перечисляются в условии акции.
+        /// </summary>
+        /// <param name="num_doc">Номер документа акции.</param>
+        /// <param name="percent">Процент скидки.</param>
+        /// <param name="sum">Сумма акции.</param>
+        /// <param name="comment">Комментарий к акции.</param>
+        /// <param name="actionPricesByDoc">Словарь с данными из базы данных.</param>
+        private void action_3_dt(int num_doc, decimal percent, decimal sum, string comment, Dictionary<int, Dictionary<long, decimal>> actionPricesByDoc)
         {
-            NpgsqlConnection conn = null;
-            NpgsqlCommand command = null;
-            decimal sum_on_doc = 0;//сумма документа без скидок 
+            // Создаем копию DataTable для работы
+            DataTable dtCopy = dt.Copy();
+
             try
             {
-                conn = MainStaticClass.NpgsqlConn();
-                conn.Open();
-                foreach (DataRow row in dt.Rows)
-                {
-                    if (Convert.ToInt32(row["action2"]) > 0)//Этот товар уже участвовал в акции значит его пропускаем                  
-                    {
-                        continue;
-                    }
-                    string query = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + row["tovar_code"] + " AND num_doc=" + num_doc.ToString();
-                    command = new NpgsqlCommand(query, conn);
-                    if (Convert.ToInt16(command.ExecuteScalar()) != 0)
-                    {
-                        sum_on_doc += Convert.ToDecimal(row["sum_at_discount"]);
-                    }
-                }
-                //Сумма документа без скидки больше или равна той что в условии ации
-                //значит акция сработала
-                if (sum_on_doc >= sum)
-                {
-                    have_action = true;//Признак того что в документе есть сработка по акции
+                // Получаем коды товаров, участвующих в акции, из словаря
+                var tovarCodesInAction = GetTovarCodesInActionFromDictionary(actionPricesByDoc, num_doc);
 
-                    foreach (DataRow row in dt.Rows)
-                    {
-                        if (Convert.ToInt32(row["action2"]) > 0)//Этот товар уже участвовал в акции значит его пропускаем                  
-                        {
-                            continue;
-                        }
-                        string query = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + row["tovar_code"] + " AND num_doc=" + num_doc.ToString();
-                        command = new NpgsqlCommand(query, conn);
-                        if (Convert.ToInt16(command.ExecuteScalar()) != 0)
-                        {
-                            row["price_at_discount"] = (Math.Round(Convert.ToDecimal(row["price"]) - Convert.ToDecimal(row["price"]) * persent / 100, 2)).ToString();//Цена со скидкой            
-                            row["sum_full"] = ((Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price"])).ToString());
-                            row["sum_at_discount"] = ((Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price_at_discount"])).ToString());
-                            row["action"] = num_doc.ToString();
-                            row["action2"] = num_doc.ToString();
-                        }
-                    }
+                // Вычисляем общую сумму документа без скидок
+                decimal sumOnDoc = CalculateTotalSumWithoutDiscount(dtCopy, tovarCodesInAction);
+
+                // Проверяем условия акции
+                if (CheckActionConditions(sumOnDoc, sum))
+                {
+                    have_action = true; // Признак того, что в документе есть сработка по акции
+
+                    // Применяем скидку к товарам
+                    ApplyDiscountToTovars(dtCopy, tovarCodesInAction, num_doc, percent);
+
+                    // Если все успешно, применяем изменения к исходной DataTable
+                    dt = dtCopy;
                 }
-            }
-            catch (NpgsqlException ex)
-            {
-                MessageBox.Show(ex.Message);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "ошибка при обработке 3 типа акций");
+                MainStaticClass.WriteRecordErrorLog(ex.Message, "action_3_dt(int num_doc, decimal percent, decimal sum, string comment, Dictionary<int, Dictionary<long, decimal>> actionPricesByDoc)", num_doc, MainStaticClass.CashDeskNumber, "Акции 3 типа скидка");
             }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                }
-            }
-
         }
 
-        /*Эта акция срабатывает когда сумма без скидки в документе >= сумме акции
-         * тогда выдается сообщение о подарке
-         */
-        private void action_3_dt(int num_doc, string comment, decimal sum, int marker,bool show_messages)
+        /// <summary>
+        /// Получает коды товаров, участвующих в акции, из словаря.
+        /// </summary>
+        /// <param name="actionPricesByDoc">Словарь с данными из базы данных.</param>
+        /// <param name="num_doc">Номер документа акции.</param>
+        /// <returns>Набор кодов товаров.</returns>
+        private HashSet<long> GetTovarCodesInActionFromDictionary(Dictionary<int, Dictionary<long, decimal>> actionPricesByDoc, int num_doc)
         {
+            if (actionPricesByDoc.ContainsKey(num_doc))
+            {
+                return new HashSet<long>(actionPricesByDoc[num_doc].Keys);
+            }
+            return new HashSet<long>();
+        }
 
-            NpgsqlConnection conn = null;
-            NpgsqlCommand command = null;
-            decimal sum_on_doc = 0;//сумма документа без скидок 
-            int index = 0;
+        /// <summary>
+        /// Эта акция срабатывает, когда сумма без скидки в документе >= сумме акции.
+        /// Тогда выдается сообщение о подарке.
+        /// </summary>
+        /// <param name="num_doc">Номер документа акции.</param>
+        /// <param name="comment">Комментарий к акции.</param>
+        /// <param name="sum">Сумма акции.</param>
+        /// <param name="marker">Маркер для дополнительной логики.</param>
+        /// <param name="show_messages">Флаг, указывающий, нужно ли показывать сообщения.</param>
+        /// <param name="actionPricesByDoc">Словарь с данными из базы данных.</param>
+        private void action_3_dt(int num_doc, string comment, decimal sum, int marker, bool show_messages, Dictionary<int, Dictionary<long, decimal>> actionPricesByDoc)
+        {
+            // Создаем копию DataTable для работы
+            DataTable dtCopy = dt.Copy();
+
             try
             {
-                conn = MainStaticClass.NpgsqlConn();
-                conn.Open();
+                // Получаем коды товаров, участвующих в акции, из словаря
+                var tovarCodesInAction = GetTovarCodesInActionFromDictionary(actionPricesByDoc, num_doc);
 
-                foreach (DataRow row in dt.Rows)
+                // Обработка данных в копии DataTable
+                decimal totalSumWithoutDiscount;
+                int index;
+                CalculateTotalSum(dtCopy, tovarCodesInAction, out totalSumWithoutDiscount, out index);
+
+                if (CheckActionConditions(totalSumWithoutDiscount, sum))
                 {
-                    if (Convert.ToInt32(row["action2"]) > 0)//Этот товар уже участвовал в акции значит его пропускаем                  
-                    {
-                        continue;
-                    }
-                    string query = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + row["tovar_code"] + " AND num_doc=" + num_doc.ToString();
-                    command = new NpgsqlCommand(query, conn);
-                    if (Convert.ToInt16(command.ExecuteScalar()) != 0)
-                    {
-                        sum_on_doc += Convert.ToDecimal(row["sum_at_discount"]);
-                        index = dt.Rows.IndexOf(row);
-                    }
-                }
-                //Сумма документа без скидки больше или равна той что в условии ации
-                //значит акция сработала
-                if (sum_on_doc >= sum)
-                {
-                    have_action = true;//Признак того что в документе есть сработка по акции                    
-                    dt.Rows[index]["gift"] = num_doc.ToString();//Тип акции                    
+                    // Применяем изменения к копии DataTable
+                    dtCopy.Rows[index]["gift"] = num_doc.ToString();
+
                     if (show_messages)
                     {
                         MessageBox.Show(comment, " АКЦИЯ !!!");
-                    }
-                    DialogResult dr = DialogResult.Cancel;
-                    if (show_messages)
-                    {
                         if (marker == 1)
                         {
-                            dr = show_query_window_barcode(2, 1, num_doc,0);
+                            //var dr = show_query_window_barcode(2, 1, num_doc, 0);
+                            show_query_window_barcode(2, 1, num_doc, 0, dtCopy);
                         }
                     }
-                    /*акция сработала
-                    * надо отметить все товарные позиции 
-                    * чтобы они не участвовали в других акциях 
-                    */
-                    marked_action_tovar_dt(num_doc,comment);
+
+                    // Логика для отметки товаров (если нужно)
+                    marked_action_tovar_dt(num_doc, comment);
                 }
-            }
-            catch (NpgsqlException ex)
-            {
-                MessageBox.Show(ex.Message);
+
+                // Если все успешно, применяем изменения к исходной DataTable
+                dt = dtCopy;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "ошибка при обработке 3 типа акций");
+                MainStaticClass.WriteRecordErrorLog(ex.Message, "action_3_dt(int num_doc, string comment, decimal sum, int marker, bool show_messages, Dictionary<int, Dictionary<long, decimal>> actionPricesByDoc)", num_doc, MainStaticClass.CashDeskNumber, "Акции 3 типа сообщение о подарке");
             }
-            finally
+        }
+
+
+        /// <summary>
+        /// Эта акция срабатывает когда сумма без скидки в документе >= сумме акции
+        /// тогда дается скидка на те позиции которые перечисляются в условии акции
+        /// </summary>
+        /// <param name="num_doc"></param>
+        /// <param name="percent"></param>
+        /// <param name="sum"></param>
+        /// <param name="comment"></param>
+        private void action_3_dt(int num_doc, decimal percent, decimal sum, string comment)
+        {
+            // Создаем копию DataTable для работы
+            DataTable dtCopy = dt.Copy();
+
+            try
             {
-                if (conn.State == ConnectionState.Open)
+                using (var conn = MainStaticClass.NpgsqlConn())
                 {
-                    conn.Close();
-                    // conn.Dispose();
+                    conn.Open();
+
+                    // Получаем коды товаров, участвующих в акции
+                    var tovarCodesInAction = GetTovarCodesInAction(conn, num_doc);
+
+                    // Вычисляем общую сумму документа без скидок
+                    decimal sumOnDoc = CalculateTotalSumWithoutDiscount(dtCopy, tovarCodesInAction);
+
+                    // Проверяем условия акции
+                    if (CheckActionConditions(sumOnDoc, sum))
+                    {
+                        have_action = true; // Признак того, что в документе есть сработка по акции
+
+                        // Применяем скидку к товарам
+                        ApplyDiscountToTovars(dtCopy, tovarCodesInAction, num_doc, percent);
+
+                        // Если все успешно, применяем изменения к исходной DataTable
+                        dt = dtCopy;
+                    }
+                }
+            }
+            catch (NpgsqlException ex)
+            {
+                //Logger.LogError(ex, "Ошибка при работе с базой данных");
+                MessageBox.Show(ex.Message, "ошибка при обработке 3 типа акций");
+                MainStaticClass.WriteRecordErrorLog(ex.Message, "action_3_dt(int num_doc, decimal percent, decimal sum, string comment)", num_doc, MainStaticClass.CashDeskNumber, "Акции 3 типа скидка");
+            }
+            catch (Exception ex)
+            {
+                //Logger.LogError(ex, "Ошибка при обработке акции");
+                MessageBox.Show(ex.Message, "ошибка при обработке 3 типа акций");
+                MainStaticClass.WriteRecordErrorLog(ex.Message, "action_3_dt(int num_doc, decimal percent, decimal sum, string comment)", num_doc, MainStaticClass.CashDeskNumber, "Акции 3 типа скидка");
+            }
+        }
+
+        private HashSet<long> GetTovarCodesInAction(NpgsqlConnection conn, int num_doc)
+        {
+            var tovarCodesInAction = new HashSet<long>();
+            string query = "SELECT code_tovar FROM action_table WHERE num_doc = @num_doc";
+
+            using (var command = new NpgsqlCommand(query, conn))
+            {
+                command.Parameters.AddWithValue("@num_doc", num_doc);
+                var reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    tovarCodesInAction.Add(reader.GetInt64(0)); // Используем GetInt64 для long
+                }
+            }
+
+            return tovarCodesInAction;
+        }
+
+        private decimal CalculateTotalSumWithoutDiscount(DataTable dtCopy, HashSet<long> tovarCodesInAction)
+        {
+            decimal sumOnDoc = 0;
+
+            foreach (DataRow row in dtCopy.Rows)
+            {
+                if (Convert.ToInt32(row["action2"]) > 0)
+                {
+                    continue;
+                }
+
+                if (tovarCodesInAction.Contains(Convert.ToInt64(row["tovar_code"]))) // Используем Convert.ToInt64 для long
+                {
+                    sumOnDoc += Convert.ToDecimal(row["sum_at_discount"]);
+                }
+            }
+
+            return sumOnDoc;
+        }
+
+        private bool CheckActionConditions(decimal sumOnDoc, decimal sum)
+        {
+            return sumOnDoc >= sum;
+        }
+
+        private void ApplyDiscountToTovars(DataTable dtCopy, HashSet<long> tovarCodesInAction, int num_doc, decimal percent)
+        {
+            foreach (DataRow row in dtCopy.Rows)
+            {
+                if (Convert.ToInt32(row["action2"]) > 0)
+                {
+                    continue;
+                }
+
+                if (tovarCodesInAction.Contains(Convert.ToInt64(row["tovar_code"]))) // Используем Convert.ToInt64 для long
+                {
+                    decimal price = Convert.ToDecimal(row["price"]);
+                    decimal priceAtDiscount = Math.Round(price - price * percent / 100, 2);
+                    decimal quantity = Convert.ToDecimal(row["quantity"]);
+
+                    row["price_at_discount"] = priceAtDiscount.ToString();
+                    row["sum_full"] = (quantity * price).ToString();
+                    row["sum_at_discount"] = (quantity * priceAtDiscount).ToString();
+                    row["action"] = num_doc.ToString();
+                    row["action2"] = num_doc.ToString();
                 }
             }
         }
+        /*Эта акция срабатывает когда сумма без скидки в документе >= сумме акции
+         * тогда выдается сообщение о подарке
+         */
+        //private void action_3_dt(int num_doc, string comment, decimal sum, int marker,bool show_messages)
+        //{
+
+        //    NpgsqlConnection conn = null;
+        //    NpgsqlCommand command = null;
+        //    decimal sum_on_doc = 0;//сумма документа без скидок 
+        //    int index = 0;
+        //    try
+        //    {
+        //        conn = MainStaticClass.NpgsqlConn();
+        //        conn.Open();
+
+        //        foreach (DataRow row in dt.Rows)
+        //        {
+        //            if (Convert.ToInt32(row["action2"]) > 0)//Этот товар уже участвовал в акции значит его пропускаем                  
+        //            {
+        //                continue;
+        //            }
+        //            string query = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + row["tovar_code"] + " AND num_doc=" + num_doc.ToString();
+        //            command = new NpgsqlCommand(query, conn);
+        //            if (Convert.ToInt16(command.ExecuteScalar()) != 0)
+        //            {
+        //                sum_on_doc += Convert.ToDecimal(row["sum_at_discount"]);
+        //                index = dt.Rows.IndexOf(row);
+        //            }
+        //        }
+        //        //Сумма документа без скидки больше или равна той что в условии ации
+        //        //значит акция сработала
+        //        if (sum_on_doc >= sum)
+        //        {
+        //            have_action = true;//Признак того что в документе есть сработка по акции                    
+        //            dt.Rows[index]["gift"] = num_doc.ToString();//Тип акции                    
+        //            if (show_messages)
+        //            {
+        //                MessageBox.Show(comment, " АКЦИЯ !!!");
+        //            }
+        //            DialogResult dr = DialogResult.Cancel;
+        //            if (show_messages)
+        //            {
+        //                if (marker == 1)
+        //                {
+        //                    dr = show_query_window_barcode(2, 1, num_doc,0);
+        //                }
+        //            }
+        //            /*акция сработала
+        //            * надо отметить все товарные позиции 
+        //            * чтобы они не участвовали в других акциях 
+        //            */
+        //            marked_action_tovar_dt(num_doc,comment);
+        //        }
+        //    }
+        //    catch (NpgsqlException ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message, "ошибка при обработке 3 типа акций");
+        //    }
+        //    finally
+        //    {
+        //        if (conn.State == ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //            // conn.Dispose();
+        //        }
+        //    }
+        //}
+
+        /// <summary>
+        ///   Эта акция срабатывает когда сумма без скидки в документе >= сумме акции
+        ///   тогда выдается сообщение о подарке
+        /// </summary>
+        /// <param name="num_doc"></param>
+        /// <param name="comment"></param>
+        /// <param name="sum"></param>
+        /// <param name="marker"></param>
+        /// <param name="show_messages"></param>
+        private void action_3_dt(int num_doc, string comment, decimal sum, int marker, bool show_messages)
+        {
+            // Создаем копию DataTable для работы
+            DataTable dtCopy = dt.Copy();
+
+            try
+            {
+                using (var conn = MainStaticClass.NpgsqlConn())
+                {
+                    conn.Open();
+
+                    // Чтение данных из базы
+                    var tovarCodesInAction = GetTovarCodesInAction(conn, num_doc);
+
+                    // Обработка данных в копии DataTable
+                    decimal totalSumWithoutDiscount;
+                    int index;
+                    CalculateTotalSum(dtCopy, tovarCodesInAction, out totalSumWithoutDiscount, out index);
+
+                    if (CheckActionConditions(totalSumWithoutDiscount, sum))
+                    {
+                        // Применяем изменения к копии DataTable
+                        dtCopy.Rows[index]["gift"] = num_doc.ToString();
+
+                        if (show_messages)
+                        {
+                            MessageBox.Show(comment, " АКЦИЯ !!!");
+                            if (marker == 1)
+                            {
+                                var dr = show_query_window_barcode(2, 1, num_doc, 0);
+                            }
+                        }
+
+                        // Логика для отметки товаров (если нужно)
+                        //MarkActionTovar(conn, num_doc, comment);
+                        marked_action_tovar_dt(num_doc, comment);
+                    }
+
+                    // Если все успешно, применяем изменения к исходной DataTable
+                    dt = dtCopy;
+                }
+            }
+            catch (NpgsqlException ex)
+            {
+                // В случае ошибки при чтении из базы, dt остается неизменной
+                //Logger.LogError(ex, "Ошибка при работе с базой данных");
+                MessageBox.Show(ex.Message, "ошибка при обработке 3 типа акций");
+                MainStaticClass.WriteRecordErrorLog(ex.Message, "action_3_dt(int num_doc, string comment, decimal sum, int marker, bool show_messages)", num_doc, MainStaticClass.CashDeskNumber, "Акции 3 типа сообщение о подарке");
+            }
+            catch (Exception ex)
+            {
+                // В случае любой другой ошибки, dt остается неизменной
+                //Logger.LogError(ex, "Ошибка при обработке акции");
+                MessageBox.Show(ex.Message, "ошибка при обработке 3 типа акций");
+                MainStaticClass.WriteRecordErrorLog(ex.Message, "action_3_dt(int num_doc, string comment, decimal sum, int marker, bool show_messages)", num_doc, MainStaticClass.CashDeskNumber, "Акции 3 типа сообщение о подарке");
+            }
+        }
+
+     
+
+        private void CalculateTotalSum(DataTable dtCopy, HashSet<long> tovarCodesInAction, out decimal totalSumWithoutDiscount, out int index)
+        {
+            totalSumWithoutDiscount = 0;
+            index = 0;
+
+            foreach (DataRow row in dtCopy.Rows)
+            {
+                if (Convert.ToInt32(row["action2"]) > 0)
+                {
+                    continue;
+                }
+
+                if (tovarCodesInAction.Contains(Convert.ToInt32(row["tovar_code"])))
+                {
+                    totalSumWithoutDiscount += Convert.ToDecimal(row["sum_at_discount"]);
+                    index = dtCopy.Rows.IndexOf(row);
+                }
+            }
+        }
+
+      
 
         /// <summary>
         /// Создание временной таблицы для 4 типа акций

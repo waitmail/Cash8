@@ -1677,10 +1677,10 @@ namespace Cash8
                                     fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
                                     fptr.printText();
                                     fptr.endNonfiscalDocument();
-                                    if (MainStaticClass.GetVariantConnectFN == 1)
-                                    {
-                                        fptr.close();
-                                    }
+                                    //if (MainStaticClass.GetVariantConnectFN == 1)
+                                    //{
+                                    //    fptr.close();
+                                    //}
                                 }
                                 else
                                 {
@@ -1889,10 +1889,10 @@ namespace Cash8
                                     fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
                                     fptr.printText();
                                     fptr.endNonfiscalDocument();
-                                    if (MainStaticClass.GetVariantConnectFN == 1)
-                                    {
-                                        fptr.close();
-                                    }
+                                    //if (MainStaticClass.GetVariantConnectFN == 1)
+                                    //{
+                                    //    fptr.close();
+                                    //}
                                 }
                                 else
                                 {

@@ -633,7 +633,8 @@ namespace Cash8
                 }
                 else
                 {
-                    MessageBox.Show("Произошли ошибки при передаче удаленных строк");
+                    //MessageBox.Show("Произошли ошибки при передаче удаленных строк");
+                    MainStaticClass.WriteRecordErrorLog("Произошли ошибки при передаче удаленных строк", "UploadDeletedItems", 0, MainStaticClass.CashDeskNumber, "не удалось передать информацию об удаленных строках");
                 }
                 command.Dispose();
                 conn.Close();
@@ -641,6 +642,7 @@ namespace Cash8
             catch (Exception ex)
             {
                 MessageBox.Show("Произошли ошибки при передаче удаленных строк " + ex.Message);
+                MainStaticClass.WriteRecordErrorLog(ex.Message, "UploadDeletedItems", 0, MainStaticClass.CashDeskNumber, "Не удалось передать информацию об удаленных строках");
             }
             finally
             {
@@ -723,13 +725,15 @@ namespace Cash8
                 }
                 else
                 {
-                    MessageBox.Show("Произошли ошибки на сервере при передаче телефонов клиентов");
+                    //MessageBox.Show("Произошли ошибки на сервере при передаче телефонов клиентов");
+                    MainStaticClass.WriteRecordErrorLog("Произошли ошибки на сервере при передаче телефонов клиентов", "UploadPhoneClients", 0, MainStaticClass.CashDeskNumber, "не удалось передать информацию о телефонах клиентов");
                 }
                 conn.Close();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Произошли ошибки при передаче телефонов клиентов " + ex.Message);
+                //MessageBox.Show("Произошли ошибки при передаче телефонов клиентов " + ex.Message);
+                MainStaticClass.WriteRecordErrorLog(ex.Message, "UploadPhoneClients", 0, MainStaticClass.CashDeskNumber, "не удалось передать информацию о телефонах клиентов");
             }
             finally
             {
@@ -1466,14 +1470,22 @@ namespace Cash8
 
         private void UploadErrorsLog()
         {
-            var recordsErrorLog = ReadErrorLogsFromDatabase();
-            if (recordsErrorLog.ErrorLogs.Count > 0)
+            try
             {
-                bool uploadResult = UploadErrorLogsToServer(recordsErrorLog);
-                if (uploadResult)
+                var recordsErrorLog = ReadErrorLogsFromDatabase();
+                if (recordsErrorLog.ErrorLogs.Count > 0)
                 {
-                    DeleteErrorLogsFromDatabase(recordsErrorLog);
+                    bool uploadResult = UploadErrorLogsToServer(recordsErrorLog);
+                    if (uploadResult)
+                    {
+                        DeleteErrorLogsFromDatabase(recordsErrorLog);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                // Логируем ошибку или предпринимаем другие действия по обработке исключения
+                MainStaticClass.WriteRecordErrorLog(ex.Message, "UploadErrorsLog", 0, MainStaticClass.CashDeskNumber, "Произошла ошибка при загрузке логов ошибок");
             }
         }
 
@@ -1529,6 +1541,7 @@ namespace Cash8
             }
             catch (Exception ex)
             {
+                MainStaticClass.WriteRecordErrorLog(ex.Message, "UploadErrorLogsToServer", 0, MainStaticClass.CashDeskNumber, "не удалось передать информацию об ошибках в программе");
                 return false;
             }
         }

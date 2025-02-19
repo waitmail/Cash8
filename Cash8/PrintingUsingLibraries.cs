@@ -46,10 +46,10 @@ namespace Cash8
             fptr.operatorLogin();
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_REPORT_TYPE, AtolConstants.LIBFPTR_RT_LAST_DOCUMENT);
             fptr.report();
-            if (MainStaticClass.GetVariantConnectFN == 1)
-            {
-                fptr.close();
-            }
+            //if (MainStaticClass.GetVariantConnectFN == 1)
+            //{
+            //    fptr.close();
+            //}
         }
         
         public bool validate_date_time_with_fn(int minutes)
@@ -79,10 +79,10 @@ namespace Cash8
                     result = false;
                 }
             }
-            if (MainStaticClass.GetVariantConnectFN == 1)
-            {
-                fptr.close();
-            }
+            //if (MainStaticClass.GetVariantConnectFN == 1)
+            //{
+            //    fptr.close();
+            //}
 
             return result;
         }
@@ -112,13 +112,13 @@ namespace Cash8
                 reportZ();
                 //}
             }
-            else
-            {
-                if (MainStaticClass.GetVariantConnectFN == 1)
-                {
-                    fptr.close();
-                }
-            }
+            //else
+            //{
+            //    //if (MainStaticClass.GetVariantConnectFN == 1)
+            //    //{
+            //    //    fptr.close();
+            //    //}
+            //}
             //fptr.close();
         }
 
@@ -179,10 +179,10 @@ namespace Cash8
             }
 
             //fptr.close();
-            if (MainStaticClass.GetVariantConnectFN == 1)
-            {
-                fptr.close();
-            }
+            //if (MainStaticClass.GetVariantConnectFN == 1)
+            //{
+            //    fptr.close();
+            //}
 
             return fn_info;
         }
@@ -213,10 +213,10 @@ namespace Cash8
             }
 
             //fptr.close();
-            if (MainStaticClass.GetVariantConnectFN == 1)
-            {
-                fptr.close();
-            }
+            //if (MainStaticClass.GetVariantConnectFN == 1)
+            //{
+            //    fptr.close();
+            //}
             return result;
         }
 
@@ -243,10 +243,10 @@ namespace Cash8
 
 
             //fptr.close();
-            if (MainStaticClass.GetVariantConnectFN == 1)
-            {
-                fptr.close();
-            }
+            //if (MainStaticClass.GetVariantConnectFN == 1)
+            //{
+            //    fptr.close();
+            //}
 
             result = cashSum.ToString().Replace(",", ".");
             return result;
@@ -270,10 +270,10 @@ namespace Cash8
                 MessageBox.Show("Ошибка при инкасации  " + fptr.errorDescription());
             }
             //fptr.close();
-            if (MainStaticClass.GetVariantConnectFN == 1)
-            {
-                fptr.close();
-            }
+            //if (MainStaticClass.GetVariantConnectFN == 1)
+            //{
+            //    fptr.close();
+            //}
         }
 
         public void cashIncome(double sumCashIn)
@@ -293,10 +293,10 @@ namespace Cash8
                 MessageBox.Show("Ошибка при внесении  " + fptr.errorDescription());
             }
             //fptr.close();
-            if (MainStaticClass.GetVariantConnectFN == 1)
-            {
-                fptr.close();
-            }
+            //if (MainStaticClass.GetVariantConnectFN == 1)
+            //{
+            //    fptr.close();
+            //}
         }
 
         public void reportX()
@@ -317,10 +317,10 @@ namespace Cash8
                     "Ошибка при X отчете", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             //fptr.close();
-            if (MainStaticClass.GetVariantConnectFN == 1)
-            {
-                fptr.close();
-            }
+            //if (MainStaticClass.GetVariantConnectFN == 1)
+            //{
+            //    fptr.close();
+            //}
         }
 
         public void reportZ()
@@ -340,10 +340,10 @@ namespace Cash8
                 MessageBox.Show(string.Format("Ошибка при закрытии смены.\nОшибка {0}: {1}", fptr.errorCode(), fptr.errorDescription()),
                     "Ошибка закрытия смены", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            if (MainStaticClass.GetVariantConnectFN == 1)
-            {
-                fptr.close();
-            }
+            //if (MainStaticClass.GetVariantConnectFN == 1)
+            //{
+            //    fptr.close();
+            //}
             //fptr.close();
         }
 
@@ -913,10 +913,10 @@ namespace Cash8
 
           
 
-            if (MainStaticClass.GetVariantConnectFN == 1)
-            {
-                fptr.close();
-            }
+            //if (MainStaticClass.GetVariantConnectFN == 1)
+            //{
+            //    fptr.close();
+            //}
             //print_promo();
         }
 
@@ -924,7 +924,8 @@ namespace Cash8
         public void print_sell_2_3_or_return_sell(Cash_check check, int variant)
         {
             bool error = false;
-                      
+
+            
 
             IFptr fptr = MainStaticClass.FPTR;
             //setConnectSetting(fptr);
@@ -935,6 +936,7 @@ namespace Cash8
             fptr.setParam(1021, MainStaticClass.Cash_Operator);
             fptr.setParam(1203, MainStaticClass.CashOperatorInn);
             fptr.operatorLogin();
+            
 
             print_terminal_check(fptr, check);
             if (variant == 0)
@@ -1016,10 +1018,10 @@ namespace Cash8
                 {
                     //здесь необходимо поставить флаг распечатан
                     check.its_print_p(variant);
-                    if (MainStaticClass.GetVariantConnectFN == 1)
-                    {
-                        fptr.close();
-                    }
+                    //if (MainStaticClass.GetVariantConnectFN == 1)
+                    //{
+                    //    fptr.close();
+                    //}
                     return;
                 }
 
@@ -1069,6 +1071,8 @@ namespace Cash8
                 fptr.setParam(AtolConstants.LIBFPTR_PARAM_RECEIPT_TYPE, AtolConstants.LIBFPTR_RT_SELL_RETURN);
             }
 
+            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_RECEIPT_ELECTRONICALLY, true);
+
 
             if (check.txtB_email_telephone.Text.Trim().Length > 0)
             {
@@ -1095,6 +1099,8 @@ namespace Cash8
                 }
                 return;
             }
+
+           
 
             foreach (ListViewItem lvi in check.listView1.Items)
             {
@@ -1349,10 +1355,10 @@ namespace Cash8
                     fptr.cancelReceipt();                
             }
 
-            if (MainStaticClass.GetVariantConnectFN == 1)
-            {
-                fptr.close();
-            }
+            //if (MainStaticClass.GetVariantConnectFN == 1)
+            //{
+            //    fptr.close();
+            //}
 
             //print_promo();
         }
@@ -1647,7 +1653,9 @@ namespace Cash8
             fptr.printText();
 
             //fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, "" + "\"\""+ Environment.NewLine );
-            fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT,""+ (char)22 + Environment.NewLine);
+            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT,""+ "\x16" + Environment.NewLine);
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, ((char)22).ToString() + "\n");
+
             fptr.printText();
 
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_PRINT_FOOTER, false);

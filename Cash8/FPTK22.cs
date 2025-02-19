@@ -666,10 +666,10 @@ namespace Cash8
                     fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
                     fptr.printText();
                     fptr.endNonfiscalDocument();
-                    if (MainStaticClass.GetVariantConnectFN == 1)
-                    {
-                        fptr.close();
-                    }
+                    //if (MainStaticClass.GetVariantConnectFN == 1)
+                    //{
+                    //    fptr.close();
+                    //}
                 }
                 catch (Exception ex)
                 {
@@ -802,10 +802,10 @@ namespace Cash8
                     fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
                     fptr.printText();
                     fptr.endNonfiscalDocument();
-                    if (MainStaticClass.GetVariantConnectFN == 1)
-                    {
-                        fptr.close();
-                    }
+                    //if (MainStaticClass.GetVariantConnectFN == 1)
+                    //{
+                    //    fptr.close();
+                    //}
                 }
                 catch (Exception ex)
                 {
@@ -830,10 +830,10 @@ namespace Cash8
                         fptr.open();
                     }
                     fptr.openDrawer();
-                    if (MainStaticClass.GetVariantConnectFN == 1)
-                    {
-                        fptr.close();
-                    }
+                    //if (MainStaticClass.GetVariantConnectFN == 1)
+                    //{
+                    //    fptr.close();
+                    //}
                 }
                 catch (Exception ex)
                 {
@@ -859,10 +859,10 @@ namespace Cash8
 
                     DateTime dateTime = fptr.getParamDateTime(AtolConstants.LIBFPTR_PARAM_DATE_TIME);
                     txtB_last_send_mark.Text = dateTime.ToString("dd-MM-yyyy HH:mm:ss");
-                    if (MainStaticClass.GetVariantConnectFN == 1)
-                    {
-                        fptr.close();
-                    }
+                    //if (MainStaticClass.GetVariantConnectFN == 1)
+                    //{
+                    //    fptr.close();
+                    //}
                 }
                 catch (Exception ex)
                 {
