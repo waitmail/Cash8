@@ -186,10 +186,10 @@ namespace Cash8
                     customerScreen.show_price = 1;
                     customerScreen.ListCheckPositions = new List<CheckPosition>();
                     DataTable dataTable = to_define_the_action_dt(false);
-                    if (dataTable.Rows.Count > 0)
-                    {
-                        this.txtB_total_sum.Text = calculation_of_the_sum_of_the_document().ToString() + " / " + Math.Round(Convert.ToDouble(dataTable.Compute("Sum(sum_at_discount)", (string)null)), 2).ToString("F2");//calculation_of_the_sum_of_the_document().ToString() +" / "+Convert.ToDouble(dataTable.Compute("Sum(sum_at_discount)", (string)null)).ToString("F2");
-                    }
+                    //if (dataTable.Rows.Count > 0)
+                    //{
+                    this.txtB_total_sum.Text = calculation_of_the_sum_of_the_document().ToString() + " / " + Math.Round(Convert.ToDouble(dataTable.Compute("Sum(sum_at_discount)", (string)null)), 2).ToString("F2");//calculation_of_the_sum_of_the_document().ToString() +" / "+Convert.ToDouble(dataTable.Compute("Sum(sum_at_discount)", (string)null)).ToString("F2");
+                    //}
                     foreach (DataRow row in dataTable.Rows)
                     {
                         CheckPosition checkPosition = new CheckPosition();
@@ -461,6 +461,7 @@ namespace Cash8
                     //MessageBox.Show("3-" + listView1.SelectedItems[0].SubItems[3].Text);
 
                     ///////////////////////////////////////////////////////////////
+
                     if (MainStaticClass.Code_right_of_user != 1)
                     {
                         //if (MainStaticClass.SelfServiceKiosk == 0)
@@ -4413,7 +4414,7 @@ namespace Cash8
         /// <param name="non_cash_money"></param>
         /// <param name="sertificate_money"></param>
         /// <returns></returns>
-        public bool write_new_document(string pay, string sum_doc, string remainder, string pay_bonus_many, bool last_rewrite, string cash_money, string non_cash_money, string sertificate_money, string its_deleted,bool send=true)
+        public bool write_new_document(string pay, string sum_doc, string remainder, string pay_bonus_many, bool last_rewrite, string cash_money, string non_cash_money, string sertificate_money, string its_deleted)
         {
             if ((sum_doc == "")|| (sum_doc == "0"))
             {
@@ -4761,8 +4762,8 @@ namespace Cash8
                 tran.Commit();
                 conn.Close();
 
-                if (send)
-                {
+                //if (send)
+                //{
                     if (last_rewrite)
                     {
                         itsnew = false;
@@ -4786,7 +4787,7 @@ namespace Cash8
                             SendDataToCustomerScreen(0, 0, 0);
                         }
                     }
-                }
+                //}
                 result = true;
             }
             catch (NpgsqlException ex)
@@ -13414,7 +13415,7 @@ namespace Cash8
                 
                 pay_form.pay_sum.Text = calculation_of_the_sum_of_the_document().ToString("F", System.Globalization.CultureInfo.CurrentCulture);
                   
-                write_new_document("0", calculation_of_the_sum_of_the_document().ToString(), "0", "0", false, "0", "0", "0", "0",false);//нужно для того чтобы в окне оплаты взять сумму из БД
+                write_new_document("0", calculation_of_the_sum_of_the_document().ToString(), "0", "0", false, "0", "0", "0", "0");//нужно для того чтобы в окне оплаты взять сумму из БД
             }
             else//Это возврат
             {
