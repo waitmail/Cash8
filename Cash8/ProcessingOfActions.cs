@@ -539,7 +539,14 @@ namespace Cash8
 
                         if (persent != 0)
                         {
-                            action_4_dt(num_doc, persent, sum,comment);//Дать скидку на все позиции из списка позицию                                                 
+                            if (LoadActionDataInMemory.AllActionData1 == null)
+                            {
+                                action_4_dt(num_doc, persent, sum, comment);//Дать скидку на все позиции из списка позицию                                                 
+                            }
+                            else
+                            {
+                                action_4_dt(num_doc, persent, sum, comment, LoadActionDataInMemory.AllActionData1);//Дать скидку на все позиции из списка позицию                                                 
+                            }
                         }
                         else
                         {
@@ -3846,6 +3853,563 @@ namespace Cash8
                 }
             }
         }
+
+
+
+        private void action_4_dt(int num_doc,
+                        decimal percent,
+                        decimal sum,
+                        string comment,
+                        Dictionary<int, Dictionary<long, decimal>> actionPricesByDoc)
+        {
+            DataTable originalDt = dt.Copy(); // Полная копия исходных данных
+            DataTable tempDt = dt.Clone(); // Новая таблица для результатов
+
+            try
+            {
+                // 1. Копируем все строки с action2 > 0
+                foreach (DataRow row in originalDt.Rows)
+                {
+                    if (Convert.ToInt32(row["action2"]) > 0)
+                    {
+                        tempDt.ImportRow(row);
+                    }
+                }
+
+                // 2. Обрабатываем акционные товары
+                List<DataRow> flatItems = new List<DataRow>();
+                foreach (DataRow row in originalDt.Rows)
+                {
+                    if (Convert.ToInt32(row["action2"]) > 0) continue;
+
+                    long tovarCode = Convert.ToInt64(row["tovar_code"]);
+                    if (!IsTovarInAction(actionPricesByDoc, num_doc, tovarCode))
+                    {
+                        tempDt.ImportRow(row); // Копируем неакционные строки
+                        continue;
+                    }
+
+                    // Обработка акционных товаров
+                    int quantity = Convert.ToInt32(row["quantity"]);
+                    for (int i = 0; i < quantity; i++)
+                    {
+                        DataRow newRow = tempDt.NewRow();
+                        CopyRowData(row, newRow);
+                        newRow["quantity"] = 1;
+                        flatItems.Add(newRow);
+                    }
+                }
+
+                // 3. Сортировка и применение скидок
+                flatItems.Sort((a, b) => Convert.ToDecimal(a["price"]).CompareTo(Convert.ToDecimal(b["price"])));
+
+                int currentPosition = 0;
+                foreach (DataRow item in flatItems)
+                {
+                    currentPosition++;
+                    if (currentPosition % sum == 0)
+                    {
+                        decimal price = Convert.ToDecimal(item["price"]);
+                        item["price_at_discount"] = Math.Round(price * (1 - percent / 100m), 2);
+                        item["action"] = num_doc;
+                    }
+                    else
+                    {
+                        item["price_at_discount"] = item["price"];
+                        item["action"] = 0;
+                    }
+                    item["action2"] = num_doc;
+                }
+
+                // 4. Группировка и добавление в результат
+                var grouped = flatItems
+                    .GroupBy(r => new
+                    {
+                        Code = Convert.ToInt64(r["tovar_code"]),
+                        CharName = r["characteristic_name"].ToString(),
+                        CharGuid = r["characteristic_code"].ToString(),
+                        Price = Convert.ToDecimal(r["price"]),
+                        DiscountPrice = Convert.ToDecimal(r["price_at_discount"])
+                    });
+
+                foreach (var group in grouped)
+                {
+                    DataRow newRow = tempDt.NewRow();
+                    newRow.ItemArray = group.First().ItemArray;
+                    newRow["quantity"] = group.Count();
+                    newRow["sum_full"] = group.Sum(r => Convert.ToDecimal(r["price"]));
+                    newRow["sum_at_discount"] = group.Sum(r => Convert.ToDecimal(r["price_at_discount"]));
+                    tempDt.Rows.Add(newRow);
+                }
+
+                // 5. Заменяем исходную таблицу
+                dt.Clear();
+                foreach (DataRow row in tempDt.Rows)
+                {
+                    dt.ImportRow(row);
+                }
+            }
+            catch
+            {
+                // 6. Восстанавливаем исходные данные при ошибке
+                dt.Clear();
+                foreach (DataRow row in originalDt.Rows)
+                {
+                    dt.ImportRow(row);
+                }
+                throw;
+            }
+            finally
+            {
+                originalDt.Dispose();
+                tempDt.Dispose();
+            }
+        }
+
+        private void ProcessData(DataTable tempDt,
+                                int num_doc,
+                                decimal percent,
+                                decimal sum,
+                                Dictionary<int, Dictionary<long, decimal>> actionPricesByDoc)
+        {
+            List<DataRow> rowsToProcess = new List<DataRow>();
+
+            // Шаг 1: Подготовка данных
+            foreach (DataRow row in tempDt.Rows)
+            {
+                if (Convert.ToInt32(row["action2"]) > 0) continue;
+
+                long tovarCode = Convert.ToInt64(row["tovar_code"]);
+                if (IsTovarInAction(actionPricesByDoc, num_doc, tovarCode))
+                {
+                    rowsToProcess.Add(row);
+                }
+            }
+
+            // Шаг 2: Создаем плоский список
+            List<DataRow> flatItems = new List<DataRow>();
+            foreach (DataRow row in rowsToProcess)
+            {
+                int quantity = Convert.ToInt32(row["quantity"]);
+                for (int i = 0; i < quantity; i++)
+                {
+                    DataRow newRow = tempDt.NewRow();
+                    CopyRowData(row, newRow);
+                    newRow["quantity"] = 1;
+                    flatItems.Add(newRow);
+                }
+                row.Delete();
+            }
+
+            // Шаг 3: Сортировка и применение скидок
+            flatItems.Sort((a, b) => Convert.ToDecimal(a["price"]).CompareTo(Convert.ToDecimal(b["price"])));
+
+            int currentPosition = 0;
+            foreach (DataRow item in flatItems)
+            {
+                currentPosition++;
+                item["price_at_discount"] = currentPosition % sum == 0
+                    ? Math.Round(Convert.ToDecimal(item["price"]) * (1 - percent / 100m), 2)
+                    : Convert.ToDecimal(item["price"]);
+
+                item["action"] = currentPosition % sum == 0 ? num_doc : 0;
+            }
+
+            // Шаг 4: Группировка и добавление в таблицу
+            var grouped = flatItems
+                .GroupBy(r => new
+                {
+                    Code = Convert.ToInt64(r["tovar_code"]),
+                    CharacteristicName = r["characteristic_name"].ToString(),
+                    CharacteristicGuid = r["characteristic_code"].ToString(),
+                    Price = Convert.ToDecimal(r["price"]),
+                    DiscountedPrice = Convert.ToDecimal(r["price_at_discount"])
+                });
+
+            foreach (var group in grouped)
+            {
+                DataRow newRow = tempDt.NewRow();
+                newRow.ItemArray = group.First().ItemArray;
+                newRow["quantity"] = group.Count();
+                newRow["sum_full"] = group.Sum(r => Convert.ToDecimal(r["price"]));
+                newRow["sum_at_discount"] = group.Sum(r => Convert.ToDecimal(r["price_at_discount"]));
+                tempDt.Rows.Add(newRow);
+            }
+        }
+
+        private bool IsTovarInAction(
+                   Dictionary<int, Dictionary<long, decimal>> actionPricesByDoc,
+                   int num_doc,
+                   long tovarCode)
+        {
+            return actionPricesByDoc.TryGetValue(num_doc, out var docData) &&
+                   docData.ContainsKey(tovarCode);
+        }
+
+        private void CopyRowData(DataRow source, DataRow target)
+        {
+            foreach (DataColumn column in source.Table.Columns)
+            {
+                target[column.ColumnName] = source[column.ColumnName];
+            }
+        }
+
+
+
+
+        ///// <summary>
+        ///// Эта акция срабатывает, когда количество товаров в документе >= сумме (количеству) товаров в акции.
+        ///// Тогда дается скидка на кратное количество товара на самый дешевый товар из участвующих в акции.
+        ///// </summary>
+        ///// <param name="num_doc">Номер документа акции.</param>
+        ///// <param name="percent">Процент скидки.</param>
+        ///// <param name="sum">Сумма (количество) товаров в акции.</param>
+        ///// <param name="comment">Комментарий к акции.</param>
+        //private void action_4_dt(int num_doc, decimal percent, decimal sum, string comment)
+        //{
+        //    if (!create_temp_tovar_table_4())
+        //    {
+        //        return;
+        //    }
+
+        //    DataTable dt2 = dt.Copy();
+        //    dt2.Rows.Clear();
+        //    decimal quantity_on_doc = 0; // Количество позиций в документе
+        //    StringBuilder query = new StringBuilder();
+
+        //    try
+        //    {
+        //        using (var conn = MainStaticClass.NpgsqlConn())
+        //        {
+        //            conn.Open();
+
+        //            // Шаг 1: Фильтруем товары и рассчитываем общее количество
+        //            foreach (DataRow row in dt.Rows)
+        //            {
+        //                if (Convert.ToInt32(row["action2"]) > 0) // Пропускаем товары, уже участвовавшие в акции
+        //                {
+        //                    dt2.Rows.Add(row.ItemArray);
+        //                    continue;
+        //                }
+
+        //                if (IsTovarInAction(conn, num_doc, row["tovar_code"].ToString()))
+        //                {
+        //                    // Добавляем товары во временную таблицу
+        //                    AddTovarToTempTable(query, row, Convert.ToInt32(row["quantity"]));
+        //                    quantity_on_doc += Convert.ToDecimal(row["quantity"]);
+        //                }
+        //                else
+        //                {
+        //                    // Товары, не участвующие в акции, добавляем в dt2
+        //                    dt2.Rows.Add(row.ItemArray);
+        //                }
+        //            }
+
+        //            // Шаг 2: Проверяем условие акции
+        //            if (quantity_on_doc >= sum)
+        //            {
+        //                have_action = true; // Признак того, что в документе есть сработка по акции
+
+        //                // Шаг 3: Очищаем dt и добавляем строки из dt2
+        //                dt.Rows.Clear();
+        //                foreach (DataRow row2 in dt2.Rows)
+        //                {
+        //                    dt.Rows.Add(row2.ItemArray);
+        //                }
+
+        //                // Шаг 4: Выполняем запросы к временной таблице
+        //                ExecuteTempTableQueries(conn, query, num_doc, percent, quantity_on_doc, sum);
+
+        //                // Шаг 5: Обновляем DataTable с учетом скидок
+        //                UpdateDataTableWithDiscounts(conn, num_doc);
+
+        //                // Шаг 6: Отмечаем товары, участвовавшие в акции
+        //                marked_action_tovar_dt(num_doc, comment);
+        //            }
+        //        }
+        //    }
+        //    catch (NpgsqlException ex)
+        //    {
+        //        //Logger.LogError(ex, "Ошибка при работе с базой данных");
+        //        MessageBox.Show("Произошла ошибка при работе с базой данных."+ex.Message, " Ошибка при обработке 4 типа акций ");
+        //        MainStaticClass.WriteRecordErrorLog(ex.Message, "action_4_dt(int num_doc, decimal percent, decimal sum, string comment)", num_doc, MainStaticClass.CashDeskNumber, "Обработка акций 4 типа,скидка");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        //Logger.LogError(ex, "Ошибка при обработке акции");
+        //        MessageBox.Show("Произошла ошибка при обработке акции."+ex.Message, " Ошибка при обработке 4 типа акций ");
+        //        MainStaticClass.WriteRecordErrorLog(ex.Message, "action_4_dt(int num_doc, decimal percent, decimal sum, string comment)", num_doc, MainStaticClass.CashDeskNumber, "Обработка акций 4 типа,скидка");
+        //    }
+        //}
+
+        ///// <summary>
+        ///// Проверяет, участвует ли товар в акции.
+        ///// </summary>
+        //private bool IsTovarInAction(NpgsqlConnection conn, int num_doc, string tovar_code)
+        //{
+        //    string query = "SELECT COUNT(*) FROM action_table WHERE code_tovar = @code_tovar AND num_doc = @num_doc";
+        //    using (var command = new NpgsqlCommand(query, conn))
+        //    {
+        //        command.Parameters.AddWithValue("@code_tovar", tovar_code);
+        //        command.Parameters.AddWithValue("@num_doc", num_doc);
+        //        return Convert.ToInt16(command.ExecuteScalar()) != 0;
+        //    }
+        //}
+
+        ///// <summary>
+        ///// Добавляет товары во временную таблицу.
+        ///// </summary>
+        //private void AddTovarToTempTable(StringBuilder query, DataRow row, int quantity)
+        //{
+        //    for (int i = 0; i < quantity; i++)
+        //    {
+        //        query.Append("INSERT INTO tovar_action(code, retail_price, quantity, characteristic_name, characteristic_guid) VALUES (")
+        //            .Append(row["tovar_code"].ToString()).Append(",")
+        //            .Append(row["price"].ToString().Replace(",", ".")).Append(",")
+        //            .Append("1,'")
+        //            .Append(row["characteristic_name"].ToString()).Append("','")
+        //            .Append(row["characteristic_code"].ToString()).Append("');");
+        //    }
+        //}
+
+        ///// <summary>
+        ///// Выполняет запросы к временной таблице.
+        ///// </summary>
+        //private void ExecuteTempTableQueries(NpgsqlConnection conn, StringBuilder query, int num_doc, decimal percent, decimal quantity_on_doc, decimal sum)
+        //{
+        //    using (var command = new NpgsqlCommand(query.ToString(), conn))
+        //    {
+        //        command.ExecuteNonQuery();
+        //    }
+
+        //    query.Clear();
+        //    query.Append("DELETE FROM tovar_action;"); // Очищаем таблицу акционных товаров
+
+        //    int multiplication_factor = (int)(quantity_on_doc / sum);
+        //    string query_string = "SELECT code, retail_price, quantity, characteristic_name, characteristic_guid FROM tovar_action ORDER BY retail_price DESC";
+        //    using (var command = new NpgsqlCommand(query_string, conn))
+        //    using (var reader = command.ExecuteReader())
+        //    {
+        //        int num_records = 1;
+        //        while (reader.Read())
+        //        {
+        //            decimal retail_price = reader.GetDecimal(1);
+        //            decimal discounted_price = retail_price;
+
+        //            if (multiplication_factor > 0 && num_records % sum == 0)
+        //            {
+        //                discounted_price = Math.Round(retail_price - retail_price * percent / 100, 2);
+        //                multiplication_factor--;
+        //            }
+
+        //            query.Append("INSERT INTO tovar_action(code, retail_price, quantity, characteristic_name, characteristic_guid, retail_price_discount) VALUES (")
+        //                .Append(reader[0].ToString()).Append(",")
+        //                .Append(retail_price.ToString().Replace(",", ".")).Append(",")
+        //                .Append("1,'")
+        //                .Append(reader[3].ToString()).Append("','")
+        //                .Append(reader[4].ToString()).Append("',")
+        //                .Append(discounted_price.ToString().Replace(",", ".")).Append(");");
+
+        //            num_records++;
+        //        }
+        //    }
+
+        //    using (var command = new NpgsqlCommand(query.ToString(), conn))
+        //    {
+        //        command.ExecuteNonQuery();
+        //    }
+        //}
+
+        ///// <summary>
+        ///// Обновляет DataTable с учетом скидок.
+        ///// </summary>
+        //private void UpdateDataTableWithDiscounts(NpgsqlConnection conn, int num_doc)
+        //{
+        //    string query_string = @"
+        //SELECT tovar_action.code, tovar.name, tovar_action.retail_price, tovar_action.retail_price_discount, 
+        //       SUM(quantity), characteristic_name, characteristic_guid 
+        //FROM tovar_action 
+        //LEFT JOIN tovar ON tovar_action.code = tovar.code 
+        //GROUP BY tovar_action.code, tovar.name, tovar.retail_price, tovar_action.retail_price, characteristic_name, characteristic_guid, retail_price_discount";
+
+        //    using (var command = new NpgsqlCommand(query_string, conn))
+        //    using (var reader = command.ExecuteReader())
+        //    {
+        //        while (reader.Read())
+        //        {
+        //            DataRow row = dt.NewRow();
+        //            row["tovar_code"] = reader[0].ToString();
+        //            row["tovar_name"] = reader[1].ToString().Trim();
+        //            row["characteristic_name"] = reader[5].ToString();
+        //            row["characteristic_code"] = reader[6].ToString();
+        //            row["quantity"] = reader[4].ToString().Trim();
+        //            row["price"] = reader.GetDecimal(2).ToString();
+        //            row["price_at_discount"] = reader.GetDecimal(3).ToString();
+        //            row["sum_full"] = (Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price"])).ToString();
+        //            row["sum_at_discount"] = (Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price_at_discount"])).ToString();
+        //            row["action"] = (Convert.ToDecimal(row["price"]) != Convert.ToDecimal(row["price_at_discount"])) ? num_doc.ToString() : "0";
+        //            row["gift"] = "0";
+        //            row["action2"] = num_doc.ToString();
+        //            row["bonus_reg"] = 0;
+        //            row["bonus_action"] = 0;
+        //            row["bonus_action_b"] = 0;
+        //            row["marking"] = "0";
+        //            dt.Rows.Add(row);
+        //        }
+        //    }
+        //}
+
+        ///// <summary>
+        ///// Эта акция срабатывает, когда количество товаров в документе >= сумме (количеству) товаров в акции.
+        ///// Тогда дается скидка на кратное количество товара на самый дешевый товар из участвующих в акции.
+        ///// </summary>
+        ///// <param name="num_doc">Номер документа акции.</param>
+        ///// <param name="percent">Процент скидки.</param>
+        ///// <param name="sum">Сумма (количество) товаров в акции.</param>
+        ///// <param name="comment">Комментарий к акции.</param>
+        //private void action_4_dt(int num_doc, decimal percent, decimal sum, string comment)
+        //{
+        //    if (!create_temp_tovar_table_4())
+        //    {
+        //        return;
+        //    }
+
+        //    try
+        //    {
+        //        using (var conn = MainStaticClass.NpgsqlConn())
+        //        {
+        //            conn.Open();
+
+        //            // Шаг 1: Собираем товары, участвующие в акции
+        //            var tovarCodesInAction = GetTovarCodesInAction(conn, num_doc);
+
+        //            // Шаг 2: Фильтруем строки DataTable для товаров, участвующих в акции
+        //            var eligibleRows = new List<DataRow>();
+        //            decimal totalQuantity = 0;
+
+        //            foreach (DataRow row in dt.Rows)
+        //            {
+        //                if (Convert.ToInt32(row["action2"]) > 0) // Пропускаем товары, уже участвовавшие в акции
+        //                {
+        //                    continue;
+        //                }
+
+        //                long tovarCode = Convert.ToInt64(row["tovar_code"]);
+        //                if (tovarCodesInAction.Contains(tovarCode))
+        //                {
+        //                    eligibleRows.Add(row);
+        //                    totalQuantity += Convert.ToDecimal(row["quantity"]); // Суммируем общее количество
+        //                }
+        //            }
+
+        //            // Шаг 3: Проверяем условие акции
+        //            if (totalQuantity < sum)
+        //            {
+        //                // Если общее количество меньше требуемого, ничего не делаем
+        //                return;
+        //            }
+
+        //            have_action = true; // Признак того, что в документе есть сработка по акции
+
+        //            // Шаг 4: Рассчитываем количество товаров для скидки
+        //            int multiplicationFactor = (int)(totalQuantity / sum); // Количество кратных групп
+        //            int discountQuantity = (int)sum * multiplicationFactor; // Общее количество товаров со скидкой
+
+        //            // Шаг 5: Находим самый дешевый товар среди участвующих
+        //            var cheapestRow = eligibleRows.OrderBy(row => Convert.ToDecimal(row["price"])).First();
+        //            decimal originalPrice = Convert.ToDecimal(cheapestRow["price"]);
+        //            decimal discountedPrice = Math.Round(originalPrice - originalPrice * percent / 100, 2);
+
+        //            // Шаг 6: Определяем, сколько единиц самого дешевого товара можно "зачесть" под скидку
+        //            int quantityOfCheapest = Convert.ToInt32(cheapestRow["quantity"]);
+
+        //            if (quantityOfCheapest <= discountQuantity)
+        //            {
+        //                // Если всего самого дешевого товара достаточно для скидки
+        //                ApplyDiscountToRow(cheapestRow, discountedPrice, originalPrice, quantityOfCheapest, num_doc);
+        //                discountQuantity -= quantityOfCheapest; // Уменьшаем оставшееся количество для скидки
+        //            }
+        //            else
+        //            {
+        //                // Если самого дешевого товара больше, чем нужно для скидки
+        //                SplitRowWithDiscount(cheapestRow, discountedPrice, originalPrice, sum, percent, num_doc);
+        //                discountQuantity -= (int)sum; // Уменьшаем оставшееся количество для скидки
+        //            }
+
+        //            // Шаг 7: Применяем скидку к остальным товарам, если необходимо
+        //            foreach (DataRow row in eligibleRows)
+        //            {
+        //                if (discountQuantity <= 0) break; // Если скидка уже полностью применена
+
+        //                int rowQuantity = Convert.ToInt32(row["quantity"]);
+        //                if (rowQuantity <= discountQuantity)
+        //                {
+        //                    ApplyDiscountToRow(row, discountedPrice, originalPrice, rowQuantity, num_doc);
+        //                    discountQuantity -= rowQuantity; // Уменьшаем оставшееся количество для скидки
+        //                }
+        //                else
+        //                {
+        //                    SplitRowWithDiscount(row, discountedPrice, originalPrice, sum, percent, num_doc);
+        //                    discountQuantity -= (int)sum; // Уменьшаем оставшееся количество для скидки
+        //                }
+        //            }
+
+        //            // Шаг 8: Отмечаем товары, участвовавшие в акции
+        //            marked_action_tovar_dt(num_doc, comment);
+        //        }
+        //    }
+        //    catch (NpgsqlException ex)
+        //    {
+        //        //Logger.LogError(ex, "Ошибка при работе с базой данных");
+        //        MessageBox.Show("Произошла ошибка при работе с базой данных.");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        //Logger.LogError(ex, "Ошибка при обработке акции");
+        //        MessageBox.Show("Произошла ошибка при обработке акции.");
+        //    }
+        //}
+
+        ///// <summary>
+        ///// Применяет скидку к строке полностью.
+        ///// </summary>
+        //private void ApplyDiscountToRow(DataRow row, decimal discountedPrice, decimal originalPrice, int quantity, int num_doc)
+        //{
+        //    row["price_at_discount"] = discountedPrice.ToString();
+        //    row["sum_full"] = (quantity * originalPrice).ToString();
+        //    row["sum_at_discount"] = (quantity * discountedPrice).ToString();
+        //    row["action"] = num_doc.ToString();
+        //    row["action2"] = num_doc.ToString();
+        //}
+
+        ///// <summary>
+        ///// Разбивает строку на две части: одну со скидкой, другую без скидки.
+        ///// </summary>
+        //private void SplitRowWithDiscount(DataRow row, decimal discountedPrice, decimal originalPrice, decimal sum, decimal percent, int num_doc)
+        //{
+        //    int rowQuantity = Convert.ToInt32(row["quantity"]);
+        //    int discountedUnits = (int)sum; // Количество единиц, на которые дается скидка
+        //    int remainingUnits = rowQuantity - discountedUnits; // Оставшееся количество без скидки
+
+        //    // Создаем новую строку для оставшихся единиц без скидки
+        //    DataRow newRow = dt.NewRow();
+        //    newRow.ItemArray = row.ItemArray;
+        //    newRow["quantity"] = remainingUnits.ToString();
+        //    newRow["price_at_discount"] = originalPrice.ToString();
+        //    newRow["sum_full"] = (remainingUnits * originalPrice).ToString();
+        //    newRow["sum_at_discount"] = (remainingUnits * originalPrice).ToString();
+        //    newRow["action"] = "0"; // Без скидки
+        //    newRow["action2"] = "0"; // Без скидки
+        //    dt.Rows.Add(newRow);
+
+        //    // Обновляем текущую строку для единиц со скидкой
+        //    row["quantity"] = discountedUnits.ToString();
+        //    row["price_at_discount"] = discountedPrice.ToString();
+        //    row["sum_full"] = (discountedUnits * originalPrice).ToString();
+        //    row["sum_at_discount"] = (discountedUnits * discountedPrice).ToString();
+        //    row["action"] = num_doc.ToString();
+        //    row["action2"] = num_doc.ToString();
+        //}
 
         //private void Action4Dt(int numDoc, decimal percent, decimal sum, string comment)
         //{

@@ -153,7 +153,7 @@ namespace Cash8
         /// </summary>
         /// <param name="mode"></param>
         public void SendDataToCustomerScreen(int mode, int show_price, int calculate_actionc)
-        {           
+        {
             try
             {
                 if (listView1.Items.Count == 0)
@@ -186,7 +186,10 @@ namespace Cash8
                     customerScreen.show_price = 1;
                     customerScreen.ListCheckPositions = new List<CheckPosition>();
                     DataTable dataTable = to_define_the_action_dt(false);
-                    this.txtB_total_sum.Text = calculation_of_the_sum_of_the_document().ToString() + " / " +Math.Round(Convert.ToDouble(dataTable.Compute("Sum(sum_at_discount)", (string)null)), 2).ToString("F2");//calculation_of_the_sum_of_the_document().ToString() +" / "+Convert.ToDouble(dataTable.Compute("Sum(sum_at_discount)", (string)null)).ToString("F2");
+                    if (dataTable.Rows.Count > 0)
+                    {
+                        this.txtB_total_sum.Text = calculation_of_the_sum_of_the_document().ToString() + " / " + Math.Round(Convert.ToDouble(dataTable.Compute("Sum(sum_at_discount)", (string)null)), 2).ToString("F2");//calculation_of_the_sum_of_the_document().ToString() +" / "+Convert.ToDouble(dataTable.Compute("Sum(sum_at_discount)", (string)null)).ToString("F2");
+                    }
                     foreach (DataRow row in dataTable.Rows)
                     {
                         CheckPosition checkPosition = new CheckPosition();
@@ -199,9 +202,9 @@ namespace Cash8
                     SendUDPMessage(message);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                MessageBox.Show("SendDataToCustomerScreen "+ex.Message);
+                MessageBox.Show("SendDataToCustomerScreen " + ex.Message);
             }
         }
 
@@ -4410,7 +4413,7 @@ namespace Cash8
         /// <param name="non_cash_money"></param>
         /// <param name="sertificate_money"></param>
         /// <returns></returns>
-        public bool write_new_document(string pay, string sum_doc, string remainder, string pay_bonus_many, bool last_rewrite, string cash_money, string non_cash_money, string sertificate_money, string its_deleted)
+        public bool write_new_document(string pay, string sum_doc, string remainder, string pay_bonus_many, bool last_rewrite, string cash_money, string non_cash_money, string sertificate_money, string its_deleted,bool send=true)
         {
             if ((sum_doc == "")|| (sum_doc == "0"))
             {
@@ -4758,27 +4761,30 @@ namespace Cash8
                 tran.Commit();
                 conn.Close();
 
-                if (last_rewrite)
+                if (send)
                 {
-                    itsnew = false;
-                    if (this.check_type.SelectedIndex == 0)
+                    if (last_rewrite)
                     {
-                        SendDataToCustomerScreen(0, 0, 0);
+                        itsnew = false;
+                        if (this.check_type.SelectedIndex == 0)
+                        {
+                            SendDataToCustomerScreen(0, 0, 0);
+                        }
                     }
-                }
-                else
-                {
-                    itsnew = true;
-                    if (this.check_type.SelectedIndex == 0)
+                    else
                     {
-                        SendDataToCustomerScreen(1, 0, 1);
+                        itsnew = true;
+                        if (this.check_type.SelectedIndex == 0)
+                        {
+                            SendDataToCustomerScreen(1, 0, 1);
+                        }
                     }
-                }
-                if (its_deleted == "1")
-                {
-                    if (this.check_type.SelectedIndex == 0)
+                    if (its_deleted == "1")
                     {
-                        SendDataToCustomerScreen(0, 0, 0);
+                        if (this.check_type.SelectedIndex == 0)
+                        {
+                            SendDataToCustomerScreen(0, 0, 0);
+                        }
                     }
                 }
                 result = true;
@@ -13408,7 +13414,7 @@ namespace Cash8
                 
                 pay_form.pay_sum.Text = calculation_of_the_sum_of_the_document().ToString("F", System.Globalization.CultureInfo.CurrentCulture);
                   
-                write_new_document("0", calculation_of_the_sum_of_the_document().ToString(), "0", "0", false, "0", "0", "0", "0");//нужно для того чтобы в окне оплаты взять сумму из БД
+                write_new_document("0", calculation_of_the_sum_of_the_document().ToString(), "0", "0", false, "0", "0", "0", "0",false);//нужно для того чтобы в окне оплаты взять сумму из БД
             }
             else//Это возврат
             {
