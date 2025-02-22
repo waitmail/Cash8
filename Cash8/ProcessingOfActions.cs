@@ -3854,111 +3854,99 @@ namespace Cash8
             }
         }
 
-
-
+        /// <summary>
+        /// в документе >= сумме(количество) товаров в акции  
+        /// тогда дается скидка на кратное количество товара
+        /// на самый дешевый товар из участвующих в акции 
+        /// здесь метод без обращения к бд
+        /// </summary>
+        /// <param name="num_doc"></param>
+        /// <param name="percent"></param>
+        /// <param name="sum"></param>
+        /// <param name="comment"></param>
+        /// <param name="actionPricesByDoc"></param>
         private void action_4_dt(int num_doc,
-                         decimal percent,
-                         decimal sum,
-                         string comment,
-                         Dictionary<int, Dictionary<long, decimal>> actionPricesByDoc)
+                    decimal percent,
+                    decimal sum,
+                    string comment,
+                    Dictionary<int, Dictionary<long, decimal>> actionPricesByDoc)
         {
+            // Проверка на целочисленность sum
+            if (sum != Math.Floor(sum))
+                throw new ArgumentException("Параметр 'sum' дожен быть целым числом");
+
+            // Сохраняем оригинальные данные для возможного отката
             DataTable originalDt = dt.Copy();
             DataTable tempDt = dt.Clone();
 
             try
             {
-                // 1. Копируем строки, не участвующие в акции
+                // 1. Переносим строки, не участвующие в акции
                 foreach (DataRow row in originalDt.Rows)
                 {
-                    if (Convert.ToInt32(row["action2"]) > 0 ||
-                       !IsTovarInAction(actionPricesByDoc, num_doc, Convert.ToInt64(row["tovar_code"])))
+                    if (row.Field<int>("action2") > 0 ||
+                        !IsTovarInAction(actionPricesByDoc, num_doc, (long)row.Field<double>("tovar_code")))
                     {
                         tempDt.ImportRow(row);
                     }
                 }
 
-                // 2. Создаем плоский список акционных товаров
-                List<DataRow> flatItems = new List<DataRow>();
+                // 2. Подготовка данных для обработки
+                var items = new List<ItemData>();
                 foreach (DataRow row in originalDt.Rows)
                 {
-                    if (Convert.ToInt32(row["action2"]) > 0) continue;
+                    if (row.Field<int>("action2") > 0) continue;
 
-                    long tovarCode = Convert.ToInt64(row["tovar_code"]);
+                    long tovarCode = (long)row.Field<double>("tovar_code"); // Преобразуем double в long
                     if (!IsTovarInAction(actionPricesByDoc, num_doc, tovarCode)) continue;
 
-                    int quantity = Convert.ToInt32(row["quantity"]);
-                    for (int i = 0; i < quantity; i++)
+                    items.Add(new ItemData
                     {
-                        DataRow newRow = tempDt.NewRow();
-                        CopyRowData(row, newRow);
-                        newRow["quantity"] = 1;
-                        flatItems.Add(newRow);
-                    }
-                }
-
-                // 3. Сортировка по возрастанию цены
-                flatItems.Sort((a, b) => Convert.ToDecimal(a["price"]).CompareTo(Convert.ToDecimal(b["price"])));
-
-                // 4. Применение скидки с первой позиции
-                for (int i = 0; i < flatItems.Count; i++)
-                {
-                    int currentPosition = i + 1; // Позиции начинаются с 1
-                    if (currentPosition % sum == 1)
-                    {
-                        decimal price = Convert.ToDecimal(flatItems[i]["price"]);
-                        flatItems[i]["price_at_discount"] = Math.Round(price * (1 - percent / 100m), 2);
-                        flatItems[i]["action"] = num_doc;
-                    }
-                    else
-                    {
-                        flatItems[i]["price_at_discount"] = flatItems[i]["price"];
-                        flatItems[i]["action"] = 0;
-                    }
-                    flatItems[i]["action2"] = num_doc;
-                }
-
-                // 5. Группировка и добавление в результат
-                var grouped = flatItems
-                    .GroupBy(r => new
-                    {
-                        Code = Convert.ToInt64(r["tovar_code"]),
-                        CharName = r["characteristic_name"].ToString(),
-                        CharGuid = r["characteristic_code"].ToString(),
-                        Price = Convert.ToDecimal(r["price"]),
-                        Discount = Convert.ToDecimal(r["price_at_discount"])
+                        Code = row.Field<double>("tovar_code"),
+                        CharName = row.Field<string>("characteristic_name"),
+                        CharGuid = row.Field<string>("characteristic_code"),
+                        Price = row.Field<decimal>("price"),
+                        Quantity = row.Field<double>("quantity")
                     });
-
-                foreach (var group in grouped)
-                {
-                    DataRow newRow = tempDt.NewRow();
-                    newRow["tovar_code"] = group.Key.Code;
-                    newRow["characteristic_name"] = group.Key.CharName;
-                    newRow["characteristic_code"] = group.Key.CharGuid;
-                    newRow["quantity"] = group.Count();
-                    newRow["price"] = group.Key.Price;
-                    newRow["price_at_discount"] = group.Key.Discount;
-                    newRow["sum_full"] = group.Sum(r => Convert.ToDecimal(r["price"]));
-                    newRow["sum_at_discount"] = group.Sum(r => Convert.ToDecimal(r["price_at_discount"]));
-                    newRow["action"] = group.Key.Discount != group.Key.Price ? num_doc : 0;
-                    newRow["action2"] = num_doc;
-                    newRow["gift"] = 0;
-                    newRow["bonus_reg"] = 0m;
-                    newRow["bonus_action"] = 0m;
-                    newRow["bonus_action_b"] = 0m;
-                    newRow["marking"] = "0";
-
-                    tempDt.Rows.Add(newRow);
                 }
 
-                // 6. Обновление исходной таблицы
-                dt.Clear();
-                foreach (DataRow row in tempDt.Rows) dt.ImportRow(row);
+                // 3. Обработка и группировка
+                var processedItems = ProcessItems(items, num_doc, percent, (int)sum); // Преобразуем sum в int
+
+                // 4. Заполнение таблицы
+                dt.BeginLoadData();
+                try
+                {
+                    dt.Clear();
+
+                    // Добавляем обработанные элементы
+                    foreach (var group in processedItems)
+                    {
+                        DataRow newRow = dt.NewRow();
+                        FillDataRow(newRow, group, num_doc);
+                        dt.Rows.Add(newRow);
+                    }
+
+                    // Добавляем неизмененные строки
+                    foreach (DataRow row in tempDt.Rows)
+                    {
+                        dt.ImportRow(row);
+                    }
+                }
+                finally
+                {
+                    dt.EndLoadData();
+                }
             }
-            catch
+            catch(Exception ex)
             {
-                // Восстановление при ошибке
+                MainStaticClass.WriteRecordErrorLog(ex.Message, "action_4_dt(int num_doc,decimal percent,decimal sum,string comment,Dictionary<int, Dictionary<long, decimal>> actionPricesByDoc)", num_doc, MainStaticClass.CashDeskNumber, "Акция 4 типа без обращения к бд");
+                // Восстановление данных при ошибке
                 dt.Clear();
-                foreach (DataRow row in originalDt.Rows) dt.ImportRow(row);
+                foreach (DataRow row in originalDt.Rows)
+                {
+                    dt.ImportRow(row);
+                }
                 throw;
             }
             finally
@@ -3968,25 +3956,118 @@ namespace Cash8
             }
         }
 
+        // Вспомогательные классы
+        private class ItemData
+        {
+            public double Code { get; set; }
+            public string CharName { get; set; }
+            public string CharGuid { get; set; }
+            public decimal Price { get; set; }
+            public double Quantity { get; set; }
+        }
 
+        private class GroupedItem
+        {
+            public double Code { get; set; }
+            public string CharName { get; set; }
+            public string CharGuid { get; set; }
+            public decimal Price { get; set; }
+            public decimal Discount { get; set; }
+            public double Count { get; set; }
+            public decimal SumFull { get; set; }
+            public decimal SumDiscount { get; set; }
+            public int Action { get; set; }
+        }
+
+        private List<GroupedItem> ProcessItems(List<ItemData> items, int num_doc, decimal percent, int sum)
+        {
+            var flatItems = new List<ItemData>();
+            foreach (var item in items)
+            {
+                // Проверка на целочисленность Quantity
+                if (item.Quantity != Math.Floor(item.Quantity))
+                    throw new ArgumentException("Quantity must be integer value");
+
+                int quantity = (int)item.Quantity;
+
+                for (int i = 0; i < quantity; i++)
+                {
+                    flatItems.Add(new ItemData
+                    {
+                        Code = item.Code,
+                        CharName = item.CharName,
+                        CharGuid = item.CharGuid,
+                        Price = item.Price,
+                        Quantity = 1.0
+                    });
+                }
+            }
+
+            // Сортировка по цене
+            flatItems.Sort((a, b) => a.Price.CompareTo(b.Price));
+
+            var groups = new Dictionary<string, GroupedItem>();
+            for (int i = 0; i < flatItems.Count; i++)
+            {
+                var item = flatItems[i];
+                bool applyDiscount = (i + 1) % sum == 1;
+
+                decimal discount = applyDiscount
+                    ? Math.Round(item.Price * (1 - percent / 100m), 2)
+                    : item.Price;
+
+                string key = $"{item.Code}|{item.CharName}|{item.CharGuid}|{item.Price}|{discount}";
+
+                if (!groups.TryGetValue(key, out GroupedItem group))
+                {
+                    group = new GroupedItem
+                    {
+                        Code = item.Code,
+                        CharName = item.CharName,
+                        CharGuid = item.CharGuid,
+                        Price = item.Price,
+                        Discount = discount,
+                        Action = applyDiscount ? num_doc : 0,
+                        Count = 0.0
+                    };
+                    groups[key] = group;
+                }
+
+                group.Count += 1.0;
+                group.SumFull += item.Price;
+                group.SumDiscount += discount;
+            }
+
+            return groups.Values.ToList();
+        }
+
+        private void FillDataRow(DataRow row, GroupedItem item, int num_doc)
+        {
+            row["tovar_code"] = item.Code;
+            row["characteristic_name"] = item.CharName ?? string.Empty;
+            row["characteristic_code"] = item.CharGuid ?? string.Empty;
+            row["quantity"] = item.Count;
+            row["price"] = item.Price;
+            row["price_at_discount"] = item.Discount;
+            row["sum_full"] = item.SumFull;
+            row["sum_at_discount"] = item.SumDiscount;
+            row["action"] = item.Action;
+            row["action2"] = num_doc;
+            row["gift"] = 0;
+            row["bonus_reg"] = 0m;
+            row["bonus_action"] = 0m;
+            row["bonus_action_b"] = 0m;
+            row["marking"] = "0";
+        }
 
         private bool IsTovarInAction(
-                   Dictionary<int, Dictionary<long, decimal>> actionPricesByDoc,
-                   int num_doc,
-                   long tovarCode)
+            Dictionary<int, Dictionary<long, decimal>> actionPricesByDoc,
+            int num_doc,
+            long tovarCode)
         {
-            return actionPricesByDoc.TryGetValue(num_doc, out var docData) &&
-                   docData.ContainsKey(tovarCode);
+            return actionPricesByDoc.TryGetValue(num_doc, out var docPrices)
+                   && docPrices.ContainsKey(tovarCode);
         }
-
-        private void CopyRowData(DataRow source, DataRow target)
-        {
-            foreach (DataColumn column in source.Table.Columns)
-            {
-                target[column.ColumnName] = source[column.ColumnName];
-            }
-        }
-
 
 
 
