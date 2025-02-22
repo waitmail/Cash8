@@ -4414,7 +4414,7 @@ namespace Cash8
         /// <param name="non_cash_money"></param>
         /// <param name="sertificate_money"></param>
         /// <returns></returns>
-        public bool write_new_document(string pay, string sum_doc, string remainder, string pay_bonus_many, bool last_rewrite, string cash_money, string non_cash_money, string sertificate_money, string its_deleted)
+        public bool write_new_document(string pay, string sum_doc, string remainder, string pay_bonus_many, bool last_rewrite, string cash_money, string non_cash_money, string sertificate_money, string its_deleted, bool sendToScreen=true)
         {
             if ((sum_doc == "")|| (sum_doc == "0"))
             {
@@ -4762,8 +4762,8 @@ namespace Cash8
                 tran.Commit();
                 conn.Close();
 
-                //if (send)
-                //{
+                if (sendToScreen)
+                {
                     if (last_rewrite)
                     {
                         itsnew = false;
@@ -4787,7 +4787,7 @@ namespace Cash8
                             SendDataToCustomerScreen(0, 0, 0);
                         }
                     }
-                //}
+                }
                 result = true;
             }
             catch (NpgsqlException ex)
@@ -13415,7 +13415,7 @@ namespace Cash8
                 
                 pay_form.pay_sum.Text = calculation_of_the_sum_of_the_document().ToString("F", System.Globalization.CultureInfo.CurrentCulture);
                   
-                write_new_document("0", calculation_of_the_sum_of_the_document().ToString(), "0", "0", false, "0", "0", "0", "0");//нужно для того чтобы в окне оплаты взять сумму из БД
+                write_new_document("0", calculation_of_the_sum_of_the_document().ToString(), "0", "0", false, "0", "0", "0", "0",false);//нужно для того чтобы в окне оплаты взять сумму из БД
             }
             else//Это возврат
             {

@@ -552,8 +552,16 @@ namespace Cash8
                         {
                             //if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
                             //{
-                                action_4_dt(num_doc, comment, sum, show_messages);
+
                             //}
+                            if (LoadActionDataInMemory.AllActionData1 == null)
+                            {
+                                action_4_dt(num_doc, comment, sum, show_messages);
+                            }
+                            else
+                            {
+                                action_4_dt(num_doc, comment, sum, show_messages, LoadActionDataInMemory.AllActionData1);
+                            }
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
                     }
@@ -3866,14 +3874,14 @@ namespace Cash8
         /// <param name="comment"></param>
         /// <param name="actionPricesByDoc"></param>
         private void action_4_dt(int num_doc,
-                    decimal percent,
-                    decimal sum,
-                    string comment,
-                    Dictionary<int, Dictionary<long, decimal>> actionPricesByDoc)
+                                decimal percent,
+                                decimal sum,
+                                string comment,
+                                Dictionary<int, Dictionary<long, decimal>> actionPricesByDoc)
         {
             // Проверка на целочисленность sum
             if (sum != Math.Floor(sum))
-                throw new ArgumentException("Параметр 'sum' дожен быть целым числом");
+                throw new ArgumentException("Параметр 'sum' должен быть целым числом");
 
             // Сохраняем оригинальные данные для возможного отката
             DataTable originalDt = dt.Copy();
@@ -3903,6 +3911,7 @@ namespace Cash8
                     items.Add(new ItemData
                     {
                         Code = row.Field<double>("tovar_code"),
+                        TovarName = row.Field<string>("tovar_name"), // Сохраняем наименование товара
                         CharName = row.Field<string>("characteristic_name"),
                         CharGuid = row.Field<string>("characteristic_code"),
                         Price = row.Field<decimal>("price"),
@@ -3937,10 +3946,13 @@ namespace Cash8
                 {
                     dt.EndLoadData();
                 }
+
+                // 5. Отмечаем товары, участвовавшие в акции
+                marked_action_tovar_dt(num_doc, comment);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                MainStaticClass.WriteRecordErrorLog(ex.Message, "action_4_dt(int num_doc,decimal percent,decimal sum,string comment,Dictionary<int, Dictionary<long, decimal>> actionPricesByDoc)", num_doc, MainStaticClass.CashDeskNumber, "Акция 4 типа без обращения к бд");
+                MainStaticClass.WriteRecordErrorLog(ex.Message, "action_4_dt(int num_doc, decimal percent, decimal sum, string comment, Dictionary<int, Dictionary<long, decimal>> actionPricesByDoc)", num_doc, MainStaticClass.CashDeskNumber, "Акция 4 типа без обращения к бд");
                 // Восстановление данных при ошибке
                 dt.Clear();
                 foreach (DataRow row in originalDt.Rows)
@@ -3956,27 +3968,33 @@ namespace Cash8
             }
         }
 
+
+       
+
         // Вспомогательные классы
         private class ItemData
         {
             public double Code { get; set; }
-            public string CharName { get; set; }
-            public string CharGuid { get; set; }
-            public decimal Price { get; set; }
-            public double Quantity { get; set; }
+            public string TovarName { get; set; } // Наименование товара
+            public string CharName { get; set; }  // Название характеристики
+            public string CharGuid { get; set; }  // Идентификатор характеристики
+            public decimal Price { get; set; }    // Цена товара
+            public double Quantity { get; set; }  // Количество товара
         }
 
         private class GroupedItem
         {
             public double Code { get; set; }
-            public string CharName { get; set; }
-            public string CharGuid { get; set; }
-            public decimal Price { get; set; }
-            public decimal Discount { get; set; }
-            public double Count { get; set; }
-            public decimal SumFull { get; set; }
-            public decimal SumDiscount { get; set; }
-            public int Action { get; set; }
+            public string TovarName { get; set; } // Наименование товара
+            public string CharName { get; set; }  // Название характеристики
+            public string CharGuid { get; set; }  // Идентификатор характеристики
+            public decimal Price { get; set; }    // Цена товара
+            public decimal Discount { get; set; } // Цена со скидкой
+            public double Count { get; set; }     // Количество товара
+            public decimal SumFull { get; set; }  // Сумма без скидки
+            public decimal SumDiscount { get; set; } // Сумма со скидкой
+            public int Action { get; set; }       // Флаг акции
+            public int Gift { get; set; }
         }
 
         private List<GroupedItem> ProcessItems(List<ItemData> items, int num_doc, decimal percent, int sum)
@@ -3995,6 +4013,7 @@ namespace Cash8
                     flatItems.Add(new ItemData
                     {
                         Code = item.Code,
+                        TovarName = item.TovarName, // Сохраняем наименование товара
                         CharName = item.CharName,
                         CharGuid = item.CharGuid,
                         Price = item.Price,
@@ -4003,26 +4022,27 @@ namespace Cash8
                 }
             }
 
-            // Сортировка по цене
+            // Сортировка по цене (от меньшего к большему)
             flatItems.Sort((a, b) => a.Price.CompareTo(b.Price));
 
             var groups = new Dictionary<string, GroupedItem>();
             for (int i = 0; i < flatItems.Count; i++)
             {
                 var item = flatItems[i];
-                bool applyDiscount = (i + 1) % sum == 1;
+                bool applyDiscount = (i + 1) % sum == 0; // Скидка применяется только при кратности sum
 
                 decimal discount = applyDiscount
                     ? Math.Round(item.Price * (1 - percent / 100m), 2)
                     : item.Price;
 
-                string key = $"{item.Code}|{item.CharName}|{item.CharGuid}|{item.Price}|{discount}";
+                string key = $"{item.Code}|{item.TovarName}|{item.CharName}|{item.CharGuid}|{item.Price}|{discount}";
 
                 if (!groups.TryGetValue(key, out GroupedItem group))
                 {
                     group = new GroupedItem
                     {
                         Code = item.Code,
+                        TovarName = item.TovarName, // Сохраняем наименование товара
                         CharName = item.CharName,
                         CharGuid = item.CharGuid,
                         Price = item.Price,
@@ -4044,6 +4064,7 @@ namespace Cash8
         private void FillDataRow(DataRow row, GroupedItem item, int num_doc)
         {
             row["tovar_code"] = item.Code;
+            row["tovar_name"] = item.TovarName ?? string.Empty; // Заполняем наименование товара
             row["characteristic_name"] = item.CharName ?? string.Empty;
             row["characteristic_code"] = item.CharGuid ?? string.Empty;
             row["quantity"] = item.Count;
@@ -4068,7 +4089,6 @@ namespace Cash8
             return actionPricesByDoc.TryGetValue(num_doc, out var docPrices)
                    && docPrices.ContainsKey(tovarCode);
         }
-
 
 
         ///// <summary>
@@ -4807,6 +4827,207 @@ namespace Cash8
                 }
             }
         }
+
+
+        private void action_4_dt(int num_doc,
+                         string comment,
+                         decimal sum,
+                         bool show_messages,
+                         Dictionary<int, Dictionary<long, decimal>> actionPricesByDoc)
+        {
+            if (sum != Math.Floor(sum))
+                throw new ArgumentException("Параметр 'sum' должен быть целым числом");
+
+            DataTable originalDt = dt.Copy();
+            DataTable tempDt = dt.Clone();
+
+            try
+            {
+                foreach (DataRow row in originalDt.Rows)
+                {
+                    if (row.Field<int>("action2") > 0 ||
+                        !IsTovarInAction(actionPricesByDoc, num_doc, (long)row.Field<double>("tovar_code")))
+                    {
+                        tempDt.ImportRow(row);
+                    }
+                }
+
+                var items = new List<ItemData>();
+                foreach (DataRow row in originalDt.Rows)
+                {
+                    if (row.Field<int>("action2") > 0) continue;
+
+                    long tovarCode = (long)row.Field<double>("tovar_code");
+                    if (!IsTovarInAction(actionPricesByDoc, num_doc, tovarCode)) continue;
+
+                    items.Add(new ItemData
+                    {
+                        Code = row.Field<double>("tovar_code"),
+                        TovarName = row.Field<string>("tovar_name"),
+                        CharName = row.Field<string>("characteristic_name"),
+                        CharGuid = row.Field<string>("characteristic_code"),
+                        Price = row.Field<decimal>("price"),
+                        Quantity = row.Field<double>("quantity")
+                    });
+                }
+
+                var processedItems = ProcessItems(items, num_doc, (int)sum);
+
+                //if (processedItems == null || processedItems.Count == 0)
+                //{
+                //    throw new InvalidOperationException("Нет данных для обработки.");
+                //}
+
+                dt.BeginLoadData();
+                try
+                {
+                    dt.Clear();
+
+                    foreach (var group in processedItems)
+                    {
+                        DataRow newRow = dt.NewRow();
+                        FillDataRowGift(newRow, group, num_doc);
+                        dt.Rows.Add(newRow);
+                    }
+
+                    foreach (DataRow row in tempDt.Rows)
+                    {
+                        dt.ImportRow(row);
+                    }
+                }
+                finally
+                {
+                    dt.EndLoadData();
+                }                
+
+                marked_action_tovar_dt(num_doc, comment);
+            }
+            catch (Exception ex)
+            {
+                MainStaticClass.WriteRecordErrorLog(ex.Message, "action_4_dt", num_doc, MainStaticClass.CashDeskNumber, "Акция 4 типа без обращения к бд");
+                dt.Clear();
+                foreach (DataRow row in originalDt.Rows)
+                {
+                    dt.ImportRow(row);
+                }
+                throw;
+            }
+            finally
+            {
+                originalDt.Dispose();
+                tempDt.Dispose();
+            }
+        }
+        
+        private void FillDataRowGift(DataRow row, GroupedItem item, int num_doc)
+        {
+            row["tovar_code"] = item.Code;
+            row["tovar_name"] = item.TovarName ?? string.Empty; // Заполняем наименование товара
+            row["characteristic_name"] = item.CharName ?? string.Empty;
+            row["characteristic_code"] = item.CharGuid ?? string.Empty;
+            row["quantity"] = item.Count;
+            row["price"] = item.Price;
+            row["price_at_discount"] = item.Discount;
+            row["sum_full"] = item.SumFull;
+            row["sum_at_discount"] = item.SumDiscount;
+            row["action"] = 0;            
+            row["gift"] = num_doc;
+            row["action2"] = num_doc;
+            row["bonus_reg"] = 0m;
+            row["bonus_action"] = 0m;
+            row["bonus_action_b"] = 0m;
+            row["marking"] = "0";
+        }
+
+        // Вспомогательные классы
+        private List<GroupedItem> ProcessItems(List<ItemData> items, int num_doc, int sum)
+        {
+            var flatItems = new List<ItemData>();
+            foreach (var item in items)
+            {
+                // Проверка на целочисленность Quantity
+                if (item.Quantity != Math.Floor(item.Quantity))
+                    throw new ArgumentException("Quantity must be integer value");
+
+                int quantity = (int)item.Quantity;
+
+                for (int i = 0; i < quantity; i++)
+                {
+                    flatItems.Add(new ItemData
+                    {
+                        Code = item.Code,
+                        TovarName = item.TovarName, // Сохраняем наименование товара
+                        CharName = item.CharName,
+                        CharGuid = item.CharGuid,
+                        Price = item.Price,
+                        Quantity = 1.0
+                    });
+                }
+            }
+
+            // Сортировка по цене (от меньшего к большему)
+            flatItems.Sort((a, b) => a.Price.CompareTo(b.Price));
+
+            var groups = new Dictionary<string, GroupedItem>();
+            for (int i = 0; i < flatItems.Count; i++)
+            {
+                var item = flatItems[i];
+                bool isGift = (i + 1) % sum == 0; // Кратное количество позиций выдается в подарок
+
+                // Исправленный блок для расчета discount
+                decimal discount;
+                if (isGift)
+                {
+                    discount = Convert.ToDecimal(get_price_action(num_doc)); // Используем get_price_action для подарков
+                }
+                else
+                {
+                    discount = item.Price; // Для обычных товаров цена без изменений
+                }
+
+                string key = $"{item.Code}|{item.CharName}|{item.CharGuid}|{item.Price}|{discount}";
+
+                if (!groups.TryGetValue(key, out GroupedItem group))
+                {
+                    group = new GroupedItem
+                    {
+                        Code = item.Code,
+                        TovarName = item.TovarName, // Сохраняем наименование товара
+                        CharName = item.CharName,
+                        CharGuid = item.CharGuid,
+                        Price = item.Price,
+                        Discount = discount,
+                        Action = isGift ? 0 : num_doc, // Для подарков action = 0
+                        Gift = isGift ? num_doc : 0, // Отмечаем подарок
+                        Count = 0.0
+                    };
+                    groups[key] = group;
+                }
+
+                group.Count += 1.0;
+                group.SumFull += item.Price;
+                group.SumDiscount += discount;
+            }
+
+            return groups.Values.ToList();
+        }
+
+
+        /// <summary>
+        ///   Эта акция срабатывает когда количество 
+        ///   товаров в документе >= сумме(количество) товаров в акции        
+        ///   тогда выдается сообщение о подарке        
+        ///   самый дешевый товар из документа дается в подарок кратное число единиц
+        ///   и еще добавляется некий товар из акционного документа
+        ///   метод без обращения к бд
+        /// </summary>
+        /// <param name="num_doc"></param>
+        /// <param name="comment"></param>
+        /// <param name="sum"></param>
+        /// <param name="show_messages"></param>
+        /// <param name="actionPricesByDoc"></param>
+
+
 
         /*Эта акция работает только по предъявлению 
         * акционного купона то есть по штрихкоду
