@@ -2819,13 +2819,13 @@ namespace Cash8
                 }
                 lvi.SubItems.Add(productData.Price.ToString());//Цена 
 
-                if (productData.isCertificate())
+                if (!productData.isCertificate())
                 {
                     lvi.SubItems.Add(Math.Round(Convert.ToDouble(productData.Price) - Convert.ToDouble(productData.Price) * Discount, 2).ToString());//Цена со скидкой
                 }
                 else
                 {
-                    lvi.SubItems.Add(Math.Round(Convert.ToDecimal(productData.Price), 2).ToString());//Цена со скидкой 
+                    lvi.SubItems.Add(Math.Round(Convert.ToDecimal(productData.Price), 2).ToString());
                 }
                 lvi.SubItems.Add(Math.Round(Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[4].Text),2, MidpointRounding.ToEven).ToString());//Сумма
                 lvi.SubItems.Add(Math.Round((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)),2,MidpointRounding.ToEven).ToString()); //Сумма со скидкой                        

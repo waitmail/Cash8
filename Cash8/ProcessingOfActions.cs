@@ -1156,7 +1156,55 @@ namespace Cash8
         /*Пометка товарных позиций которые участвовали в акции
         * для того чтобы они не участвоствовали в следующих акциях
         */
-        private void marked_action_tovar_dt(int num_doc,string comment)
+        private void marked_action_tovar_dt(DataTable dtCopy, int num_doc,string comment)
+        {
+            NpgsqlConnection conn = null;
+            NpgsqlCommand command = null;
+            try
+            {
+                conn = MainStaticClass.NpgsqlConn();
+                conn.Open();
+                foreach (DataRow row in dtCopy.Rows)
+                {
+                    if (Convert.ToInt32(row["action2"]) > 0)//Этот товар уже участвовал в акции значит его пропускаем
+                    {
+                        continue;
+                    }
+                    string query = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + row["tovar_code"].ToString() + " AND num_doc=" + num_doc.ToString();
+                    command = new NpgsqlCommand(query, conn);
+                    Int16 result = Convert.ToInt16(command.ExecuteScalar());
+                    if (result == 1)
+                    {
+                        row["action2"] = num_doc.ToString();
+                        if (dt.Columns.Contains("promo_description"))
+                        {
+                            row["promo_description"] = comment;
+                        }
+                    }
+                }
+            }
+            catch (NpgsqlException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "пометка товарных позиций участвующих в акции");
+            }
+
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+        }
+
+        /*Пометка товарных позиций которые участвовали в акции
+       * для того чтобы они не участвоствовали в следующих акциях
+       */
+        private void marked_action_tovar_dt(int num_doc, string comment)
         {
             NpgsqlConnection conn = null;
             NpgsqlCommand command = null;
@@ -1200,6 +1248,67 @@ namespace Cash8
                 }
             }
         }
+
+
+        /// <summary>
+        /// Пометка товарных позиций, которые участвовали в акции,
+        /// чтобы они не участвовали в следующих акциях.
+        /// </summary>
+        /// <param name="num_doc">Номер документа акции.</param>
+        /// <param name="comment">Комментарий к акции.</param>
+        /// <param name="actionPricesByDoc">Словарь с данными о товарах и их ценах по документам.</param>
+        private void marked_action_tovar_dt(int num_doc, string comment, Dictionary<int, Dictionary<long, decimal>> actionPricesByDoc)
+        {
+            try
+            {
+                // Проверяем, есть ли данные для текущего документа в словаре
+                if (actionPricesByDoc.ContainsKey(num_doc))
+                {
+                    // Получаем словарь с товарами для текущего документа
+                    var tovarPrices = actionPricesByDoc[num_doc];
+
+                    // Проходим по всем строкам в DataTable (предполагается, что dt — это DataTable)
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        // Пропускаем товары, которые уже участвовали в акции
+                        if (Convert.ToInt32(row["action2"]) > 0)
+                        {
+                            continue;
+                        }
+
+                        // Получаем код товара из строки
+                        long tovarCode = Convert.ToInt64(row["tovar_code"]);
+
+                        // Проверяем, есть ли товар в словаре для текущего документа
+                        if (tovarPrices.ContainsKey(tovarCode))
+                        {
+                            // Если товар участвовал в акции, помечаем его
+                            row["action2"] = num_doc.ToString();
+
+                            // Добавляем комментарий, если есть соответствующая колонка
+                            if (dt.Columns.Contains("promo_description"))
+                            {
+                                row["promo_description"] = comment;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    // Если данных для текущего документа нет, можно вывести предупреждение
+                    MessageBox.Show($"Данные для документа {num_doc} отсутствуют в словаре.");
+                    MainStaticClass.WriteRecordErrorLog("Данные для документа {num_doc} отсутствуют в словаре.", "marked_action_tovar_dt(int num_doc, string comment, Dictionary<int, Dictionary<long, decimal>> actionPricesByDoc)", num_doc, MainStaticClass.CashDeskNumber, "Отметка позиций уже участовавших в акции");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Обработка ошибок
+                MessageBox.Show(ex.Message, "Ошибка при пометке товарных позиций");
+                MainStaticClass.WriteRecordErrorLog(ex.Message, "marked_action_tovar_dt(int num_doc, string comment, Dictionary<int, Dictionary<long, decimal>> actionPricesByDoc)", num_doc, MainStaticClass.CashDeskNumber, "Отметка позиций уже участовавших в акции");
+            }
+        }
+
+
 
         /// <summary>
         /// Возвращает true если в табличной части условия акций есть строки и false
@@ -2334,53 +2443,55 @@ namespace Cash8
         #endregion
 
 
-        private async void marked_action_tovar_dt(DataTable dtCopy, int num_doc, string comment)
+        /// <summary>
+        /// Пометка товарных позиций, которые участвовали в акции,
+        /// чтобы они не участвовали в следующих акциях.
+        /// </summary>
+        /// <param name="dtCopy">DataTable с товарами.</param>
+        /// <param name="num_doc">Номер документа акции.</param>
+        /// <param name="comment">Комментарий к акции.</param>
+        /// <param name="listQuantities">Словарь с данными о товарах и их количестве по документам.</param>
+        /// <param name="show_messages">Флаг, указывающий, нужно ли показывать сообщения об ошибках.</param>
+        private void marked_action_tovar_dt(DataTable dtCopy, int num_doc, string comment, Dictionary<int, int> listQuantities, bool show_messages)
         {
             try
             {
-                using (var conn = MainStaticClass.NpgsqlConn())
+                // Проходим по всем строкам в DataTable
+                foreach (DataRow row in dtCopy.Rows)
                 {
-                    await conn.OpenAsync();
-
-                    foreach (DataRow row in dtCopy.Rows)
+                    // Пропускаем товары, которые уже участвовали в акции
+                    if (Convert.ToInt32(row["action2"]) > 0)
                     {
-                        if (Convert.ToInt32(row["action2"]) > 0)
-                        {
-                            continue; // Этот товар уже участвовал в акции, пропускаем
-                        }
+                        continue;
+                    }
 
-                        string query = "SELECT COUNT(*) FROM action_table WHERE code_tovar = @code_tovar AND num_doc = @num_doc";
-                        using (var command = new NpgsqlCommand(query, conn))
-                        {
-                            command.Parameters.AddWithValue("@code_tovar", row["tovar_code"]);
-                            command.Parameters.AddWithValue("@num_doc", num_doc);
+                    // Получаем код товара из строки
+                    int tovarCode = Convert.ToInt32(row["tovar_code"]);
 
-                            int result = Convert.ToInt32(await command.ExecuteScalarAsync());
-                            if (result == 1)
-                            {
-                                row["action2"] = num_doc.ToString();
-                                if (dtCopy.Columns.Contains("promo_description"))
-                                {
-                                    row["promo_description"] = comment;
-                                }
-                            }
+                    // Проверяем, есть ли товар в словаре для текущего документа
+                    if (listQuantities.ContainsKey(tovarCode))
+                    {
+                        // Если товар участвовал в акции, помечаем его
+                        row["action2"] = num_doc.ToString();
+
+                        // Добавляем комментарий, если есть соответствующая колонка
+                        if (dtCopy.Columns.Contains("promo_description"))
+                        {
+                            row["promo_description"] = comment;
                         }
                     }
                 }
             }
-            catch (NpgsqlException ex)
-            {
-                MessageBox.Show(ex.Message, "Пометка товарных позиций участвующих в акции");
-                MainStaticClass.WriteRecordErrorLog(ex.Message, "marked_action_tovar_dt(DataTable dtCopy, int num_doc, string comment)", num_doc, MainStaticClass.CashDeskNumber, "Пометка товарных позиций участвующих в акции");
-                // Логирование ошибки
-                // Logger.Log(ex);
-            }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Пометка товарных позиций участвующих в акции");
-                MainStaticClass.WriteRecordErrorLog(ex.Message, "marked_action_tovar_dt(DataTable dtCopy, int num_doc, string comment)", num_doc, MainStaticClass.CashDeskNumber, "Пометка товарных позиций участвующих в акции");
+                // Обработка ошибок
+                if (show_messages)
+                {
+                    MessageBox.Show(ex.Message, "Пометка товарных позиций участвующих в акции");                    
+                }
+
                 // Логирование ошибки
-                // Logger.Log(ex);
+                MainStaticClass.WriteRecordErrorLog(ex.Message, "marked_action_tovar_dt(DataTable dtCopy, int num_doc, string comment)", num_doc, MainStaticClass.CashDeskNumber, "Пометка товарных позиций участвующих в акции");
             }
         }
 
@@ -2972,7 +3083,7 @@ namespace Cash8
   * по вхождению в акционный список 
     * 
   * Здесь выдается сообщение о подарке*/
-   private void action_2_dt(int num_doc, string comment, bool show_messages, Dictionary<int, LoadActionDataInMemory.ActionDataContainer> allActionData2)
+        private void action_2_dt(int num_doc, string comment, bool show_messages, Dictionary<int, LoadActionDataInMemory.ActionDataContainer> allActionData2)
    {
        if (!allActionData2.ContainsKey(num_doc))
        {
@@ -3315,7 +3426,8 @@ namespace Cash8
                     }
 
                     // Логика для отметки товаров (если нужно)
-                    marked_action_tovar_dt(num_doc, comment);
+                    //marked_action_tovar_dt(num_doc, comment);
+                    marked_action_tovar_dt(dtCopy,num_doc, comment);
                 }
 
                 // Если все успешно, применяем изменения к исходной DataTable
@@ -3948,7 +4060,7 @@ namespace Cash8
                 }
 
                 // 5. Отмечаем товары, участвовавшие в акции
-                marked_action_tovar_dt(num_doc, comment);
+                marked_action_tovar_dt(num_doc, comment, actionPricesByDoc);
             }
             catch (Exception ex)
             {
@@ -4829,6 +4941,18 @@ namespace Cash8
         }
 
 
+        /// <summary>
+        ///  Эта акция срабатывает когда количество товаров 
+        ///  в документе >= сумме(количество) товаров в акции         
+        ///  тогда выдается сообщение о подарке         
+        ///  самый дешевый товар из документа дается в подарок кратное число единиц 
+        ///  и еще добавляется некий товар из акционного документа        
+        /// </summary>
+        /// <param name="num_doc"></param>
+        /// <param name="comment"></param>
+        /// <param name="sum"></param>
+        /// <param name="show_messages"></param>
+        /// <param name="actionPricesByDoc"></param>
         private void action_4_dt(int num_doc,
                          string comment,
                          decimal sum,
@@ -4900,7 +5024,7 @@ namespace Cash8
                     dt.EndLoadData();
                 }                
 
-                marked_action_tovar_dt(num_doc, comment);
+                marked_action_tovar_dt(num_doc, comment, actionPricesByDoc);
             }
             catch (Exception ex)
             {
@@ -4931,7 +5055,7 @@ namespace Cash8
             row["sum_full"] = item.SumFull;
             row["sum_at_discount"] = item.SumDiscount;
             row["action"] = 0;            
-            row["gift"] = num_doc;
+            row["gift"] = item.Gift;
             row["action2"] = num_doc;
             row["bonus_reg"] = 0m;
             row["bonus_action"] = 0m;
@@ -4940,12 +5064,84 @@ namespace Cash8
         }
 
         // Вспомогательные классы
+        //private List<GroupedItem> ProcessItems(List<ItemData> items, int num_doc, int sum)
+        //{
+        //    var flatItems = new List<ItemData>();
+        //    foreach (var item in items)
+        //    {
+        //        // Проверка на целочисленность Quantity
+        //        if (item.Quantity != Math.Floor(item.Quantity))
+        //            throw new ArgumentException("Quantity must be integer value");
+
+        //        int quantity = (int)item.Quantity;
+
+        //        for (int i = 0; i < quantity; i++)
+        //        {
+        //            flatItems.Add(new ItemData
+        //            {
+        //                Code = item.Code,
+        //                TovarName = item.TovarName, // Сохраняем наименование товара
+        //                CharName = item.CharName,
+        //                CharGuid = item.CharGuid,
+        //                Price = item.Price,
+        //                Quantity = 1.0
+        //            });
+        //        }
+        //    }
+
+        //    // Сортировка по цене (от меньшего к большему)
+        //    flatItems.Sort((a, b) => a.Price.CompareTo(b.Price));
+
+        //    var groups = new Dictionary<string, GroupedItem>();
+        //    for (int i = 0; i < flatItems.Count; i++)
+        //    {
+        //        var item = flatItems[i];
+        //        bool isGift = (i + 1) % sum == 0; // Кратное количество позиций выдается в подарок
+
+        //        // Исправленный блок для расчета discount
+        //        decimal discount;
+        //        if (isGift)
+        //        {
+        //            discount = Convert.ToDecimal(get_price_action(num_doc)); // Используем get_price_action для подарков
+        //        }
+        //        else
+        //        {
+        //            discount = item.Price; // Для обычных товаров цена без изменений
+        //        }
+
+        //        string key = $"{item.Code}|{item.CharName}|{item.CharGuid}|{item.Price}|{discount}";
+
+        //        if (!groups.TryGetValue(key, out GroupedItem group))
+        //        {
+        //            group = new GroupedItem
+        //            {
+        //                Code = item.Code,
+        //                TovarName = item.TovarName, // Сохраняем наименование товара
+        //                CharName = item.CharName,
+        //                CharGuid = item.CharGuid,
+        //                Price = item.Price,
+        //                Discount = discount,
+        //                //Action = isGift ? 0 : num_doc, // Для подарков action = 0
+        //                Action = 0, // Для подарков action = 0
+        //                Gift = isGift ? num_doc : 0, // Отмечаем подарок
+        //                Count = 0.0
+        //            };
+        //            groups[key] = group;
+        //        }
+
+        //        group.Count += 1.0;
+        //        group.SumFull += item.Price;
+        //        group.SumDiscount += discount;
+        //    }
+
+        //    return groups.Values.ToList();
+        //}
+
         private List<GroupedItem> ProcessItems(List<ItemData> items, int num_doc, int sum)
         {
             var flatItems = new List<ItemData>();
             foreach (var item in items)
             {
-                // Проверка на целочисленность Quantity
                 if (item.Quantity != Math.Floor(item.Quantity))
                     throw new ArgumentException("Quantity must be integer value");
 
@@ -4956,7 +5152,7 @@ namespace Cash8
                     flatItems.Add(new ItemData
                     {
                         Code = item.Code,
-                        TovarName = item.TovarName, // Сохраняем наименование товара
+                        TovarName = item.TovarName,
                         CharName = item.CharName,
                         CharGuid = item.CharGuid,
                         Price = item.Price,
@@ -4965,47 +5161,42 @@ namespace Cash8
                 }
             }
 
-            // Сортировка по цене (от меньшего к большему)
             flatItems.Sort((a, b) => a.Price.CompareTo(b.Price));
 
             var groups = new Dictionary<string, GroupedItem>();
             for (int i = 0; i < flatItems.Count; i++)
             {
                 var item = flatItems[i];
-                bool isGift = (i + 1) % sum == 0; // Кратное количество позиций выдается в подарок
+                bool isGift = (i + 1) % sum == 0;
 
-                // Исправленный блок для расчета discount
-                decimal discount;
-                if (isGift)
-                {
-                    discount = Convert.ToDecimal(get_price_action(num_doc)); // Используем get_price_action для подарков
-                }
-                else
-                {
-                    discount = item.Price; // Для обычных товаров цена без изменений
-                }
+                decimal discount = isGift
+                    ? Convert.ToDecimal(get_price_action(num_doc))
+                    : Convert.ToDecimal(item.Price);
 
-                string key = $"{item.Code}|{item.CharName}|{item.CharGuid}|{item.Price}|{discount}";
+                // Добавляем isGift в ключ группировки
+                string key = $"{item.Code}|{item.CharName}|{item.CharGuid}|{item.Price}|{discount}|{isGift}";
 
                 if (!groups.TryGetValue(key, out GroupedItem group))
                 {
                     group = new GroupedItem
                     {
                         Code = item.Code,
-                        TovarName = item.TovarName, // Сохраняем наименование товара
+                        TovarName = item.TovarName,
                         CharName = item.CharName,
                         CharGuid = item.CharGuid,
                         Price = item.Price,
                         Discount = discount,
-                        Action = isGift ? 0 : num_doc, // Для подарков action = 0
-                        Gift = isGift ? num_doc : 0, // Отмечаем подарок
-                        Count = 0.0
+                        Action = 0,
+                        Gift = isGift ? num_doc : 0, // Корректное определение подарка
+                        Count = 0.0,
+                        SumFull = 0.0m,
+                        SumDiscount = 0.0m
                     };
                     groups[key] = group;
                 }
 
                 group.Count += 1.0;
-                group.SumFull += item.Price;
+                group.SumFull += Convert.ToDecimal(item.Price);
                 group.SumDiscount += discount;
             }
 
