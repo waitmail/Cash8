@@ -4203,42 +4203,36 @@ namespace Cash8
             // Сортировка по цене (от меньшего к большему)
             flatItems.Sort((a, b) => a.Price.CompareTo(b.Price));
 
-            var groups = new Dictionary<string, GroupedItem>();
+            var result = new List<GroupedItem>();
             for (int i = 0; i < flatItems.Count; i++)
             {
                 var item = flatItems[i];
-                bool applyDiscount = (i + 1) % sum == 0; // Скидка применяется только при кратности sum
+                bool applyDiscount = (i % sum) == 0 && flatItems.Count >= sum; // Скидка применяется только при наличии достаточного количества товаров
 
                 decimal discount = applyDiscount
                     ? Math.Round(item.Price * (1 - percent / 100m), 2)
                     : item.Price;
 
-                string key = $"{item.Code}|{item.TovarName}|{item.CharName}|{item.CharGuid}|{item.Price}|{discount}";
-
-                if (!groups.TryGetValue(key, out GroupedItem group))
+                // Создаем новый GroupedItem для каждого товара
+                var groupedItem = new GroupedItem
                 {
-                    group = new GroupedItem
-                    {
-                        Code = item.Code,
-                        TovarName = item.TovarName, // Сохраняем наименование товара
-                        CharName = item.CharName,
-                        CharGuid = item.CharGuid,
-                        Price = item.Price,
-                        Discount = discount,
-                        Action = applyDiscount ? num_doc : 0,
-                        Count = 0.0
-                    };
-                    groups[key] = group;
-                }
+                    Code = item.Code,
+                    TovarName = item.TovarName, // Сохраняем наименование товара
+                    CharName = item.CharName,
+                    CharGuid = item.CharGuid,
+                    Price = item.Price,
+                    Discount = discount,
+                    Action = applyDiscount ? num_doc : 0,
+                    Count = 1.0,
+                    SumFull = item.Price,
+                    SumDiscount = discount
+                };
 
-                group.Count += 1.0;
-                group.SumFull += item.Price;
-                group.SumDiscount += discount;
+                result.Add(groupedItem);
             }
 
-            return groups.Values.ToList();
+            return result;
         }
-
         private void FillDataRow(DataRow row, GroupedItem item, int num_doc)
         {
             row["tovar_code"] = item.Code;
@@ -5189,15 +5183,15 @@ namespace Cash8
             {
                 var item = flatItems[i];
                 // Определение, является ли текущий товар подарком
-                bool isGift = (i % sum) == 0; // Изменено условие: теперь подарок выдается с первой позиции
+                bool isGift = (i % sum) == 0 && flatItems.Count >= sum; // Подарок выдается на каждую sum-ую позицию, начиная с первой, если товаров достаточно
 
-                // Расчет скидки: для подарков используется цена из акции, для остальных — цена товара
-                decimal discount = isGift
-                    ? Convert.ToDecimal(get_price_action(num_doc))
-                    : Convert.ToDecimal(item.Price);
+                // Расчет цены: для подарков используется цена из акции, для остальных — цена товара
+                decimal price = isGift
+                    ? Convert.ToDecimal(get_price_action(num_doc)) // Используем цену подарка из акции
+                    : Convert.ToDecimal(item.Price); // Используем обычную цену товара
 
                 // Создание ключа для группировки, включая признак подарка
-                string key = $"{item.Code}|{item.CharName}|{item.CharGuid}|{item.Price}|{discount}|{isGift}";
+                string key = $"{item.Code}|{item.CharName}|{item.CharGuid}|{item.Price}|{price}|{isGift}";
 
                 if (!groups.TryGetValue(key, out GroupedItem group))
                 {
@@ -5209,7 +5203,7 @@ namespace Cash8
                         CharName = item.CharName,
                         CharGuid = item.CharGuid,
                         Price = item.Price,
-                        Discount = discount,
+                        Discount = price, // Используем цену подарка или обычную цену
                         Action = 0,
                         Gift = isGift ? num_doc : 0, // Указываем, является ли группа подарком
                         Count = 0.0,
@@ -5222,7 +5216,7 @@ namespace Cash8
                 // Обновление данных группы
                 group.Count += 1.0;
                 group.SumFull += Convert.ToDecimal(item.Price);
-                group.SumDiscount += discount;
+                group.SumDiscount += price;
             }
 
             // Возвращаем список сгруппированных товаров

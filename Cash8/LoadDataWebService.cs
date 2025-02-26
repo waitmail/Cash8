@@ -9,6 +9,8 @@ using System.IO;
 using Npgsql;
 using Newtonsoft.Json;
 using System.IO.Compression;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace Cash8
 {
@@ -1207,6 +1209,109 @@ namespace Cash8
             return result;
         }
 
+
+        public void UpdateOrInsertRow(int id, string newValue)
+        {
+            using (var conn = MainStaticClass.NpgsqlConn())
+            {
+                conn.Open();
+                using (var tran = conn.BeginTransaction(System.Data.IsolationLevel.ReadCommitted))
+                {
+                    try
+                    {
+                        // Пытаемся обновить строку
+                        string updateSql = "UPDATE your_table SET column_name = @newValue WHERE id = @id";
+                        using (var updateCmd = new NpgsqlCommand(updateSql, conn, tran))
+                        {
+                            updateCmd.Parameters.AddWithValue("newValue", newValue);
+                            updateCmd.Parameters.AddWithValue("id", id);
+                            int rowsUpdated = updateCmd.ExecuteNonQuery();
+
+                            // Если ни одна строка не была обновлена, выполняем INSERT
+                            if (rowsUpdated == 0)
+                            {
+                                string insertSql = "INSERT INTO your_table (id, column_name) VALUES (@id, @newValue)";
+                                using (var insertCmd = new NpgsqlCommand(insertSql, conn, tran))
+                                {
+                                    insertCmd.Parameters.AddWithValue("id", id);
+                                    insertCmd.Parameters.AddWithValue("newValue", newValue);
+                                    insertCmd.ExecuteNonQuery();
+                                }
+                            }
+                        }
+
+                        // Фиксируем транзакцию
+                        tran.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        // Откатываем транзакцию в случае ошибки
+                        tran.Rollback();
+                        HandleError(id, newValue, ex);
+                    }
+                }
+            }
+        }
+
+        private void HandleError(int id, string newValue, Exception ex)
+        {
+            // Логирование ошибки
+            Console.WriteLine($"Ошибка при обновлении записи ID={id}, значение={newValue}. Подробности: {ex.Message}");
+        }
+
+        //public static void Main(string[] args)
+        //{
+        //    var program = new Program();
+        //    program.UpdateOrInsertRowWithLimit();
+        //}
+
+
+        public void UpdateOrInsertRowWithLimit()
+        {
+            int maxDegreeOfParallelism = 20; // Максимальное количество одновременно выполняемых задач
+            SemaphoreSlim semaphore = new SemaphoreSlim(maxDegreeOfParallelism);
+
+            int totalTasks = 100; // Общее количество задач
+            int completedTasks = 0;
+
+            var tasks = new List<Task>();
+
+            for (int i = 1; i <= totalTasks; i++)
+            {
+                int currentId = i;
+                string currentValue = $"NewValue_{i}";
+
+                // Ожидаем, пока освободится слот для новой задачи
+                semaphore.Wait();
+
+                // Запускаем задачу
+                Task task = Task.Run(() =>
+                {
+                    try
+                    {
+                        UpdateOrInsertRow(currentId, currentValue); // Используем метод с UPDATE/INSERT
+                    }
+                    catch (Exception ex)
+                    {
+                        HandleError(currentId, currentValue, ex);
+                    }
+                    finally
+                    {
+                        // Освобождаем слот после завершения задачи
+                        semaphore.Release();
+
+                        // Увеличиваем счетчик завершенных задач
+                        Interlocked.Increment(ref completedTasks);
+                        Console.WriteLine($"Выполнено {completedTasks} из {totalTasks}");
+                    }
+                });
+
+                tasks.Add(task);
+            }
+
+            // Ожидаем завершения всех задач
+            Task.WaitAll(tasks.ToArray());
+        }
 
 
 
