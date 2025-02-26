@@ -4172,7 +4172,7 @@ namespace Cash8
             public decimal SumFull { get; set; }  // Сумма без скидки
             public decimal SumDiscount { get; set; } // Сумма со скидкой
             public int Action { get; set; }       // Флаг акции
-            public int Gift { get; set; }
+            public int Gift { get; set; }         //флаг подарка     
         }
 
         private List<GroupedItem> ProcessItems(List<ItemData> items, int num_doc, decimal percent, int sum)
@@ -4182,7 +4182,7 @@ namespace Cash8
             {
                 // Проверка на целочисленность Quantity
                 if (item.Quantity != Math.Floor(item.Quantity))
-                    throw new ArgumentException("Quantity must be integer value");
+                    throw new ArgumentException("Количество должно быть целым числом");
 
                 int quantity = (int)item.Quantity;
 
@@ -5055,10 +5055,10 @@ namespace Cash8
                     {
                         Code = row.Field<double>("tovar_code"),
                         TovarName = row.Field<string>("tovar_name"),
-                        CharName = row.Field<string>("characteristic_name"),
-                        CharGuid = row.Field<string>("characteristic_code"),
+                        CharName = row.Field<string>("characteristic_name") ?? string.Empty,
+                        CharGuid = row.Field<string>("characteristic_code") ?? string.Empty,
                         Price = row.Field<decimal>("price"),
-                        Quantity = row.Field<double>("quantity")
+                        Quantity = row.Field<double>("quantity")                      //Convert.ToDouble(row["quantity"])
                     });
                 }
 
@@ -5189,7 +5189,7 @@ namespace Cash8
             {
                 var item = flatItems[i];
                 // Определение, является ли текущий товар подарком
-                bool isGift = (i + 1) % sum == 0;
+                bool isGift = (i % sum) == 0; // Изменено условие: теперь подарок выдается с первой позиции
 
                 // Расчет скидки: для подарков используется цена из акции, для остальных — цена товара
                 decimal discount = isGift
