@@ -4754,6 +4754,67 @@ namespace Cash8
             return result; 
         }
 
+        public static DataTable CreateDataTableForActions(int variant=0)
+        {
+            DataTable dt = new DataTable();
+
+            // Добавление столбцов с указанием типов данных
+            dt.Columns.Add(new DataColumn("tovar_code", typeof(double)));
+            dt.Columns.Add(new DataColumn("tovar_name", typeof(string)));
+            dt.Columns.Add(new DataColumn("characteristic_code", typeof(string)));
+            dt.Columns.Add(new DataColumn("characteristic_name", typeof(string)));
+            dt.Columns.Add(new DataColumn("quantity", typeof(double)));
+            dt.Columns.Add(new DataColumn("price", typeof(decimal)));
+            dt.Columns.Add(new DataColumn("price_at_discount", typeof(decimal)));
+            dt.Columns.Add(new DataColumn("sum_full", typeof(decimal)));
+            dt.Columns.Add(new DataColumn("sum_at_discount", typeof(decimal)));
+            dt.Columns.Add(new DataColumn("action", typeof(int)));
+            dt.Columns.Add(new DataColumn("gift", typeof(int)));
+            dt.Columns.Add(new DataColumn("action2", typeof(int)));
+            dt.Columns.Add(new DataColumn("bonus_reg", typeof(int)));
+            dt.Columns.Add(new DataColumn("bonus_action", typeof(int)));
+            dt.Columns.Add(new DataColumn("bonus_action_b", typeof(int)));
+            dt.Columns.Add(new DataColumn("marking", typeof(string)));
+            dt.Columns.Add(new DataColumn("promo_description", typeof(string)));
+
+            // Настройка видимости столбцов
+            switch (variant)
+            {
+                case 0:
+                case 2:
+                    // Скрываем только изначально скрытые столбцы
+                    dt.Columns["characteristic_code"].ColumnMapping = MappingType.Hidden;
+                    dt.Columns["characteristic_name"].ColumnMapping = MappingType.Hidden;
+                    dt.Columns["price"].ColumnMapping = MappingType.Hidden;
+                    dt.Columns["sum_full"].ColumnMapping = MappingType.Hidden;
+                    dt.Columns["action"].ColumnMapping = MappingType.Hidden;
+                    dt.Columns["gift"].ColumnMapping = MappingType.Hidden;
+                    dt.Columns["bonus_reg"].ColumnMapping = MappingType.Hidden;
+                    dt.Columns["bonus_action"].ColumnMapping = MappingType.Hidden;
+                    dt.Columns["bonus_action_b"].ColumnMapping = MappingType.Hidden;
+                    dt.Columns["marking"].ColumnMapping = MappingType.Hidden;
+                    break;
+
+                case 1:
+                    // Скрываем все изначально скрытые столбцы + дополнительные
+                    dt.Columns["characteristic_code"].ColumnMapping = MappingType.Hidden;
+                    dt.Columns["characteristic_name"].ColumnMapping = MappingType.Hidden;
+                    dt.Columns["price"].ColumnMapping = MappingType.Hidden;
+                    dt.Columns["sum_full"].ColumnMapping = MappingType.Hidden;
+                    dt.Columns["action"].ColumnMapping = MappingType.Hidden;
+                    dt.Columns["gift"].ColumnMapping = MappingType.Hidden;
+                    dt.Columns["bonus_reg"].ColumnMapping = MappingType.Hidden;
+                    dt.Columns["bonus_action"].ColumnMapping = MappingType.Hidden;
+                    dt.Columns["bonus_action_b"].ColumnMapping = MappingType.Hidden;
+                    dt.Columns["marking"].ColumnMapping = MappingType.Hidden;
+                    dt.Columns["promo_description"].ColumnMapping = MappingType.Hidden;
+                    dt.Columns["action2"].ColumnMapping = MappingType.Hidden; // Дополнительно скрываем action2
+                    break;              
+            }
+
+            return dt;
+        }
+
 
         //public static void fiscall_print()
         //{

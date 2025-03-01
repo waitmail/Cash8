@@ -148,86 +148,88 @@ namespace Cash8
         public DataTable create_dt(ListView listView1)
         {
 
-            DataTable dt = new DataTable();
-            DataColumn tovar_code = new DataColumn();
-            tovar_code.DataType = System.Type.GetType("System.Double");
-            tovar_code.ColumnName = "tovar_code"; //listView1.Columns.Add("Код", 100, HorizontalAlignment.Left);           
-            dt.Columns.Add(tovar_code);
+            //DataTable dt = new DataTable();
+            //DataColumn tovar_code = new DataColumn();
+            //tovar_code.DataType = System.Type.GetType("System.Double");
+            //tovar_code.ColumnName = "tovar_code"; //listView1.Columns.Add("Код", 100, HorizontalAlignment.Left);           
+            //dt.Columns.Add(tovar_code);
 
-            DataColumn tovar_name = new DataColumn();
-            tovar_name.DataType = System.Type.GetType("System.String");
-            tovar_name.ColumnName = "tovar_name"; //listView1.Columns.Add("Товар", 400, HorizontalAlignment.Left);
-            dt.Columns.Add(tovar_name);
+            //DataColumn tovar_name = new DataColumn();
+            //tovar_name.DataType = System.Type.GetType("System.String");
+            //tovar_name.ColumnName = "tovar_name"; //listView1.Columns.Add("Товар", 400, HorizontalAlignment.Left);
+            //dt.Columns.Add(tovar_name);
 
-            DataColumn characteristic_code = new DataColumn();
-            characteristic_code.DataType = System.Type.GetType("System.String");
-            characteristic_code.ColumnName = "characteristic_code"; //listView1.Columns.Add("Характеристика", 400, HorizontalAlignment.Left);
-            dt.Columns.Add(characteristic_code);
+            //DataColumn characteristic_code = new DataColumn();
+            //characteristic_code.DataType = System.Type.GetType("System.String");
+            //characteristic_code.ColumnName = "characteristic_code"; //listView1.Columns.Add("Характеристика", 400, HorizontalAlignment.Left);
+            //dt.Columns.Add(characteristic_code);
 
-            DataColumn characteristic_name = new DataColumn();
-            characteristic_name.DataType = System.Type.GetType("System.String");
-            characteristic_name.ColumnName = "characteristic_name"; //listView1.Columns.Add("Характеристика", 400, HorizontalAlignment.Left);
-            dt.Columns.Add(characteristic_name);
+            //DataColumn characteristic_name = new DataColumn();
+            //characteristic_name.DataType = System.Type.GetType("System.String");
+            //characteristic_name.ColumnName = "characteristic_name"; //listView1.Columns.Add("Характеристика", 400, HorizontalAlignment.Left);
+            //dt.Columns.Add(characteristic_name);
 
-            DataColumn quantity = new DataColumn();
-            quantity.DataType = System.Type.GetType("System.Double");
-            quantity.ColumnName = "quantity"; //listView1.Columns.Add("Количество", 50, HorizontalAlignment.Right);
-            dt.Columns.Add(quantity);
+            //DataColumn quantity = new DataColumn();
+            //quantity.DataType = System.Type.GetType("System.Double");
+            //quantity.ColumnName = "quantity"; //listView1.Columns.Add("Количество", 50, HorizontalAlignment.Right);
+            //dt.Columns.Add(quantity);
 
-            DataColumn price = new DataColumn();
-            price.DataType = System.Type.GetType("System.Decimal");
-            price.ColumnName = "price"; //listView1.Columns.Add("Цена", 50, HorizontalAlignment.Right);
-            dt.Columns.Add(price);
+            //DataColumn price = new DataColumn();
+            //price.DataType = System.Type.GetType("System.Decimal");
+            //price.ColumnName = "price"; //listView1.Columns.Add("Цена", 50, HorizontalAlignment.Right);
+            //dt.Columns.Add(price);
 
-            DataColumn price_at_discount = new DataColumn();
-            price_at_discount.DataType = System.Type.GetType("System.Decimal");
-            price_at_discount.ColumnName = "price_at_discount"; //listView1.Columns.Add("Цена со скидкой", 50, HorizontalAlignment.Right);
-            dt.Columns.Add(price_at_discount);
+            //DataColumn price_at_discount = new DataColumn();
+            //price_at_discount.DataType = System.Type.GetType("System.Decimal");
+            //price_at_discount.ColumnName = "price_at_discount"; //listView1.Columns.Add("Цена со скидкой", 50, HorizontalAlignment.Right);
+            //dt.Columns.Add(price_at_discount);
 
-            DataColumn sum_full = new DataColumn();
-            sum_full.DataType = System.Type.GetType("System.Decimal");
-            sum_full.ColumnName = "sum_full"; //listView1.Columns.Add("Сумма", 50, HorizontalAlignment.Right);
-            dt.Columns.Add(sum_full);
+            //DataColumn sum_full = new DataColumn();
+            //sum_full.DataType = System.Type.GetType("System.Decimal");
+            //sum_full.ColumnName = "sum_full"; //listView1.Columns.Add("Сумма", 50, HorizontalAlignment.Right);
+            //dt.Columns.Add(sum_full);
 
-            DataColumn sum_at_discount = new DataColumn();
-            sum_at_discount.DataType = System.Type.GetType("System.Decimal");
-            sum_at_discount.ColumnName = "sum_at_discount"; //listView1.Columns.Add("Сумма со скидкой", 50, HorizontalAlignment.Right);
-            dt.Columns.Add(sum_at_discount);
+            //DataColumn sum_at_discount = new DataColumn();
+            //sum_at_discount.DataType = System.Type.GetType("System.Decimal");
+            //sum_at_discount.ColumnName = "sum_at_discount"; //listView1.Columns.Add("Сумма со скидкой", 50, HorizontalAlignment.Right);
+            //dt.Columns.Add(sum_at_discount);
 
-            DataColumn action = new DataColumn();
-            action.DataType = System.Type.GetType("System.Int32");
-            action.ColumnName = "action"; //listView1.Columns.Add("Акция", 50, HorizontalAlignment.Right);
-            dt.Columns.Add(action);
+            //DataColumn action = new DataColumn();
+            //action.DataType = System.Type.GetType("System.Int32");
+            //action.ColumnName = "action"; //listView1.Columns.Add("Акция", 50, HorizontalAlignment.Right);
+            //dt.Columns.Add(action);
 
-            DataColumn gift = new DataColumn();
-            gift.DataType = System.Type.GetType("System.Int32");
-            gift.ColumnName = "gift"; //listView1.Columns.Add("Подарок", 50, HorizontalAlignment.Right);
-            dt.Columns.Add(gift);
+            //DataColumn gift = new DataColumn();
+            //gift.DataType = System.Type.GetType("System.Int32");
+            //gift.ColumnName = "gift"; //listView1.Columns.Add("Подарок", 50, HorizontalAlignment.Right);
+            //dt.Columns.Add(gift);
 
-            DataColumn action2 = new DataColumn();
-            action2.DataType = System.Type.GetType("System.Int32");
-            action2.ColumnName = "action2"; //listView1.Columns.Add("Акция2", 50, HorizontalAlignment.Right);
-            dt.Columns.Add(action2);
+            //DataColumn action2 = new DataColumn();
+            //action2.DataType = System.Type.GetType("System.Int32");
+            //action2.ColumnName = "action2"; //listView1.Columns.Add("Акция2", 50, HorizontalAlignment.Right);
+            //dt.Columns.Add(action2);
 
-            DataColumn bonus_reg = new DataColumn();
-            bonus_reg.DataType = System.Type.GetType("System.Int32");
-            bonus_reg.ColumnName = "bonus_reg"; //listView1.Columns.Add("Акция2", 50, HorizontalAlignment.Right);
-            dt.Columns.Add(bonus_reg);
+            //DataColumn bonus_reg = new DataColumn();
+            //bonus_reg.DataType = System.Type.GetType("System.Int32");
+            //bonus_reg.ColumnName = "bonus_reg"; //listView1.Columns.Add("Акция2", 50, HorizontalAlignment.Right);
+            //dt.Columns.Add(bonus_reg);
 
-            DataColumn bonus_action = new DataColumn();
-            bonus_action.DataType = System.Type.GetType("System.Int32");
-            bonus_action.ColumnName = "bonus_action"; //listView1.Columns.Add("Акция2", 50, HorizontalAlignment.Right);
-            dt.Columns.Add(bonus_action);
+            //DataColumn bonus_action = new DataColumn();
+            //bonus_action.DataType = System.Type.GetType("System.Int32");
+            //bonus_action.ColumnName = "bonus_action"; //listView1.Columns.Add("Акция2", 50, HorizontalAlignment.Right);
+            //dt.Columns.Add(bonus_action);
 
-            DataColumn bonus_action_b = new DataColumn();
-            bonus_action_b.DataType = System.Type.GetType("System.Int32");
-            bonus_action_b.ColumnName = "bonus_action_b"; //listView1.Columns.Add("Акция2", 50, HorizontalAlignment.Right);
-            dt.Columns.Add(bonus_action_b);
+            //DataColumn bonus_action_b = new DataColumn();
+            //bonus_action_b.DataType = System.Type.GetType("System.Int32");
+            //bonus_action_b.ColumnName = "bonus_action_b"; //listView1.Columns.Add("Акция2", 50, HorizontalAlignment.Right);
+            //dt.Columns.Add(bonus_action_b);
 
-            DataColumn marking = new DataColumn();
-            marking.DataType = System.Type.GetType("System.String");
-            marking.ColumnName = "marking"; //listView1.Columns.Add("Акция2", 50, HorizontalAlignment.Right);
-            dt.Columns.Add(marking);
+            //DataColumn marking = new DataColumn();
+            //marking.DataType = System.Type.GetType("System.String");
+            //marking.ColumnName = "marking"; //listView1.Columns.Add("Акция2", 50, HorizontalAlignment.Right);
+            //dt.Columns.Add(marking);
+
+            dt = MainStaticClass.CreateDataTableForActions();
 
 
             foreach (ListViewItem lvi in listView1.Items)
@@ -4207,11 +4209,12 @@ namespace Cash8
             for (int i = 0; i < flatItems.Count; i++)
             {
                 var item = flatItems[i];
-                bool applyDiscount = (i % sum) == 0 && flatItems.Count >= sum; // Скидка применяется только при наличии достаточного количества товаров
+                // Условие для применения скидки: позиция 1, 3, 5 и т.д., и общее количество товаров достаточно для выполнения условия кратности
+                bool applyDiscount = (i % 2 == 0) && (flatItems.Count >= sum * ((i / 2) + 1));
 
                 decimal discount = applyDiscount
-                    ? Math.Round(item.Price * (1 - percent / 100m), 2)
-                    : item.Price;
+                    ? Math.Round(item.Price * (1 - percent / 100m), 2) // Применяем скидку
+                    : item.Price; // Без скидки
 
                 // Создаем новый GroupedItem для каждого товара
                 var groupedItem = new GroupedItem
@@ -4222,7 +4225,7 @@ namespace Cash8
                     CharGuid = item.CharGuid,
                     Price = item.Price,
                     Discount = discount,
-                    Action = applyDiscount ? num_doc : 0,
+                    Action = applyDiscount ? num_doc : 0, // Указываем, применяется ли скидка
                     Count = 1.0,
                     SumFull = item.Price,
                     SumDiscount = discount
@@ -5185,7 +5188,7 @@ namespace Cash8
             {
                 var item = flatItems[i];
                 // Определение, является ли текущий товар подарком
-                bool isGift = (i % sum) == 0 && flatItems.Count >= sum; // Подарок выдается на каждую sum-ую позицию, начиная с первой, если товаров достаточно
+                bool isGift = (i % 2 == 0) && (flatItems.Count >= sum * ((i / 2) + 1)); // Подарок выдается на 1, 3, 5 и т.д. позиции, если общее количество товаров достаточно
 
                 // Расчет цены: для подарков используется цена из акции, для остальных — цена товара
                 decimal price = isGift

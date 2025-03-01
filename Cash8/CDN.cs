@@ -538,7 +538,7 @@ namespace Cash8
                         {
                             if (answer_check_mark.codes[0].groupIds != null)
                             {
-                                if ((answer_check_mark.codes[0].groupIds[0] != 23) && (answer_check_mark.codes[0].groupIds[0] != 8))
+                                if ((answer_check_mark.codes[0].groupIds[0] != 23) && (answer_check_mark.codes[0].groupIds[0] != 8)&& (answer_check_mark.codes[0].groupIds[0] != 13))
                                 {
                                     //MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + " Вы не являетесь владельцем " + s, "CDN проверка");
                                     sb.AppendLine("Вы не являетесь владельцем!".ToUpper());

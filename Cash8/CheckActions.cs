@@ -303,7 +303,7 @@ namespace Cash8
             dt.Columns.Add(characteristic_name);
 
             DataColumn quantity = new DataColumn();
-            quantity.DataType = System.Type.GetType("System.Decimal");
+            quantity.DataType = System.Type.GetType("System.Double");
             quantity.ColumnName = "quantity"; //listView1.Columns.Add("Количество", 50, HorizontalAlignment.Right);
             dt.Columns.Add(quantity);
 
@@ -373,7 +373,7 @@ namespace Cash8
             marking.ColumnName = "marking"; //listView1.Columns.Add("Акция2", 50, HorizontalAlignment.Right);
             marking.ColumnMapping = MappingType.Hidden;
             dt.Columns.Add(marking);
-            
+
             DataColumn promo_description = new DataColumn();
             promo_description.DataType = System.Type.GetType("System.String");
             promo_description.ColumnName = "promo_description"; //listView1.Columns.Add("Акция2", 50, HorizontalAlignment.Right);
@@ -382,8 +382,9 @@ namespace Cash8
                 promo_description.ColumnMapping = MappingType.Hidden;
             }
             dt.Columns.Add(promo_description);
-            
-            return dt;
+
+            //return dt;
+            return MainStaticClass.CreateDataTableForActions(variant);
         }
 
         /// <summary>
