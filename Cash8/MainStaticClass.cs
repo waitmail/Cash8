@@ -17,6 +17,9 @@ using Newtonsoft.Json;
 using Atol.Drivers10.Fptr;
 using AtolConstants = Atol.Drivers10.Fptr.Constants;
 using System.IO.Ports;
+using System.Diagnostics;
+using System.Reflection;
+//using System.Text.Json;
 
 
 namespace Cash8
@@ -2145,18 +2148,127 @@ namespace Cash8
             }
         }
 
+        static object GetErrorInfo(Exception ex)
+        {
+            var stackTrace = new StackTrace(ex, true);
+            var frame = stackTrace.GetFrame(0); // Получаем первый кадр стека
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="errorMessage"></param>
-        /// <param name="methodName"></param>
-        /// <param name="numDoc"></param>
-        /// <param name="cashDeskNumber"></param>
-        /// <param name="description"></param>
-        /// <returns></returns>
+            if (frame == null)
+                return new { Error = "Не удалось получить информацию о стеке вызовов." };
+
+            // Получаем метод, в котором произошло исключение
+            var method = frame.GetMethod();           
+
+            // Формируем объект с информацией об ошибке
+            return new
+            {
+                ErrorMessage = ex.Message,
+                StackTrace = ex.StackTrace,
+                FileName = frame.GetFileName(),
+                LineNumber = frame.GetFileLineNumber(),
+                MethodName = method?.Name,                
+            };
+        }
+    
+
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="errorMessage"></param>
+    /// <param name="methodName"></param>
+    /// <param name="numDoc"></param>
+    /// <param name="cashDeskNumber"></param>
+    /// <param name="description"></param>
+    /// <returns></returns>
+    public static void WriteRecordErrorLog(
+     //string errorMessage,
+      Exception exception,
+     string methodName,
+     long numDoc,
+     short cashDeskNumber,
+     string description)
+        {
+            
+            string errorMessage = JsonConvert.SerializeObject(GetErrorInfo(exception), Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            // Валидация числовых параметров
+            if (numDoc < 0)
+                throw new ArgumentOutOfRangeException(nameof(numDoc), "Номер документа должен быть положительным числом");
+
+            if (cashDeskNumber <= 0)
+                throw new ArgumentOutOfRangeException(nameof(cashDeskNumber), "Номер кассы должен быть положительным числом");
+
+            // Обработка строковых параметров
+            string truncatedErrorMessage = errorMessage.Trim();
+            string truncatedMethodName = TruncateString(methodName, 255);
+            string truncatedDescription = TruncateString(description, 255);
+
+            const string sql = @"
+        INSERT INTO errors_log(
+            error_message,
+            date_time_record,
+            method_name,
+            num_doc,            
+            description
+        )
+        VALUES(
+            @errorMessage,
+            @dateTimeRecord,
+            @methodName,
+            @numDoc,            
+            @description
+        )";
+
+            try
+            {
+                using (var conn = MainStaticClass.NpgsqlConn())
+                {
+                    conn.Open();
+                    using (var command = new NpgsqlCommand(sql, conn))
+                    {
+                        command.Parameters.Add("@errorMessage", NpgsqlTypes.NpgsqlDbType.Text).Value = (object)truncatedErrorMessage ?? DBNull.Value;
+                        command.Parameters.Add("@dateTimeRecord", NpgsqlTypes.NpgsqlDbType.Timestamp).Value = DateTime.Now;
+                        command.Parameters.Add("@methodName", NpgsqlTypes.NpgsqlDbType.Text).Value = (object)truncatedMethodName ?? DBNull.Value;
+                        command.Parameters.Add("@numDoc", NpgsqlTypes.NpgsqlDbType.Bigint).Value = numDoc;
+                        command.Parameters.Add("@cashDeskNumber", NpgsqlTypes.NpgsqlDbType.Smallint).Value = cashDeskNumber;
+                        command.Parameters.Add("@description", NpgsqlTypes.NpgsqlDbType.Text).Value = (object)truncatedDescription ?? DBNull.Value;
+
+                        command.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Логируем оригинальные значения (до обрезки)
+                var logMessage = new StringBuilder()
+                    .AppendLine($"Дата: {DateTime.Now}")
+                    .AppendLine($"Ошибка: {ex.Message}")
+                    .AppendLine($"StackTrace: {ex.StackTrace}")
+                    .AppendLine("Параметры:")
+                    .AppendLine($"- Сообщение: {exception.Message}")
+                    .AppendLine($"- Метод: {methodName}")
+                    .AppendLine($"- Документ: {numDoc}")
+                    .AppendLine($"- Касса: {cashDeskNumber}")
+                    .AppendLine($"- Описание: {description}")
+                    .AppendLine(new string('-', 50))
+                    .ToString();
+
+                var logPath = Path.Combine(Application.StartupPath, "ErrorsLog.txt");
+
+                try
+                {
+                    File.AppendAllText(logPath, logMessage);
+                }
+                catch (Exception fileEx)
+                {
+                    MessageBox.Show($"Ошибка записи в лог: {fileEx.Message}");
+                    
+                }
+            }
+        }
+
         public static void WriteRecordErrorLog(
-     string errorMessage,
+      string errorMessage,             
      string methodName,
      long numDoc,
      short cashDeskNumber,
@@ -2233,7 +2345,7 @@ namespace Cash8
                 catch (Exception fileEx)
                 {
                     MessageBox.Show($"Ошибка записи в лог: {fileEx.Message}");
-                    
+
                 }
             }
         }

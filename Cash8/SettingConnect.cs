@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
-//using System.Security.Cryptography;
 using System.IO;
 using Npgsql;
-using System.Security.Cryptography;
+using System.Linq;
 
 
 namespace Cash8
@@ -148,7 +145,7 @@ namespace Cash8
             return (new UnicodeEncoding()).GetString(bytes);
         }
         void SettingConnect_Load(object sender, System.EventArgs e)
-        {           
+        {
             fileSettinConnect = File.Exists(Application.StartupPath + "/Setting.gaa");
             if (fileSettinConnect == true)//файл с параметрами есть заполнить реквизиты
             {
@@ -374,7 +371,7 @@ namespace Cash8
             List<string> queries = new List<string>();
             try
             {
-                string[] query=new string[25];
+                string[] query = new string[25];
                 queries.Add("CREATE TABLE public.tovar(code bigint NOT NULL,name character(100) COLLATE pg_catalog.default NOT NULL,    retail_price numeric(10, 2) NOT NULL,    its_deleted numeric(1, 0) NOT NULL,    nds integer,    its_certificate smallint,    percent_bonus numeric(8, 2) DEFAULT 0,    tnved character varying(10) COLLATE pg_catalog.default,    its_marked smallint,    its_excise smallint NOT NULL DEFAULT 0,CONSTRAINT tovar_pkey PRIMARY KEY (code))WITH(    OIDS = FALSE)TABLESPACE pg_default;                ALTER TABLE public.tovar                    OWNER to postgres;        COMMENT ON COLUMN public.tovar.its_excise            IS '0 - обычный товар 1 - подакцизный товар';        CREATE UNIQUE INDEX _tovar_code_    ON public.tovar USING btree    (code ASC NULLS LAST)    TABLESPACE pg_default;");
                 //queries.Add("CREATE TABLE public.tovar(    code bigint NOT NULL,    name character(100) COLLATE pg_catalog.default NOT NULL,    retail_price numeric(10, 2) NOT NULL,    its_deleted numeric(1, 0) NOT NULL,    nds integer,    its_certificate smallint,    percent_bonus numeric(8, 2) DEFAULT 0,    tnved character varying(10) COLLATE pg_catalog.default,    its_marked smallint,    its_excise smallint NOT NULL DEFAULT 0)WITH(    OIDS = FALSE)TABLESPACE pg_default;                ALTER TABLE public.tovar                    OWNER to postgres;        COMMENT ON COLUMN public.tovar.its_excise            IS '0 - обычный товар 1 - подакцизный товар';        CREATE UNIQUE INDEX _tovar_code_    ON public.tovar USING btree    (code ASC NULLS LAST, code ASC NULLS LAST, code ASC NULLS LAST, code ASC NULLS LAST)    TABLESPACE pg_default;");
                 //query[0]  = "CREATE TABLE action_clients(num_doc integer,code_client character(10))WITH (OIDS=FALSE);ALTER TABLE action_clients  OWNER TO postgres";
@@ -393,7 +390,7 @@ namespace Cash8
                 queries.Add("CREATE TABLE public.checks_header(document_number bigint,client character varying(36) COLLATE pg_catalog.default,cash_desk_number smallint NOT NULL,comment character(50) COLLATE pg_catalog.default,cash numeric(10, 2) NOT NULL,remainder numeric(10, 2),    date_time_write timestamp without time zone NOT NULL,    date_time_start timestamp without time zone NOT NULL,    discount numeric(10, 2) DEFAULT 0,    its_deleted numeric(1, 0) NOT NULL,    action_num_doc integer,    check_type smallint,    have_action boolean,    discount_it_is_sent boolean,    its_print boolean,    is_sent smallint,    cash_money numeric(10, 2),    non_cash_money numeric(10, 2),    sertificate_money numeric(10, 2),    sales_assistant character varying(11) COLLATE pg_catalog.default,    bonus_is_on smallint,    autor integer,    bonuses_it_is_written_off numeric(8, 2) DEFAULT 0,    bonuses_it_is_counted numeric(8, 2) DEFAULT 0,    sent_to_processing_center smallint DEFAULT 0,    id_transaction character varying(10) COLLATE pg_catalog.default,    id_transaction_sale character varying(10) COLLATE pg_catalog.default,    clientinfo_vatin character varying(12) COLLATE pg_catalog.default,    clientinfo_name character varying(200) COLLATE pg_catalog.default,    id_sale bigint,    requisite smallint,    viza_d smallint,    id_transaction_terminal character varying(18) COLLATE pg_catalog.default,    system_taxation smallint DEFAULT 0,    code_authorization_terminal character varying(8) COLLATE pg_catalog.default,    its_print_p boolean,    cash_money1 numeric(10, 2) DEFAULT 0,    non_cash_money1 numeric(10, 2) DEFAULT 0,    sertificate_money1 numeric(10, 2) DEFAULT 0,    guid character varying(36) COLLATE pg_catalog.default NOT NULL DEFAULT ''::character varying)WITH(    OIDS = FALSE)TABLESPACE pg_default;                ALTER TABLE public.checks_header                    OWNER to postgres;        COMMENT ON COLUMN public.checks_header.discount_it_is_sent            IS 'Данные (если начислен или списан этим документом) успешно отправлены в центр';        COMMENT ON COLUMN public.checks_header.its_print            IS 'Признак того что чек был нормально напечатан на фискальном принтере';        COMMENT ON COLUMN public.checks_header.is_sent            IS '0 - не отправлен 1 - отправлен';        COMMENT ON COLUMN public.checks_header.id_transaction            IS 'Номер транзакции в процессинговом центре бонусной программы';        COMMENT ON COLUMN public.checks_header.id_transaction_sale            IS 'Колонка ид транзакции документа продажи на основании которого вводится возврат';        COMMENT ON COLUMN public.checks_header.clientinfo_vatin            IS 'Инн покупателя при возврате';        COMMENT ON COLUMN public.checks_header.clientinfo_name            IS 'Наименования покупателя при возврате';        COMMENT ON COLUMN public.checks_header.system_taxation            IS 'Система налогообложения';        COMMENT ON COLUMN public.checks_header.code_authorization_terminal            IS 'Это служебное поле в ответе от терминала при оплате, его необходимо указывать при возврате ';        COMMENT ON COLUMN public.checks_header.its_print_p            IS 'Признако того что чек был нормально рапечатан на фискальном принтере по налогообложению патент.';        CREATE INDEX _checks_header_date_time_write_            ON public.checks_header USING btree            (date_time_write ASC NULLS LAST)    TABLESPACE pg_default;        CREATE UNIQUE INDEX checks_header_document_number_idx    ON public.checks_header USING btree    (document_number ASC NULLS LAST)    TABLESPACE pg_default;        ALTER TABLE public.checks_header            CLUSTER ON checks_header_document_number_idx;        CREATE UNIQUE INDEX cheks_header_date_time_start    ON public.checks_header USING btree    (date_time_start ASC NULLS LAST)    TABLESPACE pg_default;                    ");
                 //queries.Add("CREATE TABLE checks_table(  document_number bigint NOT NULL,  tovar_code integer NOT NULL,  quantity integer NOT NULL,  price numeric(10,2) NOT NULL,  price_at_a_discount numeric(10,2),  sum numeric(10,2) NOT NULL,  sum_at_a_discount numeric(10,2) NOT NULL,  numstr integer NOT NULL,  action_num_doc integer,   action_num_doc1 integer,  action_num_doc2 integer,  characteristic character varying(36),  bonus_standard numeric(8,2),  bonus_promotion numeric(8,2),  promotion_b_mover integer,  CONSTRAINT checks_table_tovar_code_fkey FOREIGN KEY (tovar_code)      REFERENCES tovar (code) MATCH SIMPLE      ON UPDATE NO ACTION ON DELETE NO ACTION)WITH (  OIDS=FALSE);ALTER TABLE checks_table  OWNER TO postgres;COMMENT ON COLUMN checks_table.action_num_doc IS 'сюда пишется номер акционного документа, маркер чтобы не был начислен дисконт';COMMENT ON COLUMN checks_table.action_num_doc1 IS 'когда выдается подарок сюда пишется номер акционного документа';COMMENT ON COLUMN checks_table.action_num_doc2 IS 'сюда пишется номер акционного документа, маркер того чтобы данный товар участвовал в одной акции';COMMENT ON COLUMN checks_table.bonus_standard IS 'бонусы, начисленные по стандартным значениям для производителей/марок/товаров';COMMENT ON COLUMN checks_table.bonus_promotion IS 'бонусы, начисленные по бонусным акциям';COMMENT ON COLUMN checks_table.promotion_b_mover IS 'номер акции, указывается для товаров-инициаторов сработки';");
                 queries.Add("CREATE TABLE public.checks_table(document_number bigint NOT NULL,tovar_code bigint NOT NULL,quantity integer NOT NULL,price numeric(10,2) NOT NULL,price_at_a_discount numeric(10,2),sum numeric(10,2) NOT NULL,sum_at_a_discount numeric(10,2) NOT NULL,numstr integer NOT NULL,action_num_doc integer,action_num_doc1 integer,action_num_doc2 integer,characteristic character varying(36) COLLATE pg_catalog.default,bonus_standard numeric(8,2),bonus_promotion numeric(8,2),promotion_b_mover integer,item_marker character varying(200) COLLATE pg_catalog.default,guid character varying(36) COLLATE pg_catalog.default NOT NULL DEFAULT ''::character varying,    CONSTRAINT checks_table_tovar_code_fkey FOREIGN KEY (tovar_code) REFERENCES public.tovar(code) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION )WITH(OIDS = FALSE)TABLESPACE pg_default; ALTER TABLE public.checks_table OWNER to postgres;COMMENT ON COLUMN public.checks_table.action_num_doc IS 'сюда пишется номер акционного документа, маркер чтобы не был начислен дисконт';COMMENT ON COLUMN public.checks_table.action_num_doc1 IS 'когда выдается подарок сюда пишется номер акционного документа';COMMENT ON COLUMN public.checks_table.action_num_doc2 IS 'сюда пишется номер акционного документа, маркер того чтобы данный товар участвовал в одной акции'; COMMENT ON COLUMN public.checks_table.bonus_standard IS 'бонусы, начисленные по стандартным значениям для производителей/марок/товаров';COMMENT ON COLUMN public.checks_table.bonus_promotion IS 'бонусы, начисленные по бонусным акциям';COMMENT ON COLUMN public.checks_table.promotion_b_mover IS 'номер акции, указывается для товаров-инициаторов сработки';");
-                
+
                 queries.Add("CREATE TABLE discount_types(code integer NOT NULL,  discount_percent numeric(10,2) NOT NULL,  transition_sum numeric(10,2) NOT NULL,  name character(10) NOT NULL)WITH (  OIDS=FALSE);ALTER TABLE discount_types  OWNER TO postgres;CREATE UNIQUE INDEX _discount_types_  ON discount_types  USING btree  (code);");
                 //queries.Add("CREATE TABLE clients(  name character(100) NOT NULL,  sum numeric(10,2),  discount_types_code integer NOT NULL,  code character(13) NOT NULL,  date_of_birth date,  its_work smallint,  phone character varying(13),  attribute character varying(1),  bonus_is_on smallint,  CONSTRAINT clients_discount_types_code_fkey FOREIGN KEY (discount_types_code)      REFERENCES discount_types (code) MATCH SIMPLE      ON UPDATE NO ACTION ON DELETE NO ACTION)WITH (  OIDS=FALSE);ALTER TABLE clients  OWNER TO postgres;COMMENT ON COLUMN clients.bonus_is_on IS 'Бонусная система включена - 1, выключена - иначе.';CREATE UNIQUE INDEX _clients_code_  ON clients  USING btree  (code COLLATE pg_catalog.default);");
                 queries.Add("CREATE TABLE public.clients(name character(100) COLLATE pg_catalog.default NOT NULL,sum numeric(10,2),discount_types_code integer NOT NULL,code character varying(13) COLLATE pg_catalog.default NOT NULL,date_of_birth date,its_work smallint,phone character varying(13) COLLATE pg_catalog.default,attribute character varying(1) COLLATE pg_catalog.default,bonus_is_on smallint,notify_security smallint DEFAULT 0,reason_for_blocking character varying(500) COLLATE pg_catalog.default,CONSTRAINT clients_discount_types_code_fkey FOREIGN KEY (discount_types_code) REFERENCES public.discount_types(code) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION) WITH(OIDS = FALSE) TABLESPACE pg_default; ALTER TABLE public.clients OWNER to postgres;COMMENT ON COLUMN public.clients.bonus_is_on IS 'Бонусная система включена - 1, выключена - иначе.';CREATE UNIQUE INDEX _clients_code_ ON public.clients USING btree (code COLLATE pg_catalog.default ASC NULLS LAST) TABLESPACE pg_default;");
@@ -423,10 +420,10 @@ namespace Cash8
                 queries.Add("CREATE TABLE deleted_items(num_doc bigint NOT NULL,num_cash smallint NOT NULL,date_time_start timestamp without time zone NOT NULL,date_time_action timestamp without time zone NOT NULL,tovar integer NOT NULL,quantity integer NOT NULL,type_of_operation smallint NOT NULL)WITH(    OIDS = FALSE)TABLESPACE pg_default;        ALTER TABLE public.deleted_items            OWNER to postgres");
                 queries.Add("CREATE TABLE public.client_with_changed_status_to_send(client character varying(10) COLLATE pg_catalog.default NOT NULL,date_change timestamp without time zone NOT NULL,new_phone_number character varying(10) COLLATE pg_catalog.default,   CONSTRAINT client_with_changed_status_to_send_pkey PRIMARY KEY (client) )WITH(    OIDS = FALSE)TABLESPACE pg_default;        ALTER TABLE public.client_with_changed_status_to_send OWNER to postgres");
 
-                conn.Open();               
+                conn.Open();
                 trans = conn.BeginTransaction();
 
-                foreach(string str in queries)
+                foreach (string str in queries)
                 {
                     command = new NpgsqlCommand(str, conn);
                     command.Transaction = trans;
@@ -458,7 +455,7 @@ namespace Cash8
             CreateDataTables();
             add_field_Click(null, null);
         }
-        
+
         /// <summary>
         /// Проверка и вставка
         /// 13 кода прав
@@ -480,11 +477,11 @@ namespace Cash8
                 }
                 conn.Close();
             }
-            catch(NpgsqlException ex)
+            catch (NpgsqlException ex)
             {
                 //MessageBox.Show(ex.Message,query);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 //MessageBox.Show(ex.Message, query);
             }
@@ -673,7 +670,7 @@ namespace Cash8
             }
             finally
             {
-                if(conn.State== ConnectionState.Open)
+                if (conn.State == ConnectionState.Open)
                 {
                     conn.Close();
                 }
@@ -710,7 +707,7 @@ namespace Cash8
                 command.Transaction = tran;
                 command.ExecuteNonQuery();
 
-                query = " UPDATE constants SET last_date_download_bonus_clients ='"+old_value.ToString("yyyy-MM-dd HH:mm:ss")+"'";
+                query = " UPDATE constants SET last_date_download_bonus_clients ='" + old_value.ToString("yyyy-MM-dd HH:mm:ss") + "'";
                 command = new NpgsqlCommand(query, conn);
                 command.Transaction = tran;
                 command.ExecuteNonQuery();
@@ -737,46 +734,46 @@ namespace Cash8
 
         private void check_and_chage_data_type_persent_bonus()
         {
-             NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
-             NpgsqlTransaction tran = null;
-             try
-             {
-                 conn.Open();
-                 tran = conn.BeginTransaction();
-                 string query = "SELECT data_type FROM information_schema.columns where table_name = 'tovar' AND column_name = 'percent_bonus'";
-                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
-                 if (command.ExecuteScalar().ToString().Trim() == "smallint")//старый тип колонки в бд, меняем на новый
-                 {
-                     query = "ALTER TABLE tovar DROP COLUMN percent_bonus";
-                     command = new NpgsqlCommand(query, conn);
-                     command.Transaction = tran;
-                     command.ExecuteNonQuery();
-                     query = "ALTER TABLE tovar ADD COLUMN percent_bonus numeric(8,2);ALTER TABLE tovar ALTER COLUMN percent_bonus SET DEFAULT 0;UPDATE tovar SET percent_bonus=0";
-                     command = new NpgsqlCommand(query, conn);
-                     command.Transaction = tran;
-                     command.ExecuteNonQuery(); 
-                 }
-                 tran.Commit();
-                 conn.Close();
-                 command.Dispose();
-             }
-             catch
-             {
-                 if (tran != null)
-                 {
-                     tran.Rollback();
-                 }
-             }
-             finally
-             {
-                 if (conn.State == ConnectionState.Open)
-                 {
-                     conn.Close();
-                 }
-             }
+            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+            NpgsqlTransaction tran = null;
+            try
+            {
+                conn.Open();
+                tran = conn.BeginTransaction();
+                string query = "SELECT data_type FROM information_schema.columns where table_name = 'tovar' AND column_name = 'percent_bonus'";
+                NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                if (command.ExecuteScalar().ToString().Trim() == "smallint")//старый тип колонки в бд, меняем на новый
+                {
+                    query = "ALTER TABLE tovar DROP COLUMN percent_bonus";
+                    command = new NpgsqlCommand(query, conn);
+                    command.Transaction = tran;
+                    command.ExecuteNonQuery();
+                    query = "ALTER TABLE tovar ADD COLUMN percent_bonus numeric(8,2);ALTER TABLE tovar ALTER COLUMN percent_bonus SET DEFAULT 0;UPDATE tovar SET percent_bonus=0";
+                    command = new NpgsqlCommand(query, conn);
+                    command.Transaction = tran;
+                    command.ExecuteNonQuery();
+                }
+                tran.Commit();
+                conn.Close();
+                command.Dispose();
+            }
+            catch
+            {
+                if (tran != null)
+                {
+                    tran.Rollback();
+                }
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
         }
 
-        
+
         private void check_and_chage_data_type_bonuses_it_is_written_off()
         {
             NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
@@ -872,11 +869,11 @@ namespace Cash8
             {
                 conn.Open();
                 tran = conn.BeginTransaction();
-                string query = "SELECT data_type FROM information_schema.columns where table_name = 'checks_header' AND column_name = 'autor'";
+                string query = "SELECT data_type FROM information_schema.columns where table_name = 'errors_log' AND column_name = 'error_message'";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
-                if (command.ExecuteScalar().ToString().Trim() != "integer")//старый тип колонки в бд, меняем на новый
+                if (command.ExecuteScalar().ToString().Trim() != "text")//старый тип колонки в бд, меняем на новый
                 {
-                    query = "ALTER TABLE checks_header ADD COLUMN autor_temp integer;UPDATE checks_header SET autor_temp = CAST(autor AS Integer);ALTER TABLE checks_header DROP COLUMN autor;ALTER TABLE checks_header RENAME COLUMN autor_temp TO autor;";
+                    query = "ALTER TABLE public.errors_log ALTER COLUMN error_message TYPE text COLLATE pg_catalog.default";
                     command = new NpgsqlCommand(query, conn);
                     command.Transaction = tran;
                     command.ExecuteNonQuery();
@@ -911,7 +908,7 @@ namespace Cash8
                 tran = conn.BeginTransaction();
                 string query = "SELECT COUNT(*) FROM date_sync";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
-                if (Convert.ToInt16(command.ExecuteScalar())==0)//в таблицен нет записей, далее там только обновление, поэтому сделаем 1 запись
+                if (Convert.ToInt16(command.ExecuteScalar()) == 0)//в таблицен нет записей, далее там только обновление, поэтому сделаем 1 запись
                 {
                     query = "INSERT INTO date_sync(tovar, client) VALUES ('01.01.2000', '01.01.2000');";
                     command = new NpgsqlCommand(query, conn);
@@ -937,55 +934,10 @@ namespace Cash8
                     conn.Dispose();
                 }
             }
-        }
+        }        
 
-
-        /// <summary>
-        /// Если не заполнена новая система 
-        /// налогообложения то попытаться заполнить 
-        /// его значением из старой схемы
-        /// если считывается истина то оогда магазин работает по усн
-        /// </summary>
-        //private void check_system_taxation()
-        //{
-        //    if (MainStaticClass.SystemTaxation == 0)//Система налообложения не определена
-        //    {
-        //        NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
-        //        try
-        //        {
-        //            conn.Open();
-        //            string query = "SELECT usn_income_out_come FROM constants";
-        //            NpgsqlCommand command = new NpgsqlCommand(query, conn);
-        //            bool result = Convert.ToBoolean(command.ExecuteScalar());
-        //            if (!result)
-        //            {
-        //                query = "UPDATE constants SET system_taxation = 1";
-        //            }
-        //            else
-        //            {
-        //                query = "UPDATE constants SET system_taxation = 2";
-        //            }
-
-        //            command = new NpgsqlCommand(query, conn);
-        //            command.ExecuteNonQuery();
-        //            command.Dispose();
-        //        }
-        //        catch (NpgsqlException ex)
-        //        {
-        //            MessageBox.Show("Ошибка при считывании системы налогообложения по старой схеме, проверьте константы, в частности ситстему налогообложения  "+ex.Message );
-        //        }
-        //        finally
-        //        {
-        //            if (conn.State == ConnectionState.Open)
-        //            {
-        //                conn.Close();
-        //            }
-        //        }
-        //    }                        
-        //}
-                     
         public void add_field_Click(object sender, EventArgs e)
-        {            
+        {
             List<string> queries = new List<string>();
 
             //queries.Add("CREATE TABLE failed_input_phone(client_code character varying(10),  datetime_input timestamp without time zone)WITH (OIDS=FALSE);ALTER TABLE failed_input_phone  OWNER TO postgres");
@@ -1081,7 +1033,7 @@ namespace Cash8
             queries.Add("CREATE INDEX _client_phone_ ON public.clients USING btree(phone COLLATE pg_catalog.default ASC NULLS LAST) TABLESPACE pg_default;");
             queries.Add("CREATE INDEX _time_event_ ON public.logs USING btree (time_event ASC NULLS LAST) TABLESPACE pg_default;");
             queries.Add("ALTER TABLE public.logs ALTER COLUMN description TYPE text COLLATE pg_catalog.default;");
-                       //ALTER TABLE имя_таблицы ALTER COLUMN имя_столбца TYPE text;
+            //ALTER TABLE имя_таблицы ALTER COLUMN имя_столбца TYPE text;
             queries.Add("ALTER TABLE checks_header ALTER COLUMN autor TYPE character varying (12) USING autor::character varying(12);");
             queries.Add("ALTER TABLE users ALTER COLUMN code TYPE character varying (12) USING code::character varying(12);");
             queries.Add("ALTER TABLE public.tovar ADD COLUMN cdn_check boolean NOT NULL DEFAULT false;");
@@ -1095,22 +1047,23 @@ namespace Cash8
             queries.Add("ALTER TABLE public.constants ADD COLUMN variant_connect_fn smallint NOT NULL DEFAULT 0;");
             queries.Add("ALTER TABLE public.constants ADD COLUMN fn_ipaddr character varying(20) COLLATE pg_catalog.default;");
             queries.Add("ALTER TABLE checks_header ALTER COLUMN id_sale TYPE character varying(36) USING id_sale::character varying(36)");
-            queries.Add("ALTER TABLE public.constants    ADD COLUMN acquiring_bank smallint DEFAULT 0;");
+            queries.Add("ALTER TABLE public.constants ADD COLUMN acquiring_bank smallint DEFAULT 0;");
             queries.Add("ALTER TABLE public.constants ADD COLUMN do_not_prompt_marking_code boolean NOT NULL DEFAULT false; COMMENT ON COLUMN public.constants.do_not_prompt_marking_code IS 'Не запрашивать код марикровки';");
             queries.Add("CREATE TABLE IF NOT EXISTS public.cdn_log (num_cash smallint NOT NULL,date timestamp without time zone NOT NULL,cdn_answer character varying COLLATE pg_catalog.default NOT NULL,numdoc character varying COLLATE pg_catalog.default,is_sent smallint DEFAULT 0)WITH(    OIDS = FALSE)TABLESPACE pg_default;        ALTER TABLE public.cdn_log            OWNER to postgres; COMMENT ON COLUMN public.cdn_log.is_sent    IS '0 - не отправлен 1 - отправлен'; ");
-            queries.Add("ALTER TABLE public.cdn_log ADD COLUMN mark character varying(300) COLLATE pg_catalog.default;");            
+            queries.Add("ALTER TABLE public.cdn_log ADD COLUMN mark character varying(300) COLLATE pg_catalog.default;");
             queries.Add("ALTER TABLE public.cdn_log ADD COLUMN status smallint NOT NULL DEFAULT 0;COMMENT ON COLUMN public.cdn_log.status IS '1 - Ответ от cdn 2 - Отладочная информация 3 - Ошибка при работе с CDN';");
             queries.Add("CREATE TABLE IF NOT EXISTS public.cdn_cash(host character varying(100) COLLATE pg_catalog.default,latensy bigint,date timestamp without time zone)WITH(OIDS = FALSE)TABLESPACE pg_default; ALTER TABLE public.cdn_cash OWNER to postgres;");
             queries.Add("ALTER TABLE public.constants ADD COLUMN constant_conversion_to_kilograms integer NOT NULL DEFAULT 0;");
-            queries.Add("CREATE TABLE IF NOT EXISTS public.errors_log(error_message character varying(255) COLLATE pg_catalog.default,date_time_record timestamp without time zone,num_doc bigint,method_name character varying(255) COLLATE pg_catalog.default,description character varying(255) COLLATE pg_catalog.default)WITH(OIDS = FALSE)TABLESPACE pg_default;ALTER TABLE public.errors_log OWNER to postgres;");
+            queries.Add("CREATE TABLE IF NOT EXISTS public.errors_log(error_message text COLLATE pg_catalog.default,date_time_record timestamp without time zone,num_doc bigint,method_name character varying(255) COLLATE pg_catalog.default,description character varying(255) COLLATE pg_catalog.default)WITH(OIDS = FALSE)TABLESPACE pg_default;ALTER TABLE public.errors_log OWNER to postgres;");
             queries.Add("ALTER TABLE public.tovar ADD COLUMN refusal_of_marking boolean NOT NULL DEFAULT false;");
-                
-                foreach (string str in queries)
+            //queries.Add("ALTER TABLE public.errors_log ALTER COLUMN error_message TYPE text COLLATE pg_catalog.default");
+
+            foreach (string str in queries)
             {
                 append_column(str);
             }
 
-            //check_and_correct();
+            check_and_correct();
             check_and_correct_date_sync();
             //if (MainStaticClass.CashDeskNumber != 9)
             //{
@@ -1118,6 +1071,101 @@ namespace Cash8
             //}
 
             MessageBox.Show(" Дополнительные колонки добавлены ");
+        }
+
+        private static void CheckAndCorrectValues(Dictionary<string, object> data, Dictionary<string, Type> expectedTypes)
+        {
+            foreach (var key in data.Keys.ToList()) // Используем ToList для избежания модификации коллекции во время итерации
+            {
+                if (expectedTypes.ContainsKey(key))
+                {
+                    var expectedType = expectedTypes[key];
+                    var currentValue = data[key];
+
+                    // Если тип значения не соответствует ожидаемому, пытаемся преобразовать
+                    if (currentValue.GetType() != expectedType)
+                    {
+                        try
+                        {
+                            data[key] = Convert.ChangeType(currentValue, expectedType);
+                        }
+                        catch
+                        {
+                            // Если преобразование не удалось, устанавливаем значение по умолчанию
+                            data[key] = GetDefaultValue(expectedType);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Возвращает значение по умолчанию для указанного типа.
+        /// </summary>
+        private static object GetDefaultValue(Type type)
+        {
+            if (type.IsValueType)
+            {
+                return Activator.CreateInstance(type);
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Проверяет тип колонки в таблице PostgreSQL и изменяет его, если он не соответствует ожидаемому.
+        /// </summary>
+        /// <param name="tableName">Имя таблицы.</param>
+        /// <param name="columnName">Имя колонки.</param>
+        /// <param name="expectedType">Ожидаемый тип данных (например, "integer").</param>
+        private static void CheckAndCorrectColumnType(string tableName, string columnName, string expectedType)
+        {
+            using (var conn = MainStaticClass.NpgsqlConn())
+            {
+                conn.Open();
+                using (var tran = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        // Проверяем текущий тип колонки
+                        var query = $@"
+                        SELECT data_type 
+                        FROM information_schema.columns 
+                        WHERE table_name = @tableName AND column_name = @columnName;";
+
+                        using (var cmd = new NpgsqlCommand(query, conn, tran))
+                        {
+                            cmd.Parameters.AddWithValue("@tableName", tableName);
+                            cmd.Parameters.AddWithValue("@columnName", columnName);
+
+                            var currentType = cmd.ExecuteScalar()?.ToString();
+
+                            // Если тип не соответствует ожидаемому, изменяем его
+                            if (currentType != expectedType)
+                            {
+                                // Создаем временную колонку, копируем данные, удаляем старую колонку и переименовываем временную
+                                var alterQuery = $@"
+                                ALTER TABLE {tableName} ADD COLUMN {columnName}_temp {expectedType};
+                                UPDATE {tableName} SET {columnName}_temp = CAST({columnName} AS {expectedType});
+                                ALTER TABLE {tableName} DROP COLUMN {columnName};
+                                ALTER TABLE {tableName} RENAME COLUMN {columnName}_temp TO {columnName};";
+
+                                using (var alterCmd = new NpgsqlCommand(alterQuery, conn, tran))
+                                {
+                                    alterCmd.ExecuteNonQuery();
+                                }
+                            }
+                        }
+
+                        tran.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        tran.Rollback();
+                        //Console.WriteLine($"Ошибка: {ex.Message}");
+                        MainStaticClass.WriteRecordErrorLog(ex, "CheckAndCorrectColumnType", 0, MainStaticClass.CashDeskNumber, "Изменение типов значения в бд");
+                    }
+                }
+            }
         }
     }
 }

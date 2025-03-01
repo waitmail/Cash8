@@ -1304,7 +1304,7 @@ namespace Cash8
             {
                 // Обработка ошибок
                 MessageBox.Show(ex.Message, "Ошибка при пометке товарных позиций");
-                MainStaticClass.WriteRecordErrorLog(ex.Message, "marked_action_tovar_dt(int num_doc, string comment, Dictionary<int, Dictionary<long, decimal>> actionPricesByDoc)", num_doc, MainStaticClass.CashDeskNumber, "Отметка позиций уже участовавших в акции");
+                MainStaticClass.WriteRecordErrorLog(ex, "marked_action_tovar_dt(int num_doc, string comment, Dictionary<int, Dictionary<long, decimal>> actionPricesByDoc)", num_doc, MainStaticClass.CashDeskNumber, "Отметка позиций уже участовавших в акции");
             }
         }
 
@@ -1362,7 +1362,7 @@ namespace Cash8
             {
                 // Обработка ошибок
                 MessageBox.Show(ex.Message, "Ошибка при пометке товарных позиций");
-                MainStaticClass.WriteRecordErrorLog(ex.Message, "marked_action_tovar_dt(int num_doc, string comment, Dictionary<int, Dictionary<long, decimal>> actionPricesByDoc)", num_doc, MainStaticClass.CashDeskNumber, "Отметка позиций уже участовавших в акции");
+                MainStaticClass.WriteRecordErrorLog(ex, "marked_action_tovar_dt(int num_doc, string comment, Dictionary<int, Dictionary<long, decimal>> actionPricesByDoc)", num_doc, MainStaticClass.CashDeskNumber, "Отметка позиций уже участовавших в акции");
             }
         }
 
@@ -2049,12 +2049,12 @@ namespace Cash8
             catch (NpgsqlException ex)
             {
                 MessageBox.Show(ex.Message + " | " + ex.Detail, "Ошибка базы данных");
-                MainStaticClass.WriteRecordErrorLog(ex.Message, "action_1_dt", num_doc, MainStaticClass.CashDeskNumber, "Обработка акций 1 типа подарок чтение с диска, номер документа здесь это номер ак. док.");
+                MainStaticClass.WriteRecordErrorLog(ex, "action_1_dt", num_doc, MainStaticClass.CashDeskNumber, "Обработка акций 1 типа подарок чтение с диска, номер документа здесь это номер ак. док.");
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка при обработке акции 1 типа");
-                MainStaticClass.WriteRecordErrorLog(ex.Message, "action_1_dt", num_doc, MainStaticClass.CashDeskNumber, "Обработка акций 1 типа подарок чтение с диска, номер документа здесь это номер ак. док.");
+                MainStaticClass.WriteRecordErrorLog(ex, "action_1_dt", num_doc, MainStaticClass.CashDeskNumber, "Обработка акций 1 типа подарок чтение с диска, номер документа здесь это номер ак. док.");
             }
             finally
             {
@@ -2118,7 +2118,7 @@ namespace Cash8
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка при обработке акции 1 типа");
-                MainStaticClass.WriteRecordErrorLog(ex.Message, "action_1_dt", num_doc, MainStaticClass.CashDeskNumber, "Обработка акций 1 типа подарок со словарем, номер документа здесь это номер ак. док.");
+                MainStaticClass.WriteRecordErrorLog(ex, "action_1_dt", num_doc, MainStaticClass.CashDeskNumber, "Обработка акций 1 типа подарок со словарем, номер документа здесь это номер ак. док.");
             }
             finally
             {
@@ -2269,7 +2269,7 @@ namespace Cash8
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка при обработке 2 типа акций");
-                MainStaticClass.WriteRecordErrorLog(ex.Message, "action_2_dt скидка", Convert.ToInt16(num_doc), MainStaticClass.CashDeskNumber, "Обработка акций 2 типа с предварительно загруженным словарем");
+                MainStaticClass.WriteRecordErrorLog(ex, "action_2_dt скидка", Convert.ToInt16(num_doc), MainStaticClass.CashDeskNumber, "Обработка акций 2 типа с предварительно загруженным словарем");
             }
         }
 
@@ -2340,12 +2340,12 @@ namespace Cash8
             catch (NpgsqlException ex)
             {
                 MessageBox.Show(ex.Message + " | " + ex.Detail, "Ошибка при обработке 2 типа акций");
-                MainStaticClass.WriteRecordErrorLog(ex.Message, "action_2_dt скидка", Convert.ToInt16(num_doc), MainStaticClass.CashDeskNumber, "Обработка акций 2 типа чтение с диска ");
+                MainStaticClass.WriteRecordErrorLog(ex, "action_2_dt скидка", Convert.ToInt16(num_doc), MainStaticClass.CashDeskNumber, "Обработка акций 2 типа чтение с диска ");
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка при обработке 2 типа акций");
-                MainStaticClass.WriteRecordErrorLog(ex.Message, "action_2_dt скидка", Convert.ToInt16(num_doc), MainStaticClass.CashDeskNumber, "Обработка акций 2 типа чтение с диска");
+                MainStaticClass.WriteRecordErrorLog(ex, "action_2_dt скидка", Convert.ToInt16(num_doc), MainStaticClass.CashDeskNumber, "Обработка акций 2 типа чтение с диска");
             }
         }
 
@@ -2416,7 +2416,7 @@ namespace Cash8
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка при обработке 2 типа акций");
-                MainStaticClass.WriteRecordErrorLog(ex.Message, "action_2_dt скидка", Convert.ToInt16(num_doc), MainStaticClass.CashDeskNumber, "Обработка акций 2 типа общий метод для чтения с диска и словаря");
+                MainStaticClass.WriteRecordErrorLog(ex, "action_2_dt скидка", Convert.ToInt16(num_doc), MainStaticClass.CashDeskNumber, "Обработка акций 2 типа общий метод для чтения с диска и словаря");
             }
         }
 
@@ -2550,7 +2550,7 @@ namespace Cash8
                 }
 
                 // Логирование ошибки
-                MainStaticClass.WriteRecordErrorLog(ex.Message, "marked_action_tovar_dt(DataTable dtCopy, int num_doc, string comment)", num_doc, MainStaticClass.CashDeskNumber, "Пометка товарных позиций участвующих в акции");
+                MainStaticClass.WriteRecordErrorLog(ex, "marked_action_tovar_dt(DataTable dtCopy, int num_doc, string comment)", num_doc, MainStaticClass.CashDeskNumber, "Пометка товарных позиций участвующих в акции");
             }
         }
 
@@ -3217,12 +3217,12 @@ namespace Cash8
       catch (NpgsqlException ex)
       {
           MessageBox.Show(ex.Message, "Ошибка при обработке 2 типа акций");
-          MainStaticClass.WriteRecordErrorLog(ex.Message, "action_2_dt(int num_doc, string comment, bool show_messages, Dictionary<int, LoadActionDataInMemory.ActionDataContainer> allActionData2)", num_doc, MainStaticClass.CashDeskNumber, "Акции 2 типа выдается сообщение о подарке");
+          MainStaticClass.WriteRecordErrorLog(ex, "action_2_dt(int num_doc, string comment, bool show_messages, Dictionary<int, LoadActionDataInMemory.ActionDataContainer> allActionData2)", num_doc, MainStaticClass.CashDeskNumber, "Акции 2 типа выдается сообщение о подарке");
       }
       catch (Exception ex)
       {
           MessageBox.Show(ex.Message, "Ошибка при обработке 2 типа акций");
-          MainStaticClass.WriteRecordErrorLog(ex.Message, "action_2_dt(int num_doc, string comment, bool show_messages, Dictionary<int, LoadActionDataInMemory.ActionDataContainer> allActionData2)", num_doc, MainStaticClass.CashDeskNumber, "Акции 2 типа выдается сообщение о подарке");
+          MainStaticClass.WriteRecordErrorLog(ex, "action_2_dt(int num_doc, string comment, bool show_messages, Dictionary<int, LoadActionDataInMemory.ActionDataContainer> allActionData2)", num_doc, MainStaticClass.CashDeskNumber, "Акции 2 типа выдается сообщение о подарке");
       }
   }
 
@@ -3432,7 +3432,7 @@ namespace Cash8
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "ошибка при обработке 3 типа акций");
-                MainStaticClass.WriteRecordErrorLog(ex.Message, "action_3_dt(int num_doc, decimal percent, decimal sum, string comment, Dictionary<int, Dictionary<long, decimal>> actionPricesByDoc)", num_doc, MainStaticClass.CashDeskNumber, "Акции 3 типа скидка");
+                MainStaticClass.WriteRecordErrorLog(ex, "action_3_dt(int num_doc, decimal percent, decimal sum, string comment, Dictionary<int, Dictionary<long, decimal>> actionPricesByDoc)", num_doc, MainStaticClass.CashDeskNumber, "Акции 3 типа скидка");
             }
         }
 
@@ -3502,7 +3502,7 @@ namespace Cash8
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "ошибка при обработке 3 типа акций");
-                MainStaticClass.WriteRecordErrorLog(ex.Message, "action_3_dt(int num_doc, string comment, decimal sum, int marker, bool show_messages, Dictionary<int, Dictionary<long, decimal>> actionPricesByDoc)", num_doc, MainStaticClass.CashDeskNumber, "Акции 3 типа сообщение о подарке");
+                MainStaticClass.WriteRecordErrorLog(ex, "action_3_dt(int num_doc, string comment, decimal sum, int marker, bool show_messages, Dictionary<int, Dictionary<long, decimal>> actionPricesByDoc)", num_doc, MainStaticClass.CashDeskNumber, "Акции 3 типа сообщение о подарке");
             }
         }
 
@@ -3549,13 +3549,13 @@ namespace Cash8
             {
                 //Logger.LogError(ex, "Ошибка при работе с базой данных");
                 MessageBox.Show(ex.Message, "ошибка при обработке 3 типа акций");
-                MainStaticClass.WriteRecordErrorLog(ex.Message, "action_3_dt(int num_doc, decimal percent, decimal sum, string comment)", num_doc, MainStaticClass.CashDeskNumber, "Акции 3 типа скидка");
+                MainStaticClass.WriteRecordErrorLog(ex, "action_3_dt(int num_doc, decimal percent, decimal sum, string comment)", num_doc, MainStaticClass.CashDeskNumber, "Акции 3 типа скидка");
             }
             catch (Exception ex)
             {
                 //Logger.LogError(ex, "Ошибка при обработке акции");
                 MessageBox.Show(ex.Message, "ошибка при обработке 3 типа акций");
-                MainStaticClass.WriteRecordErrorLog(ex.Message, "action_3_dt(int num_doc, decimal percent, decimal sum, string comment)", num_doc, MainStaticClass.CashDeskNumber, "Акции 3 типа скидка");
+                MainStaticClass.WriteRecordErrorLog(ex, "action_3_dt(int num_doc, decimal percent, decimal sum, string comment)", num_doc, MainStaticClass.CashDeskNumber, "Акции 3 типа скидка");
             }
         }
 
@@ -3754,14 +3754,14 @@ namespace Cash8
                 // В случае ошибки при чтении из базы, dt остается неизменной
                 //Logger.LogError(ex, "Ошибка при работе с базой данных");
                 MessageBox.Show(ex.Message, "ошибка при обработке 3 типа акций");
-                MainStaticClass.WriteRecordErrorLog(ex.Message, "action_3_dt(int num_doc, string comment, decimal sum, int marker, bool show_messages)", num_doc, MainStaticClass.CashDeskNumber, "Акции 3 типа сообщение о подарке");
+                MainStaticClass.WriteRecordErrorLog(ex, "action_3_dt(int num_doc, string comment, decimal sum, int marker, bool show_messages)", num_doc, MainStaticClass.CashDeskNumber, "Акции 3 типа сообщение о подарке");
             }
             catch (Exception ex)
             {
                 // В случае любой другой ошибки, dt остается неизменной
                 //Logger.LogError(ex, "Ошибка при обработке акции");
                 MessageBox.Show(ex.Message, "ошибка при обработке 3 типа акций");
-                MainStaticClass.WriteRecordErrorLog(ex.Message, "action_3_dt(int num_doc, string comment, decimal sum, int marker, bool show_messages)", num_doc, MainStaticClass.CashDeskNumber, "Акции 3 типа сообщение о подарке");
+                MainStaticClass.WriteRecordErrorLog(ex, "action_3_dt(int num_doc, string comment, decimal sum, int marker, bool show_messages)", num_doc, MainStaticClass.CashDeskNumber, "Акции 3 типа сообщение о подарке");
             }
         }
 
@@ -4130,7 +4130,7 @@ namespace Cash8
             }
             catch (Exception ex)
             {
-                MainStaticClass.WriteRecordErrorLog(ex.Message, "action_4_dt(int num_doc, decimal percent, decimal sum, string comment, Dictionary<int, Dictionary<long, decimal>> actionPricesByDoc)", num_doc, MainStaticClass.CashDeskNumber, "Акция 4 типа без обращения к бд");
+                MainStaticClass.WriteRecordErrorLog(ex, "action_4_dt(int num_doc, decimal percent, decimal sum, string comment, Dictionary<int, Dictionary<long, decimal>> actionPricesByDoc)", num_doc, MainStaticClass.CashDeskNumber, "Акция 4 типа без обращения к бд");
                 // Восстановление данных при ошибке
                 dt.Clear();
                 foreach (DataRow row in originalDt.Rows)
@@ -5045,6 +5045,8 @@ namespace Cash8
                     long tovarCode = (long)row.Field<double>("tovar_code");
                     if (!IsTovarInAction(actionPricesByDoc, num_doc, tovarCode)) continue;
 
+
+
                     items.Add(new ItemData
                     {
                         Code = row.Field<double>("tovar_code"),
@@ -5052,7 +5054,7 @@ namespace Cash8
                         CharName = row.Field<string>("characteristic_name") ?? string.Empty,
                         CharGuid = row.Field<string>("characteristic_code") ?? string.Empty,
                         Price = row.Field<decimal>("price"),
-                        Quantity = row.Field<double>("quantity")                      //Convert.ToDouble(row["quantity"])
+                        Quantity = row.Field<double>("quantity")  //Convert.ToDouble(row["quantity"]) 
                     });
                 }
 
@@ -5097,7 +5099,7 @@ namespace Cash8
             catch (Exception ex)
             {
                 // Логирование ошибки
-                MainStaticClass.WriteRecordErrorLog(ex.Message, "action_4_dt", num_doc, MainStaticClass.CashDeskNumber, "Акция 4 типа без обращения к бд");
+                MainStaticClass.WriteRecordErrorLog(ex, "action_4_dt", num_doc, MainStaticClass.CashDeskNumber, "Акция 4 типа без обращения к бд");
 
                 // Восстановление исходного состояния таблицы
                 dt.Clear();

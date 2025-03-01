@@ -876,6 +876,491 @@ namespace Cash8
         }
 
 
+        /// <summary>
+        /// ///////////////////////////
+        /// </summary>
+        /// <param name="barcodes"></param>
+
+        public void InsertBarcodes(List<Barcode> barcodes, NpgsqlConnection conn, NpgsqlTransaction tran)
+        {
+            int maxDegreeOfParallelism = 20; // Максимальное количество одновременно выполняемых задач
+            SemaphoreSlim semaphore = new SemaphoreSlim(maxDegreeOfParallelism);
+
+            int totalTasks = barcodes.Count; // Общее количество задач
+            int completedTasks = 0;
+
+            var tasks = new List<Task>();
+
+            foreach (var barcode in barcodes)
+            {
+                // Ожидаем, пока освободится слот для новой задачи
+                semaphore.Wait();
+
+                // Запускаем задачу
+                Task task = Task.Run(() =>
+                {
+                    try
+                    {
+                        InsertBarcode(barcode, conn, tran); // Вставляем штрихкод
+                    }
+                    finally
+                    {
+                        // Освобождаем слот после завершения задачи
+                        semaphore.Release();
+
+                        // Увеличиваем счетчик завершенных задач
+                        Interlocked.Increment(ref completedTasks);
+                        Console.WriteLine($"Выполнено {completedTasks} из {totalTasks}");
+                    }
+                });
+
+                tasks.Add(task);
+            }
+
+            // Ожидаем завершения всех задач
+            Task.WaitAll(tasks.ToArray());
+        }
+
+        private void InsertBarcode(Barcode barcode, NpgsqlConnection conn, NpgsqlTransaction tran)
+        {
+            using (var cmd = new NpgsqlCommand(
+                "INSERT INTO barcode(tovar_code, barcode) VALUES (@tovarCode, @barcode)", conn, tran))
+            {
+                cmd.Parameters.AddWithValue("tovarCode", barcode.TovarCode);
+                cmd.Parameters.AddWithValue("barcode", barcode.BarCode);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        private void HandleError(long tovarCode, string barcode, Exception ex)
+        {            
+            MessageBox.Show($"Ошибка при вставке штрихкода. Код товара: {tovarCode}, Штрихкод: {barcode}. Подробности: {ex.Message}","Ошибка при загрузке данных");
+        }
+
+        public void UpdateOrInsertRow(Tovar tovar, NpgsqlConnection conn, NpgsqlTransaction tran)
+        {
+            // Пытаемся обновить строку
+            string updateSql = @"
+        UPDATE tovar 
+        SET name = @name, 
+            retail_price = @retailPrice, 
+            its_deleted = @itsDeleted, 
+            nds = @nds, 
+            its_certificate = @itsCertificate, 
+            percent_bonus = @percentBonus, 
+            tnved = @tnved, 
+            its_marked = @itsMarked, 
+            its_excise = @itsExcise, 
+            cdn_check = @cdnCheck, 
+            fractional = @fractional, 
+            refusal_of_marking = @refusalOfMarking 
+        WHERE code = @code";
+
+            using (var updateCmd = new NpgsqlCommand(updateSql, conn, tran))
+            {
+                updateCmd.Parameters.AddWithValue("name", tovar.Name);
+                updateCmd.Parameters.AddWithValue("retailPrice", tovar.RetailPrice);
+                updateCmd.Parameters.AddWithValue("itsDeleted", tovar.ItsDeleted);
+                updateCmd.Parameters.AddWithValue("nds", tovar.Nds);
+                updateCmd.Parameters.AddWithValue("itsCertificate", tovar.ItsCertificate);
+                updateCmd.Parameters.AddWithValue("percentBonus", tovar.PercentBonus);
+                updateCmd.Parameters.AddWithValue("tnved", tovar.TnVed);
+                updateCmd.Parameters.AddWithValue("itsMarked", tovar.ItsMarked);
+                updateCmd.Parameters.AddWithValue("itsExcise", tovar.ItsExcise);
+                updateCmd.Parameters.AddWithValue("cdnCheck", tovar.CdnCheck);
+                updateCmd.Parameters.AddWithValue("fractional", tovar.Fractional);
+                updateCmd.Parameters.AddWithValue("refusalOfMarking", tovar.RefusalOfMarking);
+                updateCmd.Parameters.AddWithValue("code", tovar.Code);
+
+                int rowsUpdated = updateCmd.ExecuteNonQuery();
+
+                // Если ни одна строка не была обновлена, выполняем INSERT
+                if (rowsUpdated == 0)
+                {
+                    string insertSql = @"
+                INSERT INTO tovar(
+                    code, name, retail_price, its_deleted, nds, its_certificate, 
+                    percent_bonus, tnved, its_marked, its_excise, cdn_check, 
+                    fractional, refusal_of_marking
+                ) VALUES (
+                    @code, @name, @retailPrice, @itsDeleted, @nds, @itsCertificate, 
+                    @percentBonus, @tnved, @itsMarked, @itsExcise, @cdnCheck, 
+                    @fractional, @refusalOfMarking
+                )";
+
+                    using (var insertCmd = new NpgsqlCommand(insertSql, conn, tran))
+                    {
+                        insertCmd.Parameters.AddWithValue("code", tovar.Code);
+                        insertCmd.Parameters.AddWithValue("name", tovar.Name);
+                        insertCmd.Parameters.AddWithValue("retailPrice", tovar.RetailPrice);
+                        insertCmd.Parameters.AddWithValue("itsDeleted", tovar.ItsDeleted);
+                        insertCmd.Parameters.AddWithValue("nds", tovar.Nds);
+                        insertCmd.Parameters.AddWithValue("itsCertificate", tovar.ItsCertificate);
+                        insertCmd.Parameters.AddWithValue("percentBonus", tovar.PercentBonus);
+                        insertCmd.Parameters.AddWithValue("tnved", tovar.TnVed);
+                        insertCmd.Parameters.AddWithValue("itsMarked", tovar.ItsMarked);
+                        insertCmd.Parameters.AddWithValue("itsExcise", tovar.ItsExcise);
+                        insertCmd.Parameters.AddWithValue("cdnCheck", tovar.CdnCheck);
+                        insertCmd.Parameters.AddWithValue("fractional", tovar.Fractional);
+                        insertCmd.Parameters.AddWithValue("refusalOfMarking", tovar.RefusalOfMarking);
+
+                        insertCmd.ExecuteNonQuery();
+                    }
+                }
+            }
+        }
+
+        public void UpdateOrInsertTovars(List<Tovar> tovars, NpgsqlConnection conn, NpgsqlTransaction tran)
+        {
+            int maxDegreeOfParallelism = 20; // Максимальное количество одновременно выполняемых задач
+            SemaphoreSlim semaphore = new SemaphoreSlim(maxDegreeOfParallelism);
+
+            int totalTasks = tovars.Count; // Общее количество задач
+            int completedTasks = 0;
+
+            var tasks = new List<Task>();
+
+            foreach (var tovar in tovars)
+            {
+                // Ожидаем, пока освободится слот для новой задачи
+                semaphore.Wait();
+
+                // Запускаем задачу
+                Task task = Task.Run(() =>
+                {
+                    try
+                    {
+                        UpdateOrInsertRow(tovar, conn, tran); // Используем метод с UPDATE/INSERT
+                    }
+                    finally
+                    {
+                        // Освобождаем слот после завершения задачи
+                        semaphore.Release();
+
+                        // Увеличиваем счетчик завершенных задач
+                        Interlocked.Increment(ref completedTasks);
+                        Console.WriteLine($"Выполнено {completedTasks} из {totalTasks}");
+                    }
+                });
+
+                tasks.Add(task);
+            }
+
+            // Ожидаем завершения всех задач
+            Task.WaitAll(tasks.ToArray());
+        }
+
+        public void new_load_fast()
+        {
+            //btn_new_load.Enabled = false;
+            if (!MainStaticClass.service_is_worker())
+            {
+                MessageBox.Show("Веб сервис недоступен");
+                return;
+            }
+
+            check_temp_tables();
+
+            //Получить параметра для запроса на сервер 
+            string nick_shop = MainStaticClass.Nick_Shop.Trim();
+            if (nick_shop.Trim().Length == 0)
+            {
+                MessageBox.Show(" Не удалось получить название магазина ");
+                return;
+            }
+
+            string code_shop = MainStaticClass.Code_Shop.Trim();
+            if (code_shop.Trim().Length == 0)
+            {
+                MessageBox.Show(" Не удалось получить код магазина ");
+                return;
+            }
+            string count_day = CryptorEngine.get_count_day();
+            string key = nick_shop.Trim() + count_day.Trim() + code_shop.Trim();
+            string data_encrypt = "";
+            using (QueryPacketData queryPacketData = new QueryPacketData())
+            {
+                queryPacketData.NickShop = nick_shop;
+                queryPacketData.CodeShop = code_shop;
+                queryPacketData.LastDateDownloadTovar = last_date_download_tovars().ToString("dd-MM-yyyy");
+                queryPacketData.NumCash = MainStaticClass.CashDeskNumber.ToString();
+                queryPacketData.Version = MainStaticClass.version().Replace(".", "");
+                string data = JsonConvert.SerializeObject(queryPacketData, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                data_encrypt = CryptorEngine.Encrypt(data, true, key);
+            }
+
+            List<string> queries = new List<string>();//Список запросов                                          
+            using (LoadPacketData loadPacketData = getLoadPacketDataFull(nick_shop, data_encrypt, key))
+            {
+                if (!loadPacketData.PacketIsFull)
+                {
+                    MessageBox.Show(loadPacketData.Exception + "\r\n Неудачная попытка получения данных");
+                    return;
+                }
+                if (loadPacketData.Exchange)
+                {
+                    MessageBox.Show("Пакет данных получен во время обновления данных на сервере, загрузка прервана");
+                    return;
+                }
+
+                queries.Add("Delete from action_table");
+                queries.Add("Delete from action_header");
+                queries.Add("Delete from advertisement");
+                queries.Add("UPDATE constants SET threshold=" + loadPacketData.Threshold.ToString());
+                queries.Add("UPDATE constants SET cdn_token='" + loadPacketData.TokenMark.ToString() + "'");
+
+
+                if (loadPacketData.ListPromoText != null)
+                {
+                    if (loadPacketData.ListPromoText.Count > 0)
+                    {
+                        foreach (PromoText promoText in loadPacketData.ListPromoText)
+                        {
+                            queries.Add("INSERT INTO advertisement(advertisement_text,num_str)VALUES ('" + promoText.AdvertisementText + "'," + promoText.NumStr + ")");
+                        }
+                        loadPacketData.ListPromoText.Clear();
+                        loadPacketData.ListPromoText = null;
+                    }
+                }
+                if (loadPacketData.ListTovar.Count > 0)
+                {
+                    foreach (Tovar tovar in loadPacketData.ListTovar)
+                    {
+                        queries.Add("INSERT INTO tovar2(code,name,retail_price,its_deleted,nds,its_certificate,percent_bonus,tnved,its_marked,its_excise,cdn_check,fractional,refusal_of_marking) VALUES(" +
+                                                        tovar.Code + ",'" +
+                                                        tovar.Name + "'," +
+                                                        tovar.RetailPrice + "," +
+                                                        tovar.ItsDeleted + "," +
+                                                        tovar.Nds + "," +
+                                                        tovar.ItsCertificate + "," +
+                                                        tovar.PercentBonus + ",'" +
+                                                        tovar.TnVed + "'," +
+                                                        tovar.ItsMarked + "," +
+                                                        tovar.ItsExcise + "," +
+                                                        tovar.CdnCheck + "," +
+                                                        tovar.Fractional + "," +
+                                                        tovar.RefusalOfMarking + ");");
+                    }
+                    loadPacketData.ListTovar.Clear();
+                    loadPacketData.ListTovar = null;
+                }
+
+                queries.Add("UPDATE tovar SET its_deleted=1,retail_price=0;");
+                queries.Add("INSERT INTO tovar SELECT F.code, F.name, F.retail_price, F.its_deleted, F.nds, F.its_certificate, F.percent_bonus, F.tnved,F.its_marked,F.its_excise,F.cdn_check,F.fractional,F.refusal_of_marking FROM(SELECT tovar2.code AS code, tovar.code AS code2, tovar2.name, tovar2.retail_price, tovar2.its_deleted, tovar2.nds, tovar2.its_certificate, tovar2.percent_bonus, tovar2.tnved,tovar2.its_marked,tovar2.its_excise,tovar2.cdn_check,tovar2.fractional,tovar2.refusal_of_marking  FROM tovar2 left join tovar on tovar2.code = tovar.code)AS F WHERE code2 ISNULL;");
+                queries.Add("UPDATE tovar SET name = tovar2.name,retail_price = tovar2.retail_price, its_deleted=tovar2.its_deleted,nds=tovar2.nds,its_certificate = tovar2.its_certificate,percent_bonus = tovar2.percent_bonus,tnved = tovar2.tnved,its_marked = tovar2.its_marked,its_excise=tovar2.its_excise,cdn_check = tovar2.cdn_check,fractional=tovar2.fractional,refusal_of_marking=tovar2.refusal_of_marking FROM tovar2 where tovar.code=tovar2.code;");
+                queries.Add("DELETE FROM barcode;");
+                if (loadPacketData.ListBarcode.Count > 0)
+                {
+                    foreach (Barcode barcode in loadPacketData.ListBarcode)
+                    {
+                        queries.Add("INSERT INTO barcode(tovar_code,barcode) VALUES(" + barcode.TovarCode + ",'" + barcode.BarCode + "')");
+                    }
+                    loadPacketData.ListBarcode.Clear();
+                    loadPacketData.ListBarcode = null;
+
+                }
+                if (loadPacketData.ListCharacteristic != null)
+                {
+                    if (loadPacketData.ListCharacteristic.Count > 0)
+                    {
+                        queries.Add("DELETE FROM characteristic");
+                        foreach (Characteristic characteristic in loadPacketData.ListCharacteristic)
+                        {
+                            queries.Add("INSERT INTO characteristic(tovar_code, guid, name, retail_price_characteristic) VALUES(" +
+                                characteristic.CodeTovar + ",'" +
+                                characteristic.Guid + "','" +
+                                characteristic.Name + "'," +
+                                characteristic.RetailPrice + ")");
+                        }
+                        loadPacketData.ListCharacteristic.Clear();
+                        loadPacketData.ListCharacteristic = null;
+                    }
+                }
+
+                queries.Add("DELETE FROM sertificates");
+
+                if (loadPacketData.ListSertificate.Count > 0)
+                {
+                    foreach (Sertificate sertificate in loadPacketData.ListSertificate)
+                    {
+                        queries.Add(" INSERT INTO sertificates(code, code_tovar, rating, is_active)VALUES (" +
+                            sertificate.Code + "," +
+                            sertificate.CodeTovar + "," +
+                            sertificate.Rating + "," +
+                            sertificate.IsActive + ")");
+                    }
+                    loadPacketData.ListSertificate.Clear();
+                    loadPacketData.ListSertificate = null;
+                }
+
+
+                if (loadPacketData.ListActionHeader.Count > 0)
+                {
+                    foreach (ActionHeader actionHeader in loadPacketData.ListActionHeader)
+                    {
+                        queries.Add("INSERT INTO action_header(date_started,date_end,num_doc,tip,barcode,persent,sum,comment,marker,action_by_discount,time_start,time_end," +
+                        " bonus_promotion, with_old_promotion, monday, tuesday, wednesday, thursday, friday, saturday, sunday, promo_code, sum_bonus,execution_order,gift_price,kind,sum1)VALUES ('" +
+                        actionHeader.DateStarted + "','" +
+                        actionHeader.DateEnd + "'," +
+                        actionHeader.NumDoc + "," +
+                        actionHeader.Tip + ",'" +
+                        actionHeader.Barcode + "'," +
+                        actionHeader.Persent + "," +
+                        actionHeader.sum + ",'" +
+                        actionHeader.Comment + "'," +
+                        //actionHeader.CodeTovar + "," +
+                        actionHeader.Marker + "," +
+                        actionHeader.ActionByDiscount + "," +
+                        actionHeader.TimeStart + "," +
+                        actionHeader.TimeEnd + "," +
+                        actionHeader.BonusPromotion + "," +
+                        actionHeader.WithOldPromotion + "," +
+                        actionHeader.Monday + "," +
+                        actionHeader.Tuesday + "," +
+                        actionHeader.Wednesday + "," +
+                        actionHeader.Thursday + "," +
+                        actionHeader.Friday + "," +
+                        actionHeader.Saturday + "," +
+                        actionHeader.Sunday + "," +
+                        actionHeader.PromoCode + "," +
+                        actionHeader.SumBonus + "," +
+                        actionHeader.ExecutionOrder + "," +
+                        actionHeader.GiftPrice + "," +
+                        actionHeader.Kind + "," +
+                        actionHeader.sum1 + ")");
+                    }
+                    if (loadPacketData.ListActionTable.Count > 0)
+                    {
+                        foreach (ActionTable actionTable in loadPacketData.ListActionTable)
+                        {
+                            queries.Add("INSERT INTO action_table(num_doc, num_list, code_tovar, price)VALUES(" +
+                                actionTable.NumDoc + "," +
+                                actionTable.NumList + "," +
+                                actionTable.CodeTovar + "," +
+                                actionTable.Price + ")");
+                        }
+                    }
+                    loadPacketData.ListActionHeader.Clear();
+                    loadPacketData.ListActionTable.Clear();
+                    loadPacketData.ListActionHeader = null;
+                    loadPacketData.ListActionTable = null;
+                }
+                else
+                {
+                    MessageBox.Show("Нет данных по акциям");
+                }
+
+                queries.Add("Delete from action_clients");
+
+                if (loadPacketData.ListActionClients.Count > 0)
+                {
+                    foreach (ActionClients actionClients in loadPacketData.ListActionClients)
+                    {
+                        queries.Add("INSERT INTO action_clients(num_doc, code_client) VALUES(" +
+                            actionClients.NumDoc + "," +
+                            actionClients.CodeClient + ")");
+                    }
+                    loadPacketData.ListActionClients.Clear();
+                    loadPacketData.ListActionClients = null;
+                }
+                ;
+            }
+
+            //queries.Add("UPDATE date_sync SET tovar='" + DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd")+"'");
+            //queries.Add("INSERT INTO date_sync(tovar) VALUES('" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss") + "')");
+
+            NpgsqlConnection conn = null;
+            NpgsqlTransaction tran = null;
+            string s = "";
+            try
+            {
+                conn = MainStaticClass.NpgsqlConn();
+                conn.Open();
+                tran = conn.BeginTransaction();
+                NpgsqlCommand command = null;
+                foreach (string str in queries)
+                {
+                    s = str;
+                    command = new NpgsqlCommand(str, conn);
+                    command.Transaction = tran;
+                    command.ExecuteNonQuery();
+                }
+                //Обновление даты последнего обновления 
+                string query = "UPDATE date_sync SET tovar = '" + DateTime.Now.ToString("yyyy-MM-dd") + "'";
+                command = new NpgsqlCommand(query, conn);
+                command.Transaction = tran;
+                if (command.ExecuteNonQuery() == 0)
+                {
+                    query = "INSERT INTO date_sync(tovar) VALUES('" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss") + "')";
+                    command = new NpgsqlCommand(query, conn);
+                    command.Transaction = tran;
+                    command.ExecuteNonQuery();
+                }
+
+                queries.Clear();
+                queries = null;
+                tran.Commit();
+                if (!MainStaticClass.SendResultGetData())
+                {
+                    MessageBox.Show("Не удалось отправить информацию об успешной загрузке");
+                    MainStaticClass.write_event_in_log("Не удалось отправить информацию об успешной загрузке ", "Загрузка данных", "0");
+                }
+                conn.Close();
+                command.Dispose();
+                command = null;
+                tran = null;
+                MessageBox.Show("Загрузка успешно завершена");
+                if (CheckFirstLoadData())
+                {
+                    MessageBox.Show(" Это была первая загрузка данных, для применения новых параметров программа будет закрыта");
+                    Application.Exit();
+                }
+            }
+            catch (NpgsqlException ex)
+            {
+                string error = ex.Message;
+                MessageBox.Show(error, "Ошибка при импорте данных");
+                MessageBox.Show(s);
+                if (tran != null)
+                {
+                    tran.Rollback();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка при импорте данных");
+                MessageBox.Show(s);
+                if (tran != null)
+                {
+                    tran.Rollback();
+                }
+
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                    conn.Dispose();
+                    conn = null;
+                }
+            }
+            GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
+            GC.WaitForPendingFinalizers();
+
+            //btn_new_load.Enabled = true;
+        }
+
+        // Вспомогательный метод для выполнения SQL-запросов в транзакции
+        private void ExecuteNonQuery(NpgsqlTransaction tran, string query)
+        {
+            using (var cmd = new NpgsqlCommand(query, tran.Connection, tran))
+            {
+                cmd.ExecuteNonQuery();
+            }
+        }
+
         private void new_load()
         {
             //btn_new_load.Enabled = false;
@@ -1209,109 +1694,6 @@ namespace Cash8
             return result;
         }
 
-
-        public void UpdateOrInsertRow(int id, string newValue)
-        {
-            using (var conn = MainStaticClass.NpgsqlConn())
-            {
-                conn.Open();
-                using (var tran = conn.BeginTransaction(System.Data.IsolationLevel.ReadCommitted))
-                {
-                    try
-                    {
-                        // Пытаемся обновить строку
-                        string updateSql = "UPDATE your_table SET column_name = @newValue WHERE id = @id";
-                        using (var updateCmd = new NpgsqlCommand(updateSql, conn, tran))
-                        {
-                            updateCmd.Parameters.AddWithValue("newValue", newValue);
-                            updateCmd.Parameters.AddWithValue("id", id);
-                            int rowsUpdated = updateCmd.ExecuteNonQuery();
-
-                            // Если ни одна строка не была обновлена, выполняем INSERT
-                            if (rowsUpdated == 0)
-                            {
-                                string insertSql = "INSERT INTO your_table (id, column_name) VALUES (@id, @newValue)";
-                                using (var insertCmd = new NpgsqlCommand(insertSql, conn, tran))
-                                {
-                                    insertCmd.Parameters.AddWithValue("id", id);
-                                    insertCmd.Parameters.AddWithValue("newValue", newValue);
-                                    insertCmd.ExecuteNonQuery();
-                                }
-                            }
-                        }
-
-                        // Фиксируем транзакцию
-                        tran.Commit();
-                    }
-                    catch (Exception ex)
-                    {
-                        // Откатываем транзакцию в случае ошибки
-                        tran.Rollback();
-                        HandleError(id, newValue, ex);
-                    }
-                }
-            }
-        }
-
-        private void HandleError(int id, string newValue, Exception ex)
-        {
-            // Логирование ошибки
-            Console.WriteLine($"Ошибка при обновлении записи ID={id}, значение={newValue}. Подробности: {ex.Message}");
-        }
-
-        //public static void Main(string[] args)
-        //{
-        //    var program = new Program();
-        //    program.UpdateOrInsertRowWithLimit();
-        //}
-
-
-        public void UpdateOrInsertRowWithLimit()
-        {
-            int maxDegreeOfParallelism = 20; // Максимальное количество одновременно выполняемых задач
-            SemaphoreSlim semaphore = new SemaphoreSlim(maxDegreeOfParallelism);
-
-            int totalTasks = 100; // Общее количество задач
-            int completedTasks = 0;
-
-            var tasks = new List<Task>();
-
-            for (int i = 1; i <= totalTasks; i++)
-            {
-                int currentId = i;
-                string currentValue = $"NewValue_{i}";
-
-                // Ожидаем, пока освободится слот для новой задачи
-                semaphore.Wait();
-
-                // Запускаем задачу
-                Task task = Task.Run(() =>
-                {
-                    try
-                    {
-                        UpdateOrInsertRow(currentId, currentValue); // Используем метод с UPDATE/INSERT
-                    }
-                    catch (Exception ex)
-                    {
-                        HandleError(currentId, currentValue, ex);
-                    }
-                    finally
-                    {
-                        // Освобождаем слот после завершения задачи
-                        semaphore.Release();
-
-                        // Увеличиваем счетчик завершенных задач
-                        Interlocked.Increment(ref completedTasks);
-                        Console.WriteLine($"Выполнено {completedTasks} из {totalTasks}");
-                    }
-                });
-
-                tasks.Add(task);
-            }
-
-            // Ожидаем завершения всех задач
-            Task.WaitAll(tasks.ToArray());
-        }
 
 
 
@@ -1917,8 +2299,15 @@ namespace Cash8
             GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
             GC.WaitForPendingFinalizers();
 
-        }      
+        }
 
+        private void btn_new_load_fast_Click(object sender, EventArgs e)
+        {
+            DateTime start = DateTime.Now;
+            new_load_fast();
+            DateTime finish = DateTime.Now;
+            MessageBox.Show((finish - start).Seconds.ToString());
+        }
     }
 }
 

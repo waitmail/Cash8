@@ -13,7 +13,7 @@ namespace Cash8
     class PrintingUsingLibraries
     {
 
-        private  Cash_check check;
+        //private  Cash_check check;
 
         //public bool print_sale(ListView listView)
         //{

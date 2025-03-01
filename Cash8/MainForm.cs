@@ -642,7 +642,7 @@ namespace Cash8
             catch (Exception ex)
             {
                 MessageBox.Show("Произошли ошибки при передаче удаленных строк " + ex.Message);
-                MainStaticClass.WriteRecordErrorLog(ex.Message, "UploadDeletedItems", 0, MainStaticClass.CashDeskNumber, "Не удалось передать информацию об удаленных строках");
+                MainStaticClass.WriteRecordErrorLog(ex, "UploadDeletedItems", 0, MainStaticClass.CashDeskNumber, "Не удалось передать информацию об удаленных строках");
             }
             finally
             {
@@ -733,7 +733,7 @@ namespace Cash8
             catch (Exception ex)
             {
                 //MessageBox.Show("Произошли ошибки при передаче телефонов клиентов " + ex.Message);
-                MainStaticClass.WriteRecordErrorLog(ex.Message, "UploadPhoneClients", 0, MainStaticClass.CashDeskNumber, "не удалось передать информацию о телефонах клиентов");
+                MainStaticClass.WriteRecordErrorLog(ex, "UploadPhoneClients", 0, MainStaticClass.CashDeskNumber, "не удалось передать информацию о телефонах клиентов");
             }
             finally
             {
@@ -988,7 +988,7 @@ namespace Cash8
         {
             NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
             try
-            {
+            {                
                 string query = "SELECT code_shop	FROM public.constants;";
                 conn.Open();
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
@@ -1011,10 +1011,12 @@ namespace Cash8
             catch (NpgsqlException ex)
             {
                 MessageBox.Show("Ошибка при изменение реквизита " + ex.Message);
+                MainStaticClass.WriteRecordErrorLog(ex, "guid_to_lover", 0, MainStaticClass.CashDeskNumber, "Изменение гуин в НРЕГ");
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Ошибка при изменение реквизита " + ex.Message);
+                MainStaticClass.WriteRecordErrorLog(ex, "guid_to_lover", 0, MainStaticClass.CashDeskNumber, "Изменение гуин в НРЕГ");
             }
             finally
             {
@@ -1265,14 +1267,14 @@ namespace Cash8
              catch (NpgsqlException ex)
              {
                  MessageBox.Show("Ошибка при очистке счетчика ошибочно введенных номеров телефонов" + ex.Message);
-                 MainStaticClass.WriteRecordErrorLog(ex.Message, "check_failed_input_phone",0,Convert.ToInt16(MainStaticClass.CashDeskNumber),@"MainForms Проверка таблицы failed_input_phone
+                 MainStaticClass.WriteRecordErrorLog(ex, "check_failed_input_phone",0,Convert.ToInt16(MainStaticClass.CashDeskNumber),@"MainForms Проверка таблицы failed_input_phone
         при старте программы, если это сегодня первый старт
         и документов продажи еще нет, тогда очищаем таблицу");
              }
              catch (Exception ex)
              {
                  MessageBox.Show("Ошибка при очистке счетчика ошибочно введенных номеров телефонов" + ex.Message);                
-                MainStaticClass.WriteRecordErrorLog(ex.Message, "check_failed_input_phone", 0, Convert.ToInt16(MainStaticClass.CashDeskNumber), @"MainForms Проверка таблицы failed_input_phone
+                MainStaticClass.WriteRecordErrorLog(ex, "check_failed_input_phone", 0, Convert.ToInt16(MainStaticClass.CashDeskNumber), @"MainForms Проверка таблицы failed_input_phone
         при старте программы, если это сегодня первый старт
         и документов продажи еще нет, тогда очищаем таблицу");
             }
@@ -1485,7 +1487,7 @@ namespace Cash8
             catch (Exception ex)
             {
                 // Логируем ошибку или предпринимаем другие действия по обработке исключения
-                MainStaticClass.WriteRecordErrorLog(ex.Message, "UploadErrorsLog", 0, MainStaticClass.CashDeskNumber, "Произошла ошибка при загрузке логов ошибок");
+                MainStaticClass.WriteRecordErrorLog(ex, "UploadErrorsLog", 0, MainStaticClass.CashDeskNumber, "Произошла ошибка при загрузке логов ошибок");
             }
         }
 
@@ -1541,7 +1543,7 @@ namespace Cash8
             }
             catch (Exception ex)
             {
-                MainStaticClass.WriteRecordErrorLog(ex.Message, "UploadErrorLogsToServer", 0, MainStaticClass.CashDeskNumber, "не удалось передать информацию об ошибках в программе");
+                MainStaticClass.WriteRecordErrorLog(ex, "UploadErrorLogsToServer", 0, MainStaticClass.CashDeskNumber, "не удалось передать информацию об ошибках в программе");
                 return false;
             }
         }
@@ -1605,9 +1607,9 @@ namespace Cash8
             {
                 conn.Open();
                 tran = conn.BeginTransaction();
-                string query = "SELECT data_type FROM information_schema.columns where table_name = 'checks_header' AND column_name = 'id_sale'";
+                string query = "SELECT data_type FROM information_schema.columns where table_name = 'errors_log' AND column_name = 'error_message'";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
-                if (command.ExecuteScalar().ToString().Trim() != "character varying")//старый тип колонки в бд, меняем на новый
+                if (command.ExecuteScalar().ToString().Trim() != "text")//старый тип колонки в бд, меняем на новый
                 {
                     SettingConnect sc = new SettingConnect();
                     sc.add_field_Click(null, null);
@@ -1709,7 +1711,7 @@ namespace Cash8
         ///// </summary>
         private void check_add_field()
         {
-            //check_correct_type_column();
+            check_correct_type_column();
             //check_exists_table();
             check_exists_column();            
         }

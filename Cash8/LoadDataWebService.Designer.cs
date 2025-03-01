@@ -33,6 +33,7 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.btn_new_load = new System.Windows.Forms.Button();
             this.btn_update_only = new System.Windows.Forms.Button();
+            this.btn_new_load_fast = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -84,11 +85,23 @@
             this.btn_update_only.UseVisualStyleBackColor = true;
             this.btn_update_only.Click += new System.EventHandler(this.btn_update_only_Click);
             // 
+            // btn_new_load_fast
+            // 
+            this.btn_new_load_fast.Location = new System.Drawing.Point(18, 230);
+            this.btn_new_load_fast.Name = "btn_new_load_fast";
+            this.btn_new_load_fast.Size = new System.Drawing.Size(248, 66);
+            this.btn_new_load_fast.TabIndex = 9;
+            this.btn_new_load_fast.Text = "Загрузить данные быстро (ПОЛНАЯ ЗАГРУЗКА)";
+            this.btn_new_load_fast.UseVisualStyleBackColor = true;
+            this.btn_new_load_fast.Visible = false;
+            this.btn_new_load_fast.Click += new System.EventHandler(this.btn_new_load_fast_Click);
+            // 
             // LoadDataWebService
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 229);
+            this.ClientSize = new System.Drawing.Size(284, 326);
+            this.Controls.Add(this.btn_new_load_fast);
             this.Controls.Add(this.btn_update_only);
             this.Controls.Add(this.btn_new_load);
             this.Controls.Add(this.progressBar1);
@@ -106,5 +119,6 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button btn_new_load;
         private System.Windows.Forms.Button btn_update_only;
+        private System.Windows.Forms.Button btn_new_load_fast;
     }
 }
