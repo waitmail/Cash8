@@ -431,6 +431,11 @@ namespace Cash8
 
         private void btn_have_internet_Click(object sender, EventArgs e)
         {
+            txtB_have_internet.BackColor = Color.White;
+            txtB_have_internet.Text = "Проверка ...";
+            txtB_have_internet.Update();
+            System.Threading.Thread.Sleep(1000);
+
             if (MainStaticClass.get_exists_internet())
             {
                 txtB_have_internet.Text = "Работает";
@@ -445,6 +450,12 @@ namespace Cash8
 
         private void btn_ofd_exchange_status_Click(object sender, EventArgs e)
         {
+
+            txtB_ofd_exchange_status.BackColor = Color.White;
+            txtB_ofd_exchange_status.Text = "Проверка ...";
+            txtB_ofd_exchange_status.Update();
+            System.Threading.Thread.Sleep(1000);
+
             if (MainStaticClass.PrintingUsingLibraries == 0)
             {
                 //txtB_ofd_exchange_status.BackColor = Color.Green;
@@ -844,6 +855,12 @@ namespace Cash8
 
         private void btn_date_mark_Click(object sender, EventArgs e)
         {
+
+            txtB_last_send_mark.BackColor = Color.White;
+            txtB_last_send_mark.Text = "Проверка ...";
+            txtB_last_send_mark.Update();
+            System.Threading.Thread.Sleep(1000);
+
             if (MainStaticClass.PrintingUsingLibraries == 1)
             {
                 try

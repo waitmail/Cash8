@@ -2014,10 +2014,13 @@ namespace Cash8
 
             try
             {
-                using (var client = new WebClient())
-                using (var stream = client.OpenRead("https://ya.ru/"))
+                var request = (HttpWebRequest)WebRequest.Create("https://ya.ru/");
+                request.Timeout = 5000; // Таймаут в миллисекундах (5 секунд)
+                request.ReadWriteTimeout = 5000; // Таймаут на чтение/запись
+
+                using (var response = (HttpWebResponse)request.GetResponse())
                 {
-                    return true;
+                    return response.StatusCode == HttpStatusCode.OK;
                 }
             }
             catch

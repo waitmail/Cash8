@@ -2770,12 +2770,14 @@ namespace Cash8
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(" Произошли ошибки при работе с сертификатами " + ex.Message);
+                    MessageBox.Show(" Отсутствует доступ в интернет с кассы или же на сервере, который обрабатывает сертификаты.");
+                    MainStaticClass.WriteRecordErrorLog(ex, "find_barcode_or_code_in_tovar_new", numdoc, MainStaticClass.CashDeskNumber, "Провекрка активации сертификата при продаже");
                     return;
                 }
                 if (status == "-1")
                 {
-                    MessageBox.Show("Произошли ошибки при работе с сертификатами");
+                    MessageBox.Show("Произошли ошибки на сервере при работе с сертификатами");
+                    MainStaticClass.WriteRecordErrorLog("Произошли ошибки на сервере при работе с сертификатами", "find_barcode_or_code_in_tovar_new", numdoc, MainStaticClass.CashDeskNumber, "Провекрка активации сертификата при продаже");
                     return;
                 }
                 else
