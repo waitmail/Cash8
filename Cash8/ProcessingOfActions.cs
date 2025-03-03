@@ -4256,7 +4256,7 @@ namespace Cash8
             row["sum_full"] = item.SumFull;
             row["sum_at_discount"] = item.SumDiscount;
             row["action"] = item.Action;
-            row["action2"] = isActionApplied ? num_doc : 0 ;
+            row["action2"] = item.Action; //isActionApplied ? num_doc : 0 ;
             row["gift"] = 0;
             row["bonus_reg"] = 0m;
             row["bonus_action"] = 0m;
@@ -5153,7 +5153,7 @@ namespace Cash8
             row["sum_at_discount"] = item.SumDiscount;
             row["action"] = 0; // Указываем, что это акция
             row["gift"] = item.Gift; // Указываем, является ли товар подарком
-            row["action2"] = isActionApplied ? num_doc : 0 ; // Номер акции
+            row["action2"] = item.Gift; //isActionApplied ? num_doc : 0 ; // Номер акции
             row["bonus_reg"] = 0m; // Бонусы (по умолчанию 0)
             row["bonus_action"] = 0m; // Бонусы акции (по умолчанию 0)
             row["bonus_action_b"] = 0m; // Дополнительные бонусы акции (по умолчанию 0)
