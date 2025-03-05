@@ -2771,7 +2771,7 @@ namespace Cash8
                 catch (Exception ex)
                 {
                     MessageBox.Show(" Отсутствует доступ в интернет с кассы или же на сервере, который обрабатывает сертификаты.");
-                    MainStaticClass.WriteRecordErrorLog(ex, "find_barcode_or_code_in_tovar_new", numdoc, MainStaticClass.CashDeskNumber, "Провекрка активации сертификата при продаже");
+                    MainStaticClass.WriteRecordErrorLog(ex, numdoc, MainStaticClass.CashDeskNumber, "Провекрка активации сертификата при продаже");
                     return;
                 }
                 if (status == "-1")
@@ -13311,34 +13311,38 @@ namespace Cash8
         
 
         private void checkSumOnDocument(DataTable dt)
-        {
+        {           
             foreach (DataRow row in dt.Rows)
             {
-                if (Convert.ToDouble(row["sum_full"]) != Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price"]))
-                {                 
-                    MainStaticClass.write_cdn_log("Обнаружено несовпадение цены и суммы в строке "+ row["tovar_code"].ToString(), numdoc.ToString(), "", "100");
+                if (Math.Round(Convert.ToDouble(row["sum_full"]),2,MidpointRounding.ToEven) != Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price"]),2, MidpointRounding.ToEven))
+                {                                     
+                    MainStaticClass.WriteRecordErrorLog("Обнаружено несовпадение цены и суммы в строке " + row["tovar_code"].ToString(), "checkSumOnDocument", numdoc, MainStaticClass.CashDeskNumber, "Проверки сумм по строке");
                 }
-                if (Convert.ToDouble(row["sum_at_discount"]) != Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price_at_discount"]))
+                if (Math.Round(Convert.ToDouble(row["sum_at_discount"]),2,MidpointRounding.ToEven) != Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price_at_discount"]),2,MidpointRounding.ToEven))
                 {                    
-                    MainStaticClass.write_cdn_log("Обнаружено несовпадение цены со скидкой и суммы со скидкой в строке "+ row["tovar_code"].ToString(), numdoc.ToString(), "", "100");
+                    MainStaticClass.WriteRecordErrorLog("Обнаружено несовпадение цены со скидкой и суммы со скидкой в строке " + row["tovar_code"].ToString(), "checkSumOnDocument", numdoc, MainStaticClass.CashDeskNumber, "Проверки сумм по строке");
                 }
                 if (client.Tag is null)
                 {
-                    if (Convert.ToDouble(row["sum_full"]) != Convert.ToDouble(row["sum_at_discount"]))
+                    if (Math.Round(Convert.ToDouble(row["sum_full"]),2,MidpointRounding.ToEven) != Math.Round(Convert.ToDouble(row["sum_at_discount"]),2,MidpointRounding.ToEven))
                     {
-                        if (row["action"].ToString() == "0")
+                        if ((row["action"].ToString() == "0") && (row["gift"].ToString() == "0"))
                         {                            
-                            MainStaticClass.write_cdn_log("Обнаружена непонятная скидка "+ row["tovar_code"].ToString(), numdoc.ToString(), "", "100");
+                            MainStaticClass.WriteRecordErrorLog("Обнаружена непонятная скидка " + row["tovar_code"].ToString(), "checkSumOnDocument", numdoc, MainStaticClass.CashDeskNumber, "Проверки сумм по строке");
                         }                        
                     }
                 }
                 else
                 {
-                    if (Math.Round(Convert.ToDouble(row["sum_full"])- Convert.ToDouble(row["sum_full"])/100*5,2, MidpointRounding.ToEven) != Convert.ToDouble(row["sum_at_discount"]))
+                    if (Math.Round(Convert.ToDouble(row["sum_full"])- Convert.ToDouble(row["sum_full"])/100*5,2, MidpointRounding.ToEven) != Math.Round(Convert.ToDouble(row["sum_at_discount"]),2,MidpointRounding.ToEven))
                     {
-                        if (row["action"].ToString() == "0")
+                        string sum_full = row["sum_full"].ToString();
+                        string sum_at_discount = Math.Round(Convert.ToDouble(row["sum_full"]) - Convert.ToDouble(row["sum_full"]) / 100 * 5, 2, MidpointRounding.ToEven).ToString();
+                        string raznost = (Math.Round(Convert.ToDouble(row["sum_full"]) - Convert.ToDouble(row["sum_full"]) / 100 * 5, 2, MidpointRounding.ToEven) - Convert.ToDouble(row["sum_at_discount"])).ToString();
+                        string test = "sum_full " + sum_full + " sum_at_discount " + sum_at_discount + " raznost" + raznost;
+                        if ((row["action"].ToString() == "0") && (row["gift"].ToString() == "0"))
                         {                            
-                            MainStaticClass.write_cdn_log("Обнаружена непонятная скидка по карте клиента "+ row["tovar_code"].ToString(), numdoc.ToString(), "", "100");
+                            MainStaticClass.WriteRecordErrorLog("Обнаружена непонятная скидка по карте клиента " + row["tovar_code"].ToString() + test, "checkSumOnDocument", numdoc, MainStaticClass.CashDeskNumber, "Проверки сумм по строке");
                         }                       
                     }
                 }
@@ -13381,7 +13385,7 @@ namespace Cash8
                 MainStaticClass.write_event_in_log(" Попытка обработать акции по штрихкодам ", "Документ чек", numdoc.ToString());              
               
                 DataTable dataTable = to_define_the_action_dt(true);//Обработка на дисконтные акции с использованием datatable 
-                checkSumOnDocument(dataTable);
+                //checkSumOnDocument(dataTable);Пока закомментирую проблема если есть карта клиента, надо отлаживать  
                 //
 
                 //рассчитанные данные в памяти по акциям теперь помещаем в листвью 

@@ -2160,7 +2160,7 @@ namespace Cash8
                 return new { Error = "Не удалось получить информацию о стеке вызовов." };
 
             // Получаем метод, в котором произошло исключение
-            var method = frame.GetMethod();           
+            var method = frame.GetMethod();
 
             // Формируем объект с информацией об ошибке
             return new
@@ -2186,8 +2186,7 @@ namespace Cash8
     /// <returns></returns>
     public static void WriteRecordErrorLog(
      //string errorMessage,
-      Exception exception,
-     string methodName,
+      Exception exception,     
      long numDoc,
      short cashDeskNumber,
      string description)
@@ -2200,7 +2199,7 @@ namespace Cash8
 
             if (cashDeskNumber <= 0)
                 throw new ArgumentOutOfRangeException(nameof(cashDeskNumber), "Номер кассы должен быть положительным числом");
-
+            string methodName = "methodName";
             // Обработка строковых параметров
             string truncatedErrorMessage = errorMessage.Trim();
             string truncatedMethodName = TruncateString(methodName, 255);

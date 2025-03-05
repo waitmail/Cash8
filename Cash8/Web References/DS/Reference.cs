@@ -49,6 +49,8 @@ namespace Cash8.DS {
         
         private System.Threading.SendOrPostCallback GetNpgsqlNewOperationCompleted;
         
+        private System.Threading.SendOrPostCallback GetPDPOperationCompleted;
+        
         private System.Threading.SendOrPostCallback GetStatusSertificatOperationCompleted;
         
         private System.Threading.SendOrPostCallback UploadChangeStatusClientsOperationCompleted;
@@ -72,6 +74,8 @@ namespace Cash8.DS {
         private System.Threading.SendOrPostCallback UploadErrorLogPortionJsonOperationCompleted;
         
         private System.Threading.SendOrPostCallback UploadDataOnSalesPortionJsonOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback UploadDataOnSalesPortionJasonOperationCompleted;
         
         private bool useDefaultCredentialsSetExplicitly;
         
@@ -142,6 +146,9 @@ namespace Cash8.DS {
         public event GetNpgsqlNewCompletedEventHandler GetNpgsqlNewCompleted;
         
         /// <remarks/>
+        public event GetPDPCompletedEventHandler GetPDPCompleted;
+        
+        /// <remarks/>
         public event GetStatusSertificatCompletedEventHandler GetStatusSertificatCompleted;
         
         /// <remarks/>
@@ -176,6 +183,9 @@ namespace Cash8.DS {
         
         /// <remarks/>
         public event UploadDataOnSalesPortionJsonCompletedEventHandler UploadDataOnSalesPortionJsonCompleted;
+        
+        /// <remarks/>
+        public event UploadDataOnSalesPortionJasonCompletedEventHandler UploadDataOnSalesPortionJasonCompleted;
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/HelloWorld", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
@@ -482,6 +492,40 @@ namespace Cash8.DS {
             if ((this.GetNpgsqlNewCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetNpgsqlNewCompleted(this, new GetNpgsqlNewCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetPDP", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute(DataType="base64Binary")]
+        public byte[] GetPDP(string nick_shop, string data, string scheme) {
+            object[] results = this.Invoke("GetPDP", new object[] {
+                        nick_shop,
+                        data,
+                        scheme});
+            return ((byte[])(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetPDPAsync(string nick_shop, string data, string scheme) {
+            this.GetPDPAsync(nick_shop, data, scheme, null);
+        }
+        
+        /// <remarks/>
+        public void GetPDPAsync(string nick_shop, string data, string scheme, object userState) {
+            if ((this.GetPDPOperationCompleted == null)) {
+                this.GetPDPOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetPDPOperationCompleted);
+            }
+            this.InvokeAsync("GetPDP", new object[] {
+                        nick_shop,
+                        data,
+                        scheme}, this.GetPDPOperationCompleted, userState);
+        }
+        
+        private void OnGetPDPOperationCompleted(object arg) {
+            if ((this.GetPDPCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetPDPCompleted(this, new GetPDPCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -884,6 +928,39 @@ namespace Cash8.DS {
         }
         
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/UploadDataOnSalesPortionJason", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public bool UploadDataOnSalesPortionJason(string nick_shop, string data, string scheme) {
+            object[] results = this.Invoke("UploadDataOnSalesPortionJason", new object[] {
+                        nick_shop,
+                        data,
+                        scheme});
+            return ((bool)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void UploadDataOnSalesPortionJasonAsync(string nick_shop, string data, string scheme) {
+            this.UploadDataOnSalesPortionJasonAsync(nick_shop, data, scheme, null);
+        }
+        
+        /// <remarks/>
+        public void UploadDataOnSalesPortionJasonAsync(string nick_shop, string data, string scheme, object userState) {
+            if ((this.UploadDataOnSalesPortionJasonOperationCompleted == null)) {
+                this.UploadDataOnSalesPortionJasonOperationCompleted = new System.Threading.SendOrPostCallback(this.OnUploadDataOnSalesPortionJasonOperationCompleted);
+            }
+            this.InvokeAsync("UploadDataOnSalesPortionJason", new object[] {
+                        nick_shop,
+                        data,
+                        scheme}, this.UploadDataOnSalesPortionJasonOperationCompleted, userState);
+        }
+        
+        private void OnUploadDataOnSalesPortionJasonOperationCompleted(object arg) {
+            if ((this.UploadDataOnSalesPortionJasonCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.UploadDataOnSalesPortionJasonCompleted(this, new UploadDataOnSalesPortionJasonCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
         public new void CancelAsync(object userState) {
             base.CancelAsync(userState);
         }
@@ -1149,6 +1226,32 @@ namespace Cash8.DS {
         private object[] results;
         
         internal GetNpgsqlNewCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public byte[] Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((byte[])(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
+    public delegate void GetPDPCompletedEventHandler(object sender, GetPDPCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetPDPCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetPDPCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }
@@ -1461,6 +1564,32 @@ namespace Cash8.DS {
         private object[] results;
         
         internal UploadDataOnSalesPortionJsonCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public bool Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
+    public delegate void UploadDataOnSalesPortionJasonCompletedEventHandler(object sender, UploadDataOnSalesPortionJasonCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class UploadDataOnSalesPortionJasonCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal UploadDataOnSalesPortionJasonCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }

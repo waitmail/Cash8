@@ -1162,7 +1162,7 @@ namespace Cash8
                     {
                         tran.Rollback();
                         //Console.WriteLine($"Ошибка: {ex.Message}");
-                        MainStaticClass.WriteRecordErrorLog(ex, "CheckAndCorrectColumnType", 0, MainStaticClass.CashDeskNumber, "Изменение типов значения в бд");
+                        MainStaticClass.WriteRecordErrorLog(ex, 0, MainStaticClass.CashDeskNumber, "Изменение типов значения в бд");
                     }
                 }
             }

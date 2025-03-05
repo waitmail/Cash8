@@ -642,7 +642,7 @@ namespace Cash8
             catch (Exception ex)
             {
                 MessageBox.Show("Произошли ошибки при передаче удаленных строк " + ex.Message);
-                MainStaticClass.WriteRecordErrorLog(ex, "UploadDeletedItems", 0, MainStaticClass.CashDeskNumber, "Не удалось передать информацию об удаленных строках");
+                MainStaticClass.WriteRecordErrorLog(ex, 0, MainStaticClass.CashDeskNumber, "Не удалось передать информацию об удаленных строках");
             }
             finally
             {
@@ -733,7 +733,7 @@ namespace Cash8
             catch (Exception ex)
             {
                 //MessageBox.Show("Произошли ошибки при передаче телефонов клиентов " + ex.Message);
-                MainStaticClass.WriteRecordErrorLog(ex, "UploadPhoneClients", 0, MainStaticClass.CashDeskNumber, "не удалось передать информацию о телефонах клиентов");
+                MainStaticClass.WriteRecordErrorLog(ex,0, MainStaticClass.CashDeskNumber, "не удалось передать информацию о телефонах клиентов");
             }
             finally
             {
@@ -1011,12 +1011,12 @@ namespace Cash8
             catch (NpgsqlException ex)
             {
                 MessageBox.Show("Ошибка при изменение реквизита " + ex.Message);
-                MainStaticClass.WriteRecordErrorLog(ex, "guid_to_lover", 0, MainStaticClass.CashDeskNumber, "Изменение гуин в НРЕГ");
+                MainStaticClass.WriteRecordErrorLog(ex,0, MainStaticClass.CashDeskNumber, "Изменение гуин в НРЕГ");
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Ошибка при изменение реквизита " + ex.Message);
-                MainStaticClass.WriteRecordErrorLog(ex, "guid_to_lover", 0, MainStaticClass.CashDeskNumber, "Изменение гуин в НРЕГ");
+                MainStaticClass.WriteRecordErrorLog(ex, 0, MainStaticClass.CashDeskNumber, "Изменение гуин в НРЕГ");
             }
             finally
             {
@@ -1032,6 +1032,7 @@ namespace Cash8
         private async void Main_Load(object sender, System.EventArgs e)
         {
             
+
             //if (File.Exists(Application.StartupPath + "/UpdateNpgsql/Npgsql.dll"))
             //{
             //    if (File.ReadAllBytes(Application.StartupPath + "/UpdateNpgsql/Npgsql.dll").Length > 0)
@@ -1083,10 +1084,7 @@ namespace Cash8
 
             if (MainStaticClass.exist_table_name("constants"))
             {
-
-                //InventoryManager.FillDictionaryProductData();
-                //LoadCdnWithStartAsync();
-                //UploadErrorsLogAsync();
+                Task.Run(() => get_pdb());                
                 check_add_field();
                 InventoryManager.FillDictionaryProductDataAsync();
 
@@ -1267,14 +1265,14 @@ namespace Cash8
              catch (NpgsqlException ex)
              {
                  MessageBox.Show("Ошибка при очистке счетчика ошибочно введенных номеров телефонов" + ex.Message);
-                 MainStaticClass.WriteRecordErrorLog(ex, "check_failed_input_phone",0,Convert.ToInt16(MainStaticClass.CashDeskNumber),@"MainForms Проверка таблицы failed_input_phone
+                 MainStaticClass.WriteRecordErrorLog(ex,0,Convert.ToInt16(MainStaticClass.CashDeskNumber),@"MainForms Проверка таблицы failed_input_phone
         при старте программы, если это сегодня первый старт
         и документов продажи еще нет, тогда очищаем таблицу");
              }
              catch (Exception ex)
              {
                  MessageBox.Show("Ошибка при очистке счетчика ошибочно введенных номеров телефонов" + ex.Message);                
-                MainStaticClass.WriteRecordErrorLog(ex, "check_failed_input_phone", 0, Convert.ToInt16(MainStaticClass.CashDeskNumber), @"MainForms Проверка таблицы failed_input_phone
+                MainStaticClass.WriteRecordErrorLog(ex, 0, Convert.ToInt16(MainStaticClass.CashDeskNumber), @"MainForms Проверка таблицы failed_input_phone
         при старте программы, если это сегодня первый старт
         и документов продажи еще нет, тогда очищаем таблицу");
             }
@@ -1469,6 +1467,49 @@ namespace Cash8
         //}
 
 
+        private void get_pdb()
+        {
+            string nick_shop = MainStaticClass.Nick_Shop.Trim();
+            string code_shop = MainStaticClass.Code_Shop.Trim();
+            if (string.IsNullOrEmpty(nick_shop) || string.IsNullOrEmpty(code_shop))
+            {
+                MainStaticClass.WriteRecordErrorLog("Не удалось получить ник или код магазина", "get_pdb()",0, MainStaticClass.CashDeskNumber, "Обновление pdb файла");
+                return ;
+            }
+
+            string filePath = Application.StartupPath+ "\\Cash8.pdb";
+            DateTime lastWriteTime = new DateTime(2000, 1, 1);
+            if (File.Exists(filePath))
+            {
+                FileInfo fileInfo = new FileInfo(filePath);
+                lastWriteTime = fileInfo.LastWriteTime;
+            }
+            
+
+            string count_day = CryptorEngine.get_count_day();
+            string key = nick_shop + count_day + code_shop;
+
+            string data = JsonConvert.SerializeObject(lastWriteTime, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            string data_crypt = CryptorEngine.Encrypt(data, true, key);
+
+            Cash8.DS.DS ds = MainStaticClass.get_ds();
+            ds.Timeout = 18000;
+            try
+            {
+                byte[] pdb=ds.GetPDP(nick_shop, data_crypt, MainStaticClass.GetWorkSchema.ToString());
+                if (pdb.Length != 0)
+                {
+                    File.WriteAllBytes(Application.StartupPath + "\\Cash8.pdb", pdb);
+                }
+            }
+            catch (Exception ex)
+            {
+                MainStaticClass.WriteRecordErrorLog(ex, 0, MainStaticClass.CashDeskNumber, "не удалось загрузить pdb файл");
+                //return false;
+            }
+        }
+
+
 
         private void UploadErrorsLog()
         {
@@ -1487,7 +1528,7 @@ namespace Cash8
             catch (Exception ex)
             {
                 // Логируем ошибку или предпринимаем другие действия по обработке исключения
-                MainStaticClass.WriteRecordErrorLog(ex, "UploadErrorsLog", 0, MainStaticClass.CashDeskNumber, "Произошла ошибка при загрузке логов ошибок");
+                MainStaticClass.WriteRecordErrorLog(ex,0, MainStaticClass.CashDeskNumber, "Произошла ошибка при загрузке логов ошибок");
             }
         }
 
@@ -1543,7 +1584,7 @@ namespace Cash8
             }
             catch (Exception ex)
             {
-                MainStaticClass.WriteRecordErrorLog(ex, "UploadErrorLogsToServer", 0, MainStaticClass.CashDeskNumber, "не удалось передать информацию об ошибках в программе");
+                MainStaticClass.WriteRecordErrorLog(ex, 0, MainStaticClass.CashDeskNumber, "не удалось передать информацию об ошибках в программе");
                 return false;
             }
         }

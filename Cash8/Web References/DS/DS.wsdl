@@ -143,6 +143,22 @@
           </s:sequence>
         </s:complexType>
       </s:element>
+      <s:element name="GetPDP">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="nick_shop" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="data" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="scheme" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPDPResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetPDPResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
       <s:element name="GetStatusSertificat">
         <s:complexType>
           <s:sequence>
@@ -335,6 +351,22 @@
           </s:sequence>
         </s:complexType>
       </s:element>
+      <s:element name="UploadDataOnSalesPortionJason">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="nick_shop" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="data" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="scheme" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UploadDataOnSalesPortionJasonResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="UploadDataOnSalesPortionJasonResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
     </s:schema>
   </wsdl:types>
   <wsdl:message name="HelloWorldSoapIn">
@@ -396,6 +428,12 @@
   </wsdl:message>
   <wsdl:message name="GetNpgsqlNewSoapOut">
     <wsdl:part name="parameters" element="tns:GetNpgsqlNewResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetPDPSoapIn">
+    <wsdl:part name="parameters" element="tns:GetPDP" />
+  </wsdl:message>
+  <wsdl:message name="GetPDPSoapOut">
+    <wsdl:part name="parameters" element="tns:GetPDPResponse" />
   </wsdl:message>
   <wsdl:message name="GetStatusSertificatSoapIn">
     <wsdl:part name="parameters" element="tns:GetStatusSertificat" />
@@ -469,6 +507,12 @@
   <wsdl:message name="UploadDataOnSalesPortionJsonSoapOut">
     <wsdl:part name="parameters" element="tns:UploadDataOnSalesPortionJsonResponse" />
   </wsdl:message>
+  <wsdl:message name="UploadDataOnSalesPortionJasonSoapIn">
+    <wsdl:part name="parameters" element="tns:UploadDataOnSalesPortionJason" />
+  </wsdl:message>
+  <wsdl:message name="UploadDataOnSalesPortionJasonSoapOut">
+    <wsdl:part name="parameters" element="tns:UploadDataOnSalesPortionJasonResponse" />
+  </wsdl:message>
   <wsdl:portType name="DSSoap">
     <wsdl:operation name="HelloWorld">
       <wsdl:input message="tns:HelloWorldSoapIn" />
@@ -509,6 +553,10 @@
     <wsdl:operation name="GetNpgsqlNew">
       <wsdl:input message="tns:GetNpgsqlNewSoapIn" />
       <wsdl:output message="tns:GetNpgsqlNewSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPDP">
+      <wsdl:input message="tns:GetPDPSoapIn" />
+      <wsdl:output message="tns:GetPDPSoapOut" />
     </wsdl:operation>
     <wsdl:operation name="GetStatusSertificat">
       <wsdl:input message="tns:GetStatusSertificatSoapIn" />
@@ -557,6 +605,10 @@
     <wsdl:operation name="UploadDataOnSalesPortionJson">
       <wsdl:input message="tns:UploadDataOnSalesPortionJsonSoapIn" />
       <wsdl:output message="tns:UploadDataOnSalesPortionJsonSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="UploadDataOnSalesPortionJason">
+      <wsdl:input message="tns:UploadDataOnSalesPortionJasonSoapIn" />
+      <wsdl:output message="tns:UploadDataOnSalesPortionJasonSoapOut" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="DSSoap" type="tns:DSSoap">
@@ -644,6 +696,15 @@
     </wsdl:operation>
     <wsdl:operation name="GetNpgsqlNew">
       <soap:operation soapAction="http://tempuri.org/GetNpgsqlNew" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPDP">
+      <soap:operation soapAction="http://tempuri.org/GetPDP" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -759,6 +820,15 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="UploadDataOnSalesPortionJason">
+      <soap:operation soapAction="http://tempuri.org/UploadDataOnSalesPortionJason" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
   </wsdl:binding>
   <wsdl:binding name="DSSoap12" type="tns:DSSoap">
     <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
@@ -845,6 +915,15 @@
     </wsdl:operation>
     <wsdl:operation name="GetNpgsqlNew">
       <soap12:operation soapAction="http://tempuri.org/GetNpgsqlNew" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPDP">
+      <soap12:operation soapAction="http://tempuri.org/GetPDP" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -953,6 +1032,15 @@
     </wsdl:operation>
     <wsdl:operation name="UploadDataOnSalesPortionJson">
       <soap12:operation soapAction="http://tempuri.org/UploadDataOnSalesPortionJson" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UploadDataOnSalesPortionJason">
+      <soap12:operation soapAction="http://tempuri.org/UploadDataOnSalesPortionJason" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
