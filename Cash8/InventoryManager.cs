@@ -81,7 +81,7 @@ namespace Cash8
                         while (reader.Read())
                         {
                             int numDoc = reader.GetInt32(reader.GetOrdinal("num_doc"));
-                            double giftPriceValue = reader.GetDouble(reader.GetOrdinal("gift_price"));
+                            double giftPriceValue = Convert.ToDouble(reader.GetDecimal(reader.GetOrdinal("gift_price")));
                             result[numDoc] = giftPriceValue;
                         }
                     }
