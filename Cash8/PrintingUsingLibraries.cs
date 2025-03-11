@@ -504,7 +504,9 @@ namespace Cash8
         }
 
         public void print_sell_2_or_return_sell(Cash_check check)
-        {            
+        {
+            //print_promo();
+
             bool error = false;
 
             //***************************************************************************
@@ -616,6 +618,7 @@ namespace Cash8
             if (check.txtB_email_telephone.Text.Trim().Length > 0)
             {
                 fptr.setParam(1008, check.txtB_email_telephone.Text);
+                fptr.setParam(AtolConstants.LIBFPTR_PARAM_RECEIPT_ELECTRONICALLY, true);
             }
 
             if ((check.txtB_inn.Text.Trim().Length > 0) && (check.txtB_name.Text.Trim().Length > 0))
@@ -1077,6 +1080,7 @@ namespace Cash8
             if (check.txtB_email_telephone.Text.Trim().Length > 0)
             {
                 fptr.setParam(1008, check.txtB_email_telephone.Text);
+                fptr.setParam(AtolConstants.LIBFPTR_PARAM_RECEIPT_ELECTRONICALLY, true);
             }
 
             if ((check.txtB_inn.Text.Trim().Length > 0) && (check.txtB_name.Text.Trim().Length > 0))
@@ -1661,6 +1665,7 @@ namespace Cash8
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_PRINT_FOOTER, false);
 
             fptr.endNonfiscalDocument();
+            //fptr.close();
 
             //fptr.beginNonfiscalDocument();
             //fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, "" + (char)22 + Environment.NewLine);

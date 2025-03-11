@@ -11,7 +11,8 @@ public enum ProductFlags : byte
     Certificate = 1 << 0,
     Marked = 1 << 1,
     CDNCheck = 1 << 2,
-    Fractional = 1 << 3
+    Fractional = 1 << 3,
+    RefusalMarking = 1 << 4
 }
 
 public class ProductData
@@ -49,6 +50,12 @@ public class ProductData
     {
         return (Flags & ProductFlags.Fractional) != 0;
     }
+    public bool IsRefusalMarking()
+    {
+        return (Flags & ProductFlags.RefusalMarking) != 0;
+    }
+
+    
 
 
 

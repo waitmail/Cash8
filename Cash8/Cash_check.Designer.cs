@@ -145,7 +145,7 @@
             // 
             this.panel1.BackColor = System.Drawing.Color.LightSalmon;
             this.panel1.Controls.Add(this.numericUpDown_enter_quantity);
-            this.panel1.Location = new System.Drawing.Point(603, 110);
+            this.panel1.Location = new System.Drawing.Point(70, 45);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(174, 66);
             this.panel1.TabIndex = 21;
@@ -335,10 +335,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Location = new System.Drawing.Point(8, 228);
+            this.tabControl1.Location = new System.Drawing.Point(8, 237);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(791, 310);
+            this.tabControl1.Size = new System.Drawing.Size(791, 301);
             this.tabControl1.TabIndex = 46;
             // 
             // tabPage1
@@ -348,7 +348,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(783, 284);
+            this.tabPage1.Size = new System.Drawing.Size(783, 275);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Товары";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -363,7 +363,7 @@
             this.listView1.Location = new System.Drawing.Point(3, 3);
             this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(780, 281);
+            this.listView1.Size = new System.Drawing.Size(780, 272);
             this.listView1.TabIndex = 4;
             this.listView1.UseCompatibleStateImageBehavior = false;
             // 

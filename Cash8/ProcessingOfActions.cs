@@ -1585,7 +1585,7 @@ namespace Cash8
                     row["characteristic_name"] = "";                    
                     row["quantity"] = count;//Количество
                     row["price"] = reader.GetDecimal(2);//Цена
-                    string retail_price = get_price_action(num_doc);
+                    string retail_price = GetGiftPrice(num_doc);
                     if (retail_price != "")
                     {
                         //row["price_at_discount"] = reader.GetDecimal(2);//Цена соскидкой    
@@ -4770,56 +4770,146 @@ namespace Cash8
         //    }
         //}
 
+
         /// <summary>
-        /// Возвращает цену подарка
+        /// Возвращает цену подарка для указанного номера документа акции.
         /// </summary>
-        /// <param name="num_doc"></param>
-        /// <returns></returns>
-        private string get_price_action(int num_doc)
+        /// <param name="numDoc">Номер документа акции.</param>
+        /// <returns>Цена подарка или 0, если не найдена.</returns>
+        private string GetGiftPrice(int numDoc)
         {
-            string result = "";
+            // 1. Проверка кэша
+            if (TryGetCachedPrice(numDoc, out double cachedPrice))
+            {
+                return cachedPrice.ToString();
+            }
 
-            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
-
+            // 2. Запрос к базе данных
             try
             {
-
-                conn.Open();
-                string query = "SELECT action_header.tip, action_header.gift_price, action_header.marker  FROM action_header where action_header.num_doc=" + num_doc.ToString();
-                NpgsqlCommand command = new NpgsqlCommand(query, conn);
-                NpgsqlDataReader reader = command.ExecuteReader();
-                while (reader.Read())
+                using (var connection = MainStaticClass.NpgsqlConn())
                 {
-                    if ((Convert.ToInt16(reader["tip"]) == 1) || (Convert.ToInt16(reader["tip"]) == 2) || (Convert.ToInt16(reader["tip"]) == 3) || (Convert.ToInt16(reader["tip"]) == 4) || (Convert.ToInt16(reader["tip"]) == 5) || (Convert.ToInt16(reader["tip"]) == 6) || (Convert.ToInt16(reader["tip"]) == 8))
-                    {
-                        //if (Convert.ToInt16(reader["marker"]) == 1)//запрашивать подарок
-                        //{
-                        result = reader["gift_price"].ToString();//получить розничную цену подарка
-                        //}
-                    }
+                    return QueryDatabase(connection, numDoc).ToString();
                 }
-                reader.Close();
-                conn.Close();
             }
-            catch (NpgsqlException ex)
+            catch (Exception ex) when (ex is NpgsqlException || ex is InvalidOperationException)
             {
-                MessageBox.Show(ex.Message);
+                LogError(ex, numDoc);
+                return "1";
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                }
-
-            }
-
-            return result;
         }
+
+        //-------------------------------------------------------
+        // Вспомогательные методы
+        //-------------------------------------------------------
+
+        /// <summary>
+        /// Пытается получить цену из кэша.
+        /// </summary>
+        private bool TryGetCachedPrice(int numDoc, out double price)
+        {
+            price = 0;
+
+            if (!InventoryManager.complete)
+                return false;
+
+            return InventoryManager.DictionaryPriceGiftAction.TryGetValue(numDoc, out price);
+        }
+
+        /// <summary>
+        /// Выполняет запрос к базе данных.
+        /// </summary>
+        private decimal QueryDatabase(NpgsqlConnection connection, int numDoc)
+        {
+            const string query = @"
+        SELECT gift_price 
+        FROM action_header 
+        WHERE num_doc = @numDoc 
+          AND tip IN (1,2,3,4,5,6,8)";
+
+            using (var command = new NpgsqlCommand(query, connection))
+            {
+                command.Parameters.AddWithValue("@numDoc", numDoc);
+                connection.Open();
+
+                var result = command.ExecuteScalar();
+                return Convert.ToDecimal(result ?? 0m);
+            }
+        }
+
+        /// <summary>
+        /// Логирует ошибки.
+        /// </summary>
+        private void LogError(Exception ex, int numDoc)
+        {
+            string errorContext = $"Ошибка при получении цены для документа {numDoc}";
+            MainStaticClass.WriteRecordErrorLog(
+                ex,
+                numDoc,
+                MainStaticClass.CashDeskNumber,
+                errorContext
+            );
+            MessageBox.Show(errorContext);
+        }
+
+
+
+        ///// <summary>
+        ///// Возвращает цену подарка
+        ///// </summary>
+        ///// <param name="num_doc"></param>
+        ///// <returns></returns>
+        //private string get_price_action(int num_doc)
+        //{
+        //    string result = "";
+
+        //    if (InventoryManager.complete)
+        //    {
+        //        var giftPrice = InventoryManager.DictionaryPriceGiftAction;
+        //        if (giftPrice.Count != 0)
+        //        {
+        //            if (giftPrice.TryGetValue(2, out double price))
+        //            {
+        //                result = price.ToString();
+        //                return result;
+        //            }
+        //        }
+        //    }
+
+        //    using (NpgsqlConnection conn = MainStaticClass.NpgsqlConn())
+        //    {
+
+        //        try
+        //        {
+
+        //            conn.Open();
+        //            string query = "SELECT action_header.tip, action_header.gift_price  FROM action_header where action_header.num_doc=" + num_doc.ToString();
+        //            NpgsqlCommand command = new NpgsqlCommand(query, conn);
+        //            NpgsqlDataReader reader = command.ExecuteReader();
+        //            while (reader.Read())
+        //            {
+        //                if ((Convert.ToInt16(reader["tip"]) == 1) || (Convert.ToInt16(reader["tip"]) == 2) || (Convert.ToInt16(reader["tip"]) == 3) || (Convert.ToInt16(reader["tip"]) == 4) || (Convert.ToInt16(reader["tip"]) == 5) || (Convert.ToInt16(reader["tip"]) == 6) || (Convert.ToInt16(reader["tip"]) == 8))
+        //                {
+        //                    result = reader["gift_price"].ToString();//получить розничную цену подарка                     
+        //                }
+        //            }
+        //            reader.Close();
+        //            conn.Close();
+        //        }
+        //        catch (NpgsqlException ex)
+        //        {
+        //            MessageBox.Show(ex.Message);
+        //            MainStaticClass.WriteRecordErrorLog(ex, 0, MainStaticClass.CashDeskNumber, "Получение цены для подарка");
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            MessageBox.Show(ex.Message);
+        //            MainStaticClass.WriteRecordErrorLog(ex, 0, MainStaticClass.CashDeskNumber, "Получение цены для подарка");
+        //        }
+        //    }             
+
+        //    return result;
+        //}
 
         /*Эта акция срабатывает когда количество товаров в документе >= сумме(количество) товаров в акции
         * тогда выдается сообщение о подарке
@@ -4919,7 +5009,7 @@ namespace Cash8
                                 row["characteristic_code"] = reader[6].ToString();
                                 row["quantity"] = 1;
                                 row["price"] = reader.GetDecimal(2).ToString();
-                                row["price_at_discount"] = get_price_action(num_doc);
+                                row["price_at_discount"] = GetGiftPrice(num_doc);
                                 row["sum_full"] = (Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price"])).ToString();
                                 row["sum_at_discount"] = (Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price_at_discount"])).ToString();
                                 //if (Convert.ToDecimal(row["price"]) != Convert.ToDecimal(row["price_at_discount"]))
@@ -5235,7 +5325,7 @@ namespace Cash8
 
                 // Цена товара: если это подарок, используем цену акции, иначе — обычную цену
                 decimal price = isGift
-                    ? Convert.ToDecimal(get_price_action(num_doc))
+                    ? Convert.ToDecimal(GetGiftPrice(num_doc))
                     : Convert.ToDecimal(item.Price);
 
                 // Ключ для группировки

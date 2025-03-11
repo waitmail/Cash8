@@ -11,21 +11,24 @@ namespace Cash8
     public static class InventoryManager
     {
         private static Dictionary<long, ProductData> dictionaryProductData = new Dictionary<long, ProductData>();
+        private static Dictionary<int, double> giftPriceAction = new Dictionary<int, double>();
+
         public static bool complete = false;
         //public static int rowCount = 0;
         //public static int rowCountCurrent = 0;
 
-        public static Dictionary<long, ProductData> DictionaryProductData
-        {
-            get => dictionaryProductData;
-        }
+        //private static Dictionary<long, ProductData> DictionaryProductData
+        //{
+        //    get => dictionaryProductData;
+        //}
 
         public static void ClearDictionaryProductData()
         {
             complete = false;
             dictionaryProductData.Clear();
+            giftPriceAction.Clear();
         }
-        
+
         public static async Task FillDictionaryProductDataAsync()
         {
             await Task.Run(() =>
@@ -48,6 +51,59 @@ namespace Cash8
                 }
             });
         }
+               
+        public static Dictionary<int, double> DictionaryPriceGiftAction
+        {
+            get
+            {
+                // Ленивая инициализация
+                if ((giftPriceAction == null) || (giftPriceAction.Count == 0))
+                {
+                    giftPriceAction = GetPriceGiftAction();
+                }
+                return giftPriceAction;
+            }
+        }
+
+        private static Dictionary<int, double> GetPriceGiftAction()
+        {
+            var result = new Dictionary<int, double>();
+
+            using (NpgsqlConnection conn = MainStaticClass.NpgsqlConn())
+            {
+                try
+                {
+                    conn.Open();
+                    string query = "SELECT num_doc, gift_price FROM action_header";
+                    using (NpgsqlCommand command = new NpgsqlCommand(query, conn))
+                    using (NpgsqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int numDoc = reader.GetInt32(reader.GetOrdinal("num_doc"));
+                            double giftPriceValue = reader.GetDouble(reader.GetOrdinal("gift_price"));
+                            result[numDoc] = giftPriceValue;
+                        }
+                    }
+                }
+                catch (NpgsqlException ex)
+                {
+                    MainStaticClass.WriteRecordErrorLog(ex, 0, MainStaticClass.CashDeskNumber, "Заполнение словаря ценами подарков из акций");
+                    // Возвращаем пустой словарь вместо null
+                    return new Dictionary<int, double>();
+                }
+                catch (Exception ex)
+                {
+                    MainStaticClass.WriteRecordErrorLog(ex, 0, MainStaticClass.CashDeskNumber, "Заполнение словаря ценами подарков из акций");
+                    // Возвращаем пустой словарь вместо null
+                    return new Dictionary<int, double>();
+                }
+            }
+
+            return result;
+        }
+
+
 
         //public static bool FillDictionaryProductData()
         //{
@@ -161,11 +217,15 @@ namespace Cash8
                             ProductFlags flags = ProductFlags.None;
                             if (Convert.ToBoolean(reader["its_certificate"])) flags |= ProductFlags.Certificate;
                             if (Convert.ToBoolean(reader["its_marked"])) flags |= ProductFlags.Marked;
-                            if (Convert.ToBoolean(reader["refusal_of_marking"]))
-                            {
-                                // Сбрасываем флаг Marked, если он был установлен ранее
-                                flags &= ~ProductFlags.Marked;
-                            }
+                            if (Convert.ToBoolean(reader["refusal_of_marking"])) flags |= ProductFlags.RefusalMarking;
+
+                            //if (Convert.ToBoolean(reader["refusal_of_marking"]))
+                            //{
+                            //    // Сбрасываем флаг Marked, если он был установлен ранее
+                            //    flags &= ~ProductFlags.Marked;
+                            //}
+
+
                             if (Convert.ToBoolean(reader["cdn_check"])) flags |= ProductFlags.CDNCheck;
                             if (Convert.ToBoolean(reader["fractional"])) flags |= ProductFlags.Fractional;
 
@@ -187,8 +247,8 @@ namespace Cash8
                             }
                         }
                     }
-
-                    return true;
+                    complete = true;
+                    return complete;                    
                 }
                 catch (NpgsqlException ex)
                 {

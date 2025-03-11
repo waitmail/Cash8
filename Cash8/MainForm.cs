@@ -1087,6 +1087,7 @@ namespace Cash8
                 Task.Run(() => get_pdb());                
                 check_add_field();
                 InventoryManager.FillDictionaryProductDataAsync();
+                Task.Run(() => InventoryManager.DictionaryPriceGiftAction);                ;
 
                 MainStaticClass.write_event_in_log(" Старт программы ", "проверка таблицы констант", "0");
                 Text += "Касса   " + Cash8.MainStaticClass.CashDeskNumber;

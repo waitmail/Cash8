@@ -2599,11 +2599,12 @@ namespace Cash8
                     ProductFlags flags = ProductFlags.None;
                     if (Convert.ToBoolean(reader["its_certificate"])) flags |= ProductFlags.Certificate;
                     if (Convert.ToBoolean(reader["its_marked"])) flags |= ProductFlags.Marked;
-                    if (Convert.ToBoolean(reader["refusal_of_marking"]))
-                    {
-                        // Сбрасываем флаг Marked, если он был установлен ранее
-                        flags &= ~ProductFlags.Marked;
-                    }
+                    if (Convert.ToBoolean(reader["refusal_of_marking"])) flags |= ProductFlags.RefusalMarking;
+                    //if (Convert.ToBoolean(reader["refusal_of_marking"]))
+                    //{
+                    //    // Сбрасываем флаг Marked, если он был установлен ранее
+                    //    flags &= ~ProductFlags.Marked;
+                    //}
                     //else if (Convert.ToBoolean(reader["its_marked"]))
                     //{
                     //    // Устанавливаем флаг Marked, если refusal_of_marking == false и its_marked == true
@@ -2862,7 +2863,10 @@ namespace Cash8
                         input_Action_Barcode.caller = this;
                         if (DialogResult.Cancel == input_Action_Barcode.ShowDialog())
                         {
-                            error = true;
+                            if (!productData.IsRefusalMarking())
+                            {
+                                error = true;
+                            }
                         }
                         else
                         {
@@ -3058,8 +3062,7 @@ namespace Cash8
                         {
                             lvi.SubItems[14].Text = this.qr_code;//добавим в чек qr код                                        
                         }
-                        this.qr_code = "";//обнулим переменную
-                                          //}
+                        this.qr_code = "";//обнулим переменную                                          //}
                     }
                     else
                     {
@@ -3719,12 +3722,19 @@ namespace Cash8
         private void client_barcode_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
         {
             if (e.KeyChar == (char)Keys.Enter)
-            {                
-                if ((MainStaticClass.GetWorkSchema == 1)||(MainStaticClass.GetWorkSchema==3)||(MainStaticClass.GetWorkSchema == 4))
+            {
+                if ((MainStaticClass.GetWorkSchema == 1) || (MainStaticClass.GetWorkSchema == 3) || (MainStaticClass.GetWorkSchema == 4))
                 {
                     MainStaticClass.write_event_in_log(" Перед началом поиска клиента ", "Документ чек", numdoc.ToString());
                     process_client_discount(this.client_barcode.Text);
-                }                
+                }
+            }
+            else
+            {
+                if (!char.IsDigit(e.KeyChar) && (e.KeyChar != (char)Keys.Back))
+                {
+                    e.Handled = true;
+                }
             }
         }
 

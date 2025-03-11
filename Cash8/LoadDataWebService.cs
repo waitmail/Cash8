@@ -1705,7 +1705,9 @@ namespace Cash8
             GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
             GC.WaitForPendingFinalizers();
             new_load();
-            InventoryManager.FillDictionaryProductDataAsync();
+            InventoryManager.FillDictionaryProductDataAsync(); //товары и цены
+            Task.Run(() => InventoryManager.DictionaryPriceGiftAction);//цены для подарков в акциях
+
             //btn_new_load.Enabled = false;
             //if (!MainStaticClass.service_is_worker())
             //{
