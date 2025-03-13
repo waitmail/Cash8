@@ -25,7 +25,7 @@ public class ProductData
 
     public ProductData(long code, string name, decimal price, ProductFlags flags)
     {
-        Code = code;        
+        Code = code;
         Name = CompressString(name);
         Price = price;
         Flags = flags;
@@ -55,7 +55,7 @@ public class ProductData
         return (Flags & ProductFlags.RefusalMarking) != 0;
     }
 
-    
+
 
 
 
@@ -78,7 +78,7 @@ public class ProductData
     }
 
 
-private static string CompressString(string text)
+    private static string CompressString(string text)
     {
         byte[] buffer = Encoding.UTF8.GetBytes(text);
         using (var memoryStream = new MemoryStream())

@@ -4818,6 +4818,75 @@ namespace Cash8
         }
 
 
+        public static bool CheckNewVersionProgramm()
+        {
+            bool result = false;
+            if (!MainStaticClass.service_is_worker())
+            {
+                return result;
+            }
+
+            Cash8.DS.DS ds = MainStaticClass.get_ds();
+            ds.Timeout = 1000;
+
+            //Получить параметра для запроса на сервер 
+            string nick_shop = MainStaticClass.Nick_Shop.Trim();
+            if (nick_shop.Trim().Length == 0)
+            {
+                return result;
+            }
+
+            string code_shop = MainStaticClass.Code_Shop.Trim();
+            if (code_shop.Trim().Length == 0)
+            {
+                return result;
+            }
+
+            string count_day = CryptorEngine.get_count_day();
+            string key = nick_shop.Trim() + count_day.Trim() + code_shop.Trim();
+            string data = code_shop.Trim() + "|" + MainStaticClass.version() + "|" + code_shop.Trim();
+            string result_web_query = "";
+
+            try
+            {
+                result_web_query = ds.ExistsUpdateProrgam(nick_shop, CryptorEngine.Encrypt(data, true, key), MainStaticClass.GetWorkSchema.ToString());
+            }
+            catch (Exception ex)
+            {
+                //MessageBox.Show("Ошибка при получении версии программы на сервере " + ex.Message);
+                return result;
+            }
+
+            if (result_web_query == "")
+            {
+                //label_update.Text = "Не удалось проверить версию программы на сервере";
+            }
+            else// (result_web_query != "")
+            {
+                result_web_query = CryptorEngine.Decrypt(result_web_query, true, key);
+
+                if (MainStaticClass.version() == result_web_query)
+                {
+                    //label_update.Text = " У вас установлена самая последняя версия программы ";
+                    return result;
+                }
+                else
+                {
+                    //это старое решение по контролю версий
+                    string version = result_web_query;
+                    //это новое решение по контролю версий
+                    //здесь наверное надо установить проверку на больше меньше по версиям 
+                    Int64 local_version = Convert.ToInt64(MainStaticClass.version().Replace(".", ""));
+                    Int64 remote_version = Convert.ToInt64(result_web_query.Replace(".", ""));
+                    if (remote_version > local_version)
+                    { 
+                        result = true;                        
+                    }
+                }
+            }
+            return result;
+        }
+
         //public static void fiscall_print()
         //{
         //    Mini_FP_6 mini = new Mini_FP_6();            

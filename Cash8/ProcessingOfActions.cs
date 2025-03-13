@@ -483,7 +483,7 @@ namespace Cash8
                             {
                                 action_2_dt(num_doc, persent, comment, LoadActionDataInMemory.AllActionData2);
                             }
-                    }
+                        }
                         else
                         {
                             //if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
@@ -521,7 +521,7 @@ namespace Cash8
                         {
                             //if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
                             //{
-                                //action_3_dt(num_doc, comment, sum, marker,show_messages); //Сообщить о подарке                           
+                            //action_3_dt(num_doc, comment, sum, marker,show_messages); //Сообщить о подарке                           
                             if (LoadActionDataInMemory.AllActionData1 == null)
                             {
                                 action_3_dt(num_doc, comment, sum, marker, show_messages);
@@ -583,7 +583,7 @@ namespace Cash8
                         {
                             if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
                             {
-                                action_8_dt(num_doc, persent, sum,comment);//Дать скидку на все позиции из списка позицию                                                 
+                                action_8_dt(num_doc, persent, sum, comment);//Дать скидку на все позиции из списка позицию                                                 
                             }
                         }
                         else
@@ -626,11 +626,16 @@ namespace Cash8
                     else if (tip_action == 12)
                     {
 
-                        action_12_dt(num_doc, persent,sum,sum1);
+                        action_12_dt(num_doc, persent, sum, sum1);
+                    }
+                    else if (tip_action == 13)
+                    {
+                        action_13_dt(num_doc);
                     }
                     else
                     {
                         MessageBox.Show("Неопознанный тип акции в документе  № " + reader["num_doc"].ToString(), " Обработка акций ");
+                        MainStaticClass.WriteRecordErrorLog("Неопознанный тип акции в документе  № " + reader["num_doc"].ToString(),"to_define_the_action_dt", num_doc, MainStaticClass.CashDeskNumber, "Основная обработка акций");
                     }
                 }
                 reader.Close();
@@ -1527,6 +1532,97 @@ namespace Cash8
 
             return result;
         }
+
+
+        /// Обработка акций 13 типа
+        /// </summary>
+        /// <param name="num_doc"></param>
+        private void action_13_dt(int num_doc)
+        {
+            try
+            {
+                using (NpgsqlConnection conn = MainStaticClass.NpgsqlConn())
+                {
+                    conn.Open();
+
+                    // Создаем резервную копию таблицы
+                    DataTable originalDt = dt.Copy();
+
+                    try
+                    {
+                        // Группируем строки по code_tovar
+                        var groupedRows = dt.AsEnumerable()
+                            .GroupBy(row => row.Field<long>("tovar_code"))
+                            .Where(group => group.All(row => row.Field<int>("action2") == 0)) // Товар не участвовал в других акциях
+                            .ToList();
+
+                        foreach (var group in groupedRows)
+                        {
+                            long codeTovar = group.Key;
+                            int totalQuantity = group.Sum(row => row.Field<int>("quantity"));
+
+                            decimal? actionPrice = GetPriceAction13(num_doc, codeTovar, totalQuantity, conn);
+                            if (!actionPrice.HasValue) continue;
+
+                            // Обновляем все строки с этим товаром
+                            foreach (DataRow row in group)
+                            {
+                                decimal qty = row.Field<decimal>("quantity");
+                                decimal price = row.Field<decimal>("price");
+
+                                row["price_at_discount"] = actionPrice.Value;
+                                row["sum_full"] = (qty * price).ToString();
+                                row["sum_at_discount"] = (qty * actionPrice.Value).ToString();
+                                row["action"] = num_doc.ToString();
+                                row["action2"] = num_doc.ToString();
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        // Восстанавливаем исходное состояние таблицы при ошибке
+                        dt.Clear();
+                        foreach (DataRow row in originalDt.Rows)
+                        {
+                            dt.ImportRow(row);
+                        }
+
+                        throw; // Перебрасываем исключение дальше
+                    }
+                }
+            }
+            catch (NpgsqlException ex)
+            {
+                MainStaticClass.WriteRecordErrorLog(ex, num_doc, MainStaticClass.CashDeskNumber, "Обработка акций 13 типа");
+            }
+            catch (Exception ex)
+            {
+                MainStaticClass.WriteRecordErrorLog(ex, num_doc, MainStaticClass.CashDeskNumber, "Обработка акций 13 типа");
+            }
+        }
+
+        public decimal? GetPriceAction13(int numDoc, long codeTovar, int quantity, NpgsqlConnection conn)
+        {
+            const string query = @"
+        SELECT price 
+        FROM action_table 
+        WHERE num_doc = @numDoc 
+          AND code_tovar = @codeTovar 
+          AND num_list <= @quantity
+        ORDER BY num_list DESC 
+        LIMIT 1";
+
+            using (var cmd = new NpgsqlCommand(query, conn))
+            {
+                cmd.Parameters.AddWithValue("@numDoc", numDoc);
+                cmd.Parameters.AddWithValue("@codeTovar", codeTovar);
+                cmd.Parameters.AddWithValue("@quantity", quantity);
+
+                var result = cmd.ExecuteScalar();
+                return result != null ? Convert.ToDecimal(result) : (decimal?)null;
+            }
+        }
+
 
         /*Поиск товара по штрихкоду
         * и добвление его в табличную часть
@@ -4810,7 +4906,7 @@ namespace Cash8
         {
             price = 0;
 
-            if (!InventoryManager.complete)
+            if (!InventoryManager.completeDictionaryProductData)
                 return false;
 
             return InventoryManager.DictionaryPriceGiftAction.TryGetValue(numDoc, out price);

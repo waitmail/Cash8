@@ -13,7 +13,7 @@ namespace Cash8
         private static Dictionary<long, ProductData> dictionaryProductData = new Dictionary<long, ProductData>();
         private static Dictionary<int, double> giftPriceAction = new Dictionary<int, double>();
 
-        public static bool complete = false;
+        public static bool completeDictionaryProductData = false;
         //public static int rowCount = 0;
         //public static int rowCountCurrent = 0;
 
@@ -24,7 +24,7 @@ namespace Cash8
 
         public static void ClearDictionaryProductData()
         {
-            complete = false;
+            completeDictionaryProductData = false;
             dictionaryProductData.Clear();
             giftPriceAction.Clear();
         }
@@ -247,8 +247,8 @@ namespace Cash8
                             }
                         }
                     }
-                    complete = true;
-                    return complete;                    
+                    completeDictionaryProductData = true;
+                    return completeDictionaryProductData;                    
                 }
                 catch (NpgsqlException ex)
                 {

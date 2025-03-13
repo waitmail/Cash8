@@ -428,6 +428,9 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="Pictures\ExistUpdateProgramm.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="SberDll\gate.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

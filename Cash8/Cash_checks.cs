@@ -289,6 +289,11 @@ namespace Cash8
                 return;
             }
 
+            if (System.IO.File.Exists(Application.StartupPath + "\\Pictures\\ExistUpdateProgramm.jpg"))
+            {
+                pictureBox_get_update_program.Load(Application.StartupPath + "\\Pictures\\ExistUpdateProgramm.jpg");
+            }
+
             int result = MainStaticClass.get_unloading_interval();
             if (result != 0)
             {                
@@ -423,6 +428,10 @@ namespace Cash8
                 get_status_send_document();
                 timer.Start();
                 timer_execute = DateTime.Now;
+                if (MainStaticClass.CheckNewVersionProgramm())
+                {
+                    pictureBox_get_update_program.Visible = true;
+                }
             }
 
         }
@@ -774,6 +783,12 @@ namespace Cash8
         {
             CheckActions checkActions = new CheckActions();
             checkActions.ShowDialog();
+        }
+
+        private void pictureBox_get_update_program_Click(object sender, EventArgs e)
+        {
+            LoadProgramFromInternet loadProgramFromInternet = new LoadProgramFromInternet();
+            loadProgramFromInternet.ShowDialog();
         }
     }
 }

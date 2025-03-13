@@ -655,6 +655,27 @@ namespace Cash8
 
         }
 
+        private void check_files_and_folders()
+        {
+            try
+            {
+                string folderPathPictures = Application.StartupPath + "\\Pictures";
+                if (!Directory.Exists(folderPathPictures))
+                {
+                    Directory.CreateDirectory(folderPathPictures);
+                }
+                string fileExistUpdateProgrammPictures = Application.StartupPath + "\\Pictures\\ExistUpdateProgramm.jpg";
+                if (!File.Exists(fileExistUpdateProgrammPictures))
+                {
+                                            
+                }
+            }
+            catch (Exception ex)
+            {
+                MainStaticClass.WriteRecordErrorLog(ex, 0, MainStaticClass.CashDeskNumber, "Проверка/создание файлов и папок");
+            }
+        }
+
 
         private void UploadPhoneClients()
         {

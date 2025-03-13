@@ -2687,7 +2687,7 @@ namespace Cash8
             
             ProductData productData = new ProductData(0, "", 0, ProductFlags.None);
 
-            if (InventoryManager.complete)
+            if (InventoryManager.completeDictionaryProductData)
             {
                 productData = InventoryManager.GetItem(Convert.ToInt64(barcode));
             }
@@ -2866,7 +2866,7 @@ namespace Cash8
                             if (!productData.IsRefusalMarking())
                             {
                                 error = true;
-                            }
+                            }                            
                         }
                         else
                         {
@@ -3040,13 +3040,16 @@ namespace Cash8
                         }
                         else
                         {
-                            foreach (ListViewItem listViewItem4 in this.listView1.Items)
+                            if ((this.qr_code.Trim() != "") || (!productData.IsRefusalMarking()))
                             {
-                                if (listViewItem4.SubItems[14].Text == this.qr_code)
+                                foreach (ListViewItem listViewItem4 in this.listView1.Items)
                                 {
-                                    error = true;
-                                    MessageBox.Show("Номенклатура с введенным кодом маркировки который вы пытались добавить уже существует в чеке. \r\n Номенклатура не будет добавлена.");
-                                    break;
+                                    if (listViewItem4.SubItems[14].Text == this.qr_code)
+                                    {
+                                        error = true;
+                                        MessageBox.Show("Номенклатура с введенным кодом маркировки который вы пытались добавить уже существует в чеке. \r\n Номенклатура не будет добавлена.");
+                                        break;
+                                    }
                                 }
                             }
                         }
