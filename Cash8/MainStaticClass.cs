@@ -4856,12 +4856,8 @@ namespace Cash8
                 //MessageBox.Show("Ошибка при получении версии программы на сервере " + ex.Message);
                 return result;
             }
-
-            if (result_web_query == "")
-            {
-                //label_update.Text = "Не удалось проверить версию программы на сервере";
-            }
-            else// (result_web_query != "")
+            
+            if(result_web_query != "")
             {
                 result_web_query = CryptorEngine.Decrypt(result_web_query, true, key);
 

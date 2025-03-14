@@ -245,16 +245,16 @@ namespace Cash8
             {
                 try
                 {
-                    if (!Directory.Exists(Application.StartupPath + "/Update"))
+                    if (!Directory.Exists(Application.StartupPath + "\\Update"))
                     {
-                        Directory.CreateDirectory(Application.StartupPath + "/Update");
+                        Directory.CreateDirectory(Application.StartupPath + "\\Update");
                     }
 
-                    File.WriteAllBytes(Application.StartupPath + "/Update/Cash.exe", result_web_query);
+                    File.WriteAllBytes(Application.StartupPath + "\\Update\\Cash.exe", result_web_query);
 
-                    if (!Directory.Exists(Application.StartupPath + "/Previous"))
+                    if (!Directory.Exists(Application.StartupPath + "\\Previous"))
                     {
-                        Directory.CreateDirectory(Application.StartupPath + "/Previous");
+                        Directory.CreateDirectory(Application.StartupPath + "\\Previous");
                     }
 
                     File.Copy(Application.StartupPath + "/Cash.exe", Application.StartupPath + "/Previous/Cash.exe", true);

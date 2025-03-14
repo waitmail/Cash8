@@ -51,6 +51,8 @@ namespace Cash8.DS {
         
         private System.Threading.SendOrPostCallback GetPDPOperationCompleted;
         
+        private System.Threading.SendOrPostCallback GetFileOperationCompleted;
+        
         private System.Threading.SendOrPostCallback GetStatusSertificatOperationCompleted;
         
         private System.Threading.SendOrPostCallback UploadChangeStatusClientsOperationCompleted;
@@ -147,6 +149,9 @@ namespace Cash8.DS {
         
         /// <remarks/>
         public event GetPDPCompletedEventHandler GetPDPCompleted;
+        
+        /// <remarks/>
+        public event GetFileCompletedEventHandler GetFileCompleted;
         
         /// <remarks/>
         public event GetStatusSertificatCompletedEventHandler GetStatusSertificatCompleted;
@@ -526,6 +531,40 @@ namespace Cash8.DS {
             if ((this.GetPDPCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetPDPCompleted(this, new GetPDPCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetFile", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute(DataType="base64Binary")]
+        public byte[] GetFile(string nick_shop, string data, string scheme) {
+            object[] results = this.Invoke("GetFile", new object[] {
+                        nick_shop,
+                        data,
+                        scheme});
+            return ((byte[])(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetFileAsync(string nick_shop, string data, string scheme) {
+            this.GetFileAsync(nick_shop, data, scheme, null);
+        }
+        
+        /// <remarks/>
+        public void GetFileAsync(string nick_shop, string data, string scheme, object userState) {
+            if ((this.GetFileOperationCompleted == null)) {
+                this.GetFileOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetFileOperationCompleted);
+            }
+            this.InvokeAsync("GetFile", new object[] {
+                        nick_shop,
+                        data,
+                        scheme}, this.GetFileOperationCompleted, userState);
+        }
+        
+        private void OnGetFileOperationCompleted(object arg) {
+            if ((this.GetFileCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetFileCompleted(this, new GetFileCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -1252,6 +1291,32 @@ namespace Cash8.DS {
         private object[] results;
         
         internal GetPDPCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public byte[] Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((byte[])(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
+    public delegate void GetFileCompletedEventHandler(object sender, GetFileCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetFileCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetFileCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }

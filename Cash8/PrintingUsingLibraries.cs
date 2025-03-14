@@ -1593,20 +1593,13 @@ namespace Cash8
                 fptr.open();
             }
 
-            fptr.beginNonfiscalDocument();
-            //MessageBox.Show(fptr.errorDescription());
-
-            fptr.setParam(AtolConstants.LIBFPTR_PARAM_FILENAME, @"D:\Last Cash8\Cash8\Cash8\bin\Debug\logo3.png");
-            fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
-            fptr.printPicture();
-            //MessageBox.Show(fptr.errorDescription());
-            
-            
+            fptr.beginNonfiscalDocument();            
+                        
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_BARCODE, "123456789012");
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_BARCODE_TYPE, AtolConstants.LIBFPTR_BT_EAN_13);
-            fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
-            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_SCALE, 2);
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);            
             fptr.printBarcode();
+
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, "123456789012");
             fptr.printText();//печать циферок штрихкода
@@ -1624,29 +1617,7 @@ namespace Cash8
             string a2 = "       0  00   00 00    00 0  ";
             string a3 = "0000     00    00 00      0   ";
             string a4 = "       00      00 00     0 00 ";
-            string a5 = "       00000    000     0  00 ";
-
-            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
-            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, "- 20 %");
-            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_FONT, 2);
-            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_FONT_DOUBLE_WIDTH, true);
-            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_FONT_DOUBLE_HEIGHT, true);
-            fptr.lineFeed();            
-            fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
-            fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, a1);
-            fptr.printText();
-            fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
-            fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, a2);
-            fptr.printText();
-            fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
-            fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, a3);
-            fptr.printText();
-            fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
-            fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, a4);
-            fptr.printText();
-            fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
-            fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, a5);            
-            fptr.printText();
+            string a5 = "       00000    000     0  00 ";           
             
             fptr.lineFeed();
 
@@ -1654,33 +1625,11 @@ namespace Cash8
 
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);            
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT,s);
-            fptr.printText();
-
-            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, "" + "\"\""+ Environment.NewLine );
-            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT,""+ "\x16" + Environment.NewLine);
-            fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, ((char)22).ToString() + "\n");
-
-            fptr.printText();
+            fptr.printText();            
 
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_PRINT_FOOTER, false);
 
-            fptr.endNonfiscalDocument();
-            //fptr.close();
-
-            //fptr.beginNonfiscalDocument();
-            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, "" + (char)22 + Environment.NewLine);
-            //fptr.printText();            
-            //fptr.endNonfiscalDocument();
-            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_RECEIPT_TYPE, AtolConstants.LIBFPTR_RT_SELL);
-            //fptr.openReceipt();
-            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_COMMODITY_NAME, "Фискальный чек");
-            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_PRICE, 0);
-            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_QUANTITY, 1);
-            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_TAX_TYPE, AtolConstants.LIBFPTR_TAX_VAT10);
-            //fptr.registration();
-            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_PAYMENT_TYPE, AtolConstants.LIBFPTR_PT_ELECTRONICALLY);
-            //fptr.closeReceipt();
-            //MessageBox.Show(fptr.errorDescription());
+            fptr.endNonfiscalDocument();            
         }
 
 

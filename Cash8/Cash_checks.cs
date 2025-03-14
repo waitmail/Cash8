@@ -16,6 +16,8 @@ namespace Cash8
     {
         //private Nomenklatura tovar;
         public delegate void set_message_on_txtB_not_unloaded_docs(string message);
+        public delegate void set_vsisble_pictureBox__update_program(bool visible);
+        
         //public delegate void set_color_on_have_internet(Color color);
         //public delegate void set_message_on_ofd_exchange_status(string message);
         private bool new_document = false;
@@ -382,6 +384,12 @@ namespace Cash8
             txtB_not_unloaded_docs.Text = message;
         }
 
+        public void set_vsisble_pictureBox_get_update_program(bool visible)
+        {
+            pictureBox_get_update_program.Visible = visible;
+            this.Refresh();
+        }
+
 
         private void timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
@@ -422,18 +430,23 @@ namespace Cash8
             //result += "  "+DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss");
 
             //Invoke(new set_message_on_txtB_not_unloaded_docs(set_text_on_txtB_not_unloaded_docs), new object[] { result });
-            if (DateTime.Now > timer_execute.AddSeconds(59))
-            {
-                timer.Stop();
+            //if (DateTime.Now > timer_execute.AddSeconds(59))
+            //{
+            //    timer.Stop();
                 get_status_send_document();
-                timer.Start();
+                //timer.Start();
                 timer_execute = DateTime.Now;
                 if (MainStaticClass.CheckNewVersionProgramm())
                 {
-                    pictureBox_get_update_program.Visible = true;
+                    //MessageBox.Show("Есть");
+                    Invoke(new set_vsisble_pictureBox__update_program(set_vsisble_pictureBox_get_update_program), new object[] { true });
                 }
-            }
-
+                else
+                {
+                    //MessageBox.Show("Нет");
+                    Invoke(new set_vsisble_pictureBox__update_program(set_vsisble_pictureBox_get_update_program), new object[] { false });                    
+                }
+            //}
         }
         
         private void get_status_send_document()
@@ -787,6 +800,7 @@ namespace Cash8
 
         private void pictureBox_get_update_program_Click(object sender, EventArgs e)
         {
+            //MessageBox.Show("Загружаем новую версию");
             LoadProgramFromInternet loadProgramFromInternet = new LoadProgramFromInternet();
             loadProgramFromInternet.ShowDialog();
         }

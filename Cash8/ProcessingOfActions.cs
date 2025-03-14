@@ -1552,14 +1552,14 @@ namespace Cash8
                     {
                         // Группируем строки по code_tovar
                         var groupedRows = dt.AsEnumerable()
-                            .GroupBy(row => row.Field<long>("tovar_code"))
+                            .GroupBy(row => row.Field<double>("tovar_code"))
                             .Where(group => group.All(row => row.Field<int>("action2") == 0)) // Товар не участвовал в других акциях
                             .ToList();
 
                         foreach (var group in groupedRows)
                         {
-                            long codeTovar = group.Key;
-                            int totalQuantity = group.Sum(row => row.Field<int>("quantity"));
+                            double codeTovar = group.Key;
+                            double totalQuantity = group.Sum(row => row.Field<double>("quantity"));
 
                             decimal? actionPrice = GetPriceAction13(num_doc, codeTovar, totalQuantity, conn);
                             if (!actionPrice.HasValue) continue;
@@ -1567,12 +1567,12 @@ namespace Cash8
                             // Обновляем все строки с этим товаром
                             foreach (DataRow row in group)
                             {
-                                decimal qty = row.Field<decimal>("quantity");
+                                decimal qty = Convert.ToDecimal(row.Field<double>("quantity"));
                                 decimal price = row.Field<decimal>("price");
 
                                 row["price_at_discount"] = actionPrice.Value;
                                 row["sum_full"] = (qty * price).ToString();
-                                row["sum_at_discount"] = (qty * actionPrice.Value).ToString();
+                                row["sum_at_discount"] = ((decimal)qty * actionPrice.Value).ToString();
                                 row["action"] = num_doc.ToString();
                                 row["action2"] = num_doc.ToString();
                             }
@@ -1593,15 +1593,17 @@ namespace Cash8
             }
             catch (NpgsqlException ex)
             {
+                MessageBox.Show(ex.Message, "Ошибка при обработке 13 типа акций");
                 MainStaticClass.WriteRecordErrorLog(ex, num_doc, MainStaticClass.CashDeskNumber, "Обработка акций 13 типа");
             }
             catch (Exception ex)
             {
+                MessageBox.Show(ex.Message, "Ошибка при обработке 13 типа акций");
                 MainStaticClass.WriteRecordErrorLog(ex, num_doc, MainStaticClass.CashDeskNumber, "Обработка акций 13 типа");
             }
         }
 
-        public decimal? GetPriceAction13(int numDoc, long codeTovar, int quantity, NpgsqlConnection conn)
+        public decimal? GetPriceAction13(int numDoc, double codeTovar, double quantity, NpgsqlConnection conn)
         {
             const string query = @"
         SELECT price 
@@ -1622,6 +1624,84 @@ namespace Cash8
                 return result != null ? Convert.ToDecimal(result) : (decimal?)null;
             }
         }
+
+
+        //private void action_13_dt(int num_doc)
+        //{
+        //    try
+        //    {
+        //        using (NpgsqlConnection conn = MainStaticClass.NpgsqlConn())
+        //        {
+        //            conn.Open();
+
+        //            // Создаем резервную копию таблицы
+        //            DataTable originalDt = dt.Copy();
+
+        //            try
+        //            {
+        //                // Сгруппируем данные по tovar_code и просуммируем quantity
+        //                var groupedData = dt.AsEnumerable()
+        //                    .Where(row => row.Field<int>("action2") == 0) // Только те строки, которые не участвовали в других акциях
+        //                    .GroupBy(row => row.Field<long>("tovar_code"))
+        //                    .Select(g => new
+        //                    {
+        //                        TovarCode = g.Key,
+        //                        TotalQuantity = g.Sum(row => row.Field<int>("quantity"))
+        //                    })
+        //                    .ToList();
+
+        //                foreach (var group in groupedData)
+        //                {
+        //                    long codeTovar = group.TovarCode;
+        //                    int totalQuantity = group.TotalQuantity;
+
+        //                    // Получаем цену для всей группы товара
+        //                    decimal? action_price = GetPriceAction13(num_doc, codeTovar, totalQuantity, conn);
+
+        //                    if (action_price.HasValue)
+        //                    {
+        //                        decimal priceAtDiscount = action_price.Value;
+
+        //                        // Находим все строки с этим товаром в исходной таблице
+        //                        var rowsToUpdate = dt.AsEnumerable()
+        //                            .Where(row => row.Field<long>("tovar_code") == codeTovar && row.Field<int>("action2") == 0);
+
+        //                        foreach (var row in rowsToUpdate)
+        //                        {
+        //                            decimal qty = row.Field<decimal>("quantity");
+        //                            decimal price = row.Field<decimal>("price");
+
+        //                            row["price_at_discount"] = priceAtDiscount;
+        //                            row["sum_full"] = (qty * price).ToString();
+        //                            row["sum_at_discount"] = (qty * priceAtDiscount).ToString();
+        //                            row["action"] = num_doc.ToString();
+        //                            row["action2"] = num_doc.ToString(); // Отметим, что этот товар уже участвовал в акции
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //            catch
+        //            {
+        //                // Восстанавливаем исходное состояние таблицы при ошибке
+        //                dt.Clear();
+        //                foreach (DataRow row in originalDt.Rows)
+        //                {
+        //                    dt.ImportRow(row);
+        //                }
+
+        //                throw; // Перебрасываем исключение дальше
+        //            }
+        //        }
+        //    }
+        //    catch (NpgsqlException ex)
+        //    {
+        //        MainStaticClass.WriteRecordErrorLog(ex, num_doc, MainStaticClass.CashDeskNumber, "Обработка акций 13 типа");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MainStaticClass.WriteRecordErrorLog(ex, num_doc, MainStaticClass.CashDeskNumber, "Обработка акций 13 типа");
+        //    }
+        //}
 
 
         /*Поиск товара по штрихкоду

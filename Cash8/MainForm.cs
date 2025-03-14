@@ -667,7 +667,7 @@ namespace Cash8
                 string fileExistUpdateProgrammPictures = Application.StartupPath + "\\Pictures\\ExistUpdateProgramm.jpg";
                 if (!File.Exists(fileExistUpdateProgrammPictures))
                 {
-                                            
+                    get_file_for_web_service("Pictures\\ExistUpdateProgramm.jpg");
                 }
             }
             catch (Exception ex)
@@ -1200,6 +1200,9 @@ namespace Cash8
                 PrintingUsingLibraries printingUsingLibraries = new PrintingUsingLibraries();
                 printingUsingLibraries.CheckTaxationTypes();
             }
+
+            check_files_and_folders();
+
         }
 
        
@@ -1531,6 +1534,48 @@ namespace Cash8
             }
         }
 
+        private void get_file_for_web_service(string filename)
+        {
+            string nick_shop = MainStaticClass.Nick_Shop.Trim();
+            string code_shop = MainStaticClass.Code_Shop.Trim();
+            if (string.IsNullOrEmpty(nick_shop) || string.IsNullOrEmpty(code_shop))
+            {
+                MainStaticClass.WriteRecordErrorLog("Не удалось получить ник или код магазина", "get_pdb()", 0, MainStaticClass.CashDeskNumber, "Обновление pdb файла");
+                return;
+            }
+
+            //string filePath = Application.StartupPath + "\\Cash8.pdb";
+            //DateTime lastWriteTime = new DateTime(2000, 1, 1);
+            //if (File.Exists(filePath))
+            //{
+            //    FileInfo fileInfo = new FileInfo(filePath);
+            //    lastWriteTime = fileInfo.LastWriteTime;
+            //}
+
+
+            string count_day = CryptorEngine.get_count_day();
+            string key = nick_shop + count_day + code_shop;
+
+            string data = JsonConvert.SerializeObject(filename, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            string data_crypt = CryptorEngine.Encrypt(data, true, key);
+
+            Cash8.DS.DS ds = MainStaticClass.get_ds();
+            ds.Timeout = 18000;
+            try
+            {
+                byte[] file = ds.GetPDP(nick_shop, data_crypt, MainStaticClass.GetWorkSchema.ToString());
+                if (file.Length != 0)
+                {
+                    File.WriteAllBytes(Application.StartupPath + "\\" + filename, file);
+                }
+            }
+            catch (Exception ex)
+            {
+                MainStaticClass.WriteRecordErrorLog(ex, 0, MainStaticClass.CashDeskNumber, "не удалось загрузить pdb файл");
+                //return false;
+            }
+        }
+
 
 
         private void UploadErrorsLog()
@@ -1849,6 +1894,8 @@ namespace Cash8
 
             return result;
         }
+
+
 
         //private void check_add_field()
         //{            
