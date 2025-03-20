@@ -1065,14 +1065,14 @@ namespace Cash8
            // bool closing = false;
 
             // Открытие чека (с передачей телефона получателя)
-            if (check.check_type.SelectedIndex == 0)
-            {
-                fptr.setParam(AtolConstants.LIBFPTR_PARAM_RECEIPT_TYPE, AtolConstants.LIBFPTR_RT_SELL);
-            }
-            else
-            {
-                fptr.setParam(AtolConstants.LIBFPTR_PARAM_RECEIPT_TYPE, AtolConstants.LIBFPTR_RT_SELL_RETURN);
-            }
+            //if (check.check_type.SelectedIndex == 0)
+            //{
+            //    fptr.setParam(AtolConstants.LIBFPTR_PARAM_RECEIPT_TYPE, AtolConstants.LIBFPTR_RT_SELL);
+            //}
+            //else
+            //{
+            //    fptr.setParam(AtolConstants.LIBFPTR_PARAM_RECEIPT_TYPE, AtolConstants.LIBFPTR_RT_SELL_RETURN);
+            //}
 
             //fptr.setParam(AtolConstants.LIBFPTR_PARAM_RECEIPT_ELECTRONICALLY, true);
 

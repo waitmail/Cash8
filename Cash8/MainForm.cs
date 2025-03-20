@@ -1105,10 +1105,12 @@ namespace Cash8
 
             if (MainStaticClass.exist_table_name("constants"))
             {
+                //MessageBox.Show("1");
                 Task.Run(() => get_pdb());                
                 check_add_field();
                 InventoryManager.FillDictionaryProductDataAsync();
                 Task.Run(() => InventoryManager.DictionaryPriceGiftAction);                ;
+                //MessageBox.Show("2");
 
                 MainStaticClass.write_event_in_log(" Старт программы ", "проверка таблицы констант", "0");
                 Text += "Касса   " + Cash8.MainStaticClass.CashDeskNumber;
@@ -1124,8 +1126,8 @@ namespace Cash8
                     timer_send_data.Interval = result * 60000;               
                     timer_send_data.Start();
                     timer_send_data.Elapsed += new System.Timers.ElapsedEventHandler(timer_send_data_Elapsed);                   
-                }              
-                
+                }
+                //MessageBox.Show("3");
                 UploadPhoneClients();                 
                 check_failed_input_phone();
 
@@ -1139,12 +1141,13 @@ namespace Cash8
 
                 MainStaticClass.delete_old_checks(MainStaticClass.GetMinDateWork);
                 MainStaticClass.delete_all_events_in_log(MainStaticClass.GetMinDateWorkLogs);
-
+                //MessageBox.Show("4");
                 if (MainStaticClass.Use_Fiscall_Print)
                 {
                     getShiftStatus();
                 }
-               
+                //MessageBox.Show("5");
+
                 if (MainStaticClass.GetDoNotPromptMarkingCode == 0)
                 {
                     if (MainStaticClass.CashDeskNumber != 9)
@@ -1202,6 +1205,7 @@ namespace Cash8
             }
 
             check_files_and_folders();
+            //MessageBox.Show("10");
 
         }
 

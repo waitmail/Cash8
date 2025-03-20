@@ -76,7 +76,6 @@
             // 
             // btn_update_only
             // 
-            this.btn_update_only.Enabled = false;
             this.btn_update_only.Location = new System.Drawing.Point(18, 12);
             this.btn_update_only.Name = "btn_update_only";
             this.btn_update_only.Size = new System.Drawing.Size(248, 58);
