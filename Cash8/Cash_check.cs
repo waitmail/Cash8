@@ -105,6 +105,7 @@ namespace Cash8
         //public Dictionary<string, Cash_check.CdnMarkerDateTime> cdn_markers_date_time = new Dictionary<string, Cash_check.CdnMarkerDateTime>();
 
         public Dictionary<string, uint>  cdn_markers_result_check = new Dictionary<string, uint>();
+        public Dictionary<string, Requisite1260> verifyCDN = new Dictionary<string, Requisite1260>();
 
         System.Windows.Forms.Timer timer = null;
 
@@ -2642,7 +2643,16 @@ namespace Cash8
             }
 
             return productData;
-        }      
+        }
+
+
+        public class Requisite1260
+        {
+            public string req1262 { get; set; }
+            public string req1263 { get; set; }
+            public string req1264 { get; set; }
+            public string req1265 { get; set; }           
+        }
 
 
         public void find_barcode_or_code_in_tovar_new(string barcode, string marking_code)
@@ -2927,7 +2937,7 @@ namespace Cash8
                                             mark_str_cdn = mark_str_cdn.Replace("'", "\'");
                                             Dictionary<string, string> d_tovar = new Dictionary<string, string>();
                                             d_tovar[lvi.SubItems[1].Text] = lvi.SubItems[0].Text;
-                                            result_check_cdn = cdn.cdn_check_marker_code(codes, mark_str, this.numdoc, ref request, mark_str_cdn, d_tovar, ref timeout_check_cdn);
+                                            result_check_cdn = cdn.cdn_check_marker_code(codes, mark_str, this.numdoc, ref request, mark_str_cdn, d_tovar, ref timeout_check_cdn,this);
                                             if ((!result_check_cdn) && (!timeout_check_cdn))//не прошел проверку и таймаута не было 
                                             {
                                                 return;

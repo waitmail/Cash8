@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Cash_checks));
             this.listView1 = new System.Windows.Forms.ListView();
             this.button1 = new System.Windows.Forms.Button();
             this.num_cash = new System.Windows.Forms.Label();
@@ -116,7 +115,7 @@
             this.txtB_not_unloaded_docs.MaxLength = 100;
             this.txtB_not_unloaded_docs.Multiline = true;
             this.txtB_not_unloaded_docs.Name = "txtB_not_unloaded_docs";
-            this.txtB_not_unloaded_docs.Size = new System.Drawing.Size(481, 56);
+            this.txtB_not_unloaded_docs.Size = new System.Drawing.Size(481, 25);
             this.txtB_not_unloaded_docs.TabIndex = 17;
             // 
             // txtB_cashier
@@ -143,7 +142,7 @@
             // 
             this.btn_update_status_send.Location = new System.Drawing.Point(507, 3);
             this.btn_update_status_send.Name = "btn_update_status_send";
-            this.btn_update_status_send.Size = new System.Drawing.Size(67, 57);
+            this.btn_update_status_send.Size = new System.Drawing.Size(67, 26);
             this.btn_update_status_send.TabIndex = 20;
             this.btn_update_status_send.Text = "Обновить";
             this.btn_update_status_send.UseVisualStyleBackColor = true;
@@ -166,7 +165,7 @@
             // 
             this.btn_check_actions.Location = new System.Drawing.Point(580, 4);
             this.btn_check_actions.Name = "btn_check_actions";
-            this.btn_check_actions.Size = new System.Drawing.Size(74, 56);
+            this.btn_check_actions.Size = new System.Drawing.Size(125, 25);
             this.btn_check_actions.TabIndex = 22;
             this.btn_check_actions.Text = "ПРОВЕРКА АКЦИЙ";
             this.btn_check_actions.UseVisualStyleBackColor = true;
@@ -176,8 +175,8 @@
             // 
             this.pictureBox_get_update_program.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox_get_update_program.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.pictureBox_get_update_program.InitialImage = ((System.Drawing.Image)(resources.GetObject("pictureBox_get_update_program.InitialImage")));
-            this.pictureBox_get_update_program.Location = new System.Drawing.Point(723, 10);
+            this.pictureBox_get_update_program.InitialImage = null;
+            this.pictureBox_get_update_program.Location = new System.Drawing.Point(720, 3);
             this.pictureBox_get_update_program.Name = "pictureBox_get_update_program";
             this.pictureBox_get_update_program.Size = new System.Drawing.Size(65, 50);
             this.pictureBox_get_update_program.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;

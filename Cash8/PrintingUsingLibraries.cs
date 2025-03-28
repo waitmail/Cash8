@@ -542,14 +542,17 @@ namespace Cash8
             if (MainStaticClass.SystemTaxation == 1)
             {
                 fptr.setParam(1055, AtolConstants.LIBFPTR_TT_OSN);
+                MainStaticClass.write_event_in_log("SNO SystemTaxation == 1 LIBFPTR_TT_OSN", "print_sell_2_or_return_sell", check.numdoc.ToString());
             }
             else if (MainStaticClass.SystemTaxation == 2)
             {
                 fptr.setParam(1055, AtolConstants.LIBFPTR_TT_USN_INCOME_OUTCOME);
+                MainStaticClass.write_event_in_log("SNO SystemTaxation == 2 LIBFPTR_TT_USN_INCOME_OUTCOME", "print_sell_2_or_return_sell", check.numdoc.ToString());
             }
             else if (MainStaticClass.SystemTaxation == 4)
             {
                 fptr.setParam(1055, AtolConstants.LIBFPTR_TT_USN_INCOME);
+                MainStaticClass.write_event_in_log("SNO SystemTaxation == 4 LIBFPTR_TT_USN_INCOME", "print_sell_2_or_return_sell", check.numdoc.ToString());
             }
             if (MainStaticClass.GetDoNotPromptMarkingCode == 0)
             {
@@ -645,6 +648,64 @@ namespace Cash8
 
             foreach (ListViewItem lvi in check.listView1.Items)
             {
+                if (MainStaticClass.its_excise(lvi.SubItems[0].Text.Trim()) == 0)
+                {
+                    if (lvi.SubItems[14].Text.Trim().Length <= 13)//код маркировки не заполнен
+                    {
+                        fptr.setParam(1212, 32);
+                    }
+                    else
+                    {
+                        //if (!cdn_check(lvi.SubItems[0].Text.Trim(), check.numdoc.ToString()))
+                        //{
+                        //string marker_code = lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'");
+                        //byte[] textAsBytes = System.Text.Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'"));
+                        //string mark = Convert.ToBase64String(textAsBytes);
+                        string mark = lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'");
+                        fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE, mark);
+                        fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_TYPE, AtolConstants.LIBFPTR_MCT12_AUTO);
+                        if (check.check_type.SelectedIndex == 0)
+                        {
+                            fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, AtolConstants.LIBFPTR_MES_PIECE_SOLD);
+                        }
+                        else if (check.check_type.SelectedIndex == 1)
+                        {
+                            fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, AtolConstants.LIBFPTR_MES_PIECE_RETURN);
+                        }
+                        uint result_check = 0;
+                        if (check.cdn_markers_result_check.ContainsKey(mark))
+                        {
+                            result_check = check.cdn_markers_result_check[mark];
+                        }
+                        else
+                        {
+                            MessageBox.Show("Код маркировки " + mark + " не найден в проверенных");
+                        }
+
+                        Cash_check.Requisite1260 requisite1260;
+
+                        if (check.verifyCDN.TryGetValue(mark, out requisite1260))
+                        {
+                            fptr.setParam(1262, requisite1260.req1262);
+                            fptr.setParam(1263, requisite1260.req1263);
+                            fptr.setParam(1264, requisite1260.req1264);
+                            fptr.setParam(1265, requisite1260.req1265);
+                            fptr.utilFormTlv();
+                            byte[] industryInfo = fptr.getParamByteArray(AtolConstants.LIBFPTR_PARAM_TAG_VALUE);
+                            fptr.setParam(1260, industryInfo);
+                        }
+
+                        fptr.setParam(AtolConstants.LIBFPTR_PARAM_COMMODITY_NAME, lvi.SubItems[0].Text.Trim() + " " + lvi.SubItems[1].Text.Trim());
+                        fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_RESULT, result_check);
+                        fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_PROCESSING_MODE, 0);
+                    }
+                    //}
+                }
+                else
+                {
+                    fptr.setParam(1212, 2);//подакцизеый товар
+                }
+
                 fptr.setParam(AtolConstants.LIBFPTR_PARAM_COMMODITY_NAME, lvi.SubItems[0].Text.Trim() + " " + lvi.SubItems[1].Text.Trim());
                 fptr.setParam(AtolConstants.LIBFPTR_PARAM_PRICE, lvi.SubItems[5].Text.Replace(",", "."));
                 if (MainStaticClass.check_fractional_tovar(lvi.SubItems[0].Text.Trim()) == "piece")
@@ -692,48 +753,63 @@ namespace Cash8
                     fptr.setParam(AtolConstants.LIBFPTR_PARAM_TAX_TYPE, AtolConstants.LIBFPTR_TAX_NO);
                 }
 
-                if (MainStaticClass.its_excise(lvi.SubItems[0].Text.Trim()) == 0)
-                {
-                    if (lvi.SubItems[14].Text.Trim().Length <= 13)//код маркировки не заполнен
-                    {
-                        fptr.setParam(1212, 32);
-                    }
-                    else
-                    {
-                        //if (!cdn_check(lvi.SubItems[0].Text.Trim(), check.numdoc.ToString()))
-                        //{
-                        //string marker_code = lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'");
-                        //byte[] textAsBytes = System.Text.Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'"));
-                        //string mark = Convert.ToBase64String(textAsBytes);
-                        string mark = lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'");
-                        fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE, mark);
-                        fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_TYPE, AtolConstants.LIBFPTR_MCT12_AUTO);
-                        if (check.check_type.SelectedIndex == 0)
-                        {
-                            fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, AtolConstants.LIBFPTR_MES_PIECE_SOLD);
-                        }
-                        else if (check.check_type.SelectedIndex == 1)
-                        {
-                            fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, AtolConstants.LIBFPTR_MES_PIECE_RETURN);
-                        }                        
-                        uint result_check = 0;
-                        if (check.cdn_markers_result_check.ContainsKey(mark))
-                        {
-                            result_check = check.cdn_markers_result_check[mark];
-                        }
-                        else
-                        {
-                            MessageBox.Show("Код маркировки " + mark + " не найден в проверенных");
-                        }
-                        fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_RESULT, result_check);
-                        fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_PROCESSING_MODE, 0);
-                    }
-                    //}
-                }
-                else
-                {
-                    fptr.setParam(1212, 2);//подакцизеый товар
-                }
+                //if (MainStaticClass.its_excise(lvi.SubItems[0].Text.Trim()) == 0)
+                //{
+                //    if (lvi.SubItems[14].Text.Trim().Length <= 13)//код маркировки не заполнен
+                //    {
+                //        fptr.setParam(1212, 32);
+                //    }
+                //    else
+                //    {
+                //        //if (!cdn_check(lvi.SubItems[0].Text.Trim(), check.numdoc.ToString()))
+                //        //{
+                //        //string marker_code = lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'");
+                //        //byte[] textAsBytes = System.Text.Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'"));
+                //        //string mark = Convert.ToBase64String(textAsBytes);
+                //        string mark = lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'");
+                //        fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE, mark);
+                //        fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_TYPE, AtolConstants.LIBFPTR_MCT12_AUTO);
+                //        if (check.check_type.SelectedIndex == 0)
+                //        {
+                //            fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, AtolConstants.LIBFPTR_MES_PIECE_SOLD);
+                //        }
+                //        else if (check.check_type.SelectedIndex == 1)
+                //        {
+                //            fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, AtolConstants.LIBFPTR_MES_PIECE_RETURN);
+                //        }
+                //        uint result_check = 0;
+                //        if (check.cdn_markers_result_check.ContainsKey(mark))
+                //        {
+                //            result_check = check.cdn_markers_result_check[mark];
+                //        }
+                //        else
+                //        {
+                //            MessageBox.Show("Код маркировки " + mark + " не найден в проверенных");
+                //        }
+
+                //        Cash_check.Requisite1260 requisite1260;
+
+                //        if (check.verifyCDN.TryGetValue(mark, out requisite1260))
+                //        {
+                //            fptr.setParam(1262, requisite1260.req1262);
+                //            fptr.setParam(1263, requisite1260.req1263);
+                //            fptr.setParam(1264, requisite1260.req1264);
+                //            fptr.setParam(1265, requisite1260.req1265);
+                //            fptr.utilFormTlv();
+                //            byte[] industryInfo = fptr.getParamByteArray(AtolConstants.LIBFPTR_PARAM_TAG_VALUE);
+                //            fptr.setParam(1260, industryInfo);
+                //        }
+
+                //        fptr.setParam(AtolConstants.LIBFPTR_PARAM_COMMODITY_NAME, lvi.SubItems[0].Text.Trim() + " " + lvi.SubItems[1].Text.Trim());
+                //        fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_RESULT, result_check);
+                //        fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_PROCESSING_MODE, 0);
+                //    }
+                //    //}
+                //}
+                //else
+                //{
+                //    fptr.setParam(1212, 2);//подакцизеый товар
+                //}
                 //fptr.resetError();
                 fptr.registration();
                 if (fptr.errorCode() > 0)
@@ -922,14 +998,11 @@ namespace Cash8
             //}
             //print_promo();
         }
-
-                          
+                                  
         public void print_sell_2_3_or_return_sell(Cash_check check, int variant)
         {
             bool error = false;
-
             
-
             IFptr fptr = MainStaticClass.FPTR;
             //setConnectSetting(fptr);
             if (!fptr.isOpened())
@@ -945,16 +1018,19 @@ namespace Cash8
             if (variant == 0)
             {
                 fptr.setParam(1055, AtolConstants.LIBFPTR_TT_PATENT);
+                MainStaticClass.write_event_in_log("SNO SystemTaxation == LIBFPTR_TT_PATENT variant = 0 не маркировка", "print_sell_2_3_or_return_sell", check.numdoc.ToString());
             }
             else if (variant == 1)
             {
                 if (MainStaticClass.SystemTaxation == 3)
                 {
                     fptr.setParam(1055, AtolConstants.LIBFPTR_TT_USN_INCOME_OUTCOME);
+                    MainStaticClass.write_event_in_log("SNO SystemTaxation == 3 variant = 1 маркировка LIBFPTR_TT_USN_INCOME_OUTCOME", "print_sell_2_3_or_return_sell", check.numdoc.ToString());
                 }
                 else if (MainStaticClass.SystemTaxation == 5)
                 {
                     fptr.setParam(1055, AtolConstants.LIBFPTR_TT_USN_INCOME);
+                    MainStaticClass.write_event_in_log("SNO SystemTaxation == 5 variant = 1 маркировка LIBFPTR_TT_USN_INCOME", "print_sell_2_3_or_return_sell", check.numdoc.ToString());
                 }                
             }
             else
@@ -1124,20 +1200,6 @@ namespace Cash8
                     }
                 }
 
-                fptr.setParam(AtolConstants.LIBFPTR_PARAM_COMMODITY_NAME, lvi.SubItems[0].Text.Trim() + " " + lvi.SubItems[1].Text.Trim());
-                fptr.setParam(AtolConstants.LIBFPTR_PARAM_PRICE, lvi.SubItems[5].Text.Replace(",", "."));
-                if (MainStaticClass.check_fractional_tovar(lvi.SubItems[0].Text.Trim()) == "piece")
-                {
-                    fptr.setParam(AtolConstants.LIBFPTR_PARAM_MEASUREMENT_UNIT, AtolConstants.LIBFPTR_IU_PIECE);
-                }
-                else
-                {
-                    fptr.setParam(AtolConstants.LIBFPTR_PARAM_MEASUREMENT_UNIT, AtolConstants.LIBFPTR_IU_KILOGRAM);
-                }
-                fptr.setParam(AtolConstants.LIBFPTR_PARAM_QUANTITY, lvi.SubItems[3].Text.Replace(",","."));
-
-                fptr.setParam(AtolConstants.LIBFPTR_PARAM_TAX_TYPE, AtolConstants.LIBFPTR_TAX_NO);
-
                 if (MainStaticClass.its_excise(lvi.SubItems[0].Text.Trim()) == 0)
                 {
                     if (lvi.SubItems[14].Text.Trim().Length <= 13)//код маркировки не заполнен
@@ -1151,7 +1213,7 @@ namespace Cash8
                         //string marker_code = lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'");
                         //byte[] textAsBytes = System.Text.Encoding.Default.GetBytes(marker_code);
                         //string mark = Convert.ToBase64String(textAsBytes);
-                        string mark = lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'");                        
+                        string mark = lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'");
                         fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE, mark);
                         fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_TYPE, AtolConstants.LIBFPTR_MCT12_AUTO);
                         //fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, AtolConstants.LIBFPTR_MES_PIECE_SOLD);
@@ -1172,6 +1234,20 @@ namespace Cash8
                         {
                             MessageBox.Show("Код маркировки " + mark + " не найден в проверенных");
                         }
+
+                        Cash_check.Requisite1260 requisite1260;
+
+                        if (check.verifyCDN.TryGetValue(mark, out requisite1260))
+                        {
+                            fptr.setParam(1262, requisite1260.req1262);
+                            fptr.setParam(1263, requisite1260.req1263);
+                            fptr.setParam(1264, requisite1260.req1264);
+                            fptr.setParam(1265, requisite1260.req1265);
+                            fptr.utilFormTlv();
+                            byte[] industryInfo = fptr.getParamByteArray(AtolConstants.LIBFPTR_PARAM_TAG_VALUE);
+                            fptr.setParam(1260, industryInfo);
+                        }
+
                         fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_RESULT, result_check);
                         fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_PROCESSING_MODE, 0);
                         //}
@@ -1181,6 +1257,78 @@ namespace Cash8
                 {
                     fptr.setParam(1212, 2);//подакцизеый товар
                 }
+
+                fptr.setParam(AtolConstants.LIBFPTR_PARAM_COMMODITY_NAME, lvi.SubItems[0].Text.Trim() + " " + lvi.SubItems[1].Text.Trim());
+                fptr.setParam(AtolConstants.LIBFPTR_PARAM_PRICE, lvi.SubItems[5].Text.Replace(",", "."));
+                if (MainStaticClass.check_fractional_tovar(lvi.SubItems[0].Text.Trim()) == "piece")
+                {
+                    fptr.setParam(AtolConstants.LIBFPTR_PARAM_MEASUREMENT_UNIT, AtolConstants.LIBFPTR_IU_PIECE);
+                }
+                else
+                {
+                    fptr.setParam(AtolConstants.LIBFPTR_PARAM_MEASUREMENT_UNIT, AtolConstants.LIBFPTR_IU_KILOGRAM);
+                }
+                fptr.setParam(AtolConstants.LIBFPTR_PARAM_QUANTITY, lvi.SubItems[3].Text.Replace(",","."));
+
+                fptr.setParam(AtolConstants.LIBFPTR_PARAM_TAX_TYPE, AtolConstants.LIBFPTR_TAX_NO);
+
+                //if (MainStaticClass.its_excise(lvi.SubItems[0].Text.Trim()) == 0)
+                //{
+                //    if (lvi.SubItems[14].Text.Trim().Length <= 13)//код маркировки не заполнен
+                //    {
+                //        fptr.setParam(1212, 32);
+                //    }
+                //    else
+                //    {
+                //        //if (!cdn_check(lvi.SubItems[0].Text.Trim(), check.numdoc.ToString()))
+                //        //{
+                //        //string marker_code = lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'");
+                //        //byte[] textAsBytes = System.Text.Encoding.Default.GetBytes(marker_code);
+                //        //string mark = Convert.ToBase64String(textAsBytes);
+                //        string mark = lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'");                        
+                //        fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE, mark);
+                //        fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_TYPE, AtolConstants.LIBFPTR_MCT12_AUTO);
+                //        //fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, AtolConstants.LIBFPTR_MES_PIECE_SOLD);
+                //        if (check.check_type.SelectedIndex == 0)
+                //        {
+                //            fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, AtolConstants.LIBFPTR_MES_PIECE_SOLD);
+                //        }
+                //        else if (check.check_type.SelectedIndex == 1)
+                //        {
+                //            fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, AtolConstants.LIBFPTR_MES_PIECE_RETURN);
+                //        }
+                //        uint result_check = 0;
+                //        if (check.cdn_markers_result_check.ContainsKey(mark))
+                //        {
+                //            result_check = check.cdn_markers_result_check[mark];
+                //        }
+                //        else
+                //        {
+                //            MessageBox.Show("Код маркировки " + mark + " не найден в проверенных");
+                //        }
+
+                //        Cash_check.Requisite1260 requisite1260;
+
+                //        if (check.verifyCDN.TryGetValue(mark, out requisite1260))
+                //        {
+                //            fptr.setParam(1262, requisite1260.req1262);
+                //            fptr.setParam(1263, requisite1260.req1263);
+                //            fptr.setParam(1264, requisite1260.req1264);
+                //            fptr.setParam(1265, requisite1260.req1265);
+                //            fptr.utilFormTlv();
+                //            byte[] industryInfo = fptr.getParamByteArray(AtolConstants.LIBFPTR_PARAM_TAG_VALUE);
+                //            fptr.setParam(1260, industryInfo);
+                //        }
+
+                //        fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_RESULT, result_check);
+                //        fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_PROCESSING_MODE, 0);
+                //        //}
+                //    }
+                //}
+                //else
+                //{
+                //    fptr.setParam(1212, 2);//подакцизеый товар
+                //}
                 //fptr.registration();
                 //fptr.resetError();
                 fptr.registration();

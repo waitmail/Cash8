@@ -441,7 +441,7 @@ namespace Cash8
             return cDNHealth;
         }
 
-        public bool cdn_check_marker_code(List<string> codes, string mark_str, Int64 numdoc, ref HttpWebRequest request, string mark_str_cdn, Dictionary<string, string> d_tovar, ref bool timeout)
+        public bool cdn_check_marker_code(List<string> codes, string mark_str, Int64 numdoc, ref HttpWebRequest request, string mark_str_cdn, Dictionary<string, string> d_tovar, ref bool timeout,Cash_check cash_Check)
         {
 
             bool result_check = false;
@@ -610,6 +610,19 @@ namespace Cash8
                         }
                         if (sb.Length == 0)
                         {
+
+                            if (cash_Check.verifyCDN.ContainsKey(mark_str))
+                            {
+                                cash_Check.verifyCDN.Remove(mark_str);
+                            }
+
+                            Cash_check.Requisite1260 requisite1260 = new Cash_check.Requisite1260();
+                            requisite1260.req1262 = "030";
+                            requisite1260.req1263 = "21.11.2023";
+                            requisite1260.req1264 = "1944";
+                            requisite1260.req1265 = answer_check_mark.reqId + "&" + answer_check_mark.reqTimestamp;
+                            cash_Check.verifyCDN.Add(mark_str, requisite1260);
+
                             result_check = true;                         
                             break;//проверка успешно завершена
                         }

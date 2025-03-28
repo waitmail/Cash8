@@ -651,23 +651,21 @@ namespace Cash8
                     conn.Close();
                 }
             }
-
-
         }
 
         private void check_files_and_folders()
         {
             try
             {
-                string folderPathPictures = Application.StartupPath + "\\Pictures";
+                string folderPathPictures = Application.StartupPath + "\\Pictures2";
                 if (!Directory.Exists(folderPathPictures))
                 {
                     Directory.CreateDirectory(folderPathPictures);
                 }
-                string fileExistUpdateProgrammPictures = Application.StartupPath + "\\Pictures\\ExistUpdateProgramm.jpg";
+                string fileExistUpdateProgrammPictures = Application.StartupPath + "\\Pictures2\\ExistUpdateProgramm.jpg";
                 if (!File.Exists(fileExistUpdateProgrammPictures))
                 {
-                    get_file_for_web_service("Pictures\\ExistUpdateProgramm.jpg");
+                    get_file_for_web_service("Pictures2\\ExistUpdateProgramm.jpg");
                 }
             }
             catch (Exception ex)

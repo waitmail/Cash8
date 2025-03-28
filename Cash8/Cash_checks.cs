@@ -291,9 +291,9 @@ namespace Cash8
                 return;
             }
 
-            if (System.IO.File.Exists(Application.StartupPath + "\\Pictures\\ExistUpdateProgramm.jpg"))
+            if (System.IO.File.Exists(Application.StartupPath + "\\Pictures2\\ExistUpdateProgramm.jpg"))
             {
-                pictureBox_get_update_program.Load(Application.StartupPath + "\\Pictures\\ExistUpdateProgramm.jpg");
+                pictureBox_get_update_program.Load(Application.StartupPath + "\\Pictures2\\ExistUpdateProgramm.jpg");
             }
 
             int result = MainStaticClass.get_unloading_interval();
