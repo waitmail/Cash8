@@ -461,47 +461,47 @@ namespace Cash8
         }
 
 
-        /// <summary>
-        /// Возвращает признак проверки 
-        /// данного  товара в CDN сервисе
-        /// </summary>
-        /// <param name="code"></param>
-        /// <returns></returns>
-        private bool cdn_check(string code,string num_doc)
-        {
-            bool result = false;
-            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
-            try
-            {
-                conn.Open();
-                string query = "SELECT cdn_check FROM tovar";
-                NpgsqlCommand command = new NpgsqlCommand(query, conn);
-                result = Convert.ToBoolean(command.ExecuteScalar());
-                conn.Close();
-                command.Dispose();
-            }
-            catch (NpgsqlException ex)
-            {
-                MessageBox.Show("Ошибка при проверке флажка чтения при проверке в CDN " + ex.Message);
-                MainStaticClass.write_event_in_log("Ошибка при проверке флажка чтения ро проверке в CDN cdn_check PrintingUsingLibraries " + ex.Message, "Документ", num_doc);
-                result = true;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Ошибка при проверке флажка чтения при проверке в CDN " + ex.Message);
-                MainStaticClass.write_event_in_log("Ошибка при проверке флажка чтения ро проверке в CDN cdn_check PrintingUsingLibraries " + ex.Message, "Документ", num_doc);
-                result = true;
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                }
-            }
+        ///// <summary>
+        ///// Возвращает признак проверки 
+        ///// данного  товара в CDN сервисе
+        ///// </summary>
+        ///// <param name="code"></param>
+        ///// <returns></returns>
+        //private bool cdn_check(string code,string num_doc)
+        //{
+        //    bool result = false;
+        //    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+        //    try
+        //    {
+        //        conn.Open();
+        //        string query = "SELECT cdn_check FROM tovar";
+        //        NpgsqlCommand command = new NpgsqlCommand(query, conn);
+        //        result = Convert.ToBoolean(command.ExecuteScalar());
+        //        conn.Close();
+        //        command.Dispose();
+        //    }
+        //    catch (NpgsqlException ex)
+        //    {
+        //        MessageBox.Show("Ошибка при проверке флажка чтения при проверке в CDN " + ex.Message);
+        //        MainStaticClass.write_event_in_log("Ошибка при проверке флажка чтения ро проверке в CDN cdn_check PrintingUsingLibraries " + ex.Message, "Документ", num_doc);
+        //        result = true;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show("Ошибка при проверке флажка чтения при проверке в CDN " + ex.Message);
+        //        MainStaticClass.write_event_in_log("Ошибка при проверке флажка чтения ро проверке в CDN cdn_check PrintingUsingLibraries " + ex.Message, "Документ", num_doc);
+        //        result = true;
+        //    }
+        //    finally
+        //    {
+        //        if (conn.State == ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //        }
+        //    }
 
-            return result;
-        }
+        //    return result;
+        //}
 
         public void print_sell_2_or_return_sell(Cash_check check)
         {
@@ -532,6 +532,53 @@ namespace Cash8
             {
                 fptr.open();
             }
+            
+
+            if (check.check_type.SelectedIndex == 1 || check.reopened)//для возвратов и красных чеков старая схема
+            {
+                //здесь необходимо выполнить запрос на cdn
+                ProductData productData = new ProductData(0, "", 0, ProductFlags.None);
+
+                fptr.clearMarkingCodeValidationResult();
+                check.cdn_markers_result_check.Clear();//если мы здесь предыдущие проверки очищаем
+                foreach (ListViewItem lvi in check.listView1.Items)
+                {
+                    if (lvi.SubItems[14].Text.Trim().Length > 13)
+                    {                       
+
+                        string mark = lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'");
+
+                        if (InventoryManager.completeDictionaryProductData)
+                        {
+                            productData = InventoryManager.GetItem(Convert.ToInt64(lvi.SubItems[0].Text.Trim()));
+                        }
+                        else
+                        {
+                            productData = check.GetProductDataInDB(lvi.SubItems[0].Text.Trim());
+                        }
+
+                        if (productData.IsCDNCheck())//&& check.check_type.SelectedIndex == 0 
+                        {
+                            if (!MainStaticClass.cdn_check(productData, mark, lvi, check))
+                            {
+                                error = true;
+                            }
+                        }
+
+                        bool result_check_mark = check_marking_code(mark, check.numdoc.ToString(), ref check.cdn_markers_result_check, check.check_type.SelectedIndex);
+                        if (!result_check_mark)
+                        {
+                            error = true;
+                        }
+                    }
+                }
+            }
+
+            if (error)
+            {
+                return;
+            }
+
 
             fptr.setParam(1021, MainStaticClass.Cash_Operator);
             fptr.setParam(1203, MainStaticClass.CashOperatorInn);
@@ -554,33 +601,33 @@ namespace Cash8
                 fptr.setParam(1055, AtolConstants.LIBFPTR_TT_USN_INCOME);
                 MainStaticClass.write_event_in_log("SNO SystemTaxation == 4 LIBFPTR_TT_USN_INCOME", "print_sell_2_or_return_sell", check.numdoc.ToString());
             }
-            if (MainStaticClass.GetDoNotPromptMarkingCode == 0)
-            {
-                if (check.check_type.SelectedIndex == 1 ||  check.reopened)//для возвратов и красных чеков старая схема
-                {
-                    fptr.clearMarkingCodeValidationResult();
+            //if (MainStaticClass.GetDoNotPromptMarkingCode == 0)
+            //{
+            //    if (check.check_type.SelectedIndex == 1 ||  check.reopened)//для возвратов и красных чеков старая схема
+            //    {
+            //        fptr.clearMarkingCodeValidationResult();
 
-                    check.cdn_markers_result_check.Clear();//если мы здесь предыдущие проверки очищаем
+            //        check.cdn_markers_result_check.Clear();//если мы здесь предыдущие проверки очищаем
 
-                    foreach (ListViewItem lvi in check.listView1.Items)
-                    {
-                        if (lvi.SubItems[14].Text.Trim().Length > 13)
-                        {
-                            //if (cdn_check(lvi.SubItems[0].Text.Trim(), check.numdoc.ToString()))
-                            //{
-                            //    continue;
-                            //}
+            //        foreach (ListViewItem lvi in check.listView1.Items)
+            //        {
+            //            if (lvi.SubItems[14].Text.Trim().Length > 13)
+            //            {
+            //                //if (cdn_check(lvi.SubItems[0].Text.Trim(), check.numdoc.ToString()))
+            //                //{
+            //                //    continue;
+            //                //}
                             
-                            string mark = lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'");
+            //                string mark = lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'");
                                                         
-                            if (!check_marking_code(mark, check.numdoc.ToString(), ref check.cdn_markers_result_check,check.check_type.SelectedIndex))
-                            {
-                                error = true;
-                            }                           
-                        }
-                    }
-                }
-            }
+            //                if (!check_marking_code(mark, check.numdoc.ToString(), ref check.cdn_markers_result_check,check.check_type.SelectedIndex))
+            //                {
+            //                    error = true;
+            //                }                           
+            //            }
+            //        }
+            //    }
+            //}
 
             // Открытие чека (с передачей телефона получателя)
             if (check.check_type.SelectedIndex == 0)
@@ -662,6 +709,20 @@ namespace Cash8
                         //byte[] textAsBytes = System.Text.Encoding.Default.GetBytes(lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'"));
                         //string mark = Convert.ToBase64String(textAsBytes);
                         string mark = lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'");
+
+                        Cash_check.Requisite1260 requisite1260;
+
+                        if (check.verifyCDN.TryGetValue(mark, out requisite1260))
+                        {
+                            fptr.setParam(1262, requisite1260.req1262);
+                            fptr.setParam(1263, requisite1260.req1263);
+                            fptr.setParam(1264, requisite1260.req1264);
+                            fptr.setParam(1265, requisite1260.req1265);
+                            fptr.utilFormTlv();
+                            byte[] industryInfo = fptr.getParamByteArray(AtolConstants.LIBFPTR_PARAM_TAG_VALUE);
+                            fptr.setParam(1260, industryInfo);
+                        }
+
                         fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE, mark);
                         fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_TYPE, AtolConstants.LIBFPTR_MCT12_AUTO);
                         if (check.check_type.SelectedIndex == 0)
@@ -682,18 +743,18 @@ namespace Cash8
                             MessageBox.Show("Код маркировки " + mark + " не найден в проверенных");
                         }
 
-                        Cash_check.Requisite1260 requisite1260;
+                        //Cash_check.Requisite1260 requisite1260;
 
-                        if (check.verifyCDN.TryGetValue(mark, out requisite1260))
-                        {
-                            fptr.setParam(1262, requisite1260.req1262);
-                            fptr.setParam(1263, requisite1260.req1263);
-                            fptr.setParam(1264, requisite1260.req1264);
-                            fptr.setParam(1265, requisite1260.req1265);
-                            fptr.utilFormTlv();
-                            byte[] industryInfo = fptr.getParamByteArray(AtolConstants.LIBFPTR_PARAM_TAG_VALUE);
-                            fptr.setParam(1260, industryInfo);
-                        }
+                        //if (check.verifyCDN.TryGetValue(mark, out requisite1260))
+                        //{
+                        //    fptr.setParam(1262, requisite1260.req1262);
+                        //    fptr.setParam(1263, requisite1260.req1263);
+                        //    fptr.setParam(1264, requisite1260.req1264);
+                        //    fptr.setParam(1265, requisite1260.req1265);
+                        //    fptr.utilFormTlv();
+                        //    byte[] industryInfo = fptr.getParamByteArray(AtolConstants.LIBFPTR_PARAM_TAG_VALUE);
+                        //    fptr.setParam(1260, industryInfo);
+                        //}
 
                         fptr.setParam(AtolConstants.LIBFPTR_PARAM_COMMODITY_NAME, lvi.SubItems[0].Text.Trim() + " " + lvi.SubItems[1].Text.Trim());
                         fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_RESULT, result_check);
@@ -1009,35 +1070,35 @@ namespace Cash8
             {
                 fptr.open();
             }
-            fptr.setParam(1021, MainStaticClass.Cash_Operator);
-            fptr.setParam(1203, MainStaticClass.CashOperatorInn);
-            fptr.operatorLogin();
+            //fptr.setParam(1021, MainStaticClass.Cash_Operator);
+            //fptr.setParam(1203, MainStaticClass.CashOperatorInn);
+            //fptr.operatorLogin();
             
 
-            print_terminal_check(fptr, check);
-            if (variant == 0)
-            {
-                fptr.setParam(1055, AtolConstants.LIBFPTR_TT_PATENT);
-                MainStaticClass.write_event_in_log("SNO SystemTaxation == LIBFPTR_TT_PATENT variant = 0 не маркировка", "print_sell_2_3_or_return_sell", check.numdoc.ToString());
-            }
-            else if (variant == 1)
-            {
-                if (MainStaticClass.SystemTaxation == 3)
-                {
-                    fptr.setParam(1055, AtolConstants.LIBFPTR_TT_USN_INCOME_OUTCOME);
-                    MainStaticClass.write_event_in_log("SNO SystemTaxation == 3 variant = 1 маркировка LIBFPTR_TT_USN_INCOME_OUTCOME", "print_sell_2_3_or_return_sell", check.numdoc.ToString());
-                }
-                else if (MainStaticClass.SystemTaxation == 5)
-                {
-                    fptr.setParam(1055, AtolConstants.LIBFPTR_TT_USN_INCOME);
-                    MainStaticClass.write_event_in_log("SNO SystemTaxation == 5 variant = 1 маркировка LIBFPTR_TT_USN_INCOME", "print_sell_2_3_or_return_sell", check.numdoc.ToString());
-                }                
-            }
-            else
-            {
-                MessageBox.Show("В печать не передан или передан не верный вариант, печать невозможна");
-                return;
-            }
+            //print_terminal_check(fptr, check);
+            //if (variant == 0)
+            //{
+            //    fptr.setParam(1055, AtolConstants.LIBFPTR_TT_PATENT);
+            //    MainStaticClass.write_event_in_log("SNO SystemTaxation == LIBFPTR_TT_PATENT variant = 0 не маркировка", "print_sell_2_3_or_return_sell", check.numdoc.ToString());
+            //}
+            //else if (variant == 1)
+            //{
+            //    if (MainStaticClass.SystemTaxation == 3)
+            //    {
+            //        fptr.setParam(1055, AtolConstants.LIBFPTR_TT_USN_INCOME_OUTCOME);
+            //        MainStaticClass.write_event_in_log("SNO SystemTaxation == 3 variant = 1 маркировка LIBFPTR_TT_USN_INCOME_OUTCOME", "print_sell_2_3_or_return_sell", check.numdoc.ToString());
+            //    }
+            //    else if (MainStaticClass.SystemTaxation == 5)
+            //    {
+            //        fptr.setParam(1055, AtolConstants.LIBFPTR_TT_USN_INCOME);
+            //        MainStaticClass.write_event_in_log("SNO SystemTaxation == 5 variant = 1 маркировка LIBFPTR_TT_USN_INCOME", "print_sell_2_3_or_return_sell", check.numdoc.ToString());
+            //    }                
+            //}
+            //else
+            //{
+            //    MessageBox.Show("В печать не передан или передан не верный вариант, печать невозможна");
+            //    return;
+            //}
 
 
             if (variant == 0)
@@ -1106,18 +1167,40 @@ namespace Cash8
 
                 if (check.check_type.SelectedIndex == 1 || check.reopened)//для возвратов и красных чеков старая схема
                 {
+                    //здесь необходимо выполнить запрос на cdn
+                    ProductData productData = new ProductData(0, "", 0, ProductFlags.None);                    
+
                     fptr.clearMarkingCodeValidationResult();
                     check.cdn_markers_result_check.Clear();//если мы здесь предыдущие проверки очищаем
                     foreach (ListViewItem lvi in check.listView1.Items)
                     {
                         if (lvi.SubItems[14].Text.Trim().Length > 13)
                         {
-                            if (cdn_check(lvi.SubItems[0].Text.Trim(), check.numdoc.ToString()))
-                            {
-                                continue;
-                            }                            
-                                                        
+                            //if (cdn_check(lvi.SubItems[0].Text.Trim(), check.numdoc.ToString()))
+                            //{
+                            //    continue;
+                            //}
+
                             string mark = lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'");
+
+                            if (InventoryManager.completeDictionaryProductData)
+                            {
+                                productData = InventoryManager.GetItem(Convert.ToInt64(lvi.SubItems[0].Text.Trim()));
+                            }
+                            else
+                            {
+                                productData = check.GetProductDataInDB(lvi.SubItems[0].Text.Trim());
+                            }
+
+                            if (productData.IsCDNCheck())// && check.check_type.SelectedIndex == 0)
+                            {
+                                if (!MainStaticClass.cdn_check(productData, mark, lvi, check))
+                                {
+                                    error = true;
+                                }
+                            }
+
+                            //string mark = lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'");
                             bool result_check_mark = check_marking_code(mark, check.numdoc.ToString(), ref check.cdn_markers_result_check,check.check_type.SelectedIndex);
                             if (!result_check_mark)
                             {
@@ -1126,8 +1209,44 @@ namespace Cash8
                         }
                     }
                 }
-
             }
+
+            if (error)
+            {
+                return;
+            }
+
+
+            fptr.setParam(1021, MainStaticClass.Cash_Operator);
+            fptr.setParam(1203, MainStaticClass.CashOperatorInn);
+            fptr.operatorLogin();
+
+
+            print_terminal_check(fptr, check);
+            if (variant == 0)
+            {
+                fptr.setParam(1055, AtolConstants.LIBFPTR_TT_PATENT);
+                MainStaticClass.write_event_in_log("SNO SystemTaxation == LIBFPTR_TT_PATENT variant = 0 не маркировка", "print_sell_2_3_or_return_sell", check.numdoc.ToString());
+            }
+            else if (variant == 1)
+            {
+                if (MainStaticClass.SystemTaxation == 3)
+                {
+                    fptr.setParam(1055, AtolConstants.LIBFPTR_TT_USN_INCOME_OUTCOME);
+                    MainStaticClass.write_event_in_log("SNO SystemTaxation == 3 variant = 1 маркировка LIBFPTR_TT_USN_INCOME_OUTCOME", "print_sell_2_3_or_return_sell", check.numdoc.ToString());
+                }
+                else if (MainStaticClass.SystemTaxation == 5)
+                {
+                    fptr.setParam(1055, AtolConstants.LIBFPTR_TT_USN_INCOME);
+                    MainStaticClass.write_event_in_log("SNO SystemTaxation == 5 variant = 1 маркировка LIBFPTR_TT_USN_INCOME", "print_sell_2_3_or_return_sell", check.numdoc.ToString());
+                }
+            }
+            else
+            {
+                MessageBox.Show("В печать не передан или передан не верный вариант, печать невозможна");
+                return;
+            }
+
 
             if (check.check_type.SelectedIndex == 0)
             {
@@ -1208,12 +1327,27 @@ namespace Cash8
                     }
                     else
                     {
+                       
+
                         //if (!cdn_check(lvi.SubItems[0].Text.Trim(), check.numdoc.ToString()))
                         //{
                         //string marker_code = lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'");
                         //byte[] textAsBytes = System.Text.Encoding.Default.GetBytes(marker_code);
                         //string mark = Convert.ToBase64String(textAsBytes);
                         string mark = lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'");
+                        Cash_check.Requisite1260 requisite1260;
+
+                        if (check.verifyCDN.TryGetValue(mark, out requisite1260))
+                        {
+                            fptr.setParam(1262, requisite1260.req1262);
+                            fptr.setParam(1263, requisite1260.req1263);
+                            fptr.setParam(1264, requisite1260.req1264);
+                            fptr.setParam(1265, requisite1260.req1265);
+                            fptr.utilFormTlv();
+                            byte[] industryInfo = fptr.getParamByteArray(AtolConstants.LIBFPTR_PARAM_TAG_VALUE);
+                            fptr.setParam(1260, industryInfo);
+                        }
+
                         fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE, mark);
                         fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_TYPE, AtolConstants.LIBFPTR_MCT12_AUTO);
                         //fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, AtolConstants.LIBFPTR_MES_PIECE_SOLD);
@@ -1235,18 +1369,18 @@ namespace Cash8
                             MessageBox.Show("Код маркировки " + mark + " не найден в проверенных");
                         }
 
-                        Cash_check.Requisite1260 requisite1260;
+                        //Cash_check.Requisite1260 requisite1260;
 
-                        if (check.verifyCDN.TryGetValue(mark, out requisite1260))
-                        {
-                            fptr.setParam(1262, requisite1260.req1262);
-                            fptr.setParam(1263, requisite1260.req1263);
-                            fptr.setParam(1264, requisite1260.req1264);
-                            fptr.setParam(1265, requisite1260.req1265);
-                            fptr.utilFormTlv();
-                            byte[] industryInfo = fptr.getParamByteArray(AtolConstants.LIBFPTR_PARAM_TAG_VALUE);
-                            fptr.setParam(1260, industryInfo);
-                        }
+                        //if (check.verifyCDN.TryGetValue(mark, out requisite1260))
+                        //{
+                        //    fptr.setParam(1262, requisite1260.req1262);
+                        //    fptr.setParam(1263, requisite1260.req1263);
+                        //    fptr.setParam(1264, requisite1260.req1264);
+                        //    fptr.setParam(1265, requisite1260.req1265);
+                        //    fptr.utilFormTlv();
+                        //    byte[] industryInfo = fptr.getParamByteArray(AtolConstants.LIBFPTR_PARAM_TAG_VALUE);
+                        //    fptr.setParam(1260, industryInfo);
+                        //}
 
                         fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_RESULT, result_check);
                         fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_PROCESSING_MODE, 0);

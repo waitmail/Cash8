@@ -225,45 +225,45 @@ namespace Cash8
             }
         }
 
-        /// <summary>
-        /// Возвращает флажок 
-        /// запрашивать ли код маркировки        
-        /// </summary>
-        public static int GetDoNotPromptMarkingCode
-        {
-            get
-            {
-                if (do_not_prompt_marking_code == -1)
-                {
-                    NpgsqlConnection conn = null;
-                    NpgsqlCommand command = null;
-                    conn = MainStaticClass.NpgsqlConn();
-                    try
-                    {
-                        conn.Open();
-                        string query = "SELECT do_not_prompt_marking_code FROM constants";
-                        command = new NpgsqlCommand(query, conn);
-                        do_not_prompt_marking_code = Convert.ToInt16(command.ExecuteScalar());
-                    }
-                    catch (NpgsqlException ex)
-                    {
-                        MessageBox.Show("Ошибка при чтении do_not_prompt_marking_code" + ex.ToString());
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("Ошибка при чтении do_not_prompt_marking_code" + ex.ToString());
-                    }
-                    finally
-                    {
-                        if (conn.State == ConnectionState.Open)
-                        {
-                            conn.Close();
-                        }
-                    }
-                }
-                return do_not_prompt_marking_code;
-            }
-        }
+        ///// <summary>
+        ///// Возвращает флажок 
+        ///// запрашивать ли код маркировки        
+        ///// </summary>
+        //public static int GetDoNotPromptMarkingCode
+        //{
+        //    get
+        //    {
+        //        if (do_not_prompt_marking_code == -1)
+        //        {
+        //            NpgsqlConnection conn = null;
+        //            NpgsqlCommand command = null;
+        //            conn = MainStaticClass.NpgsqlConn();
+        //            try
+        //            {
+        //                conn.Open();
+        //                string query = "SELECT do_not_prompt_marking_code FROM constants";
+        //                command = new NpgsqlCommand(query, conn);
+        //                do_not_prompt_marking_code = Convert.ToInt16(command.ExecuteScalar());
+        //            }
+        //            catch (NpgsqlException ex)
+        //            {
+        //                MessageBox.Show("Ошибка при чтении do_not_prompt_marking_code" + ex.ToString());
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                MessageBox.Show("Ошибка при чтении do_not_prompt_marking_code" + ex.ToString());
+        //            }
+        //            finally
+        //            {
+        //                if (conn.State == ConnectionState.Open)
+        //                {
+        //                    conn.Close();
+        //                }
+        //            }
+        //        }
+        //        return do_not_prompt_marking_code;
+        //    }
+        //}
 
         public static string GetFnIpaddr
         {
@@ -1853,16 +1853,28 @@ namespace Cash8
             try
             {
                 conn.Open();
+                //string query = " SELECT SUM(d_c.cash_money)AS cash_money,SUM(d_c.non_cash_money)AS non_cash_money FROM" +
+                //              " (SELECT cash_money, non_cash_money FROM checks_header where guid = '"+ id_sale.ToString()+"'"+
+                //              "  AND checks_header.check_type = 0 AND checks_header.its_deleted = 0 "+
+                //              " AND checks_header.date_time_write BETWEEN '" + 
+                //              DateTime.Now.AddDays(-14).Date.ToString("dd-MM-yyyy") + "' AND  '" + DateTime.Now.AddDays(1).ToString("dd-MM-yyyy") + "'" +
+                //              " UNION ALL " +
+                //              " SELECT - coalesce(SUM(cash_money),0), - coalesce(SUM(non_cash_money),0) FROM checks_header where id_sale = '" + id_sale.ToString()+"'"+
+                //              " AND checks_header.check_type = 1 AND checks_header.its_deleted = 0 "+
+                //              " AND checks_header.date_time_write BETWEEN '" + 
+                //              DateTime.Now.AddDays(-14).Date.ToString("dd-MM-yyyy") + "' AND  '" + DateTime.Now.AddDays(1).ToString("dd-MM-yyyy") + "') AS d_c ";//--delta_calculations
+
                 string query = " SELECT SUM(d_c.cash_money)AS cash_money,SUM(d_c.non_cash_money)AS non_cash_money FROM" +
-                              " (SELECT cash_money, non_cash_money FROM checks_header where guid = '"+ id_sale.ToString()+"'"+
-                              "  AND checks_header.check_type = 0 AND checks_header.its_deleted = 0 "+
-                              " AND checks_header.date_time_write BETWEEN '" + 
+                              " (SELECT (cash_money+sertificate_money) AS cash_money, non_cash_money FROM checks_header where guid = '" + id_sale.ToString() + "'" +
+                              "  AND checks_header.check_type = 0 AND checks_header.its_deleted = 0 " +
+                              " AND checks_header.date_time_write BETWEEN '" +
                               DateTime.Now.AddDays(-14).Date.ToString("dd-MM-yyyy") + "' AND  '" + DateTime.Now.AddDays(1).ToString("dd-MM-yyyy") + "'" +
                               " UNION ALL " +
-                              " SELECT - coalesce(SUM(cash_money),0), - coalesce(SUM(non_cash_money),0) FROM checks_header where id_sale = '" + id_sale.ToString()+"'"+
-                              " AND checks_header.check_type = 1 AND checks_header.its_deleted = 0 "+
-                              " AND checks_header.date_time_write BETWEEN '" + 
+                              " SELECT - coalesce(SUM(cash_money),0), - coalesce(SUM(non_cash_money),0) FROM checks_header where id_sale = '" + id_sale.ToString() + "'" +
+                              " AND checks_header.check_type = 1 AND checks_header.its_deleted = 0 " +
+                              " AND checks_header.date_time_write BETWEEN '" +
                               DateTime.Now.AddDays(-14).Date.ToString("dd-MM-yyyy") + "' AND  '" + DateTime.Now.AddDays(1).ToString("dd-MM-yyyy") + "') AS d_c ";//--delta_calculations
+
 
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();                
@@ -2386,6 +2398,35 @@ namespace Cash8
             }
         }
 
+
+        public static bool cdn_check(ProductData productData,string mark_str, ListViewItem lvi,Cash_check check)
+        {
+            bool result = true;
+            string mark_str_cdn = "";
+
+            if (productData.IsCDNCheck())
+            {
+                if (MainStaticClass.CashDeskNumber != 9 && MainStaticClass.EnableCdnMarkers == 1)
+                {
+                    if (MainStaticClass.CDN_Token == "")
+                    {
+                        MessageBox.Show("В этой кассе не заполнен CDN токен, \r\n ПРОДАЖА ДАННОГО ТОВАРА НЕВОЗМОЖНА ! ", "Проверка CDN");
+                        return result;
+                    }
+                    CDN cdn = new CDN();
+                    List<string> codes = new List<string>();
+                    mark_str_cdn = mark_str.Replace("\u001d", @"\u001d");
+                    codes.Add(mark_str_cdn);
+                    mark_str_cdn = mark_str_cdn.Replace("'", "\'");
+                    Dictionary<string, string> d_tovar = new Dictionary<string, string>();
+                    d_tovar[lvi.SubItems[1].Text] = lvi.SubItems[0].Text;
+                    result = cdn.cdn_check_marker_code(codes, mark_str, check.numdoc, ref check.request, mark_str_cdn, d_tovar, check);                    
+                }
+            }
+
+
+            return result;
+        }
 
 
         /// <summary>

@@ -109,7 +109,7 @@ namespace Cash8
 
         System.Windows.Forms.Timer timer = null;
 
-        HttpWebRequest request = null;
+        public HttpWebRequest request = null;
         //список допустимых длин qr кодов
         List<int> qr_code_lenght = new List<int>();
         ToolTip toolTip = null;
@@ -2563,7 +2563,7 @@ namespace Cash8
             return result;
         }
 
-        private ProductData GetProductDataInDB(string barcode)
+        public ProductData GetProductDataInDB(string barcode)
         {
             NpgsqlConnection conn = null;
             ProductData productData = new ProductData(0, "", 0, ProductFlags.None);
@@ -2863,7 +2863,7 @@ namespace Cash8
                 bool cdn_vrifyed = false;
                 string mark_str = "";
 
-                if ((productData.IsMarked()) && (MainStaticClass.GetDoNotPromptMarkingCode == 0))
+                if (productData.IsMarked()) //&& (MainStaticClass.GetDoNotPromptMarkingCode == 0))
                 {
                     if (marking_code == "")
                     {
@@ -2923,29 +2923,37 @@ namespace Cash8
 
                                     if (productData.IsCDNCheck())
                                     {
-                                        if (MainStaticClass.CashDeskNumber != 9 && MainStaticClass.EnableCdnMarkers == 1)
+                                        //if (MainStaticClass.CashDeskNumber != 9 && MainStaticClass.EnableCdnMarkers == 1)
+                                        //{
+                                        //    if (MainStaticClass.CDN_Token == "")
+                                        //    {
+                                        //        MessageBox.Show("В этой кассе не заполнен CDN токен, \r\n ПРОДАЖА ДАННОГО ТОВАРА НЕВОЗМОЖНА ! ", "Проверка CDN");
+                                        //        return;
+                                        //    }
+                                        //    CDN cdn = new CDN();
+                                        //    List<string> codes = new List<string>();
+                                        //    mark_str_cdn = mark_str.Replace("\u001d", @"\u001d");
+                                        //    codes.Add(mark_str_cdn);
+                                        //    mark_str_cdn = mark_str_cdn.Replace("'", "\'");
+                                        //    Dictionary<string, string> d_tovar = new Dictionary<string, string>();
+                                        //    d_tovar[lvi.SubItems[1].Text] = lvi.SubItems[0].Text;
+                                        //    result_check_cdn = cdn.cdn_check_marker_code(codes, mark_str, this.numdoc, ref request, mark_str_cdn, d_tovar,this);
+                                        //    if (!result_check_cdn) //не прошел проверку и таймаута не было 
+                                        //    {
+                                        //        return;
+                                        //    }
+                                        //    else
+                                        //    {
+                                        //        cdn_vrifyed = true;
+                                        //    }
+                                        //}
+                                        if (!MainStaticClass.cdn_check(productData, mark_str, lvi, this))
                                         {
-                                            if (MainStaticClass.CDN_Token == "")
-                                            {
-                                                MessageBox.Show("В этой кассе не заполнен CDN токен, \r\n ПРОДАЖА ДАННОГО ТОВАРА НЕВОЗМОЖНА ! ", "Проверка CDN");
-                                                return;
-                                            }
-                                            CDN cdn = new CDN();
-                                            List<string> codes = new List<string>();
-                                            mark_str_cdn = mark_str.Replace("\u001d", @"\u001d");
-                                            codes.Add(mark_str_cdn);
-                                            mark_str_cdn = mark_str_cdn.Replace("'", "\'");
-                                            Dictionary<string, string> d_tovar = new Dictionary<string, string>();
-                                            d_tovar[lvi.SubItems[1].Text] = lvi.SubItems[0].Text;
-                                            result_check_cdn = cdn.cdn_check_marker_code(codes, mark_str, this.numdoc, ref request, mark_str_cdn, d_tovar, ref timeout_check_cdn,this);
-                                            if ((!result_check_cdn) && (!timeout_check_cdn))//не прошел проверку и таймаута не было 
-                                            {
-                                                return;
-                                            }
-                                            else
-                                            {
-                                                cdn_vrifyed = true;
-                                            }
+                                            return;
+                                        }
+                                        else
+                                        {
+                                            cdn_vrifyed = true;
                                         }
                                     }
                                     //}
@@ -9127,7 +9135,7 @@ namespace Cash8
                         return;
                     }
                 }
-                if (MainStaticClass.SystemTaxation == 3)
+                if ((MainStaticClass.SystemTaxation == 3)||(MainStaticClass.SystemTaxation == 5))
                 {
                     if (MainStaticClass.PrintingUsingLibraries == 0)
                     {
@@ -14235,6 +14243,10 @@ namespace Cash8
                             client_barcode.Enabled = false;
                         }
                         //**************************
+                        if (Convert.ToDecimal(reader[6].ToString()) < 0)
+                        {
+                            continue;
+                        }
                         ListViewItem lvi = new ListViewItem(reader[0].ToString());
                         lvi.Tag = reader[0].ToString();
                         lvi.SubItems.Add(reader[1].ToString());//Наименование

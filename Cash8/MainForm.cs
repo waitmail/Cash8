@@ -1104,10 +1104,10 @@ namespace Cash8
             if (MainStaticClass.exist_table_name("constants"))
             {
                 //MessageBox.Show("1");
-                Task.Run(() => get_pdb());                
+                Task.Run(() => get_pdb());
                 check_add_field();
                 InventoryManager.FillDictionaryProductDataAsync();
-                Task.Run(() => InventoryManager.DictionaryPriceGiftAction);                ;
+                Task.Run(() => InventoryManager.DictionaryPriceGiftAction); ;
                 //MessageBox.Show("2");
 
                 MainStaticClass.write_event_in_log(" Старт программы ", "проверка таблицы констант", "0");
@@ -1116,23 +1116,23 @@ namespace Cash8
                 Text += " | " + Cash8.MainStaticClass.version();
                 Text += " | " + Cash8.LoadDataWebService.last_date_download_tovars().ToString("yyyy-MM-dd hh:mm:ss");
 
-                
+
                 update_unloading_period();
                 int result = MainStaticClass.get_unloading_interval();
                 if (result != 0)
                 {
-                    timer_send_data.Interval = result * 60000;               
+                    timer_send_data.Interval = result * 60000;
                     timer_send_data.Start();
-                    timer_send_data.Elapsed += new System.Timers.ElapsedEventHandler(timer_send_data_Elapsed);                   
+                    timer_send_data.Elapsed += new System.Timers.ElapsedEventHandler(timer_send_data_Elapsed);
                 }
                 //MessageBox.Show("3");
-                UploadPhoneClients();                 
+                UploadPhoneClients();
                 check_failed_input_phone();
 
                 //MainStaticClass.write_event_in_log("Перед получением данных по пользователям", " Старт программы ", "0");
                 get_users();
                 //MainStaticClass.write_event_in_log("После получения данных по пользователям", " Старт программы ", "0");
-              
+
                 //MainStaticClass.write_event_in_log("Перед проверкой системы налогообложения", " Старт программы ", "0");
                 MainStaticClass.SystemTaxation = check_system_taxation();
                 //MainStaticClass.write_event_in_log("После проверки системы налогообложения", " Старт программы ", "0");
@@ -1146,28 +1146,28 @@ namespace Cash8
                 }
                 //MessageBox.Show("5");
 
-                if (MainStaticClass.GetDoNotPromptMarkingCode == 0)
+                //if (MainStaticClass.GetDoNotPromptMarkingCode == 0)
+                //{
+                if (MainStaticClass.CashDeskNumber != 9)
                 {
-                    if (MainStaticClass.CashDeskNumber != 9)
+                    MainStaticClass.validate_date_time_with_fn(10);
+                    if (MainStaticClass.SystemTaxation == 0)
                     {
-                        MainStaticClass.validate_date_time_with_fn(10);
-                        if (MainStaticClass.SystemTaxation == 0)
-                        {
-                            MessageBox.Show("У вас не заполнена система налогообложения!\r\nСоздание и печать чеков невозможна!\r\nОБРАЩАЙТЕСЬ В БУХГАЛТЕРИЮ!");
-                        }
-                        bool restart = false; bool error = false;
+                        MessageBox.Show("У вас не заполнена система налогообложения!\r\nСоздание и печать чеков невозможна!\r\nОБРАЩАЙТЕСЬ В БУХГАЛТЕРИЮ!");
+                    }
+                    bool restart = false; bool error = false;
 
-                        MainStaticClass.check_version_fn(ref restart, ref error);
-                        if (!error)
+                    MainStaticClass.check_version_fn(ref restart, ref error);
+                    if (!error)
+                    {
+                        if (restart)
                         {
-                            if (restart)
-                            {
-                                MessageBox.Show("У вас неверно была установлена версия ФН, необходим перезапуск программы");
-                                this.Close();
-                            }
+                            MessageBox.Show("У вас неверно была установлена версия ФН, необходим перезапуск программы");
+                            this.Close();
                         }
                     }
                 }
+                //}
             }
             else
             {

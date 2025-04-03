@@ -191,28 +191,28 @@ namespace Cash8
                     MessageBox.Show(" У ВАС УСТАНОВЛЕНА НЕПРАВИЛЬНАЯ ДАТА НА КОМПЬЮТЕРЕ !!! ДАЛЬНЕЙШАЯ РАБОТА С ЧЕКАМИ НЕВОЗМОЖНА !!!");
                     return;
                 }
-                if (MainStaticClass.GetDoNotPromptMarkingCode == 0)
+                //if (MainStaticClass.GetDoNotPromptMarkingCode == 0)
+                //{
+                if (MainStaticClass.CashDeskNumber != 9)
                 {
-                    if (MainStaticClass.CashDeskNumber != 9)
+                    bool restart = false; bool errors = false;
+                    MainStaticClass.check_version_fn(ref restart, ref errors);
+                    if (errors)
                     {
-                        bool restart = false; bool errors = false;
-                        MainStaticClass.check_version_fn(ref restart, ref errors);
-                        if (errors)
-                        {
-                            return;
-                        }
-                        if (restart)
-                        {
-                            MessageBox.Show("У вас неверно была установлена версия ФН,НЕОБХОДИМ ПЕРЕЗАПУСК КАССОВОЙ ПРОГРАММЫ !!!");
-                            this.Close();
-                        }
-                    }
-                    if (MainStaticClass.SystemTaxation == 0)
-                    {
-                        MessageBox.Show("У вас не заполнена система налогообложения!\r\nСоздание и печать чеков невозможна!\r\nОБРАЩАЙТЕСЬ В БУХГАЛТЕРИЮ!");
                         return;
                     }
+                    if (restart)
+                    {
+                        MessageBox.Show("У вас неверно была установлена версия ФН,НЕОБХОДИМ ПЕРЕЗАПУСК КАССОВОЙ ПРОГРАММЫ !!!");
+                        this.Close();
+                    }
                 }
+                if (MainStaticClass.SystemTaxation == 0)
+                {
+                    MessageBox.Show("У вас не заполнена система налогообложения!\r\nСоздание и печать чеков невозможна!\r\nОБРАЩАЙТЕСЬ В БУХГАЛТЕРИЮ!");
+                    return;
+                }
+                //}
 
                 //Проверка на заполненность обяз реквизитов
                 if (all_is_filled())

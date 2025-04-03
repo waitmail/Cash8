@@ -441,7 +441,7 @@ namespace Cash8
             return cDNHealth;
         }
 
-        public bool cdn_check_marker_code(List<string> codes, string mark_str, Int64 numdoc, ref HttpWebRequest request, string mark_str_cdn, Dictionary<string, string> d_tovar, ref bool timeout,Cash_check cash_Check)
+        public bool cdn_check_marker_code(List<string> codes, string mark_str, Int64 numdoc, ref HttpWebRequest request, string mark_str_cdn, Dictionary<string, string> d_tovar,Cash_check cash_Check)
         {
 
             bool result_check = false;
@@ -540,10 +540,13 @@ namespace Cash8
                             {
                                 if ((answer_check_mark.codes[0].groupIds[0] != 23) && (answer_check_mark.codes[0].groupIds[0] != 8)&& (answer_check_mark.codes[0].groupIds[0] != 13))
                                 {
-                                    //MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + " Вы не являетесь владельцем " + s, "CDN проверка");
-                                    sb.AppendLine("Вы не являетесь владельцем!".ToUpper());
-                                    //MainStaticClass.write_event_in_log("CDN Код маркировки " + mark_str_cdn + " Вы не являетесь владельцем ", "Документ чек", numdoc.ToString());
-                                    MainStaticClass.write_cdn_log("CDN Код маркировки " + mark_str_cdn + " Вы не являетесь владельцем ", numdoc.ToString(), codes[0].ToString(), "1");
+                                    if (cash_Check.check_type.SelectedIndex == 0)
+                                    {
+                                        //MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + " Вы не являетесь владельцем " + s, "CDN проверка");
+                                        sb.AppendLine("Вы не являетесь владельцем!".ToUpper());
+                                        //MainStaticClass.write_event_in_log("CDN Код маркировки " + mark_str_cdn + " Вы не являетесь владельцем ", "Документ чек", numdoc.ToString());
+                                        MainStaticClass.write_cdn_log("CDN Код маркировки " + mark_str_cdn + " Вы не являетесь владельцем ", numdoc.ToString(), codes[0].ToString(), "1");
+                                    }
                                 }
                             }
                             else
@@ -583,11 +586,14 @@ namespace Cash8
                         }
                         if (answer_check_mark.codes[0].sold)
                         {
-                            sb.AppendLine("Уже выведен из оборота!".ToUpper());
-                            //MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + "  уже выведен из оборота." + s, "CDN проверка");
-                            //MainStaticClass.write_event_in_log("CDN Код маркировки " + mark_str_cdn + "  уже выведен из оборота.", "Документ чек", numdoc.ToString());
-                            MainStaticClass.write_cdn_log("CDN Код маркировки " + mark_str_cdn + "  уже выведен из оборота.", numdoc.ToString(), codes[0].ToString(), "1");
-                            //result_check = false;
+                            if (cash_Check.check_type.SelectedIndex == 0)
+                            {
+                                sb.AppendLine("Уже выведен из оборота!".ToUpper());
+                                //MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + "  уже выведен из оборота." + s, "CDN проверка");
+                                //MainStaticClass.write_event_in_log("CDN Код маркировки " + mark_str_cdn + "  уже выведен из оборота.", "Документ чек", numdoc.ToString());
+                                MainStaticClass.write_cdn_log("CDN Код маркировки " + mark_str_cdn + "  уже выведен из оборота.", numdoc.ToString(), codes[0].ToString(), "1");
+                                //result_check = false;
+                            }
                         }
                         if (answer_check_mark.codes[0].isBlocked)
                         {
@@ -679,10 +685,10 @@ namespace Cash8
                     break;
                 }
             }
-            if (cdn_list.hosts.Count == error_timeout)
-            {
-                timeout = true;
-            }
+            //if (cdn_list.hosts.Count == error_timeout)
+            //{
+            //    timeout = true;
+            //}
 
             return result_check;
         }                     
