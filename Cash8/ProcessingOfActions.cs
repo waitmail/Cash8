@@ -2588,8 +2588,11 @@ namespace Cash8
                 // Применяем скидку к товарам из первого списка
                 ApplyDiscountsToEligibleItems(dtCopy, num_doc, percent, min_quantity, firstListItems);
 
-                // Помечаем товары, участвовавшие в акции
-                marked_action_tovar_dt(dtCopy, num_doc, comment);
+                if (min_quantity != 0)
+                {
+                    //Помечаем товары, участвовавшие в акции
+                    marked_action_tovar_dt(dtCopy, num_doc, comment);
+                }
             }
             catch (Exception ex)
             {
