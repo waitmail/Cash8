@@ -626,7 +626,7 @@ namespace Cash8
                             requisite1260.req1262 = "030";
                             requisite1260.req1263 = "21.11.2023";
                             requisite1260.req1264 = "1944";
-                            requisite1260.req1265 = answer_check_mark.reqId + "&" + answer_check_mark.reqTimestamp;
+                            requisite1260.req1265 = "UUID="+answer_check_mark.reqId + "&Time=" + answer_check_mark.reqTimestamp;
                             cash_Check.verifyCDN.Add(mark_str, requisite1260);
 
                             result_check = true;                         

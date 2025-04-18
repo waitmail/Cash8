@@ -1057,6 +1057,7 @@ namespace Cash8
             queries.Add("CREATE TABLE IF NOT EXISTS public.errors_log(error_message text COLLATE pg_catalog.default,date_time_record timestamp without time zone,num_doc bigint,method_name character varying(255) COLLATE pg_catalog.default,description character varying(255) COLLATE pg_catalog.default)WITH(OIDS = FALSE)TABLESPACE pg_default;ALTER TABLE public.errors_log OWNER to postgres;");
             queries.Add("ALTER TABLE public.tovar ADD COLUMN refusal_of_marking boolean NOT NULL DEFAULT false;");
             queries.Add("CREATE INDEX idx_action_table_doc_tovar_list ON public.action_table USING btree(num_doc ASC NULLS LAST, code_tovar ASC NULLS LAST, num_list ASC NULLS LAST) TABLESPACE pg_default; ALTER TABLE public.action_table CLUSTER ON idx_action_table_doc_tovar_list;");
+            queries.Add("ALTER TABLE public.barcode ALTER COLUMN barcode TYPE character(14);");
 
             //queries.Add("ALTER TABLE public.errors_log ALTER COLUMN error_message TYPE text COLLATE pg_catalog.default");
 

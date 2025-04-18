@@ -1717,9 +1717,18 @@ namespace Cash8
             {
                 conn.Open();
                 tran = conn.BeginTransaction();
-                string query = "SELECT data_type FROM information_schema.columns where table_name = 'errors_log' AND column_name = 'error_message'";
+                string query = "SELECT data_type,character_maximum_length FROM information_schema.columns where table_name = 'barcode' AND column_name = 'barcode'";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
-                if (command.ExecuteScalar().ToString().Trim() != "text")//старый тип колонки в бд, меняем на новый
+                NpgsqlDataReader reader = command.ExecuteReader();
+                bool update = false;
+                while (reader.Read())
+                {
+                    if (Convert.ToInt16(reader["character_maximum_length"]) == 13)
+                    {
+                        update = true;
+                    }
+                }
+                if (update)//старый тип колонки в бд, меняем на новый
                 {
                     SettingConnect sc = new SettingConnect();
                     sc.add_field_Click(null, null);
@@ -1822,7 +1831,7 @@ namespace Cash8
         private void check_add_field()
         {
             check_correct_type_column();
-            //check_exists_table();
+            check_exists_table();
             check_exists_column();            
         }
 
