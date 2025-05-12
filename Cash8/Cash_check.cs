@@ -3868,10 +3868,10 @@ namespace Cash8
 
             this.check_type.Items.Add("Продажа");
             this.check_type.Items.Add("Возврат");
-            //if (MainStaticClass.Code_right_of_user == 1 && MainStaticClass.PrintingUsingLibraries == 1)
-            //{
-            //    this.check_type.Items.Add("КоррекцияПродажи");                
-            //}
+            if (MainStaticClass.Code_right_of_user == 1 && MainStaticClass.PrintingUsingLibraries == 1)
+            {
+                this.check_type.Items.Add("КоррекцияПродажи");
+            }
 
             this.WindowState = FormWindowState.Maximized;
 

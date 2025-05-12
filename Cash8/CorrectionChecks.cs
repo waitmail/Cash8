@@ -155,7 +155,7 @@ namespace Cash8
             //}
         }
 
-        private void create_check(string num_doc)
+        private void create_check(DataRow row)
         {
             Cash_check cash_Check = new Cash_check();
             cash_Check.Cash_check_Load(null, null);
@@ -164,7 +164,7 @@ namespace Cash8
             //cash_Check.check_type.Items.Add("Возврат");
             //cash_Check.check_type.Items.Add("КоррекцияПродажи");            
             cash_Check.check_type.SelectedIndex = 2;
-            cash_Check.txtB_num_sales.Text = num_doc;
+            cash_Check.txtB_num_sales.Text = row["document_number"].ToString();
             cash_Check.tax_order = txtB_tax_order.Text;
             //cash_Check.num_cash.Tag = MainStaticClass.CashDeskNumber.ToString();
             //cash_Check.user.Tag = MainStaticClass.Cash_Operator_Client_Code;
@@ -172,9 +172,9 @@ namespace Cash8
 
             cash_Check.fill_on_sales();
 
-            string sertificate_money = cash_Check.txtB_sertificate_money.Text;
-            string non_cash_money = cash_Check.txtB_non_cash_money.Text;
-            string cash_money = cash_Check.txtB_cash_money.Text;
+            string sertificate_money = row["sertificate_money"].ToString();//cash_Check.txtB_sertificate_money.Text;
+            string non_cash_money = row["non_cash_money"].ToString();  //cash_Check.txtB_non_cash_money.Text;
+            string cash_money = row["cash_money"].ToString(); //cash_Check.txtB_cash_money.Text;
             
             string sum_doc = cash_Check.calculation_of_the_sum_of_the_document().ToString().Replace(",", ".");
             cash_Check.it_is_paid(sum_doc     , sum_doc, "0", "0", true, cash_money, non_cash_money, sertificate_money);
@@ -191,7 +191,7 @@ namespace Cash8
             {
                 if (Convert.ToBoolean(row["correction"]))
                 {
-                    create_check(row["document_number"].ToString());
+                    create_check(row);
                     row["correction"] = false;
                     row["modified"] = true;
                 }

@@ -586,21 +586,21 @@ namespace Cash8
 
             print_terminal_check(fptr, check);
 
-            if (MainStaticClass.SystemTaxation == 1)
-            {
-                fptr.setParam(1055, AtolConstants.LIBFPTR_TT_OSN);
-                MainStaticClass.write_event_in_log("SNO SystemTaxation == 1 LIBFPTR_TT_OSN", "print_sell_2_or_return_sell", check.numdoc.ToString());
-            }
-            else if (MainStaticClass.SystemTaxation == 2)
-            {
-                fptr.setParam(1055, AtolConstants.LIBFPTR_TT_USN_INCOME_OUTCOME);
-                MainStaticClass.write_event_in_log("SNO SystemTaxation == 2 LIBFPTR_TT_USN_INCOME_OUTCOME", "print_sell_2_or_return_sell", check.numdoc.ToString());
-            }
-            else if (MainStaticClass.SystemTaxation == 4)
-            {
-                fptr.setParam(1055, AtolConstants.LIBFPTR_TT_USN_INCOME);
-                MainStaticClass.write_event_in_log("SNO SystemTaxation == 4 LIBFPTR_TT_USN_INCOME", "print_sell_2_or_return_sell", check.numdoc.ToString());
-            }
+            //if (MainStaticClass.SystemTaxation == 1)
+            //{
+            //    fptr.setParam(1055, AtolConstants.LIBFPTR_TT_OSN);
+            //    MainStaticClass.write_event_in_log("SNO SystemTaxation == 1 LIBFPTR_TT_OSN", "print_sell_2_or_return_sell", check.numdoc.ToString());
+            //}
+            //else if (MainStaticClass.SystemTaxation == 2)
+            //{
+            //    fptr.setParam(1055, AtolConstants.LIBFPTR_TT_USN_INCOME_OUTCOME);
+            //    MainStaticClass.write_event_in_log("SNO SystemTaxation == 2 LIBFPTR_TT_USN_INCOME_OUTCOME", "print_sell_2_or_return_sell", check.numdoc.ToString());
+            //}
+            //else if (MainStaticClass.SystemTaxation == 4)
+            //{
+            //    fptr.setParam(1055, AtolConstants.LIBFPTR_TT_USN_INCOME);
+            //    MainStaticClass.write_event_in_log("SNO SystemTaxation == 4 LIBFPTR_TT_USN_INCOME", "print_sell_2_or_return_sell", check.numdoc.ToString());
+            //}
             //if (MainStaticClass.GetDoNotPromptMarkingCode == 0)
             //{
             //    if (check.check_type.SelectedIndex == 1 ||  check.reopened)//для возвратов и красных чеков старая схема
@@ -640,7 +640,7 @@ namespace Cash8
             }
             else if (check.check_type.SelectedIndex == 2)
             {
-
+                //fptr.setParam(1177, "Служебная записка");
                 fptr.setParam(1178, check.sale_date);//Дата продажи
                 if (check.tax_order.Trim().Length != 0)
                 {
@@ -656,7 +656,7 @@ namespace Cash8
                 byte[] correctionInfo = fptr.getParamByteArray(AtolConstants.LIBFPTR_PARAM_TAG_VALUE);
                 if (check.tax_order == "")
                 {
-                    fptr.setParam(1173, 0);
+                    fptr.setParam(1173, 0);                                        
                 }
                 else
                 {
@@ -677,7 +677,21 @@ namespace Cash8
                 fptr.setParam(1227, check.txtB_name.Text);
             }
 
-
+            if (MainStaticClass.SystemTaxation == 1)
+            {
+                fptr.setParam(1055, AtolConstants.LIBFPTR_TT_OSN);
+                MainStaticClass.write_event_in_log("SNO SystemTaxation == 1 LIBFPTR_TT_OSN", "print_sell_2_or_return_sell", check.numdoc.ToString());
+            }
+            else if (MainStaticClass.SystemTaxation == 2)
+            {
+                fptr.setParam(1055, AtolConstants.LIBFPTR_TT_USN_INCOME_OUTCOME);
+                MainStaticClass.write_event_in_log("SNO SystemTaxation == 2 LIBFPTR_TT_USN_INCOME_OUTCOME", "print_sell_2_or_return_sell", check.numdoc.ToString());
+            }
+            else if (MainStaticClass.SystemTaxation == 4)
+            {
+                fptr.setParam(1055, AtolConstants.LIBFPTR_TT_USN_INCOME);
+                MainStaticClass.write_event_in_log("SNO SystemTaxation == 4 LIBFPTR_TT_USN_INCOME", "print_sell_2_or_return_sell", check.numdoc.ToString());
+            }
 
             if (fptr.openReceipt() != 0)
             {
@@ -1223,29 +1237,29 @@ namespace Cash8
 
 
             print_terminal_check(fptr, check);
-            if (variant == 0)
-            {
-                fptr.setParam(1055, AtolConstants.LIBFPTR_TT_PATENT);
-                MainStaticClass.write_event_in_log("SNO SystemTaxation == LIBFPTR_TT_PATENT variant = 0 не маркировка", "print_sell_2_3_or_return_sell", check.numdoc.ToString());
-            }
-            else if (variant == 1)
-            {
-                if (MainStaticClass.SystemTaxation == 3)
-                {
-                    fptr.setParam(1055, AtolConstants.LIBFPTR_TT_USN_INCOME_OUTCOME);
-                    MainStaticClass.write_event_in_log("SNO SystemTaxation == 3 variant = 1 маркировка LIBFPTR_TT_USN_INCOME_OUTCOME", "print_sell_2_3_or_return_sell", check.numdoc.ToString());
-                }
-                else if (MainStaticClass.SystemTaxation == 5)
-                {
-                    fptr.setParam(1055, AtolConstants.LIBFPTR_TT_USN_INCOME);
-                    MainStaticClass.write_event_in_log("SNO SystemTaxation == 5 variant = 1 маркировка LIBFPTR_TT_USN_INCOME", "print_sell_2_3_or_return_sell", check.numdoc.ToString());
-                }
-            }
-            else
-            {
-                MessageBox.Show("В печать не передан или передан не верный вариант, печать невозможна");
-                return;
-            }
+            //if (variant == 0)
+            //{
+            //    fptr.setParam(1055, AtolConstants.LIBFPTR_TT_PATENT);
+            //    MainStaticClass.write_event_in_log("SNO SystemTaxation == LIBFPTR_TT_PATENT variant = 0 не маркировка", "print_sell_2_3_or_return_sell", check.numdoc.ToString());
+            //}
+            //else if (variant == 1)
+            //{
+            //    if (MainStaticClass.SystemTaxation == 3)
+            //    {
+            //        fptr.setParam(1055, AtolConstants.LIBFPTR_TT_USN_INCOME_OUTCOME);
+            //        MainStaticClass.write_event_in_log("SNO SystemTaxation == 3 variant = 1 маркировка LIBFPTR_TT_USN_INCOME_OUTCOME", "print_sell_2_3_or_return_sell", check.numdoc.ToString());
+            //    }
+            //    else if (MainStaticClass.SystemTaxation == 5)
+            //    {
+            //        fptr.setParam(1055, AtolConstants.LIBFPTR_TT_USN_INCOME);
+            //        MainStaticClass.write_event_in_log("SNO SystemTaxation == 5 variant = 1 маркировка LIBFPTR_TT_USN_INCOME", "print_sell_2_3_or_return_sell", check.numdoc.ToString());
+            //    }
+            //}
+            //else
+            //{
+            //    MessageBox.Show("В печать не передан или передан не верный вариант, печать невозможна");
+            //    return;
+            //}
 
 
             if (check.check_type.SelectedIndex == 0)
@@ -1256,8 +1270,31 @@ namespace Cash8
             {
                 fptr.setParam(AtolConstants.LIBFPTR_PARAM_RECEIPT_TYPE, AtolConstants.LIBFPTR_RT_SELL_RETURN);
             }
+            else if (check.check_type.SelectedIndex == 2)
+            {
+                //fptr.setParam(1177, "Служебная записка");
+                fptr.setParam(1178, check.sale_date);//Дата продажи
+                if (check.tax_order.Trim().Length != 0)
+                {
+                    fptr.setParam(1179, check.tax_order);//Номер предписания
+                }
+            
+                fptr.utilFormTlv();
+                fptr.setParam(AtolConstants.LIBFPTR_PARAM_RECEIPT_TYPE, AtolConstants.LIBFPTR_RT_SELL_CORRECTION);
 
-           // bool closing = false;
+                byte[] correctionInfo = fptr.getParamByteArray(AtolConstants.LIBFPTR_PARAM_TAG_VALUE);
+                if (check.tax_order == "")
+                {
+                    fptr.setParam(1173, 0);
+                }
+                else
+                {
+                    fptr.setParam(1173, 1);
+                }
+                fptr.setParam(1174, correctionInfo);
+            }
+
+            // bool closing = false;
 
             // Открытие чека (с передачей телефона получателя)
             //if (check.check_type.SelectedIndex == 0)
@@ -1283,6 +1320,31 @@ namespace Cash8
                 fptr.setParam(1228, check.txtB_inn.Text);
                 fptr.setParam(1227, check.txtB_name.Text);
             }
+
+            if (variant == 0)
+            {
+                fptr.setParam(1055, AtolConstants.LIBFPTR_TT_PATENT);
+                MainStaticClass.write_event_in_log("SNO SystemTaxation == LIBFPTR_TT_PATENT variant = 0 не маркировка", "print_sell_2_3_or_return_sell", check.numdoc.ToString());
+            }
+            else if (variant == 1)
+            {
+                if (MainStaticClass.SystemTaxation == 3)
+                {
+                    fptr.setParam(1055, AtolConstants.LIBFPTR_TT_USN_INCOME_OUTCOME);
+                    MainStaticClass.write_event_in_log("SNO SystemTaxation == 3 variant = 1 маркировка LIBFPTR_TT_USN_INCOME_OUTCOME", "print_sell_2_3_or_return_sell", check.numdoc.ToString());
+                }
+                else if (MainStaticClass.SystemTaxation == 5)
+                {
+                    fptr.setParam(1055, AtolConstants.LIBFPTR_TT_USN_INCOME);
+                    MainStaticClass.write_event_in_log("SNO SystemTaxation == 5 variant = 1 маркировка LIBFPTR_TT_USN_INCOME", "print_sell_2_3_or_return_sell", check.numdoc.ToString());
+                }
+            }
+            else
+            {
+                MessageBox.Show("В печать не передан или передан не верный вариант, печать невозможна");
+                return;
+            }
+
 
             //fptr.closeReceipt();//.cancelReceipt();//
             if (fptr.openReceipt() != 0)
