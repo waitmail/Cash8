@@ -131,7 +131,7 @@ namespace Cash8
                 conn.Open();
                 string query = "SELECT nick_shop,cash_desk_number,code_shop," +
                     " path_for_web_service,currency,unloading_period,last_date_download_bonus_clients," +
-                    " envd,pass_promo,print_m,system_taxation,work_schema,version_fn,enable_stock_processing_in_memory," +
+                    " envd,pass_promo,system_taxation,work_schema,version_fn,enable_stock_processing_in_memory," +
                     " id_acquirer_terminal,ip_address_acquiring_terminal,self_service_kiosk,enable_cdn_markers, " +
                     " webservice_authorize,printing_using_libraries,fn_serial_port,get_weight_automatically,scale_serial_port,"+
                     " variant_connect_fn,fn_ipaddr,acquiring_bank,do_not_prompt_marking_code,constant_conversion_to_kilograms FROM constants";
@@ -152,7 +152,7 @@ namespace Cash8
                     this.unloading_period.Text = reader["unloading_period"].ToString();
                     this.txtB_last_date_download_bonus_clients.Text = (reader["last_date_download_bonus_clients"].ToString() == "" ? new DateTime(2000, 1, 1).ToString("dd-MM-yyyy") : Convert.ToDateTime(reader["last_date_download_bonus_clients"]).ToString("dd-MM-yyyy"));
                     //this.checkBox_envd.CheckState = (reader["envd"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
-                    this.checkBox_print_m.CheckState = (reader["print_m"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
+                    //this.checkBox_print_m.CheckState = (reader["print_m"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
                     //this.checkBox_osn_usnIncomeOutcome.CheckState = (reader["usn_income_out_come"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
                     this.comboBox_system_taxation.SelectedIndex = Convert.ToInt16(reader["system_taxation"]);
                     this.txtB_work_schema.Text = reader["work_schema"].ToString();
@@ -375,7 +375,7 @@ namespace Cash8
                 }
             }
 
-            string print_m = (checkBox_print_m.CheckState == CheckState.Unchecked ? "false" : "true");
+            //string print_m = (checkBox_print_m.CheckState == CheckState.Unchecked ? "false" : "true");
             //string enable_stock_processing_in_memory = (checkBox_enable_cdn_markers.CheckState == CheckState.Unchecked ? "false" : "true");
             //string self_service_kiosk = (checkBox_self_service_kiosk.CheckState == CheckState.Unchecked ? "false" : "true");
             string enable_cdn_markers = (checkBox_enable_cdn_markers.CheckState == CheckState.Unchecked ? "false" : "true");
@@ -405,7 +405,7 @@ namespace Cash8
                     "path_for_web_service ='" + path_for_web_service.Text + "'," +
                     "currency ='" + currency.Text + "'," +
                     "unloading_period =" + unloading_period.Text + "," +
-                    "print_m ='" + print_m + "'," +
+                    //"print_m ='" + print_m + "'," +
                     "last_date_download_bonus_clients ='" + txtB_last_date_download_bonus_clients.Text + "'," +
                     "system_taxation = '" + comboBox_system_taxation.SelectedIndex.ToString() + "'," +
                     "work_schema = '" + txtB_work_schema.Text + "'," +
@@ -440,7 +440,7 @@ namespace Cash8
                         "unloading_period," +
                         "last_date_download_bonus_clients," +
                         //"envd,"+
-                        "print_m," +
+                        //"print_m," +
                         "system_taxation," +
                         "work_schema," +
                         "version_fn," +
@@ -468,7 +468,7 @@ namespace Cash8
                         currency.Text + "','" +
                         unloading_period.Text + "','" +
                         txtB_last_date_download_bonus_clients.Text + "','" +
-                        print_m + "','" +
+                        //print_m + "','" +
                         comboBox_system_taxation.SelectedIndex.ToString() + "','" +
                         txtB_work_schema.Text + "','" +
                         txtB_version_fn.Text + "','" +
@@ -585,6 +585,7 @@ namespace Cash8
                 txtB_fn_ipaddr.Enabled =true;
                 comboBox_fn_port.Enabled = false;
             }
-        }
+        }      
+        
     }
 }

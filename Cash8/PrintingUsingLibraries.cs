@@ -509,21 +509,21 @@ namespace Cash8
 
             bool error = false;
 
-            //***************************************************************************
-            if (check.to_print_certainly == 1)
-            {
-                MainStaticClass.delete_document_wil_be_printed(check.numdoc.ToString());
-            }
+            ////***************************************************************************
+            //if (check.to_print_certainly == 1)
+            //{
+            //    MainStaticClass.delete_document_wil_be_printed(check.numdoc.ToString());
+            //}
 
-            if (MainStaticClass.get_document_wil_be_printed(check.numdoc.ToString()) != 0)
-            {
-                MessageBox.Show("Этот чек уже был успешно отправлен на печать");
-                return;
-            }
+            //if (MainStaticClass.get_document_wil_be_printed(check.numdoc.ToString()) != 0)
+            //{
+            //    MessageBox.Show("Этот чек уже был успешно отправлен на печать");
+            //    return;
+            //}
 
-            //closing = false;           
+            ////closing = false;           
 
-            //**************************************************************************
+            ////**************************************************************************
 
 
             IFptr fptr = MainStaticClass.FPTR;
@@ -992,8 +992,8 @@ namespace Cash8
                 return;
             }
             else
-            {
-                //print_promo();
+            {                
+                get_actions_num_doc(check);//Печать акционных картинок
                 fptr.closeReceipt();
             }
 
@@ -1118,16 +1118,16 @@ namespace Cash8
             if (variant == 0)
             {
 
-                if (check.to_print_certainly == 1)
-                {
-                    MainStaticClass.delete_document_wil_be_printed(check.numdoc.ToString(), variant);
-                }
+                //if (check.to_print_certainly == 1)
+                //{
+                //    MainStaticClass.delete_document_wil_be_printed(check.numdoc.ToString(), variant);
+                //}
 
-                if (MainStaticClass.get_document_wil_be_printed(check.numdoc.ToString()) != 0)
-                {
-                    MessageBox.Show("Этот чек уже был успешно отправлен на печать");
-                    return;
-                }
+                //if (MainStaticClass.get_document_wil_be_printed(check.numdoc.ToString()) != 0)
+                //{
+                //    MessageBox.Show("Этот чек уже был успешно отправлен на печать");
+                //    return;
+                //}
                 //здесь проверяем есть ли строки
                 int count_string = 0;
                 foreach (ListViewItem lvi in check.listView1.Items)
@@ -1150,16 +1150,16 @@ namespace Cash8
                 fptr.openDrawer();
                 //здесь проверяем есть ли строки
 
-                if (check.to_print_certainly_p == 1)
-                {
-                    MainStaticClass.delete_document_wil_be_printed(check.numdoc.ToString(), variant);
-                }
+                //if (check.to_print_certainly_p == 1)
+                //{
+                //    MainStaticClass.delete_document_wil_be_printed(check.numdoc.ToString(), variant);
+                //}
 
-                if (MainStaticClass.get_document_wil_be_printed(check.numdoc.ToString(), variant) != 0)
-                {
-                    MessageBox.Show("Этот чек уже был успешно отправлен на печать");
-                    return;
-                }
+                //if (MainStaticClass.get_document_wil_be_printed(check.numdoc.ToString(), variant) != 0)
+                //{
+                //    MessageBox.Show("Этот чек уже был успешно отправлен на печать");
+                //    return;
+                //}
                 int count_string = 0;
                 foreach (ListViewItem lvi in check.listView1.Items)
                 {
@@ -1641,6 +1641,16 @@ namespace Cash8
             else
             {
                 //print_promo();
+                //fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
+                //fptr.setParam(AtolConstants.LIBFPTR_PARAM_SCALE_PERCENT, 150);
+
+                //fptr.setParam(AtolConstants.LIBFPTR_PARAM_FILENAME, "C:\\2025-05-13_10-30.png");
+                //fptr.printPicture();
+                if (!check.print_promo_picture)
+                {
+                    get_actions_num_doc(check);//Печать акционных картинок
+                    check.print_promo_picture = true;
+                }
                 fptr.closeReceipt();
             }
             
@@ -1711,6 +1721,102 @@ namespace Cash8
             //print_promo();
         }
 
+        /// <summary>
+        /// Преобразует шестнадцатеричную строку в массив байтов.
+        /// </summary>
+        /// <param name="hexString">Шестнадцатеричная строка.</param>
+        /// <returns>Массив байтов.</returns>
+        static byte[] HexStringToByteArray(string hexString)
+        {
+            int length = hexString.Length;
+            byte[] byteArray = new byte[length / 2];
+
+            for (int i = 0; i < length; i += 2)
+            {
+                // Преобразуем каждую пару символов в байт
+                byteArray[i / 2] = Convert.ToByte(hexString.Substring(i, 2), 16);
+            }
+
+            return byteArray;
+        }
+        
+        private void print_picture(string hex_string)
+        {
+
+            IFptr fptr = MainStaticClass.FPTR;
+            if (!fptr.isOpened())
+            {
+                fptr.open();
+            }
+
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_SCALE_PERCENT, 150);
+
+            
+            // Преобразование шестнадцатеричной строки в массив байтов
+            //byte[] byteArray = HexStringToByteArray(hex_string);
+            byte[] byteArray = Convert.FromBase64String(hex_string);
+
+            // Запись массива байтов в новый файл
+            string outputFilePath = Application.StartupPath+"temp_picture.png";
+            System.IO.File.WriteAllBytes(outputFilePath, byteArray);
+            
+            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_FILENAME, "C:\\2025-05-13_10-30.png");
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_FILENAME, outputFilePath);
+            fptr.printPicture();
+
+        }
+
+        private void get_actions_num_doc(Cash_check check)
+        {
+            List<string> numDocsAction = new List<string>();
+
+            foreach (ListViewItem lvi in check.listView1.Items)
+            {
+                string action_num_doc = lvi.SubItems[10].Text.Trim();
+                if (action_num_doc.Length > 1)
+                {
+                    if (numDocsAction.IndexOf(action_num_doc) == -1)
+                    {
+                        numDocsAction.Add(action_num_doc);
+                    }
+                }
+            }
+            if (numDocsAction.Count > 0)
+            {
+                print_pictures(numDocsAction);
+            }
+        }
+
+
+
+        public void print_pictures(List<string> numDocsAction)
+        {
+            using (NpgsqlConnection  conn = MainStaticClass.NpgsqlConn())
+            {
+                try
+                {
+                    conn.Open();
+                    foreach (var item in numDocsAction)
+                    {
+                        string query = "SELECT picture	FROM public.action_header WHERE num_doc=" + item;
+                        NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                        string hex_string = command.ExecuteScalar().ToString();
+                        //hex_string = hex_string.Substring(2, hex_string.Length - 2);
+                        print_picture(hex_string);
+                    }
+                }
+                catch (NpgsqlException ex)
+                {                    
+                    MessageBox.Show($"Ошибка базы данных: {ex.Message}");
+                }
+                catch (Exception ex)
+                {
+                    // Общие ошибки
+                    MessageBox.Show($"Произошла ошибка: {ex.Message}");
+                }
+            }
+        }
 
         private void start_and_restart_beginMarkingCodeValidation(string mark, int check_type)
         {

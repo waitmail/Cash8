@@ -114,6 +114,8 @@ namespace Cash8
         List<int> qr_code_lenght = new List<int>();
         ToolTip toolTip = null;
         public bool reopened = false;
+        public bool print_promo_picture = false;
+
         //(HttpWebRequest)WebRequest.Create("url");
         //request.KeepAlive = true;
         //request.Method = "GET"; // Или другой метод, который вы используете
@@ -10136,19 +10138,21 @@ namespace Cash8
                 }
             }
 
-            if (MainStaticClass.SystemTaxation < 3)
-            {
-                if (to_print_certainly == 1)
-                {
-                    MainStaticClass.delete_document_wil_be_printed(numdoc.ToString());
-                }
+            //if (MainStaticClass.SystemTaxation < 3)
+            //{
+            //    if (to_print_certainly == 1)
+            //    {
+            //        MainStaticClass.delete_document_wil_be_printed(numdoc.ToString());
+            //    }
 
-                if (MainStaticClass.get_document_wil_be_printed(numdoc.ToString()) != 0)
-                {
-                    MessageBox.Show("Этот чек уже был успешно отправлен на печать");
-                    return;
-                }
-            }
+            //    if (MainStaticClass.get_document_wil_be_printed(numdoc.ToString()) != 0)
+            //    {
+            //        MessageBox.Show("Этот чек уже был успешно отправлен на печать");
+            //        return;
+            //    }
+            //}
+
+
             //else if ((MainStaticClass.SystemTaxation == 3)|| (MainStaticClass.SystemTaxation == 5))
             //{
             //    if (check_type.SelectedIndex==1)//Комбинированный тип налогообложения необходимо проверить чтобы не было вместе маркированного и не маркированного товара

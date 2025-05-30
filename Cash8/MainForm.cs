@@ -1204,7 +1204,6 @@ namespace Cash8
 
             check_files_and_folders();
             //MessageBox.Show("10");
-
         }
 
        
@@ -1761,7 +1760,7 @@ namespace Cash8
             try
             {
                 conn.Open();
-                string query = "SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'tovar' AND column_name = 'refusal_of_marking'); ";                
+                string query = "SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'action_header' AND column_name = 'picture'); ";                
                 
                  NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 if (!Convert.ToBoolean(command.ExecuteScalar())) //не нашли такой колонки   

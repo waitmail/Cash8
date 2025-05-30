@@ -42,7 +42,6 @@
             this.label11 = new System.Windows.Forms.Label();
             this.txtB_last_date_download_bonus_clients = new System.Windows.Forms.TextBox();
             this.label14 = new System.Windows.Forms.Label();
-            this.checkBox_print_m = new System.Windows.Forms.CheckBox();
             this.comboBox_system_taxation = new System.Windows.Forms.ComboBox();
             this.lbl_system_taxation = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -60,6 +59,8 @@
             this.checkBox_get_weight_automatically = new System.Windows.Forms.CheckBox();
             this.comboBox_scale_port = new System.Windows.Forms.ComboBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.txtB_constant_conversion_to_kilograms = new System.Windows.Forms.TextBox();
             this.btn_get_weight = new System.Windows.Forms.Button();
             this.checkBox_printing_using_libraries = new System.Windows.Forms.CheckBox();
             this.comboBox_fn_port = new System.Windows.Forms.ComboBox();
@@ -70,8 +71,7 @@
             this.label9 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.checkBox_do_not_prompt_marking_code = new System.Windows.Forms.CheckBox();
-            this.txtB_constant_conversion_to_kilograms = new System.Windows.Forms.TextBox();
-            this.label10 = new System.Windows.Forms.Label();
+            this.btn_test_pictures = new System.Windows.Forms.Button();
             this.groupBox_acquiring_terminal.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -203,16 +203,6 @@
             this.label14.TabIndex = 54;
             this.label14.Text = "Дата последней загрузки карточек покупателей";
             // 
-            // checkBox_print_m
-            // 
-            this.checkBox_print_m.AutoSize = true;
-            this.checkBox_print_m.Location = new System.Drawing.Point(536, 402);
-            this.checkBox_print_m.Name = "checkBox_print_m";
-            this.checkBox_print_m.Size = new System.Drawing.Size(170, 17);
-            this.checkBox_print_m.TabIndex = 61;
-            this.checkBox_print_m.Text = "Печатать [M] перед товаром";
-            this.checkBox_print_m.UseVisualStyleBackColor = true;
-            // 
             // comboBox_system_taxation
             // 
             this.comboBox_system_taxation.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -261,7 +251,7 @@
             // 
             this.label4.Location = new System.Drawing.Point(247, 7);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(100, 25);
+            this.label4.Size = new System.Drawing.Size(73, 25);
             this.label4.TabIndex = 68;
             this.label4.Text = "Версия ФН";
             // 
@@ -382,6 +372,24 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Настройки весов";
             // 
+            // label10
+            // 
+            this.label10.Location = new System.Drawing.Point(25, 60);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(137, 35);
+            this.label10.TabIndex = 91;
+            this.label10.Text = "Делитель для перевода веса в килограммы";
+            this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // txtB_constant_conversion_to_kilograms
+            // 
+            this.txtB_constant_conversion_to_kilograms.Location = new System.Drawing.Point(187, 68);
+            this.txtB_constant_conversion_to_kilograms.MaxLength = 4;
+            this.txtB_constant_conversion_to_kilograms.Name = "txtB_constant_conversion_to_kilograms";
+            this.txtB_constant_conversion_to_kilograms.Size = new System.Drawing.Size(127, 20);
+            this.txtB_constant_conversion_to_kilograms.TabIndex = 90;
+            this.txtB_constant_conversion_to_kilograms.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
             // btn_get_weight
             // 
             this.btn_get_weight.Location = new System.Drawing.Point(327, 24);
@@ -493,31 +501,14 @@
             this.checkBox_do_not_prompt_marking_code.Text = "Не запрашивать код  маркир (ТОЛЬКО ЕСЛИ НЕТ ФН)";
             this.checkBox_do_not_prompt_marking_code.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_do_not_prompt_marking_code.UseVisualStyleBackColor = true;
-            this.checkBox_do_not_prompt_marking_code.Visible = false;
-            // 
-            // txtB_constant_conversion_to_kilograms
-            // 
-            this.txtB_constant_conversion_to_kilograms.Location = new System.Drawing.Point(187, 68);
-            this.txtB_constant_conversion_to_kilograms.MaxLength = 4;
-            this.txtB_constant_conversion_to_kilograms.Name = "txtB_constant_conversion_to_kilograms";
-            this.txtB_constant_conversion_to_kilograms.Size = new System.Drawing.Size(127, 20);
-            this.txtB_constant_conversion_to_kilograms.TabIndex = 90;
-            this.txtB_constant_conversion_to_kilograms.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // label10
-            // 
-            this.label10.Location = new System.Drawing.Point(25, 60);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(137, 35);
-            this.label10.TabIndex = 91;
-            this.label10.Text = "Делитель для перевода веса в килограммы";
-            this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBox_do_not_prompt_marking_code.Visible = false;            
             // 
             // Constants
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 562);
+            this.Controls.Add(this.btn_test_pictures);
             this.Controls.Add(this.checkBox_do_not_prompt_marking_code);
             this.Controls.Add(this.checkBox_webservice_authorize);
             this.Controls.Add(this.txtB_ip_address_acquiring_terminal);
@@ -530,7 +521,6 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.lbl_system_taxation);
             this.Controls.Add(this.comboBox_system_taxation);
-            this.Controls.Add(this.checkBox_print_m);
             this.Controls.Add(this.label14);
             this.Controls.Add(this.txtB_last_date_download_bonus_clients);
             this.Controls.Add(this.label11);
@@ -579,7 +569,6 @@
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.TextBox txtB_last_date_download_bonus_clients;
         private System.Windows.Forms.Label label14;
-        private System.Windows.Forms.CheckBox checkBox_print_m;
         private System.Windows.Forms.ComboBox comboBox_system_taxation;
         private System.Windows.Forms.Label lbl_system_taxation;
         private System.Windows.Forms.Label label3;
@@ -609,5 +598,6 @@
         private System.Windows.Forms.CheckBox checkBox_do_not_prompt_marking_code;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.TextBox txtB_constant_conversion_to_kilograms;
+        private System.Windows.Forms.Button btn_test_pictures;
     }
 }

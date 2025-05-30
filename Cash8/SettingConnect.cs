@@ -1058,6 +1058,7 @@ namespace Cash8
             queries.Add("ALTER TABLE public.tovar ADD COLUMN refusal_of_marking boolean NOT NULL DEFAULT false;");
             queries.Add("CREATE INDEX idx_action_table_doc_tovar_list ON public.action_table USING btree(num_doc ASC NULLS LAST, code_tovar ASC NULLS LAST, num_list ASC NULLS LAST) TABLESPACE pg_default; ALTER TABLE public.action_table CLUSTER ON idx_action_table_doc_tovar_list;");
             queries.Add("ALTER TABLE public.barcode ALTER COLUMN barcode TYPE character(14);");
+            queries.Add("ALTER TABLE public.action_header ADD COLUMN picture text COLLATE pg_catalog.default");
 
             //queries.Add("ALTER TABLE public.errors_log ALTER COLUMN error_message TYPE text COLLATE pg_catalog.default");
 
