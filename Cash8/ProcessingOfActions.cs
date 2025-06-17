@@ -1510,7 +1510,7 @@ namespace Cash8
                 {
                     query = "SELECT COUNT(*) FROM action_table WHERE code_tovar=" + row["tovar_code"].ToString() + " AND num_doc=" + num_doc.ToString();
                     command = new NpgsqlCommand(query, conn);
-                    if (Convert.ToInt16(command.ExecuteScalar()) == 1)//вхождение найдено 
+                    if (Convert.ToInt16(command.ExecuteScalar()) ==1 )//вхождение найдено 
                     {
                         result += Convert.ToDecimal(row["sum_at_discount"].ToString());
                         //is_found = true;

@@ -996,9 +996,24 @@ namespace Cash8
                         this.bonuses_it_is_written_off = Convert.ToDecimal(reader["bonuses_it_is_written_off"]);
                         this.txtB_bonus_money.Text = this.bonuses_it_is_written_off.ToString();
                         this.payment_by_sbp_sales = Convert.ToBoolean(reader["payment_by_sbp"]);
-                       
-                        int[] dbArray = (int[])reader["action_num_doc"];
-                        action_num_doc.AddRange(dbArray);
+
+                        //int[] dbArray = (int[])reader["action_num_doc"];
+                        //action_num_doc.AddRange(dbArray);
+                        if (reader["action_num_doc"] is int[] dbArray)
+                        {
+                            action_num_doc.AddRange(dbArray);
+                        }
+                        else if (reader["action_num_doc"] is int singleValue)
+                        {
+                            if (singleValue != 0)
+                            {
+                                action_num_doc.Add(singleValue); // Если одно значение
+                            }
+                        }
+
+
+
+
                         //if (reader["requisite"].ToString() == "1")
                         //{
                         //    this.checkBox_club.Checked = true;
