@@ -1782,6 +1782,11 @@ namespace Cash8
                     }
                 }
             }
+            foreach (int action_num_doc in check.action_num_doc)//номера акционных документов акций 10 типа 
+            {
+                numDocsAction.Add(action_num_doc.ToString());
+            }
+
             if (numDocsAction.Count > 0)
             {
                 print_pictures(numDocsAction);

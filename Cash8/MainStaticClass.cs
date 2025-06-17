@@ -1771,11 +1771,12 @@ namespace Cash8
         {
             get
             {
-                if (work_schema == 0)
-                {
-                    work_schema = get_work_schema();
-                }                
-                return work_schema;
+                //if (work_schema == 0)
+                //{
+                //    work_schema = get_work_schema();
+                //}                
+                //return work_schema;
+                return 1;
             }
         }
         

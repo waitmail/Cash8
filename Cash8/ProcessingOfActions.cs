@@ -19,13 +19,13 @@ namespace Cash8
         public DataTable dt_copy = new DataTable();//эта таблица необходима для временного хранения строк которые позднее будут добавлены в осносную базу в тот момент когда идет перебор строк основной таблицы в нее добавлять строки нельзя
         //private DataTable dt_gift = new DataTable();
         public string client_code = "";
-        public int action_num_doc = 0;
+        //public int action_num_doc = 0;
         public ArrayList action_barcode_list = new ArrayList();//Доступ из формы ввода акционного штрихкода 
         public bool inpun_action_barcode = false;//Доступ из формы ввода акционного штрихкода
         public bool have_action = false;
         public decimal discount = 0;
         public bool show_messages = false;
-        //public Cash_check cc = null;
+        public Cash_check cc = null;
 
         public ProcessingOfActions()
         {
@@ -658,7 +658,11 @@ namespace Cash8
                         {
                             int multiplicity = (int)(calculation_of_the_sum_of_the_document_dt() / action_10_dt(Convert.ToInt32(reader["num_doc"])));
                             MessageBox.Show("Крастность " + multiplicity.ToString() + " " + reader["comment"].ToString());
-                            action_num_doc = Convert.ToInt32(reader["num_doc"]);
+                            int num = Convert.ToInt32(reader["num_doc"]);
+                            if (!cc.action_num_doc.Contains(num))
+                            {
+                                cc.action_num_doc.Add(num);
+                            }
                         }
                     }
 
@@ -666,6 +670,7 @@ namespace Cash8
                 }
                 conn.Close();
                 command.Dispose();
+
                 if (show_messages)
                 {
                     checked_action_10_dt();//Отдельная проверка поскольку может не быть товарной части, а все акции выше проверяются именно на вхождение товаров документа в таб части акционных документов
@@ -1450,7 +1455,12 @@ namespace Cash8
                     {
                         int multiplicity = (int)(calculation_of_the_sum_of_the_document_dt() / reader.GetDecimal(5));
                         MessageBox.Show("Кратность " + multiplicity.ToString() + " " + reader[3].ToString());
-                        action_num_doc = Convert.ToInt32(reader[1].ToString());
+                        //action_num_doc = Convert.ToInt32(reader[1].ToString());
+                        int num = Convert.ToInt32(reader["num_doc"]);
+                        if (!cc.action_num_doc.Contains(num))
+                        {
+                            cc.action_num_doc.Add(num);
+                        }
                     }
                 }
                 reader.Close();

@@ -130,43 +130,30 @@ namespace Cash8
                 conn = MainStaticClass.NpgsqlConn();
                 conn.Open();
                 string query = "SELECT nick_shop,cash_desk_number,code_shop," +
-                    " path_for_web_service,currency,unloading_period,last_date_download_bonus_clients," +
-                    " envd,pass_promo,system_taxation,work_schema,version_fn,enable_stock_processing_in_memory," +
-                    " id_acquirer_terminal,ip_address_acquiring_terminal,self_service_kiosk,enable_cdn_markers, " +
+                    " path_for_web_service,unloading_period,last_date_download_bonus_clients," +
+                    " system_taxation,version_fn," +
+                    " id_acquirer_terminal,ip_address_acquiring_terminal,enable_cdn_markers, " +
                     " webservice_authorize,printing_using_libraries,fn_serial_port,get_weight_automatically,scale_serial_port,"+
-                    " variant_connect_fn,fn_ipaddr,acquiring_bank,do_not_prompt_marking_code,constant_conversion_to_kilograms FROM constants";
+                    " variant_connect_fn,fn_ipaddr,acquiring_bank,constant_conversion_to_kilograms FROM constants";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
                 {
                     this.nick_shop.Text = reader["nick_shop"].ToString();
                     this.cash_desk_number.Text = reader["cash_desk_number"].ToString();
-                    m_cash_desk_number = Convert.ToInt32(reader["cash_desk_number"]);
-                    //if (Convert.ToBoolean(reader["use_debug"]))
-                    //{
-                    //    this.use_debug.CheckState = CheckState.Checked;
-                    //}
-                    //this.code_shop.Text = reader["code_shop"].ToString();
-                    this.path_for_web_service.Text = reader["path_for_web_service"].ToString();
-                    this.currency.Text = reader["currency"].ToString();
+                    m_cash_desk_number = Convert.ToInt32(reader["cash_desk_number"]);                   
+                    this.path_for_web_service.Text = reader["path_for_web_service"].ToString();                    
                     this.unloading_period.Text = reader["unloading_period"].ToString();
-                    this.txtB_last_date_download_bonus_clients.Text = (reader["last_date_download_bonus_clients"].ToString() == "" ? new DateTime(2000, 1, 1).ToString("dd-MM-yyyy") : Convert.ToDateTime(reader["last_date_download_bonus_clients"]).ToString("dd-MM-yyyy"));
-                    //this.checkBox_envd.CheckState = (reader["envd"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
-                    //this.checkBox_print_m.CheckState = (reader["print_m"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
-                    //this.checkBox_osn_usnIncomeOutcome.CheckState = (reader["usn_income_out_come"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
-                    this.comboBox_system_taxation.SelectedIndex = Convert.ToInt16(reader["system_taxation"]);
-                    this.txtB_work_schema.Text = reader["work_schema"].ToString();
-                    this.txtB_version_fn.Text = reader["version_fn"].ToString();
-                    //this.checkBox_enable_cdn_markers.CheckState= (reader["enable_stock_processing_in_memory"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
+                    this.txtB_last_date_download_bonus_clients.Text = (reader["last_date_download_bonus_clients"].ToString() == "" ? new DateTime(2000, 1, 1).ToString("dd-MM-yyyy") : Convert.ToDateTime(reader["last_date_download_bonus_clients"]).ToString("dd-MM-yyyy"));                    
+                    this.comboBox_system_taxation.SelectedIndex = Convert.ToInt16(reader["system_taxation"]);                    
+                    this.txtB_version_fn.Text = reader["version_fn"].ToString();                    
                     this.txtB_id_acquiring_terminal.Text = reader["id_acquirer_terminal"].ToString();
-                    this.txtB_ip_address_acquiring_terminal.Text = reader["ip_address_acquiring_terminal"].ToString();
-                    //this.checkBox_self_service_kiosk.CheckState = (reader["self_service_kiosk"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
-                    this.checkBox_enable_cdn_markers.CheckState = (reader["enable_cdn_markers"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
-                    //this.checkBox_version2_marking.CheckState = (reader["version2_marking"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
+                    this.txtB_ip_address_acquiring_terminal.Text = reader["ip_address_acquiring_terminal"].ToString();                    
+                    this.checkBox_enable_cdn_markers.CheckState = (reader["enable_cdn_markers"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);                    
                     this.checkBox_webservice_authorize.CheckState = (reader["webservice_authorize"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
                     this.checkBox_printing_using_libraries.CheckState = (reader["printing_using_libraries"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
                     this.checkBox_get_weight_automatically.CheckState = (reader["get_weight_automatically"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
-                    this.checkBox_do_not_prompt_marking_code.CheckState = (reader["do_not_prompt_marking_code"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
+                   
 
                     comboBox_variant_connect_fn.SelectedIndex = Convert.ToInt16(reader["variant_connect_fn"]);
                     this.txtB_constant_conversion_to_kilograms.Text = reader["constant_conversion_to_kilograms"].ToString();
@@ -353,10 +340,10 @@ namespace Cash8
                 }
             }
 
-            if (currency.Text.Trim().Length == 0)
-            {
-                MessageBox.Show(" Не заполнена валюта ", " Ошибка ввода !!!");
-            }
+            //if (currency.Text.Trim().Length == 0)
+            //{
+            //    MessageBox.Show(" Не заполнена валюта ", " Ошибка ввода !!!");
+            //}
 
 
             if (unloading_period.Text.Trim().Length == 0)
@@ -384,7 +371,7 @@ namespace Cash8
             //string static_guid_in_print = (checkBox_static_guid_in_print.CheckState == CheckState.Unchecked ? "false" : "true");
             string printing_using_libraries = (checkBox_printing_using_libraries.CheckState == CheckState.Unchecked ? "false" : "true");
             string get_weight_automatically = (checkBox_get_weight_automatically.CheckState == CheckState.Unchecked ? "false" : "true");
-            string do_not_prompt_marking_code = (checkBox_do_not_prompt_marking_code.CheckState == CheckState.Unchecked ? "false" : "true");
+            //string do_not_prompt_marking_code = (checkBox_do_not_prompt_marking_code.CheckState == CheckState.Unchecked ? "false" : "true");
 
             string fn_serial_port = (comboBox_fn_port.Items.Count == 0 ? "" : (comboBox_fn_port.SelectedIndex == -1 ? "" : comboBox_fn_port.SelectedItem.ToString()));
             string scale_serial_port = (comboBox_scale_port.Items.Count == 0 ? "" : (comboBox_scale_port.SelectedIndex == -1 ? "" : comboBox_scale_port.SelectedItem.ToString()));
@@ -403,12 +390,12 @@ namespace Cash8
                     "nick_shop ='" + nick_shop.Text + "'," +
                     //"use_debug =" + get_use_debug() + "," +
                     "path_for_web_service ='" + path_for_web_service.Text + "'," +
-                    "currency ='" + currency.Text + "'," +
+                    //"currency ='" + currency.Text + "'," +
                     "unloading_period =" + unloading_period.Text + "," +
                     //"print_m ='" + print_m + "'," +
                     "last_date_download_bonus_clients ='" + txtB_last_date_download_bonus_clients.Text + "'," +
                     "system_taxation = '" + comboBox_system_taxation.SelectedIndex.ToString() + "'," +
-                    "work_schema = '" + txtB_work_schema.Text + "'," +
+                    //"work_schema = '" + txtB_work_schema.Text + "'," +
                     "version_fn = " + txtB_version_fn.Text + "," +
                     //"enable_stock_processing_in_memory=" + enable_stock_processing_in_memory + "," +
                     "id_acquirer_terminal='" + txtB_id_acquiring_terminal.Text.ToString() + "'," +
@@ -425,7 +412,7 @@ namespace Cash8
                     "variant_connect_fn = " + variant_connect_fn+","+
                     "fn_ipaddr='"+ fn_ipaddr+"'"+","+
                     "acquiring_bank= "+comboBox_acquiring_bank.SelectedIndex.ToString()+","+
-                    "do_not_prompt_marking_code="+ do_not_prompt_marking_code+","+
+                    //"do_not_prompt_marking_code="+ do_not_prompt_marking_code+","+
                     "constant_conversion_to_kilograms="+ txtB_constant_conversion_to_kilograms.Text.Trim();
 
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
@@ -436,13 +423,13 @@ namespace Cash8
                         "nick_shop," +
                         //"use_debug," +
                         "path_for_web_service," +
-                        "currency," +
+                        //"currency," +
                         "unloading_period," +
                         "last_date_download_bonus_clients," +
                         //"envd,"+
                         //"print_m," +
                         "system_taxation," +
-                        "work_schema," +
+                        //"work_schema," +
                         "version_fn," +
                         //"enable_stock_processing_in_memory,"+
                         "id_acquirer_terminal," +
@@ -459,18 +446,18 @@ namespace Cash8
                         "variant_connect_fn,"+
                         "fn_ipaddr,"+
                         "acquiring_bank,"+
-                        "do_not_prompt_marking_code,"+
+                       // "do_not_prompt_marking_code,"+
                         "constant_conversion_to_kilograms) VALUES(" +
                         cash_desk_number.Text + ",'" +
                         nick_shop.Text + "'," +
                         //get_use_debug() + ",'" +
                         path_for_web_service.Text + "','" +
-                        currency.Text + "','" +
+                       // currency.Text + "','" +
                         unloading_period.Text + "','" +
                         txtB_last_date_download_bonus_clients.Text + "','" +
                         //print_m + "','" +
                         comboBox_system_taxation.SelectedIndex.ToString() + "','" +
-                        txtB_work_schema.Text + "','" +
+                        //txtB_work_schema.Text + "','" +
                         txtB_version_fn.Text + "','" +
                         //enable_stock_processing_in_memory+"','"+
                         txtB_id_acquiring_terminal.Text.ToString() + "','" +
@@ -487,7 +474,7 @@ namespace Cash8
                         variant_connect_fn+",'"+
                         fn_ipaddr+"',"+
                         comboBox_acquiring_bank.SelectedIndex.ToString()+","+
-                        do_not_prompt_marking_code +","+
+                        //do_not_prompt_marking_code +","+
                         txtB_constant_conversion_to_kilograms.Text.Trim()+")";
 
                     command = new NpgsqlCommand(query, conn);

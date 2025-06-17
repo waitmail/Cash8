@@ -36,16 +36,12 @@
             this.nick_shop = new System.Windows.Forms.TextBox();
             this.path_for_web_service = new System.Windows.Forms.TextBox();
             this.label15 = new System.Windows.Forms.Label();
-            this.currency = new System.Windows.Forms.TextBox();
-            this.label8 = new System.Windows.Forms.Label();
             this.unloading_period = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
             this.txtB_last_date_download_bonus_clients = new System.Windows.Forms.TextBox();
             this.label14 = new System.Windows.Forms.Label();
             this.comboBox_system_taxation = new System.Windows.Forms.ComboBox();
             this.lbl_system_taxation = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.txtB_work_schema = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.txtB_version_fn = new System.Windows.Forms.TextBox();
             this.checkBox_enable_cdn_markers = new System.Windows.Forms.CheckBox();
@@ -70,8 +66,6 @@
             this.txtB_fn_ipaddr = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
-            this.checkBox_do_not_prompt_marking_code = new System.Windows.Forms.CheckBox();
-            this.btn_test_pictures = new System.Windows.Forms.Button();
             this.groupBox_acquiring_terminal.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -151,25 +145,6 @@
             this.label15.Text = "Путь к вебсервису";
             this.label15.Visible = false;
             // 
-            // currency
-            // 
-            this.currency.Location = new System.Drawing.Point(704, 519);
-            this.currency.MaxLength = 4;
-            this.currency.Name = "currency";
-            this.currency.Size = new System.Drawing.Size(43, 20);
-            this.currency.TabIndex = 43;
-            this.currency.Visible = false;
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(657, 526);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(29, 13);
-            this.label8.TabIndex = 44;
-            this.label8.Text = "Вал.";
-            this.label8.Visible = false;
-            // 
             // unloading_period
             // 
             this.unloading_period.Location = new System.Drawing.Point(652, 103);
@@ -227,25 +202,6 @@
             this.lbl_system_taxation.Size = new System.Drawing.Size(100, 31);
             this.lbl_system_taxation.TabIndex = 64;
             this.lbl_system_taxation.Text = "Система налогообложения";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(247, 47);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(39, 13);
-            this.label3.TabIndex = 65;
-            this.label3.Text = "Схема";
-            // 
-            // txtB_work_schema
-            // 
-            this.txtB_work_schema.Enabled = false;
-            this.txtB_work_schema.Location = new System.Drawing.Point(326, 40);
-            this.txtB_work_schema.MaxLength = 1;
-            this.txtB_work_schema.Name = "txtB_work_schema";
-            this.txtB_work_schema.Size = new System.Drawing.Size(34, 20);
-            this.txtB_work_schema.TabIndex = 66;
-            this.txtB_work_schema.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // label4
             // 
@@ -491,25 +447,11 @@
             this.label7.Text = "USB ==> COM";
             this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // checkBox_do_not_prompt_marking_code
-            // 
-            this.checkBox_do_not_prompt_marking_code.AutoSize = true;
-            this.checkBox_do_not_prompt_marking_code.Location = new System.Drawing.Point(188, 126);
-            this.checkBox_do_not_prompt_marking_code.Name = "checkBox_do_not_prompt_marking_code";
-            this.checkBox_do_not_prompt_marking_code.Size = new System.Drawing.Size(309, 17);
-            this.checkBox_do_not_prompt_marking_code.TabIndex = 90;
-            this.checkBox_do_not_prompt_marking_code.Text = "Не запрашивать код  маркир (ТОЛЬКО ЕСЛИ НЕТ ФН)";
-            this.checkBox_do_not_prompt_marking_code.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkBox_do_not_prompt_marking_code.UseVisualStyleBackColor = true;
-            this.checkBox_do_not_prompt_marking_code.Visible = false;            
-            // 
             // Constants
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 562);
-            this.Controls.Add(this.btn_test_pictures);
-            this.Controls.Add(this.checkBox_do_not_prompt_marking_code);
             this.Controls.Add(this.checkBox_webservice_authorize);
             this.Controls.Add(this.txtB_ip_address_acquiring_terminal);
             this.Controls.Add(this.label6);
@@ -517,16 +459,12 @@
             this.Controls.Add(this.checkBox_enable_cdn_markers);
             this.Controls.Add(this.txtB_version_fn);
             this.Controls.Add(this.label4);
-            this.Controls.Add(this.txtB_work_schema);
-            this.Controls.Add(this.label3);
             this.Controls.Add(this.lbl_system_taxation);
             this.Controls.Add(this.comboBox_system_taxation);
             this.Controls.Add(this.label14);
             this.Controls.Add(this.txtB_last_date_download_bonus_clients);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.unloading_period);
-            this.Controls.Add(this.label8);
-            this.Controls.Add(this.currency);
             this.Controls.Add(this.path_for_web_service);
             this.Controls.Add(this.label15);
             this.Controls.Add(this.nick_shop);
@@ -563,16 +501,12 @@
         private System.Windows.Forms.TextBox nick_shop;
         private System.Windows.Forms.TextBox path_for_web_service;
         private System.Windows.Forms.Label label15;
-        private System.Windows.Forms.TextBox currency;
-        private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox unloading_period;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.TextBox txtB_last_date_download_bonus_clients;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.ComboBox comboBox_system_taxation;
         private System.Windows.Forms.Label lbl_system_taxation;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox txtB_work_schema;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox txtB_version_fn;
         private System.Windows.Forms.CheckBox checkBox_enable_cdn_markers;
@@ -595,9 +529,7 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox txtB_fn_ipaddr;
         private System.Windows.Forms.ComboBox comboBox_acquiring_bank;
-        private System.Windows.Forms.CheckBox checkBox_do_not_prompt_marking_code;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.TextBox txtB_constant_conversion_to_kilograms;
-        private System.Windows.Forms.Button btn_test_pictures;
     }
 }

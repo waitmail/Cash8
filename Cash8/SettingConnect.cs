@@ -1017,7 +1017,7 @@ namespace Cash8
             queries.Add("ALTER TABLE public.constants ADD COLUMN webservice_authorize boolean  DEFAULT false;");
             queries.Add("ALTER TABLE public.action_header ADD COLUMN sum1 numeric(12,2); COMMENT ON COLUMN public.action_header.sum1 IS 'Для 12 типа акций сумма по 2 списку';");
             queries.Add("ALTER TABLE public.checks_header ADD COLUMN guid1 character varying(36) COLLATE pg_catalog.default;COMMENT ON COLUMN public.checks_header.guid1 IS 'Для печати чека по патенту';");
-            queries.Add("ALTER TABLE public.constants ADD COLUMN static_guid_in_print boolean NOT NULL DEFAULT false;");
+            //queries.Add("ALTER TABLE public.constants ADD COLUMN static_guid_in_print boolean NOT NULL DEFAULT false;");
             queries.Add("ALTER TABLE public.constants ADD COLUMN printing_using_libraries boolean DEFAULT false;COMMENT ON COLUMN public.constants.printing_using_libraries IS 'Печать с использованием библиотек';");
             queries.Add("ALTER TABLE public.constants ADD COLUMN fn_sreial_port character varying(20) COLLATE pg_catalog.default;");
             queries.Add("ALTER TABLE public.deleted_items ADD COLUMN guid character varying(36) COLLATE pg_catalog.default;");
@@ -1048,7 +1048,7 @@ namespace Cash8
             queries.Add("ALTER TABLE public.constants ADD COLUMN fn_ipaddr character varying(20) COLLATE pg_catalog.default;");
             queries.Add("ALTER TABLE checks_header ALTER COLUMN id_sale TYPE character varying(36) USING id_sale::character varying(36)");
             queries.Add("ALTER TABLE public.constants ADD COLUMN acquiring_bank smallint DEFAULT 0;");
-            queries.Add("ALTER TABLE public.constants ADD COLUMN do_not_prompt_marking_code boolean NOT NULL DEFAULT false; COMMENT ON COLUMN public.constants.do_not_prompt_marking_code IS 'Не запрашивать код марикровки';");
+            //queries.Add("ALTER TABLE public.constants ADD COLUMN do_not_prompt_marking_code boolean NOT NULL DEFAULT false; COMMENT ON COLUMN public.constants.do_not_prompt_marking_code IS 'Не запрашивать код марикровки';");
             queries.Add("CREATE TABLE IF NOT EXISTS public.cdn_log (num_cash smallint NOT NULL,date timestamp without time zone NOT NULL,cdn_answer character varying COLLATE pg_catalog.default NOT NULL,numdoc character varying COLLATE pg_catalog.default,is_sent smallint DEFAULT 0)WITH(    OIDS = FALSE)TABLESPACE pg_default;        ALTER TABLE public.cdn_log            OWNER to postgres; COMMENT ON COLUMN public.cdn_log.is_sent    IS '0 - не отправлен 1 - отправлен'; ");
             queries.Add("ALTER TABLE public.cdn_log ADD COLUMN mark character varying(300) COLLATE pg_catalog.default;");
             queries.Add("ALTER TABLE public.cdn_log ADD COLUMN status smallint NOT NULL DEFAULT 0;COMMENT ON COLUMN public.cdn_log.status IS '1 - Ответ от cdn 2 - Отладочная информация 3 - Ошибка при работе с CDN';");
@@ -1059,6 +1059,7 @@ namespace Cash8
             queries.Add("CREATE INDEX idx_action_table_doc_tovar_list ON public.action_table USING btree(num_doc ASC NULLS LAST, code_tovar ASC NULLS LAST, num_list ASC NULLS LAST) TABLESPACE pg_default; ALTER TABLE public.action_table CLUSTER ON idx_action_table_doc_tovar_list;");
             queries.Add("ALTER TABLE public.barcode ALTER COLUMN barcode TYPE character(14);");
             queries.Add("ALTER TABLE public.action_header ADD COLUMN picture text COLLATE pg_catalog.default");
+            queries.Add("ALTER TABLE public.checks_header ALTER COLUMN action_num_doc TYPE integer[] USING ARRAY[action_num_doc]::integer[]");
 
             //queries.Add("ALTER TABLE public.errors_log ALTER COLUMN error_message TYPE text COLLATE pg_catalog.default");
 
@@ -1073,7 +1074,7 @@ namespace Cash8
             //{
             //check_system_taxation();
             //}
-
+           
             MessageBox.Show(" Дополнительные колонки добавлены ");
         }
 
@@ -1170,6 +1171,11 @@ namespace Cash8
                     }
                 }
             }
+        }
+
+        private void btn_delete_old_columns_Click(object sender, EventArgs e)
+        {
+            CreateDB.delete_inactive_old_column();
         }
     }
 }

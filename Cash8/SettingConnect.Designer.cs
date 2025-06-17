@@ -55,6 +55,7 @@
             this.userPostrgres = new System.Windows.Forms.Label();
             this.button4 = new System.Windows.Forms.Button();
             this.add_field = new System.Windows.Forms.Button();
+            this.btn_delete_old_columns = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -329,11 +330,22 @@
             this.add_field.UseVisualStyleBackColor = true;
             this.add_field.Click += new System.EventHandler(this.add_field_Click);
             // 
+            // btn_delete_old_columns
+            // 
+            this.btn_delete_old_columns.Location = new System.Drawing.Point(281, 363);
+            this.btn_delete_old_columns.Name = "btn_delete_old_columns";
+            this.btn_delete_old_columns.Size = new System.Drawing.Size(176, 23);
+            this.btn_delete_old_columns.TabIndex = 18;
+            this.btn_delete_old_columns.Text = "Удалить старые колонки";
+            this.btn_delete_old_columns.UseVisualStyleBackColor = true;
+            this.btn_delete_old_columns.Click += new System.EventHandler(this.btn_delete_old_columns_Click);
+            // 
             // SettingConnect
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(473, 453);
+            this.ClientSize = new System.Drawing.Size(473, 457);
+            this.Controls.Add(this.btn_delete_old_columns);
             this.Controls.Add(this.add_field);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.repeatPassword);
@@ -394,5 +406,6 @@
         private System.Windows.Forms.CheckBox checkBox2;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button add_field;
+        private System.Windows.Forms.Button btn_delete_old_columns;
     }
 }

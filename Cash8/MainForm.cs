@@ -1084,12 +1084,12 @@ namespace Cash8
                 Cash8.MainStaticClass.loadConfig(Application.StartupPath + "/Setting.gaa");
             }
 
-            if (DateTime.Now > new DateTime(2024, 12, 16, 0, 0, 0))
-            {
-                guid_to_lover();
-            }
+            //if (DateTime.Now > new DateTime(2024, 12, 16, 0, 0, 0))
+            //{
+            //    guid_to_lover();
+            //}
 
-            MainStaticClass.write_event_in_log("Перед проверкой обновления в интернет", " Старт программы ", "0");
+            //MainStaticClass.write_event_in_log("Перед проверкой обновления в интернет", " Старт программы ", "0");
             LoadProgramFromInternet lpfi = new LoadProgramFromInternet();
             lpfi.show_phone = true;
             lpfi.check_new_version_programm();
@@ -1099,7 +1099,7 @@ namespace Cash8
                 обновлениеПрограммыToolStripMenuItem_Click(null, null);
             }
             lpfi.Dispose();
-            MainStaticClass.write_event_in_log("Проверка обновления в интернет завершена", " Старт программы ", "0");
+            //MainStaticClass.write_event_in_log("Проверка обновления в интернет завершена", " Старт программы ", "0");
 
             if (MainStaticClass.exist_table_name("constants"))
             {
@@ -1107,7 +1107,7 @@ namespace Cash8
                 Task.Run(() => get_pdb());
                 check_add_field();
                 InventoryManager.FillDictionaryProductDataAsync();
-                Task.Run(() => InventoryManager.DictionaryPriceGiftAction); ;
+                Task.Run(() => InventoryManager.DictionaryPriceGiftAction);
                 //MessageBox.Show("2");
 
                 MainStaticClass.write_event_in_log(" Старт программы ", "проверка таблицы констант", "0");
@@ -1205,32 +1205,7 @@ namespace Cash8
             check_files_and_folders();
             //MessageBox.Show("10");
         }
-
-       
-
-
-
-        //private void load_cdn_with_start()
-        //{
-        //    CancellationTokenSource cts = new CancellationTokenSource();
-        //    CancellationToken token = cts.Token;
-
-        //    // Запуск функции с параметром в новом потоке            
-        //    Task task = Task.Factory.StartNew(() => get_cdn_with_start());
-        //    try
-        //    {
-        //        // Ожидание результата функции в течение 5 секунд
-        //        bool isCompletedSuccessfully = task.Wait(TimeSpan.FromSeconds(60));
-
-        //        if (!isCompletedSuccessfully)
-        //        {
-        //            cts.Cancel();
-        //        }
-        //    }
-        //    catch
-        //    {
-        //    }
-        //}
+                
 
         private void get_cdn_with_start()
         {
@@ -1327,172 +1302,7 @@ namespace Cash8
             public string Description { get; set; }
             public DateTime DateTimeRecord { get; set; }
         }
-
-        //private void UploadErrorsLog()
-        //{
-        //    RecordsErrorLog recordsErrorLog = new RecordsErrorLog();
-        //    using (var connection = MainStaticClass.NpgsqlConn())
-        //    {
-        //        connection.Open();
-
-        //        // SQL-запрос для выборки данных из таблицы log_errors
-        //        string query = "SELECT error_message, date_time_record, num_doc, cash_desk_number, method_name, description FROM public.log_errors";
-
-        //        using (var command = new NpgsqlCommand(query, connection))
-        //        using (var reader = command.ExecuteReader())
-        //        {
-        //            while (reader.Read())
-        //            {
-        //                var logError = new RecordErrorLog
-        //                {
-        //                    ErrorMessage = reader["error_message"].ToString().Trim(),
-        //                    DateTimeRecord = reader.GetDateTime(reader.GetOrdinal("date_time_record")),
-        //                    NumDoc = reader.GetInt64(reader.GetOrdinal("num_doc")),
-        //                    CashDeskNumber = reader.GetInt16(reader.GetOrdinal("cash_desk_number")),
-        //                    MethodName = reader["method_name"].ToString().Trim(),
-        //                    Description = reader["description"].ToString().Trim()
-        //                };
-
-        //                recordsErrorLog.ErrorLogs.Add(logError);
-        //            }
-        //        }
-        //    }
-
-        //    if (recordsErrorLog.ErrorLogs.Count > 0)
-        //    {                
-        //        Cash8.DS.DS ds = MainStaticClass.get_ds();
-        //        ds.Timeout = 180000;
-
-        //        //Получить параметра для запроса на сервер 
-        //        string nick_shop = MainStaticClass.Nick_Shop.Trim();
-        //        if (nick_shop.Trim().Length == 0)
-        //        {
-        //            return;
-        //        }
-        //        string code_shop = MainStaticClass.Code_Shop.Trim();
-        //        if (code_shop.Trim().Length == 0)
-        //        {
-        //            return;
-        //        }
-        //        string count_day = CryptorEngine.get_count_day();
-
-        //        string key = nick_shop.Trim() + count_day.Trim() + code_shop.Trim();
-        //        bool result_web_quey = false;
-        //        string data = JsonConvert.SerializeObject(recordsErrorLog, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-        //        string data_crypt = CryptorEngine.Encrypt(data, true, key);
-        //        try
-        //        {
-        //            result_web_quey = ds.UploadErrorLogPortionJason(nick_shop, data_crypt, MainStaticClass.GetWorkSchema.ToString());
-        //            if (result_web_quey)
-        //            {
-        //                using (var connection = MainStaticClass.NpgsqlConn())
-        //                {
-        //                    connection.Open();
-        //                    foreach (RecordErrorLog recordErrorLog in recordsErrorLog.ErrorLogs)
-        //                    {
-        //                        string query = "DELETE FROM public.log_errors WHERE date_time_record='" + recordErrorLog.DateTimeRecord.ToString() + "'";
-        //                        NpgsqlCommand command  = new NpgsqlCommand(query, connection);
-        //                        command.ExecuteNonQuery();
-        //                    }
-        //                }
-        //            }
-        //        }
-        //        catch (Exception)
-        //        {
-        //            //write_error(ex.Message);
-        //        }
-        //    }
-        //}
-
-        //private async Task UploadErrorsLogAsync()
-        //{
-        //    var recordsErrorLog = await ReadErrorLogsFromDatabaseAsync();
-        //    if (recordsErrorLog.ErrorLogs.Count > 0)
-        //    {
-        //        bool uploadResult = await UploadErrorLogsToServerAsync(recordsErrorLog);
-        //        if (uploadResult)
-        //        {
-        //            await DeleteErrorLogsFromDatabaseAsync(recordsErrorLog);
-        //        }
-        //    }
-        //}
-
-        //private async Task<RecordsErrorLog> ReadErrorLogsFromDatabaseAsync()
-        //{
-        //    RecordsErrorLog recordsErrorLog = new RecordsErrorLog();
-        //    recordsErrorLog.Shop = MainStaticClass.Nick_Shop;
-        //    recordsErrorLog.CashDeskNumber = Convert.ToInt16(MainStaticClass.CashDeskNumber);
-
-        //    using (var connection = MainStaticClass.NpgsqlConn())
-        //    {
-        //        await connection.OpenAsync();
-        //        string query = "SELECT error_message, date_time_record, num_doc, method_name, description FROM public.log_errors";
-        //        using (var command = new NpgsqlCommand(query, connection))
-        //        using (var reader = await command.ExecuteReaderAsync())
-        //        {
-        //            while (await reader.ReadAsync())
-        //            {
-        //                var logError = new RecordErrorLog
-        //                {
-        //                    ErrorMessage = reader["error_message"].ToString().Trim(),
-        //                    DateTimeRecord = reader.GetDateTime(reader.GetOrdinal("date_time_record")),
-        //                    NumDoc = reader.GetInt64(reader.GetOrdinal("num_doc")),                            
-        //                    MethodName = reader["method_name"].ToString().Trim(),
-        //                    Description = reader["description"].ToString().Trim()
-        //                };                        
-        //                recordsErrorLog.ErrorLogs.Add(logError);
-        //            }
-        //        }
-        //    }
-        //    return recordsErrorLog;
-        //}
-
-        //private async Task<bool> UploadErrorLogsToServerAsync(RecordsErrorLog recordsErrorLog)
-        //{
-        //    string nick_shop = MainStaticClass.Nick_Shop.Trim();
-        //    string code_shop = MainStaticClass.Code_Shop.Trim();
-        //    if (string.IsNullOrEmpty(nick_shop) || string.IsNullOrEmpty(code_shop))
-        //    {
-        //        return false;
-        //    }
-
-        //    string count_day = CryptorEngine.get_count_day();
-        //    string key = nick_shop + count_day + code_shop;
-        //    string data = JsonConvert.SerializeObject(recordsErrorLog, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-        //    string data_crypt = CryptorEngine.Encrypt(data, true, key);
-
-        //    Cash8.DS.DS ds = MainStaticClass.get_ds();
-        //    ds.Timeout = 18000;
-        //    try
-        //    {
-        //        return await Task.Run(() =>
-        //            ds.UploadErrorLogPortionJson(nick_shop, data_crypt, MainStaticClass.GetWorkSchema.ToString())
-        //        );
-        //    }
-        //    catch (Exception)
-        //    {                
-        //        return false;
-        //    }
-        //}
-
-        //private async Task DeleteErrorLogsFromDatabaseAsync(RecordsErrorLog recordsErrorLog)
-        //{
-        //    using (var connection = MainStaticClass.NpgsqlConn())
-        //    {
-        //        await connection.OpenAsync();
-        //        foreach (var recordErrorLog in recordsErrorLog.ErrorLogs)
-        //        {
-        //            string query = "DELETE FROM public.log_errors WHERE date_time_record = @DateTimeRecord";
-        //            using (var command = new NpgsqlCommand(query, connection))
-        //            {
-        //                command.Parameters.AddWithValue("@DateTimeRecord", recordErrorLog.DateTimeRecord);
-        //                await command.ExecuteNonQueryAsync();
-        //            }
-        //        }
-        //    }
-        //}
-
-
+        
         private void get_pdb()
         {
             string nick_shop = MainStaticClass.Nick_Shop.Trim();
@@ -1716,13 +1526,13 @@ namespace Cash8
             {
                 conn.Open();
                 tran = conn.BeginTransaction();
-                string query = "SELECT data_type,character_maximum_length FROM information_schema.columns where table_name = 'barcode' AND column_name = 'barcode'";
+                string query = "SELECT data_type,character_maximum_length FROM information_schema.columns where table_name = 'checks_header' AND column_name = 'action_num_doc'";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();
                 bool update = false;
                 while (reader.Read())
                 {
-                    if (Convert.ToInt16(reader["character_maximum_length"]) == 13)
+                    if (reader["data_type"].ToString() != "ARRAY")
                     {
                         update = true;
                     }

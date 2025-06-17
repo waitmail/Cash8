@@ -125,6 +125,7 @@
     <Compile Include="CorrectionChecks.Designer.cs">
       <DependentUpon>CorrectionChecks.cs</DependentUpon>
     </Compile>
+    <Compile Include="CreateDB.cs" />
     <Compile Include="CryptorEngine.cs" />
     <Compile Include="Discount_types.cs">
       <SubType>Form</SubType>

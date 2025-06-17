@@ -61,7 +61,8 @@ namespace Cash8
         private DateTime start_action = DateTime.Now;
         //private Int32 total_seconnds = 0;
         private DataTable table = new DataTable();
-        private int action_num_doc = 0;
+        // public int  action_num_doc = 0;
+        public List<int> action_num_doc = new List<int>();//список для хранения номеров акционных документов 10 типа 
         public string cashier = "";
         public int added_bonus_when_replacing_card = 0;
         public decimal bonuses_it_is_written_off = 0;
@@ -925,7 +926,7 @@ namespace Cash8
                                " checks_header.sertificate_money,checks_header.non_cash_money,checks_header.cash_money,checks_header.bonuses_it_is_counted, " +
                                " checks_header.bonuses_it_is_written_off, " +
                                " checks_table.bonus_standard,checks_table.bonus_promotion,checks_table.promotion_b_mover,checks_table.item_marker,checks_header.requisite," +
-                               "checks_header.its_deleted,checks_header.system_taxation,checks_header.guid AS checks_header_guid,checks_header.guid1 AS checks_header_guid,payment_by_sbp " +
+                               "checks_header.its_deleted,checks_header.system_taxation,checks_header.guid AS checks_header_guid,checks_header.guid1 AS checks_header_guid,payment_by_sbp,checks_header.action_num_doc " +
                                " FROM checks_header left join checks_table ON checks_header.document_number=checks_table.document_number " +
                                " left join clients ON checks_header.client  = clients.code " +
                                " left join tovar ON checks_table.tovar_code = tovar.code " +
@@ -995,6 +996,9 @@ namespace Cash8
                         this.bonuses_it_is_written_off = Convert.ToDecimal(reader["bonuses_it_is_written_off"]);
                         this.txtB_bonus_money.Text = this.bonuses_it_is_written_off.ToString();
                         this.payment_by_sbp_sales = Convert.ToBoolean(reader["payment_by_sbp"]);
+                       
+                        int[] dbArray = (int[])reader["action_num_doc"];
+                        action_num_doc.AddRange(dbArray);
                         //if (reader["requisite"].ToString() == "1")
                         //{
                         //    this.checkBox_club.Checked = true;
@@ -4599,7 +4603,8 @@ namespace Cash8
                 {
                     command.Parameters.AddWithValue("its_deleted", its_deleted);
                 }
-                command.Parameters.AddWithValue("action_num_doc", action_num_doc.ToString());
+                //command.Parameters.AddWithValue("action_num_doc", action_num_doc.ToString());
+                command.Parameters.AddWithValue("action_num_doc", action_num_doc.ToArray());
                 command.Parameters.AddWithValue("check_type", check_type.SelectedIndex.ToString());
                 command.Parameters.AddWithValue("have_action", have_action.ToString());
                 command.Parameters.AddWithValue("bonuses_it_is_written_off", (check_type.SelectedIndex == 1 ? return_bonus.ToString() : pay_bonus_many.ToString().Replace(",", ".")));
@@ -10623,7 +10628,11 @@ namespace Cash8
             {
                 return dataTable;
             }
-            ProcessingOfActions processingOfActions = new ProcessingOfActions();            
+            ProcessingOfActions processingOfActions = new ProcessingOfActions();
+            processingOfActions.cc = this;
+            action_num_doc = new List<int>();//При какждом пересчете список предвариетльно обнуляется
+
+
             processingOfActions.dt = processingOfActions.create_dt(listView1);
             processingOfActions.show_messages = show_messages;
             MainStaticClass.write_event_in_log(" Попытка обработать акции по штрихкодам ", "Документ чек", numdoc.ToString());

@@ -97,7 +97,7 @@ namespace Cash8
                     " remainder, "+
                     " bonuses_it_is_counted ,"+
                     " id_sale, "+
-                    " viza_d, "+
+                    //" viza_d, "+
                     " system_taxation," +
                     " cash_money1, " +
                     " non_cash_money1, " +
@@ -149,11 +149,11 @@ namespace Cash8
                     salesPortionsHeader.SumCashRemainder = reader["remainder"].ToString().Replace(",",".");
                     salesPortionsHeader.NumOrder4 = reader["id_sale"].ToString();
                     salesPortionsHeader.NumOrder = get_numDocOnGuid(reader["id_sale"].ToString());
-                    salesPortionsHeader.VizaD = reader["viza_d"].ToString();
-                    if (salesPortionsHeader.VizaD == "")
-                    {
-                        salesPortionsHeader.VizaD = "0";
-                    }
+                    //salesPortionsHeader.VizaD = reader["viza_d"].ToString();
+                    //if (salesPortionsHeader.VizaD == "")
+                    //{
+                    //    salesPortionsHeader.VizaD = "0";
+                    //}
                     salesPortionsHeader.SystemTaxation = reader["system_taxation"].ToString();
                     salesPortionsHeader.Sum_cash1 = reader["cash_money1"].ToString().Replace(",", ".");
                     salesPortionsHeader.Sum_terminal1 = reader["non_cash_money1"].ToString().Replace(",", ".");
@@ -680,7 +680,7 @@ namespace Cash8
             public string SumCashRemainder { get; set; }
             public string NumOrder { get; set; }
             public string NumOrder4 { get; set; }
-            public string VizaD { get; set; }
+            //public string VizaD { get; set; }
             public string SystemTaxation { get; set; }
             public string Guid { get; set; }
             public string SBP { get; set; }
