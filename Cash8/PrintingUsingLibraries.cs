@@ -1750,9 +1750,8 @@ namespace Cash8
             }
 
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
-            fptr.setParam(AtolConstants.LIBFPTR_PARAM_SCALE_PERCENT, 150);
+            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_SCALE_PERCENT, 150);            
 
-            
             // Преобразование шестнадцатеричной строки в массив байтов
             //byte[] byteArray = HexStringToByteArray(hex_string);
             byte[] byteArray = Convert.FromBase64String(hex_string);
@@ -1764,6 +1763,10 @@ namespace Cash8
             //fptr.setParam(AtolConstants.LIBFPTR_PARAM_FILENAME, "C:\\2025-05-13_10-30.png");
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_FILENAME, outputFilePath);
             fptr.printPicture();
+            if (fptr.errorCode() != 0)
+            {
+                MessageBox.Show("При выводе картинки на печать произошла ошибка  " + fptr.errorDescription());
+            }
 
         }
 
