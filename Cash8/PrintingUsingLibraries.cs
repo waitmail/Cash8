@@ -1651,6 +1651,7 @@ namespace Cash8
                     get_actions_num_doc(check);//Печать акционных картинок
                     check.print_promo_picture = true;
                 }
+                
                 fptr.closeReceipt();
             }
             
@@ -1740,7 +1741,7 @@ namespace Cash8
             return byteArray;
         }
         
-        private void print_picture(string hex_string)
+        private void print_picture(string hex_string, string action_num_doc)
         {
 
             IFptr fptr = MainStaticClass.FPTR;
@@ -1756,18 +1757,37 @@ namespace Cash8
             //byte[] byteArray = HexStringToByteArray(hex_string);
             byte[] byteArray = Convert.FromBase64String(hex_string);
 
-            // Запись массива байтов в новый файл
-            string outputFilePath = Application.StartupPath+"temp_picture.png";
-            System.IO.File.WriteAllBytes(outputFilePath, byteArray);
+            // Запись массива байтов в новый файл            
+            string outputFilePath = Application.StartupPath+ "\\Pictures2\\"+ action_num_doc+"_picture.png";
+            //System.IO.File.WriteAllBytes(outputFilePath, byteArray);
             
+
+            if (!System.IO.File.Exists(outputFilePath))
+            {
+                System.IO.File.WriteAllBytes(outputFilePath, byteArray);
+                //MessageBox.Show("Файл картинки не создан по пути "+ outputFilePath);
+            }
+
             //fptr.setParam(AtolConstants.LIBFPTR_PARAM_FILENAME, "C:\\2025-05-13_10-30.png");
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_FILENAME, outputFilePath);
+            fptr.resetError();
             fptr.printPicture();
             if (fptr.errorCode() != 0)
             {
-                MessageBox.Show("При выводе картинки на печать произошла ошибка  " + fptr.errorDescription());
+                //MessageBox.Show("При выводе картинки на печать произошла ошибка  " + fptr.errorDescription());
+                MainStaticClass.WriteRecordErrorLog(fptr.errorDescription(), "print_picture", 0, MainStaticClass.CashDeskNumber, "Ошибка при печати акционной картинки ");
             }
-
+            //try
+            //{
+            //    if (System.IO.File.Exists(outputFilePath))
+            //    {
+            //        System.IO.File.Delete(outputFilePath);
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show("Ошибки при удалении фала картинки " +ex.Message);
+            //}
         }
 
         private void get_actions_num_doc(Cash_check check)
@@ -1792,7 +1812,12 @@ namespace Cash8
 
             if (numDocsAction.Count > 0)
             {
+                //MessageBox.Show("Акция с картинкой есть");
                 print_pictures(numDocsAction);
+            }
+            else
+            {
+                //MessageBox.Show("Нет акций с картинками");
             }
         }
 
@@ -1811,7 +1836,7 @@ namespace Cash8
                         NpgsqlCommand command = new NpgsqlCommand(query, conn);
                         string hex_string = command.ExecuteScalar().ToString();
                         //hex_string = hex_string.Substring(2, hex_string.Length - 2);
-                        print_picture(hex_string);
+                        print_picture(hex_string,item);
                     }
                 }
                 catch (NpgsqlException ex)

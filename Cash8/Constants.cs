@@ -572,7 +572,63 @@ namespace Cash8
                 txtB_fn_ipaddr.Enabled =true;
                 comboBox_fn_port.Enabled = false;
             }
-        }      
-        
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            string hex_string = "";
+
+            using (NpgsqlConnection conn = MainStaticClass.NpgsqlConn())
+            {
+                try
+                {
+                    conn.Open();
+                    //foreach (var item in numDocsAction)
+                    //{
+                    string query = "SELECT picture	FROM public.action_header WHERE num_doc=65434";
+                    NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                    hex_string = command.ExecuteScalar().ToString();
+                    //hex_string = hex_string.Substring(2, hex_string.Length - 2);
+                    //print_picture(hex_string);
+                    //}
+                }
+                catch (NpgsqlException ex)
+                {
+                    MessageBox.Show($"Ошибка базы данных: {ex.Message}");
+                }
+                catch (Exception ex)
+                {
+                    // Общие ошибки
+                    MessageBox.Show($"Произошла ошибка: {ex.Message}");
+                }
+            }
+
+            IFptr fptr = MainStaticClass.FPTR;
+            if (!fptr.isOpened())
+            {
+                fptr.open();
+            }
+
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
+            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_SCALE_PERCENT, 150);
+
+            // Преобразование шестнадцатеричной строки в массив байтов
+            //byte[] byteArray = HexStringToByteArray(hex_string);
+            byte[] byteArray = Convert.FromBase64String(hex_string);
+            MessageBox.Show(byteArray.Length.ToString());
+
+            // Запись массива байтов в новый файл
+            //string outputFilePath = Application.StartupPath + "temp_picture.png";
+            string outputFilePath = Application.StartupPath + "\\Pictures2\\temp_picture.png";
+            System.IO.File.WriteAllBytes(outputFilePath, byteArray);
+
+            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_FILENAME, "C:\\2025-05-13_10-30.png");
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_FILENAME, outputFilePath);
+            fptr.printPicture();
+            if (fptr.errorCode() != 0)
+            {
+                MessageBox.Show("При выводе картинки на печать произошла ошибка  " + fptr.errorDescription());
+            }
+        }
     }
 }

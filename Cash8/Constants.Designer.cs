@@ -66,6 +66,7 @@
             this.txtB_fn_ipaddr = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
             this.groupBox_acquiring_terminal.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -447,11 +448,22 @@
             this.label7.Text = "USB ==> COM";
             this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(571, 393);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(121, 77);
+            this.button1.TabIndex = 90;
+            this.button1.Text = "Печать картинки";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // Constants
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 562);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.checkBox_webservice_authorize);
             this.Controls.Add(this.txtB_ip_address_acquiring_terminal);
             this.Controls.Add(this.label6);
@@ -531,5 +543,6 @@
         private System.Windows.Forms.ComboBox comboBox_acquiring_bank;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.TextBox txtB_constant_conversion_to_kilograms;
+        private System.Windows.Forms.Button button1;
     }
 }
