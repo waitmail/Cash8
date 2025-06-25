@@ -1740,7 +1740,112 @@ namespace Cash8
 
             return byteArray;
         }
-        
+
+
+        /// <summary>
+        /// Добавляет новую запись в таблицу picture_number_in_f_r.
+        /// </summary>
+        /// <param name="idFR">Значение id_f_r</param>
+        /// <param name="objectType">Значение object_type</param>
+        /// <param name="idObject">Значение id_object</param>
+        /// <returns>
+        /// 1, если запись успешно добавлена,
+        /// -1 в случае ошибки.
+        /// </returns>
+        public int InsertRecordPictureNumbe(int idFR, short objectType, int idObject)
+        {
+            // SQL-запрос для вставки новой записи
+            string query = @"
+        INSERT INTO picture_number_in_f_r (id_f_r, object_type, id_object)
+        VALUES (@idFR, @objectType, @idObject);";
+
+            try
+            {
+                // Открываем соединение с базой данных
+                using (var connection = MainStaticClass.NpgsqlConn())
+                {
+                    connection.Open();
+
+                    // Создаем команду с параметрами
+                    using (var command = new NpgsqlCommand(query, connection))
+                    {
+                        // Добавляем параметры
+                        command.Parameters.AddWithValue("idFR", idFR);
+                        command.Parameters.AddWithValue("objectType", objectType);
+                        command.Parameters.AddWithValue("idObject", idObject);
+
+                        // Выполняем запрос
+                        int rowsAffected = command.ExecuteNonQuery();
+
+                        // Если хотя бы одна строка была добавлена, возвращаем 1
+                        return rowsAffected > 0 ? 1 : -1;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Логируем ошибку
+                MessageBox.Show($"Ошибка при добавлении записи в таблицу: {ex.Message}");
+                return -1; // Возвращаем -1 в случае ошибки
+            }
+        }
+
+
+        //// <summary>
+        /// Проверяет, существует ли запись в таблице picture_number_in_f_r по заданным id_object и object_type.
+        /// </summary>
+        /// <param name="idObject">Значение id_object</param>
+        /// <param name="objectType">Значение object_type</param>
+        /// <returns>
+        /// id_f_r, если запись существует,
+        /// 0, если записи нет,
+        /// -1 в случае ошибки.
+        /// </returns>
+        public int CheckRecordExists(int idObject, short objectType)
+        {
+            // SQL-запрос для получения id_f_r
+            string query = @"
+        SELECT id_f_r
+        FROM picture_number_in_f_r
+        WHERE id_object = @idObject AND object_type = @objectType;";
+
+            try
+            {
+                // Открываем соединение с базой данных
+                using (var connection = MainStaticClass.NpgsqlConn())
+                {
+                    connection.Open();
+
+                    // Создаем команду с параметрами
+                    using (var command = new NpgsqlCommand(query, connection))
+                    {
+                        // Добавляем параметры
+                        command.Parameters.AddWithValue("idObject", idObject);
+                        command.Parameters.AddWithValue("objectType", objectType);
+
+                        // Выполняем запрос и получаем результат
+                        var result = command.ExecuteScalar();
+
+                        // Если результат не null, значит запись существует
+                        if (result != null && result != DBNull.Value)
+                        {
+                            // Преобразуем результат в int (id_f_r)
+                            return Convert.ToInt32(result);
+                        }
+
+                        // Если результат null, значит записи нет
+                        return 0;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Логируем ошибку
+                MessageBox.Show($"Ошибка при проверке соответствия записи в бд: {ex.Message}");
+                return -1; // Возвращаем -1 в случае ошибки
+            }
+        }
+
         private void print_picture(string hex_string, string action_num_doc)
         {
 
@@ -1748,46 +1853,57 @@ namespace Cash8
             if (!fptr.isOpened())
             {
                 fptr.open();
-            }
-
-            fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
-            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_SCALE_PERCENT, 150);            
-
-            // Преобразование шестнадцатеричной строки в массив байтов
-            //byte[] byteArray = HexStringToByteArray(hex_string);
+            }           
+            
+            // Преобразование шестнадцатеричной строки в массив байтов            
             byte[] byteArray = Convert.FromBase64String(hex_string);
 
             // Запись массива байтов в новый файл            
-            string outputFilePath = Application.StartupPath+ "\\Pictures2\\"+ action_num_doc+"_picture.png";
-            //System.IO.File.WriteAllBytes(outputFilePath, byteArray);
+            string outputFilePath = Application.StartupPath + "\\Pictures2\\" + action_num_doc + "_picture.png";
             
-
             if (!System.IO.File.Exists(outputFilePath))
             {
-                System.IO.File.WriteAllBytes(outputFilePath, byteArray);
-                //MessageBox.Show("Файл картинки не создан по пути "+ outputFilePath);
+                System.IO.File.WriteAllBytes(outputFilePath, byteArray);                
             }
 
-            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_FILENAME, "C:\\2025-05-13_10-30.png");
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_FILENAME, outputFilePath);
-            fptr.resetError();
             fptr.printPicture();
+
+            //if (!System.IO.File.Exists(outputFilePath))
+            //{
+            //    return;
+            //}
+
+            //int checkpictureNumber = CheckRecordExists(Convert.ToInt32(action_num_doc), 1);
+
+            //if (checkpictureNumber == -1)
+            //{
+            //    return;
+            //}
+
+            //uint pictureNumber = 0;
+            //if (checkpictureNumber == 0)//в бд нет еще записи и поэтому необходимо загрузить картинку в фр 
+            //{
+            //    fptr.setParam(AtolConstants.LIBFPTR_PARAM_FILENAME, outputFilePath);
+            //    fptr.uploadPictureMemory();
+            //    pictureNumber = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_PICTURE_NUMBER);
+            //    InsertRecordPictureNumbe(Convert.ToInt32(pictureNumber), 1, Convert.ToInt32(action_num_doc));
+            //}
+            //else
+            //{
+            //    pictureNumber = Convert.ToUInt32(checkpictureNumber);
+            //}
+
+            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_PICTURE_NUMBER, pictureNumber);
+            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
+            //fptr.printPictureByNumber();
+
             if (fptr.errorCode() != 0)
             {
                 //MessageBox.Show("При выводе картинки на печать произошла ошибка  " + fptr.errorDescription());
                 MainStaticClass.WriteRecordErrorLog(fptr.errorDescription(), "print_picture", 0, MainStaticClass.CashDeskNumber, "Ошибка при печати акционной картинки ");
-            }
-            //try
-            //{
-            //    if (System.IO.File.Exists(outputFilePath))
-            //    {
-            //        System.IO.File.Delete(outputFilePath);
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show("Ошибки при удалении фала картинки " +ex.Message);
-            //}
+            }            
         }
 
         private void get_actions_num_doc(Cash_check check)
@@ -1836,7 +1952,10 @@ namespace Cash8
                         NpgsqlCommand command = new NpgsqlCommand(query, conn);
                         string hex_string = command.ExecuteScalar().ToString();
                         //hex_string = hex_string.Substring(2, hex_string.Length - 2);
-                        print_picture(hex_string,item);
+                        if (hex_string.Trim().Length > 0)
+                        {
+                            print_picture(hex_string, item);
+                        }
                     }
                 }
                 catch (NpgsqlException ex)

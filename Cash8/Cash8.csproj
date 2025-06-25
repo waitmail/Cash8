@@ -427,11 +427,11 @@
     <None Include="Web References\DS\DS.disco" />
     <None Include="Web References\DS\DS.wsdl" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <Content Include="Pictures\ExistUpdateProgramm.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Folder Include="Pictures\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\Pictures2\ExistUpdateProgramm.jpg" />
     <Content Include="SberDll\gate.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

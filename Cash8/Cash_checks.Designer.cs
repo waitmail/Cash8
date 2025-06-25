@@ -174,7 +174,7 @@
             // pictureBox_get_update_program
             // 
             this.pictureBox_get_update_program.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox_get_update_program.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.pictureBox_get_update_program.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;            
             this.pictureBox_get_update_program.InitialImage = null;
             this.pictureBox_get_update_program.Location = new System.Drawing.Point(720, 3);
             this.pictureBox_get_update_program.Name = "pictureBox_get_update_program";

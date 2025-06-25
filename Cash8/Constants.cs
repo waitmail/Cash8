@@ -13,6 +13,9 @@ using AtolConstants = Atol.Drivers10.Fptr.Constants;
 using System.Linq;
 using System.Text.RegularExpressions;
 
+using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
+
 namespace Cash8
 {
     public partial class Constants : Form
@@ -574,8 +577,227 @@ namespace Cash8
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+
+
+
+
+        public void PrintCouponCorrectly(string filePath)
         {
+            using (var original = new Bitmap(filePath))
+            {
+                // 1. Масштабируем с сохранением пропорций
+                var scaled = ScaleImage(original, 384);
+
+                // 2. Конвертируем в монохромный буфер
+                byte[] pixelBuffer = ConvertCouponToBuffer(scaled);
+
+                // 3. Настраиваем печать
+                IFptr fptr = MainStaticClass.FPTR;
+                if (!fptr.isOpened()) fptr.open();
+
+                fptr.setParam(AtolConstants.LIBFPTR_PARAM_PIXEL_BUFFER, pixelBuffer);
+                fptr.setParam(AtolConstants.LIBFPTR_PARAM_WIDTH, 384);
+                fptr.setParam(AtolConstants.LIBFPTR_PARAM_HEIGHT, scaled.Height);
+                fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
+
+                fptr.printPixelBuffer();
+            }
+        }
+
+
+        private byte[] ConvertToPrinterFormat(Bitmap bitmap)
+        {
+            // Размер буфера: количество пикселей / 8 (округляем вверх)
+            int bufferSize = (bitmap.Width * bitmap.Height + 7) / 8;
+            byte[] buffer = new byte[bufferSize];
+
+            // Используем LockBits для быстрого доступа
+            BitmapData bmpData = bitmap.LockBits(
+                new Rectangle(0, 0, bitmap.Width, bitmap.Height),
+                ImageLockMode.ReadOnly,
+                PixelFormat.Format32bppArgb);
+
+            try
+            {
+                int bytesPerPixel = 4; // Format32bppArgb
+                byte[] pixelData = new byte[bmpData.Stride * bmpData.Height];
+                System.Runtime.InteropServices.Marshal.Copy(bmpData.Scan0, pixelData, 0, pixelData.Length);
+
+                for (int y = 0; y < bitmap.Height; y++)
+                {
+                    for (int x = 0; x < bitmap.Width; x++)
+                    {
+                        // Получаем цвет пикселя
+                        int index = y * bmpData.Stride + x * bytesPerPixel;
+                        byte r = pixelData[index + 2];
+                        byte g = pixelData[index + 1];
+                        byte b = pixelData[index];
+
+                        // Преобразуем в черно-белое
+                        bool isBlack = (r * 0.299 + g * 0.587 + b * 0.114) < 128;
+
+                        if (isBlack)
+                        {
+                            // Упаковываем пиксели построчно
+                            int pixelIndex = y * bitmap.Width + x;
+                            int bytePos = pixelIndex / 8;
+                            int bitPos = 7 - (pixelIndex % 8);
+                            buffer[bytePos] |= (byte)(1 << bitPos);
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                bitmap.UnlockBits(bmpData);
+            }
+
+            return buffer;
+        }
+
+        private Bitmap ScaleImage(Bitmap original, int targetWidth)
+        {
+            // Сохраняем пропорции
+            double ratio = (double)original.Height / original.Width;
+            int targetHeight = (int)(targetWidth * ratio);
+
+            var scaled = new Bitmap(targetWidth, targetHeight);
+
+            using (var graphics = Graphics.FromImage(scaled))
+            {
+                graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                graphics.DrawImage(original, 0, 0, targetWidth, targetHeight);
+            }
+
+            return scaled;
+        }
+
+        private byte[] ConvertToMonochromeSafe(Bitmap bitmap)
+        {
+            // Высота должна быть кратна 8 для правильного выравнивания
+            int height = (bitmap.Height % 8 == 0) ? bitmap.Height : ((bitmap.Height / 8) + 1) * 8;
+            byte[] buffer = new byte[(384 * height) / 8];
+
+            // Используем LockBits без unsafe
+            var bitmapData = bitmap.LockBits(
+                new Rectangle(0, 0, bitmap.Width, bitmap.Height),
+                ImageLockMode.ReadOnly,
+                PixelFormat.Format32bppArgb);
+
+            try
+            {
+                // Копируем данные в массив
+                byte[] pixelData = new byte[bitmapData.Stride * bitmapData.Height];
+                System.Runtime.InteropServices.Marshal.Copy(bitmapData.Scan0, pixelData, 0, pixelData.Length);
+
+                for (int y = 0; y < bitmap.Height; y++)
+                {
+                    for (int x = 0; x < 384; x++)
+                    {
+                        int index = y * bitmapData.Stride + x * 4;
+                        byte r = pixelData[index + 2];
+                        byte g = pixelData[index + 1];
+                        byte b = pixelData[index];
+
+                        bool isBlack = (r * 0.299 + g * 0.587 + b * 0.114) < 100;
+
+                        if (isBlack)
+                        {
+                            // Правильная упаковка: 8 вертикальных пикселей в один байт
+                            int bytePos = (x * height + y) / 8;
+                            int bitPos = y % 8;
+                            buffer[bytePos] |= (byte)(1 << bitPos);
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                bitmap.UnlockBits(bitmapData);
+            }
+
+            return buffer;
+        }
+
+        private byte[] ConvertCouponToBuffer(Bitmap bitmap)
+        {
+            // Размер буфера: (ширина * высота + 7) / 8
+            int bufferSize = (384 * bitmap.Height + 7) / 8;
+            byte[] buffer = new byte[bufferSize];
+
+            using (var tempBitmap = new Bitmap(bitmap))
+            {
+                // Улучшаем качество текста
+                tempBitmap.SetResolution(203, 203); // 203 DPI - стандарт для чеков
+
+                for (int y = 0; y < tempBitmap.Height; y++)
+                {
+                    for (int x = 0; x < 384; x++)
+                    {
+                        Color pixel = tempBitmap.GetPixel(x, y);
+
+                        // Улучшенное преобразование в черно-белое
+                        bool isBlack = (pixel.R * 0.299 + pixel.G * 0.587 + pixel.B * 0.114) < 150;
+
+                        if (isBlack)
+                        {
+                            // Правильная упаковка пикселей для принтера
+                            int bytePos = (y * 384 + x) / 8;
+                            int bitPos = 7 - (x % 8);
+                            buffer[bytePos] |= (byte)(1 << bitPos);
+                        }
+                    }
+                }
+            }
+
+            return buffer;
+        }
+
+
+        private void button1_Click(object sender, EventArgs e)
+        { 
+
+            //PrintCouponCorrectly(Application.StartupPath + "\\Pictures2\\temp_picture.png");
+            //PrintCoupon();
+
+            //var imageBytes = System.IO.File.ReadAllBytes(Application.StartupPath + "\\Pictures2\\temp_picture.png");
+            //byte[] pixelBuffer = ConvertToPixelBuffer(Application.StartupPath + "\\Pictures2\\temp_picture.png");
+            //PrintPngCorrectly(Application.StartupPath + "\\Pictures2\\temp_picture.png");
+
+            //// Настройка драйвера
+            IFptr fptr = MainStaticClass.FPTR;
+            if (!fptr.isOpened())
+            {
+                fptr.open();
+            }
+
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_FILENAME, Application.StartupPath + "\\Pictures2\\temp_picture.png");
+            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_SCALE_PERCENT, 50.0);
+            fptr.uploadPictureMemory();
+
+            uint pictureNumber = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_PICTURE_NUMBER);
+            MessageBox.Show(pictureNumber.ToString());
+
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_PICTURE_NUMBER, pictureNumber);
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
+            fptr.printPictureByNumber();
+
+            fptr.clearPictures();
+
+            return;
+            
+
+
+            //// Критически важные параметры:
+            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_PIXEL_BUFFER, pixelBuffer);
+            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_WIDTH, 200);
+            //fptr.setParam(AtolConstants.LIBFPTR_PARAM_DATA_TYPE, 0); // RAW-данные
+            ////fptr.setParam(AtolConstants.LIBFPTR_PARAM_PIXEL_BUFFER_LINE_SIZE, (printerWidth + 7) / 8);
+
+            //// Печать
+            //fptr.printPixelBuffer();
+
+
             string hex_string = "";
 
             using (NpgsqlConnection conn = MainStaticClass.NpgsqlConn())
@@ -603,18 +825,24 @@ namespace Cash8
                 }
             }
 
-            IFptr fptr = MainStaticClass.FPTR;
+            //IFptr fptr = MainStaticClass.FPTR;
             if (!fptr.isOpened())
             {
                 fptr.open();
             }
+
+            
+            byte[] byteArray = Convert.FromBase64String(hex_string);         
+
+
+
 
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
             //fptr.setParam(AtolConstants.LIBFPTR_PARAM_SCALE_PERCENT, 150);
 
             // Преобразование шестнадцатеричной строки в массив байтов
             //byte[] byteArray = HexStringToByteArray(hex_string);
-            byte[] byteArray = Convert.FromBase64String(hex_string);
+            //byte[] byteArray = Convert.FromBase64String(hex_string);
             MessageBox.Show(byteArray.Length.ToString());
 
             // Запись массива байтов в новый файл
