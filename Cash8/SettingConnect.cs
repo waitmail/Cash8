@@ -1060,36 +1060,7 @@ namespace Cash8
             queries.Add("ALTER TABLE public.barcode ALTER COLUMN barcode TYPE character(14);");
             queries.Add("ALTER TABLE public.action_header ADD COLUMN picture text COLLATE pg_catalog.default");
             queries.Add("ALTER TABLE public.checks_header ALTER COLUMN action_num_doc TYPE integer[] USING ARRAY[action_num_doc]::integer[]");
-            //queries.Add(@"
-            //                    CREATE TABLE IF NOT EXISTS public.picture_number_in_f_r
-            //                    (
-            //                    id_f_r integer,
-            //                    object_type smallint,
-            //                    id_object integer
-            //                   )
-
-            //                TABLESPACE pg_default;
-
-            //                ALTER TABLE IF EXISTS public.picture_number_in_f_r
-            //                    OWNER to postgres;
-
-            //                COMMENT ON TABLE public.picture_number_in_f_r
-            //                    IS 'Соответсвие картинки в фискальном регистраторе к объектам в кассовой программе';
-
-            //                COMMENT ON COLUMN public.picture_number_in_f_r.id_f_r
-            //                    IS 'Номер картинки в фискальном регистраторе';
-
-            //                COMMENT ON COLUMN public.picture_number_in_f_r.object_type
-            //                    IS 'Тип объекта 
-            //                1 - Акционный документ
-            //                2 - Рекламные тексты';
-
-            //                COMMENT ON COLUMN public.picture_number_in_f_r.id_object
-            //                    IS 'Номер объекта в кассовой программе';
-            //            ");
-
-
-            //queries.Add("ALTER TABLE public.errors_log ALTER COLUMN error_message TYPE text COLLATE pg_catalog.default");
+            queries.Add("ALTER TABLE IF EXISTS public.advertisement ADD COLUMN picture text COLLATE pg_catalog.default");         
 
             foreach (string str in queries)
             {

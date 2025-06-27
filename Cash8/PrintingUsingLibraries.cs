@@ -406,32 +406,65 @@ namespace Cash8
         {
             NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
             string s = ""; //int length = 0;
+            string hex_string = "";
             bool first_string = true;
+            bool text_available = false;
             try
             {
                 conn.Open();
-                string query = "SELECT advertisement_text  FROM advertisement order by num_str";
+                string query = "SELECT advertisement_text, picture,num_str  FROM advertisement order by num_str";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    if (first_string)
-                    {
-                        first_string = false;                        
-                        s = " * -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*";
-                        fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, s);
-                        fptr.setParam(AtolConstants.LIBFPTR_PARAM_DEFER, AtolConstants.LIBFPTR_DEFER_POST);//печатать в конце чека
-                        fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_LEFT);                        
-                        fptr.printText();
-                    }
+                    //if (first_string)
+                    //{
+                    //    first_string = false;                        
+                    //    s = " * -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*";
+                    //    fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, s);
+                    //    fptr.setParam(AtolConstants.LIBFPTR_PARAM_DEFER, AtolConstants.LIBFPTR_DEFER_POST);//печатать в конце чека
+                    //    fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_LEFT);                        
+                    //    fptr.printText();
+                    //}
 
                     s = reader["advertisement_text"].ToString();
-                    fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, s);
-                    fptr.setParam(AtolConstants.LIBFPTR_PARAM_DEFER, AtolConstants.LIBFPTR_DEFER_POST);
-                    fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_LEFT);
-                    fptr.printText();
+                    hex_string = reader["picture"].ToString();
+                    if (s != "")
+                    {
+                        text_available = true;
+                        if (first_string)
+                        {
+                            first_string = false;
+                            s = " * -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*";
+                            fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, s);
+                            fptr.setParam(AtolConstants.LIBFPTR_PARAM_DEFER, AtolConstants.LIBFPTR_DEFER_POST);//печатать в конце чека
+                            fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_LEFT);
+                            fptr.printText();
+                        }
+
+                        fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, s);
+                        fptr.setParam(AtolConstants.LIBFPTR_PARAM_DEFER, AtolConstants.LIBFPTR_DEFER_POST);
+                        fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_LEFT);
+                        fptr.printText();
+                    }
+                    else if (hex_string != "")
+                    {
+                        byte[] byteArray = Convert.FromBase64String(hex_string);
+
+                        // Запись массива байтов в новый файл            
+                        string outputFilePath = Application.StartupPath + "\\Pictures2\\B" + reader["num_str"].ToString() + "_picture.png";//Префикс A  у файла значит что это акционный документ
+
+                        if (!System.IO.File.Exists(outputFilePath))
+                        {
+                            System.IO.File.WriteAllBytes(outputFilePath, byteArray);
+                        }
+
+                        fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
+                        fptr.setParam(AtolConstants.LIBFPTR_PARAM_FILENAME, outputFilePath);
+                        fptr.printPicture();
+                    }
                 }
-                if (!first_string)
+                if ((!first_string)&&(text_available))
                 {
                     s = " * -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*";
                     fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, s);
@@ -1859,7 +1892,7 @@ namespace Cash8
             byte[] byteArray = Convert.FromBase64String(hex_string);
 
             // Запись массива байтов в новый файл            
-            string outputFilePath = Application.StartupPath + "\\Pictures2\\" + action_num_doc + "_picture.png";
+            string outputFilePath = Application.StartupPath + "\\Pictures2\\A" + action_num_doc + "_picture.png";//Префикс A  у файла значит что это акционный документ
             
             if (!System.IO.File.Exists(outputFilePath))
             {

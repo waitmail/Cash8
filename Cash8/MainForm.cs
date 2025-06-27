@@ -662,11 +662,11 @@ namespace Cash8
                 {
                     Directory.CreateDirectory(folderPathPictures);
                 }
-                string fileExistUpdateProgrammPictures = Application.StartupPath + "\\Pictures2\\ExistUpdateProgramm.jpg";
-                if (!File.Exists(fileExistUpdateProgrammPictures))
-                {
-                    get_file_for_web_service("Pictures2\\ExistUpdateProgramm.jpg");
-                }
+                //string fileExistUpdateProgrammPictures = Application.StartupPath + "\\Pictures2\\ExistUpdateProgramm.jpg";
+                //if (!File.Exists(fileExistUpdateProgrammPictures))
+                //{
+                //    get_file_for_web_service("Pictures2\\ExistUpdateProgramm.jpg");
+                //}
             }
             catch (Exception ex)
             {
@@ -1570,7 +1570,7 @@ namespace Cash8
             try
             {
                 conn.Open();
-                string query = "SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'action_header' AND column_name = 'picture'); ";                
+                string query = "SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'advertisement' AND column_name = 'picture'); ";                
                 
                  NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 if (!Convert.ToBoolean(command.ExecuteScalar())) //не нашли такой колонки   

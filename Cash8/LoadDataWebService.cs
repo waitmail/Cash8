@@ -713,6 +713,7 @@ namespace Cash8
         {
             public string AdvertisementText { get; set; }
             public string NumStr { get; set; }
+            public string Picture { get; set; }
         }
         public class ActionClients
         {
@@ -1428,7 +1429,7 @@ namespace Cash8
                     {
                         foreach (PromoText promoText in loadPacketData.ListPromoText)
                         {
-                            queries.Add("INSERT INTO advertisement(advertisement_text,num_str)VALUES ('" + promoText.AdvertisementText + "'," + promoText.NumStr + ")");
+                            queries.Add("INSERT INTO advertisement(advertisement_text,num_str,picture)VALUES ('" + promoText.AdvertisementText + "'," + promoText.NumStr + ",'"+promoText.Picture+"')");
                         }
                         loadPacketData.ListPromoText.Clear();
                         loadPacketData.ListPromoText = null;
@@ -2079,7 +2080,7 @@ namespace Cash8
                         {                            
                             foreach (PromoText promoText in loadPacketData.ListPromoText)
                             {
-                                queries.Add("INSERT INTO advertisement(advertisement_text,num_str)VALUES ('" + promoText.AdvertisementText + "'," + promoText.NumStr + ")");
+                                queries.Add("INSERT INTO advertisement(advertisement_text,num_str,picture)VALUES ('" + promoText.AdvertisementText + "'," + promoText.NumStr + ",'"+promoText.Picture+"')");
                             }
                             loadPacketData.ListPromoText.Clear();
                             loadPacketData.ListPromoText = null;

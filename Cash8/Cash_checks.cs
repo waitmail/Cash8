@@ -291,10 +291,10 @@ namespace Cash8
                 return;
             }
 
-            if (System.IO.File.Exists(Application.StartupPath + "\\Pictures2\\ExistUpdateProgramm.jpg"))
-            {
-                pictureBox_get_update_program.Load(Application.StartupPath + "\\Pictures2\\ExistUpdateProgramm.jpg");
-            }
+            //if (System.IO.File.Exists(Application.StartupPath + "\\Pictures2\\ExistUpdateProgramm.jpg"))
+            //{
+            //    pictureBox_get_update_program.Load(Application.StartupPath + "\\Pictures2\\ExistUpdateProgramm.jpg");
+            //}
 
             int result = MainStaticClass.get_unloading_interval();
             if (result != 0)
@@ -801,8 +801,9 @@ namespace Cash8
         private void pictureBox_get_update_program_Click(object sender, EventArgs e)
         {
             //MessageBox.Show("Загружаем новую версию");
+            this.Close();
             LoadProgramFromInternet loadProgramFromInternet = new LoadProgramFromInternet();
-            loadProgramFromInternet.ShowDialog();
+            loadProgramFromInternet.ShowDialog();            
         }
     }
 }
