@@ -800,10 +800,23 @@ namespace Cash8
 
         private void pictureBox_get_update_program_Click(object sender, EventArgs e)
         {
-            //MessageBox.Show("Загружаем новую версию");
+            // Сначала закрываем текущую дочернюю форму
             this.Close();
-            LoadProgramFromInternet loadProgramFromInternet = new LoadProgramFromInternet();
-            loadProgramFromInternet.ShowDialog();            
+
+            // Создаём форму загрузки и показываем её модально
+            using (var loader = new LoadProgramFromInternet())
+            {
+                loader.ShowDialog();
+            }
+
+            // Теперь пытаемся закрыть главное окно (если оно осталось открытым)
+            foreach (Form form in Application.OpenForms)
+            {
+                form.Close();
+            }
+
+            // И завершаем приложение
+            Application.Exit();
         }
     }
 }

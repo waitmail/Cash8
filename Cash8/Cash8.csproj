@@ -432,7 +432,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="bin\Debug\Pictures2\ExistUpdateProgramm.jpg" />
-    <Content Include="ExistUpdateProgramm.jpg" />
     <Content Include="SberDll\gate.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -1060,7 +1060,8 @@ namespace Cash8
             queries.Add("ALTER TABLE public.barcode ALTER COLUMN barcode TYPE character(14);");
             queries.Add("ALTER TABLE public.action_header ADD COLUMN picture text COLLATE pg_catalog.default");
             queries.Add("ALTER TABLE public.checks_header ALTER COLUMN action_num_doc TYPE integer[] USING ARRAY[action_num_doc]::integer[]");
-            queries.Add("ALTER TABLE IF EXISTS public.advertisement ADD COLUMN picture text COLLATE pg_catalog.default");         
+            queries.Add("ALTER TABLE IF EXISTS public.advertisement ADD COLUMN picture text COLLATE pg_catalog.default");
+            queries.Add("ALTER TABLE IF EXISTS public.constants ADD COLUMN nds_ip smallint DEFAULT 0; COMMENT ON COLUMN public.constants.nds_ip IS 'Ставка ндс для ИП у которого превышен порог нулевого ндс';");
 
             foreach (string str in queries)
             {

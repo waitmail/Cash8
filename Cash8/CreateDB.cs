@@ -32,7 +32,8 @@ namespace Cash8
             variant_connect_fn smallint NOT NULL DEFAULT 0,
             fn_ipaddr character varying(20) COLLATE pg_catalog.default,
             acquiring_bank smallint DEFAULT 0,
-            constant_conversion_to_kilograms integer NOT NULL DEFAULT 0
+            constant_conversion_to_kilograms integer NOT NULL DEFAULT 0,
+            nds_ip smallint DEFAULT 0
         )
 
         TABLESPACE pg_default;
@@ -101,7 +102,10 @@ namespace Cash8
             IS 'Банк которму принадлежит банковский терминал';
 
         COMMENT ON COLUMN public.constants.constant_conversion_to_kilograms
-            IS 'Множитель  для конвертации значения полученного из весов ';";
+            IS 'Множитель  для конвертации значения полученного из весов ';
+
+        COMMENT ON COLUMN public.constants.nds_ip
+            IS 'Ставка ндс для ИП у которого превышен порог нулевого ндс';";
 
             return result;
         }

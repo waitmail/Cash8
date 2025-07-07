@@ -137,7 +137,7 @@ namespace Cash8
                     " system_taxation,version_fn," +
                     " id_acquirer_terminal,ip_address_acquiring_terminal,enable_cdn_markers, " +
                     " webservice_authorize,printing_using_libraries,fn_serial_port,get_weight_automatically,scale_serial_port,"+
-                    " variant_connect_fn,fn_ipaddr,acquiring_bank,constant_conversion_to_kilograms FROM constants";
+                    " variant_connect_fn,fn_ipaddr,acquiring_bank,constant_conversion_to_kilograms,nds_ip FROM constants";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
@@ -204,6 +204,7 @@ namespace Cash8
                         this.comboBox_scale_port.SelectedIndex = index;
                     }
                     this.comboBox_acquiring_bank.SelectedIndex = Convert.ToInt16(reader["acquiring_bank"]);
+                    this.comboBox_nds_ip.SelectedIndex = Convert.ToInt16(reader["nds_ip"]); 
                 }
                 reader.Close();
                 //if (nick_shop.Text.Trim() != "A01")
@@ -382,6 +383,16 @@ namespace Cash8
             
             string variant_connect_fn = comboBox_variant_connect_fn.SelectedIndex.ToString();
             string fn_ipaddr = txtB_fn_ipaddr.Text.Trim();
+            string nds_ip = "";
+            if (comboBox_nds_ip.SelectedItem != null)            
+            {
+                nds_ip = comboBox_nds_ip.SelectedIndex.ToString();                
+            }
+            else
+            {
+                nds_ip = "0";
+            }
+
 
             try
             {
@@ -416,7 +427,8 @@ namespace Cash8
                     "fn_ipaddr='"+ fn_ipaddr+"'"+","+
                     "acquiring_bank= "+comboBox_acquiring_bank.SelectedIndex.ToString()+","+
                     //"do_not_prompt_marking_code="+ do_not_prompt_marking_code+","+
-                    "constant_conversion_to_kilograms="+ txtB_constant_conversion_to_kilograms.Text.Trim();
+                    "constant_conversion_to_kilograms="+ txtB_constant_conversion_to_kilograms.Text.Trim()+","+
+                    "nds_ip="+ nds_ip;
 
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 int resul_update = command.ExecuteNonQuery();
@@ -450,7 +462,8 @@ namespace Cash8
                         "fn_ipaddr,"+
                         "acquiring_bank,"+
                        // "do_not_prompt_marking_code,"+
-                        "constant_conversion_to_kilograms) VALUES(" +
+                        "constant_conversion_to_kilograms,"+
+                        "nds_ip) VALUES(" +
                         cash_desk_number.Text + ",'" +
                         nick_shop.Text + "'," +
                         //get_use_debug() + ",'" +
@@ -478,7 +491,8 @@ namespace Cash8
                         fn_ipaddr+"',"+
                         comboBox_acquiring_bank.SelectedIndex.ToString()+","+
                         //do_not_prompt_marking_code +","+
-                        txtB_constant_conversion_to_kilograms.Text.Trim()+")";
+                        txtB_constant_conversion_to_kilograms.Text.Trim()+","+
+                        nds_ip+")";
 
                     command = new NpgsqlCommand(query, conn);
                     command.ExecuteNonQuery();

@@ -131,6 +131,7 @@ namespace Cash8
         private static string fn_ipaddr = "";
         private static int acquiring_bank = -1;
         private static int do_not_prompt_marking_code = -1;
+        private static int nds_ip = -1;
         //private static Dictionary<int, Cash8.ProductData> dictionaryProductData = new Dictionary<int, Cash8.ProductData>();
         
 
@@ -188,7 +189,45 @@ namespace Cash8
                 }
             }
         }
-        
+
+        public static int GetNdsIp
+        {
+            get
+            {
+                if (nds_ip == -1)
+                {
+                    NpgsqlConnection conn = null;
+                    NpgsqlCommand command = null;
+                    conn = MainStaticClass.NpgsqlConn();
+                    try
+                    {
+                        conn.Open();
+                        string query = "SELECT nds_ip FROM constants";
+                        command = new NpgsqlCommand(query, conn);
+                        nds_ip = Convert.ToInt16(command.ExecuteScalar());
+                    }
+                    catch (NpgsqlException ex)
+                    {
+                        MessageBox.Show("Ошибка при чтении nds_ip" + ex.ToString());
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Ошибка при чтении nds_ip" + ex.ToString());
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                }
+                return nds_ip;
+            }
+        }
+
+
+
         public static int GetAcquiringBank
         {
             get

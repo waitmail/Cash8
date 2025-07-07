@@ -858,7 +858,18 @@ namespace Cash8
                 }
                 else
                 {
-                    fptr.setParam(AtolConstants.LIBFPTR_PARAM_TAX_TYPE, AtolConstants.LIBFPTR_TAX_NO);
+                    if (MainStaticClass.GetNdsIp == 0)
+                    {
+                        fptr.setParam(AtolConstants.LIBFPTR_PARAM_TAX_TYPE, AtolConstants.LIBFPTR_TAX_NO);
+                    }
+                    else if (MainStaticClass.GetNdsIp == 5)
+                    {
+                        fptr.setParam(AtolConstants.LIBFPTR_PARAM_TAX_TYPE, AtolConstants.LIBFPTR_TAX_VAT5);
+                    }
+                    else if (MainStaticClass.GetNdsIp == 7)
+                    {
+                        fptr.setParam(AtolConstants.LIBFPTR_PARAM_TAX_TYPE, AtolConstants.LIBFPTR_TAX_VAT7);
+                    }
                 }
 
                 //if (MainStaticClass.its_excise(lvi.SubItems[0].Text.Trim()) == 0)
@@ -1499,7 +1510,18 @@ namespace Cash8
                 }
                 fptr.setParam(AtolConstants.LIBFPTR_PARAM_QUANTITY, lvi.SubItems[3].Text.Replace(",","."));
 
-                fptr.setParam(AtolConstants.LIBFPTR_PARAM_TAX_TYPE, AtolConstants.LIBFPTR_TAX_NO);
+                if (MainStaticClass.GetNdsIp == 0)
+                {
+                    fptr.setParam(AtolConstants.LIBFPTR_PARAM_TAX_TYPE, AtolConstants.LIBFPTR_TAX_NO);
+                }
+                else if (MainStaticClass.GetNdsIp == 1)
+                {
+                    fptr.setParam(AtolConstants.LIBFPTR_PARAM_TAX_TYPE, AtolConstants.LIBFPTR_TAX_VAT5);
+                }
+                else if (MainStaticClass.GetNdsIp == 2)
+                {
+                    fptr.setParam(AtolConstants.LIBFPTR_PARAM_TAX_TYPE, AtolConstants.LIBFPTR_TAX_VAT7);
+                }
 
                 //if (MainStaticClass.its_excise(lvi.SubItems[0].Text.Trim()) == 0)
                 //{

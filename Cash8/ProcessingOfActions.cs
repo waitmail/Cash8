@@ -554,16 +554,15 @@ namespace Cash8
                         {
                             if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
                             {
-
-                            }
-                            if (LoadActionDataInMemory.AllActionData1 == null)
-                            {
-                                action_4_dt(num_doc, comment, sum, show_messages);
-                            }
-                            else
-                            {
-                                action_4_dt(num_doc, comment, sum, show_messages, LoadActionDataInMemory.AllActionData1);
-                            }
+                                if (LoadActionDataInMemory.AllActionData1 == null)
+                                {
+                                    action_4_dt(num_doc, comment, sum, show_messages);
+                                }
+                                else
+                                {
+                                    action_4_dt(num_doc, comment, sum, show_messages, LoadActionDataInMemory.AllActionData1);
+                                }
+                            }                           
                         }
                         //write_time_execution(reader[1].ToString(), tip_action.ToString());
                     }
@@ -1795,13 +1794,20 @@ namespace Cash8
                     row["bonus_action"] = 0;
                     row["bonus_action_b"] = 0;
                     row["marking"] = "0";
-                    if (mode == 0)
+                    if (dtCopy == null)
                     {
-                        dt.Rows.Add(row);
+                        if (mode == 0)
+                        {
+                            dt.Rows.Add(row);
+                        }
+                        else
+                        {
+                            dt_copy.Rows.Add(row);
+                        }
                     }
                     else
                     {
-                        dt_copy.Rows.Add(row);
+                        dtCopy.Rows.Add(row);
                     }
                     there_are_goods = true;                    
                 }
@@ -3920,20 +3926,23 @@ namespace Cash8
                     if (CheckActionConditions(totalSumWithoutDiscount, sum))
                     {
                         // Применяем изменения к копии DataTable
-                        dtCopy.Rows[index]["gift"] = num_doc.ToString();
+                        //dtCopy.Rows[index]["gift"] = num_doc.ToString();
+                        //dtCopy.Rows[index]["action2"] = num_doc.ToString();
 
                         if (show_messages)
                         {
                             MessageBox.Show(comment, " АКЦИЯ !!!");
                             if (marker == 1)
                             {
-                                var dr = show_query_window_barcode(2, 1, num_doc, 0);
+                                var dr = show_query_window_barcode(2, 1, num_doc, 0, dtCopy);
+                                //var dr = show_query_window_barcode(2, 1, num_doc, 1);
+
                             }
                         }
 
                         // Логика для отметки товаров (если нужно)
                         //MarkActionTovar(conn, num_doc, comment);
-                        marked_action_tovar_dt(num_doc, comment);
+                        marked_action_tovar_dt(dtCopy, num_doc, comment);
                     }
 
                     // Если все успешно, применяем изменения к исходной DataTable

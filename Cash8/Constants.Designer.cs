@@ -67,6 +67,8 @@
             this.label9 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
+            this.comboBox_nds_ip = new System.Windows.Forms.ComboBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.groupBox_acquiring_terminal.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -192,7 +194,7 @@
             "УСН ДОХОДЫ + ПАТЕНТ"});
             this.comboBox_system_taxation.Location = new System.Drawing.Point(127, 77);
             this.comboBox_system_taxation.Name = "comboBox_system_taxation";
-            this.comboBox_system_taxation.Size = new System.Drawing.Size(370, 21);
+            this.comboBox_system_taxation.Size = new System.Drawing.Size(359, 21);
             this.comboBox_system_taxation.TabIndex = 63;
             this.comboBox_system_taxation.SelectedIndexChanged += new System.EventHandler(this.comboBox_system_taxation_SelectedIndexChanged);
             // 
@@ -290,7 +292,7 @@
             // checkBox_webservice_authorize
             // 
             this.checkBox_webservice_authorize.AutoSize = true;
-            this.checkBox_webservice_authorize.Location = new System.Drawing.Point(11, 126);
+            this.checkBox_webservice_authorize.Location = new System.Drawing.Point(543, 492);
             this.checkBox_webservice_authorize.Name = "checkBox_webservice_authorize";
             this.checkBox_webservice_authorize.Size = new System.Drawing.Size(167, 17);
             this.checkBox_webservice_authorize.TabIndex = 80;
@@ -398,7 +400,7 @@
             // 
             this.btn_trst_connection.Location = new System.Drawing.Point(338, 18);
             this.btn_trst_connection.Name = "btn_trst_connection";
-            this.btn_trst_connection.Size = new System.Drawing.Size(143, 98);
+            this.btn_trst_connection.Size = new System.Drawing.Size(92, 98);
             this.btn_trst_connection.TabIndex = 84;
             this.btn_trst_connection.Text = "Проверка соединения";
             this.btn_trst_connection.UseVisualStyleBackColor = true;
@@ -415,7 +417,7 @@
             this.groupBox1.Controls.Add(this.checkBox_printing_using_libraries);
             this.groupBox1.Location = new System.Drawing.Point(11, 170);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(486, 133);
+            this.groupBox1.Size = new System.Drawing.Size(475, 133);
             this.groupBox1.TabIndex = 85;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Настроки прямой печати";
@@ -459,11 +461,35 @@
             this.button1.Visible = false;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // comboBox_nds_ip
+            // 
+            this.comboBox_nds_ip.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox_nds_ip.FormattingEnabled = true;
+            this.comboBox_nds_ip.Items.AddRange(new object[] {
+            "Без НДС",
+            "5",
+            "7"});
+            this.comboBox_nds_ip.Location = new System.Drawing.Point(127, 116);
+            this.comboBox_nds_ip.Name = "comboBox_nds_ip";
+            this.comboBox_nds_ip.Size = new System.Drawing.Size(359, 21);
+            this.comboBox_nds_ip.TabIndex = 91;
+            // 
+            // label3
+            // 
+            this.label3.Location = new System.Drawing.Point(14, 111);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(98, 35);
+            this.label3.TabIndex = 92;
+            this.label3.Text = "Ставка % НДС для ИП";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // Constants
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 562);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.comboBox_nds_ip);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.checkBox_webservice_authorize);
             this.Controls.Add(this.txtB_ip_address_acquiring_terminal);
@@ -545,5 +571,7 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.TextBox txtB_constant_conversion_to_kilograms;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.ComboBox comboBox_nds_ip;
+        private System.Windows.Forms.Label label3;
     }
 }
