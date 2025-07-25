@@ -39,7 +39,6 @@
             this.btn_ofd_exchange_status = new System.Windows.Forms.Button();
             this.txtB_have_internet = new System.Windows.Forms.TextBox();
             this.print_last_check = new System.Windows.Forms.Button();
-            this.annul_check = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.get_summ_in_cashe = new System.Windows.Forms.Button();
             this.sum_incass = new System.Windows.Forms.TextBox();
@@ -181,17 +180,6 @@
             this.print_last_check.Text = "Копия последнего чека";
             this.print_last_check.UseVisualStyleBackColor = true;
             this.print_last_check.Click += new System.EventHandler(this.print_last_check_Click);
-            // 
-            // annul_check
-            // 
-            this.annul_check.Enabled = false;
-            this.annul_check.Location = new System.Drawing.Point(267, 166);
-            this.annul_check.Name = "annul_check";
-            this.annul_check.Size = new System.Drawing.Size(163, 23);
-            this.annul_check.TabIndex = 17;
-            this.annul_check.Text = "Отмена последнего задания";
-            this.annul_check.UseVisualStyleBackColor = true;
-            this.annul_check.Click += new System.EventHandler(this.annul_check_Click);
             // 
             // groupBox3
             // 
@@ -366,7 +354,6 @@
             this.Controls.Add(this.txtB_fn_info);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.print_last_check);
-            this.Controls.Add(this.annul_check);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.sum_avans);
@@ -391,7 +378,6 @@
 
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.Button print_last_check;
-        private System.Windows.Forms.Button annul_check;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.TextBox sum_incass;
         private System.Windows.Forms.Button incass;

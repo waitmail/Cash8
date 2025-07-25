@@ -1408,6 +1408,14 @@ namespace Cash8
 
             if (e.KeyCode == Keys.F8)
             {
+                if (MainStaticClass.PrintingUsingLibraries == 1)
+                {
+                    if (MainStaticClass.GetFiscalsForbidden)
+                    {
+                        MessageBox.Show("Вам запрещена печать на фискаольном регистраторое", "Проверки при печати");
+                        return;
+                    }
+                }
 
                 if (listView1.Items.Count == 0)
                 {
@@ -6437,7 +6445,7 @@ namespace Cash8
                     int length = 0;
                     if (Discount != 0)
                     {
-                        string s = "Вами получена скидка " + calculation_of_the_discount_of_the_document().ToString().Replace(",", ".") + " " + MainStaticClass.get_currency();
+                        string s = "Вами получена скидка " + calculation_of_the_discount_of_the_document().ToString().Replace(",", ".") + "руб. ";// + MainStaticClass.get_currency();
                         length = s.Length;
                         pi = new FiscallPrintJason.PostItem();
                         pi.type = "text";
@@ -7220,7 +7228,7 @@ namespace Cash8
                 int length = 0;
                 if (Discount != 0)
                 {
-                    string s = "Вами получена скидка " + calculation_of_the_discount_of_the_document().ToString().Replace(",", ".") + " " + MainStaticClass.get_currency();
+                    string s = "Вами получена скидка " + calculation_of_the_discount_of_the_document().ToString().Replace(",", ".") + "руб. ";// + MainStaticClass.get_currency();
                     length = s.Length;
                     pi = new FiscallPrintJason2.PostItem();
                     pi.type = "text";
@@ -7816,7 +7824,7 @@ namespace Cash8
                 int length = 0;
                 if (Discount != 0)
                 {
-                    string s = "Вами получена скидка " + calculation_of_the_discount_of_the_document().ToString().Replace(",", ".") + " " + MainStaticClass.get_currency();
+                    string s = "Вами получена скидка " + calculation_of_the_discount_of_the_document().ToString().Replace(",", ".") + "руб. ";// + MainStaticClass.get_currency();
                     length = s.Length;
                     pi = new FiscallPrintJason2.PostItem();
                     pi.type = "text";
@@ -10112,7 +10120,17 @@ namespace Cash8
                
         private void pay_Click(object sender, EventArgs e)
         {
-            if (itsnew)
+            if (MainStaticClass.PrintingUsingLibraries == 1)
+            {
+                if (MainStaticClass.GetFiscalsForbidden)
+                {
+                    MessageBox.Show("Вам запрещена печать на фискаольном регистраторое", "Проверки при печати");
+                    return;
+                }                
+            }
+            
+
+                if (itsnew)
             {
                 if (check_type.SelectedIndex == 0)
                 {

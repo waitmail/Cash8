@@ -1100,21 +1100,49 @@ namespace Cash8
                     }
                     else if (tip_action == 3)
                     {
-                        //start_action = DateTime.Now;
+                        ////////start_action = DateTime.Now;
 
-                        //action_2(reader.GetInt32(1));
+                        ////////action_2(reader.GetInt32(1));
+                        //////if (persent != 0)
+                        //////{                                                                        
+                        //////    action_3_dt(num_doc, persent, sum, comment);//Дать скидку на все позиции из списка позицию                                                 
+                        //////}
+                        //////else
+                        //////{
+                        //////    //if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
+                        //////    //{                                
+                        //////        action_3_dt(num_doc, comment, sum, marker, show_messages); //Сообщить о подарке                           
+                        //////    //}
+                        //////}
+                        ////////write_time_execution(reader[1].ToString(), tip_action.ToString());
+                        //start_action = DateTime.Now;                        
                         if (persent != 0)
-                        {                                                                        
-                            action_3_dt(num_doc, persent, sum, comment);//Дать скидку на все позиции из списка позицию                                                 
+                        {
+                            //action_3_dt(num_doc, persent, sum, comment);//Дать скидку на все позиции из списка позицию                                                 
+                            if (LoadActionDataInMemory.AllActionData1 == null)
+                            {
+                                action_3_dt(num_doc, persent, sum, comment);
+                            }
+                            else
+                            {
+                                action_3_dt(num_doc, persent, sum, comment, LoadActionDataInMemory.AllActionData1);
+                            }
                         }
                         else
                         {
                             //if (show_messages)//В этой акции в любом случае всплывающие окна, в предварительном рассчете она не будет участвовать
-                            //{                                
-                                action_3_dt(num_doc, comment, sum, marker, show_messages); //Сообщить о подарке                           
+                            //{
+                            //action_3_dt(num_doc, comment, sum, marker,show_messages); //Сообщить о подарке                           
+                            if (LoadActionDataInMemory.AllActionData1 == null)
+                            {
+                                action_3_dt(num_doc, comment, sum, marker, show_messages);
+                            }
+                            else
+                            {
+                                action_3_dt(num_doc, comment, sum, marker, show_messages, LoadActionDataInMemory.AllActionData1);
+                            }
                             //}
                         }
-                        //write_time_execution(reader[1].ToString(), tip_action.ToString());
 
                     }
                     else if (tip_action == 4)
@@ -3676,7 +3704,7 @@ namespace Cash8
                 if (CheckActionConditions(totalSumWithoutDiscount, sum))
                 {
                     // Применяем изменения к копии DataTable
-                    dtCopy.Rows[index]["gift"] = num_doc.ToString();
+                    //dtCopy.Rows[index]["gift"] = num_doc.ToString();
 
                     if (show_messages)
                     {

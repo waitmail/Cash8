@@ -216,11 +216,14 @@
             // 
             // txtB_version_fn
             // 
+            this.txtB_version_fn.Enabled = false;
             this.txtB_version_fn.Location = new System.Drawing.Point(326, 5);
             this.txtB_version_fn.MaxLength = 1;
             this.txtB_version_fn.Name = "txtB_version_fn";
             this.txtB_version_fn.Size = new System.Drawing.Size(34, 20);
             this.txtB_version_fn.TabIndex = 69;
+            this.txtB_version_fn.Text = "2";
+            this.txtB_version_fn.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // checkBox_enable_cdn_markers
             // 

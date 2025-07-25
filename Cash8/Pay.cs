@@ -120,10 +120,10 @@ namespace Cash8
                 {
                     if (numberDecimalSeparator() == ".")
                     {
-                        if (MainStaticClass.get_currency() == "руб.")
-                        {
-                            this.non_cash_sum.Text = "0";
-                        }
+                        //if (MainStaticClass.get_currency() == "руб.")
+                        //{
+                        this.non_cash_sum.Text = "0";
+                        //}
                         //else
                         //{
                         //    this.non_cash_sum.Text = "0.00";
@@ -131,10 +131,10 @@ namespace Cash8
                     }
                     else
                     {
-                        if (MainStaticClass.get_currency() == "руб.")
-                        {
-                            this.non_cash_sum.Text = "0";
-                        }
+                        //if (MainStaticClass.get_currency() == "руб.")
+                        //{
+                        this.non_cash_sum.Text = "0";
+                        //}
                         //else
                         //{
                         //    this.non_cash_sum.Text = "0,00";
@@ -169,14 +169,14 @@ namespace Cash8
             non_cash_sum.Text = _sum_;
             non_cash_sum.SelectionStart = start;
             non_cash_sum.Update();
-            if (MainStaticClass.get_currency() == "руб.")
-            {
+            //if (MainStaticClass.get_currency() == "руб.")
+            //{
 
-            }
-            else
-            {
-                non_cash_sum.SelectionStart = curpos_non_cash;
-            }
+            //}
+            //else
+            //{
+            //    non_cash_sum.SelectionStart = curpos_non_cash;
+            //}
         }
 
         private bool copFilledCorrectly()
@@ -250,14 +250,14 @@ namespace Cash8
                 }
             }
 
-            if (MainStaticClass.get_currency() == "руб.")//зарпет на ввод запятой и точек можно только цифры или бекспейс
+            //if (MainStaticClass.get_currency() == "руб.")//зарпет на ввод запятой и точек можно только цифры или бекспейс
+            //{
+            if (!(Char.IsDigit(e.KeyChar)) && (e.KeyChar != (char)Keys.Back) && (e.KeyChar != 37))
             {
-                if (!(Char.IsDigit(e.KeyChar)) && (e.KeyChar != (char)Keys.Back) && (e.KeyChar != 37))
-                {
-                    e.Handled = true;
-                }
-                //return;
+                e.Handled = true;
             }
+                //return;
+            //}
 
             if (!(Char.IsDigit(e.KeyChar)))
             {

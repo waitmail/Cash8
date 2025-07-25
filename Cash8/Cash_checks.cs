@@ -182,7 +182,7 @@ namespace Cash8
             if (e.KeyCode == Keys.F4 && e.Alt)
             {
                 e.Handled = true;
-            }            
+            }
             //if ((e.KeyCode == Keys.Insert)||(e.KeyCode == Keys.F7))
             if (e.KeyCode == Keys.Insert)
             {
@@ -191,8 +191,6 @@ namespace Cash8
                     MessageBox.Show(" У ВАС УСТАНОВЛЕНА НЕПРАВИЛЬНАЯ ДАТА НА КОМПЬЮТЕРЕ !!! ДАЛЬНЕЙШАЯ РАБОТА С ЧЕКАМИ НЕВОЗМОЖНА !!!");
                     return;
                 }
-                //if (MainStaticClass.GetDoNotPromptMarkingCode == 0)
-                //{
                 if (MainStaticClass.CashDeskNumber != 9)
                 {
                     bool restart = false; bool errors = false;
@@ -212,7 +210,7 @@ namespace Cash8
                     MessageBox.Show("У вас не заполнена система налогообложения!\r\nСоздание и печать чеков невозможна!\r\nОБРАЩАЙТЕСЬ В БУХГАЛТЕРИЮ!");
                     return;
                 }
-                //}
+
 
                 //Проверка на заполненность обяз реквизитов
                 if (all_is_filled())
@@ -220,13 +218,13 @@ namespace Cash8
                     if (new_document)
                     {
                         return;
-                    }                    
-                    
-                        if (txtB_cashier.Text.Trim().Length == 0)
-                        {
-                            MessageBox.Show("Не заполнен кассир");
-                            return;
-                        }
+                    }
+
+                    if (txtB_cashier.Text.Trim().Length == 0)
+                    {
+                        MessageBox.Show("Не заполнен кассир");
+                        return;
+                    }
 
                     MainStaticClass.validate_date_time_with_fn(15);
 
@@ -235,12 +233,12 @@ namespace Cash8
                     doc.cashier = txtB_cashier.Text;
                     doc.ShowDialog();
                     doc.Dispose();
-                    new_document = false;                    
+                    new_document = false;
                     loaddocuments();
                     //SendDataOnSalesPortions sdsp = new SendDataOnSalesPortions();
                     //sdsp.send_sales_data_Click(null, null);
                     //sdsp.Dispose();
-                }                
+                }
             }
             if (e.KeyCode == Keys.F10)
             {                

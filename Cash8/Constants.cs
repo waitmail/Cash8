@@ -142,6 +142,7 @@ namespace Cash8
                 NpgsqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
                 {
+                    this.comboBox_nds_ip.SelectedIndex = Convert.ToInt16(reader["nds_ip"]);
                     this.nick_shop.Text = reader["nick_shop"].ToString();
                     this.cash_desk_number.Text = reader["cash_desk_number"].ToString();
                     m_cash_desk_number = Convert.ToInt32(reader["cash_desk_number"]);                   
@@ -204,7 +205,7 @@ namespace Cash8
                         this.comboBox_scale_port.SelectedIndex = index;
                     }
                     this.comboBox_acquiring_bank.SelectedIndex = Convert.ToInt16(reader["acquiring_bank"]);
-                    this.comboBox_nds_ip.SelectedIndex = Convert.ToInt16(reader["nds_ip"]); 
+                    
                 }
                 reader.Close();
                 //if (nick_shop.Text.Trim() != "A01")
@@ -523,11 +524,16 @@ namespace Cash8
 
         private void comboBox_system_taxation_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboBox_system_taxation.SelectedIndex == 3)
+            if (comboBox_system_taxation.SelectedIndex == 1)
             {
                 //checkBox_version2_marking.Checked = true;
                 //checkBox_enable_stock_processing_in_memory.Checked = true;
-                txtB_version_fn.Text = "2";
+                //txtB_version_fn.Text = "2";
+                if (comboBox_nds_ip.SelectedIndex != 0)
+                {
+                    MessageBox.Show("Ставка НДС для налогообложения по ип будет установлена в значение Без НДС.");
+                    comboBox_nds_ip.SelectedIndex = 0;
+                }
             }
         }
 

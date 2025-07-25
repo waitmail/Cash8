@@ -30,6 +30,7 @@ namespace Cash8
             public string rights { get; set; }
             public string password_m { get; set; }
             public string password_b { get; set; }
+            public string fiscals_forbidden { get; set; }
         }
 
 
@@ -93,7 +94,8 @@ namespace Cash8
                         " shop," +
                         " password_m," +
                         " password_b," +
-                        " inn " +
+                        " inn, " +
+                        "fiscals_forbidden"+
                         ")VALUES ('" +
                         user.user_id + "','" +
                         user.name + "'," +
@@ -101,7 +103,8 @@ namespace Cash8
                         user.shop + "','" +
                         user.password_m + "','" +
                         user.password_b + "','" +
-                        user.user_id + "')";
+                        user.user_id + "','"+
+                        user.fiscals_forbidden+"')";
                   
                     command = new NpgsqlCommand(query, conn);
                     command.Transaction = trans;
@@ -1570,7 +1573,7 @@ namespace Cash8
             try
             {
                 conn.Open();
-                string query = "SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'constants' AND column_name = 'nds_ip'); ";                
+                string query = "SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'users' AND column_name = 'fiscals_forbidden'); ";                
                 
                  NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 if (!Convert.ToBoolean(command.ExecuteScalar())) //не нашли такой колонки   

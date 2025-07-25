@@ -976,7 +976,9 @@ namespace Cash8
                 if (check.Discount != 0)
                 {
                     //fptr.beginNonfiscalDocument();
-                    s = "Вами получена скидка " + check.calculation_of_the_discount_of_the_document().ToString().Replace(",", ".") + " " + MainStaticClass.get_currency();
+                    //s = "Вами получена скидка " + check.calculation_of_the_discount_of_the_document().ToString().Replace(",", ".") + " " + MainStaticClass.get_currency();
+                    s = "Вами получена скидка " + check.calculation_of_the_discount_of_the_document().ToString().Replace(",", ".") + "руб. ";
+
                     fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, s);
                     fptr.setParam(AtolConstants.LIBFPTR_PARAM_DEFER, AtolConstants.LIBFPTR_DEFER_POST);
                     fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
@@ -1001,11 +1003,11 @@ namespace Cash8
                             fptr.printText();
                         }
                     }
-                    s = "ДК: " + MainStaticClass.Nick_Shop + "-" + MainStaticClass.CashDeskNumber.ToString() + "-" + check.numdoc.ToString();// +" кассир " + this.cashier;
-                    fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, s);
-                    fptr.setParam(AtolConstants.LIBFPTR_PARAM_DEFER, AtolConstants.LIBFPTR_DEFER_POST);
-                    fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_LEFT);
-                    fptr.printText();
+                    //s = "ДК: " + MainStaticClass.Nick_Shop + "-" + MainStaticClass.CashDeskNumber.ToString() + "-" + check.numdoc.ToString();// +" кассир " + this.cashier;
+                    //fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, s);
+                    //fptr.setParam(AtolConstants.LIBFPTR_PARAM_DEFER, AtolConstants.LIBFPTR_DEFER_POST);
+                    //fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_LEFT);
+                    //fptr.printText();
                     //fptr.endNonfiscalDocument();
                 }
             }
@@ -1629,7 +1631,8 @@ namespace Cash8
             {                
                 if (check.Discount != 0)
                 {
-                    s = "Вами получена скидка " + check.calculation_of_the_discount_of_the_document().ToString().Replace(",", ".") + " " + MainStaticClass.get_currency();
+                    //s = "Вами получена скидка " + check.calculation_of_the_discount_of_the_document().ToString().Replace(",", ".") + " руб. " + MainStaticClass.get_currency();
+                    s = "Вами получена скидка " + check.calculation_of_the_discount_of_the_document().ToString().Replace(",", ".") + " руб. ";
                     fptr.beginNonfiscalDocument();
 
                     fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, s);
@@ -1657,11 +1660,11 @@ namespace Cash8
                         }
                     }
 
-                    s = "ДК: " + MainStaticClass.Nick_Shop + "-" + MainStaticClass.CashDeskNumber.ToString() + "-" + check.numdoc.ToString();// +" кассир " + this.cashier;
-                    fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, s);
-                    fptr.setParam(AtolConstants.LIBFPTR_PARAM_DEFER, AtolConstants.LIBFPTR_DEFER_POST);
-                    fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_LEFT);
-                    fptr.printText();
+                    //s = "ДК: " + MainStaticClass.Nick_Shop + "-" + MainStaticClass.CashDeskNumber.ToString() + "-" + check.numdoc.ToString();// +" кассир " + this.cashier;
+                    //fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, s);
+                    //fptr.setParam(AtolConstants.LIBFPTR_PARAM_DEFER, AtolConstants.LIBFPTR_DEFER_POST);
+                    //fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_LEFT);
+                    //fptr.printText();
                     //fptr.endNonfiscalDocument();
 
                 }

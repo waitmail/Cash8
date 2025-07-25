@@ -443,7 +443,7 @@ namespace Cash8
 
         public bool cdn_check_marker_code(List<string> codes, string mark_str, Int64 numdoc, ref HttpWebRequest request, string mark_str_cdn, Dictionary<string, string> d_tovar,Cash_check cash_Check)
         {
-
+            int error_5000 = 0;
             bool result_check = false;
             AnswerCheckMark answer_check_mark = null;
             ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
@@ -650,10 +650,31 @@ namespace Cash8
                         }
                     }
                 }
-                catch (WebException ex)
+                catch (WebException ex) when (ex.Response is HttpWebResponse errorResponse)
                 {
-                    MainStaticClass.write_cdn_log("check_marker_code " + host.host + " " + ex.Message, numdoc.ToString(), codes[0].ToString(), "3");
-
+                   
+                    MainStaticClass.write_cdn_log("check_marker_code " + host.host + " " + ex.Message, numdoc.ToString(), codes[0].ToString(), "3");                    
+                    using (var errorStream = errorResponse.GetResponseStream())
+                    {
+                        using (var reader = new StreamReader(errorStream))
+                        {
+                            string errorResponseText = reader.ReadToEnd();
+                            MainStaticClass.write_cdn_log($"HTTP Error {(int)errorResponse.StatusCode}: {errorResponseText}",numdoc.ToString(), codes[0].ToString(), "2");
+                            answer_check_mark = JsonConvert.DeserializeObject<AnswerCheckMark>(errorResponseText);
+                            if (answer_check_mark != null)
+                            {
+                                if (answer_check_mark.code == 5000)
+                                {
+                                    error_5000++;
+                                }
+                                else
+                                {
+                                    MessageBox.Show("При проверке кода маркировки на сервере CDN произошла ошибка \r\n Код  " + answer_check_mark.code + " \r\n Описание " + answer_check_mark.description);
+                                }
+                            }
+                        }
+                    }
+    
                     if (ex.Status == WebExceptionStatus.Timeout || ex.Status == WebExceptionStatus.ConnectionClosed)
                     {                 
                         error = true;
@@ -665,10 +686,23 @@ namespace Cash8
                     }
                     else
                     {
-                        host.dateTime = DateTime.Now.AddMinutes(15);
+                        //host.dateTime = DateTime.Now.AddMinutes(15);
                         //result_check = false; //ошибка работы с интернет не является ошибкой кода маркировки
                         error = true;
-                        MessageBox.Show("WebException check_marker_code " + host.host + " " + ex.Message, "check_marker_code");
+                        if (error_5000 == 0)
+                        {
+                            MessageBox.Show("WebException check_marker_code " + host.host + " " + ex.Message, "check_marker_code");
+                            host.dateTime = DateTime.Now.AddMinutes(15);
+                        }
+                        else
+                        {
+                            if (error_5000 > 1)
+                            {
+                                error = false;
+                                result_check = true;
+                            }
+                        }
+
                         MainStaticClass.write_cdn_log("WebException check_marker_code " + host.host + " " + ex.Message, numdoc.ToString(), codes[0].ToString(), "3");
                     }
                     MainStaticClass.UpdateHostDateTimeCdnHost(host.host, DateTime.Now.AddMinutes(15));

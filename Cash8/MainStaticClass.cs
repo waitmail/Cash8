@@ -132,8 +132,9 @@ namespace Cash8
         private static int acquiring_bank = -1;
         private static int do_not_prompt_marking_code = -1;
         private static int nds_ip = -1;
+        private static bool fiscals_forbidden = true;
         //private static Dictionary<int, Cash8.ProductData> dictionaryProductData = new Dictionary<int, Cash8.ProductData>();
-        
+
 
 
         //public static Dictionary DictionaryProductData
@@ -144,6 +145,48 @@ namespace Cash8
         //    }
 
         //}
+
+        /// <summary>
+        /// Возвращает истина если печать 
+        /// на фискальном регистраторе запрещена
+        /// </summary>
+        public static bool GetFiscalsForbidden
+        {
+            get
+            {
+                if (nds_ip == -1)
+                {
+                    NpgsqlConnection conn = null;
+                    NpgsqlCommand command = null;
+                    conn = MainStaticClass.NpgsqlConn();
+                    try
+                    {
+                        conn.Open();
+                        string query = "SELECT fiscals_forbidden FROM users";
+                        command = new NpgsqlCommand(query, conn);
+                        fiscals_forbidden = Convert.ToBoolean(command.ExecuteScalar());
+                    }
+                    catch (NpgsqlException ex)
+                    {
+                        MessageBox.Show("Ошибка при чтении fiscals_forbidden" + ex.ToString());
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Ошибка при чтении fiscals_forbidden" + ex.ToString());
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                }
+                return fiscals_forbidden;
+            }
+        }
+
+
 
         public static void validate_date_time_with_fn(int minutes)
         {
@@ -2474,42 +2517,42 @@ namespace Cash8
         /// представление текущей валюты
         /// </summary>
         /// <returns></returns>
-        public static string get_currency()
-        {
+        //public static string get_currency()
+        //{
 
-            string result = "";
+        //    string result = "";
 
-            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
-            try
-            {
-                conn.Open();
-                string query = "SELECT currency  FROM constants;";
-                NpgsqlCommand command = new NpgsqlCommand(query, conn);
-                result = Convert.ToString(command.ExecuteScalar());
-                conn.Close();
+        //    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+        //    try
+        //    {
+        //        conn.Open();
+        //        string query = "SELECT currency  FROM constants;";
+        //        NpgsqlCommand command = new NpgsqlCommand(query, conn);
+        //        result = Convert.ToString(command.ExecuteScalar());
+        //        conn.Close();
 
-            }
-            catch (NpgsqlException)
-            {
-                MyMessageBox mmb = new MyMessageBox("Ошибка при получении валюты", "Ошибка при получении валюты");
-                mmb.ShowDialog();
-            }
-            catch (Exception)
-            {
-                MyMessageBox mmb = new MyMessageBox("Ошибка при получении валюты", "Ошибка при получении валюты");
-                mmb.ShowDialog();
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                }
-            }
+        //    }
+        //    catch (NpgsqlException)
+        //    {
+        //        MyMessageBox mmb = new MyMessageBox("Ошибка при получении валюты", "Ошибка при получении валюты");
+        //        mmb.ShowDialog();
+        //    }
+        //    catch (Exception)
+        //    {
+        //        MyMessageBox mmb = new MyMessageBox("Ошибка при получении валюты", "Ошибка при получении валюты");
+        //        mmb.ShowDialog();
+        //    }
+        //    finally
+        //    {
+        //        if (conn.State == ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //        }
+        //    }
 
-            return result;
+        //    return result;
 
-        }
+        //}
 
         public static string version()
         {
@@ -2766,7 +2809,10 @@ namespace Cash8
             public string Version { get; set; }
             public string OSVersion { get; set; }
             public string DeviceInfo { get; set; }
-            public string PrintingLibraryes { get; set; }
+            public string PrintingLibrary { get; set; }
+            public string VersionPrintingLibrary { get; set; }
+            public string VariantUsePrintingLibrary { get; set; }
+
         }
 
 #region DeviceInfo
@@ -2886,8 +2932,31 @@ namespace Cash8
 
             return result;
         }
-#endregion
+        #endregion
 
+
+        private static string GetAtolDriverVersion()
+        {
+            try
+            {
+                // Получаем путь к исполняемому файлу
+                string executablePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                string directory = Path.GetDirectoryName(executablePath);
+
+                // Формируем полный путь к библиотеке
+                string dllPath = Path.Combine(directory, "Atol.Drivers10.Fptr.dll");
+
+                // Загружаем сборку и получаем версию
+                var assembly = System.Reflection.Assembly.LoadFrom(dllPath);
+                return assembly.GetName().Version.ToString();
+            }
+            catch (Exception ex)
+            {
+                // Обработка ошибок
+                 MessageBox.Show($"Ошибка при получении версии: {ex.Message}");
+                return "Версия не определена";
+            }
+        }
 
         public static bool SendResultGetData()
         {
@@ -2901,6 +2970,8 @@ namespace Cash8
             resultGetData.Version = MainStaticClass.version().Replace(".", "");
             resultGetData.NumCash = MainStaticClass.CashDeskNumber.ToString();
             resultGetData.OSVersion = Environment.OSVersion.VersionString;
+            resultGetData.VariantUsePrintingLibrary = MainStaticClass.variant_connect_fn.ToString();
+            resultGetData.VersionPrintingLibrary = GetAtolDriverVersion();
             //Запросим информацию про фискальный регистратор
             if (MainStaticClass.printing_using_libraries == 0)
             {
@@ -2910,7 +2981,7 @@ namespace Cash8
             {
                 resultGetData.DeviceInfo = get_device_info_printing_libraries();
             }
-            resultGetData.PrintingLibraryes = MainStaticClass.PrintingUsingLibraries.ToString();
+            resultGetData.PrintingLibrary = MainStaticClass.PrintingUsingLibraries.ToString();
             //string vatin = get_registration_info();
             //if (vatin.Trim() != "")
             //{
@@ -2954,7 +3025,9 @@ namespace Cash8
             resultGetData.Successfully = "Successfully";
             resultGetData.Version = MainStaticClass.version().Replace(".", "");
             resultGetData.NumCash = MainStaticClass.CashDeskNumber.ToString();
-            resultGetData.PrintingLibraryes = MainStaticClass.PrintingUsingLibraries.ToString();
+            resultGetData.PrintingLibrary = MainStaticClass.PrintingUsingLibraries.ToString();
+            resultGetData.VariantUsePrintingLibrary = MainStaticClass.variant_connect_fn.ToString();
+            resultGetData.VersionPrintingLibrary = GetAtolDriverVersion();
             string data = JsonConvert.SerializeObject(resultGetData, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             data_encrypt = CryptorEngine.Encrypt(data, true, key);
             using (Cash8.DS.DS ds = MainStaticClass.get_ds())

@@ -222,9 +222,19 @@ namespace Cash8
             }
             else
             {
-                PrintingUsingLibraries printing = new PrintingUsingLibraries();
-                printing.cashIncome(Convert.ToDouble(sum_avans.Text.Replace(".",",")));
-                get_summ_in_cashe_Click(null, null);
+                if (MainStaticClass.GetFiscalsForbidden)
+                {
+                    MessageBox.Show("Вам запрещена печать на фискаольном регистраторое", "Проверки при печати");
+                    return;
+                }
+                else
+                {
+                    PrintingUsingLibraries printing = new PrintingUsingLibraries();
+                    printing.cashIncome(Convert.ToDouble(sum_avans.Text.Replace(".", ",")));
+                }
+
+                    get_summ_in_cashe_Click(null, null);
+                //}
             }
             //sum_avans.Text = "0";
             avans.Enabled = true;
@@ -262,9 +272,17 @@ namespace Cash8
             }
             else
             {
-                PrintingUsingLibraries printing = new PrintingUsingLibraries();
-                printing.cashOutcome(Convert.ToDouble(sum_incass.Text.Replace(".",",")));
-                get_summ_in_cashe_Click(null, null);
+                if (MainStaticClass.GetFiscalsForbidden)
+                {
+                    MessageBox.Show("Вам запрещена печать на фискаольном регистраторое", "Проверки при печати");
+                    return;
+                }
+                else
+                {
+                    PrintingUsingLibraries printing = new PrintingUsingLibraries();
+                    printing.cashOutcome(Convert.ToDouble(sum_incass.Text.Replace(".", ",")));
+                    get_summ_in_cashe_Click(null, null);
+                }
             }
             incass.Enabled = true;
         }
@@ -299,8 +317,16 @@ namespace Cash8
             }
             else
             {
-                PrintingUsingLibraries printing = new PrintingUsingLibraries();
-                printing.reportX();
+                if (MainStaticClass.GetFiscalsForbidden)
+                {
+                    MessageBox.Show("Вам запрещена печать на фискаольном регистраторое", "Проверки при печати");
+                    return;
+                }
+                else
+                {
+                    PrintingUsingLibraries printing = new PrintingUsingLibraries();
+                    printing.reportX();
+                }
             }
         }
 
@@ -334,20 +360,16 @@ namespace Cash8
             }
             else
             {
-                PrintingUsingLibraries printing = new PrintingUsingLibraries();
-                printing.reportZ();
-            }
-        }
-
-        private void annul_check_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                MessageBox.Show(FiscallPrintJason.delete_last_job());
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
+                if (MainStaticClass.GetFiscalsForbidden)
+                {
+                    MessageBox.Show("Вам запрещена печать на фискаольном регистраторое", "Проверки при печати");
+                    return;
+                }
+                else
+                {
+                    PrintingUsingLibraries printing = new PrintingUsingLibraries();
+                    printing.reportZ();
+                }
             }
         }
 
@@ -382,8 +404,16 @@ namespace Cash8
             }
             else
             {
-                PrintingUsingLibraries printing = new PrintingUsingLibraries();
-                printing.print_last_document();
+                if (MainStaticClass.GetFiscalsForbidden)
+                {
+                    MessageBox.Show("Вам запрещена печать на фискаольном регистраторое", "Проверки при печати");
+                    return;
+                }
+                else
+                {
+                    PrintingUsingLibraries printing = new PrintingUsingLibraries();
+                    printing.print_last_document();
+                }
             }
         }
 
@@ -418,8 +448,16 @@ namespace Cash8
             }
             else
             {
-                PrintingUsingLibraries printing = new PrintingUsingLibraries();
-                sum_incass.Text = printing.getCasheSumm();
+                if (MainStaticClass.GetFiscalsForbidden)
+                {
+                    MessageBox.Show("Вам запрещена печать на фискаольном регистраторое", "Проверки при печати");
+                    return;
+                }
+                else
+                {
+                    PrintingUsingLibraries printing = new PrintingUsingLibraries();
+                    sum_incass.Text = printing.getCasheSumm();
+                }
             }
         }
 
