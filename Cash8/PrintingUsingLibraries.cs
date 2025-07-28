@@ -1121,7 +1121,8 @@ namespace Cash8
         }
                                   
         public void print_sell_2_3_or_return_sell(Cash_check check, int variant)
-        {
+        {            
+
             bool error = false;
             
             IFptr fptr = MainStaticClass.FPTR;

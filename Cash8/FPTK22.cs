@@ -231,10 +231,8 @@ namespace Cash8
                 {
                     PrintingUsingLibraries printing = new PrintingUsingLibraries();
                     printing.cashIncome(Convert.ToDouble(sum_avans.Text.Replace(".", ",")));
-                }
-
                     get_summ_in_cashe_Click(null, null);
-                //}
+                }                
             }
             //sum_avans.Text = "0";
             avans.Enabled = true;
