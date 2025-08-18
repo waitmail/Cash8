@@ -311,41 +311,41 @@ namespace Cash8
         ///// Возвращает флажок 
         ///// запрашивать ли код маркировки        
         ///// </summary>
-        //public static int GetDoNotPromptMarkingCode
-        //{
-        //    get
-        //    {
-        //        if (do_not_prompt_marking_code == -1)
-        //        {
-        //            NpgsqlConnection conn = null;
-        //            NpgsqlCommand command = null;
-        //            conn = MainStaticClass.NpgsqlConn();
-        //            try
-        //            {
-        //                conn.Open();
-        //                string query = "SELECT do_not_prompt_marking_code FROM constants";
-        //                command = new NpgsqlCommand(query, conn);
-        //                do_not_prompt_marking_code = Convert.ToInt16(command.ExecuteScalar());
-        //            }
-        //            catch (NpgsqlException ex)
-        //            {
-        //                MessageBox.Show("Ошибка при чтении do_not_prompt_marking_code" + ex.ToString());
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                MessageBox.Show("Ошибка при чтении do_not_prompt_marking_code" + ex.ToString());
-        //            }
-        //            finally
-        //            {
-        //                if (conn.State == ConnectionState.Open)
-        //                {
-        //                    conn.Close();
-        //                }
-        //            }
-        //        }
-        //        return do_not_prompt_marking_code;
-        //    }
-        //}
+        public static int GetDoNotPromptMarkingCode
+        {
+            get
+            {
+                if (do_not_prompt_marking_code == -1)
+                {
+                    NpgsqlConnection conn = null;
+                    NpgsqlCommand command = null;
+                    conn = MainStaticClass.NpgsqlConn();
+                    try
+                    {
+                        conn.Open();
+                        string query = "SELECT do_not_prompt_marking_code FROM constants";
+                        command = new NpgsqlCommand(query, conn);
+                        do_not_prompt_marking_code = Convert.ToInt16(command.ExecuteScalar());
+                    }
+                    catch (NpgsqlException ex)
+                    {
+                        MessageBox.Show("Ошибка при чтении do_not_prompt_marking_code" + ex.ToString());
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Ошибка при чтении do_not_prompt_marking_code" + ex.ToString());
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                }
+                return do_not_prompt_marking_code;
+            }
+        }
 
         public static string GetFnIpaddr
         {

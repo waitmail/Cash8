@@ -1609,7 +1609,7 @@ namespace Cash8
 
                                 row["price_at_discount"] = actionPrice.Value;
                                 row["sum_full"] = (qty * price).ToString();
-                                row["sum_at_discount"] = ((decimal)qty * actionPrice.Value).ToString();
+                                row["sum_at_discount"] = (Math.Ceiling((decimal)qty * actionPrice.Value * 100) / 100).ToString();//((decimal)qty * actionPrice.Value).ToString();
                                 row["action"] = num_doc.ToString();
                                 row["action2"] = num_doc.ToString();
                             }

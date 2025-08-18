@@ -1641,11 +1641,20 @@ namespace Cash8
                 {
                     if (check_type.SelectedIndex == 0)
                     {
-                        lvi.SubItems[5].Text = Math.Round(Convert.ToDouble(lvi.SubItems[4].Text) - Convert.ToDouble(lvi.SubItems[4].Text) * Discount, 2, MidpointRounding.ToEven).ToString();//Цена со скидкой            
+                        //lvi.SubItems[5].Text = Math.Round(Convert.ToDouble(lvi.SubItems[4].Text) - Convert.ToDouble(lvi.SubItems[4].Text) * Discount, 2, MidpointRounding.ToEven).ToString();//Цена со скидкой            
+                        double originalPrice = Convert.ToDouble(lvi.SubItems[4].Text);
+                        double discountedPrice = originalPrice - originalPrice * Discount;
+                        double roundedUpPrice = Math.Ceiling(discountedPrice * 100) / 100;
+                        lvi.SubItems[5].Text = roundedUpPrice.ToString();
                     }
                     else if (check_type.SelectedIndex == 1)
                     {
-                        lvi.SubItems[7].Text = Math.Round(Convert.ToDouble(lvi.SubItems[3].Text) * Convert.ToDouble(lvi.SubItems[5].Text),2,MidpointRounding.ToEven).ToString();//Это возврат 
+                        //lvi.SubItems[7].Text = Math.Round(Convert.ToDouble(lvi.SubItems[3].Text) * Convert.ToDouble(lvi.SubItems[5].Text),2,MidpointRounding.ToEven).ToString();//Это возврат 
+                        double quantity = Convert.ToDouble(lvi.SubItems[3].Text);
+                        double price = Convert.ToDouble(lvi.SubItems[5].Text);
+                        double total = quantity * price;
+                        double roundedUpTotal = Math.Ceiling(total * 100) / 100;
+                        lvi.SubItems[7].Text = roundedUpTotal.ToString();
                     }
                 }
                 else
@@ -1676,11 +1685,13 @@ namespace Cash8
                 //Проверка на сертификат               
                 if (its_certificate(row["code"].ToString()) != "1")
                 {
-                    row["price_at_discount"] = Math.Round(Convert.ToDouble(row["price"]) - Convert.ToDouble(row["price"]) * Discount, 2);//Цена со скидкой            
+                    //row["price_at_discount"] = Math.Round(Convert.ToDouble(row["price"]) - Convert.ToDouble(row["price"]) * Discount, 2);//Цена со скидкой       
+                    row["price_at_discount"] = Math.Ceiling((Convert.ToDouble(row["price"]) - Convert.ToDouble(row["price"]) * Discount) * 100) / 100;
                 }
                 else
                 {
-                    row["price_at_discount"] = Math.Round(Convert.ToDecimal(row["price"]), 2);
+                    //row["price_at_discount"] = Math.Round(Convert.ToDecimal(row["price"]), 2);
+                    row["price_at_discount"] = Math.Ceiling(Convert.ToDecimal(row["price"]) * 100) / 100;
                 }
                 row["sum_full"] = Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price"]);
                 row["sum_at_discount"] = Convert.ToDecimal(row["quantity"]) * Convert.ToDecimal(row["price_at_discount"]);
@@ -2863,7 +2874,11 @@ namespace Cash8
 
                 if (!productData.isCertificate())
                 {
-                    lvi.SubItems.Add(Math.Round(Convert.ToDouble(productData.Price) - Convert.ToDouble(productData.Price) * Discount, 2).ToString());//Цена со скидкой
+                    //lvi.SubItems.Add(Math.Round(Convert.ToDouble(productData.Price) - Convert.ToDouble(productData.Price) * Discount, 2).ToString());//Цена со скидкой
+                    double originalPrice = Convert.ToDouble(productData.Price);
+                    double discountedPrice = originalPrice - originalPrice * Discount;
+                    double roundedUpPrice = Math.Ceiling(discountedPrice * 100) / 100;
+                    lvi.SubItems.Add(roundedUpPrice.ToString());
                 }
                 else
                 {
@@ -2892,7 +2907,7 @@ namespace Cash8
                 bool cdn_vrifyed = false;
                 string mark_str = "";
 
-                if (productData.IsMarked()) //&& (MainStaticClass.GetDoNotPromptMarkingCode == 0))
+                if (productData.IsMarked() && MainStaticClass.GetDoNotPromptMarkingCode == 0)
                 {
                     if (marking_code == "")
                     {
