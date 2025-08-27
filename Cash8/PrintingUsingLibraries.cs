@@ -644,7 +644,7 @@ namespace Cash8
                         fptr.setParam(1212, 32);
                     }
                     else
-                    {                       
+                    {
                         string mark = lvi.SubItems[14].Text.Trim().Replace("vasya2021", "'");
 
                         Cash_check.Requisite1260 requisite1260;
@@ -679,7 +679,7 @@ namespace Cash8
                         else
                         {
                             MessageBox.Show("Код маркировки " + mark + " не найден в проверенных");
-                        }                     
+                        }
 
                         fptr.setParam(AtolConstants.LIBFPTR_PARAM_COMMODITY_NAME, lvi.SubItems[0].Text.Trim() + " " + lvi.SubItems[1].Text.Trim());
                         fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_ONLINE_VALIDATION_RESULT, result_check);
@@ -749,7 +749,20 @@ namespace Cash8
                         fptr.setParam(AtolConstants.LIBFPTR_PARAM_TAX_TYPE, AtolConstants.LIBFPTR_TAX_VAT7);
                     }
                 }
-                               
+
+                //Проверка на сертификат
+                if (check.check_type.SelectedIndex == 0)
+                {
+                    if (MainStaticClass.its_certificate(lvi.SubItems[0].Text.Trim()))
+                    {
+                        fptr.setParam(1214, 3);
+                    }
+                    else
+                    {
+                        fptr.setParam(1214, 4);
+                    }
+                }
+
                 fptr.registration();
                 if (fptr.errorCode() > 0)
                 {
@@ -1262,8 +1275,7 @@ namespace Cash8
                         fptr.setParam(1212, 32);
                     }
                     else
-                    {
-                       
+                    {                       
 
                         //if (!cdn_check(lvi.SubItems[0].Text.Trim(), check.numdoc.ToString()))
                         //{
@@ -1353,7 +1365,20 @@ namespace Cash8
                 {
                     fptr.setParam(AtolConstants.LIBFPTR_PARAM_TAX_TYPE, AtolConstants.LIBFPTR_TAX_VAT7);
                 }
-                                
+
+                //Проверка на сертификат
+                if (check.check_type.SelectedIndex == 0)
+                {
+                    if (MainStaticClass.its_certificate(lvi.SubItems[0].Text.Trim()))
+                    {
+                        fptr.setParam(1214, 3);
+                    }
+                    else
+                    {
+                        fptr.setParam(1214, 4);
+                    }
+                }
+
                 fptr.registration();
                 if (fptr.errorCode() > 0)
                 {

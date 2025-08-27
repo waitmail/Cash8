@@ -2907,7 +2907,7 @@ namespace Cash8
                 bool cdn_vrifyed = false;
                 string mark_str = "";
 
-                if (productData.IsMarked() && MainStaticClass.GetDoNotPromptMarkingCode == 0)
+                if (productData.IsMarked())// && MainStaticClass.GetDoNotPromptMarkingCode == 0
                 {
                     if (marking_code == "")
                     {
@@ -13402,44 +13402,44 @@ namespace Cash8
         }
         
 
-        private void checkSumOnDocument(DataTable dt)
-        {           
-            foreach (DataRow row in dt.Rows)
-            {
-                if (Math.Round(Convert.ToDouble(row["sum_full"]),2,MidpointRounding.ToEven) != Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price"]),2, MidpointRounding.ToEven))
-                {                                     
-                    MainStaticClass.WriteRecordErrorLog("Обнаружено несовпадение цены и суммы в строке " + row["tovar_code"].ToString(), "checkSumOnDocument", numdoc, MainStaticClass.CashDeskNumber, "Проверки сумм по строке");
-                }
-                if (Math.Round(Convert.ToDouble(row["sum_at_discount"]),2,MidpointRounding.ToEven) != Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price_at_discount"]),2,MidpointRounding.ToEven))
-                {                    
-                    MainStaticClass.WriteRecordErrorLog("Обнаружено несовпадение цены со скидкой и суммы со скидкой в строке " + row["tovar_code"].ToString(), "checkSumOnDocument", numdoc, MainStaticClass.CashDeskNumber, "Проверки сумм по строке");
-                }
-                if (client.Tag is null)
-                {
-                    if (Math.Round(Convert.ToDouble(row["sum_full"]),2,MidpointRounding.ToEven) != Math.Round(Convert.ToDouble(row["sum_at_discount"]),2,MidpointRounding.ToEven))
-                    {
-                        if ((row["action"].ToString() == "0") && (row["gift"].ToString() == "0"))
-                        {                            
-                            MainStaticClass.WriteRecordErrorLog("Обнаружена непонятная скидка " + row["tovar_code"].ToString(), "checkSumOnDocument", numdoc, MainStaticClass.CashDeskNumber, "Проверки сумм по строке");
-                        }                        
-                    }
-                }
-                else
-                {
-                    if (Math.Round(Convert.ToDouble(row["sum_full"])- Convert.ToDouble(row["sum_full"])/100*5,2, MidpointRounding.ToEven) != Math.Round(Convert.ToDouble(row["sum_at_discount"]),2,MidpointRounding.ToEven))
-                    {
-                        string sum_full = row["sum_full"].ToString();
-                        string sum_at_discount = Math.Round(Convert.ToDouble(row["sum_full"]) - Convert.ToDouble(row["sum_full"]) / 100 * 5, 2, MidpointRounding.ToEven).ToString();
-                        string raznost = (Math.Round(Convert.ToDouble(row["sum_full"]) - Convert.ToDouble(row["sum_full"]) / 100 * 5, 2, MidpointRounding.ToEven) - Convert.ToDouble(row["sum_at_discount"])).ToString();
-                        string test = "sum_full " + sum_full + " sum_at_discount " + sum_at_discount + " raznost" + raznost;
-                        if ((row["action"].ToString() == "0") && (row["gift"].ToString() == "0"))
-                        {                            
-                            MainStaticClass.WriteRecordErrorLog("Обнаружена непонятная скидка по карте клиента " + row["tovar_code"].ToString() + test, "checkSumOnDocument", numdoc, MainStaticClass.CashDeskNumber, "Проверки сумм по строке");
-                        }                       
-                    }
-                }
-            }
-        }
+        //private void checkSumOnDocument(DataTable dt)
+        //{
+        //    foreach (DataRow row in dt.Rows)
+        //    {
+        //        if (Math.Round(Convert.ToDouble(row["sum_full"]), 2, MidpointRounding.ToEven) != Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price"]), 2, MidpointRounding.ToEven))
+        //        {
+        //            MainStaticClass.WriteRecordErrorLog("Обнаружено несовпадение цены и суммы в строке " + row["tovar_code"].ToString(), "checkSumOnDocument", numdoc, MainStaticClass.CashDeskNumber, "Проверки сумм по строке");
+        //        }
+        //        if (Math.Round(Convert.ToDouble(row["sum_at_discount"]), 2, MidpointRounding.ToEven) != Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price_at_discount"]), 2, MidpointRounding.ToEven))
+        //        {
+        //            MainStaticClass.WriteRecordErrorLog("Обнаружено несовпадение цены со скидкой и суммы со скидкой в строке " + row["tovar_code"].ToString(), "checkSumOnDocument", numdoc, MainStaticClass.CashDeskNumber, "Проверки сумм по строке");
+        //        }
+        //        if (client.Tag is null)
+        //        {
+        //            if (Math.Round(Convert.ToDouble(row["sum_full"]), 2, MidpointRounding.ToEven) != Math.Round(Convert.ToDouble(row["sum_at_discount"]), 2, MidpointRounding.ToEven))
+        //            {
+        //                if ((row["action"].ToString() == "0") && (row["gift"].ToString() == "0"))
+        //                {
+        //                    MainStaticClass.WriteRecordErrorLog("Обнаружена непонятная скидка " + row["tovar_code"].ToString(), "checkSumOnDocument", numdoc, MainStaticClass.CashDeskNumber, "Проверки сумм по строке");
+        //                }
+        //            }
+        //        }
+        //        else
+        //        {
+        //            if (Math.Round(Convert.ToDouble(row["sum_full"]) - Convert.ToDouble(row["sum_full"]) / 100 * 5, 2, MidpointRounding.ToEven) != Math.Round(Convert.ToDouble(row["sum_at_discount"]), 2, MidpointRounding.ToEven))
+        //            {
+        //                string sum_full = row["sum_full"].ToString();
+        //                string sum_at_discount = Math.Round(Convert.ToDouble(row["sum_full"]) - Convert.ToDouble(row["sum_full"]) / 100 * 5, 2, MidpointRounding.ToEven).ToString();
+        //                string raznost = (Math.Round(Convert.ToDouble(row["sum_full"]) - Convert.ToDouble(row["sum_full"]) / 100 * 5, 2, MidpointRounding.ToEven) - Convert.ToDouble(row["sum_at_discount"])).ToString();
+        //                string test = "sum_full " + sum_full + " sum_at_discount " + sum_at_discount + " raznost" + raznost;
+        //                if ((row["action"].ToString() == "0") && (row["gift"].ToString() == "0"))
+        //                {
+        //                    MainStaticClass.WriteRecordErrorLog("Обнаружена непонятная скидка по карте клиента " + row["tovar_code"].ToString() + test, "checkSumOnDocument", numdoc, MainStaticClass.CashDeskNumber, "Проверки сумм по строке");
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
 
 
         private void show_pay_form()

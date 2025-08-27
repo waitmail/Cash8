@@ -311,41 +311,41 @@ namespace Cash8
         ///// Возвращает флажок 
         ///// запрашивать ли код маркировки        
         ///// </summary>
-        public static int GetDoNotPromptMarkingCode
-        {
-            get
-            {
-                if (do_not_prompt_marking_code == -1)
-                {
-                    NpgsqlConnection conn = null;
-                    NpgsqlCommand command = null;
-                    conn = MainStaticClass.NpgsqlConn();
-                    try
-                    {
-                        conn.Open();
-                        string query = "SELECT do_not_prompt_marking_code FROM constants";
-                        command = new NpgsqlCommand(query, conn);
-                        do_not_prompt_marking_code = Convert.ToInt16(command.ExecuteScalar());
-                    }
-                    catch (NpgsqlException ex)
-                    {
-                        MessageBox.Show("Ошибка при чтении do_not_prompt_marking_code" + ex.ToString());
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("Ошибка при чтении do_not_prompt_marking_code" + ex.ToString());
-                    }
-                    finally
-                    {
-                        if (conn.State == ConnectionState.Open)
-                        {
-                            conn.Close();
-                        }
-                    }
-                }
-                return do_not_prompt_marking_code;
-            }
-        }
+        //public static int GetDoNotPromptMarkingCode
+        //{
+        //    get
+        //    {
+        //        if (do_not_prompt_marking_code == -1)
+        //        {
+        //            NpgsqlConnection conn = null;
+        //            NpgsqlCommand command = null;
+        //            conn = MainStaticClass.NpgsqlConn();
+        //            try
+        //            {
+        //                conn.Open();
+        //                string query = "SELECT do_not_prompt_marking_code FROM constants";
+        //                command = new NpgsqlCommand(query, conn);
+        //                do_not_prompt_marking_code = Convert.ToInt16(command.ExecuteScalar());
+        //            }
+        //            catch (NpgsqlException ex)
+        //            {
+        //                MessageBox.Show("Ошибка при чтении do_not_prompt_marking_code" + ex.ToString());
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                MessageBox.Show("Ошибка при чтении do_not_prompt_marking_code" + ex.ToString());
+        //            }
+        //            finally
+        //            {
+        //                if (conn.State == ConnectionState.Open)
+        //                {
+        //                    conn.Close();
+        //                }
+        //            }
+        //        }
+        //        return do_not_prompt_marking_code;
+        //    }
+        //}
 
         public static string GetFnIpaddr
         {
@@ -1498,54 +1498,54 @@ namespace Cash8
         }
 
 
-        public static int EnableCdnMarkers
-        {
-            get
-            {
-                if (enable_cdn_markers == -1)
-                {
+        //public static int EnableCdnMarkers
+        //{
+        //    get
+        //    {
+        //        if (enable_cdn_markers == -1)
+        //        {
 
-                    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
-                    try
-                    {
-                        conn.Open();
-                        string query = "SELECT enable_cdn_markers FROM constants";
-                        NpgsqlCommand command = new NpgsqlCommand(query, conn);
-                        object result_query = command.ExecuteScalar();
-                        if (Convert.ToBoolean(result_query) == false)
-                        {
-                            enable_cdn_markers = 0;
-                        }
-                        else
-                        {
-                            enable_cdn_markers = 1;
-                        }
-                    }
-                    catch (NpgsqlException ex)
-                    {
-                        enable_cdn_markers = 0;
-                        MessageBox.Show("Ошибка при чтении флага о том что разрешена работа с CDN серверами " + ex.Message);
-                    }
-                    catch (Exception ex)
-                    {
-                        enable_cdn_markers = 0;
-                        MessageBox.Show("Ошибка при чтении флага о том что разрешена работа с CDN серверами " + ex.Message);
-                    }
-                    finally
-                    {
-                        if (conn.State == ConnectionState.Open)
-                        {
-                            conn.Close();
-                        }
-                    }
-                }                
-                return enable_cdn_markers;
-            }
-            set
-            {
-                enable_cdn_markers = value;
-            }
-        }
+        //            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+        //            try
+        //            {
+        //                conn.Open();
+        //                string query = "SELECT enable_cdn_markers FROM constants";
+        //                NpgsqlCommand command = new NpgsqlCommand(query, conn);
+        //                object result_query = command.ExecuteScalar();
+        //                if (Convert.ToBoolean(result_query) == false)
+        //                {
+        //                    enable_cdn_markers = 0;
+        //                }
+        //                else
+        //                {
+        //                    enable_cdn_markers = 1;
+        //                }
+        //            }
+        //            catch (NpgsqlException ex)
+        //            {
+        //                enable_cdn_markers = 0;
+        //                MessageBox.Show("Ошибка при чтении флага о том что разрешена работа с CDN серверами " + ex.Message);
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                enable_cdn_markers = 0;
+        //                MessageBox.Show("Ошибка при чтении флага о том что разрешена работа с CDN серверами " + ex.Message);
+        //            }
+        //            finally
+        //            {
+        //                if (conn.State == ConnectionState.Open)
+        //                {
+        //                    conn.Close();
+        //                }
+        //            }
+        //        }                
+        //        return enable_cdn_markers;
+        //    }
+        //    set
+        //    {
+        //        enable_cdn_markers = value;
+        //    }
+        //}
 
 
         /// <summary>
@@ -2489,7 +2489,7 @@ namespace Cash8
 
             if (productData.IsCDNCheck())
             {
-                if (MainStaticClass.CashDeskNumber != 9 && MainStaticClass.EnableCdnMarkers == 1)
+                if (MainStaticClass.CashDeskNumber != 9)// && MainStaticClass.EnableCdnMarkers == 1
                 {
                     if (MainStaticClass.CDN_Token == "")
                     {
@@ -2506,7 +2506,6 @@ namespace Cash8
                     result = cdn.cdn_check_marker_code(codes, mark_str, check.numdoc, ref check.request, mark_str_cdn, d_tovar, check);                    
                 }
             }
-
 
             return result;
         }
