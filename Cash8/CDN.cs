@@ -333,7 +333,14 @@ namespace Cash8
                     //MainStaticClass.write_event_in_log("Произошли ошибки при опросе досутности CDN серверов " + ex.Message, "Документ чек", "0");
                     MainStaticClass.write_cdn_log("Произошли ошибки при опросе досутности CDN серверов " + ex.Message, "0", "", "3");
                 }
-            }
+            }          
+
+            // Сортировка: сначала доступные серверы (dateTime <= Now), затем недоступные
+            // Внутри каждой группы - по возрастанию времени отклика
+            list.hosts = list.hosts
+                .OrderBy(h => h.dateTime > DateTime.Now ? 1 : 0) // 0 для доступных, 1 для недоступных
+                .ThenBy(h => h.latensy) // затем по времени отклика
+                .ToList();
 
             return list;
         }
@@ -441,7 +448,7 @@ namespace Cash8
             return cDNHealth;
         }
 
-        public bool cdn_check_marker_code(List<string> codes, string mark_str, Int64 numdoc, ref HttpWebRequest request, string mark_str_cdn, Dictionary<string, string> d_tovar,Cash_check cash_Check)
+        public bool cdn_check_marker_code(List<string> codes, string mark_str, Int64 numdoc, ref HttpWebRequest request, string mark_str_cdn, Dictionary<string, string> d_tovar,Cash_check cash_Check, ProductData productData)
         {
             int error_5000 = 0;
             bool result_check = false;
@@ -538,17 +545,22 @@ namespace Cash8
                         {
                             if (answer_check_mark.codes[0].groupIds != null)
                             {
-                                if ((answer_check_mark.codes[0].groupIds[0] != 23) && (answer_check_mark.codes[0].groupIds[0] != 8)&& (answer_check_mark.codes[0].groupIds[0] != 13))
+                                if ((answer_check_mark.codes[0].groupIds[0] != 23) && (answer_check_mark.codes[0].groupIds[0] != 8)&&(answer_check_mark.codes[0].groupIds[0] != 15))
+                                //if ((answer_check_mark.codes[0].groupIds[0] != 23) && (answer_check_mark.codes[0].groupIds[0] != 8))
                                 {
-                                    if (cash_Check.check_type.SelectedIndex == 0)
+                                    if (!productData.RrNotControlOwner())
                                     {
-                                        //MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + " Вы не являетесь владельцем " + s, "CDN проверка");
-                                        sb.AppendLine("Вы не являетесь владельцем!".ToUpper());
-                                        //MainStaticClass.write_event_in_log("CDN Код маркировки " + mark_str_cdn + " Вы не являетесь владельцем ", "Документ чек", numdoc.ToString());
-                                        MainStaticClass.write_cdn_log("CDN Код маркировки " + mark_str_cdn + " Вы не являетесь владельцем ", numdoc.ToString(), codes[0].ToString(), "1");
+                                        MessageBox.Show(" Исключения групп маркрировки  23|8|15 \r\n Текущая группа маркировки  " + answer_check_mark.codes[0].groupIds[0].ToString());
+                                        if (cash_Check.check_type.SelectedIndex == 0)
+                                        {
+                                            //MessageBox.Show("Код маркировки " + answer_check_mark.codes[0].gtin + " Вы не являетесь владельцем " + s, "CDN проверка");
+                                            sb.AppendLine("Вы не являетесь владельцем!".ToUpper());
+                                            //MainStaticClass.write_event_in_log("CDN Код маркировки " + mark_str_cdn + " Вы не являетесь владельцем ", "Документ чек", numdoc.ToString());
+                                            MainStaticClass.write_cdn_log("CDN Код маркировки " + mark_str_cdn + " Вы не являетесь владельцем ", numdoc.ToString(), codes[0].ToString(), "1");
+                                        }
                                     }
                                 }
-                            }
+                            }                            
                             else
                             {
                                 sb.AppendLine("Не удалось определить группу товара");
@@ -650,16 +662,97 @@ namespace Cash8
                         }
                     }
                 }
-                catch (WebException ex) when (ex.Response is HttpWebResponse errorResponse)
+                //catch (WebException ex) when (ex.Response is HttpWebResponse errorResponse)
+                //{
+
+                //    MainStaticClass.write_cdn_log("check_marker_code " + host.host + " " + ex.Message, numdoc.ToString(), codes[0].ToString(), "3");                    
+                //    using (var errorStream = errorResponse.GetResponseStream())
+                //    {
+                //        using (var reader = new StreamReader(errorStream))
+                //        {
+                //            string errorResponseText = reader.ReadToEnd();
+                //            MainStaticClass.write_cdn_log($"HTTP Error {(int)errorResponse.StatusCode}: {errorResponseText}",numdoc.ToString(), codes[0].ToString(), "2");
+                //            answer_check_mark = JsonConvert.DeserializeObject<AnswerCheckMark>(errorResponseText);
+                //            if (answer_check_mark != null)
+                //            {
+                //                if (answer_check_mark.code == 5000)
+                //                {
+                //                    error_5000++;
+                //                }
+                //                else
+                //                {
+                //                    MessageBox.Show("При проверке кода маркировки на сервере CDN произошла ошибка \r\n Код  " + answer_check_mark.code + " \r\n Описание " + answer_check_mark.description);
+                //                }
+                //            }
+                //        }
+                //    }
+
+                //    if (ex.Status == WebExceptionStatus.Timeout || ex.Status == WebExceptionStatus.ConnectionClosed)
+                //    {                 
+                //        error = true;
+                //        if (error_timeout == 0)//если это первая ошибка по таймауту или соединение закрыто тогда попробуем обновить соединение и еще раз соединиться с наиболее быстрым CDN сервером
+                //        {
+                //            i--;
+                //        }
+                //        error_timeout++;
+                //    }
+                //    else
+                //    {
+                //        //host.dateTime = DateTime.Now.AddMinutes(15);
+                //        //result_check = false; //ошибка работы с интернет не является ошибкой кода маркировки
+                //        error = true;
+                //        if (error_5000 == 0)
+                //        {
+                //            MessageBox.Show("WebException check_marker_code " + host.host + " " + ex.Message, "check_marker_code");
+                //            host.dateTime = DateTime.Now.AddMinutes(15);
+                //        }
+                //        else
+                //        {
+                //            if (error_5000 > 1)
+                //            {
+                //                error = false;
+                //                result_check = true;
+                //            }
+                //        }
+
+                //        MainStaticClass.write_cdn_log("WebException check_marker_code " + host.host + " " + ex.Message, numdoc.ToString(), codes[0].ToString(), "3");
+                //    }
+                //    MainStaticClass.UpdateHostDateTimeCdnHost(host.host, DateTime.Now.AddMinutes(15));
+                //}
+                //catch (Exception ex)
+                //{
+                //    MessageBox.Show("Exception check_marker_code " + host.host + " " + ex.Message, "check_marker_code");                    
+                //    MainStaticClass.write_cdn_log("check_marker_code " + host.host + " " + ex.Message, numdoc.ToString(), codes[0].ToString(), "3");
+                //    MainStaticClass.UpdateHostDateTimeCdnHost(host.host, DateTime.Now.AddMinutes(15));
+                //    error = true;
+                //}
+                catch (WebException ex)
                 {
-                   
-                    MainStaticClass.write_cdn_log("check_marker_code " + host.host + " " + ex.Message, numdoc.ToString(), codes[0].ToString(), "3");                    
-                    using (var errorStream = errorResponse.GetResponseStream())
+                    if (ex.Status == WebExceptionStatus.Timeout || ex.Status == WebExceptionStatus.ConnectFailure || ex.Status == WebExceptionStatus.ConnectionClosed)
                     {
+                        // Обработка таймаута и ошибок соединения
+                        error = true;
+                        MainStaticClass.write_cdn_log("Timeout or connection error: " + ex.Message, numdoc.ToString(), codes[0].ToString(), "3");
+
+                        if (error_timeout == 0)
+                        {
+                            i--; // Повторить попытку
+                        }
+                        error_timeout++;
+                        continue; // или continue, если это в цикле
+                    }
+
+                    // Если есть HTTP-ответ — обрабатываем его
+                    if (ex.Response is HttpWebResponse errorResponse)
+                    {
+                        MainStaticClass.write_cdn_log("check_marker_code " + host.host + " " + ex.Message, numdoc.ToString(), codes[0].ToString(), "3");
+
+                        using (var errorStream = errorResponse.GetResponseStream())
                         using (var reader = new StreamReader(errorStream))
                         {
                             string errorResponseText = reader.ReadToEnd();
-                            MainStaticClass.write_cdn_log($"HTTP Error {(int)errorResponse.StatusCode}: {errorResponseText}",numdoc.ToString(), codes[0].ToString(), "2");
+                            MainStaticClass.write_cdn_log($"HTTP Error {(int)errorResponse.StatusCode}: {errorResponseText}", numdoc.ToString(), codes[0].ToString(), "2");
+
                             answer_check_mark = JsonConvert.DeserializeObject<AnswerCheckMark>(errorResponseText);
                             if (answer_check_mark != null)
                             {
@@ -673,43 +766,34 @@ namespace Cash8
                                 }
                             }
                         }
-                    }
-    
-                    if (ex.Status == WebExceptionStatus.Timeout || ex.Status == WebExceptionStatus.ConnectionClosed)
-                    {                 
-                        error = true;
-                        if (error_timeout == 0)//если это первая ошибка по таймауту или соединение закрыто тогда попробуем обновить соединение и еще раз соединиться с наиболее быстрым CDN сервером
-                        {
-                            i--;
-                        }
-                        error_timeout++;
-                    }
-                    else
-                    {
-                        //host.dateTime = DateTime.Now.AddMinutes(15);
-                        //result_check = false; //ошибка работы с интернет не является ошибкой кода маркировки
+
+                        // Другие HTTP ошибки
                         error = true;
                         if (error_5000 == 0)
                         {
                             MessageBox.Show("WebException check_marker_code " + host.host + " " + ex.Message, "check_marker_code");
                             host.dateTime = DateTime.Now.AddMinutes(15);
                         }
-                        else
+                        else if (error_5000 > 1)
                         {
-                            if (error_5000 > 1)
-                            {
-                                error = false;
-                                result_check = true;
-                            }
+                            error = false;
+                            result_check = true;
                         }
 
                         MainStaticClass.write_cdn_log("WebException check_marker_code " + host.host + " " + ex.Message, numdoc.ToString(), codes[0].ToString(), "3");
+                        MainStaticClass.UpdateHostDateTimeCdnHost(host.host, DateTime.Now.AddMinutes(15));
                     }
-                    MainStaticClass.UpdateHostDateTimeCdnHost(host.host, DateTime.Now.AddMinutes(15));
+                    else
+                    {
+                        // Другие WebException без Response
+                        MessageBox.Show("WebException without response: " + ex.Message);
+                        MainStaticClass.write_cdn_log("WebException without response: " + ex.Message, numdoc.ToString(), codes[0].ToString(), "3");
+                        error = true;
+                    }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Exception check_marker_code " + host.host + " " + ex.Message, "check_marker_code");                    
+                    MessageBox.Show("Exception check_marker_code " + host.host + " " + ex.Message, "check_marker_code");
                     MainStaticClass.write_cdn_log("check_marker_code " + host.host + " " + ex.Message, numdoc.ToString(), codes[0].ToString(), "3");
                     MainStaticClass.UpdateHostDateTimeCdnHost(host.host, DateTime.Now.AddMinutes(15));
                     error = true;

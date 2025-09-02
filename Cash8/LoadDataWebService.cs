@@ -27,29 +27,114 @@ namespace Cash8
         }
 
 
+        //private void check_temp_tables()
+        //{
+
+        //    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+        //    conn.Open();
+        //    NpgsqlCommand command = new NpgsqlCommand();
+        //    command.Connection = conn;
+        //    command.CommandText = "select COUNT(*) from information_schema.tables where table_schema='public' and table_name='tovar2'";
+        //    if (Convert.ToInt16(command.ExecuteScalar()) == 0)
+        //    {
+        //        command.CommandText = @"
+        //            CREATE TABLE tovar2(
+        //                code bigint NOT NULL,
+        //                name character(100) NOT NULL,
+        //                retail_price numeric(10,2),
+        //                purchase_price numeric(10,2),
+        //                its_deleted numeric(1),
+        //                nds integer,
+        //                its_certificate smallint,
+        //                percent_bonus numeric(8,2),
+        //                tnved character varying(10),
+        //                its_marked smallint,
+        //                its_excise smallint,
+        //                cdn_check boolean,
+        //                fractional boolean NOT NULL DEFAULT false,
+        //                refusal_of_marking boolean NOT NULL DEFAULT false,
+        //                rr_not_control_owner boolean NOT NULL DEFAULT false
+        //            ) WITH (OIDS=FALSE);
+
+        //            ALTER TABLE tovar2 OWNER TO postgres;
+
+        //            CREATE UNIQUE INDEX _tovar2_code_ 
+        //            ON tovar2 
+        //            USING btree (code);";
+        //    }
+        //    else
+        //    {
+        //        command.CommandText = @"
+        //            DROP TABLE IF EXISTS tovar2;
+
+        //            CREATE TABLE tovar2(
+        //                code bigint NOT NULL,
+        //                name character(100) NOT NULL,
+        //                retail_price numeric(10,2),
+        //                purchase_price numeric(10,2),
+        //                its_deleted numeric(1),
+        //                nds integer,
+        //                its_certificate smallint,
+        //                percent_bonus numeric(8,2),
+        //                tnved character varying(10),
+        //                its_marked smallint,
+        //                its_excise smallint,
+        //                cdn_check boolean,
+        //                fractional boolean NOT NULL DEFAULT false,
+        //                refusal_of_marking boolean NOT NULL DEFAULT false,
+        //                rr_not_control_owner boolean NOT NULL DEFAULT false
+        //            ) WITH (OIDS=FALSE);
+
+        //            ALTER TABLE tovar2 OWNER TO postgres;
+
+        //            CREATE UNIQUE INDEX _tovar2_code_ 
+        //            ON tovar2 
+        //            USING btree (code);";
+        //    }
+        //    try
+        //    {
+        //        command.ExecuteNonQuery();
+        //    }
+        //    catch
+        //    {
+
+        //    }
+        //}
+
         private void check_temp_tables()
         {
-
-            NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
-            conn.Open();
-            NpgsqlCommand command = new NpgsqlCommand();
-            command.Connection = conn;
-            command.CommandText = "select COUNT(*) from information_schema.tables where table_schema='public' and table_name='tovar2'";
-            if (Convert.ToInt16(command.ExecuteScalar()) == 0)
-            {
-                command.CommandText = "CREATE TABLE tovar2(code bigint NOT NULL,name character(100) NOT NULL,  retail_price numeric(10,2) ,purchase_price numeric(10,2) ,its_deleted numeric(1) ,nds integer,its_certificate smallint,percent_bonus numeric(8,2), tnved character varying(10),its_marked smallint,its_excise smallint,cdn_check boolean,fractional boolean NOT NULL DEFAULT false, refusal_of_marking boolean NOT NULL DEFAULT false) WITH (OIDS=FALSE);ALTER TABLE tovar2 OWNER TO postgres;CREATE UNIQUE INDEX _tovar2_code_  ON tovar2  USING btree  (code);";
-            }
-            else
-            {
-                command.CommandText = "DROP TABLE tovar2;CREATE TABLE tovar2(code bigint NOT NULL,name character(100) NOT NULL,  retail_price numeric(10,2) ,purchase_price numeric(10,2) ,its_deleted numeric(1),nds integer,its_certificate smallint,percent_bonus numeric(8,2), tnved character varying(10),its_marked smallint,its_excise smallint,cdn_check boolean,fractional boolean NOT NULL DEFAULT false, refusal_of_marking boolean NOT NULL DEFAULT false) WITH (OIDS=FALSE);ALTER TABLE tovar2 OWNER TO postgres;CREATE UNIQUE INDEX _tovar2_code_  ON tovar2  USING btree  (code);";
-            }
             try
             {
-                command.ExecuteNonQuery();
-            }
-            catch
-            {
+                using (NpgsqlConnection conn = MainStaticClass.NpgsqlConn())
+                {
+                    conn.Open();
 
+                    string sql = @"
+                    DROP TABLE IF EXISTS tovar2;
+                    CREATE TABLE tovar2(
+                        code bigint NOT NULL, name character(100) NOT NULL,
+                        retail_price numeric(10,2), purchase_price numeric(10,2),
+                        its_deleted numeric(1), nds integer, its_certificate smallint,
+                        percent_bonus numeric(8,2), tnved character varying(10),
+                        its_marked smallint, its_excise smallint, cdn_check boolean,
+                        fractional boolean NOT NULL DEFAULT false,
+                        refusal_of_marking boolean NOT NULL DEFAULT false,
+                        rr_not_control_owner boolean NOT NULL DEFAULT false
+                    ) WITH (OIDS=FALSE);
+                    ALTER TABLE tovar2 OWNER TO postgres;
+                    CREATE UNIQUE INDEX _tovar2_code_ ON tovar2 USING btree (code);";
+
+                    using (NpgsqlCommand command = new NpgsqlCommand(sql, conn))
+                    {
+                        command.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Логирование ошибки
+                MessageBox.Show($"Ошибка при создании таблицы tovar2: {ex.Message}");
+                // Можно также записать в лог файл или показать сообщение пользователю
             }
         }
 
@@ -648,6 +733,7 @@ namespace Cash8
             public string CdnCheck { get; set; }
             public string Fractional { get; set; }
             public string RefusalOfMarking { get; set; }
+            public string RrNotControlOwner { get; set; }
         }
 
         public class Barcode
@@ -1363,6 +1449,49 @@ namespace Cash8
             }
         }
 
+
+        private string GetInsertQuery()
+        {
+            return @"
+            INSERT INTO tovar 
+            SELECT F.code, F.name, F.retail_price, F.its_deleted, F.nds, 
+                   F.its_certificate, F.percent_bonus, F.tnved, F.its_marked,
+                   F.its_excise, F.cdn_check, F.fractional, F.refusal_of_marking,
+                   F.rr_not_control_owner
+            FROM (
+                SELECT t2.code, t.code AS code2, t2.name, t2.retail_price, 
+                       t2.its_deleted, t2.nds, t2.its_certificate, t2.percent_bonus, 
+                       t2.tnved, t2.its_marked, t2.its_excise, t2.cdn_check, 
+                       t2.fractional, t2.refusal_of_marking,t2.rr_not_control_owner
+                FROM tovar2 t2 
+                LEFT JOIN tovar t ON t2.code = t.code
+            ) AS F 
+            WHERE code2 IS NULL;";
+        }
+
+        private string GetUpdateQuery()
+        {
+            return @"
+            UPDATE tovar 
+            SET name = t2.name,
+                retail_price = t2.retail_price,
+                its_deleted = t2.its_deleted,
+                nds = t2.nds,
+                its_certificate = t2.its_certificate,
+                percent_bonus = t2.percent_bonus,
+                tnved = t2.tnved,
+                its_marked = t2.its_marked,
+                its_excise = t2.its_excise,
+                cdn_check = t2.cdn_check,
+                fractional = t2.fractional,
+                refusal_of_marking = t2.refusal_of_marking,
+                rr_not_control_owner = t2.rr_not_control_owner
+            FROM tovar2 t2 
+            WHERE tovar.code = t2.code;";
+        }
+
+
+
         private void new_load()
         {
             //btn_new_load.Enabled = false;
@@ -1429,7 +1558,7 @@ namespace Cash8
                     {
                         foreach (PromoText promoText in loadPacketData.ListPromoText)
                         {
-                            queries.Add("INSERT INTO advertisement(advertisement_text,num_str,picture)VALUES ('" + promoText.AdvertisementText + "'," + promoText.NumStr + ",'"+promoText.Picture+"')");
+                            queries.Add("INSERT INTO advertisement(advertisement_text,num_str,picture)VALUES ('" + promoText.AdvertisementText + "'," + promoText.NumStr + ",'" + promoText.Picture + "')");
                         }
                         loadPacketData.ListPromoText.Clear();
                         loadPacketData.ListPromoText = null;
@@ -1439,7 +1568,7 @@ namespace Cash8
                 {
                     foreach (Tovar tovar in loadPacketData.ListTovar)
                     {
-                        queries.Add("INSERT INTO tovar2(code,name,retail_price,its_deleted,nds,its_certificate,percent_bonus,tnved,its_marked,its_excise,cdn_check,fractional,refusal_of_marking) VALUES(" +
+                        queries.Add("INSERT INTO tovar2(code,name,retail_price,its_deleted,nds,its_certificate,percent_bonus,tnved,its_marked,its_excise,cdn_check,fractional,refusal_of_marking,rr_not_control_owner) VALUES(" +
                                                         tovar.Code + ",'" +
                                                         tovar.Name + "'," +
                                                         tovar.RetailPrice + "," +
@@ -1452,15 +1581,18 @@ namespace Cash8
                                                         tovar.ItsExcise + "," +
                                                         tovar.CdnCheck + "," +
                                                         tovar.Fractional + "," +
-                                                        tovar.RefusalOfMarking+");");
+                                                        tovar.RefusalOfMarking + ","+
+                                                        tovar.RrNotControlOwner +");");
                     }
                     loadPacketData.ListTovar.Clear();
                     loadPacketData.ListTovar = null;
                 }
 
                 queries.Add("UPDATE tovar SET its_deleted=1,retail_price=0;");
-                queries.Add("INSERT INTO tovar SELECT F.code, F.name, F.retail_price, F.its_deleted, F.nds, F.its_certificate, F.percent_bonus, F.tnved,F.its_marked,F.its_excise,F.cdn_check,F.fractional,F.refusal_of_marking FROM(SELECT tovar2.code AS code, tovar.code AS code2, tovar2.name, tovar2.retail_price, tovar2.its_deleted, tovar2.nds, tovar2.its_certificate, tovar2.percent_bonus, tovar2.tnved,tovar2.its_marked,tovar2.its_excise,tovar2.cdn_check,tovar2.fractional,tovar2.refusal_of_marking  FROM tovar2 left join tovar on tovar2.code = tovar.code)AS F WHERE code2 ISNULL;");
-                queries.Add("UPDATE tovar SET name = tovar2.name,retail_price = tovar2.retail_price, its_deleted=tovar2.its_deleted,nds=tovar2.nds,its_certificate = tovar2.its_certificate,percent_bonus = tovar2.percent_bonus,tnved = tovar2.tnved,its_marked = tovar2.its_marked,its_excise=tovar2.its_excise,cdn_check = tovar2.cdn_check,fractional=tovar2.fractional,refusal_of_marking=tovar2.refusal_of_marking FROM tovar2 where tovar.code=tovar2.code;");
+                //queries.Add("INSERT INTO tovar SELECT F.code, F.name, F.retail_price, F.its_deleted, F.nds, F.its_certificate, F.percent_bonus, F.tnved,F.its_marked,F.its_excise,F.cdn_check,F.fractional,F.refusal_of_marking FROM(SELECT tovar2.code AS code, tovar.code AS code2, tovar2.name, tovar2.retail_price, tovar2.its_deleted, tovar2.nds, tovar2.its_certificate, tovar2.percent_bonus, tovar2.tnved,tovar2.its_marked,tovar2.its_excise,tovar2.cdn_check,tovar2.fractional,tovar2.refusal_of_marking  FROM tovar2 left join tovar on tovar2.code = tovar.code)AS F WHERE code2 ISNULL;");
+                //queries.Add("UPDATE tovar SET name = tovar2.name,retail_price = tovar2.retail_price, its_deleted=tovar2.its_deleted,nds=tovar2.nds,its_certificate = tovar2.its_certificate,percent_bonus = tovar2.percent_bonus,tnved = tovar2.tnved,its_marked = tovar2.its_marked,its_excise=tovar2.its_excise,cdn_check = tovar2.cdn_check,fractional=tovar2.fractional,refusal_of_marking=tovar2.refusal_of_marking FROM tovar2 where tovar.code=tovar2.code;");
+                queries.Add(GetInsertQuery());
+                queries.Add(GetUpdateQuery());
                 queries.Add("DELETE FROM barcode;");
                 if (loadPacketData.ListBarcode.Count > 0)
                 {
@@ -1540,8 +1672,8 @@ namespace Cash8
                         actionHeader.ExecutionOrder + "," +
                         actionHeader.GiftPrice + "," +
                         actionHeader.Kind + "," +
-                        actionHeader.sum1 + ",'"+
-                        actionHeader.Picture+"')");
+                        actionHeader.sum1 + ",'" +
+                        actionHeader.Picture + "')");
                     }
                     if (loadPacketData.ListActionTable.Count > 0)
                     {

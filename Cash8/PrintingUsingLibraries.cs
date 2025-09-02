@@ -560,6 +560,7 @@ namespace Cash8
             // Открытие чека (с передачей телефона получателя)
             if (check.check_type.SelectedIndex == 0)
             {
+                get_actions_num_doc(check);//Печать акционных картинок
                 fptr.setParam(AtolConstants.LIBFPTR_PARAM_RECEIPT_TYPE, AtolConstants.LIBFPTR_RT_SELL);
             }
             else if (check.check_type.SelectedIndex == 1)
@@ -879,7 +880,7 @@ namespace Cash8
             }
             else
             {                
-                get_actions_num_doc(check);//Печать акционных картинок
+                //get_actions_num_doc(check);//Печать акционных картинок
                 fptr.closeReceipt();
             }
 
@@ -971,10 +972,17 @@ namespace Cash8
             {
                 fptr.open();
             }
+
+            if (!check.print_promo_picture)
+            {
+                get_actions_num_doc(check);//Печать акционных картинок
+                check.print_promo_picture = true;
+            }
+
             //fptr.setParam(1021, MainStaticClass.Cash_Operator);
             //fptr.setParam(1203, MainStaticClass.CashOperatorInn);
             //fptr.operatorLogin();
-            
+
 
             //print_terminal_check(fptr, check);
             //if (variant == 0)
@@ -1499,11 +1507,11 @@ namespace Cash8
 
                 //fptr.setParam(AtolConstants.LIBFPTR_PARAM_FILENAME, "C:\\2025-05-13_10-30.png");
                 //fptr.printPicture();
-                if (!check.print_promo_picture)
-                {
-                    get_actions_num_doc(check);//Печать акционных картинок
-                    check.print_promo_picture = true;
-                }
+                //if (!check.print_promo_picture)
+                //{
+                //    get_actions_num_doc(check);//Печать акционных картинок
+                //    check.print_promo_picture = true;
+                //}
                 
                 fptr.closeReceipt();
             }          
@@ -1691,8 +1699,9 @@ namespace Cash8
             if (!fptr.isOpened())
             {
                 fptr.open();
-            }           
-            
+            }
+            fptr.beginNonfiscalDocument();
+
             // Преобразование шестнадцатеричной строки в массив байтов            
             byte[] byteArray = Convert.FromBase64String(hex_string);
 
@@ -1706,9 +1715,9 @@ namespace Cash8
 
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_FILENAME, outputFilePath);
+            
             fptr.printPicture();
-
-           
+            fptr.endNonfiscalDocument();
 
             if (fptr.errorCode() != 0)
             {

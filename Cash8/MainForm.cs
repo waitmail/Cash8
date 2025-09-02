@@ -1573,7 +1573,7 @@ namespace Cash8
             try
             {
                 conn.Open();
-                string query = "SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'users' AND column_name = 'fiscals_forbidden'); ";                
+                string query = "SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'tovar' AND column_name = 'rr_not_control_owner'); ";                
                 
                  NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 if (!Convert.ToBoolean(command.ExecuteScalar())) //не нашли такой колонки   

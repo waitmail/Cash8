@@ -1063,6 +1063,7 @@ namespace Cash8
             queries.Add("ALTER TABLE IF EXISTS public.advertisement ADD COLUMN picture text COLLATE pg_catalog.default");
             queries.Add("ALTER TABLE IF EXISTS public.constants ADD COLUMN nds_ip smallint DEFAULT 0; COMMENT ON COLUMN public.constants.nds_ip IS 'Ставка ндс для ИП у которого превышен порог нулевого ндс';");
             queries.Add("ALTER TABLE IF EXISTS public.users    ADD COLUMN fiscals_forbidden boolean NOT NULL DEFAULT false;");
+            queries.Add("ALTER TABLE IF EXISTS public.tovar ADD COLUMN rr_not_control_owner boolean NOT NULL DEFAULT false;");
 
             foreach (string str in queries)
             {

@@ -2616,7 +2616,7 @@ namespace Cash8
                 command.Connection = conn;
                 if (barcode.Length > 6)
                 {
-                    command.CommandText = "select tovar.code,tovar.name,tovar.retail_price,characteristic.name,characteristic.guid,characteristic.retail_price_characteristic,tovar.its_certificate,tovar.its_marked,tovar.cdn_check,tovar.fractional,tovar.refusal_of_marking " +
+                    command.CommandText = "select tovar.code,tovar.name,tovar.retail_price,characteristic.name,characteristic.guid,characteristic.retail_price_characteristic,tovar.its_certificate,tovar.its_marked,tovar.cdn_check,tovar.fractional,tovar.refusal_of_marking,tovar.rr_not_control_owner " +
                         " from  barcode left join tovar ON barcode.tovar_code=tovar.code " +
                     " left join characteristic ON tovar.code = characteristic.tovar_code " +
                     " where barcode='" + barcode + "' AND its_deleted=0  AND (retail_price<>0 OR characteristic.retail_price_characteristic<>0)";
@@ -2624,7 +2624,7 @@ namespace Cash8
                 }
                 else
                 {
-                    command.CommandText = "select tovar.code,tovar.name,tovar.retail_price, characteristic.name,characteristic.guid,characteristic.retail_price_characteristic,tovar.its_certificate,tovar.its_marked,tovar.cdn_check,tovar.fractional,tovar.refusal_of_marking " +
+                    command.CommandText = "select tovar.code,tovar.name,tovar.retail_price, characteristic.name,characteristic.guid,characteristic.retail_price_characteristic,tovar.its_certificate,tovar.its_marked,tovar.cdn_check,tovar.fractional,tovar.refusal_of_marking,tovar.rr_not_control_owner " +
                         " FROM tovar left join characteristic  ON tovar.code = characteristic.tovar_code where tovar.its_deleted=0 AND tovar.its_certificate=0 AND  (retail_price<>0 OR characteristic.retail_price_characteristic<>0) " +
                         " AND tovar.code='" + barcode + "'";
                 }
@@ -2641,6 +2641,7 @@ namespace Cash8
                     if (Convert.ToBoolean(reader["its_certificate"])) flags |= ProductFlags.Certificate;
                     if (Convert.ToBoolean(reader["its_marked"])) flags |= ProductFlags.Marked;
                     if (Convert.ToBoolean(reader["refusal_of_marking"])) flags |= ProductFlags.RefusalMarking;
+                    if (Convert.ToBoolean(reader["rr_not_control_owner"])) flags |= ProductFlags.RrNotControlOwner;
                     //if (Convert.ToBoolean(reader["refusal_of_marking"]))
                     //{
                     //    // Сбрасываем флаг Marked, если он был установлен ранее
@@ -3253,43 +3254,91 @@ namespace Cash8
 
 
 
-        /// <summary>
-        /// Добавить разделитель групп
-        /// </summary>
-        /// <param name="mark_str"></param>
-        /// <returns></returns>
+        ///// <summary>
+        ///// Добавить разделитель групп
+        ///// </summary>
+        ///// <param name="mark_str"></param>
+        ///// <returns></returns>
+        //private string add_gs1(string mark_str)
+        //{
+        //    string GS1 = Char.ConvertFromUtf32(29);
+        //    if ((mark_str.Length == 83) || (mark_str.Length == 127) || (mark_str.Length == 115))
+        //    {
+        //        mark_str = mark_str.Insert(31, GS1);
+        //        mark_str = mark_str.Insert(38, GS1);
+        //    }
+
+        //    if (mark_str.Length == 40)
+        //    {
+        //        //lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
+        //        mark_str = mark_str.Insert(24, GS1);
+        //        mark_str = mark_str.Insert(31, GS1);
+        //    }
+
+        //    if (mark_str.Length == 37 && mark_str.Substring(16, 2) == "21")
+        //    {
+        //        //lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
+        //        mark_str = mark_str.Insert(31, GS1);
+        //    }
+
+        //    if (mark_str.Length == 32)
+        //    {             
+        //        mark_str = mark_str.Insert(26, GS1);
+        //    }
+
+        //    if (mark_str.Length == 31)
+        //    {
+        //        mark_str = mark_str.Insert(25, GS1);
+        //    }
+
+        //    if (mark_str.Length == 30)
+        //    {
+        //        mark_str = mark_str.Insert(24, GS1);
+        //    }
+
+        //    return mark_str;
+        //}
+
+
+        ///// <summary>
+        ///// Добавить разделитель групп
+        ///// </summary>
+        ///// <param name="mark_str"></param>
+        ///// <returns></returns>
         private string add_gs1(string mark_str)
         {
             string GS1 = Char.ConvertFromUtf32(29);
-            if ((mark_str.Length == 83) || (mark_str.Length == 127) || (mark_str.Length == 115))
-            {
-                mark_str = mark_str.Insert(31, GS1);
-                mark_str = mark_str.Insert(38, GS1);
-            }
+            int length = mark_str.Length;
 
-            if (mark_str.Length == 40)
+            switch (length)
             {
-                //lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
-                mark_str = mark_str.Insert(24, GS1);
-                mark_str = mark_str.Insert(31, GS1);
-            }
+                case 30:
+                    mark_str = mark_str.Insert(24, GS1);
+                    break;
 
-            if (mark_str.Length == 37 && mark_str.Substring(16, 2) == "21")
-            {
-                //lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(31, GS1);
-                mark_str = mark_str.Insert(31, GS1);
-            }
+                case 31:
+                    mark_str = mark_str.Insert(25, GS1);
+                    break;
 
-            if (mark_str.Length == 30)
-            {
-                //lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(24, GS1);
-                mark_str = mark_str.Insert(24, GS1);
-            }
+                case 32:
+                    mark_str = mark_str.Insert(26, GS1);
+                    break;
 
-            if (mark_str.Length == 32)
-            {
-                //lvi.SubItems[14].Text = lvi.SubItems[14].Text.Insert(26, GS1);                                                    
-                mark_str = mark_str.Insert(26, GS1);
+                case 37 when mark_str.Substring(16, 2) == "21":
+                    mark_str = mark_str.Insert(31, GS1);
+                    break;
+
+                case 40:
+                    mark_str = mark_str.Insert(24, GS1);
+                    mark_str = mark_str.Insert(31, GS1);
+                    break;
+
+                case 83:
+                case 115:
+                case 127:
+                    mark_str = mark_str.Insert(31, GS1);
+                    mark_str = mark_str.Insert(38, GS1);
+                    break;
             }
 
             return mark_str;
@@ -3320,7 +3369,7 @@ namespace Cash8
         //        MainStaticClass.write_event_in_log(" check_marker_code_with_cdn cdn_list = null","Документ",numdoc.ToString());
         //        return result;
         //    }
-            
+
         //    if (cdn_list.hosts.Count > 0)
         //    {
 
@@ -4120,6 +4169,7 @@ namespace Cash8
                 this.txtB_search_product.Focus();
                 //список допустимых длин qr кодов                
                 qr_code_lenght.Add(30);
+                qr_code_lenght.Add(31);
                 qr_code_lenght.Add(32);
                 qr_code_lenght.Add(37);
                 qr_code_lenght.Add(40);

@@ -12,7 +12,8 @@ public enum ProductFlags : byte
     Marked = 1 << 1,
     CDNCheck = 1 << 2,
     Fractional = 1 << 3,
-    RefusalMarking = 1 << 4
+    RefusalMarking = 1 << 4,
+    RrNotControlOwner = 1 << 5
 }
 
 public class ProductData
@@ -55,10 +56,11 @@ public class ProductData
         return (Flags & ProductFlags.RefusalMarking) != 0;
     }
 
-
-
-
-
+    public bool RrNotControlOwner()
+    {
+        return (Flags & ProductFlags.RrNotControlOwner) != 0;
+    }
+          
     //    ProductData product = InventoryManager.GetItem(id);
     //if (product.IsEmpty())
     //{
@@ -70,14 +72,12 @@ public class ProductData
     //// Обработка непустого значения
     //MessageBox.Show($"ProductData is not empty. Name: {product.GetName()}");
     //}
-
-
+    
     public bool IsEmpty()
     {
         return Code == 0 && string.IsNullOrEmpty(Name) && Price == 0 && Flags == ProductFlags.None;
     }
-
-
+    
     private static string CompressString(string text)
     {
         byte[] buffer = Encoding.UTF8.GetBytes(text);

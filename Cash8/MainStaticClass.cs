@@ -2503,7 +2503,7 @@ namespace Cash8
                     mark_str_cdn = mark_str_cdn.Replace("'", "\'");
                     Dictionary<string, string> d_tovar = new Dictionary<string, string>();
                     d_tovar[lvi.SubItems[1].Text] = lvi.SubItems[0].Text;
-                    result = cdn.cdn_check_marker_code(codes, mark_str, check.numdoc, ref check.request, mark_str_cdn, d_tovar, check);                    
+                    result = cdn.cdn_check_marker_code(codes, mark_str, check.numdoc, ref check.request, mark_str_cdn, d_tovar, check, productData);                    
                 }
             }
 

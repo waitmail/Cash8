@@ -641,34 +641,41 @@ namespace Cash8
 
                 if (show_messages)
                 {
-                    query = "SELECT tip,num_doc,persent,comment,code_tovar,sum,barcode,marker,execution_order FROM action_header " +
-                     " WHERE '" + DateTime.Now.Date.ToString("yyy-MM-dd") + "' between date_started AND date_end " +
-                     " AND " + count_minutes.ToString() + " between time_start AND time_end AND bonus_promotion=0 " +
-                     " AND barcode='' AND tip=10 AND num_doc in(" +//AND tip<>10 
-                     " SELECT DISTINCT action_table.num_doc FROM checks_table_temp " +
-                     " LEFT JOIN action_table ON checks_table_temp.tovar = action_table.code_tovar) order by execution_order asc, tip asc";//date_started asc,, tip desc
+                    //decimal divisor = action_10_dt(Convert.ToInt32(reader["num_doc"]));
+                    //if (divisor > 0)
+                    //{
+                        query = "SELECT tip,num_doc,persent,comment,code_tovar,sum,barcode,marker,execution_order FROM action_header " +
+                         " WHERE '" + DateTime.Now.Date.ToString("yyy-MM-dd") + "' between date_started AND date_end " +
+                         " AND " + count_minutes.ToString() + " between time_start AND time_end AND bonus_promotion=0 " +
+                         " AND barcode='' AND tip=10 AND num_doc in(" +//AND tip<>10 
+                         " SELECT DISTINCT action_table.num_doc FROM checks_table_temp " +
+                         " LEFT JOIN action_table ON checks_table_temp.tovar = action_table.code_tovar) order by execution_order asc, tip asc";//date_started asc,, tip desc
 
-                    command = new NpgsqlCommand(query, conn);
-                    reader = command.ExecuteReader();
+                        command = new NpgsqlCommand(query, conn);
+                        reader = command.ExecuteReader();
 
-                    while (reader.Read())
-                    {
-                        if (Convert.ToDecimal(reader["sum"]) <= action_10_dt(Convert.ToInt32(reader["num_doc"])))
+                        while (reader.Read())
                         {
-                            int multiplicity = (int)(calculation_of_the_sum_of_the_document_dt() / action_10_dt(Convert.ToInt32(reader["num_doc"])));
-                            MessageBox.Show("Крастность " + multiplicity.ToString() + " " + reader["comment"].ToString());
-                            int num = Convert.ToInt32(reader["num_doc"]);
-                            if (!cc.action_num_doc.Contains(num))
-                            {
-                                cc.action_num_doc.Add(num);
+                            decimal divisor = action_10_dt(Convert.ToInt32(reader["num_doc"]));
+                            //if (Convert.ToDecimal(reader["sum"]) <= action_10_dt(Convert.ToInt32(reader["num_doc"])))
+                            if ((Convert.ToDecimal(reader["sum"]) <= divisor)&&(divisor>0))
+                                {
+                                //int multiplicity = (int)(calculation_of_the_sum_of_the_document_dt() / action_10_dt(Convert.ToInt32(reader["num_doc"])));
+                                int multiplicity = (int)(calculation_of_the_sum_of_the_document_dt() / divisor );
+                                MessageBox.Show("Крастность " + multiplicity.ToString() + " " + reader["comment"].ToString());
+                                int num = Convert.ToInt32(reader["num_doc"]);
+                                if (!cc.action_num_doc.Contains(num))
+                                {
+                                    cc.action_num_doc.Add(num);
+                                }
                             }
                         }
-                    }
 
-                    reader.Close();
+                        reader.Close();
+                    //}
+                    conn.Close();
+                    command.Dispose();
                 }
-                conn.Close();
-                command.Dispose();
 
                 if (show_messages)
                 {
