@@ -1578,6 +1578,94 @@ namespace Cash8
         }
 
 
+        ///// <summary>
+        ///// Обработка акций 13 типа с сохранением структуры чека
+        ///// </summary>
+        ///// <param name="num_doc"></param>
+        //private void action_13_dt(int num_doc)
+        //{
+        //    try
+        //    {
+        //        using (NpgsqlConnection conn = MainStaticClass.NpgsqlConn())
+        //        {
+        //            conn.Open();
+
+        //            // Создаем резервную копию таблицы
+        //            DataTable originalDt = dt.Copy();
+
+        //            try
+        //            {
+        //                // Создаем временную таблицу для расчета акционных цен
+        //                DataTable tempDt = dt.Copy();
+
+        //                // Группируем строки по code_tovar для расчета акционных цен
+        //                var groupedRows = tempDt.AsEnumerable()
+        //                    .Where(row => row.Field<int>("action2") == 0) // Товар не участвовал в других акциях
+        //                    .GroupBy(row => row.Field<double>("tovar_code"))
+        //                    .ToList();
+
+        //                // Словарь для хранения акционных цен по коду товара
+        //                Dictionary<double, decimal?> actionPrices = new Dictionary<double, decimal?>();
+
+        //                // Рассчитываем акционные цены для каждой группы
+        //                foreach (var group in groupedRows)
+        //                {
+        //                    double codeTovar = group.Key;
+        //                    double totalQuantity = group.Sum(row => row.Field<double>("quantity"));
+
+        //                    decimal? actionPrice = GetPriceAction13(num_doc, codeTovar, totalQuantity, conn);
+        //                    actionPrices[codeTovar] = actionPrice;
+        //                }
+
+        //                // Применяем акционные цены к оригинальной таблице
+        //                foreach (DataRow row in dt.Rows)
+        //                {
+        //                    if (row.Field<int>("action2") != 0) continue; // Пропускаем товары, участвовавшие в других акциях
+
+        //                    double codeTovar = row.Field<double>("tovar_code");
+
+        //                    if (actionPrices.ContainsKey(codeTovar) && actionPrices[codeTovar].HasValue)
+        //                    {
+        //                        decimal actionPrice = actionPrices[codeTovar].Value;
+        //                        decimal qty = Convert.ToDecimal(row.Field<double>("quantity"));
+        //                        decimal price = row.Field<decimal>("price");
+
+        //                        row["price_at_discount"] = actionPrice;
+        //                        row["sum_full"] = (qty * price).ToString();
+        //                        row["sum_at_discount"] = Math.Round(qty * actionPrice, 2).ToString();
+        //                        row["action"] = num_doc.ToString();
+        //                        row["action2"] = num_doc.ToString();
+        //                    }
+        //                }
+        //            }
+        //            catch
+        //            {
+        //                // Восстанавливаем исходное состояние таблицы при ошибке
+        //                dt.Clear();
+        //                foreach (DataRow row in originalDt.Rows)
+        //                {
+        //                    dt.ImportRow(row);
+        //                }
+
+        //                throw; // Перебрасываем исключение дальше
+        //            }
+        //        }
+        //    }
+        //    catch (NpgsqlException ex)
+        //    {
+        //        MessageBox.Show(ex.Message, "Ошибка при обработке 13 типа акций");
+        //        MainStaticClass.WriteRecordErrorLog(ex, num_doc, MainStaticClass.CashDeskNumber, "Обработка акций 13 типа");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message, "Ошибка при обработке 13 типа акций");
+        //        MainStaticClass.WriteRecordErrorLog(ex, num_doc, MainStaticClass.CashDeskNumber, "Обработка акций 13 типа");
+        //    }
+        //}
+
+
+
+
         /// Обработка акций 13 типа
         /// </summary>
         /// <param name="num_doc"></param>
@@ -1616,7 +1704,8 @@ namespace Cash8
 
                                 row["price_at_discount"] = actionPrice.Value;
                                 row["sum_full"] = (qty * price).ToString();
-                                row["sum_at_discount"] = (Math.Ceiling((decimal)qty * actionPrice.Value * 100) / 100).ToString();//((decimal)qty * actionPrice.Value).ToString();
+                                //row["sum_at_discount"] = (Math.Ceiling((decimal)qty * actionPrice.Value * 100) / 100).ToString();//((decimal)qty * actionPrice.Value).ToString();
+                                row["sum_at_discount"] = Math.Round((decimal)qty * actionPrice.Value, 2).ToString();
                                 row["action"] = num_doc.ToString();
                                 row["action2"] = num_doc.ToString();
                             }

@@ -1196,7 +1196,8 @@ namespace Cash8
                 }
                 else
                 {
-                    LoadCdnWithStartAsync();                    
+                    LoadCdnWithStartAsync();//gaa пока комментирую ибираю многопоточность 
+                    //get_cdn_with_start();
                 }
             }
             if (MainStaticClass.PrintingUsingLibraries == 1)
@@ -1238,9 +1239,9 @@ namespace Cash8
                 // Обработка исключений
                 MessageBox.Show($"При загрузке CDN произошла ошибка: {ex.Message}");
             }
-        }       
+        }
 
-        
+
 
         /// <summary>
         /// Проверка таблицы failed_input_phone
@@ -1607,7 +1608,7 @@ namespace Cash8
             try
             {                
                 conn.Open();                
-                string query = "SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'errors_log'); ";
+                string query = "SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'open_close_shop'); ";
 
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 if (!Convert.ToBoolean(command.ExecuteScalar())) //не нашли такой таблицы   

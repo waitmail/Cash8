@@ -1644,18 +1644,21 @@ namespace Cash8
                         //lvi.SubItems[5].Text = Math.Round(Convert.ToDouble(lvi.SubItems[4].Text) - Convert.ToDouble(lvi.SubItems[4].Text) * Discount, 2, MidpointRounding.ToEven).ToString();//Цена со скидкой            
                         double originalPrice = Convert.ToDouble(lvi.SubItems[4].Text);
                         double discountedPrice = originalPrice - originalPrice * Discount;
-                        double roundedUpPrice = Math.Ceiling(discountedPrice * 100) / 100;
+                        //double roundedUpPrice = Math.Ceiling(discountedPrice * 100) / 100;
+                        double roundedUpPrice = Math.Round(discountedPrice, 2);
                         lvi.SubItems[5].Text = roundedUpPrice.ToString();
                     }
-                    else if (check_type.SelectedIndex == 1)
-                    {
-                        //lvi.SubItems[7].Text = Math.Round(Convert.ToDouble(lvi.SubItems[3].Text) * Convert.ToDouble(lvi.SubItems[5].Text),2,MidpointRounding.ToEven).ToString();//Это возврат 
-                        double quantity = Convert.ToDouble(lvi.SubItems[3].Text);
-                        double price = Convert.ToDouble(lvi.SubItems[5].Text);
-                        double total = quantity * price;
-                        double roundedUpTotal = Math.Ceiling(total * 100) / 100;
-                        lvi.SubItems[7].Text = roundedUpTotal.ToString();
-                    }
+                    //else if (check_type.SelectedIndex == 1)
+                    //{
+                    //    //lvi.SubItems[7].Text = Math.Round(Convert.ToDouble(lvi.SubItems[3].Text) * Convert.ToDouble(lvi.SubItems[5].Text),2,MidpointRounding.ToEven).ToString();//Это возврат 
+                    //    //double quantity = Convert.ToDouble(lvi.SubItems[3].Text);
+                    //    //double price = Convert.ToDouble(lvi.SubItems[5].Text);
+                    //    //double total = quantity * price;
+                    //    //double roundedUpTotal = Math.Ceiling(total * 100) / 100;
+                    //    //lvi.SubItems[7].Text = roundedUpTotal.ToString();
+                    //    //lvi.SubItems[7].Text = total.ToString();
+
+                    //}
                 }
                 else
                 {
@@ -3422,119 +3425,7 @@ namespace Cash8
                     km_adding_to_buffer(lvi.Index);//а затем снова добавляем в буфер проверенных без проверки , если они уже были добавлены в чек, значит проверены
                 }
             }
-        }
-
-        //private int check_sign_marker_code(string code_tovar)
-        //{
-        //    int result = 0;
-
-        //    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
-        //    try
-        //    {
-        //        conn.Open();
-        //        string query = "SELECT its_marked FROM tovar where code=" + code_tovar;
-        //        NpgsqlCommand command = new NpgsqlCommand(query, conn);
-        //        result = Convert.ToInt32(command.ExecuteScalar());
-        //        conn.Close();
-        //    }
-        //    catch (NpgsqlException ex)
-        //    {
-        //        MessageBox.Show(" ВНИМАНИЕ !!! Ошибка при получении признака маркировки " + ex.Message);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show(" ВНИМАНИЕ !!! Ошибка при получении признака маркировки " + ex.Message);
-        //    }
-        //    finally
-        //    {
-        //        if (conn.State == ConnectionState.Open)
-        //        {
-        //            conn.Close();
-        //        }
-        //    }
-
-        //    return result;
-        //}
-        //private void listView2_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
-        //{
-        //    if (!itsnew)
-        //    {
-        //        return;
-        //    }
-        //    if (e.KeyChar == 13)
-        //    {
-        //        object characteristic = listView2.Items[listView2.SelectedIndices[0]].Tag;
-
-        //        ListViewItem lvi = exist_tovar_in_listView(listView1, Convert.ToInt32(select_tovar.Tag), characteristic);
-
-        //        if (lvi == null)
-        //        {
-        //            lvi = new ListViewItem(select_tovar.Tag.ToString());
-        //            lvi.Tag = select_tovar.Tag.ToString();
-        //            lvi.SubItems.Add(select_tovar.Text);//Наименование
-        //            lvi.SubItems.Add(listView2.Items[listView2.SelectedIndices[0]].Text);//Характеиристика
-        //            if (listView2.Items[listView2.SelectedIndices[0]].Tag == null) //GUID характеристики   
-        //            {
-        //                listView2.Items[listView2.SelectedIndices[0]].Tag = "";
-        //            }
-        //            else
-        //            {
-        //                lvi.SubItems[2].Tag = listView2.Items[listView2.SelectedIndices[0]].Tag;//GUID характеристики   
-        //            }
-
-        //            int index = listView2.SelectedIndices[0];
-        //            //lvi = new ListViewItem(listView2.Items[index].Text);
-        //            //lvi.Tag = listView2.Items[index].Tag;
-        //            //lvi.SubItems.Add(listView2.Items[index].SubItems[1].Text);//Наименование
-        //            //lvi.SubItems.Add(listView2.Items[index].SubItems[2].Text);//Характеристика
-        //            //lvi.SubItems[2].Tag = listView2.Items[0].SubItems[2].Tag;//GUID характеристики
-        //            lvi.SubItems.Add("1");//Количество
-        //            lvi.SubItems.Add(listView2.Items[index].SubItems[1].Text);//Цена                        
-        //            lvi.SubItems.Add(Math.Round(Convert.ToDouble(lvi.SubItems[4].Text) - Convert.ToDouble(lvi.SubItems[4].Text) * Convert.ToDouble(Discount), 2).ToString());//Цена со скидкой
-        //            lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString());//Сумма
-        //            lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[3].Text) * Convert.ToDecimal(lvi.SubItems[5].Text)).ToString()); //Сумма со скидкой                        
-        //            lvi.SubItems.Add("0");//Номер акционного документа скидка
-        //            lvi.SubItems.Add("0");//Номер акционного документа подарок
-        //            lvi.SubItems.Add("0"); //Номер акционного документа дополнительное поле пометка что участвовало в акции, но скидка может быть
-        //            listView1.Items.Add(lvi);
-        //            SendDataToCustomerScreen(1, 0,1);
-        //            this.listView1.Select();
-        //            this.listView1.Items[this.listView1.Items.Count - 1].Selected = true;
-        //            update_record_last_tovar(listView1.Items[this.listView1.Items.Count - 1].SubItems[1].Text, listView1.Items[this.listView1.Items.Count - 1].SubItems[4].Text);
-
-
-
-        //            //lvi = new ListViewItem(listView2.Items[listView2.SelectedIndices[0]].Text);
-        //            //lvi.Tag = listView2.Items[listView2.SelectedIndices[0]].Tag;
-        //            //lvi.SubItems.Add("1");
-        //            //lvi.SubItems.Add(listView2.Items[listView2.SelectedIndices[0]].SubItems[1].Text);//Цена                        
-        //            //lvi.SubItems.Add(Math.Round(Convert.ToDecimal(lvi.SubItems[2].Text) - Convert.ToDecimal(lvi.SubItems[2].Text) * Discount, 2).ToString());//Цена со скидкой
-        //            //lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[1].Text) * Convert.ToDecimal(lvi.SubItems[2].Text)).ToString());//Сумма
-        //            //lvi.SubItems.Add((Convert.ToDecimal(lvi.SubItems[1].Text) * Convert.ToDecimal(lvi.SubItems[4].Text)).ToString()); //Сумма со скидкой                        
-        //            //listView1.Items.Add(lvi);
-        //        }
-        //        else
-        //        {
-        //            lvi.SubItems[3].Text = (Convert.ToInt64(lvi.SubItems[3].Text) + 1).ToString();
-        //            //lvi.SubItems[4].Text = listView2.Items[listView2.SelectedIndices[0]].SubItems[3].Text;//Цена
-        //            calculate_on_string(lvi);
-        //            this.listView1.Select();
-        //            lvi.Selected = true;
-        //            update_record_last_tovar(lvi.SubItems[1].Text, lvi.SubItems[3].Text);
-        //        }
-        //        calculation_of_the_sum_of_the_document();
-        //        this.panel2.Visible = false;
-        //        this.listView2.Visible = false;
-
-        //        this.last_tovar.Text = listView1.Items[this.listView1.Items.Count - 1].SubItems[1].Text;
-
-        //    }
-        //    else if (e.KeyChar == 27)
-        //    {
-        //        //this.panel2.Visible = false;
-        //        //this.listView2.Visible = false;
-        //    }
-        //}
+        }       
 
 
         private string get_date_birthday()

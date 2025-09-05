@@ -11,6 +11,7 @@ using System.Xml.Serialization;
 using System.Collections.Generic;
 using Atol.Drivers10.Fptr;
 using AtolConstants = Atol.Drivers10.Fptr.Constants;
+using Npgsql;
 
 
 
@@ -79,8 +80,9 @@ namespace Cash8
             get_fiscall_info();
 
             btn_date_mark_Click(null, null);
-
-            //Не отправлено документов
+            
+            load_status_open_shop();
+            load_status_close_shop();
         }
 
 
@@ -928,5 +930,158 @@ namespace Cash8
                 txtB_last_send_mark.Visible = false;
             }
         }
+
+        private void btn_open_shop_Click(object sender, EventArgs e)
+        {
+            using (var conn = MainStaticClass.NpgsqlConn())
+            {
+                try
+                {
+                    conn.Open();
+
+                    // Проверяем, открыт ли магазин сегодня
+                    string checkQuery = "SELECT COUNT(1) FROM open_close_shop WHERE date = @date";
+                    using (var command = new NpgsqlCommand(checkQuery, conn))
+                    {
+                        command.Parameters.AddWithValue("@date", DateTime.Now.Date);
+
+                        if (Convert.ToInt32(command.ExecuteScalar()) == 0)
+                        {
+                            // Открываем магазин
+                            string insertQuery = "INSERT INTO open_close_shop(open, date) VALUES(@open, @date)";
+                            using (var insertCommand = new NpgsqlCommand(insertQuery, conn))
+                            {
+                                insertCommand.Parameters.AddWithValue("@open", DateTime.Now);
+                                insertCommand.Parameters.AddWithValue("@date", DateTime.Now.Date);
+                                insertCommand.ExecuteNonQuery();
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("Сегодня магазин уже был открыт ранее","Открытие магазина");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Ошибка при открытии магазина");
+                    MainStaticClass.WriteRecordErrorLog(ex, 0, MainStaticClass.CashDeskNumber, "Открытие магазина");
+                }
+            }
+            load_status_open_shop();
+        }
+
+        private void load_status_open_shop()
+        {
+            using (var conn = MainStaticClass.NpgsqlConn())
+            {
+                try
+                {
+                    conn.Open();
+
+                    // Проверяем, открыт ли магазин сегодня
+                    string checkQuery = "SELECT open FROM open_close_shop WHERE date = @date";
+                    using (var command = new NpgsqlCommand(checkQuery, conn))
+                    {
+                        command.Parameters.AddWithValue("@date", DateTime.Now.Date);
+                        using (NpgsqlDataReader reader = command.ExecuteReader())
+                        {
+                            string status_open = "Не открыт";
+                            while (reader.Read())
+                            {
+                                var openValue = reader["open"];
+                                if (openValue != DBNull.Value)
+                                {
+                                    status_open = Convert.ToDateTime(openValue).ToString("dd:MM:yyyy HH:mm:ss");
+                                }
+                            }
+                            label_open_shop.Text = status_open;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Ошибка при чтении статуса открытия магазина");
+                    MainStaticClass.WriteRecordErrorLog(ex, 0, MainStaticClass.CashDeskNumber, "Чтение статуса открытия магазина");
+                }
+            }
+        }
+
+        private void btn_close_shop_Click(object sender, EventArgs e)
+        {
+            using (var conn = MainStaticClass.NpgsqlConn())
+            {
+                try
+                {
+                    conn.Open();
+
+                    // Проверяем, открыт ли магазин сегодня
+                    string checkQuery = "SELECT COUNT(1) FROM open_close_shop WHERE date = @date";
+                    using (var command = new NpgsqlCommand(checkQuery, conn))
+                    {
+                        command.Parameters.AddWithValue("@date", DateTime.Now.Date);
+
+                        if (Convert.ToInt32(command.ExecuteScalar()) > 0)
+                        {
+                            // Открываем магазин
+                            string insertQuery = "UPDATE open_close_shop  	SET close=@close WHERE date = @date";
+                            using (var insertCommand = new NpgsqlCommand(insertQuery, conn))
+                            {
+                                insertCommand.Parameters.AddWithValue("@close", DateTime.Now);
+                                insertCommand.Parameters.AddWithValue("@date", DateTime.Now.Date);
+                                insertCommand.ExecuteNonQuery();
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("Сегодня магазин еще не был открыт");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Ошибка при закрытии магазина");
+                    MainStaticClass.WriteRecordErrorLog(ex, 0, MainStaticClass.CashDeskNumber, "Закрытие магазина");
+                }
+            }
+            load_status_close_shop();
+        }
+
+        private void load_status_close_shop()
+        {
+            using (var conn = MainStaticClass.NpgsqlConn())
+            {
+                try
+                {
+                    conn.Open();
+
+                    // Проверяем, открыт ли магазин сегодня
+                    string checkQuery = "SELECT close FROM open_close_shop WHERE date = @date";
+                    using (var command = new NpgsqlCommand(checkQuery, conn))
+                    {
+                        command.Parameters.AddWithValue("@date", DateTime.Now.Date);
+                        using (NpgsqlDataReader reader = command.ExecuteReader())
+                        {
+                            string status_close = "Не закрыт";
+                            while (reader.Read())
+                            {
+                                var closeValue = reader["close"];
+                                if (closeValue != DBNull.Value)
+                                {
+                                    status_close = Convert.ToDateTime(closeValue).ToString("dd:MM:yyyy HH:mm:ss");
+                                }
+                            }
+                            label_close_shop.Text = status_close;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Ошибка при чтении статуса закрытия магазина");
+                    MainStaticClass.WriteRecordErrorLog(ex, 0, MainStaticClass.CashDeskNumber, "Чтение статуса закрытия магазина");
+                }
+            }
+        }
+
     }
 }

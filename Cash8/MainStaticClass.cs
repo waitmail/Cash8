@@ -553,9 +553,10 @@ namespace Cash8
                     CDN_list = cdn.get_cdn_list();                      
                     //обновить кеш                     
                     update_cash_cdn(CDN_list);                    
-                }                
+                }
 
-                return DeepCopyCDN_List(CDN_list);//Здесь отдаем копию там дальше будут отборы, а сохранять нужно весь оргинальный список 
+                //return DeepCopyCDN_List(CDN_list);//Здесь отдаем копию там дальше будут отборы, а сохранять нужно весь оргинальный список 
+                return CDN_list;
             }
             set
             {
@@ -4154,7 +4155,9 @@ namespace Cash8
                 string query = "INSERT INTO cdn_log(date,cdn_answer,numdoc,num_cash,mark,status) VALUES(@date,@cdn_answer,@numdoc,@num_cash,@mark,@status)";
                 command = new NpgsqlCommand(query, conn);
 
-                NpgsqlParameter parameter = new NpgsqlParameter("date", DateTime.Now.ToString("yyy-MM-dd HH:mm:ss"));
+                //NpgsqlParameter parameter = new NpgsqlParameter("date", DateTime.Now.ToString("yyy-MM-dd HH:mm:ss"));
+                //NpgsqlParameter parameter = new NpgsqlParameter("date", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"));
+                NpgsqlParameter parameter = new NpgsqlParameter("date", DateTime.Now);                
                 command.Parameters.Add(parameter);
 
                 parameter = new NpgsqlParameter("cdn_answer", description);

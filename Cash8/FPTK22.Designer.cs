@@ -55,10 +55,16 @@
             this.btn_query_summary_report = new System.Windows.Forms.Button();
             this.btn_query_full_report = new System.Windows.Forms.Button();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.btn_open_shop = new System.Windows.Forms.Button();
+            this.btn_close_shop = new System.Windows.Forms.Button();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.label_close_shop = new System.Windows.Forms.Label();
+            this.label_open_shop = new System.Windows.Forms.Label();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox5.SuspendLayout();
+            this.groupBox6.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox4
@@ -346,11 +352,64 @@
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Банковский терминал";
             // 
+            // btn_open_shop
+            // 
+            this.btn_open_shop.Location = new System.Drawing.Point(14, 30);
+            this.btn_open_shop.Name = "btn_open_shop";
+            this.btn_open_shop.Size = new System.Drawing.Size(154, 43);
+            this.btn_open_shop.TabIndex = 26;
+            this.btn_open_shop.Text = "Открыть магазин";
+            this.btn_open_shop.UseVisualStyleBackColor = true;
+            this.btn_open_shop.Click += new System.EventHandler(this.btn_open_shop_Click);
+            // 
+            // btn_close_shop
+            // 
+            this.btn_close_shop.Location = new System.Drawing.Point(14, 96);
+            this.btn_close_shop.Name = "btn_close_shop";
+            this.btn_close_shop.Size = new System.Drawing.Size(152, 43);
+            this.btn_close_shop.TabIndex = 27;
+            this.btn_close_shop.Text = "Закрыть магазин";
+            this.btn_close_shop.UseVisualStyleBackColor = true;
+            this.btn_close_shop.Click += new System.EventHandler(this.btn_close_shop_Click);
+            // 
+            // groupBox6
+            // 
+            this.groupBox6.Controls.Add(this.label_close_shop);
+            this.groupBox6.Controls.Add(this.label_open_shop);
+            this.groupBox6.Controls.Add(this.btn_close_shop);
+            this.groupBox6.Controls.Add(this.btn_open_shop);
+            this.groupBox6.Location = new System.Drawing.Point(12, 387);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(359, 163);
+            this.groupBox6.TabIndex = 28;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "Открыть /Закрыть ( Магазин )";
+            // 
+            // label_close_shop
+            // 
+            this.label_close_shop.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_close_shop.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label_close_shop.Location = new System.Drawing.Point(189, 96);
+            this.label_close_shop.Name = "label_close_shop";
+            this.label_close_shop.Size = new System.Drawing.Size(154, 43);
+            this.label_close_shop.TabIndex = 29;
+            this.label_close_shop.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label_open_shop
+            // 
+            this.label_open_shop.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_open_shop.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label_open_shop.Location = new System.Drawing.Point(189, 30);
+            this.label_open_shop.Name = "label_open_shop";
+            this.label_open_shop.Size = new System.Drawing.Size(154, 43);
+            this.label_open_shop.TabIndex = 28;
+            this.label_open_shop.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // FPTK22
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(893, 481);
+            this.ClientSize = new System.Drawing.Size(891, 562);
             this.Controls.Add(this.txtB_fn_info);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.print_last_check);
@@ -361,6 +420,7 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox5);
+            this.Controls.Add(this.groupBox6);
             this.Name = "FPTK22";
             this.Text = "Фискальный регистратор";
             this.groupBox4.ResumeLayout(false);
@@ -369,6 +429,7 @@
             this.groupBox3.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox5.ResumeLayout(false);
+            this.groupBox6.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -403,5 +464,10 @@
         private System.Windows.Forms.Button btn_openDrawer;
         private System.Windows.Forms.TextBox txtB_last_send_mark;
         private System.Windows.Forms.Button btn_date_mark;
+        private System.Windows.Forms.Button btn_open_shop;
+        private System.Windows.Forms.Button btn_close_shop;
+        private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.Label label_close_shop;
+        private System.Windows.Forms.Label label_open_shop;
     }
 }
