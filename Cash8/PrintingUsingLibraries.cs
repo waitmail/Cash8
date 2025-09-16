@@ -505,7 +505,7 @@ namespace Cash8
             }
             
 
-            if (check.check_type.SelectedIndex == 1 || check.reopened)//для возвратов и красных чеков старая схема
+            if (check.check_type.SelectedIndex == 1 || check.check_type.SelectedIndex == 2 || check.reopened)//для возвратов и красных чеков старая схема
             {
                 //здесь необходимо выполнить запрос на cdn
                 ProductData productData = new ProductData(0, "", 0, ProductFlags.None);
@@ -569,29 +569,35 @@ namespace Cash8
             }
             else if (check.check_type.SelectedIndex == 2)
             {
+
                 //fptr.setParam(1177, "Служебная записка");
                 fptr.setParam(1178, check.sale_date);//Дата продажи
-                if (check.tax_order.Trim().Length != 0)
-                {
-                    fptr.setParam(1179, check.tax_order);//Номер предписания
-                }
+                //if (check.tax_order.Trim().Length != 0)
+                //{
+                //fptr.setParam(1179, check.tax_order);//Номер предписания
+                fptr.setParam(1179, "0");//Номер предписания
+                //}
 
                 //fptr.setParam(1179, "2.15-15/00373 от 12.01.2024");//Номер предписания
 
                 //fptr.setParam(1179, "2.15-15/00373 от 12.01.2024");//Номер предписания
                 fptr.utilFormTlv();
-                fptr.setParam(AtolConstants.LIBFPTR_PARAM_RECEIPT_TYPE, AtolConstants.LIBFPTR_RT_SELL_CORRECTION);
 
                 byte[] correctionInfo = fptr.getParamByteArray(AtolConstants.LIBFPTR_PARAM_TAG_VALUE);
+                fptr.setParam(1174, correctionInfo);
+
+                fptr.setParam(AtolConstants.LIBFPTR_PARAM_RECEIPT_TYPE, AtolConstants.LIBFPTR_RT_SELL_CORRECTION);          
+
+
+
                 if (check.tax_order == "")
                 {
-                    fptr.setParam(1173, 0);                                        
+                    fptr.setParam(1173, 0);
                 }
                 else
                 {
                     fptr.setParam(1173, 1);
                 }
-                fptr.setParam(1174, correctionInfo);
             }
 
             if (check.txtB_email_telephone.Text.Trim().Length > 0)
@@ -664,7 +670,7 @@ namespace Cash8
 
                         fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE, mark);
                         fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_TYPE, AtolConstants.LIBFPTR_MCT12_AUTO);
-                        if (check.check_type.SelectedIndex == 0)
+                        if ((check.check_type.SelectedIndex == 0)|| (check.check_type.SelectedIndex == 2))
                         {
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, AtolConstants.LIBFPTR_MES_PIECE_SOLD);
                         }
@@ -1074,7 +1080,7 @@ namespace Cash8
                     return;
                 }
 
-                if (check.check_type.SelectedIndex == 1 || check.reopened)//для возвратов и красных чеков старая схема
+                if (check.check_type.SelectedIndex == 1 || check.check_type.SelectedIndex == 2 || check.reopened)//для возвратов и красных чеков старая схема
                 {
                     //здесь необходимо выполнить запрос на cdn
                     ProductData productData = new ProductData(0, "", 0, ProductFlags.None);                    
@@ -1157,7 +1163,7 @@ namespace Cash8
             //}
 
 
-            if (check.check_type.SelectedIndex == 0)
+            if (check.check_type.SelectedIndex == 0)// || (check.check_type.SelectedIndex == 2))
             {
                 fptr.setParam(AtolConstants.LIBFPTR_PARAM_RECEIPT_TYPE, AtolConstants.LIBFPTR_RT_SELL);
             }
@@ -1167,17 +1173,45 @@ namespace Cash8
             }
             else if (check.check_type.SelectedIndex == 2)
             {
+                ////fptr.setParam(1177, "Служебная записка");
+                //fptr.setParam(1178, check.sale_date);//Дата продажи
+                //if (check.tax_order.Trim().Length != 0)
+                //{
+                //    fptr.setParam(1179, check.tax_order);//Номер предписания
+                //}
+
+                //fptr.utilFormTlv();
+                //fptr.setParam(AtolConstants.LIBFPTR_PARAM_RECEIPT_TYPE, AtolConstants.LIBFPTR_RT_SELL_CORRECTION);
+
+                //byte[] correctionInfo = fptr.getParamByteArray(AtolConstants.LIBFPTR_PARAM_TAG_VALUE);
+                //if (check.tax_order == "")
+                //{
+                //    fptr.setParam(1173, 0);
+                //}
+                //else
+                //{
+                //    fptr.setParam(1173, 1);
+                //}
+                ////fptr.setParam(1174, correctionInfo);
+
                 //fptr.setParam(1177, "Служебная записка");
                 fptr.setParam(1178, check.sale_date);//Дата продажи
-                if (check.tax_order.Trim().Length != 0)
-                {
-                    fptr.setParam(1179, check.tax_order);//Номер предписания
-                }
-            
+                //if (check.tax_order.Trim().Length != 0)
+                //{
+                //fptr.setParam(1179, check.tax_order);//Номер предписания
+                fptr.setParam(1179, "0");//Номер предписания
+                //}
+
+                //fptr.setParam(1179, "2.15-15/00373 от 12.01.2024");//Номер предписания
+
+                //fptr.setParam(1179, "2.15-15/00373 от 12.01.2024");//Номер предписания
                 fptr.utilFormTlv();
-                fptr.setParam(AtolConstants.LIBFPTR_PARAM_RECEIPT_TYPE, AtolConstants.LIBFPTR_RT_SELL_CORRECTION);
 
                 byte[] correctionInfo = fptr.getParamByteArray(AtolConstants.LIBFPTR_PARAM_TAG_VALUE);
+                fptr.setParam(1174, correctionInfo);
+
+                fptr.setParam(AtolConstants.LIBFPTR_PARAM_RECEIPT_TYPE, AtolConstants.LIBFPTR_RT_SELL_CORRECTION);
+                               
                 if (check.tax_order == "")
                 {
                     fptr.setParam(1173, 0);
@@ -1186,7 +1220,7 @@ namespace Cash8
                 {
                     fptr.setParam(1173, 1);
                 }
-                fptr.setParam(1174, correctionInfo);
+
             }
 
             // bool closing = false;
@@ -1308,7 +1342,7 @@ namespace Cash8
                         fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE, mark);
                         fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_TYPE, AtolConstants.LIBFPTR_MCT12_AUTO);
                         //fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, AtolConstants.LIBFPTR_MES_PIECE_SOLD);
-                        if (check.check_type.SelectedIndex == 0)
+                        if ((check.check_type.SelectedIndex == 0) || (check.check_type.SelectedIndex == 2))
                         {
                             fptr.setParam(AtolConstants.LIBFPTR_PARAM_MARKING_CODE_STATUS, AtolConstants.LIBFPTR_MES_PIECE_SOLD);
                         }
