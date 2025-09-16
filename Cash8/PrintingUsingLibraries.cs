@@ -1018,7 +1018,6 @@ namespace Cash8
 
             if (variant == 0)
             {
-
                 //if (check.to_print_certainly == 1)
                 //{
                 //    MainStaticClass.delete_document_wil_be_printed(check.numdoc.ToString(), variant);
@@ -1135,8 +1134,7 @@ namespace Cash8
             fptr.setParam(1021, MainStaticClass.Cash_Operator);
             fptr.setParam(1203, MainStaticClass.CashOperatorInn);
             fptr.operatorLogin();
-
-
+            
             print_terminal_check(fptr, check);
             //if (variant == 0)
             //{
