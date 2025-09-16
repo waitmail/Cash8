@@ -2250,9 +2250,8 @@ namespace Cash8
                 calculate();
                 return;
             }
+            
             //Проверить заполнены копейки или нет 
-
-
 
             double cash_money = Math.Round(Convert.ToDouble(txtB_cash_sum.Text.Replace(".", ",")), 2);
             double non_cash_money = Math.Round(Convert.ToDouble(get_non_cash_sum()), 2);
@@ -2874,6 +2873,15 @@ namespace Cash8
                 }
             }
         }
-       
+
+        private void button2_Click_1(object sender, EventArgs e)
+        {
+            button2_Click(null, null);
+        }
+
+        private void button2_Click_2(object sender, EventArgs e)
+        {
+            it_is_paid();
+        }
     }
 }

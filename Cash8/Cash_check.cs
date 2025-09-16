@@ -2759,7 +2759,17 @@ namespace Cash8
                 t_n_f.Dispose();
                 return;
             }
-                                              
+
+            if (this.listView1.Items.Count>70)//Превышен предел строк
+            {
+                MessageBox.Show("В одном чеке может быть максимум 70 строк.\r\n Tсли у покупателя еще есть тоовары продавайте их в другом чеке.","Проверка количества строк");
+                last_tovar.Text = barcode;
+                Tovar_Not_Found t_n_f = new Tovar_Not_Found();
+                t_n_f.ShowDialog();
+                t_n_f.Dispose();
+                return;
+            }
+
             bool find_sertificate = false;
             //Надо проверить может уже сертификат есть в чеке      
             if (productData.isCertificate())
@@ -3312,6 +3322,11 @@ namespace Cash8
         {
             string GS1 = Char.ConvertFromUtf32(29);
             int length = mark_str.Length;
+
+            if (mark_str.Contains(GS1))
+            {
+                return mark_str;
+            }
 
             switch (length)
             {
