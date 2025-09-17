@@ -1208,6 +1208,7 @@ namespace Cash8
 
             check_files_and_folders();
             //MessageBox.Show("10");
+            sent_open_close_shop();
         }
                 
 
@@ -1567,14 +1568,14 @@ namespace Cash8
                 }
             }
         }
-
+                          
         private void check_exists_column()
         {
             NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
             try
             {
                 conn.Open();
-                string query = "SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'tovar' AND column_name = 'rr_not_control_owner'); ";                
+                string query = "SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'open_close_shop' AND column_name = 'its_sent'); ";                
                 
                  NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 if (!Convert.ToBoolean(command.ExecuteScalar())) //не нашли такой колонки   
@@ -1720,67 +1721,131 @@ namespace Cash8
         }
 
 
+        class OpenCloseShop
+        {
+            public DateTime? Open { get; set; }
+            public DateTime? Close { get; set; }
+            public DateTime Date { get; set; }
+            public bool ItsSent { get; set; }
+        }
 
-        //private void check_add_field()
-        //{            
-        //    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
-        //    try
-        //    {
-        //        conn.Open();
-        //        string query = " SELECT execute_addcolumn  FROM constants;";
-        //        NpgsqlCommand command = new NpgsqlCommand(query, conn);
-        //        object result_query = command.ExecuteScalar();
-        //        if (result_query.ToString() == "")
-        //        {
-        //            SettingConnect sc = new SettingConnect();
-        //            sc.add_field_Click(null, null);
-        //            sc.Dispose();
+        private void sent_open_close_shop()
+        {
+            List<OpenCloseShop> closeShops = get_open_close_shop();
+            if (closeShops.Count > 0)
+            {
+                DS.DS ds = MainStaticClass.get_ds();
+                string nick_shop = MainStaticClass.Nick_Shop.Trim();
+                if (nick_shop.Trim().Length == 0)
+                {
+                    return;
+                }
+                string code_shop = MainStaticClass.Code_Shop.Trim();
+                if (code_shop.Trim().Length == 0)
+                {
+                    return;
+                }
+                string count_day = CryptorEngine.get_count_day();
 
-        //            query = " UPDATE constants SET execute_addcolumn = 1 ";
-        //            command = new NpgsqlCommand(query, conn);
-        //            command.ExecuteNonQuery();
-        //        }
-        //        else
-        //        {
-        //            if (Convert.ToInt16(result_query) == 2)
-        //            {
-        //                SettingConnect sc = new SettingConnect();
-        //                sc.add_field_Click(null, null);
-        //                sc.Dispose();
+                string key = nick_shop.Trim() + count_day.Trim() + code_shop.Trim();
+                
+                string data = JsonConvert.SerializeObject(closeShops, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                string data_crypt = CryptorEngine.Encrypt(data, true, key);
 
-        //                query = " UPDATE constants SET execute_addcolumn = 1 ";
-        //                command = new NpgsqlCommand(query, conn);
-        //                command.ExecuteNonQuery();
-        //            } 
-        //        }
-        //        conn.Close();
-        //    }
-        //    catch (NpgsqlException ex)
-        //    {
-        //        MessageBox.Show(" Ошибка при добавлении полей в БД "+ex.Message);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show(" Ошибка при добавлении полей в БД " + ex.Message);
-        //    }
-        //    finally
-        //    {
-        //        if (conn.State == ConnectionState.Open)
-        //        {
-        //            conn.Close();
-        //        }
-        //    }
-        //}
+                bool result = ds.UploadOpeningClosingShops(MainStaticClass.Nick_Shop, data_crypt, "4");
+                if (result)
+                {
+                    MarkShopsAsSent(closeShops);
+                }                
+            }
+        }
 
-        //void timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
-        //{      
+        private void MarkShopsAsSent(List<OpenCloseShop> shops)
+        {
+            if (shops == null || shops.Count == 0)
+                return;
 
-        //    timer.Stop();
-        //    timer = null;
-        //    //SetForegroundWindow(this);
-        //    //this.Focus();            
-        //    //MainStaticClass.Main.start_interface_switching();            
-        //}
+            using (var conn = MainStaticClass.NpgsqlConn())
+            {
+                conn.Open();
+
+                using (var transaction = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        foreach (var shop in shops)
+                        {
+                            string updateQuery = "UPDATE public.open_close_shop SET its_sent = true WHERE date = @date";
+
+                            using (var cmd = new NpgsqlCommand(updateQuery, conn, transaction))
+                            {
+                                cmd.Parameters.AddWithValue("@date", shop.Date.Date);
+                                cmd.ExecuteNonQuery();
+                            }
+                        }
+
+                        transaction.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        // Логирование ошибки (опционально)
+                        MainStaticClass.WriteRecordErrorLog(ex, 0, MainStaticClass.CashDeskNumber, "Ошибка при обновлении its_sent");
+                    }
+                }
+            }
+        }
+
+
+        private List<OpenCloseShop> get_open_close_shop()
+        {
+            List<OpenCloseShop> openCloseShops = new List<OpenCloseShop>();
+
+            using (var conn = MainStaticClass.NpgsqlConn())
+            {
+                try
+                {
+                    conn.Open();
+
+                    string query = "SELECT open, close, date, its_sent FROM public.open_close_shop WHERE its_sent = false;";
+
+                    using (var command = new NpgsqlCommand(query, conn))
+                    using (var reader = command.ExecuteReader())
+                    {
+                        // Получаем индексы колонок
+                        int openOrdinal = reader.GetOrdinal("open");
+                        int closeOrdinal = reader.GetOrdinal("close");
+                        int dateOrdinal = reader.GetOrdinal("date");
+                        int itsSentOrdinal = reader.GetOrdinal("its_sent");
+
+                        while (reader.Read())
+                        {
+                            var openCloseShop = new OpenCloseShop
+                            {
+                                Open = reader.IsDBNull(openOrdinal) ? (DateTime?)null : reader.GetDateTime(openOrdinal),
+                                Close = reader.IsDBNull(closeOrdinal) ? (DateTime?)null : reader.GetDateTime(closeOrdinal),
+                                Date = reader.GetDateTime(dateOrdinal),
+                                ItsSent = reader.GetBoolean(itsSentOrdinal)
+                            };
+
+                            openCloseShops.Add(openCloseShop);
+                        }
+                    }
+                }
+                catch (NpgsqlException ex)
+                {
+                    MessageBox.Show("При отправке даты открытия и закрытия магазина произошли ошибки: " + ex.Message);
+                    MainStaticClass.WriteRecordErrorLog(ex, 0, MainStaticClass.CashDeskNumber, "Отправка даты открытия/закрытия магазина");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("При отправке даты открытия и закрытия магазина произошли ошибки: " + ex.Message);
+                    MainStaticClass.WriteRecordErrorLog(ex, 0, MainStaticClass.CashDeskNumber, "Отправка даты открытия/закрытия магазина");
+                }
+            }
+
+            return openCloseShops;
+        }
 
         private void load_bonus_clients()
         {

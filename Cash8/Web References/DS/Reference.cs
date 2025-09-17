@@ -63,9 +63,9 @@ namespace Cash8.DS {
         
         private System.Threading.SendOrPostCallback UploadDeletedItemsOperationCompleted;
         
-        private System.Threading.SendOrPostCallback GetTovarCheckCDNOperationCompleted;
-        
         private System.Threading.SendOrPostCallback GetDataForCasheV8JasonOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback UploadOpeningClosingShopsOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetDataForCasheV8SuccessfullyOperationCompleted;
         
@@ -171,10 +171,10 @@ namespace Cash8.DS {
         public event UploadDeletedItemsCompletedEventHandler UploadDeletedItemsCompleted;
         
         /// <remarks/>
-        public event GetTovarCheckCDNCompletedEventHandler GetTovarCheckCDNCompleted;
+        public event GetDataForCasheV8JasonCompletedEventHandler GetDataForCasheV8JasonCompleted;
         
         /// <remarks/>
-        public event GetDataForCasheV8JasonCompletedEventHandler GetDataForCasheV8JasonCompleted;
+        public event UploadOpeningClosingShopsCompletedEventHandler UploadOpeningClosingShopsCompleted;
         
         /// <remarks/>
         public event GetDataForCasheV8SuccessfullyCompletedEventHandler GetDataForCasheV8SuccessfullyCompleted;
@@ -740,39 +740,6 @@ namespace Cash8.DS {
         }
         
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetTovarCheckCDN", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public string GetTovarCheckCDN(string nick_shop, string data, string scheme) {
-            object[] results = this.Invoke("GetTovarCheckCDN", new object[] {
-                        nick_shop,
-                        data,
-                        scheme});
-            return ((string)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetTovarCheckCDNAsync(string nick_shop, string data, string scheme) {
-            this.GetTovarCheckCDNAsync(nick_shop, data, scheme, null);
-        }
-        
-        /// <remarks/>
-        public void GetTovarCheckCDNAsync(string nick_shop, string data, string scheme, object userState) {
-            if ((this.GetTovarCheckCDNOperationCompleted == null)) {
-                this.GetTovarCheckCDNOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetTovarCheckCDNOperationCompleted);
-            }
-            this.InvokeAsync("GetTovarCheckCDN", new object[] {
-                        nick_shop,
-                        data,
-                        scheme}, this.GetTovarCheckCDNOperationCompleted, userState);
-        }
-        
-        private void OnGetTovarCheckCDNOperationCompleted(object arg) {
-            if ((this.GetTovarCheckCDNCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetTovarCheckCDNCompleted(this, new GetTovarCheckCDNCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetDataForCasheV8Jason", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlElementAttribute(DataType="base64Binary")]
         public byte[] GetDataForCasheV8Jason(string nick_shop, string data, string scheme) {
@@ -803,6 +770,39 @@ namespace Cash8.DS {
             if ((this.GetDataForCasheV8JasonCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetDataForCasheV8JasonCompleted(this, new GetDataForCasheV8JasonCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/UploadOpeningClosingShops", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public bool UploadOpeningClosingShops(string nick_shop, string data, string scheme) {
+            object[] results = this.Invoke("UploadOpeningClosingShops", new object[] {
+                        nick_shop,
+                        data,
+                        scheme});
+            return ((bool)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void UploadOpeningClosingShopsAsync(string nick_shop, string data, string scheme) {
+            this.UploadOpeningClosingShopsAsync(nick_shop, data, scheme, null);
+        }
+        
+        /// <remarks/>
+        public void UploadOpeningClosingShopsAsync(string nick_shop, string data, string scheme, object userState) {
+            if ((this.UploadOpeningClosingShopsOperationCompleted == null)) {
+                this.UploadOpeningClosingShopsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnUploadOpeningClosingShopsOperationCompleted);
+            }
+            this.InvokeAsync("UploadOpeningClosingShops", new object[] {
+                        nick_shop,
+                        data,
+                        scheme}, this.UploadOpeningClosingShopsOperationCompleted, userState);
+        }
+        
+        private void OnUploadOpeningClosingShopsOperationCompleted(object arg) {
+            if ((this.UploadOpeningClosingShopsCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.UploadOpeningClosingShopsCompleted(this, new UploadOpeningClosingShopsCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -1501,32 +1501,6 @@ namespace Cash8.DS {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
-    public delegate void GetTovarCheckCDNCompletedEventHandler(object sender, GetTovarCheckCDNCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetTovarCheckCDNCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetTovarCheckCDNCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
     public delegate void GetDataForCasheV8JasonCompletedEventHandler(object sender, GetDataForCasheV8JasonCompletedEventArgs e);
     
     /// <remarks/>
@@ -1547,6 +1521,32 @@ namespace Cash8.DS {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((byte[])(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
+    public delegate void UploadOpeningClosingShopsCompletedEventHandler(object sender, UploadOpeningClosingShopsCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3761.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class UploadOpeningClosingShopsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal UploadOpeningClosingShopsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public bool Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[0]));
             }
         }
     }

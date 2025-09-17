@@ -948,11 +948,12 @@ namespace Cash8
                         if (Convert.ToInt32(command.ExecuteScalar()) == 0)
                         {
                             // Открываем магазин
-                            string insertQuery = "INSERT INTO open_close_shop(open, date) VALUES(@open, @date)";
+                            string insertQuery = "INSERT INTO open_close_shop(open, date,its_sent) VALUES(@open, @date,@its_sent)";
                             using (var insertCommand = new NpgsqlCommand(insertQuery, conn))
                             {
                                 insertCommand.Parameters.AddWithValue("@open", DateTime.Now);
                                 insertCommand.Parameters.AddWithValue("@date", DateTime.Now.Date);
+                                insertCommand.Parameters.AddWithValue("@its_sent", false);
                                 insertCommand.ExecuteNonQuery();
                             }
                         }
@@ -1024,11 +1025,12 @@ namespace Cash8
                         if (Convert.ToInt32(command.ExecuteScalar()) > 0)
                         {
                             // Открываем магазин
-                            string insertQuery = "UPDATE open_close_shop  	SET close=@close WHERE date = @date";
+                            string insertQuery = "UPDATE open_close_shop  	SET close=@close,its_sent = @its_sent  WHERE date = @date";
                             using (var insertCommand = new NpgsqlCommand(insertQuery, conn))
                             {
                                 insertCommand.Parameters.AddWithValue("@close", DateTime.Now);
                                 insertCommand.Parameters.AddWithValue("@date", DateTime.Now.Date);
+                                insertCommand.Parameters.AddWithValue("@its_sent", false);
                                 insertCommand.ExecuteNonQuery();
                             }
                         }
