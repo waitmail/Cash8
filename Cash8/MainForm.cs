@@ -1885,6 +1885,7 @@ namespace Cash8
             //sdsp.Dispose();
             timer_send_data_Elapsed(null, null);
             UploadPhoneClients();
+            sent_open_close_shop();
             //UploadDeletedItems();
             if (MainStaticClass.PrintingUsingLibraries == 1)
             {
