@@ -3351,6 +3351,11 @@ namespace Cash8
                     mark_str = mark_str.Insert(31, GS1);
                     break;
 
+                case 76:
+                    mark_str = mark_str.Insert(24, GS1);
+                    mark_str = mark_str.Insert(31, GS1);
+                    break;
+
                 case 83:
                 case 115:
                 case 127:
@@ -4079,6 +4084,7 @@ namespace Cash8
                 qr_code_lenght.Add(32);
                 qr_code_lenght.Add(37);
                 qr_code_lenght.Add(40);
+                qr_code_lenght.Add(76);
                 qr_code_lenght.Add(83);
                 qr_code_lenght.Add(115);
                 qr_code_lenght.Add(127);
