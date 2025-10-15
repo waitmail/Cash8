@@ -1705,7 +1705,7 @@ namespace Cash8
                                 row["price_at_discount"] = actionPrice.Value;
                                 row["sum_full"] = (qty * price).ToString();
                                 //row["sum_at_discount"] = (Math.Ceiling((decimal)qty * actionPrice.Value * 100) / 100).ToString();//((decimal)qty * actionPrice.Value).ToString();
-                                row["sum_at_discount"] = Math.Round((decimal)qty * actionPrice.Value, 2).ToString();
+                                row["sum_at_discount"] = Math.Round((decimal)qty * actionPrice.Value, 2,MidpointRounding.AwayFromZero).ToString();
                                 row["action"] = num_doc.ToString();
                                 row["action2"] = num_doc.ToString();
                             }
@@ -2031,9 +2031,9 @@ namespace Cash8
         //                if (Convert.ToDecimal(result_query) == 0)
         //                {
         //                    //have_action = true;//Признак того что в документе есть сработка по акции                        
-        //                    row["price_at_discount"] = Math.Round(Convert.ToDouble(Convert.ToDouble(row["price"]) - Convert.ToDouble(row["price"]) * Convert.ToDouble(persent) / 100), 2,MidpointRounding.ToEven);//Цена со скидкой                                    
-        //                    row["sum_full"] = Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price"]),2,MidpointRounding.ToEven);
-        //                    row["sum_at_discount"] = Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price_at_discount"]),2,MidpointRounding.ToEven);
+        //                    row["price_at_discount"] = Math.Round(Convert.ToDouble(Convert.ToDouble(row["price"]) - Convert.ToDouble(row["price"]) * Convert.ToDouble(persent) / 100), 2,MidpointRounding.AwayFromZero);//Цена со скидкой                                    
+        //                    row["sum_full"] = Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price"]),2,MidpointRounding.AwayFromZero);
+        //                    row["sum_at_discount"] = Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price_at_discount"]),2,MidpointRounding.AwayFromZero);
         //                    row["action"] = num_doc.ToString(); //Номер акционного документа                        
         //                    row["action2"] = num_doc.ToString();//Тип акции 
         //                    if (dt.Columns.Contains("promo_description"))
@@ -2044,8 +2044,8 @@ namespace Cash8
         //                else
         //                {
         //                    row["price_at_discount"] = result_query.ToString();//Цена со скидкой                                    
-        //                    row["sum_full"] = Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price"]),2,MidpointRounding.ToEven);
-        //                    row["sum_at_discount"] = Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price_at_discount"]),2,MidpointRounding.ToEven);
+        //                    row["sum_full"] = Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price"]),2,MidpointRounding.AwayFromZero);
+        //                    row["sum_at_discount"] = Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price_at_discount"]),2,MidpointRounding.AwayFromZero);
         //                    row["action"] = num_doc.ToString(); //Номер акционного документа                        
         //                    row["action2"] = num_doc.ToString();//Тип акции         
         //                    if (dt.Columns.Contains("promo_description"))
@@ -2150,7 +2150,7 @@ namespace Cash8
                     double priceAtDiscount;
                     if (price == 0)
                     {
-                        priceAtDiscount = Math.Round(Convert.ToDouble(row["price"]) * (1 - (double)percent / 100), 2, MidpointRounding.ToEven);
+                        priceAtDiscount = Math.Round(Convert.ToDouble(row["price"]) * (1 - (double)percent / 100), 2,MidpointRounding.AwayFromZero);
                     }
                     else
                     {
@@ -2158,8 +2158,8 @@ namespace Cash8
                     }
 
                     row["price_at_discount"] = priceAtDiscount;
-                    row["sum_full"] = Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price"]), 2, MidpointRounding.ToEven);
-                    row["sum_at_discount"] = Math.Round(Convert.ToDouble(row["quantity"]) * priceAtDiscount, 2, MidpointRounding.ToEven);
+                    row["sum_full"] = Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price"]), 2, MidpointRounding.AwayFromZero);
+                    row["sum_at_discount"] = Math.Round(Convert.ToDouble(row["quantity"]) * priceAtDiscount, 2, MidpointRounding.AwayFromZero);
                     row["action"] = num_doc.ToString();
                     row["action2"] = num_doc.ToString();
 
@@ -2219,7 +2219,7 @@ namespace Cash8
                         if (price == 0)
                         {
                             // Если цена в акции не указана, применяем процент скидки
-                            priceAtDiscount = Math.Round(Convert.ToDouble(row["price"]) * (1 - (double)percent / 100), 2, MidpointRounding.ToEven);
+                            priceAtDiscount = Math.Round(Convert.ToDouble(row["price"]) * (1 - (double)percent / 100), 2, MidpointRounding.AwayFromZero);
                         }
                         else
                         {
@@ -2229,8 +2229,8 @@ namespace Cash8
 
                         // Обновляем данные в строке
                         row["price_at_discount"] = priceAtDiscount;
-                        row["sum_full"] = Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price"]), 2, MidpointRounding.ToEven);
-                        row["sum_at_discount"] = Math.Round(Convert.ToDouble(row["quantity"]) * priceAtDiscount, 2, MidpointRounding.ToEven);
+                        row["sum_full"] = Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price"]), 2, MidpointRounding.AwayFromZero);
+                        row["sum_at_discount"] = Math.Round(Convert.ToDouble(row["quantity"]) * priceAtDiscount, 2, MidpointRounding.AwayFromZero);
                         row["action"] = num_doc.ToString();
                         row["action2"] = num_doc.ToString();
 
@@ -2766,7 +2766,7 @@ namespace Cash8
                         {
                             newRow = CreateNewRow(dtCopy, row, discountedQuantity, percent, num_doc);
                             row["quantity"] = Convert.ToInt32(row["quantity"]) - discountedQuantity;
-                            row["sum_at_discount"] = Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price_at_discount"]), 2, MidpointRounding.ToEven);
+                            row["sum_at_discount"] = Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price_at_discount"]), 2, MidpointRounding.AwayFromZero);
                         }
 
                         firstListItems[tovar_code] -= discountedQuantity;
@@ -2788,10 +2788,10 @@ namespace Cash8
         private void ApplyDiscountToRow(DataRow row, decimal percent, int num_doc)
         {
             double price = Convert.ToDouble(row["price"]);
-            double discountPrice = Math.Round(price - price * (double)percent / 100, 2, MidpointRounding.ToEven);
+            double discountPrice = Math.Round(price - price * (double)percent / 100, 2, MidpointRounding.AwayFromZero);
 
             row["price_at_discount"] = discountPrice;
-            row["sum_full"] = Math.Round(Convert.ToDouble(row["quantity"]) * price, 2, MidpointRounding.ToEven);
+            row["sum_full"] = Math.Round(Convert.ToDouble(row["quantity"]) * price, 2, MidpointRounding.AwayFromZero);
             row["sum_at_discount"] = Convert.ToDouble(row["quantity"]) * discountPrice;
             row["action"] = num_doc.ToString();
             row["action2"] = num_doc.ToString();
@@ -3024,7 +3024,7 @@ namespace Cash8
         //                // Создаем новую строку для частичного количества
         //                newRow = CreateNewRow(row, discountedQuantity, percent, num_doc);
         //                row["quantity"] = Convert.ToInt32(row["quantity"]) - discountedQuantity;
-        //                row["sum_at_discount"] = Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price_at_discount"]), 2, MidpointRounding.ToEven);
+        //                row["sum_at_discount"] = Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price_at_discount"]), 2, MidpointRounding.AwayFromZero);
         //            }
         //        }
         //    }
@@ -3038,10 +3038,10 @@ namespace Cash8
         //private void ApplyDiscountToRow(DataRow row, decimal percent, int num_doc)
         //{
         //    double price = Convert.ToDouble(row["price"]);
-        //    double discountPrice = Math.Round(price - price * (double)percent / 100, 2, MidpointRounding.ToEven);
+        //    double discountPrice = Math.Round(price - price * (double)percent / 100, 2, MidpointRounding.AwayFromZero);
 
         //    row["price_at_discount"] = discountPrice;
-        //    row["sum_full"] = Math.Round(Convert.ToDouble(row["quantity"]) * price, 2, MidpointRounding.ToEven);
+        //    row["sum_full"] = Math.Round(Convert.ToDouble(row["quantity"]) * price, 2, MidpointRounding.AwayFromZero);
         //    row["sum_at_discount"] = Convert.ToDouble(row["quantity"]) * discountPrice;
         //    row["action"] = num_doc.ToString();
         //    row["action2"] = num_doc.ToString();
@@ -3182,8 +3182,8 @@ namespace Cash8
         //                    quantity_of_pieces = Convert.ToInt16(row["quantity"]);
         //                    if (quantity_of_pieces <= min_quantity)
         //                    {
-        //                        row["price_at_discount"] = Math.Round(Convert.ToDouble(row["price"]) - Convert.ToDouble(row["price"]) * Convert.ToDouble(persent) / 100, 2, MidpointRounding.ToEven);//Цена со скидкой                                            
-        //                        row["sum_full"] = Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price"]), 2, MidpointRounding.ToEven);
+        //                        row["price_at_discount"] = Math.Round(Convert.ToDouble(row["price"]) - Convert.ToDouble(row["price"]) * Convert.ToDouble(persent) / 100, 2, MidpointRounding.AwayFromZero);//Цена со скидкой                                            
+        //                        row["sum_full"] = Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price"]), 2, MidpointRounding.AwayFromZero);
         //                        row["sum_at_discount"] = Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price_at_discount"]);
         //                        row["action"] = num_doc.ToString(); //Номер акционного документа 
         //                        row["action2"] = num_doc.ToString(); //Номер акционного документа 
@@ -3192,14 +3192,14 @@ namespace Cash8
         //                    if ((quantity_of_pieces > min_quantity) && (min_quantity > 0))
         //                    {
         //                        row["quantity"] = Convert.ToDouble(row["quantity"]) - min_quantity;
-        //                        row["sum_at_discount"] = Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price_at_discount"]), 2, MidpointRounding.ToEven);
+        //                        row["sum_at_discount"] = Math.Round(Convert.ToDouble(row["quantity"]) * Convert.ToDouble(row["price_at_discount"]), 2, MidpointRounding.AwayFromZero);
 
         //                        //Добавляем новую строку с количеством min_quantity 
         //                        row2 = dt.NewRow();
         //                        row2.ItemArray = row.ItemArray;
         //                        row2["quantity"] = min_quantity;
         //                        row2["price_at_discount"] = Math.Round(Convert.ToDouble(row2["price"]) - Convert.ToDouble(row2["price"]) * Convert.ToDouble(persent) / 100, 2);//Цена со скидкой                                            
-        //                        row2["sum_at_discount"] = Math.Round(Convert.ToDouble(row2["quantity"]) * Convert.ToDouble(row2["price_at_discount"]), 2, MidpointRounding.ToEven);
+        //                        row2["sum_at_discount"] = Math.Round(Convert.ToDouble(row2["quantity"]) * Convert.ToDouble(row2["price_at_discount"]), 2, MidpointRounding.AwayFromZero);
         //                        row2["action"] = num_doc.ToString(); //Номер акционного документа 
         //                        row2["action2"] = num_doc.ToString(); //Номер акционного документа 
         //                        //dt.Rows.Add(row2);

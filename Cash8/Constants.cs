@@ -154,7 +154,7 @@ namespace Cash8
                     this.txtB_id_acquiring_terminal.Text = reader["id_acquirer_terminal"].ToString();
                     this.txtB_ip_address_acquiring_terminal.Text = reader["ip_address_acquiring_terminal"].ToString();                    
                     this.checkBox_enable_cdn_markers.CheckState = (reader["enable_cdn_markers"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);                    
-                    this.checkBox_webservice_authorize.CheckState = (reader["webservice_authorize"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
+                    //this.checkBox_webservice_authorize.CheckState = (reader["webservice_authorize"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
                     this.checkBox_printing_using_libraries.CheckState = (reader["printing_using_libraries"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
                     this.checkBox_get_weight_automatically.CheckState = (reader["get_weight_automatically"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
                    
@@ -372,7 +372,7 @@ namespace Cash8
             //string self_service_kiosk = (checkBox_self_service_kiosk.CheckState == CheckState.Unchecked ? "false" : "true");
             string enable_cdn_markers = (checkBox_enable_cdn_markers.CheckState == CheckState.Unchecked ? "false" : "true");
             //string version2_marking = (checkBox_version2_marking.CheckState == CheckState.Unchecked ? "false" : "true");
-            string webservice_authorize = (checkBox_webservice_authorize.CheckState == CheckState.Unchecked ? "false" : "true");
+            //string webservice_authorize = (checkBox_webservice_authorize.CheckState == CheckState.Unchecked ? "false" : "true");
             //string static_guid_in_print = (checkBox_static_guid_in_print.CheckState == CheckState.Unchecked ? "false" : "true");
             string printing_using_libraries = (checkBox_printing_using_libraries.CheckState == CheckState.Unchecked ? "false" : "true");
             string get_weight_automatically = (checkBox_get_weight_automatically.CheckState == CheckState.Unchecked ? "false" : "true");
@@ -418,7 +418,7 @@ namespace Cash8
                     //"self_service_kiosk=" + self_service_kiosk + "," +
                     "enable_cdn_markers=" + enable_cdn_markers + "," +
                     //"version2_marking=" + version2_marking + "," +
-                    "webservice_authorize=" + webservice_authorize + "," +
+                    //"webservice_authorize=" + webservice_authorize + "," +
                     //"static_guid_in_print=" + static_guid_in_print + "," +
                     "printing_using_libraries=" + printing_using_libraries + "," +
                     "fn_serial_port = '" + fn_serial_port + "'," +
@@ -453,7 +453,7 @@ namespace Cash8
                         "self_service_kiosk," +
                         "enable_cdn_markers," +
                         //"version2_marking,"+
-                        "webservice_authorize," +
+                        //"webservice_authorize," +
                         //"static_guid_in_print," +
                         "printing_using_libraries," +
                         "fn_serial_port," +
@@ -482,7 +482,7 @@ namespace Cash8
                         //self_service_kiosk+","+
                         enable_cdn_markers + "," +
                         //version2_marking+","+
-                        webservice_authorize + "," +
+                        //webservice_authorize + "," +
                         //static_guid_in_print+","+
                         printing_using_libraries + ",'" +
                         fn_serial_port+"','"+      //comboBox_fn_port.SelectedItem.ToString() + "','" +

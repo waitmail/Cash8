@@ -91,9 +91,6 @@
     <Compile Include="Actions.Designer.cs">
       <DependentUpon>Actions.cs</DependentUpon>
     </Compile>
-    <Compile Include="AddingKmArrayToTableTested.cs" />
-    <Compile Include="AnswerAddingKmArrayToTableTested.cs" />
-    <Compile Include="AnswerCheckImcWorkState.cs" />
     <Compile Include="Cash_check.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -139,8 +136,6 @@
     <Compile Include="EnterQuantity.Designer.cs">
       <DependentUpon>EnterQuantity.cs</DependentUpon>
     </Compile>
-    <Compile Include="FiscallPrintJason.cs" />
-    <Compile Include="FiscallPrintJason2.cs" />
     <Compile Include="FPTK22.cs">
       <SubType>Form</SubType>
     </Compile>

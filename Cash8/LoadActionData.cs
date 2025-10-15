@@ -78,7 +78,7 @@ namespace Cash8
                     }
                 }
             }            
-            catch (Exception ex)
+            catch //(Exception ex)
             {
                 allActionData1 = null;
             }

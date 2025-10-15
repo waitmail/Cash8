@@ -212,47 +212,47 @@ namespace Cash8
 
         private void getShiftStatus()
         {
-            if (MainStaticClass.PrintingUsingLibraries == 0)
-            {
-                try
-                {
-                    Cash8.FiscallPrintJason.RootObject result = FiscallPrintJason.execute_operator_type("getShiftStatus");
-                    if (result != null)
-                    {
-                        if (result.results[0].status == "ready")//Задание выполнено успешно 
-                        {
-                            if (result.results[0].result.shiftStatus.state != "closed")
-                            {
-                                if ((DateTime.Now - result.results[0].result.shiftStatus.expiredTime).TotalHours > 0)
-                                {
-                                    //MessageBox.Show(" Период открытой смены превысил 24 часа !!!\r\n СНИМИТЕ Z-ОТЧЁТ. ЕСЛИ СОМНЕВАЕТЕСЬ В ЧЁМ-ТО, ТО ВСЁ РАВНО СНИМИТЕ Z-ОТЧЁТ");
-                                    MessageBox.Show(" Период открытой смены превысил 24 часа!\r\nСмена будет закрыта автоматически!\r\n" +
-                                                    "В ИТ отдел звонить не надо, если хотите кому нибудь позвонить по этому вопросу, звоните в бухгалтерию");
-                                    FPTK22 fPTK22 = new FPTK22();
-                                    fPTK22.z_report_Click(null, null);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            MessageBox.Show(" Ошибка !!! " + result.results[0].status + " | " + result.results[0].errorDescription);
-                        }
-                    }
-                    else
-                    {
-                        MessageBox.Show("Общая ошибка");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("getShiftStatus" + ex.Message);
-                }
-            }
-            else
-            {
+            //if (MainStaticClass.PrintingUsingLibraries == 0)
+            //{
+            //    try
+            //    {
+            //        Cash8.FiscallPrintJason.RootObject result = FiscallPrintJason.execute_operator_type("getShiftStatus");
+            //        if (result != null)
+            //        {
+            //            if (result.results[0].status == "ready")//Задание выполнено успешно 
+            //            {
+            //                if (result.results[0].result.shiftStatus.state != "closed")
+            //                {
+            //                    if ((DateTime.Now - result.results[0].result.shiftStatus.expiredTime).TotalHours > 0)
+            //                    {
+            //                        //MessageBox.Show(" Период открытой смены превысил 24 часа !!!\r\n СНИМИТЕ Z-ОТЧЁТ. ЕСЛИ СОМНЕВАЕТЕСЬ В ЧЁМ-ТО, ТО ВСЁ РАВНО СНИМИТЕ Z-ОТЧЁТ");
+            //                        MessageBox.Show(" Период открытой смены превысил 24 часа!\r\nСмена будет закрыта автоматически!\r\n" +
+            //                                        "В ИТ отдел звонить не надо, если хотите кому нибудь позвонить по этому вопросу, звоните в бухгалтерию");
+            //                        FPTK22 fPTK22 = new FPTK22();
+            //                        fPTK22.z_report_Click(null, null);
+            //                    }
+            //                }
+            //            }
+            //            else
+            //            {
+            //                MessageBox.Show(" Ошибка !!! " + result.results[0].status + " | " + result.results[0].errorDescription);
+            //            }
+            //        }
+            //        else
+            //        {
+            //            MessageBox.Show("Общая ошибка");
+            //        }
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        MessageBox.Show("getShiftStatus" + ex.Message);
+            //    }
+            //}
+            //else
+            //{
                 PrintingUsingLibraries printing = new PrintingUsingLibraries();
                 printing.getShiftStatus();
-            }
+            //}
 
         }
 
@@ -779,6 +779,7 @@ namespace Cash8
                 send_cdn_logs();
                 //UploadErrorsLogAsync();
                 UploadErrorsLog();
+                sent_open_close_shop();
             }
         }
 
@@ -875,7 +876,7 @@ namespace Cash8
             SettingConnect sc = new SettingConnect();
             sc.MdiParent = this;
             sc.Show();
-            //MessageBox.Show(Math.Round(Convert.ToDouble(0.479) * Convert.ToDouble(897.17), 2, MidpointRounding.ToEven).ToString());
+            //MessageBox.Show(Math.Round(Convert.ToDouble(0.479) * Convert.ToDouble(897.17), 2, MidpointRounding.AwayFromZero).ToString());
         }
 
 
@@ -1209,8 +1210,45 @@ namespace Cash8
             check_files_and_folders();
             //MessageBox.Show("10");
             sent_open_close_shop();
+            //opa_open_close();
         }
-                
+
+
+        ///// <summary>
+        ///// Для исправления ошибок 
+        ///// записи буду помечены как неотправленные
+        ///// </summary>
+        //private void opa_open_close()
+        //{
+        //    NpgsqlConnection conn = MainStaticClass.NpgsqlConn();
+        //    try
+        //    {
+        //        conn.Open();
+        //        string query = "UPDATE open_close_shop SET its_sent = @NewSentStatus;";
+
+        //        using (var command = new NpgsqlCommand(query, conn))
+        //        {                    
+        //            command.Parameters.AddWithValue("@NewSentStatus", false);
+        //            int rowsAffected = command.ExecuteNonQuery();                   
+        //        }
+        //    }
+        //    catch (NpgsqlException ex)
+        //    {
+        //        MessageBox.Show("Произошли ошибки при работе с таблицей open_close_shop "+ex.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show("Произошли ошибки при работе с таблицей open_close_shop " + ex.Message);
+        //    }
+        //    finally
+        //    {
+        //        if (conn.State == ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //        }
+        //    }
+        //}
+
 
         private void get_cdn_with_start()
         {
@@ -1751,12 +1789,18 @@ namespace Cash8
                 
                 string data = JsonConvert.SerializeObject(closeShops, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
                 string data_crypt = CryptorEngine.Encrypt(data, true, key);
-
-                bool result = ds.UploadOpeningClosingShops(MainStaticClass.Nick_Shop, data_crypt, "4");
-                if (result)
+                try
                 {
-                    MarkShopsAsSent(closeShops);
-                }                
+                    bool result = ds.UploadOpeningClosingShops(MainStaticClass.Nick_Shop, data_crypt, "4");
+                    if (result)
+                    {
+                        MarkShopsAsSent(closeShops);
+                    }
+                }
+                catch
+                {
+
+                }
             }
         }
 
@@ -1805,8 +1849,8 @@ namespace Cash8
             {
                 try
                 {
-                    conn.Open();
-
+                    conn.Open();                    
+                    
                     string query = "SELECT open, close, date, its_sent FROM public.open_close_shop WHERE its_sent = false;";
 
                     using (var command = new NpgsqlCommand(query, conn))

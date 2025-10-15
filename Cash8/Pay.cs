@@ -361,7 +361,7 @@ namespace Cash8
 
             //        if (Convert.ToDecimal(pay_bonus.Text) > (Convert.ToDecimal(pay_sum.Text) / 100 * 70 * 100))
             //        {
-            //            pay_bonus.Text = (Math.Round(Convert.ToDecimal(pay_sum.Text) / 100 * 70 * 100, 0, MidpointRounding.ToEven)).ToString();
+            //            pay_bonus.Text = (Math.Round(Convert.ToDecimal(pay_sum.Text) / 100 * 70 * 100, 0, MidpointRounding.AwayFromZero)).ToString();
             //        }
 
             //        pay_bonus_many.Text = String.Format("{0:0.00}", Convert.ToDecimal(pay_bonus.Text) / 100);
@@ -742,7 +742,7 @@ namespace Cash8
         //        //}
 
         //        if (Math.Round(double.Parse(cash_sum.Text.Replace(".", ",")) + double.Parse(non_cash_sum.Text) +
-        //            double.Parse(sertificates_sum.Text) + double.Parse(pay_bonus_many.Text) + Convert.ToDouble(double.Parse(non_cash_sum_kop.Text) / 100),2,MidpointRounding.ToEven) - double.Parse(pay_sum.Text.Replace(".", ",")) < 0)
+        //            double.Parse(sertificates_sum.Text) + double.Parse(pay_bonus_many.Text) + Convert.ToDouble(double.Parse(non_cash_sum_kop.Text) / 100),2,MidpointRounding.AwayFromZero) - double.Parse(pay_sum.Text.Replace(".", ",")) < 0)
         //        {
         //            this.button_pay.Enabled = false;
         //        }
@@ -808,7 +808,7 @@ namespace Cash8
 
                 if (Math.Round(double.Parse(txtB_cash_sum.Text.Replace(".", ",")) + double.Parse(non_cash_sum.Text) +
                 double.Parse(sertificates_sum.Text) + double.Parse(pay_bonus_many.Text) + 
-                Convert.ToDouble(double.Parse(non_cash_sum_kop.Text.Trim().Length==0 ? "0" : non_cash_sum_kop.Text) / 100), 2, MidpointRounding.ToEven) - double.Parse(pay_sum.Text.Replace(".", ",")) < 0)
+                Convert.ToDouble(double.Parse(non_cash_sum_kop.Text.Trim().Length==0 ? "0" : non_cash_sum_kop.Text) / 100), 2, MidpointRounding.AwayFromZero) - double.Parse(pay_sum.Text.Replace(".", ",")) < 0)
                 {
                     this.button_pay.Enabled = false;
                 }
@@ -1442,7 +1442,7 @@ namespace Cash8
 
                 //        if (Convert.ToDecimal(non_cash_sum.Text) == 0)
                 //        {
-                //            cc.distribute(Math.Round(total - (int)total, 2, MidpointRounding.ToEven), total);
+                //            cc.distribute(Math.Round(total - (int)total, 2, MidpointRounding.AwayFromZero), total);
                 //        }
 
                 //        //}
@@ -1461,7 +1461,7 @@ namespace Cash8
                 //    {
                 //        if (Convert.ToDecimal(non_cash_sum.Text) == 0)
                 //        {
-                //            cc.distribute(Math.Round(total - (int)total, 2, MidpointRounding.ToEven), total);//распределение без бонусов , здесь нет клиента нет бонусов
+                //            cc.distribute(Math.Round(total - (int)total, 2, MidpointRounding.AwayFromZero), total);//распределение без бонусов , здесь нет клиента нет бонусов
                 //        }
                 //    }
                 //}
@@ -2262,7 +2262,7 @@ namespace Cash8
 
             double all_cash_non_cash = cash_money + non_cash_money + sertificate_money + bonus_money;
 
-            //if (Math.Round(Convert.ToDouble(cash_sum.Text.Replace(".", ",")),2, MidpointRounding.ToEven) + Math.Round(Convert.ToDouble(get_non_cash_sum(0)),2, MidpointRounding.ToEven) + Math.Round(Convert.ToDouble(sertificates_sum.Text),2, MidpointRounding.ToEven) + Math.Round(Convert.ToDouble(pay_bonus_many.Text.Replace(".", ",")),2, MidpointRounding.ToEven) - Math.Round(Convert.ToDouble(pay_sum.Text.Replace(".", ",")),2, MidpointRounding.ToEven) < 0)
+            //if (Math.Round(Convert.ToDouble(cash_sum.Text.Replace(".", ",")),2, MidpointRounding.AwayFromZero) + Math.Round(Convert.ToDouble(get_non_cash_sum(0)),2, MidpointRounding.AwayFromZero) + Math.Round(Convert.ToDouble(sertificates_sum.Text),2, MidpointRounding.AwayFromZero) + Math.Round(Convert.ToDouble(pay_bonus_many.Text.Replace(".", ",")),2, MidpointRounding.AwayFromZero) - Math.Round(Convert.ToDouble(pay_sum.Text.Replace(".", ",")),2, MidpointRounding.AwayFromZero) < 0)
             //if ((Math.Round(all_cash_non_cash, 2) - Math.Round(sum_on_document, 2)) < 0)
             //MessageBox.Show("Всего оплат " + all_cash_non_cash);
             //MessageBox.Show("all_cash_non_cash - sum_on_document=" + (Math.Round(all_cash_non_cash, 2) - Math.Round(sum_on_document, 2)));

@@ -235,7 +235,7 @@ namespace Cash8
             {
                 result_web_query = ds.GetUpdateProgram(nick_shop, CryptorEngine.Encrypt(data, true, key),MainStaticClass.GetWorkSchema.ToString());
             }
-            catch (Exception ex)
+            catch //(Exception ex)
             {                
                 return;
             }

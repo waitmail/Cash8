@@ -450,6 +450,75 @@ namespace Cash8
             return cDNHealth;
         }
 
+        public void test_local(string code)
+        {
+            // Параметры
+            //string server = "192.168.2.50";
+            string server = "192.168.2.50";
+            int port = 5995;
+            string cis = "0104640043469202215Y1a67"; // ваш КИ
+            string username = "admin";
+            string password = "admin";
+            string xClientId = "8710000100123456"; // опционально
+
+            // URL-кодирование КИ (RFC 3986)
+            string encodedCis = Uri.EscapeDataString(cis);
+            string url = $"http://{server}:{port}/api/v1/cis/check?cis={encodedCis}";
+
+            // Создание запроса
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.Method = "GET";
+            request.Accept = "application/json";
+
+            // Basic Auth
+            string credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{username}:{password}"));
+            request.Headers["Authorization"] = $"Basic {credentials}";
+
+            // Опциональный заголовок
+            if (!string.IsNullOrEmpty(xClientId))
+            {
+                request.Headers["X-ClientId"] = xClientId;
+            }
+
+            try
+            {
+                // Синхронный вызов — поток заблокируется до получения ответа
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (Stream stream = response.GetResponseStream())
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    string responseBody = reader.ReadToEnd();
+
+                    Console.WriteLine($"Статус: {(int)response.StatusCode} {response.StatusDescription}");
+                    Console.WriteLine($"Ответ:\n{responseBody}");
+                }
+            }
+            catch (WebException ex)
+            {
+                // Обработка ошибок (404, 500, таймаут и т.д.)
+                if (ex.Response is HttpWebResponse errorResponse)
+                {
+                    using (var reader = new StreamReader(errorResponse.GetResponseStream()))
+                    {
+                        string errorText = reader.ReadToEnd();
+                        Console.WriteLine($"Ошибка HTTP {(int)errorResponse.StatusCode}: {errorText}");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"Сетевая ошибка: {ex.Message}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Неизвестная ошибка: {ex.Message}");
+            }
+
+            //Console.WriteLine("\nНажмите любую клавишу...");
+            //Console.ReadKey();
+
+        }
+
         public bool cdn_check_marker_code(List<string> codes, string mark_str, Int64 numdoc, ref HttpWebRequest request, string mark_str_cdn, Dictionary<string, string> d_tovar,Cash_check cash_Check, ProductData productData)
         {
 
@@ -484,52 +553,7 @@ namespace Cash8
             string body = JsonConvert.SerializeObject(check_mark, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             body = body.Replace("\\u001d", @"u001d");
             error = false;
-            //result_check = false;
-
-            //if ((MainStaticClass.Nick_Shop == "C07")|| (MainStaticClass.Nick_Shop == "A01"))
-            //{
-            //    MainStaticClass.write_cdn_log("ДО Sorted hosts order:", numdoc.ToString(), codes[0].ToString(), "1");
-            //    for (int j = 0; j < cdn_list.hosts.Count; j++)
-            //    {
-            //        var host = cdn_list.hosts[j];
-            //        MainStaticClass.write_cdn_log(
-            //            $"#{j}: {host.host}, latency: {host.latensy}, available: {host.dateTime.ToString("HH:mm:ss")}",
-            //            numdoc.ToString(),
-            //            codes[0].ToString(),
-            //            "1");
-            //    }
-            //}
-
-            //cdn_list.hosts = cdn_list.hosts.Where(h => h.dateTime < DateTime.Now).OrderBy(h => h.latensy).ToList();
-            //cdn_list.hosts = cdn_list.hosts
-            //.OrderBy(h => h.dateTime > DateTime.Now ? 1 : 0) // доступные первыми
-            //.ThenBy(h => h.latensy) // по времени отклика
-            //.ToList();
-
-            //cdn_list.hosts = cdn_list.hosts
-            //.OrderBy(h => h.dateTime <= DateTime.Now ? 1 : 0) // недоступные получают приоритет 1, доступные - 0
-            //.ThenBy(h => h.latensy)
-            //.ToList();
-                        
-            //cdn_list.hosts = cdn_list.hosts
-            //.OrderBy(h => h.dateTime <= DateTime.Now ? 0 : 1) // доступные (время < текущего) первыми
-            //.ThenBy(h => h.latensy) // затем по возрастанию latency
-            //.ToList();
-
-            //if ((MainStaticClass.Nick_Shop == "C07") || (MainStaticClass.Nick_Shop == "A01"))
-            //{
-            //    MainStaticClass.write_cdn_log("ПОСЛЕ Sorted hosts order:", numdoc.ToString(), codes[0].ToString(), "1");
-            //    for (int j = 0; j < cdn_list.hosts.Count; j++)
-            //    {
-            //        var host = cdn_list.hosts[j];
-            //        MainStaticClass.write_cdn_log(
-            //            $"#{j}: {host.host}, latency: {host.latensy}, available: {host.dateTime.ToString("HH:mm:ss")}",
-            //            numdoc.ToString(),
-            //            codes[0].ToString(),
-            //            "1");
-            //    }
-            //}
-
+            
             //Если в результате все в таймаутах или недоступно тогда пробуем хоть куда то выполнить запрос.
             if (cdn_list.hosts.Count == 0)
             {

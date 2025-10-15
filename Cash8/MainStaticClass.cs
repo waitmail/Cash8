@@ -89,9 +89,9 @@ namespace Cash8
         private static DateTime last_send_last_successful_sending;
         private static DateTime last_write_check;
         private static DateTime min_date_work = new DateTime(2023, 09, 01);
-        private static DateTime min_date_work_logs = new DateTime(2024, 09, 01);        
+        private static DateTime min_date_work_logs = new DateTime(2025, 10, 01);        
         //private static bool use_old_processiing_actions = true;
-        private static int work_schema = 0;
+        //private static int work_schema = 0;
         private static int version_fn = 0;
         private static string version_fn_real = "";
         private static string fn_serial_port = "";
@@ -116,7 +116,7 @@ namespace Cash8
         //private static int self_service_kiosk = -1;
         private static string id_acquirer_terminal = "00000000";
         private static string ip_address_acquiring_terminal = "000000000000000";
-        private static int enable_cdn_markers = -1;
+        //private static int enable_cdn_markers = -1;
         private static int version2_marking = -1;
         private static int authorization_required = -1;
         private static int static_guid_in_print = -1;
@@ -130,7 +130,7 @@ namespace Cash8
         private static string scale_serial_port = "";
         private static string fn_ipaddr = "";
         private static int acquiring_bank = -1;
-        private static int do_not_prompt_marking_code = -1;
+        //private static int do_not_prompt_marking_code = -1;
         private static int nds_ip = -1;
         private static bool fiscals_forbidden = true;
         //private static Dictionary<int, Cash8.ProductData> dictionaryProductData = new Dictionary<int, Cash8.ProductData>();
@@ -192,44 +192,44 @@ namespace Cash8
         {
             if (MainStaticClass.CashDeskNumber != 9)
             {               
-                if (MainStaticClass.PrintingUsingLibraries == 1)
-                {
+                //if (MainStaticClass.PrintingUsingLibraries == 1)
+                //{
                     PrintingUsingLibraries usingLibraries = new PrintingUsingLibraries();
                     usingLibraries.validate_date_time_with_fn(minutes);                    
-                }
-                else
-                {
+            //    }
+            //    else
+            //    {
 
-                    try
-                    {
-                        Cash8.FiscallPrintJason2.RootObject result = FiscallPrintJason2.execute_operator_type("getDeviceStatus");
-                        if (result != null)
-                        {
-                            if (result.results[0].status == "ready")//Задание выполнено успешно 
-                            {
-                                DateTime dateTime = Convert.ToDateTime(result.results[0].result.deviceStatus.currentDateTime);
+            //        try
+            //        {
+            //            Cash8.FiscallPrintJason2.RootObject result = FiscallPrintJason2.execute_operator_type("getDeviceStatus");
+            //            if (result != null)
+            //            {
+            //                if (result.results[0].status == "ready")//Задание выполнено успешно 
+            //                {
+            //                    DateTime dateTime = Convert.ToDateTime(result.results[0].result.deviceStatus.currentDateTime);
 
-                                if (Math.Abs((dateTime - DateTime.Now).Minutes) > minutes)//Поскольку может быть как больше так и меньше 
-                                {
-                                    MessageBox.Show(" У ВАС ОТЛИЧАЕТСЯ ВРЕМЯ МЕЖДУ КОМПЬЮТЕРОМ И ФИСКАЛЬНЫМ РЕГИСТРАТОРОМ БОЛЬШЕ ЧЕМ НА "+ minutes.ToString()+" МИНУТ ОТПРАВЬТЕ ЗАЯВКУ В ИТ ОТДЕЛ ", "Проверка даты и времени");
-                                    MainStaticClass.write_event_in_log(" Не схождение даты и времени между ФР и компьютером больше чем на  " + minutes.ToString() +" минут ", "Документ", "0");
-                                }
-                            }
-                            else
-                            {
-                                MessageBox.Show(" Ошибка !!! " + result.results[0].status + " | " + result.results[0].errorDescription);
-                            }
-                        }
-                        else
-                        {
-                            MessageBox.Show("Общая ошибка");
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(" OnKeyDown " + ex.Message);
-                    }
-                }
+            //                    if (Math.Abs((dateTime - DateTime.Now).Minutes) > minutes)//Поскольку может быть как больше так и меньше 
+            //                    {
+            //                        MessageBox.Show(" У ВАС ОТЛИЧАЕТСЯ ВРЕМЯ МЕЖДУ КОМПЬЮТЕРОМ И ФИСКАЛЬНЫМ РЕГИСТРАТОРОМ БОЛЬШЕ ЧЕМ НА "+ minutes.ToString()+" МИНУТ ОТПРАВЬТЕ ЗАЯВКУ В ИТ ОТДЕЛ ", "Проверка даты и времени");
+            //                        MainStaticClass.write_event_in_log(" Не схождение даты и времени между ФР и компьютером больше чем на  " + minutes.ToString() +" минут ", "Документ", "0");
+            //                    }
+            //                }
+            //                else
+            //                {
+            //                    MessageBox.Show(" Ошибка !!! " + result.results[0].status + " | " + result.results[0].errorDescription);
+            //                }
+            //            }
+            //            else
+            //            {
+            //                MessageBox.Show("Общая ошибка");
+            //            }
+            //        }
+            //        catch (Exception ex)
+            //        {
+            //            MessageBox.Show(" OnKeyDown " + ex.Message);
+            //        }
+            //    }
             }
         }
 
@@ -853,33 +853,33 @@ namespace Cash8
                                                 
                         fiscal_drive_number = fptr.getParamString(1037);                        
                     }
-                    else
-                    {
-                        try
-                        {
-                            Cash8.FiscallPrintJason.RootObject result = FiscallPrintJason.execute_operator_type("getRegistrationInfo");
-                            if (result != null)
-                            {
-                                if (result.results[0].status == "ready")//Задание выполнено успешно 
-                                {                                    
-                                    fiscal_drive_number = result.results[0].result.device.registrationNumber;
-                                }
-                                else
-                                {
-                                    MessageBox.Show(" Ошибка при получении номера фискального регистратора FiscalDriveNumber" + result.results[0].status + " | " + result.results[0].errorDescription);
-                                }
-                            }
-                            else
-                            {
-                                MessageBox.Show("Общая ошибка");
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show("Ошибка при получении номера фискального регистратора FiscalDriveNumber" + ex.Message);
-                        }
+                    //else
+                    //{
+                    //    try
+                    //    {
+                    //        Cash8.FiscallPrintJason.RootObject result = FiscallPrintJason.execute_operator_type("getRegistrationInfo");
+                    //        if (result != null)
+                    //        {
+                    //            if (result.results[0].status == "ready")//Задание выполнено успешно 
+                    //            {                                    
+                    //                fiscal_drive_number = result.results[0].result.device.registrationNumber;
+                    //            }
+                    //            else
+                    //            {
+                    //                MessageBox.Show(" Ошибка при получении номера фискального регистратора FiscalDriveNumber" + result.results[0].status + " | " + result.results[0].errorDescription);
+                    //            }
+                    //        }
+                    //        else
+                    //        {
+                    //            MessageBox.Show("Общая ошибка");
+                    //        }
+                    //    }
+                    //    catch (Exception ex)
+                    //    {
+                    //        MessageBox.Show("Ошибка при получении номера фискального регистратора FiscalDriveNumber" + ex.Message);
+                    //    }
 
-                    }
+                    //}
                 }
                 return fiscal_drive_number;
             }
@@ -2127,40 +2127,40 @@ namespace Cash8
         
 
 
-        public static Cash8.FiscallPrintJason.RootObject get_ofd_exchange_status()
-        {
+        //public static Cash8.FiscallPrintJason.RootObject get_ofd_exchange_status()
+        //{
 
-            Cash8.FiscallPrintJason.RootObject result = null;
+        //    Cash8.FiscallPrintJason.RootObject result = null;
 
-            try
-            {
-                result = FiscallPrintJason.execute_operator_type("ofdExchangeStatus");
-                //if (result != null)
-                //{
-                //    if (result.results[0].status == "ready")//Задание выполнено успешно 
-                //    {
-                //        //string s = result.results[0].result.status.notSentFirstDocDateTime.ToString("yyyy-MM-dd HH:mm:ss");
-                //        //result.results[0].result.status
-                //        //Invoke(new set_message_on_ofd_exchange_status(set_txtB_ofd_exchange_status), new object[] { s });
-                //    }
-                //    else
-                //    {
-                //        //string s = result.results[0].status + " | " + result.results[0].errorDescription;
-                //        //Invoke(new set_message_on_ofd_exchange_status(set_txtB_ofd_exchange_status), new object[] { s });
-                //    }
-                //}
-                //else
-                //{
-                //    //Invoke(new set_message_on_ofd_exchange_status(set_txtB_ofd_exchange_status), new object[] { "Общая ошибка" });
-                //}
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
+        //    try
+        //    {
+        //        result = FiscallPrintJason.execute_operator_type("ofdExchangeStatus");
+        //        //if (result != null)
+        //        //{
+        //        //    if (result.results[0].status == "ready")//Задание выполнено успешно 
+        //        //    {
+        //        //        //string s = result.results[0].result.status.notSentFirstDocDateTime.ToString("yyyy-MM-dd HH:mm:ss");
+        //        //        //result.results[0].result.status
+        //        //        //Invoke(new set_message_on_ofd_exchange_status(set_txtB_ofd_exchange_status), new object[] { s });
+        //        //    }
+        //        //    else
+        //        //    {
+        //        //        //string s = result.results[0].status + " | " + result.results[0].errorDescription;
+        //        //        //Invoke(new set_message_on_ofd_exchange_status(set_txtB_ofd_exchange_status), new object[] { s });
+        //        //    }
+        //        //}
+        //        //else
+        //        //{
+        //        //    //Invoke(new set_message_on_ofd_exchange_status(set_txtB_ofd_exchange_status), new object[] { "Общая ошибка" });
+        //        //}
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
 
-            return result;
-        }
+        //    return result;
+        //}
 
 
 
@@ -2565,35 +2565,35 @@ namespace Cash8
         {
             string string_get_device_info = string.Empty;
 
-            if (MainStaticClass.printing_using_libraries == 0)
-            {
-                try
-                {
-                    Cash8.FiscallPrintJason.RootObject result = FiscallPrintJason.execute_operator_type("getDeviceInfo");
-                    if (result != null)
-                    {
-                        if (result.results[0].status == "ready")//Задание выполнено успешно 
-                        {
-                            string_get_device_info = JsonConvert.SerializeObject(result.results[0].result.deviceInfo, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                            //string_get_device_info = result.results[0].result.deviceInfo.ToString();
-                        }
-                        else
-                        {
-                            MessageBox.Show(" Ошибка !!! " + result.results[0].status + " | " + result.results[0].errorDescription);
-                        }
-                    }
-                    else
-                    {
-                        MessageBox.Show("Общая ошибка");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("getDeviceInfo" + ex.Message);
-                }
-            }
-            else
-            {                
+            //if (MainStaticClass.printing_using_libraries == 0)
+            //{
+                //    try
+                //    {
+                //        Cash8.FiscallPrintJason.RootObject result = FiscallPrintJason.execute_operator_type("getDeviceInfo");
+                //        if (result != null)
+                //        {
+                //            if (result.results[0].status == "ready")//Задание выполнено успешно 
+                //            {
+                //                string_get_device_info = JsonConvert.SerializeObject(result.results[0].result.deviceInfo, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                //                //string_get_device_info = result.results[0].result.deviceInfo.ToString();
+                //            }
+                //            else
+                //            {
+                //                MessageBox.Show(" Ошибка !!! " + result.results[0].status + " | " + result.results[0].errorDescription);
+                //            }
+                //        }
+                //        else
+                //        {
+                //            MessageBox.Show("Общая ошибка");
+                //        }
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //        MessageBox.Show("getDeviceInfo" + ex.Message);
+                //    }
+                //}
+                //else
+                //{                
                 IFptr fptr = MainStaticClass.FPTR;
                 //setConnectSetting(fptr);
                 if (!fptr.isOpened())
@@ -2604,10 +2604,11 @@ namespace Cash8
                 fptr.queryData();
                 string_get_device_info = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_FFD_VERSION).ToString();
                 //fptr.close();
-            }
+                //}
 
-            return string_get_device_info;
+                return string_get_device_info;
 
+            //}
         }
 
         private static void update_version_fn(string _version_fn)
@@ -2678,37 +2679,37 @@ namespace Cash8
         {
             get
             {
-                if (MainStaticClass.printing_using_libraries == 0)
-                {
-                    if (version_fn_real == "")
-                    {
-                        try
-                        {
-                            Cash8.FiscallPrintJason.RootObject result = FiscallPrintJason.execute_operator_type("getRegistrationInfo");
-                            if (result != null)
-                            {
-                                if (result.results[0].status == "ready")//Задание выполнено успешно 
-                                {
-                                    version_fn_real = result.results[0].result.device.ffdVersion;
-                                }
-                                else
-                                {
-                                    MessageBox.Show(" Ошибка !!! " + result.results[0].status + " | " + result.results[0].errorDescription);
-                                }
-                            }
-                            else
-                            {
-                                MessageBox.Show("Общая ошибка");
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show("get_registration_info" + ex.Message);
-                        }
-                    }
-                }
-                else
-                {
+                //if (MainStaticClass.printing_using_libraries == 0)
+                //{
+                //    if (version_fn_real == "")
+                //    {
+                //        try
+                //        {
+                //            Cash8.FiscallPrintJason.RootObject result = FiscallPrintJason.execute_operator_type("getRegistrationInfo");
+                //            if (result != null)
+                //            {
+                //                if (result.results[0].status == "ready")//Задание выполнено успешно 
+                //                {
+                //                    version_fn_real = result.results[0].result.device.ffdVersion;
+                //                }
+                //                else
+                //                {
+                //                    MessageBox.Show(" Ошибка !!! " + result.results[0].status + " | " + result.results[0].errorDescription);
+                //                }
+                //            }
+                //            else
+                //            {
+                //                MessageBox.Show("Общая ошибка");
+                //            }
+                //        }
+                //        catch (Exception ex)
+                //        {
+                //            MessageBox.Show("get_registration_info" + ex.Message);
+                //        }
+                //    }
+                //}
+                //else
+                //{
                     IFptr fptr = MainStaticClass.FPTR;
                     //setConnectSetting(fptr);
                     if (!fptr.isOpened())
@@ -2720,7 +2721,7 @@ namespace Cash8
                     fptr.fnQueryData();
                     version_fn_real = (Convert.ToDouble(fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_DEVICE_FFD_VERSION))/100).ToString().Replace(",",".");
                     //fptr.close();
-                }
+                //}
 
                 return version_fn_real;
             }           
@@ -2756,36 +2757,36 @@ namespace Cash8
         private static string get_registration_info()
         {
             string string_get_registration_info = string.Empty;
-            if (MainStaticClass.printing_using_libraries == 0)
-            {
-                try
-                {
-                    Cash8.FiscallPrintJason.RootObject result = FiscallPrintJason.execute_operator_type("getRegistrationInfo");
-                    if (result != null)
-                    {
-                        if (result.results[0].status == "ready")//Задание выполнено успешно 
-                        {
-                            string_get_registration_info = JsonConvert.SerializeObject(result.results[0].result, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                            //string_get_registration_info = result.results[0].result.organization.vatin;
-                            //string_get_device_info = result.results[0].result.deviceInfo.ToString();
-                        }
-                        else
-                        {
-                            MessageBox.Show(" Ошибка !!! " + result.results[0].status + " | " + result.results[0].errorDescription);
-                        }
-                    }
-                    else
-                    {
-                        MessageBox.Show("Общая ошибка");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("get_registration_info" + ex.Message);
-                }
-            }
-            else
-            {
+            //if (MainStaticClass.printing_using_libraries == 0)
+            //{
+            //    try
+            //    {
+            //        Cash8.FiscallPrintJason.RootObject result = FiscallPrintJason.execute_operator_type("getRegistrationInfo");
+            //        if (result != null)
+            //        {
+            //            if (result.results[0].status == "ready")//Задание выполнено успешно 
+            //            {
+            //                string_get_registration_info = JsonConvert.SerializeObject(result.results[0].result, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            //                //string_get_registration_info = result.results[0].result.organization.vatin;
+            //                //string_get_device_info = result.results[0].result.deviceInfo.ToString();
+            //            }
+            //            else
+            //            {
+            //                MessageBox.Show(" Ошибка !!! " + result.results[0].status + " | " + result.results[0].errorDescription);
+            //            }
+            //        }
+            //        else
+            //        {
+            //            MessageBox.Show("Общая ошибка");
+            //        }
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        MessageBox.Show("get_registration_info" + ex.Message);
+            //    }
+            //}
+            //else
+            //{
                 IFptr fptr = MainStaticClass.FPTR;
                 //setConnectSetting(fptr);
                 if (!fptr.isOpened())
@@ -2796,7 +2797,7 @@ namespace Cash8
                 fptr.queryData();
                 string_get_registration_info = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_FFD_VERSION).ToString();
 
-            }
+            //}
 
             return string_get_registration_info;
         }

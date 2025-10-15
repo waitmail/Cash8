@@ -6,6 +6,8 @@ using System.Data;
 using System.Linq;
 using Npgsql;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 
 
 namespace Cash8
@@ -503,7 +505,13 @@ namespace Cash8
             {
                 fptr.open();
             }
-            
+
+            if (!check.print_promo_picture)
+            {
+                get_actions_num_doc(check);//Печать акционных картинок
+                check.print_promo_picture = true;
+            }
+
 
             if (check.check_type.SelectedIndex == 1 || check.check_type.SelectedIndex == 2 || check.reopened)//для возвратов и красных чеков старая схема
             {
@@ -1744,6 +1752,16 @@ namespace Cash8
             {
                 System.IO.File.WriteAllBytes(outputFilePath, byteArray);                
             }
+            
+
+            //using (var image = Image.FromFile(outputFilePath))
+            //{                
+            //    if ((image.Width > 384) || (image.Height>384))
+            //    {
+            //        MessageBox.Show(" Купон для акции номер документа " + action_num_doc.ToString()+" имеет неправильный формат" + 
+            //            image.Width.ToString()+"X"+image.Height.ToString()+", картинка должна быть в диапазоне 384X384 , обратитесь в категорийный отдел. ","Проверка формата картинки купона");
+            //    }                
+            //}
 
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_FILENAME, outputFilePath);
@@ -1753,7 +1771,7 @@ namespace Cash8
 
             if (fptr.errorCode() != 0)
             {
-                //MessageBox.Show("При выводе картинки на печать произошла ошибка  " + fptr.errorDescription());
+                MessageBox.Show("При выводе картинки на печать произошла ошибка  " + fptr.errorDescription());
                 MainStaticClass.WriteRecordErrorLog(fptr.errorDescription(), "print_picture", 0, MainStaticClass.CashDeskNumber, "Ошибка при печати акционной картинки ");
             }            
         }
@@ -1765,6 +1783,7 @@ namespace Cash8
             foreach (ListViewItem lvi in check.listView1.Items)
             {
                 string action_num_doc = lvi.SubItems[10].Text.Trim();
+
                 if (action_num_doc.Length > 1)
                 {
                     if (numDocsAction.IndexOf(action_num_doc) == -1)
