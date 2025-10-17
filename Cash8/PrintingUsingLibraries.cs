@@ -53,6 +53,41 @@ namespace Cash8
             //    fptr.close();
             //}
         }
+
+        public void get_register_data()
+        {
+            IFptr fptr = MainStaticClass.FPTR;
+            if (!fptr.isOpened())
+            {
+                fptr.open();
+            }
+
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_DATA_TYPE, AtolConstants.LIBFPTR_DT_SERIAL_NUMBER);
+            fptr.queryData();
+
+            string serialNumber = fptr.getParamString(AtolConstants.LIBFPTR_PARAM_SERIAL_NUMBER);
+
+
+
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_FN_DATA_TYPE, AtolConstants.LIBFPTR_FNDT_REG_INFO);
+            fptr.fnQueryData();
+
+            string organizationName = fptr.getParamString(1048);//Наименование организации
+            string organizationAddress = fptr.getParamString(1009);//адрес организации
+            string paymentsAddress = fptr.getParamString(1187);//место расчета магазин 
+            string registrationNumber = fptr.getParamString(1037);//Регистрационный номер ККТ: каждый раз разный при перерегистрации  
+            string machineNumber = fptr.getParamString(1036);
+            string organizationVATIN = fptr.getParamString(1018);
+
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_FN_DATA_TYPE, AtolConstants.LIBFPTR_FNDT_FN_INFO);
+            fptr.fnQueryData();
+
+            String fnSerial = fptr.getParamString(AtolConstants.LIBFPTR_PARAM_SERIAL_NUMBER);
+            String fnVersion = fptr.getParamString(AtolConstants.LIBFPTR_PARAM_FN_VERSION);
+            String fnExecution = fptr.getParamString(AtolConstants.LIBFPTR_PARAM_FN_EXECUTION);
+
+
+        }
         
         public bool validate_date_time_with_fn(int minutes)
         {
@@ -506,11 +541,11 @@ namespace Cash8
                 fptr.open();
             }
 
-            if (!check.print_promo_picture)
-            {
-                get_actions_num_doc(check);//Печать акционных картинок
-                check.print_promo_picture = true;
-            }
+            //if (!check.print_promo_picture)
+            //{
+            //    get_actions_num_doc(check);//Печать акционных картинок
+            //    check.print_promo_picture = true;
+            //}
 
 
             if (check.check_type.SelectedIndex == 1 || check.check_type.SelectedIndex == 2 || check.reopened)//для возвратов и красных чеков старая схема
@@ -1771,7 +1806,7 @@ namespace Cash8
 
             if (fptr.errorCode() != 0)
             {
-                MessageBox.Show("При выводе картинки на печать произошла ошибка  " + fptr.errorDescription());
+                //MessageBox.Show("При выводе картинки на печать произошла ошибка  " + fptr.errorDescription());
                 MainStaticClass.WriteRecordErrorLog(fptr.errorDescription(), "print_picture", 0, MainStaticClass.CashDeskNumber, "Ошибка при печати акционной картинки ");
             }            
         }

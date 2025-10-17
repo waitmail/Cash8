@@ -1186,7 +1186,9 @@ namespace Cash8
             }
             else
             {
-                MainStaticClass.Version2Marking = 0;
+                //MainStaticClass.Version2Marking = 0;
+                MainStaticClass.Version2Marking = 1;
+                MessageBox.Show("Получена не поддерживаемая версия ФН");
             }
             if (MainStaticClass.CashDeskNumber != 9)//&& MainStaticClass.EnableCdnMarkers == 1
             {

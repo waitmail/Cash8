@@ -448,16 +448,18 @@ namespace Cash8
             //}
             //else
             //{
-                if (MainStaticClass.GetFiscalsForbidden)
-                {
-                    MessageBox.Show("Вам запрещена печать на фискаольном регистраторое", "Проверки при печати");
-                    return;
-                }
-                else
-                {
-                    PrintingUsingLibraries printing = new PrintingUsingLibraries();
-                    sum_incass.Text = printing.getCasheSumm();
-                }
+            if (MainStaticClass.GetFiscalsForbidden)
+            {
+                MessageBox.Show("Вам запрещена печать на фискаольном регистраторое", "Проверки при печати");
+                return;
+            }
+            else
+            {
+
+                PrintingUsingLibraries printing = new PrintingUsingLibraries();
+                sum_incass.Text = printing.getCasheSumm();
+                printing.get_register_data();
+            }
             //}
         }
 
