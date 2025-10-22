@@ -383,9 +383,7 @@ namespace Cash8
             //}
             //fptr.close();
         }
-
-
-
+               
         private void print_terminal_check(IFptr fptr, Cash_check check)
         {
             if (check.recharge_note != "")
@@ -454,16 +452,6 @@ namespace Cash8
                 NpgsqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    //if (first_string)
-                    //{
-                    //    first_string = false;                        
-                    //    s = " * -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*";
-                    //    fptr.setParam(AtolConstants.LIBFPTR_PARAM_TEXT, s);
-                    //    fptr.setParam(AtolConstants.LIBFPTR_PARAM_DEFER, AtolConstants.LIBFPTR_DEFER_POST);//печатать в конце чека
-                    //    fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_LEFT);                        
-                    //    fptr.printText();
-                    //}
-
                     s = reader["advertisement_text"].ToString();
                     hex_string = reader["picture"].ToString();
                     if (s != "")
@@ -528,8 +516,7 @@ namespace Cash8
                 }
             }
 
-        }
-                      
+        }                      
 
         public void print_sell_2_or_return_sell(Cash_check check)
         {
@@ -1842,9 +1829,7 @@ namespace Cash8
                 //MessageBox.Show("Нет акций с картинками");
             }
         }
-
-
-
+               
         public void print_pictures(List<string> numDocsAction)
         {
             using (NpgsqlConnection  conn = MainStaticClass.NpgsqlConn())
@@ -1915,8 +1900,7 @@ namespace Cash8
                 fptr.beginMarkingCodeValidation();
             }
         }
-                  
-
+        
         public void CheckTaxationTypes()
         {
             uint taxationTypes = 0;
@@ -2006,7 +1990,6 @@ namespace Cash8
 
             MessageBox.Show(message, "Проверка системы налогообложения");
         }
-
         public bool check_marking_code(string mark,string num_doc, ref Dictionary<string, uint> cdn_markers_result_check,int check_type)
         //public bool check_marking_code(string mark, string num_doc,Cash_check check)
         {

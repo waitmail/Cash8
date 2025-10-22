@@ -133,6 +133,7 @@ namespace Cash8
         //private static int do_not_prompt_marking_code = -1;
         private static int nds_ip = -1;
         private static bool fiscals_forbidden = true;
+        private static string ip_addr_lm_ch_z = "0";
         //private static Dictionary<int, Cash8.ProductData> dictionaryProductData = new Dictionary<int, Cash8.ProductData>();
 
 
@@ -145,6 +146,50 @@ namespace Cash8
         //    }
 
         //}
+
+        /// <summary>
+        /// Возвращает ip адресс лм чз
+        /// в локальной сети магазина
+        /// </summary>
+        public static string GetIpAddrLmChZ
+        {
+            get
+            {
+                if (ip_addr_lm_ch_z == "0")
+                {
+                    NpgsqlConnection conn = null;
+                    NpgsqlCommand command = null;
+                    conn = MainStaticClass.NpgsqlConn();
+                    try
+                    {
+                        conn.Open();
+                        string query = "SELECT ip_adress_local_ch_z FROM constants";
+                        command = new NpgsqlCommand(query, conn);
+                        ip_addr_lm_ch_z = command.ExecuteScalar().ToString();
+                    }
+                    catch (NpgsqlException ex)
+                    {
+                        MessageBox.Show("Ошибка при чтении ip_adress_local_ch_z" + ex.ToString());
+                        ip_addr_lm_ch_z = "";
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Ошибка при чтении ip_adress_local_ch_z" + ex.ToString());
+                        ip_addr_lm_ch_z = "";
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                }                
+
+                return ip_addr_lm_ch_z;
+            }
+        }
+
 
         /// <summary>
         /// Возвращает истина если печать 

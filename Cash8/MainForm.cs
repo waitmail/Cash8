@@ -1615,7 +1615,7 @@ namespace Cash8
             try
             {
                 conn.Open();
-                string query = "SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'open_close_shop' AND column_name = 'its_sent'); ";                
+                string query = "SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'constants' AND column_name = 'ip_adress_local_ch_z'); ";                
                 
                  NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 if (!Convert.ToBoolean(command.ExecuteScalar())) //не нашли такой колонки   

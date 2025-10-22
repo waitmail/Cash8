@@ -450,16 +450,44 @@ namespace Cash8
             return cDNHealth;
         }
 
-        public void test_local(string code)
+        public static string process_marking_code(string markingCode)
         {
+            if (string.IsNullOrEmpty(markingCode))
+                return markingCode;
+
+            // Разделяем строку по символу \u001d
+            string[] parts = markingCode.Split('\u001d');
+
+            // Если разделителей нет или только один - возвращаем первую часть без разделителей
+            if (parts.Length == 1)
+            {
+                return parts[0];
+            }
+            // Если разделителей два или больше - возвращаем содержимое до второго разделителя
+            else if (parts.Length >= 2)
+            {
+                return parts[0] + parts[1];
+            }
+
+            return markingCode.Replace("\u001d", "");
+        }
+
+        public bool check_lm_ch_z(Cash_check cash_Check, string mark_str)
+        {
+            bool result_check = false;
+            AnswerCheckMark answer_check_mark = null;
+            //string error_description = "";
             // Параметры
             //string server = "192.168.2.50";
-            string server = "192.168.2.50";
+            mark_str = process_marking_code(mark_str);
+            string server = MainStaticClass.GetIpAddrLmChZ;// "192.168.2.50";
             int port = 5995;
-            string cis = "0104640043469202215Y1a67"; // ваш КИ
+            string cis = mark_str;//"0104640043469202215Y1a67"; // ваш КИ
             string username = "admin";
             string password = "admin";
-            string xClientId = "8710000100123456"; // опционально
+            string xClientId = MainStaticClass.FiscalDriveNumber;//."8710000100123456"; // опционально
+            //string xClientId = MainStaticClass.CDN_Token;// "8710000100123456"; // опционально
+            
 
             // URL-кодирование КИ (RFC 3986)
             string encodedCis = Uri.EscapeDataString(cis);
@@ -489,8 +517,23 @@ namespace Cash8
                 {
                     string responseBody = reader.ReadToEnd();
 
-                    Console.WriteLine($"Статус: {(int)response.StatusCode} {response.StatusDescription}");
-                    Console.WriteLine($"Ответ:\n{responseBody}");
+                    //Console.WriteLine($"Статус: {(int)response.StatusCode} {response.StatusDescription}");
+                    //Console.WriteLine($"Ответ:\n{responseBody}");
+                    answer_check_mark = JsonConvert.DeserializeObject<AnswerCheckMark>(responseBody);
+                    if (answer_check_mark.code == 0)//!answer_check_mark.codes[0].isBlocked)//Не заблокирован к продаже 
+                    {
+                        Cash_check.Requisite1260 requisite1260 = new Cash_check.Requisite1260();
+                        requisite1260.req1262 = "030";
+                        requisite1260.req1263 = "21.11.2023";
+                        requisite1260.req1264 = "1944";
+                        requisite1260.req1265 = "UUID=" + answer_check_mark.reqId + "&Time=" + answer_check_mark.reqTimestamp;
+                        cash_Check.verifyCDN.Add(mark_str, requisite1260);
+                        result_check = true;
+                    }
+                    else
+                    {
+                        throw new Exception(answer_check_mark.description);
+                    }
                 }
             }
             catch (WebException ex)
@@ -501,29 +544,27 @@ namespace Cash8
                     using (var reader = new StreamReader(errorResponse.GetResponseStream()))
                     {
                         string errorText = reader.ReadToEnd();
-                        Console.WriteLine($"Ошибка HTTP {(int)errorResponse.StatusCode}: {errorText}");
+                        MessageBox.Show($"Ошибка HTTP при проверке кода в лм чз {(int)errorResponse.StatusCode}: {errorText}");
                     }
                 }
                 else
                 {
-                    Console.WriteLine($"Сетевая ошибка: {ex.Message}");
+                    MessageBox.Show($"Сетевая ошибка при проверке кода в лм чз: {ex.Message}");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Неизвестная ошибка: {ex.Message}");
+                MessageBox.Show($"Неизвестная ошибка при проверке кода в лм чз: {ex.Message}");
             }
-
-            //Console.WriteLine("\nНажмите любую клавишу...");
-            //Console.ReadKey();
-
+            
+            return result_check;
         }
 
         public bool cdn_check_marker_code(List<string> codes, string mark_str, Int64 numdoc, ref HttpWebRequest request, string mark_str_cdn, Dictionary<string, string> d_tovar,Cash_check cash_Check, ProductData productData)
         {
 
             MainStaticClass.write_cdn_log(" Начало проверки на CDN ", numdoc.ToString(), codes[0].ToString(), "0");
-
+            StringBuilder sb = new StringBuilder();
             int error_5000 = 0;
             bool result_check = false;
             AnswerCheckMark answer_check_mark = null;
@@ -616,7 +657,7 @@ namespace Cash8
                     if (answer_check_mark != null)
                     {
                         error = false;
-                        StringBuilder sb = new StringBuilder();
+                        //StringBuilder sb = new StringBuilder();
 
                         string s = "ТОВАР НЕ МОЖЕТ БЫТЬ ПРОДАН!\r\n";
                         if (!answer_check_mark.codes[0].isOwner)
@@ -865,7 +906,15 @@ namespace Cash8
                     break;
                 }
             }
-         
+
+            if ((!result_check) && (sb.Length == 0))//не удалось проверить и все попытки проверить завершились ошибкой
+            {
+                if (MainStaticClass.GetIpAddrLmChZ != "")//ip адрес сервера лм чз не пустой, значит он установлен
+                {
+                    result_check = check_lm_ch_z(cash_Check, mark_str);
+                }
+            }
+
 
             return result_check;
         }                     

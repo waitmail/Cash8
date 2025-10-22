@@ -68,6 +68,8 @@
             this.button1 = new System.Windows.Forms.Button();
             this.comboBox_nds_ip = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.txtB_ip_addr_lm_ch_z = new System.Windows.Forms.TextBox();
             this.groupBox_acquiring_terminal.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -76,7 +78,7 @@
             // cash_desk_number
             // 
             this.cash_desk_number.Location = new System.Drawing.Point(254, 77);
-            this.cash_desk_number.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.cash_desk_number.Margin = new System.Windows.Forms.Padding(6);
             this.cash_desk_number.MaxLength = 1;
             this.cash_desk_number.Name = "cash_desk_number";
             this.cash_desk_number.Size = new System.Drawing.Size(146, 31);
@@ -95,7 +97,7 @@
             // write
             // 
             this.write.Location = new System.Drawing.Point(490, 975);
-            this.write.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.write.Margin = new System.Windows.Forms.Padding(6);
             this.write.Name = "write";
             this.write.Size = new System.Drawing.Size(174, 44);
             this.write.TabIndex = 2;
@@ -106,7 +108,7 @@
             // _close_
             // 
             this._close_.Location = new System.Drawing.Point(732, 975);
-            this._close_.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this._close_.Margin = new System.Windows.Forms.Padding(6);
             this._close_.Name = "_close_";
             this._close_.Size = new System.Drawing.Size(150, 44);
             this._close_.TabIndex = 3;
@@ -127,7 +129,7 @@
             // nick_shop
             // 
             this.nick_shop.Location = new System.Drawing.Point(254, 10);
-            this.nick_shop.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.nick_shop.Margin = new System.Windows.Forms.Padding(6);
             this.nick_shop.MaxLength = 5;
             this.nick_shop.Name = "nick_shop";
             this.nick_shop.Size = new System.Drawing.Size(146, 31);
@@ -136,8 +138,8 @@
             // path_for_web_service
             // 
             this.path_for_web_service.Enabled = false;
-            this.path_for_web_service.Location = new System.Drawing.Point(416, 873);
-            this.path_for_web_service.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.path_for_web_service.Location = new System.Drawing.Point(231, 873);
+            this.path_for_web_service.Margin = new System.Windows.Forms.Padding(6);
             this.path_for_web_service.MaxLength = 100;
             this.path_for_web_service.Name = "path_for_web_service";
             this.path_for_web_service.Size = new System.Drawing.Size(524, 31);
@@ -158,7 +160,7 @@
             // unloading_period
             // 
             this.unloading_period.Location = new System.Drawing.Point(1304, 198);
-            this.unloading_period.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.unloading_period.Margin = new System.Windows.Forms.Padding(6);
             this.unloading_period.MaxLength = 3;
             this.unloading_period.Name = "unloading_period";
             this.unloading_period.Size = new System.Drawing.Size(140, 31);
@@ -176,7 +178,7 @@
             // txtB_last_date_download_bonus_clients
             // 
             this.txtB_last_date_download_bonus_clients.Location = new System.Drawing.Point(1220, 54);
-            this.txtB_last_date_download_bonus_clients.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.txtB_last_date_download_bonus_clients.Margin = new System.Windows.Forms.Padding(6);
             this.txtB_last_date_download_bonus_clients.MaxLength = 15;
             this.txtB_last_date_download_bonus_clients.Name = "txtB_last_date_download_bonus_clients";
             this.txtB_last_date_download_bonus_clients.ReadOnly = true;
@@ -204,7 +206,7 @@
             "УСН ДОХОДЫ",
             "УСН ДОХОДЫ + ПАТЕНТ"});
             this.comboBox_system_taxation.Location = new System.Drawing.Point(254, 148);
-            this.comboBox_system_taxation.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.comboBox_system_taxation.Margin = new System.Windows.Forms.Padding(6);
             this.comboBox_system_taxation.Name = "comboBox_system_taxation";
             this.comboBox_system_taxation.Size = new System.Drawing.Size(714, 33);
             this.comboBox_system_taxation.TabIndex = 63;
@@ -232,7 +234,7 @@
             // 
             this.txtB_version_fn.Enabled = false;
             this.txtB_version_fn.Location = new System.Drawing.Point(652, 10);
-            this.txtB_version_fn.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.txtB_version_fn.Margin = new System.Windows.Forms.Padding(6);
             this.txtB_version_fn.MaxLength = 1;
             this.txtB_version_fn.Name = "txtB_version_fn";
             this.txtB_version_fn.Size = new System.Drawing.Size(64, 31);
@@ -244,7 +246,7 @@
             // 
             this.checkBox_enable_cdn_markers.AutoSize = true;
             this.checkBox_enable_cdn_markers.Location = new System.Drawing.Point(22, 287);
-            this.checkBox_enable_cdn_markers.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.checkBox_enable_cdn_markers.Margin = new System.Windows.Forms.Padding(6);
             this.checkBox_enable_cdn_markers.Name = "checkBox_enable_cdn_markers";
             this.checkBox_enable_cdn_markers.Size = new System.Drawing.Size(317, 29);
             this.checkBox_enable_cdn_markers.TabIndex = 70;
@@ -264,7 +266,7 @@
             // txtB_id_acquiring_terminal
             // 
             this.txtB_id_acquiring_terminal.Location = new System.Drawing.Point(298, 215);
-            this.txtB_id_acquiring_terminal.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.txtB_id_acquiring_terminal.Margin = new System.Windows.Forms.Padding(6);
             this.txtB_id_acquiring_terminal.MaxLength = 8;
             this.txtB_id_acquiring_terminal.Name = "txtB_id_acquiring_terminal";
             this.txtB_id_acquiring_terminal.Size = new System.Drawing.Size(140, 31);
@@ -282,7 +284,7 @@
             // txtB_ip_address_acquiring_terminal
             // 
             this.txtB_ip_address_acquiring_terminal.Location = new System.Drawing.Point(1190, 577);
-            this.txtB_ip_address_acquiring_terminal.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.txtB_ip_address_acquiring_terminal.Margin = new System.Windows.Forms.Padding(6);
             this.txtB_ip_address_acquiring_terminal.MaxLength = 21;
             this.txtB_ip_address_acquiring_terminal.Name = "txtB_ip_address_acquiring_terminal";
             this.txtB_ip_address_acquiring_terminal.Size = new System.Drawing.Size(254, 31);
@@ -293,9 +295,9 @@
             this.groupBox_acquiring_terminal.Controls.Add(this.comboBox_acquiring_bank);
             this.groupBox_acquiring_terminal.Controls.Add(this.txtB_id_acquiring_terminal);
             this.groupBox_acquiring_terminal.Location = new System.Drawing.Point(1006, 263);
-            this.groupBox_acquiring_terminal.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.groupBox_acquiring_terminal.Margin = new System.Windows.Forms.Padding(6);
             this.groupBox_acquiring_terminal.Name = "groupBox_acquiring_terminal";
-            this.groupBox_acquiring_terminal.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.groupBox_acquiring_terminal.Padding = new System.Windows.Forms.Padding(6);
             this.groupBox_acquiring_terminal.Size = new System.Drawing.Size(506, 446);
             this.groupBox_acquiring_terminal.TabIndex = 77;
             this.groupBox_acquiring_terminal.TabStop = false;
@@ -310,7 +312,7 @@
             "РНКБ",
             "СБЕР"});
             this.comboBox_acquiring_bank.Location = new System.Drawing.Point(28, 98);
-            this.comboBox_acquiring_bank.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.comboBox_acquiring_bank.Margin = new System.Windows.Forms.Padding(6);
             this.comboBox_acquiring_bank.Name = "comboBox_acquiring_bank";
             this.comboBox_acquiring_bank.Size = new System.Drawing.Size(410, 33);
             this.comboBox_acquiring_bank.TabIndex = 74;
@@ -318,7 +320,7 @@
             // checkBox_get_weight_automatically
             // 
             this.checkBox_get_weight_automatically.Location = new System.Drawing.Point(50, 46);
-            this.checkBox_get_weight_automatically.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.checkBox_get_weight_automatically.Margin = new System.Windows.Forms.Padding(6);
             this.checkBox_get_weight_automatically.Name = "checkBox_get_weight_automatically";
             this.checkBox_get_weight_automatically.Size = new System.Drawing.Size(320, 63);
             this.checkBox_get_weight_automatically.TabIndex = 87;
@@ -330,7 +332,7 @@
             this.comboBox_scale_port.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_scale_port.FormattingEnabled = true;
             this.comboBox_scale_port.Location = new System.Drawing.Point(374, 46);
-            this.comboBox_scale_port.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.comboBox_scale_port.Margin = new System.Windows.Forms.Padding(6);
             this.comboBox_scale_port.Name = "comboBox_scale_port";
             this.comboBox_scale_port.Size = new System.Drawing.Size(250, 33);
             this.comboBox_scale_port.TabIndex = 88;
@@ -343,17 +345,17 @@
             this.groupBox2.Controls.Add(this.comboBox_scale_port);
             this.groupBox2.Controls.Add(this.checkBox_get_weight_automatically);
             this.groupBox2.Location = new System.Drawing.Point(34, 625);
-            this.groupBox2.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(6);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
-            this.groupBox2.Size = new System.Drawing.Size(938, 215);
+            this.groupBox2.Padding = new System.Windows.Forms.Padding(6);
+            this.groupBox2.Size = new System.Drawing.Size(721, 236);
             this.groupBox2.TabIndex = 89;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Настройки весов";
             // 
             // label10
             // 
-            this.label10.Location = new System.Drawing.Point(50, 115);
+            this.label10.Location = new System.Drawing.Point(50, 104);
             this.label10.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(274, 67);
@@ -363,8 +365,8 @@
             // 
             // txtB_constant_conversion_to_kilograms
             // 
-            this.txtB_constant_conversion_to_kilograms.Location = new System.Drawing.Point(374, 131);
-            this.txtB_constant_conversion_to_kilograms.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.txtB_constant_conversion_to_kilograms.Location = new System.Drawing.Point(374, 120);
+            this.txtB_constant_conversion_to_kilograms.Margin = new System.Windows.Forms.Padding(6);
             this.txtB_constant_conversion_to_kilograms.MaxLength = 4;
             this.txtB_constant_conversion_to_kilograms.Name = "txtB_constant_conversion_to_kilograms";
             this.txtB_constant_conversion_to_kilograms.Size = new System.Drawing.Size(250, 31);
@@ -373,10 +375,10 @@
             // 
             // btn_get_weight
             // 
-            this.btn_get_weight.Location = new System.Drawing.Point(654, 46);
-            this.btn_get_weight.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.btn_get_weight.Location = new System.Drawing.Point(50, 177);
+            this.btn_get_weight.Margin = new System.Windows.Forms.Padding(6);
             this.btn_get_weight.Name = "btn_get_weight";
-            this.btn_get_weight.Size = new System.Drawing.Size(258, 44);
+            this.btn_get_weight.Size = new System.Drawing.Size(574, 44);
             this.btn_get_weight.TabIndex = 89;
             this.btn_get_weight.Text = "Получить вес";
             this.btn_get_weight.UseVisualStyleBackColor = true;
@@ -386,7 +388,7 @@
             // 
             this.checkBox_printing_using_libraries.AutoSize = true;
             this.checkBox_printing_using_libraries.Location = new System.Drawing.Point(28, 42);
-            this.checkBox_printing_using_libraries.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.checkBox_printing_using_libraries.Margin = new System.Windows.Forms.Padding(6);
             this.checkBox_printing_using_libraries.Name = "checkBox_printing_using_libraries";
             this.checkBox_printing_using_libraries.Size = new System.Drawing.Size(298, 29);
             this.checkBox_printing_using_libraries.TabIndex = 82;
@@ -402,7 +404,7 @@
             "USB ==> COM",
             "ETHERNET"});
             this.comboBox_fn_port.Location = new System.Drawing.Point(354, 112);
-            this.comboBox_fn_port.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.comboBox_fn_port.Margin = new System.Windows.Forms.Padding(6);
             this.comboBox_fn_port.Name = "comboBox_fn_port";
             this.comboBox_fn_port.Size = new System.Drawing.Size(304, 38);
             this.comboBox_fn_port.TabIndex = 83;
@@ -416,7 +418,7 @@
             "USB==>COM",
             "ETHERNET"});
             this.comboBox_variant_connect_fn.Location = new System.Drawing.Point(354, 38);
-            this.comboBox_variant_connect_fn.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.comboBox_variant_connect_fn.Margin = new System.Windows.Forms.Padding(6);
             this.comboBox_variant_connect_fn.Name = "comboBox_variant_connect_fn";
             this.comboBox_variant_connect_fn.Size = new System.Drawing.Size(304, 38);
             this.comboBox_variant_connect_fn.TabIndex = 83;
@@ -425,7 +427,7 @@
             // btn_trst_connection
             // 
             this.btn_trst_connection.Location = new System.Drawing.Point(676, 35);
-            this.btn_trst_connection.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.btn_trst_connection.Margin = new System.Windows.Forms.Padding(6);
             this.btn_trst_connection.Name = "btn_trst_connection";
             this.btn_trst_connection.Size = new System.Drawing.Size(184, 188);
             this.btn_trst_connection.TabIndex = 84;
@@ -443,9 +445,9 @@
             this.groupBox1.Controls.Add(this.comboBox_fn_port);
             this.groupBox1.Controls.Add(this.checkBox_printing_using_libraries);
             this.groupBox1.Location = new System.Drawing.Point(22, 327);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(6);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(6);
             this.groupBox1.Size = new System.Drawing.Size(950, 256);
             this.groupBox1.TabIndex = 85;
             this.groupBox1.TabStop = false;
@@ -455,7 +457,7 @@
             // 
             this.txtB_fn_ipaddr.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.txtB_fn_ipaddr.Location = new System.Drawing.Point(354, 183);
-            this.txtB_fn_ipaddr.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.txtB_fn_ipaddr.Margin = new System.Windows.Forms.Padding(6);
             this.txtB_fn_ipaddr.Name = "txtB_fn_ipaddr";
             this.txtB_fn_ipaddr.Size = new System.Drawing.Size(304, 37);
             this.txtB_fn_ipaddr.TabIndex = 88;
@@ -484,8 +486,8 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(1142, 756);
-            this.button1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.button1.Location = new System.Drawing.Point(1103, 879);
+            this.button1.Margin = new System.Windows.Forms.Padding(6);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(242, 148);
             this.button1.TabIndex = 90;
@@ -503,7 +505,7 @@
             "5",
             "7"});
             this.comboBox_nds_ip.Location = new System.Drawing.Point(254, 223);
-            this.comboBox_nds_ip.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.comboBox_nds_ip.Margin = new System.Windows.Forms.Padding(6);
             this.comboBox_nds_ip.Name = "comboBox_nds_ip";
             this.comboBox_nds_ip.Size = new System.Drawing.Size(714, 33);
             this.comboBox_nds_ip.TabIndex = 91;
@@ -518,11 +520,29 @@
             this.label3.Text = "Ставка % НДС для ИП";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // label8
+            // 
+            this.label8.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label8.Location = new System.Drawing.Point(1006, 729);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(100, 67);
+            this.label8.TabIndex = 93;
+            this.label8.Text = "ip адрес ЛМ ЧЗ";
+            // 
+            // txtB_ip_addr_lm_ch_z
+            // 
+            this.txtB_ip_addr_lm_ch_z.Location = new System.Drawing.Point(1123, 745);
+            this.txtB_ip_addr_lm_ch_z.Name = "txtB_ip_addr_lm_ch_z";
+            this.txtB_ip_addr_lm_ch_z.Size = new System.Drawing.Size(300, 31);
+            this.txtB_ip_addr_lm_ch_z.TabIndex = 94;
+            // 
             // Constants
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1568, 1081);
+            this.Controls.Add(this.txtB_ip_addr_lm_ch_z);
+            this.Controls.Add(this.label8);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.comboBox_nds_ip);
             this.Controls.Add(this.button1);
@@ -549,7 +569,7 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox_acquiring_terminal);
-            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.Margin = new System.Windows.Forms.Padding(6);
             this.Name = "Constants";
             this.Text = "Константы";
             this.groupBox_acquiring_terminal.ResumeLayout(false);
@@ -607,5 +627,7 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.ComboBox comboBox_nds_ip;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox txtB_ip_addr_lm_ch_z;
     }
 }

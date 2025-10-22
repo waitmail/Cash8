@@ -137,7 +137,7 @@ namespace Cash8
                     " system_taxation,version_fn," +
                     " id_acquirer_terminal,ip_address_acquiring_terminal,enable_cdn_markers, " +
                     " webservice_authorize,printing_using_libraries,fn_serial_port,get_weight_automatically,scale_serial_port,"+
-                    " variant_connect_fn,fn_ipaddr,acquiring_bank,constant_conversion_to_kilograms,nds_ip FROM constants";
+                    " variant_connect_fn,fn_ipaddr,acquiring_bank,constant_conversion_to_kilograms,nds_ip,ip_adress_local_ch_z FROM constants";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
@@ -205,6 +205,7 @@ namespace Cash8
                         this.comboBox_scale_port.SelectedIndex = index;
                     }
                     this.comboBox_acquiring_bank.SelectedIndex = Convert.ToInt16(reader["acquiring_bank"]);
+                    this.txtB_ip_addr_lm_ch_z.Text = reader["ip_adress_local_ch_z"].ToString();
                     
                 }
                 reader.Close();
@@ -423,13 +424,14 @@ namespace Cash8
                     "printing_using_libraries=" + printing_using_libraries + "," +
                     "fn_serial_port = '" + fn_serial_port + "'," +
                     "scale_serial_port = '" + scale_serial_port + "'," +
-                    "get_weight_automatically=" + get_weight_automatically+","+
-                    "variant_connect_fn = " + variant_connect_fn+","+
-                    "fn_ipaddr='"+ fn_ipaddr+"'"+","+
-                    "acquiring_bank= "+comboBox_acquiring_bank.SelectedIndex.ToString()+","+
+                    "get_weight_automatically=" + get_weight_automatically + "," +
+                    "variant_connect_fn = " + variant_connect_fn + "," +
+                    "fn_ipaddr='" + fn_ipaddr + "'" + "," +
+                    "acquiring_bank= " + comboBox_acquiring_bank.SelectedIndex.ToString() + "," +
                     //"do_not_prompt_marking_code="+ do_not_prompt_marking_code+","+
-                    "constant_conversion_to_kilograms="+ txtB_constant_conversion_to_kilograms.Text.Trim()+","+
-                    "nds_ip="+ nds_ip;
+                    "constant_conversion_to_kilograms=" + txtB_constant_conversion_to_kilograms.Text.Trim() + "," +
+                    "nds_ip=" + nds_ip + "," +
+                    "ip_adress_local_ch_z='" + txtB_ip_addr_lm_ch_z.Text+"'";
 
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 int resul_update = command.ExecuteNonQuery();
@@ -464,7 +466,8 @@ namespace Cash8
                         "acquiring_bank,"+
                        // "do_not_prompt_marking_code,"+
                         "constant_conversion_to_kilograms,"+
-                        "nds_ip) VALUES(" +
+                        "nds_ip,"+
+                        "ip_adress_local_ch_z) VALUES(" +
                         cash_desk_number.Text + ",'" +
                         nick_shop.Text + "'," +
                         //get_use_debug() + ",'" +
@@ -493,7 +496,8 @@ namespace Cash8
                         comboBox_acquiring_bank.SelectedIndex.ToString()+","+
                         //do_not_prompt_marking_code +","+
                         txtB_constant_conversion_to_kilograms.Text.Trim()+","+
-                        nds_ip+")";
+                        nds_ip+",'"+
+                        txtB_ip_addr_lm_ch_z.Text+"'";
 
                     command = new NpgsqlCommand(query, conn);
                     command.ExecuteNonQuery();
