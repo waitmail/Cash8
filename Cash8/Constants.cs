@@ -12,9 +12,11 @@ using Atol.Drivers10.Fptr;
 using AtolConstants = Atol.Drivers10.Fptr.Constants;
 using System.Linq;
 using System.Text.RegularExpressions;
-
+using System.Net;
 using System.Drawing.Imaging;
-using System.Runtime.InteropServices;
+using System.IO;
+using Newtonsoft.Json;
+
 
 namespace Cash8
 {
@@ -881,6 +883,121 @@ namespace Cash8
             {
                 MessageBox.Show("При выводе картинки на печать произошла ошибка  " + fptr.errorDescription());
             }
+        }
+
+
+        public class BlockedCis
+        {
+            public int serverDocCount { get; set; }
+            public int localDocCount { get; set; }
+        }
+
+        public class BlockedGtin
+        {
+            public int serverDocCount { get; set; }
+            public int localDocCount { get; set; }
+        }
+
+        public class ReplicationStatus
+        {
+            public BlockedGtin blocked_gtin { get; set; }
+            public BlockedCis blocked_cis { get; set; }
+        }
+
+        public class StatusLmChZ
+        {
+            public string serviceUrl { get; set; }
+            public bool requiresDownload { get; set; }
+            public ReplicationStatus replicationStatus { get; set; }
+            public string operationMode { get; set; }
+            public long lastUpdate { get; set; }
+            public long lastSync { get; set; }
+            public string inn { get; set; }
+            public string dbVersion { get; set; }
+            public bool isGreyGtin { get; set; }
+            public string inst { get; set; }
+            public string version { get; set; }
+            public string status { get; set; }
+            public string name { get; set; }
+        }
+
+
+        public bool check_lm_ch_z()
+        {
+            bool result_check = false;
+            //AnswerCheckMark answer_check_mark = null;
+            //string error_description = "";
+            // Параметры
+            //string server = "192.168.2.50";
+            //mark_str = process_marking_code(mark_str);
+            string server = txtB_ip_addr_lm_ch_z.Text;// MainStaticClass.GetIpAddrLmChZ;// "192.168.2.50";
+            int port = 5995;
+            //string cis = mark_str;//"0104640043469202215Y1a67"; // ваш КИ
+            string username = "admin";
+            string password = "admin";
+            //string xClientId = MainStaticClass.FiscalDriveNumber;//."8710000100123456"; // опционально
+                                                                 //string xClientId = MainStaticClass.CDN_Token;// "8710000100123456"; // опционально
+
+
+            // URL-кодирование КИ (RFC 3986)
+            //string encodedCis = Uri.EscapeDataString(cis);
+            string url = $"http://{server}:{port}/api/v1/status";
+
+            // Создание запроса
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.Method = "GET";
+            request.Accept = "application/json";
+
+            // Basic Auth
+            string credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{username}:{password}"));
+            request.Headers["Authorization"] = $"Basic {credentials}";
+
+            // Опциональный заголовок
+            //if (!string.IsNullOrEmpty(xClientId))
+            //{
+            //    request.Headers["X-ClientId"] = xClientId;
+            //}
+
+            try
+            {
+                // Синхронный вызов — поток заблокируется до получения ответа
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (Stream stream = response.GetResponseStream())
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    string responseBody = reader.ReadToEnd();                    
+                    StatusLmChZ statusLm = JsonConvert.DeserializeObject<StatusLmChZ>(responseBody);
+                    MessageBox.Show("Статус сервиса: " + statusLm.status.ToUpper(),"Проверка статуса ЛМ ЧЗ");
+                    
+                }
+            }
+            catch (WebException ex)
+            {
+                // Обработка ошибок (404, 500, таймаут и т.д.)
+                if (ex.Response is HttpWebResponse errorResponse)
+                {
+                    using (var reader = new StreamReader(errorResponse.GetResponseStream()))
+                    {
+                        string errorText = reader.ReadToEnd();
+                        MessageBox.Show($"Ошибка HTTP при проверке статуса лм чз {(int)errorResponse.StatusCode}: {errorText}");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show($"Сетевая ошибка при проверке статуса лм чз: {ex.Message}");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Неизвестная ошибка при проверке статуса лм чз: {ex.Message}");
+            }
+
+            return result_check;
+        }
+
+        private void btт_status_Click(object sender, EventArgs e)
+        {
+            check_lm_ch_z();
         }
     }
 }

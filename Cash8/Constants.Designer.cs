@@ -70,6 +70,7 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.txtB_ip_addr_lm_ch_z = new System.Windows.Forms.TextBox();
+            this.btт_status = new System.Windows.Forms.Button();
             this.groupBox_acquiring_terminal.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -486,10 +487,10 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(1103, 879);
+            this.button1.Location = new System.Drawing.Point(1064, 993);
             this.button1.Margin = new System.Windows.Forms.Padding(6);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(242, 148);
+            this.button1.Size = new System.Drawing.Size(242, 61);
             this.button1.TabIndex = 90;
             this.button1.Text = "Печать картинки";
             this.button1.UseVisualStyleBackColor = true;
@@ -536,11 +537,22 @@
             this.txtB_ip_addr_lm_ch_z.Size = new System.Drawing.Size(300, 31);
             this.txtB_ip_addr_lm_ch_z.TabIndex = 94;
             // 
+            // btт_status
+            // 
+            this.btт_status.Location = new System.Drawing.Point(1006, 822);
+            this.btт_status.Name = "btт_status";
+            this.btт_status.Size = new System.Drawing.Size(417, 39);
+            this.btт_status.TabIndex = 95;
+            this.btт_status.Text = "Проверить подключение";
+            this.btт_status.UseVisualStyleBackColor = true;
+            this.btт_status.Click += new System.EventHandler(this.btт_status_Click);
+            // 
             // Constants
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1568, 1081);
+            this.Controls.Add(this.btт_status);
             this.Controls.Add(this.txtB_ip_addr_lm_ch_z);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label3);
@@ -629,5 +641,6 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox txtB_ip_addr_lm_ch_z;
+        private System.Windows.Forms.Button btт_status;
     }
 }

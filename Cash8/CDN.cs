@@ -453,7 +453,9 @@ namespace Cash8
         public static string process_marking_code(string markingCode)
         {
             if (string.IsNullOrEmpty(markingCode))
+            {
                 return markingCode;
+            }
 
             // Разделяем строку по символу \u001d
             string[] parts = markingCode.Split('\u001d');
@@ -469,7 +471,7 @@ namespace Cash8
                 return parts[0] + parts[1];
             }
 
-            return markingCode.Replace("\u001d", "");
+            return markingCode;
         }
 
         public bool check_lm_ch_z(Cash_check cash_Check, string mark_str)
@@ -503,10 +505,10 @@ namespace Cash8
             request.Headers["Authorization"] = $"Basic {credentials}";
 
             // Опциональный заголовок
-            if (!string.IsNullOrEmpty(xClientId))
-            {
-                request.Headers["X-ClientId"] = xClientId;
-            }
+            //if (!string.IsNullOrEmpty(xClientId))
+            //{
+            //    request.Headers["X-ClientId"] = xClientId;
+            //}
 
             try
             {
@@ -762,71 +764,7 @@ namespace Cash8
                             MessageBox.Show(sb.ToString());
                         }
                     }
-                }
-                //catch (WebException ex) when (ex.Response is HttpWebResponse errorResponse)
-                //{
-
-                //    MainStaticClass.write_cdn_log("check_marker_code " + host.host + " " + ex.Message, numdoc.ToString(), codes[0].ToString(), "3");                    
-                //    using (var errorStream = errorResponse.GetResponseStream())
-                //    {
-                //        using (var reader = new StreamReader(errorStream))
-                //        {
-                //            string errorResponseText = reader.ReadToEnd();
-                //            MainStaticClass.write_cdn_log($"HTTP Error {(int)errorResponse.StatusCode}: {errorResponseText}",numdoc.ToString(), codes[0].ToString(), "2");
-                //            answer_check_mark = JsonConvert.DeserializeObject<AnswerCheckMark>(errorResponseText);
-                //            if (answer_check_mark != null)
-                //            {
-                //                if (answer_check_mark.code == 5000)
-                //                {
-                //                    error_5000++;
-                //                }
-                //                else
-                //                {
-                //                    MessageBox.Show("При проверке кода маркировки на сервере CDN произошла ошибка \r\n Код  " + answer_check_mark.code + " \r\n Описание " + answer_check_mark.description);
-                //                }
-                //            }
-                //        }
-                //    }
-
-                //    if (ex.Status == WebExceptionStatus.Timeout || ex.Status == WebExceptionStatus.ConnectionClosed)
-                //    {                 
-                //        error = true;
-                //        if (error_timeout == 0)//если это первая ошибка по таймауту или соединение закрыто тогда попробуем обновить соединение и еще раз соединиться с наиболее быстрым CDN сервером
-                //        {
-                //            i--;
-                //        }
-                //        error_timeout++;
-                //    }
-                //    else
-                //    {
-                //        //host.dateTime = DateTime.Now.AddMinutes(15);
-                //        //result_check = false; //ошибка работы с интернет не является ошибкой кода маркировки
-                //        error = true;
-                //        if (error_5000 == 0)
-                //        {
-                //            MessageBox.Show("WebException check_marker_code " + host.host + " " + ex.Message, "check_marker_code");
-                //            host.dateTime = DateTime.Now.AddMinutes(15);
-                //        }
-                //        else
-                //        {
-                //            if (error_5000 > 1)
-                //            {
-                //                error = false;
-                //                result_check = true;
-                //            }
-                //        }
-
-                //        MainStaticClass.write_cdn_log("WebException check_marker_code " + host.host + " " + ex.Message, numdoc.ToString(), codes[0].ToString(), "3");
-                //    }
-                //    MainStaticClass.UpdateHostDateTimeCdnHost(host.host, DateTime.Now.AddMinutes(15));
-                //}
-                //catch (Exception ex)
-                //{
-                //    MessageBox.Show("Exception check_marker_code " + host.host + " " + ex.Message, "check_marker_code");                    
-                //    MainStaticClass.write_cdn_log("check_marker_code " + host.host + " " + ex.Message, numdoc.ToString(), codes[0].ToString(), "3");
-                //    MainStaticClass.UpdateHostDateTimeCdnHost(host.host, DateTime.Now.AddMinutes(15));
-                //    error = true;
-                //}
+                }                
                 catch (WebException ex)
                 {
                     if (ex.Status == WebExceptionStatus.Timeout || ex.Status == WebExceptionStatus.ConnectFailure || ex.Status == WebExceptionStatus.ConnectionClosed)
