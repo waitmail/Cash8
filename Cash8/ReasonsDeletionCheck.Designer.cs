@@ -35,9 +35,10 @@
             // 
             // btn_ok
             // 
-            this.btn_ok.Location = new System.Drawing.Point(12, 136);
+            this.btn_ok.Location = new System.Drawing.Point(24, 262);
+            this.btn_ok.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.btn_ok.Name = "btn_ok";
-            this.btn_ok.Size = new System.Drawing.Size(129, 49);
+            this.btn_ok.Size = new System.Drawing.Size(258, 94);
             this.btn_ok.TabIndex = 0;
             this.btn_ok.Text = "Выбрать";
             this.btn_ok.UseVisualStyleBackColor = true;
@@ -45,9 +46,10 @@
             // 
             // btn_cancel
             // 
-            this.btn_cancel.Location = new System.Drawing.Point(328, 136);
+            this.btn_cancel.Location = new System.Drawing.Point(656, 262);
+            this.btn_cancel.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.btn_cancel.Name = "btn_cancel";
-            this.btn_cancel.Size = new System.Drawing.Size(132, 49);
+            this.btn_cancel.Size = new System.Drawing.Size(264, 94);
             this.btn_cancel.TabIndex = 1;
             this.btn_cancel.Text = "Отмена";
             this.btn_cancel.UseVisualStyleBackColor = true;
@@ -59,28 +61,31 @@
             this.comboBox_reasons.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.comboBox_reasons.FormattingEnabled = true;
             this.comboBox_reasons.Items.AddRange(new object[] {
-            "Клиента не устроила цена",
-            "Клиенту не хватило денег",
-            "Техническая ошибка.",
-            "Ошибка магазина.",
-            "Несрабатывание акции, переоценки, уценки.",
             "Проверка акции.",
-            "IT-отдел"});
-            this.comboBox_reasons.Location = new System.Drawing.Point(12, 28);
+            "Несрабатывание акции, переоценки, уценки.",
+            "Ошибка магазина.",
+            "Техническая ошибка.",
+            "Клиента не устроила цена.",
+            "Клиенту не хватило денег.",
+            "IT-отдел",
+            "Иные причины."});
+            this.comboBox_reasons.Location = new System.Drawing.Point(24, 54);
+            this.comboBox_reasons.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.comboBox_reasons.Name = "comboBox_reasons";
-            this.comboBox_reasons.Size = new System.Drawing.Size(448, 32);
+            this.comboBox_reasons.Size = new System.Drawing.Size(892, 52);
             this.comboBox_reasons.TabIndex = 2;
             this.comboBox_reasons.SelectedIndexChanged += new System.EventHandler(this.comboBox_reasons_SelectedIndexChanged);
             // 
             // ReasonsDeletionCheck
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(472, 219);
+            this.ClientSize = new System.Drawing.Size(944, 421);
             this.ControlBox = false;
             this.Controls.Add(this.comboBox_reasons);
             this.Controls.Add(this.btn_cancel);
             this.Controls.Add(this.btn_ok);
+            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.Name = "ReasonsDeletionCheck";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Причины удаления чека";
