@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Security;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
@@ -36,3 +37,21 @@ using System.Runtime.InteropServices;
 //[assembly: AssemblyVersion("29.12.20.18")]
 //[assembly: AssemblyVersion("3.0.0.*")]
 //[assembly: AssemblyFileVersion("29.12.20.18")]
+
+// =============================================================================
+// АТРИБУТЫ ДЛЯ ОБФУСКАЦИИ
+// =============================================================================
+
+// Включение обфускации всей сборки
+[assembly: ObfuscateAssembly(true)]
+
+// Настройки обфускации
+[assembly: Obfuscation(Feature = "code control flow obfuscation", Exclude = false)]
+[assembly: Obfuscation(Feature = "rename serializable symbols", Exclude = false)]
+[assembly: Obfuscation(Feature = "string encryption", Exclude = false)]
+[assembly: Obfuscation(Feature = "anti ildasm", Exclude = false)]
+[assembly: Obfuscation(Feature = "constants encryption", Exclude = false)]
+
+// Дополнительные настройки безопасности
+[assembly: SecurityRules(SecurityRuleSet.Level2)]
+[assembly: AllowPartiallyTrustedCallers]
