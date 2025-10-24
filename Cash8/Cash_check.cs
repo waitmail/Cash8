@@ -10110,6 +10110,94 @@ namespace Cash8
                 conn.Dispose();
             }
         }
+
+        private void kitchen_print(Cash_check cash_Check)
+        {
+            IFptr fptr = MainStaticClass.FPTR;
+            if (!fptr.isOpened())
+            {
+                fptr.open();
+            }
+
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_FN_DATA_TYPE, AtolConstants.LIBFPTR_FNDT_LAST_DOCUMENT);
+            fptr.fnQueryData();
+
+            string fd = fptr.getParamInt(AtolConstants.LIBFPTR_PARAM_DOCUMENT_NUMBER).ToString();
+
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_DATA_TYPE, AtolConstants.LIBFPTR_DT_SERIAL_NUMBER);
+            fptr.queryData();
+
+            string serialNumber = fptr.getParamString(AtolConstants.LIBFPTR_PARAM_SERIAL_NUMBER);
+
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_FN_DATA_TYPE, AtolConstants.LIBFPTR_FNDT_REG_INFO);
+            fptr.fnQueryData();
+
+            string organizationName    = fptr.getParamString(1048);//Наименование организации
+            string organizationAddress = fptr.getParamString(1009);//адрес организации
+            string paymentsAddress     = fptr.getParamString(1187);//место расчета магазин 
+            string registrationNumber  = fptr.getParamString(1037);//Регистрационный номер ККТ: каждый раз разный при перерегистрации  
+            string machineNumber       = fptr.getParamString(1036);
+            string organizationVATIN   = fptr.getParamString(1018);
+
+            fptr.setParam(AtolConstants.LIBFPTR_PARAM_FN_DATA_TYPE, AtolConstants.LIBFPTR_FNDT_FN_INFO);
+            fptr.fnQueryData();
+
+            String fnSerial    = fptr.getParamString(AtolConstants.LIBFPTR_PARAM_SERIAL_NUMBER);
+            String fnVersion   = fptr.getParamString(AtolConstants.LIBFPTR_PARAM_FN_VERSION);
+            String fnExecution = fptr.getParamString(AtolConstants.LIBFPTR_PARAM_FN_EXECUTION);
+
+            KitchenPrinter.ReceiptData receiptData = new KitchenPrinter.ReceiptData();
+            receiptData.OrganizationName     = organizationName;
+            receiptData.AddressShop          = organizationAddress;
+            receiptData.PlaceOfCalculation   = paymentsAddress;
+            receiptData.FNData               = "ЭН ККТ "+ serialNumber;
+            receiptData.RNKKT                = "РН ККТ "+ registrationNumber;
+            receiptData.INN                  = "ИНН "   + organizationVATIN;
+            receiptData.FN                   = "ФН "    + fnSerial;
+            receiptData.FD                   = "ФД "    + fd;
+
+            foreach (ListViewItem lvi in cash_Check.listView1.Items)
+            {
+                if (lvi.SubItems[14].Text.Trim().Length > 13)//маркировку здесь не печатаем
+                {
+                    continue;
+                }
+                string nds = "НДС 20"; //здесь должен быть метод получения НДС
+                KitchenPrinter.ReceiptItem receiptItem = new KitchenPrinter.ReceiptItem(lvi.SubItems[1].Text, lvi.SubItems[5].Text+"*"+ lvi.SubItems[3].Text, "="+lvi.SubItems[7].Text,nds);
+                receiptData.Items.Add(receiptItem);
+            }               
+
+            receiptData.TotalAmount = Convert.ToDecimal(cash_Check.calculation_of_the_sum_of_the_document());
+            receiptData.AmountWithoutVAT = Convert.ToDecimal(cash_Check.calculation_of_the_sum_of_the_document());
+
+            receiptData.CashPaid = receiptData.TotalAmount;
+            receiptData.CashReceived = receiptData.TotalAmount;
+
+            receiptData.CheckCashNumber = MainStaticClass.Nick_Shop + "-" + MainStaticClass.CashDeskNumber.ToString() + "-" + cash_Check.numdoc.ToString();
+
+            if (cash_Check.Discount != 0)
+            {                
+                string s = "Вами получена скидка " + cash_Check.calculation_of_the_discount_of_the_document().ToString().Replace(",", ".") + " руб. ";                
+
+                if (cash_Check.client.Tag != null)
+                {
+                    if (cash_Check.client.Tag == cash_Check.user.Tag)
+                    {
+                        s = "ДК: стандартная скидка";                        
+                    }
+                    else
+                    {
+                        s = "ДК: " + cash_Check.client.Tag.ToString();                    
+                    }
+                }
+            }
+
+
+            KitchenPrinter kitchenPrinter = new KitchenPrinter();
+            kitchenPrinter.PrintReceiptToThermalPrinter(receiptData);            
+        }
+
+
                
         private void pay_Click(object sender, EventArgs e)
         {
