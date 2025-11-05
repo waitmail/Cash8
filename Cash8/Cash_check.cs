@@ -10360,7 +10360,7 @@ namespace Cash8
 
             if (itsnew)
             {
-                kitchen_print(this);
+                //kitchen_print(this);
                 show_pay_form();
             }
             else
