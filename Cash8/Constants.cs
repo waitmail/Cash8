@@ -997,7 +997,14 @@ namespace Cash8
 
         private void btт_status_Click(object sender, EventArgs e)
         {
-            check_lm_ch_z();
+            try
+            {
+                check_lm_ch_z();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("При проверке статуса лм чз произошла ошибка " + ex.Message);
+            }
         }
     }
 }

@@ -10163,7 +10163,7 @@ namespace Cash8
                     continue;
                 }
                 string nds = "НДС 20"; //здесь должен быть метод получения НДС
-                KitchenPrinter.ReceiptItem receiptItem = new KitchenPrinter.ReceiptItem(lvi.SubItems[1].Text, lvi.SubItems[5].Text+"*"+ lvi.SubItems[3].Text, "="+lvi.SubItems[7].Text,nds);
+                KitchenPrinter.ReceiptItem receiptItem = new KitchenPrinter.ReceiptItem(lvi.SubItems[0].Text +" "+ lvi.SubItems[1].Text, lvi.SubItems[5].Text+"*"+ lvi.SubItems[3].Text, "="+lvi.SubItems[7].Text,nds);
                 receiptData.Items.Add(receiptItem);
             }               
 
@@ -10194,7 +10194,9 @@ namespace Cash8
 
 
             KitchenPrinter kitchenPrinter = new KitchenPrinter();
-            kitchenPrinter.PrintReceiptToThermalPrinter(receiptData);            
+            //kitchenPrinter.PrintReceiptToThermalPrinter(receiptData);
+            kitchenPrinter.PrintReceiptToThermalPrinterAsync(receiptData);
+
         }
 
 
@@ -10358,6 +10360,7 @@ namespace Cash8
 
             if (itsnew)
             {
+                kitchen_print(this);
                 show_pay_form();
             }
             else
@@ -10394,6 +10397,7 @@ namespace Cash8
 
                     }
                 }
+               
 
                 this.Close();
             }
