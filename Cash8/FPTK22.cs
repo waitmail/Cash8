@@ -458,7 +458,7 @@ namespace Cash8
 
                 PrintingUsingLibraries printing = new PrintingUsingLibraries();
                 sum_incass.Text = printing.getCasheSumm();
-                printing.get_register_data();
+                //printing.get_register_data();
             }
             //}
         }

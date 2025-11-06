@@ -54,40 +54,40 @@ namespace Cash8
             //}
         }
 
-        public void get_register_data()
-        {
-            IFptr fptr = MainStaticClass.FPTR;
-            if (!fptr.isOpened())
-            {
-                fptr.open();
-            }
+        //public void get_register_data()
+        //{
+        //    IFptr fptr = MainStaticClass.FPTR;
+        //    if (!fptr.isOpened())
+        //    {
+        //        fptr.open();
+        //    }
 
-            fptr.setParam(AtolConstants.LIBFPTR_PARAM_DATA_TYPE, AtolConstants.LIBFPTR_DT_SERIAL_NUMBER);
-            fptr.queryData();
+        //    fptr.setParam(AtolConstants.LIBFPTR_PARAM_DATA_TYPE, AtolConstants.LIBFPTR_DT_SERIAL_NUMBER);
+        //    fptr.queryData();
 
-            string serialNumber = fptr.getParamString(AtolConstants.LIBFPTR_PARAM_SERIAL_NUMBER);
-
-
-
-            fptr.setParam(AtolConstants.LIBFPTR_PARAM_FN_DATA_TYPE, AtolConstants.LIBFPTR_FNDT_REG_INFO);
-            fptr.fnQueryData();
-
-            string organizationName = fptr.getParamString(1048);//Наименование организации
-            string organizationAddress = fptr.getParamString(1009);//адрес организации
-            string paymentsAddress = fptr.getParamString(1187);//место расчета магазин 
-            string registrationNumber = fptr.getParamString(1037);//Регистрационный номер ККТ: каждый раз разный при перерегистрации  
-            string machineNumber = fptr.getParamString(1036);
-            string organizationVATIN = fptr.getParamString(1018);
-
-            fptr.setParam(AtolConstants.LIBFPTR_PARAM_FN_DATA_TYPE, AtolConstants.LIBFPTR_FNDT_FN_INFO);
-            fptr.fnQueryData();
-
-            String fnSerial = fptr.getParamString(AtolConstants.LIBFPTR_PARAM_SERIAL_NUMBER);
-            String fnVersion = fptr.getParamString(AtolConstants.LIBFPTR_PARAM_FN_VERSION);
-            String fnExecution = fptr.getParamString(AtolConstants.LIBFPTR_PARAM_FN_EXECUTION);
+        //    string serialNumber = fptr.getParamString(AtolConstants.LIBFPTR_PARAM_SERIAL_NUMBER);
 
 
-        }
+
+        //    fptr.setParam(AtolConstants.LIBFPTR_PARAM_FN_DATA_TYPE, AtolConstants.LIBFPTR_FNDT_REG_INFO);
+        //    fptr.fnQueryData();
+
+        //    string organizationName = fptr.getParamString(1048);//Наименование организации
+        //    string organizationAddress = fptr.getParamString(1009);//адрес организации
+        //    string paymentsAddress = fptr.getParamString(1187);//место расчета магазин 
+        //    string registrationNumber = fptr.getParamString(1037);//Регистрационный номер ККТ: каждый раз разный при перерегистрации  
+        //    string machineNumber = fptr.getParamString(1036);
+        //    string organizationVATIN = fptr.getParamString(1018);
+
+        //    fptr.setParam(AtolConstants.LIBFPTR_PARAM_FN_DATA_TYPE, AtolConstants.LIBFPTR_FNDT_FN_INFO);
+        //    fptr.fnQueryData();
+
+        //    String fnSerial = fptr.getParamString(AtolConstants.LIBFPTR_PARAM_SERIAL_NUMBER);
+        //    String fnVersion = fptr.getParamString(AtolConstants.LIBFPTR_PARAM_FN_VERSION);
+        //    String fnExecution = fptr.getParamString(AtolConstants.LIBFPTR_PARAM_FN_EXECUTION);
+
+
+        //}
         
         public bool validate_date_time_with_fn(int minutes)
         {

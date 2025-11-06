@@ -10218,6 +10218,7 @@ namespace Cash8
                 if (printSuccess)
                 {
                     its_print();
+                    update_kitchen_print();
                     // Печать успешна
                     //MessageBox.Show("Чек успешно напечатан!", "Успех",
                     //              MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -10244,8 +10245,40 @@ namespace Cash8
 
         }
 
+        private bool update_kitchen_print()
+        {
+            try
+            {
+                using (var conn = MainStaticClass.NpgsqlConn())
+                {
+                    conn.Open();
+                    string query = "UPDATE public.checks_header SET kitchen_print = true WHERE document_number = @document_number";
 
-               
+                    using (var command = new NpgsqlCommand(query, conn))
+                    {
+                        command.Parameters.AddWithValue("@document_number", numdoc);
+                        int rowsAffected = command.ExecuteNonQuery();
+
+                        if (rowsAffected == 0)
+                        {
+                            MessageBox.Show($"Документ с номером {numdoc} не найден в базе данных", "Предупреждение",
+                                          MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return false;
+                        }
+
+                        return true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при обновлении статуса печати: {ex.Message}", "Ошибка",
+                              MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
+
         private void pay_Click(object sender, EventArgs e)
         {
             if (MainStaticClass.PrintingUsingLibraries == 1)
