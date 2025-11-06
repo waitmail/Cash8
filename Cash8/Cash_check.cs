@@ -10242,7 +10242,6 @@ namespace Cash8
                 MessageBox.Show($"Ошибка при печати: {ex.Message}", "Ошибка",
                               MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
         }
 
         private bool update_kitchen_print()
