@@ -1068,6 +1068,7 @@ namespace Cash8
             queries.Add("CREATE TABLE IF NOT EXISTS public.open_close_shop (open timestamp without time zone NOT NULL, close timestamp without time zone, date date NOT NULL) TABLESPACE pg_default; ALTER TABLE IF EXISTS public.open_close_shop OWNER to postgres;");
             queries.Add("ALTER TABLE IF EXISTS public.open_close_shop ADD COLUMN its_sent boolean NOT NULL DEFAULT false;");
             queries.Add("ALTER TABLE IF EXISTS public.constants ADD COLUMN ip_adress_local_ch_z character varying(15) COLLATE pg_catalog.default");
+            queries.Add("ALTER TABLE IF EXISTS public.constants ADD COLUMN kitchen_print character varying(50) COLLATE pg_catalog.default;COMMENT ON COLUMN public.constants.kitchen_print IS 'Адрес/имя кухонного принтера';");
 
             foreach (string str in queries)
             {

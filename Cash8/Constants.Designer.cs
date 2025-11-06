@@ -44,7 +44,6 @@
             this.lbl_system_taxation = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.txtB_version_fn = new System.Windows.Forms.TextBox();
-            this.checkBox_enable_cdn_markers = new System.Windows.Forms.CheckBox();
             this.label5 = new System.Windows.Forms.Label();
             this.txtB_id_acquiring_terminal = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
@@ -242,17 +241,6 @@
             this.txtB_version_fn.TabIndex = 69;
             this.txtB_version_fn.Text = "2";
             this.txtB_version_fn.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // checkBox_enable_cdn_markers
-            // 
-            this.checkBox_enable_cdn_markers.AutoSize = true;
-            this.checkBox_enable_cdn_markers.Location = new System.Drawing.Point(22, 287);
-            this.checkBox_enable_cdn_markers.Margin = new System.Windows.Forms.Padding(6);
-            this.checkBox_enable_cdn_markers.Name = "checkBox_enable_cdn_markers";
-            this.checkBox_enable_cdn_markers.Size = new System.Drawing.Size(317, 29);
-            this.checkBox_enable_cdn_markers.TabIndex = 70;
-            this.checkBox_enable_cdn_markers.Text = "Включить CDN маркировку";
-            this.checkBox_enable_cdn_markers.UseVisualStyleBackColor = true;
             // 
             // label5
             // 
@@ -561,7 +549,6 @@
             this.Controls.Add(this.txtB_ip_address_acquiring_terminal);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
-            this.Controls.Add(this.checkBox_enable_cdn_markers);
             this.Controls.Add(this.txtB_version_fn);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.lbl_system_taxation);
@@ -615,7 +602,6 @@
         private System.Windows.Forms.Label lbl_system_taxation;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox txtB_version_fn;
-        private System.Windows.Forms.CheckBox checkBox_enable_cdn_markers;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox txtB_id_acquiring_terminal;
         private System.Windows.Forms.Label label6;

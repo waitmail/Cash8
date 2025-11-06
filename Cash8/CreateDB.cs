@@ -33,7 +33,9 @@ namespace Cash8
             fn_ipaddr character varying(20) COLLATE pg_catalog.default,
             acquiring_bank smallint DEFAULT 0,
             constant_conversion_to_kilograms integer NOT NULL DEFAULT 0,
-            nds_ip smallint DEFAULT 0
+            nds_ip smallint DEFAULT 0,
+            ip_adress_local_ch_z character varying(15) COLLATE pg_catalog.default,
+            kitchen_print character varying(50) COLLATE pg_catalog.default
         )
 
         TABLESPACE pg_default;
@@ -105,7 +107,13 @@ namespace Cash8
             IS 'Множитель  для конвертации значения полученного из весов ';
 
         COMMENT ON COLUMN public.constants.nds_ip
-            IS 'Ставка ндс для ИП у которого превышен порог нулевого ндс';";
+            IS 'Ставка ндс для ИП у которого превышен порог нулевого ндс';
+
+        COMMENT ON COLUMN public.constants.ip_adress_local_ch_z
+            IS 'Ип адресс локального модуля ЧЗ';
+
+        COMMENT ON COLUMN public.constants.kitchen_print
+            IS 'Адрес/имя кухонного принтера';";
 
             return result;
         }

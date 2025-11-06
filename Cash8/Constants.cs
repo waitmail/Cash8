@@ -137,8 +137,8 @@ namespace Cash8
                 string query = "SELECT nick_shop,cash_desk_number,code_shop," +
                     " path_for_web_service,unloading_period,last_date_download_bonus_clients," +
                     " system_taxation,version_fn," +
-                    " id_acquirer_terminal,ip_address_acquiring_terminal,enable_cdn_markers, " +
-                    " webservice_authorize,printing_using_libraries,fn_serial_port,get_weight_automatically,scale_serial_port,"+
+                    " id_acquirer_terminal,ip_address_acquiring_terminal," +//enable_cdn_markers
+                    " webservice_authorize,printing_using_libraries,fn_serial_port,get_weight_automatically,scale_serial_port," +
                     " variant_connect_fn,fn_ipaddr,acquiring_bank,constant_conversion_to_kilograms,nds_ip,ip_adress_local_ch_z FROM constants";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();
@@ -155,7 +155,7 @@ namespace Cash8
                     this.txtB_version_fn.Text = reader["version_fn"].ToString();                    
                     this.txtB_id_acquiring_terminal.Text = reader["id_acquirer_terminal"].ToString();
                     this.txtB_ip_address_acquiring_terminal.Text = reader["ip_address_acquiring_terminal"].ToString();                    
-                    this.checkBox_enable_cdn_markers.CheckState = (reader["enable_cdn_markers"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);                    
+                    //this.checkBox_enable_cdn_markers.CheckState = (reader["enable_cdn_markers"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);                    
                     //this.checkBox_webservice_authorize.CheckState = (reader["webservice_authorize"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
                     this.checkBox_printing_using_libraries.CheckState = (reader["printing_using_libraries"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
                     this.checkBox_get_weight_automatically.CheckState = (reader["get_weight_automatically"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
@@ -373,7 +373,7 @@ namespace Cash8
             //string print_m = (checkBox_print_m.CheckState == CheckState.Unchecked ? "false" : "true");
             //string enable_stock_processing_in_memory = (checkBox_enable_cdn_markers.CheckState == CheckState.Unchecked ? "false" : "true");
             //string self_service_kiosk = (checkBox_self_service_kiosk.CheckState == CheckState.Unchecked ? "false" : "true");
-            string enable_cdn_markers = (checkBox_enable_cdn_markers.CheckState == CheckState.Unchecked ? "false" : "true");
+            //string enable_cdn_markers = (checkBox_enable_cdn_markers.CheckState == CheckState.Unchecked ? "false" : "true");
             //string version2_marking = (checkBox_version2_marking.CheckState == CheckState.Unchecked ? "false" : "true");
             //string webservice_authorize = (checkBox_webservice_authorize.CheckState == CheckState.Unchecked ? "false" : "true");
             //string static_guid_in_print = (checkBox_static_guid_in_print.CheckState == CheckState.Unchecked ? "false" : "true");
@@ -419,7 +419,7 @@ namespace Cash8
                     "id_acquirer_terminal='" + txtB_id_acquiring_terminal.Text.ToString() + "'," +
                     "ip_address_acquiring_terminal='" + txtB_ip_address_acquiring_terminal.Text.ToString().Trim() + "'," +
                     //"self_service_kiosk=" + self_service_kiosk + "," +
-                    "enable_cdn_markers=" + enable_cdn_markers + "," +
+                    //"enable_cdn_markers=" + enable_cdn_markers + "," +
                     //"version2_marking=" + version2_marking + "," +
                     //"webservice_authorize=" + webservice_authorize + "," +
                     //"static_guid_in_print=" + static_guid_in_print + "," +
@@ -454,8 +454,8 @@ namespace Cash8
                         //"enable_stock_processing_in_memory,"+
                         "id_acquirer_terminal," +
                         "ip_address_acquiring_terminal," +
-                        "self_service_kiosk," +
-                        "enable_cdn_markers," +
+                        //"self_service_kiosk," +
+                        //"enable_cdn_markers," +
                         //"version2_marking,"+
                         //"webservice_authorize," +
                         //"static_guid_in_print," +
@@ -485,7 +485,7 @@ namespace Cash8
                         txtB_id_acquiring_terminal.Text.ToString() + "','" +
                         txtB_ip_address_acquiring_terminal.ToString().Trim() + "','" +
                         //self_service_kiosk+","+
-                        enable_cdn_markers + "," +
+                        //enable_cdn_markers + "," +
                         //version2_marking+","+
                         //webservice_authorize + "," +
                         //static_guid_in_print+","+

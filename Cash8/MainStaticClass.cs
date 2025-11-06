@@ -134,6 +134,8 @@ namespace Cash8
         private static int nds_ip = -1;
         private static bool fiscals_forbidden = true;
         private static string ip_addr_lm_ch_z = "0";
+        private static string kitchen_print = "0";
+
         //private static Dictionary<int, Cash8.ProductData> dictionaryProductData = new Dictionary<int, Cash8.ProductData>();
 
 
@@ -146,6 +148,50 @@ namespace Cash8
         //    }
 
         //}
+
+        /// <summary>
+        /// Возвращает ip адресс лм чз
+        /// в локальной сети магазина
+        /// </summary>
+        public static string GetKithenPrint
+        {
+            get
+            {
+                if (kitchen_print == "0")
+                {
+                    NpgsqlConnection conn = null;
+                    NpgsqlCommand command = null;
+                    conn = MainStaticClass.NpgsqlConn();
+                    try
+                    {
+                        conn.Open();
+                        string query = "SELECT kitchen_print FROM constants";
+                        command = new NpgsqlCommand(query, conn);
+                        kitchen_print = command.ExecuteScalar().ToString();
+                    }
+                    catch (NpgsqlException ex)
+                    {
+                        MessageBox.Show("Ошибка при чтении kitchen_print" + ex.ToString());
+                        kitchen_print = "";
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Ошибка при чтении kitchen_print" + ex.ToString());
+                        kitchen_print = "";
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                }
+
+                return kitchen_print;
+            }
+        }
+
 
         /// <summary>
         /// Возвращает ip адресс лм чз

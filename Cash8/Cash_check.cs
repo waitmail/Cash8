@@ -8066,10 +8066,22 @@ namespace Cash8
                 //}
                 //else
                 //{
-                    PrintingUsingLibraries printingUsingLibraries = new PrintingUsingLibraries();
+                PrintingUsingLibraries printingUsingLibraries = new PrintingUsingLibraries();
+                {
+                    if (MainStaticClass.GetKithenPrint != "")
+                    {
+                        //Еще надо провреить форму оплаты, что только наличные 
+                        double[] type_payment = get_cash_on_type_payment();
+                        if ((type_payment[1] == 0) && (type_payment[2] == 0))
+                        {
+                            kitchen_print(this);
+                        }
+                    }
+                    else
                     {
                         printingUsingLibraries.print_sell_2_or_return_sell(this);
                     }
+                }
                 //}
             }
             else
@@ -8094,9 +8106,9 @@ namespace Cash8
                     //}
                     //else
                     //{
-                        PrintingUsingLibraries printingUsingLibraries = new PrintingUsingLibraries();
-                        printingUsingLibraries.print_sell_2_3_or_return_sell(this, 1);//Если первый печатать без маркировки то очищается буфер в проверенных
-                        printingUsingLibraries.print_sell_2_3_or_return_sell(this, 0);
+                    PrintingUsingLibraries printingUsingLibraries = new PrintingUsingLibraries();
+                    printingUsingLibraries.print_sell_2_3_or_return_sell(this, 1);//Если первый печатать без маркировки то очищается буфер в проверенных
+                    printingUsingLibraries.print_sell_2_3_or_return_sell(this, 0);
                     //}
                 }
                 else if (print_to_button == 1)
@@ -8106,14 +8118,14 @@ namespace Cash8
                         //if (MainStaticClass.PrintingUsingLibraries == 0)
                         //    this.fiscall_print_pay_2_3(pay, 0, this.guid);
                         //else
-                            new PrintingUsingLibraries().print_sell_2_3_or_return_sell(this, 0);
+                        new PrintingUsingLibraries().print_sell_2_3_or_return_sell(this, 0);
                     }
                     if (this.checkBox_to_print_repeatedly_p.CheckState == CheckState.Checked)
                     {
                         //if (MainStaticClass.PrintingUsingLibraries == 0)
                         //    this.fiscall_print_pay_2_3(pay, 1, this.guid1);
                         //else
-                            new PrintingUsingLibraries().print_sell_2_3_or_return_sell(this, 1);
+                        new PrintingUsingLibraries().print_sell_2_3_or_return_sell(this, 1);
                     }
                 }
                 closing = false;
@@ -10111,7 +10123,7 @@ namespace Cash8
             }
         }
 
-        private void kitchen_print(Cash_check cash_Check)
+        private async void kitchen_print(Cash_check cash_Check)
         {
             IFptr fptr = MainStaticClass.FPTR;
             if (!fptr.isOpened())
@@ -10193,9 +10205,42 @@ namespace Cash8
             }
 
 
+            //KitchenPrinter kitchenPrinter = new KitchenPrinter();
+            ////kitchenPrinter.PrintReceiptToThermalPrinter(receiptData);
+            //kitchenPrinter.PrintReceiptToThermalPrinterAsync(receiptData);
+
             KitchenPrinter kitchenPrinter = new KitchenPrinter();
-            //kitchenPrinter.PrintReceiptToThermalPrinter(receiptData);
-            kitchenPrinter.PrintReceiptToThermalPrinterAsync(receiptData);
+
+            try
+            {
+                bool printSuccess = await kitchenPrinter.PrintReceiptToThermalPrinterAsync(receiptData);
+
+                if (printSuccess)
+                {
+                    its_print();
+                    // Печать успешна
+                    //MessageBox.Show("Чек успешно напечатан!", "Успех",
+                    //              MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    // Здесь можно выполнить дополнительные действия при успешной печати
+                    // Например, обновить статус в БД, логировать и т.д.
+                    //OnPrintSuccess(cash_Check);                    
+                }
+                else
+                {
+                    // Печать не удалась
+                    MessageBox.Show("Не удалось напечатать чек", "Ошибка",
+                                  MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                    // Действия при неудачной печати
+                    //OnPrintFailure(cash_Check);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при печати: {ex.Message}", "Ошибка",
+                              MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
 
         }
 
