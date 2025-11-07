@@ -10159,6 +10159,7 @@ namespace Cash8
             String fnExecution = fptr.getParamString(AtolConstants.LIBFPTR_PARAM_FN_EXECUTION);
 
             KitchenPrinter.ReceiptData receiptData = new KitchenPrinter.ReceiptData();
+            receiptData.CashierName = MainStaticClass.Cash_Operator;
             receiptData.OrganizationName     = organizationName;
             receiptData.AddressShop          = organizationAddress;
             receiptData.PlaceOfCalculation   = paymentsAddress;
@@ -10168,19 +10169,71 @@ namespace Cash8
             receiptData.FN                   = "ФН "    + fnSerial;
             receiptData.FD                   = "ФД "    + fd;
 
+            //ProductData productData = null;
+            string nds = "";
+            decimal TaxAmountVAT = 0;
             foreach (ListViewItem lvi in cash_Check.listView1.Items)
             {
                 if (lvi.SubItems[14].Text.Trim().Length > 13)//маркировку здесь не печатаем
                 {
                     continue;
                 }
-                string nds = "НДС 20"; //здесь должен быть метод получения НДС
-                KitchenPrinter.ReceiptItem receiptItem = new KitchenPrinter.ReceiptItem(lvi.SubItems[0].Text +" "+ lvi.SubItems[1].Text, lvi.SubItems[5].Text+"*"+ lvi.SubItems[3].Text, "="+lvi.SubItems[7].Text,nds);
+
+                //if (InventoryManager.completeDictionaryProductData)
+                //{
+                //    productData = InventoryManager.GetItem(Convert.ToInt64(lvi.SubItems[0].Text.Trim()));
+                //}
+                //else
+                //{
+                //    productData = GetProductDataInDB(lvi.SubItems[0].Text.Trim());
+                //}
+
+                nds = "";                
+                if (MainStaticClass.SystemTaxation == 1)
+                {
+                    int stavka_nds = get_tovar_nds(lvi.SubItems[0].Text.Trim());
+                    decimal amountWithVAT = decimal.Parse(lvi.SubItems[7].Text);
+
+                    if (stavka_nds == 10)
+                    {
+                        nds = "НДС 10";
+                        // Выделяем НДС 10% из суммы: сумма * 10 / 110
+                        decimal ndsAmount = amountWithVAT * 10 / 110;
+                        ndsAmount = Math.Ceiling(ndsAmount * 100) / 100; // Округление вверх до 2 знаков
+                        TaxAmountVAT += ndsAmount;
+                        receiptData.VAT20 += ndsAmount;
+                    }
+                    else if (stavka_nds == 20)
+                    {
+                        nds = "НДС 20";
+                        // Выделяем НДС 20% из суммы: сумма * 20 / 120
+                        decimal ndsAmount = amountWithVAT * 20 / 120;
+                        ndsAmount = Math.Ceiling(ndsAmount * 100) / 100; // Округление вверх до 2 знаков
+                        TaxAmountVAT += ndsAmount;
+                        receiptData.VAT10 += ndsAmount;
+                    }
+                }
+                else
+                {
+                    nds = "";
+                }
+
+                KitchenPrinter.ReceiptItem receiptItem = null;              
+                if (nds != "")
+                {
+                    receiptItem = new KitchenPrinter.ReceiptItem(lvi.SubItems[0].Text + " " + lvi.SubItems[1].Text, lvi.SubItems[5].Text + "*" + lvi.SubItems[3].Text, "=" + lvi.SubItems[7].Text, nds);
+                }
+                else
+                {
+                    receiptItem = new KitchenPrinter.ReceiptItem(lvi.SubItems[0].Text + " " + lvi.SubItems[1].Text, lvi.SubItems[5].Text + "*" + lvi.SubItems[3].Text, "=" + lvi.SubItems[7].Text);
+                }
+
                 receiptData.Items.Add(receiptItem);
-            }               
+            }           
+
 
             receiptData.TotalAmount = Convert.ToDecimal(cash_Check.calculation_of_the_sum_of_the_document());
-            receiptData.AmountWithoutVAT = Convert.ToDecimal(cash_Check.calculation_of_the_sum_of_the_document());
+            receiptData.AmountWithoutVAT = receiptData.TotalAmount - TaxAmountVAT;//Сумма без ндс
 
             receiptData.CashPaid = receiptData.TotalAmount;
             receiptData.CashReceived = receiptData.TotalAmount;
@@ -10217,9 +10270,9 @@ namespace Cash8
 
                 if (printSuccess)
                 {
-                    its_print();
-                    update_kitchen_print();
                     // Печать успешна
+                    its_print();
+                    update_kitchen_print();                    
                     //MessageBox.Show("Чек успешно напечатан!", "Успех",
                     //              MessageBoxButtons.OK, MessageBoxIcon.Information);
 

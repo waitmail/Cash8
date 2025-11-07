@@ -29,6 +29,9 @@ namespace Cash8
             public string OrganizationName { get; set; } //= "ЧИСТЫЙ ДОМ Р ООО";
             public string AddressShop { get; set; } //= "Республика Крым, г. Симферополь, ул. Киевская, д. 22";
             public string PlaceOfCalculation { get; set; } //= "Магазин";
+            public string TaxAmountVAT { get; set; } //= "Сумма НДС";
+
+
 
             // Товары
             public List<ReceiptItem> Items { get; set; } = new List<ReceiptItem>();
@@ -36,6 +39,8 @@ namespace Cash8
             // Итоги и оплата
             public decimal TotalAmount { get; set; }
             public decimal AmountWithoutVAT { get; set; }
+            public decimal VAT20 { get; set; }
+            public decimal VAT10 { get; set; }
             public decimal CashPaid { get; set; }
             public decimal CashReceived { get; set; }            
 
@@ -329,15 +334,45 @@ namespace Cash8
                     g.DrawLine(lightPen, 2, scaledCurrentY, pageWidth - 10, scaledCurrentY);
                     scaledCurrentY += sectionSpacing;
 
-                    // Сумма без НДС
-                    string sumNoVATLabel = "СУММА БЕЗ НДС";
-                    string sumNoVATValue = $"={receiptData.AmountWithoutVAT:F2}";
-                    SizeF sumNoVATLabelSize = g.MeasureString(sumNoVATLabel, kitchenFont);
-                    SizeF sumNoVATValueSize = g.MeasureString(sumNoVATValue, kitchenFont);
-                    int sumNoVATValueX = (int)pageWidth - 5 - (int)sumNoVATValueSize.Width;
-                    g.DrawString(sumNoVATLabel, kitchenFont, brush, 2, scaledCurrentY);
-                    g.DrawString(sumNoVATValue, kitchenFont, brush, sumNoVATValueX, scaledCurrentY);
-                    scaledCurrentY += (sumNoVATLabelSize.Height / scaleY) + lineSpacing;
+                    if (receiptData.TotalAmount == receiptData.AmountWithoutVAT)
+                    {
+                        // Сумма без НДС
+                        string sumNoVATLabel = "СУММА БЕЗ НДС";
+                        string sumNoVATValue = $"={receiptData.AmountWithoutVAT:F2}";
+                        SizeF sumNoVATLabelSize = g.MeasureString(sumNoVATLabel, kitchenFont);
+                        SizeF sumNoVATValueSize = g.MeasureString(sumNoVATValue, kitchenFont);
+                        int sumNoVATValueX = (int)pageWidth - 5 - (int)sumNoVATValueSize.Width;
+                        g.DrawString(sumNoVATLabel, kitchenFont, brush, 2, scaledCurrentY);
+                        g.DrawString(sumNoVATValue, kitchenFont, brush, sumNoVATValueX, scaledCurrentY);
+                        scaledCurrentY += (sumNoVATLabelSize.Height / scaleY) + lineSpacing;
+                    }
+                    else
+                    {
+                        if (receiptData.VAT20 != 0)
+                        {
+                            // Сумма НДС 20
+                            string sumNoVATLabel = "СУММА НДС 20%";
+                            string sumNoVATValue = $"={receiptData.VAT20:F2}";
+                            SizeF sumNoVATLabelSize = g.MeasureString(sumNoVATLabel, kitchenFont);
+                            SizeF sumNoVATValueSize = g.MeasureString(sumNoVATValue, kitchenFont);
+                            int sumNoVATValueX = (int)pageWidth - 5 - (int)sumNoVATValueSize.Width;
+                            g.DrawString(sumNoVATLabel, kitchenFont, brush, 2, scaledCurrentY);
+                            g.DrawString(sumNoVATValue, kitchenFont, brush, sumNoVATValueX, scaledCurrentY);
+                            scaledCurrentY += (sumNoVATLabelSize.Height / scaleY) + lineSpacing;
+                        }
+                        if (receiptData.VAT10 != 0)
+                        {
+                            // Сумма НДС 20
+                            string sumNoVATLabel = "СУММА НДС 10%";
+                            string sumNoVATValue = $"={receiptData.VAT10:F2}";
+                            SizeF sumNoVATLabelSize = g.MeasureString(sumNoVATLabel, kitchenFont);
+                            SizeF sumNoVATValueSize = g.MeasureString(sumNoVATValue, kitchenFont);
+                            int sumNoVATValueX = (int)pageWidth - 5 - (int)sumNoVATValueSize.Width;
+                            g.DrawString(sumNoVATLabel, kitchenFont, brush, 2, scaledCurrentY);
+                            g.DrawString(sumNoVATValue, kitchenFont, brush, sumNoVATValueX, scaledCurrentY);
+                            scaledCurrentY += (sumNoVATLabelSize.Height / scaleY) + lineSpacing;
+                        }
+                    }
 
                     // Наличными
                     string cashPaidLabel = "НАЛИЧНЫМИ";
