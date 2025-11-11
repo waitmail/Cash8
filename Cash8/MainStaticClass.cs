@@ -139,6 +139,17 @@ namespace Cash8
         //private static Dictionary<int, Cash8.ProductData> dictionaryProductData = new Dictionary<int, Cash8.ProductData>();
 
 
+        private static readonly Random random = new Random();
+
+        public static string Generate10DigitNumber()
+        {
+            // Генерируем 10 случайных цифр
+            string digits = new string(Enumerable.Repeat("0123456789", 10)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
+
+            return digits;
+        }
+
 
         //public static Dictionary DictionaryProductData
         //{

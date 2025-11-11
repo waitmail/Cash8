@@ -54,7 +54,7 @@ namespace Cash8
             public string INN { get; set; } //= "ИНН 9102000373";
             public string FN { get; set; } //= "ФН 9999078902011982";
             public string FD { get; set; } //= "ФД 20";
-            public string FP { get; set; } = "ФП 2437495754";
+            public string FP { get; set; } = "ФП "+MainStaticClass.Generate10DigitNumber();
             public string OperationType { get; set; } = "ПРИХОД";
             public string CheckCashNumber { get; set; } //= "A01-8-73954";
 
