@@ -223,6 +223,7 @@
     <Compile Include="Pay.Designer.cs">
       <DependentUpon>Pay.cs</DependentUpon>
     </Compile>
+    <Compile Include="PIOT.cs" />
     <Compile Include="PreInspectionResponse.cs" />
     <Compile Include="PrintingUsingLibraries.cs" />
     <Compile Include="ProcessingOfActions.cs" />
