@@ -264,7 +264,7 @@ namespace Cash8
                     try
                     {
                         conn.Open();
-                        string query = "SELECT fiscals_forbidden FROM users";
+                        string query = "SELECT fiscals_forbidden FROM users where code='"+MainStaticClass.CashOperatorInn+"'";
                         command = new NpgsqlCommand(query, conn);
                         fiscals_forbidden = Convert.ToBoolean(command.ExecuteScalar());
                     }
@@ -2585,6 +2585,41 @@ namespace Cash8
         }
 
 
+        public static bool piot_cdn_check(ProductData productData, string mark_str, ListViewItem lvi, Cash_check check)
+        {
+            bool result = true;
+            string mark_str_cdn = "";
+
+            if (productData.IsCDNCheck())
+            {
+                if (MainStaticClass.CashDeskNumber != 9)// && MainStaticClass.EnableCdnMarkers == 1
+                {
+                    if (MainStaticClass.CDN_Token == "")
+                    {
+                        MessageBox.Show("В этой кассе не заполнен CDN токен, \r\n ПРОДАЖА ДАННОГО ТОВАРА НЕВОЗМОЖНА ! ", "Проверка CDN");
+                        result = false;                        
+                    }
+                    else
+                    {
+                        //CDN cdn = new CDN();
+                        PIOT piot = new PIOT();
+                        List<string> codes = new List<string>();
+                        mark_str_cdn = mark_str.Replace("\u001d", @"\u001d");
+                        codes.Add(mark_str_cdn);
+                        mark_str_cdn = mark_str_cdn.Replace("'", "\'");
+                        Dictionary<string, string> d_tovar = new Dictionary<string, string>();
+                        d_tovar[lvi.SubItems[1].Text] = lvi.SubItems[0].Text;
+                        //result = cdn.cdn_check_marker_code(codes, mark_str, check.numdoc, ref check.request, mark_str_cdn, d_tovar, check, productData);
+                        result = piot.cdn_check_marker_code(codes, mark_str, check.numdoc, ref check.request, mark_str_cdn, d_tovar, check, productData);
+                    }
+
+                }
+            }
+
+            return result;
+        }
+
+
         public static bool cdn_check(ProductData productData,string mark_str, ListViewItem lvi,Cash_check check)
         {
             bool result = true;
@@ -2597,16 +2632,19 @@ namespace Cash8
                     if (MainStaticClass.CDN_Token == "")
                     {
                         MessageBox.Show("В этой кассе не заполнен CDN токен, \r\n ПРОДАЖА ДАННОГО ТОВАРА НЕВОЗМОЖНА ! ", "Проверка CDN");
-                        return result;
+                        result = false;                        
                     }
-                    CDN cdn = new CDN();
-                    List<string> codes = new List<string>();
-                    mark_str_cdn = mark_str.Replace("\u001d", @"\u001d");
-                    codes.Add(mark_str_cdn);
-                    mark_str_cdn = mark_str_cdn.Replace("'", "\'");
-                    Dictionary<string, string> d_tovar = new Dictionary<string, string>();
-                    d_tovar[lvi.SubItems[1].Text] = lvi.SubItems[0].Text;
-                    result = cdn.cdn_check_marker_code(codes, mark_str, check.numdoc, ref check.request, mark_str_cdn, d_tovar, check, productData);                    
+                    else
+                    {
+                        CDN cdn = new CDN();
+                        List<string> codes = new List<string>();
+                        mark_str_cdn = mark_str.Replace("\u001d", @"\u001d");
+                        codes.Add(mark_str_cdn);
+                        mark_str_cdn = mark_str_cdn.Replace("'", "\'");
+                        Dictionary<string, string> d_tovar = new Dictionary<string, string>();
+                        d_tovar[lvi.SubItems[1].Text] = lvi.SubItems[0].Text;
+                        result = cdn.cdn_check_marker_code(codes, mark_str, check.numdoc, ref check.request, mark_str_cdn, d_tovar, check, productData);
+                    }
                 }
             }
 

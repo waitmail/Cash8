@@ -14,14 +14,16 @@ namespace Cash8
     class PIOT
     {
 
-        public bool cdn_check_marker_code(List<string> codes, string mark_str, ref HttpWebRequest request, string mark_str_cdn, Dictionary<string, string> d_tovar, Cash_check cash_Check, ProductData productData)
+        //public bool cdn_check_marker_code(List<string> codes, string mark_str, ref HttpWebRequest request, string mark_str_cdn, Dictionary<string, string> d_tovar, Cash_check cash_Check, ProductData productData)
+        public bool cdn_check_marker_code(List<string> codes, string mark_str, Int64 numdoc, ref HttpWebRequest request, string mark_str_cdn, Dictionary<string, string> d_tovar, Cash_check cash_Check, ProductData productData)
         {
             bool result_check = false;
 
             StringBuilder sb = new StringBuilder();
 
             //string code = "MDEwNDYyOTMwODg3NzA0NDIxRHprY1l0Mh04MDA1MTc3MDAwHTkzZEdWeg==";
-            string url = "https://esm-emu.ao-esp.ru/api/v1/codes/check";
+            //string url = "https://esm-emu.ao-esp.ru/api/v1/codes/check";//онлайн 
+            string url = "https://esm-emu.ao-esp.ru/api/v1/codes/checkoffline";//оффлайн 
             ApiResponse apiResponse = null;
             string marking_code = mark_str.Replace("\\u001d", @"u001d");
 
@@ -38,13 +40,47 @@ namespace Cash8
             var apiClient = new ApiClient();
             try
             {
-                string response = apiClient.SendCodeRequest(marking_code, url, clientInfo);
+                byte[] textAsBytes = Encoding.Default.GetBytes(marking_code);
+                string imc = Convert.ToBase64String(textAsBytes);
+
+                string response = apiClient.SendCodeRequest(imc, url, clientInfo);
+                //строка ниже это когда офлайн ответ
+
+//                string response = @"{
+//""codesResponse"": {
+//""codesResponse"": [
+//{
+//""code"": 0,
+//""codes"": [
+//{
+//""cis"": ""0104670540176099215MpGKy"",
+//""found"": false,
+//""valid"": false,
+//""printView"": ""0104670540176099215MpGKy"",
+//""gtin"": ""04670540176099"",
+//""groupIds"": [],
+//""verified"": false,
+//""realizable"": false,
+//""utilised"": false,
+//""isBlocked"": true,
+//""ogvs"": []
+//}
+//],
+//""reqId"": ""c9188551-817a-85a7-93e4-7042d907ab13"",
+//""reqTimestamp"": ""1757681987579"",
+//""isCheckedOffline"": true,
+//""version"": ""6e7f1224-0e08-41ed-844c-d386675f4e50"",
+//""inst"": ""4679b3db-da6a-44e0-a2e6-a684437bafb0""
+//}
+//]
+//}
+//}";
                 apiResponse = JsonConvert.DeserializeObject<ApiResponse>(response);
                 var answer_check_mark = apiResponse.codesResponse.codesResponse[0];
 
                 if (answer_check_mark.code == 0) // Это успех
                 {
-                    if (answer_check_mark.isCheckedOffline)//Это была онлайн проверка 
+                    if (!answer_check_mark.isCheckedOffline)//Это была онлайн проверка 
                     {
                         string s = "ТОВАР НЕ МОЖЕТ БЫТЬ ПРОДАН!\r\n";
                         if (!answer_check_mark.codes[0].isOwner)
@@ -69,6 +105,13 @@ namespace Cash8
                                 sb.AppendLine("Не удалось определить группу товара");
                             }
                         }
+
+                        if (!answer_check_mark.codes[0].valid)
+                        {
+                            sb.AppendLine("Результат проверки валидности структуры КИ / КиЗ не прошла проверку !".ToUpper());
+                            MainStaticClass.write_event_in_log("CDN Код маркировки " + mark_str_cdn + "Проверки валидности структуры КИ / КиЗ не прошла проверку !", "Документ чек", cash_Check.numdoc.ToString());
+                        }
+
                         if (!answer_check_mark.codes[0].found)
                         {
                             sb.AppendLine("Не найден в ГИС МТ!".ToUpper());
@@ -147,6 +190,26 @@ namespace Cash8
                     }
                     else//это была офлайн проверка 
                     {
+                        if (answer_check_mark.codes[0].isBlocked)
+                        {
+                            result_check = false;
+                        }
+                        else
+                        {
+                            if (cash_Check.verifyCDN.ContainsKey(mark_str))
+                            {
+                                cash_Check.verifyCDN.Remove(mark_str);
+                            }
+
+                            Cash_check.Requisite1260 requisite1260 = new Cash_check.Requisite1260();
+                            requisite1260.req1262 = "030";
+                            requisite1260.req1263 = "21.11.2023";
+                            requisite1260.req1264 = "1944";
+                            requisite1260.req1265 = "UUID=" + answer_check_mark.reqId + "&Time=" + answer_check_mark.reqTimestamp;
+                            cash_Check.verifyCDN.Add(mark_str, requisite1260);
+
+                            result_check = true;
+                        }
 
                     }
                 }                
@@ -154,7 +217,8 @@ namespace Cash8
             catch(Exception ex)
             {
                 MessageBox.Show("Произошли ошибки при запросе к ПИОТ \r\n" + ex.Message);
-                MainStaticClass.write_cdn_log("CDN Код маркировки " + mark_str_cdn + "  не пройдена криптографическая проверка."+ ex.Message, cash_Check.numdoc.ToString(), codes[0].ToString(), "1");
+                //MainStaticClass.write_cdn_log("CDN Код маркировки " + mark_str_cdn + "  не пройдена криптографическая проверка."+ ex.Message, cash_Check.numdoc.ToString(), codes[0].ToString(), "1");
+                result_check = false;
             }            
 
                 return result_check;
