@@ -3016,7 +3016,27 @@ namespace Cash8
                                         //cDN.check_lm_ch_z(this, mark_str);
                                         //PIOT pIOT = new PIOT();
                                         //pIOT.cdn_check_marker_code()
+
                                         //Это пока тестовое включение PIOT
+                                        if (MainStaticClass.PiotInfo == null)
+                                        {
+                                            PIOT piot = new PIOT();
+                                            try
+                                            {
+                                                piot.GetPiotInfo();
+
+                                                if (MainStaticClass.PiotInfo == null)
+                                                {
+                                                    MessageBox.Show("Не удалось получить информацию о ПИОТ. Проверьте подключение к интернету и настройки.");
+                                                    return;
+                                                }
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                MessageBox.Show($"Ошибка при получении информации о ПИОТ:\r\n{ex.Message}");
+                                                return;
+                                            }
+                                        }
                                         //if (!MainStaticClass.piot_cdn_check(productData, mark_str, lvi, this))
                                         //{
 

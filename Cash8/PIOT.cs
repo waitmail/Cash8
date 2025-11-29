@@ -14,6 +14,102 @@ namespace Cash8
     class PIOT
     {
 
+        // Добавляем новый метод для получения информации из API
+        // Добавляем новый метод для получения информации из API
+        public PIOTInfo GetPiotInfo()
+        {
+            // Проверяем, есть ли уже данные в статическом классе
+            if (MainStaticClass.PiotInfo != null)
+            {
+                return MainStaticClass.PiotInfo;
+            }
+
+            try
+            {
+                string url = "https://esm-emu.ao-esp.ru/api/v1/info";
+
+                // Создаем запрос
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                request.Method = "GET";
+                request.ContentType = "application/json";
+                request.Accept = "application/json";
+                request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36";
+
+                // Получаем ответ
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (Stream stream = response.GetResponseStream())
+                using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+                {
+                    string jsonResponse = reader.ReadToEnd();
+                    var info = JsonConvert.DeserializeObject<PIOTInfo>(jsonResponse);
+
+                    // Сохраняем в статический класс для последующего использования
+                    MainStaticClass.PiotInfo = info;
+
+                    return info;
+                }
+            }
+            catch (WebException ex)
+            {
+                // Обработка ошибок HTTP
+                if (ex.Response != null)
+                {
+                    using (var errorResponse = (HttpWebResponse)ex.Response)
+                    using (var reader = new StreamReader(errorResponse.GetResponseStream()))
+                    {
+                        string errorText = reader.ReadToEnd();
+                        throw new Exception($"Ошибка при получении информации ПИОТ: {(int)errorResponse.StatusCode} - {errorText}", ex);
+                    }
+                }
+                throw new Exception("Ошибка сети при получении информации ПИОТ: " + ex.Message, ex);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Ошибка при получении информации ПИОТ: " + ex.Message, ex);
+            }
+        }
+
+        // Класс для десериализации ответа от API информации
+        public class PIOTInfo
+        {
+            [JsonProperty("tspiotId")]
+            public string tspiotId { get; set; }
+
+            [JsonProperty("kktSerial")]
+            public string kktSerial { get; set; }
+
+            [JsonProperty("fnSerial")]
+            public string fnSerial { get; set; }
+
+            [JsonProperty("kktInn")]
+            public string kktInn { get; set; }
+
+            // Метод для вывода информации в читаемом формате
+            public override string ToString()
+            {
+                return $"TSPIOT ID: {tspiotId}\r\n" +
+                       $"Серийный номер ККТ: {kktSerial}\r\n" +
+                       $"Серийный номер ФН: {fnSerial}\r\n" +
+                       $"ИНН ККТ: {kktInn}";
+            }
+        }
+
+        // Пример использования в существующем методе (можно добавить вызов где нужно)
+        public void CheckPiotConnection()
+        {
+            try
+            {
+                PIOTInfo info = GetPiotInfo();
+                MessageBox.Show($"Успешное подключение к ПИОТ:\r\n{info.ToString()}",
+                    "Информация ПИОТ", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка подключения к ПИОТ:\r\n{ex.Message}",
+                    "Ошибка ПИОТ", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         //public bool cdn_check_marker_code(List<string> codes, string mark_str, ref HttpWebRequest request, string mark_str_cdn, Dictionary<string, string> d_tovar, Cash_check cash_Check, ProductData productData)
         public bool cdn_check_marker_code(List<string> codes, string mark_str, Int64 numdoc, ref HttpWebRequest request, string mark_str_cdn, Dictionary<string, string> d_tovar, Cash_check cash_Check, ProductData productData)
         {

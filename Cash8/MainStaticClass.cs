@@ -150,6 +150,8 @@ namespace Cash8
             return digits;
         }
 
+        public static Cash8.PIOT.PIOTInfo PiotInfo { get; set; }
+
 
         //public static Dictionary DictionaryProductData
         //{
