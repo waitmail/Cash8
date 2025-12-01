@@ -3018,28 +3018,72 @@ namespace Cash8
                                         //pIOT.cdn_check_marker_code()
 
                                         //Это пока тестовое включение PIOT
-                                        if (MainStaticClass.PiotInfo == null)
-                                        {
-                                            PIOT piot = new PIOT();
-                                            try
-                                            {
-                                                piot.GetPiotInfo();
-
-                                                if (MainStaticClass.PiotInfo == null)
-                                                {
-                                                    MessageBox.Show("Не удалось получить информацию о ПИОТ. Проверьте подключение к интернету и настройки.");
-                                                    return;
-                                                }
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                MessageBox.Show($"Ошибка при получении информации о ПИОТ:\r\n{ex.Message}");
-                                                return;
-                                            }
-                                        }
-                                        //if (!MainStaticClass.piot_cdn_check(productData, mark_str, lvi, this))
+                                        //if (MainStaticClass.PiotInfo == null)
                                         //{
+                                        //    PIOT piot = new PIOT();
+                                        //    try
+                                        //    {
+                                        //        piot.GetPiotInfo();
 
+                                        //        if (MainStaticClass.PiotInfo == null)
+                                        //        {
+                                        //            MessageBox.Show("Не удалось получить информацию о ПИОТ. Проверьте подключение к интернету и настройки.");
+                                        //            return;
+                                        //        }
+                                        //        //Pltcm ghj
+                                        //        //MainStaticClass.PiotInfo.fnSerial
+                                        //        //MainStaticClass.PiotInfo.kktInn
+                                        //        //MainStaticClass.PiotInfo.kktSerial
+
+                                        //        IFptr fptr = MainStaticClass.FPTR;
+                                        //        if (!fptr.isOpened())
+                                        //        {
+                                        //            fptr.open();
+                                        //        }
+                                        //        fptr.setParam(AtolConstants.LIBFPTR_PARAM_FN_DATA_TYPE, AtolConstants.LIBFPTR_FNDT_FN_INFO);
+                                        //        fptr.fnQueryData();
+
+                                        //        String fnSerial = fptr.getParamString(AtolConstants.LIBFPTR_PARAM_SERIAL_NUMBER);
+
+                                        //        fptr.setParam(AtolConstants.LIBFPTR_PARAM_FN_DATA_TYPE, AtolConstants.LIBFPTR_FNDT_REG_INFO);
+                                        //        fptr.fnQueryData();
+                                        //        String registrationNumber = fptr.getParamString(1037);
+                                        //        String organizationVATIN = fptr.getParamString(1018);
+
+                                        //        bool errorcheckPIotInfo = false;
+                                        //        if (MainStaticClass.PiotInfo.fnSerial != fnSerial)
+                                        //        {
+                                        //            MessageBox.Show("Серийный номер фискального накопителя в ФР отличается от того на который зарегистрирован ПИот");
+                                        //            errorcheckPIotInfo = true;
+                                        //        }
+                                        //        if (MainStaticClass.PiotInfo.kktSerial != registrationNumber)
+                                        //        {
+                                        //            MessageBox.Show("ИНН организации на которую зарегистрирован ФР отличается от того на которую зарегистрирован ПИот");
+                                        //            errorcheckPIotInfo = true;
+                                        //        }
+                                        //        if (MainStaticClass.PiotInfo.kktInn != organizationVATIN)
+                                        //        {
+                                        //            MessageBox.Show("Регитрационный номер ФР отличается от того на который зарегистрирован ПИот");
+                                        //            errorcheckPIotInfo = true;
+                                        //        }
+                                        //        if (errorcheckPIotInfo)
+                                        //        {
+                                        //            return;
+                                        //        }
+                                        //    }
+                                        //    catch (Exception ex)
+                                        //    {
+                                        //        MessageBox.Show($"Ошибка при получении информации о ПИОТ:\r\n{ex.Message}");
+                                        //        return;
+                                        //    }
+                                        //}
+
+                                        //if (ValidatePiotAgainstFiscalData())
+                                        //{
+                                        //    //if (!MainStaticClass.piot_cdn_check(productData, mark_str, lvi, this))
+                                        //    //{
+
+                                        //    //}
                                         //}
                                         if (!MainStaticClass.cdn_check(productData, mark_str, lvi, this))
                                         {
@@ -3306,6 +3350,76 @@ namespace Cash8
             write_new_document("0", calculation_of_the_sum_of_the_document().ToString(), "0", "0", false, "0", "0", "0", "0");//нужно для того чтобы в окне оплаты взять сумму из БД
             //Task.Run(() => WriteNewDocumentAsync("0", "0", "0", "0", false, "0", "0", "0", "0"));
             //bool result = Task.Run(() => WriteNewDocumentAsync("0", "0", "0", "0", false, "0", "0", "0", "0")).GetAwaiter().GetResult();
+        }
+
+        private bool ValidatePiotAgainstFiscalData()
+        {
+            // Если данные ПИОТ не загружены, пробуем загрузить
+            if (MainStaticClass.PiotInfo == null)
+            {
+                try
+                {
+                    PIOT piot = new PIOT();
+                    piot.GetPiotInfo();
+
+                    if (MainStaticClass.PiotInfo == null)
+                    {
+                        MessageBox.Show("Не удалось получить информацию о ПИОТ. Проверьте подключение к интернету и настройки.");
+                        return false;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ошибка при получении информации о ПИОТ:\r\n{ex.Message}");
+                    return false;
+                }
+            }
+
+            // Проверяем соответствие данных ПИОТ и фискального устройства
+            try
+            {
+                IFptr fptr = MainStaticClass.FPTR;
+                if (!fptr.isOpened())
+                {
+                    fptr.open();
+                }
+
+                fptr.setParam(AtolConstants.LIBFPTR_PARAM_FN_DATA_TYPE, AtolConstants.LIBFPTR_FNDT_FN_INFO);
+                fptr.fnQueryData();
+                string fnSerial = fptr.getParamString(AtolConstants.LIBFPTR_PARAM_SERIAL_NUMBER);
+
+                fptr.setParam(AtolConstants.LIBFPTR_PARAM_FN_DATA_TYPE, AtolConstants.LIBFPTR_FNDT_REG_INFO);
+                fptr.fnQueryData();
+                string registrationNumber = fptr.getParamString(1037);
+                string organizationVATIN = fptr.getParamString(1018);
+
+                bool isValid = true;
+
+                if (MainStaticClass.PiotInfo.fnSerial != fnSerial)
+                {
+                    MessageBox.Show("Серийный номер фискального накопителя в ФР отличается от того, на который зарегистрирован ПИОТ");
+                    isValid = false;
+                }
+
+                if (MainStaticClass.PiotInfo.kktSerial != registrationNumber)
+                {
+                    MessageBox.Show("Регистрационный номер ФР отличается от того, на который зарегистрирован ПИОТ");
+                    isValid = false;
+                }
+
+                if (MainStaticClass.PiotInfo.kktInn != organizationVATIN)
+                {
+                    MessageBox.Show("ИНН организации, на которую зарегистрирован ФР, отличается от того, на которую зарегистрирован ПИОТ");
+                    isValid = false;
+                }
+
+                return isValid;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при проверке данных ФР:\r\n{ex.Message}");
+                return false;
+            }
         }
 
 

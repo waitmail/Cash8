@@ -273,10 +273,12 @@ namespace Cash8
                     catch (NpgsqlException ex)
                     {
                         MessageBox.Show("Ошибка при чтении fiscals_forbidden" + ex.ToString());
+                        fiscals_forbidden = true;
                     }
                     catch (Exception ex)
                     {
                         MessageBox.Show("Ошибка при чтении fiscals_forbidden" + ex.ToString());
+                        fiscals_forbidden = true;
                     }
                     finally
                     {
