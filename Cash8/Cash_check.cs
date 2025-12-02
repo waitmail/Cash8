@@ -350,12 +350,16 @@ namespace Cash8
                 }
 
                 if (Length > 18)
-                {                    
+                {
                     if ((search_param.Substring(0, 2) == "01") && (search_param.Substring(16, 2) == "21"))
                     {
-                        gtin = search_param.Substring(3, 13);
-                        //search_param = add_gs1(search_param);
-                        find_barcode_or_code_in_tovar_new(gtin, search_param);                        
+                        gtin = search_param.Substring(3, 13);                        
+                        find_barcode_or_code_in_tovar_new(gtin, search_param);
+                    }
+                    else
+                    {
+                        gtin = search_param.Substring(1, 13);                        
+                        find_barcode_or_code_in_tovar_new(gtin, search_param);
                     }
                 }                
             }
@@ -3078,28 +3082,41 @@ namespace Cash8
                                         //    }
                                         //}
 
+                                        //Покаа ПИот закомментирован
                                         //if (ValidatePiotAgainstFiscalData())
                                         //{
-                                        //    //if (!MainStaticClass.piot_cdn_check(productData, mark_str, lvi, this))
-                                        //    //{
-
-                                        //    //}
-                                        //}
-                                        if (!MainStaticClass.cdn_check(productData, mark_str, lvi, this))
+                                        if (!MainStaticClass.piot_cdn_check(productData, mark_str, lvi, this))
                                         {
                                             last_tovar.Text = barcode;
                                             Tovar_Not_Found t_n_f = new Tovar_Not_Found();
-                                            t_n_f.textBox1.Text = "Код маркировки не прошел проверку на CDN";
+                                            t_n_f.textBox1.Text = "Код маркировки не прошел проверку в ПИот";
                                             t_n_f.textBox1.Font = new Font("Microsoft Sans Serif", 22);
-                                            t_n_f.label1.Text = " Возможно, что проблемы с доступом к CDN серверам.";
+                                            //t_n_f.label1.Text = " Возможно, что проблемы с доступом к CDN серверам.";
                                             t_n_f.ShowDialog();
                                             t_n_f.Dispose();
                                             return;
+
                                         }
                                         else
                                         {
                                             cdn_vrifyed = true;
                                         }
+                                        //}
+                                        //////////////////if (!MainStaticClass.cdn_check(productData, mark_str, lvi, this))
+                                        //////////////////{
+                                        //////////////////    last_tovar.Text = barcode;
+                                        //////////////////    Tovar_Not_Found t_n_f = new Tovar_Not_Found();
+                                        //////////////////    t_n_f.textBox1.Text = "Код маркировки не прошел проверку на CDN";
+                                        //////////////////    t_n_f.textBox1.Font = new Font("Microsoft Sans Serif", 22);
+                                        //////////////////    t_n_f.label1.Text = " Возможно, что проблемы с доступом к CDN серверам.";
+                                        //////////////////    t_n_f.ShowDialog();
+                                        //////////////////    t_n_f.Dispose();
+                                        //////////////////    return;
+                                        //////////////////}
+                                        //////////////////else
+                                        //////////////////{
+                                        //////////////////    cdn_vrifyed = true;
+                                        //////////////////}
                                     }
                                     //}
 
@@ -3506,6 +3523,11 @@ namespace Cash8
                 case 40:
                     mark_str = mark_str.Insert(24, GS1);
                     mark_str = mark_str.Insert(31, GS1);
+                    break;
+
+                case 41:
+                    mark_str = mark_str.Insert(25, GS1);
+                    mark_str = mark_str.Insert(36, GS1);
                     break;
 
                 case 76:
@@ -4236,11 +4258,13 @@ namespace Cash8
                 //inputbarcode.Focus();
                 this.txtB_search_product.Focus();
                 //список допустимых длин qr кодов                
+                qr_code_lenght.Add(29);
                 qr_code_lenght.Add(30);
                 qr_code_lenght.Add(31);
                 qr_code_lenght.Add(32);
                 qr_code_lenght.Add(37);
                 qr_code_lenght.Add(40);
+                qr_code_lenght.Add(41);
                 qr_code_lenght.Add(76);
                 qr_code_lenght.Add(83);
                 qr_code_lenght.Add(115);
