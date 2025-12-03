@@ -83,6 +83,7 @@
             this.checkBox_payment_by_sbp = new System.Windows.Forms.CheckBox();
             this.txtB_search_product = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
+            this.comboBox_mode = new System.Windows.Forms.ComboBox();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_enter_quantity)).BeginInit();
             this.panel_return.SuspendLayout();
@@ -232,7 +233,7 @@
             // return_rouble
             // 
             this.return_rouble.Enabled = false;
-            this.return_rouble.Location = new System.Drawing.Point(237, 27);
+            this.return_rouble.Location = new System.Drawing.Point(235, 27);
             this.return_rouble.MaxLength = 12;
             this.return_rouble.Name = "return_rouble";
             this.return_rouble.Size = new System.Drawing.Size(100, 20);
@@ -667,11 +668,44 @@
             this.label2.TabIndex = 81;
             this.label2.Text = "Код\\ШК\\Код Марк.";
             // 
+            // comboBox_mode
+            // 
+            this.comboBox_mode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBox_mode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox_mode.FormattingEnabled = true;
+            this.comboBox_mode.Items.AddRange(new object[] {
+            "1.1",
+            "1.2",
+            "1.3",
+            "1.4",
+            "1.5",
+            "1.6",
+            "1.7",
+            "1.8",
+            "1.9",
+            "1.10",
+            "1.11",
+            "1.12",
+            "1.13",
+            "1.14",
+            "1.15",
+            "1.16",
+            "1.17",
+            "1.18",
+            "1.19",
+            "1.20"});
+            this.comboBox_mode.Location = new System.Drawing.Point(616, 129);
+            this.comboBox_mode.Name = "comboBox_mode";
+            this.comboBox_mode.Size = new System.Drawing.Size(169, 21);
+            this.comboBox_mode.TabIndex = 82;
+            this.comboBox_mode.Visible = false;
+            // 
             // Cash_check
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 600);
+            this.Controls.Add(this.comboBox_mode);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.checkBox_payment_by_sbp);
@@ -789,5 +823,6 @@
         private System.Windows.Forms.NumericUpDown numericUpDown_enter_quantity;
         private System.Windows.Forms.TextBox txtB_search_product;
         private System.Windows.Forms.Label label2;
+        public System.Windows.Forms.ComboBox comboBox_mode;
     }
 }

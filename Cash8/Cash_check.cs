@@ -3516,6 +3516,10 @@ namespace Cash8
                     mark_str = mark_str.Insert(26, GS1);
                     break;
 
+                case 36:
+                    mark_str = mark_str.Insert(30, GS1);
+                    break;
+
                 case 37 when mark_str.Substring(16, 2) == "21":
                     mark_str = mark_str.Insert(31, GS1);
                     break;
@@ -4026,6 +4030,10 @@ namespace Cash8
 
         public void Cash_check_Load(object sender, System.EventArgs e)
         {
+            if (MainStaticClass.Nick_Shop.Trim() == "A01")
+            {
+                comboBox_mode.Visible = true;
+            }
             //System.IO.File.Delete(Application.StartupPath.Replace("\\", "/") + "/" + "json.txt");
 
             //if (MainStaticClass.GetWorkSchema == 2)
@@ -4262,6 +4270,7 @@ namespace Cash8
                 qr_code_lenght.Add(30);
                 qr_code_lenght.Add(31);
                 qr_code_lenght.Add(32);
+                qr_code_lenght.Add(36);
                 qr_code_lenght.Add(37);
                 qr_code_lenght.Add(40);
                 qr_code_lenght.Add(41);

@@ -118,8 +118,26 @@ namespace Cash8
             StringBuilder sb = new StringBuilder();
 
             //string code = "MDEwNDYyOTMwODg3NzA0NDIxRHprY1l0Mh04MDA1MTc3MDAwHTkzZEdWeg==";
-            string url = "https://esm-emu.ao-esp.ru/api/v1/codes/check";//онлайн 
-            //string url = "https://esm-emu.ao-esp.ru/api/v1/codes/checkoffline";//оффлайн 
+            string url = "";
+            //if (cash_Check.comboBox_mode.SelectedIndex == 0)
+            //{
+            url = "https://esm-emu.ao-esp.ru/api/v1/codes/check";//онлайн                 
+            //}
+
+
+            //если 1.13 и 2 строка в документе тогда включается локальный модуль 
+            //Потом это надо будет убрать 
+            if (((cash_Check.comboBox_mode.SelectedItem == "1.13")&&(cash_Check.listView1.Items.Count>0)) 
+                || cash_Check.comboBox_mode.SelectedItem == "1.14" 
+                || cash_Check.comboBox_mode.SelectedItem == "1.15"
+                || cash_Check.comboBox_mode.SelectedItem == "1.16"
+                || cash_Check.comboBox_mode.SelectedItem == "1.17")
+            {
+                url = "https://esm-emu.ao-esp.ru/api/v1/codes/checkoffline";//оффлайн 
+            }
+
+
+
             ApiResponse apiResponse = null;
             string marking_code = mark_str.Replace("\\u001d", @"u001d");
             //string marking_code = mark_str.Replace("\u001d", @"u001d");
@@ -133,48 +151,48 @@ namespace Cash8
                 id = "client123",
                 token = "your_token_here" // Замените на реальный токен
             };
-                        
+
             // Отправляем запрос
             var apiClient = new ApiClient();
             try
             {
                 byte[] textAsBytes = Encoding.Default.GetBytes(marking_code);
                 //byte[] textAsBytes = Encoding.Default.GetBytes(mark_str_cdn);
-                
+
                 string imc = Convert.ToBase64String(textAsBytes);
 
                 string response = apiClient.SendCodeRequest(imc, url, clientInfo);
                 //строка ниже это когда офлайн ответ
 
-//                string response = @"{
-//""codesResponse"": {
-//""codesResponse"": [
-//{
-//""code"": 0,
-//""codes"": [
-//{
-//""cis"": ""0104670540176099215MpGKy"",
-//""found"": false,
-//""valid"": false,
-//""printView"": ""0104670540176099215MpGKy"",
-//""gtin"": ""04670540176099"",
-//""groupIds"": [],
-//""verified"": false,
-//""realizable"": false,
-//""utilised"": false,
-//""isBlocked"": true,
-//""ogvs"": []
-//}
-//],
-//""reqId"": ""c9188551-817a-85a7-93e4-7042d907ab13"",
-//""reqTimestamp"": ""1757681987579"",
-//""isCheckedOffline"": true,
-//""version"": ""6e7f1224-0e08-41ed-844c-d386675f4e50"",
-//""inst"": ""4679b3db-da6a-44e0-a2e6-a684437bafb0""
-//}
-//]
-//}
-//}";
+                //                string response = @"{
+                //""codesResponse"": {
+                //""codesResponse"": [
+                //{
+                //""code"": 0,
+                //""codes"": [
+                //{
+                //""cis"": ""0104670540176099215MpGKy"",
+                //""found"": false,
+                //""valid"": false,
+                //""printView"": ""0104670540176099215MpGKy"",
+                //""gtin"": ""04670540176099"",
+                //""groupIds"": [],
+                //""verified"": false,
+                //""realizable"": false,
+                //""utilised"": false,
+                //""isBlocked"": true,
+                //""ogvs"": []
+                //}
+                //],
+                //""reqId"": ""c9188551-817a-85a7-93e4-7042d907ab13"",
+                //""reqTimestamp"": ""1757681987579"",
+                //""isCheckedOffline"": true,
+                //""version"": ""6e7f1224-0e08-41ed-844c-d386675f4e50"",
+                //""inst"": ""4679b3db-da6a-44e0-a2e6-a684437bafb0""
+                //}
+                //]
+                //}
+                //}";
                 apiResponse = JsonConvert.DeserializeObject<ApiResponse>(response);
                 var answer_check_mark = apiResponse.codesResponse.codesResponse[0];
 
@@ -313,6 +331,7 @@ namespace Cash8
                             if (answer_check_mark.codes[0].isBlocked)
                             {
                                 result_check = false;
+                                MessageBox.Show("Офлайн проверка кода маркировки\r\nДанный код заблокирован");
                             }
                             else
                             {
@@ -335,19 +354,19 @@ namespace Cash8
                     }
                     else
                     {
-                        MessageBox.Show("Произошли ошибки при запросе к ПИОТ \r\nкод ошибки = " + answer_check_mark.codes[0].errorCode+"\r\nТекст ошибки "+ answer_check_mark.codes[0].message);
+                        MessageBox.Show("Произошли ошибки при запросе к ПИОТ \r\nкод ошибки = " + answer_check_mark.codes[0].errorCode + "\r\nТекст ошибки " + answer_check_mark.codes[0].message);
                         result_check = false;
                     }
-                }                
+                }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show("Произошли ошибки при запросе к ПИОТ \r\n" + ex.Message);
                 //MainStaticClass.write_cdn_log("CDN Код маркировки " + mark_str_cdn + "  не пройдена криптографическая проверка."+ ex.Message, cash_Check.numdoc.ToString(), codes[0].ToString(), "1");
                 result_check = false;
-            }            
+            }
 
-                return result_check;
+            return result_check;
         }
 
 
