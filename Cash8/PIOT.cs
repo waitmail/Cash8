@@ -129,9 +129,7 @@ namespace Cash8
             //Потом это надо будет убрать 
             if (((cash_Check.comboBox_mode.SelectedItem == "1.13")&&(cash_Check.listView1.Items.Count>0)) 
                 || cash_Check.comboBox_mode.SelectedItem == "1.14" 
-                || cash_Check.comboBox_mode.SelectedItem == "1.15"
-                || cash_Check.comboBox_mode.SelectedItem == "1.16"
-                || cash_Check.comboBox_mode.SelectedItem == "1.17")
+                || cash_Check.comboBox_mode.SelectedItem == "1.15")
             {
                 url = "https://esm-emu.ao-esp.ru/api/v1/codes/checkoffline";//оффлайн 
             }
@@ -160,8 +158,28 @@ namespace Cash8
                 //byte[] textAsBytes = Encoding.Default.GetBytes(mark_str_cdn);
 
                 string imc = Convert.ToBase64String(textAsBytes);
+                var response = apiClient.SendCodeRequest(imc, url, clientInfo);
+                if (!response.Success)
+                {
+                    if (cash_Check.comboBox_mode.SelectedItem != null)
+                    {
+                        if ((cash_Check.comboBox_mode.SelectedItem == "1.15") || (cash_Check.comboBox_mode.SelectedItem == "1.17"))
+                        {
+                            MessageBox.Show(response.Exception.Message, "Онлайн проверка. Ошибка при работе с ПИот", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            url = "https://esm-emu.ao-esp.ru/api/v1/codes/checkoffline";//оффлайн 
+                            response = apiClient.SendCodeRequest(imc, url, clientInfo);
+                        }
+                        else
+                        {
+                            throw new Exception(response.Exception.Message, response.Exception);
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception(response.Exception.Message, response.Exception);
+                    }
+                }
 
-                string response = apiClient.SendCodeRequest(imc, url, clientInfo);
                 //строка ниже это когда офлайн ответ
 
                 //                string response = @"{
@@ -193,8 +211,34 @@ namespace Cash8
                 //]
                 //}
                 //}";
-                apiResponse = JsonConvert.DeserializeObject<ApiResponse>(response);
-                var answer_check_mark = apiResponse.codesResponse.codesResponse[0];
+                apiResponse = JsonConvert.DeserializeObject<ApiResponse>(response.Data);
+                //var answer_check_mark=;
+                //if (apiResponse.errorCode != null)
+                //{
+                //    answer_check_mark = apiResponse.codesResponse.codesResponse[0];
+                //}
+                //else
+                //{
+                //    return result_check;
+                //}
+
+                ResponseItem answer_check_mark = null; // Инициализируем как null
+
+                if (apiResponse.codesResponse != null && apiResponse.codesResponse.codesResponse != null && apiResponse.codesResponse.codesResponse.Count > 0)
+                {
+                    answer_check_mark = apiResponse.codesResponse.codesResponse[0];
+                }
+                else if (apiResponse.errorCode != null)
+                {
+                    // Это аварийный режим или другая ошибка
+                    result_check = true;
+                    return result_check;
+                }
+                else
+                {
+                    // Неожиданный формат ответа
+                    return result_check;
+                }
 
                 if (answer_check_mark.code == 0) // Это успех
                 {
@@ -331,7 +375,7 @@ namespace Cash8
                             if (answer_check_mark.codes[0].isBlocked)
                             {
                                 result_check = false;
-                                MessageBox.Show("Офлайн проверка кода маркировки\r\nДанный код заблокирован");
+                                MessageBox.Show("Офлайн проверка кода маркировки\r\nДанный код заблокирован","Ошибка при работе с кодом аркировки", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             }
                             else
                             {
@@ -354,14 +398,14 @@ namespace Cash8
                     }
                     else
                     {
-                        MessageBox.Show("Произошли ошибки при запросе к ПИОТ \r\nкод ошибки = " + answer_check_mark.codes[0].errorCode + "\r\nТекст ошибки " + answer_check_mark.codes[0].message);
+                        MessageBox.Show("Произошли ошибки при запросе к ПИОТ \r\nкод ошибки = " + answer_check_mark.codes[0].errorCode + "\r\nТекст ошибки " + answer_check_mark.codes[0].message,"Ошибка при работе с ПИот",MessageBoxButtons.OK,MessageBoxIcon.Error);
                         result_check = false;
                     }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Произошли ошибки при запросе к ПИОТ \r\n" + ex.Message);
+                MessageBox.Show(ex.Message, "Ошибка при запросе к ПИот", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 //MainStaticClass.write_cdn_log("CDN Код маркировки " + mark_str_cdn + "  не пройдена криптографическая проверка."+ ex.Message, cash_Check.numdoc.ToString(), codes[0].ToString(), "1");
                 result_check = false;
             }
@@ -369,10 +413,276 @@ namespace Cash8
             return result_check;
         }
 
+        //public bool cdn_check_marker_code_online(List<string> codes, string mark_str, Int64 numdoc, ref HttpWebRequest request, string mark_str_cdn, Dictionary<string, string> d_tovar, Cash_check cash_Check, ProductData productData)
+        //{
+        //    bool result_check = false;
+
+        //    StringBuilder sb = new StringBuilder();
+
+        //    //string code = "MDEwNDYyOTMwODg3NzA0NDIxRHprY1l0Mh04MDA1MTc3MDAwHTkzZEdWeg==";
+        //    string url = "";
+        //    //if (cash_Check.comboBox_mode.SelectedIndex == 0)
+        //    //{
+        //    url = "https://esm-emu.ao-esp.ru/api/v1/codes/check";//онлайн                 
+        //    //}
+
+
+        //    //если 1.13 и 2 строка в документе тогда включается локальный модуль 
+        //    //Потом это надо будет убрать 
+        //    if (((cash_Check.comboBox_mode.SelectedItem == "1.13") && (cash_Check.listView1.Items.Count > 0))
+        //        || cash_Check.comboBox_mode.SelectedItem == "1.14"
+        //        || cash_Check.comboBox_mode.SelectedItem == "1.15"
+        //        || cash_Check.comboBox_mode.SelectedItem == "1.16"
+        //        || cash_Check.comboBox_mode.SelectedItem == "1.17")
+        //    {
+        //        url = "https://esm-emu.ao-esp.ru/api/v1/codes/checkoffline";//оффлайн 
+        //    }
+
+
+
+        //    ApiResponse apiResponse = null;
+        //    string marking_code = mark_str.Replace("\\u001d", @"u001d");
+        //    //string marking_code = mark_str.Replace("\u001d", @"u001d");
+
+
+        //    // Заполняем информацию о клиенте
+        //    var clientInfo = new ClientInfo
+        //    {
+        //        name = "Cash8",
+        //        version = "1.0.0",
+        //        id = "client123",
+        //        token = "your_token_here" // Замените на реальный токен
+        //    };
+
+        //    // Отправляем запрос
+        //    var apiClient = new ApiClient();
+        //    try
+        //    {
+        //        byte[] textAsBytes = Encoding.Default.GetBytes(marking_code);
+        //        //byte[] textAsBytes = Encoding.Default.GetBytes(mark_str_cdn);
+
+        //        string imc = Convert.ToBase64String(textAsBytes);
+
+        //        string response = apiClient.SendCodeRequest(imc, url, clientInfo);
+        //        //строка ниже это когда офлайн ответ
+
+        //        //                string response = @"{
+        //        //""codesResponse"": {
+        //        //""codesResponse"": [
+        //        //{
+        //        //""code"": 0,
+        //        //""codes"": [
+        //        //{
+        //        //""cis"": ""0104670540176099215MpGKy"",
+        //        //""found"": false,
+        //        //""valid"": false,
+        //        //""printView"": ""0104670540176099215MpGKy"",
+        //        //""gtin"": ""04670540176099"",
+        //        //""groupIds"": [],
+        //        //""verified"": false,
+        //        //""realizable"": false,
+        //        //""utilised"": false,
+        //        //""isBlocked"": true,
+        //        //""ogvs"": []
+        //        //}
+        //        //],
+        //        //""reqId"": ""c9188551-817a-85a7-93e4-7042d907ab13"",
+        //        //""reqTimestamp"": ""1757681987579"",
+        //        //""isCheckedOffline"": true,
+        //        //""version"": ""6e7f1224-0e08-41ed-844c-d386675f4e50"",
+        //        //""inst"": ""4679b3db-da6a-44e0-a2e6-a684437bafb0""
+        //        //}
+        //        //]
+        //        //}
+        //        //}";
+        //        apiResponse = JsonConvert.DeserializeObject<ApiResponse>(response);
+        //        var answer_check_mark = apiResponse.codesResponse.codesResponse[0];
+
+        //        if (answer_check_mark.code == 0) // Это успех
+        //        {
+        //            if (answer_check_mark.codes[0].errorCode == 0)
+        //            {
+        //                if (!answer_check_mark.isCheckedOffline)//Это была онлайн проверка 
+        //                {
+        //                    string s = "ТОВАР НЕ МОЖЕТ БЫТЬ ПРОДАН!\r\n";
+        //                    if (!answer_check_mark.codes[0].isOwner)
+        //                    {
+        //                        if (answer_check_mark.codes[0].groupIds != null)
+        //                        {
+        //                            if ((answer_check_mark.codes[0].groupIds[0] != 23) && (answer_check_mark.codes[0].groupIds[0] != 8) && (answer_check_mark.codes[0].groupIds[0] != 15) && (answer_check_mark.codes[0].groupIds[0] != 3))
+        //                            {
+        //                                if (!productData.RrNotControlOwner())
+        //                                {
+        //                                    MessageBox.Show(" Исключения групп маркрировки  23|8|15 \r\n Текущая группа маркировки  " + answer_check_mark.codes[0].groupIds[0].ToString());
+        //                                    if (cash_Check.check_type.SelectedIndex == 0)
+        //                                    {
+        //                                        sb.AppendLine("Вы не являетесь владельцем!".ToUpper());
+        //                                        MainStaticClass.write_cdn_log("CDN Код маркировки " + mark_str_cdn + " Вы не являетесь владельцем ", cash_Check.numdoc.ToString(), codes[0].ToString(), "1");
+        //                                    }
+        //                                }
+        //                            }
+        //                        }
+        //                        else
+        //                        {
+        //                            sb.AppendLine("Не удалось определить группу товара");
+        //                        }
+        //                    }
+
+        //                    if (!answer_check_mark.codes[0].valid)
+        //                    {
+        //                        sb.AppendLine("Результат проверки валидности структуры КИ / КиЗ не прошла проверку !".ToUpper());
+        //                        MainStaticClass.write_event_in_log("CDN Код маркировки " + mark_str_cdn + "Проверки валидности структуры КИ / КиЗ не прошла проверку !", "Документ чек", cash_Check.numdoc.ToString());
+        //                    }
+
+        //                    if (!answer_check_mark.codes[0].found)
+        //                    {
+        //                        sb.AppendLine("Не найден в ГИС МТ!".ToUpper());
+        //                        MainStaticClass.write_event_in_log("CDN Код маркировки " + mark_str_cdn + " не найден в ГИС МТ", "Документ чек", cash_Check.numdoc.ToString());
+        //                        if ((!answer_check_mark.codes[0].realizable) && (!answer_check_mark.codes[0].sold))
+        //                        {
+        //                            sb.AppendLine("Нет информации о вводе в оборот!".ToUpper());
+        //                            MainStaticClass.write_cdn_log("CDN Код маркировки " + mark_str_cdn + " нет информации о вводе в оборот. ", cash_Check.numdoc.ToString(), codes[0].ToString(), "1");
+        //                        }
+        //                    }
+
+        //                    if (answer_check_mark.codes[0].found)
+        //                    {
+        //                        //sb.AppendLine("Не найден в ГИС МТ!".ToUpper());
+        //                        //MainStaticClass.write_event_in_log("CDN Код маркировки " + mark_str_cdn + " не найден в ГИС МТ", "Документ чек", cash_Check.numdoc.ToString());
+        //                        if (answer_check_mark.codes[0].groupIds[0] != 3)//Для табака исключение 
+        //                        {
+        //                            if ((!answer_check_mark.codes[0].realizable) && (!answer_check_mark.codes[0].sold) && (answer_check_mark.codes[0].utilised))
+        //                            {
+        //                                sb.AppendLine("Нет информации о вводе в оборот!".ToUpper());
+        //                                MainStaticClass.write_cdn_log("CDN Код маркировки " + mark_str_cdn + " нет информации о вводе в оборот. ", cash_Check.numdoc.ToString(), codes[0].ToString(), "1");
+        //                            }
+        //                        }
+        //                    }
+
+        //                    if (!answer_check_mark.codes[0].utilised)
+        //                    {
+        //                        sb.AppendLine("Эмитирован, но нет информации о его нанесении!".ToUpper());
+        //                        MainStaticClass.write_cdn_log("CDN Код маркировки " + mark_str_cdn + " эмитирован, но нет информации о его нанесении. ", cash_Check.numdoc.ToString(), codes[0].ToString(), "1");
+        //                    }
+
+        //                    if (!answer_check_mark.codes[0].verified)
+        //                    {
+        //                        sb.AppendLine("Не пройдена криптографическая проверка!".ToUpper());
+        //                        MainStaticClass.write_cdn_log("CDN Код маркировки " + mark_str_cdn + "  не пройдена криптографическая проверка.", cash_Check.numdoc.ToString(), codes[0].ToString(), "1");
+        //                    }
+
+        //                    if (answer_check_mark.codes[0].sold)
+        //                    {
+        //                        if (cash_Check.check_type.SelectedIndex == 0)
+        //                        {
+        //                            sb.AppendLine("Уже выведен из оборота!".ToUpper());
+        //                            MainStaticClass.write_cdn_log("CDN Код маркировки " + mark_str_cdn + "  уже выведен из оборота.", cash_Check.numdoc.ToString(), codes[0].ToString(), "1");
+        //                        }
+        //                    }
+
+        //                    if (answer_check_mark.codes[0].isBlocked)
+        //                    {
+        //                        sb.AppendLine("Заблокирован по решению ОГВ!".ToUpper());
+        //                        MainStaticClass.write_cdn_log("CDN Код маркировки " + mark_str_cdn + "  заблокирован по решению ОГВ.", cash_Check.numdoc.ToString(), codes[0].ToString(), "1");
+        //                    }
+        //                    if (answer_check_mark.codes[0].expireDate.Year > 2000)
+        //                    {
+        //                        if (answer_check_mark.codes[0].expireDate < DateTime.Now)
+        //                        {
+        //                            sb.AppendLine("Истек срок годности!".ToUpper());
+        //                            MainStaticClass.write_cdn_log("CDN У товара с кодом маркировки " + mark_str_cdn + "  истек срок годности.", cash_Check.numdoc.ToString(), codes[0].ToString(), "1");
+
+        //                        }
+        //                    }
+        //                    if (sb.Length == 0)
+        //                    {
+
+        //                        if (cash_Check.verifyCDN.ContainsKey(mark_str))
+        //                        {
+        //                            cash_Check.verifyCDN.Remove(mark_str);
+        //                        }
+
+        //                        Cash_check.Requisite1260 requisite1260 = new Cash_check.Requisite1260();
+        //                        requisite1260.req1262 = "030";
+        //                        requisite1260.req1263 = "21.11.2023";
+        //                        requisite1260.req1264 = "1944";
+        //                        requisite1260.req1265 = "UUID=" + answer_check_mark.reqId + "&Time=" + answer_check_mark.reqTimestamp;
+        //                        cash_Check.verifyCDN.Add(mark_str, requisite1260);
+
+        //                        result_check = true;
+        //                    }
+        //                    else
+        //                    {
+        //                        int stringCount = sb.ToString().Split(new string[] { Environment.NewLine }, StringSplitOptions.None).Length;
+        //                        if (stringCount == 1)
+        //                        {
+        //                            sb.Insert(0, "Код маркировки " + mark_str + "\r\nне прошел проверку по следующей причине:\r\n".ToUpper());
+        //                        }
+        //                        else
+        //                        {
+        //                            sb.Insert(0, "Код маркировки " + mark_str + "\r\nне прошел проверку по следующим причинам:\r\n".ToUpper());
+        //                        }
+        //                        sb.Append(s);
+        //                        sb.AppendLine(d_tovar.Keys.ElementAt(0));
+        //                        sb.AppendLine(d_tovar[d_tovar.Keys.ElementAt(0)]);
+        //                        MessageBox.Show(sb.ToString());
+        //                    }
+        //                }
+        //                else//это была офлайн проверка 
+        //                {
+        //                    if (answer_check_mark.codes[0].isBlocked)
+        //                    {
+        //                        result_check = false;
+        //                        MessageBox.Show("Офлайн проверка кода маркировки\r\nДанный код заблокирован");
+        //                    }
+        //                    else
+        //                    {
+        //                        if (cash_Check.verifyCDN.ContainsKey(mark_str))
+        //                        {
+        //                            cash_Check.verifyCDN.Remove(mark_str);
+        //                        }
+
+        //                        Cash_check.Requisite1260 requisite1260 = new Cash_check.Requisite1260();
+        //                        requisite1260.req1262 = "030";
+        //                        requisite1260.req1263 = "21.11.2023";
+        //                        requisite1260.req1264 = "1944";
+        //                        requisite1260.req1265 = "UUID=" + answer_check_mark.reqId + "&Time=" + answer_check_mark.reqTimestamp;
+        //                        cash_Check.verifyCDN.Add(mark_str, requisite1260);
+
+        //                        result_check = true;
+        //                    }
+
+        //                }
+        //            }
+        //            else
+        //            {
+        //                MessageBox.Show("Произошли ошибки при запросе к ПИОТ \r\nкод ошибки = " + answer_check_mark.codes[0].errorCode + "\r\nТекст ошибки " + answer_check_mark.codes[0].message);
+        //                result_check = false;
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show("Произошли ошибки при запросе к ПИОТ \r\n" + ex.Message);
+        //        //MainStaticClass.write_cdn_log("CDN Код маркировки " + mark_str_cdn + "  не пройдена криптографическая проверка."+ ex.Message, cash_Check.numdoc.ToString(), codes[0].ToString(), "1");
+        //        result_check = false;
+        //    }
+
+        //    return result_check;
+        //}
+
 
 
         public class ApiResponse
         {
+
+            // Поля для ошибки
+            [JsonProperty("code")]
+            public int? errorCode { get; set; }
+
+            [JsonProperty("message")]
+            public string errorMessage { get; set; }
+
             [JsonProperty("codesResponse")]
             public CodesResponseWrapper codesResponse { get; set; }
         }
@@ -490,9 +800,95 @@ namespace Cash8
         }
 
 
+        //public class ApiClient
+        //{
+        //    public string SendCodeRequest(string code, string url, ClientInfo clientInfo)
+        //    {
+        //        try
+        //        {
+        //            // Создаем и заполняем объект данных
+        //            var clientData = new ClientData
+        //            {
+        //                codes = new List<string> { code },
+        //                client_info = clientInfo
+        //            };
+
+        //            // Сериализуем в JSON с помощью Newtonsoft.Json
+        //            string jsonData = JsonConvert.SerializeObject(clientData);
+
+        //            // Настраиваем web-запрос
+        //            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+
+        //            var request = (HttpWebRequest)WebRequest.Create(url);
+        //            request.Timeout = 1500;
+        //            request.Method = "POST";
+        //            request.ContentType = "application/json";
+        //            request.Accept = "application/json";
+        //            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36";
+
+        //            // Записываем данные в тело запроса
+        //            using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+        //            {
+        //                streamWriter.Write(jsonData);
+        //                streamWriter.Flush();
+        //            }
+
+        //            // Получаем ответ
+        //            using (var response = (HttpWebResponse)request.GetResponse())
+        //            using (var streamReader = new StreamReader(response.GetResponseStream()))
+        //            {
+        //                string result = streamReader.ReadToEnd();
+        //                return result;
+        //            }
+        //        }
+        //        catch (WebException ex)
+        //        {
+        //            // Обработка ошибок HTTP
+        //            if (ex.Response != null)
+        //            {
+        //                using (var errorResponse = (HttpWebResponse)ex.Response)
+        //                using (var reader = new StreamReader(errorResponse.GetResponseStream()))
+        //                {
+        //                    string errorText = reader.ReadToEnd();
+        //                    throw new Exception($"HTTP Error: {(int)errorResponse.StatusCode} - {errorText}", ex);
+        //                }
+        //            }
+        //            throw new Exception("Network error: " + ex.Message, ex);
+        //        }
+        //    }
+        //}
+
         public class ApiClient
         {
-            public string SendCodeRequest(string code, string url, ClientInfo clientInfo)
+            public class ApiResponse
+            {
+                public bool Success { get; set; }
+                public string Data { get; set; }
+                public int? HttpStatusCode { get; set; }
+                public Exception Exception { get; set; }
+
+                public static ApiResponse CreateSuccess(string data, int statusCode)
+                {
+                    return new ApiResponse
+                    {
+                        Success = true,
+                        Data = data,
+                        HttpStatusCode = statusCode
+                    };
+                }
+
+                public static ApiResponse CreateError(Exception exception, int? httpStatusCode = null)
+                {
+                    return new ApiResponse
+                    {
+                        Success = false,
+                        HttpStatusCode = httpStatusCode,
+                        Exception = exception
+                    };
+                }
+            }
+
+            public ApiResponse SendCodeRequest(string code, string url, ClientInfo clientInfo)
             {
                 try
                 {
@@ -510,6 +906,7 @@ namespace Cash8
                     ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
 
                     var request = (HttpWebRequest)WebRequest.Create(url);
+                    request.Timeout = 1500;
                     request.Method = "POST";
                     request.ContentType = "application/json";
                     request.Accept = "application/json";
@@ -527,26 +924,39 @@ namespace Cash8
                     using (var streamReader = new StreamReader(response.GetResponseStream()))
                     {
                         string result = streamReader.ReadToEnd();
-                        return result;
+                        return ApiResponse.CreateSuccess(result, (int)response.StatusCode);
                     }
                 }
                 catch (WebException ex)
                 {
-                    // Обработка ошибок HTTP
+                    int? statusCode = null;
+                    Exception exceptionToReturn = ex;
+
                     if (ex.Response != null)
                     {
                         using (var errorResponse = (HttpWebResponse)ex.Response)
                         using (var reader = new StreamReader(errorResponse.GetResponseStream()))
                         {
                             string errorText = reader.ReadToEnd();
-                            throw new Exception($"HTTP Error: {(int)errorResponse.StatusCode} - {errorText}", ex);
+                            statusCode = (int)errorResponse.StatusCode;
+
+                            // Создаем исключение с деталями HTTP
+                            exceptionToReturn = new Exception($"HTTP Error: {statusCode} - {errorText}", ex);
                         }
                     }
-                    throw new Exception("Network error: " + ex.Message, ex);
+
+                    return ApiResponse.CreateError(exceptionToReturn, statusCode);
+                }
+                catch (TimeoutException ex)
+                {
+                    return ApiResponse.CreateError(ex);
+                }
+                catch (Exception ex)
+                {
+                    return ApiResponse.CreateError(ex);
                 }
             }
         }
     }
-
 }
 

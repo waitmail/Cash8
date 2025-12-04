@@ -3085,22 +3085,22 @@ namespace Cash8
                                         //Покаа ПИот закомментирован
                                         //if (ValidatePiotAgainstFiscalData())
                                         //{
-                                        if (!MainStaticClass.piot_cdn_check(productData, mark_str, lvi, this))
-                                        {
-                                            last_tovar.Text = barcode;
-                                            Tovar_Not_Found t_n_f = new Tovar_Not_Found();
-                                            t_n_f.textBox1.Text = "Код маркировки не прошел проверку в ПИот";
-                                            t_n_f.textBox1.Font = new Font("Microsoft Sans Serif", 22);
-                                            //t_n_f.label1.Text = " Возможно, что проблемы с доступом к CDN серверам.";
-                                            t_n_f.ShowDialog();
-                                            t_n_f.Dispose();
-                                            return;
+                                            if (!MainStaticClass.piot_cdn_check(productData, mark_str, lvi, this))
+                                            {
+                                                last_tovar.Text = barcode;
+                                                Tovar_Not_Found t_n_f = new Tovar_Not_Found();
+                                                t_n_f.textBox1.Text = "Код маркировки не прошел проверку в ПИот";
+                                                t_n_f.textBox1.Font = new Font("Microsoft Sans Serif", 22);
+                                                //t_n_f.label1.Text = " Возможно, что проблемы с доступом к CDN серверам.";
+                                                t_n_f.ShowDialog();
+                                                t_n_f.Dispose();
+                                                return;
 
-                                        }
-                                        else
-                                        {
-                                            cdn_vrifyed = true;
-                                        }
+                                            }
+                                            else
+                                            {
+                                                cdn_vrifyed = true;
+                                            }
                                         //}
                                         //////////////////if (!MainStaticClass.cdn_check(productData, mark_str, lvi, this))
                                         //////////////////{
@@ -3412,23 +3412,23 @@ namespace Cash8
 
                 bool isValid = true;
 
-                if (MainStaticClass.PiotInfo.fnSerial != fnSerial)
-                {
-                    MessageBox.Show("Серийный номер фискального накопителя в ФР отличается от того, на который зарегистрирован ПИОТ");
-                    isValid = false;
-                }
+                //if (MainStaticClass.PiotInfo.fnSerial != fnSerial)
+                //{
+                //    MessageBox.Show("Серийный номер фискального накопителя в ФР отличается от того, на который зарегистрирован ПИОТ");
+                //    isValid = false;
+                //}
 
-                if (MainStaticClass.PiotInfo.kktSerial != registrationNumber)
-                {
-                    MessageBox.Show("Регистрационный номер ФР отличается от того, на который зарегистрирован ПИОТ");
-                    isValid = false;
-                }
+                //if (MainStaticClass.PiotInfo.kktSerial != registrationNumber)
+                //{
+                //    MessageBox.Show("Регистрационный номер ФР отличается от того, на который зарегистрирован ПИОТ");
+                //    isValid = false;
+                //}
 
-                if (MainStaticClass.PiotInfo.kktInn != organizationVATIN)
-                {
-                    MessageBox.Show("ИНН организации, на которую зарегистрирован ФР, отличается от того, на которую зарегистрирован ПИОТ");
-                    isValid = false;
-                }
+                //if (MainStaticClass.PiotInfo.kktInn != organizationVATIN)
+                //{
+                //    MessageBox.Show("ИНН организации, на которую зарегистрирован ФР, отличается от того, на которую зарегистрирован ПИОТ");
+                //    isValid = false;
+                //}
 
                 return isValid;
             }
@@ -3516,9 +3516,9 @@ namespace Cash8
                     mark_str = mark_str.Insert(26, GS1);
                     break;
 
-                case 36:
-                    mark_str = mark_str.Insert(30, GS1);
-                    break;
+                //case 36:
+                //    mark_str = mark_str.Insert(30, GS1);
+                //    break;
 
                 case 37 when mark_str.Substring(16, 2) == "21":
                     mark_str = mark_str.Insert(31, GS1);
@@ -4270,7 +4270,7 @@ namespace Cash8
                 qr_code_lenght.Add(30);
                 qr_code_lenght.Add(31);
                 qr_code_lenght.Add(32);
-                qr_code_lenght.Add(36);
+                //qr_code_lenght.Add(36);
                 qr_code_lenght.Add(37);
                 qr_code_lenght.Add(40);
                 qr_code_lenght.Add(41);
