@@ -54,4 +54,4 @@ using System.Security;
 
 // Дополнительные настройки безопасности
 [assembly: SecurityRules(SecurityRuleSet.Level2)]
-[assembly: AllowPartiallyTrustedCallers]
+//[assembly: AllowPartiallyTrustedCallers]

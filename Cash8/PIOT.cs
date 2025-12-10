@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using System.Windows.Forms;
 using System.Text;
 using System.Linq;
+using Npgsql;
 
 
 
@@ -30,7 +31,7 @@ namespace Cash8
 
                 // Создаем запрос
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-                request.Method = "GET";
+                request.Method = "POST";
                 request.ContentType = "application/json";
                 request.Accept = "application/json";
                 request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36";
@@ -83,7 +84,10 @@ namespace Cash8
 
             [JsonProperty("kktInn")]
             public string kktInn { get; set; }
-
+                        
+            [JsonProperty("codesCheckTimeout")]
+            public int codesCheckTimeout { get; set; }
+            
             // Метод для вывода информации в читаемом формате
             public override string ToString()
             {
@@ -110,6 +114,39 @@ namespace Cash8
             }
         }
 
+        /// <summary>
+        /// Получает баланс продаж/возвратов для маркировки
+        /// </summary>
+        /// <returns>Баланс: >0 - продан, =0 - нейтрально, <0 - возвращен</returns>
+        public int GetMarkingBalance(string markingCode)
+        {
+            string query = @"
+        SELECT COALESCE(
+            SUM(
+                CASE 
+                    WHEN ch.check_type = 0 THEN 1
+                    WHEN ch.check_type = 1 THEN -1
+                    ELSE 0
+                END
+            ), 0
+        ) as balance
+        FROM checks_table ct
+        INNER JOIN checks_header ch ON ct.guid = ch.guid
+        WHERE ct.item_marker = @markingCode
+            AND ch.check_type IN (0, 1)
+            AND ch.its_deleted = 0;";
+
+            using (NpgsqlConnection conn = MainStaticClass.NpgsqlConn())
+            using (NpgsqlCommand command = new NpgsqlCommand(query, conn))
+            {
+                conn.Open();
+                command.Parameters.AddWithValue("@markingCode", markingCode);
+
+                var result = command.ExecuteScalar();
+                return Convert.ToInt32(result ?? 0);
+            }
+        }
+
         //public bool cdn_check_marker_code(List<string> codes, string mark_str, ref HttpWebRequest request, string mark_str_cdn, Dictionary<string, string> d_tovar, Cash_check cash_Check, ProductData productData)
         public bool cdn_check_marker_code(List<string> codes, string mark_str, Int64 numdoc, ref HttpWebRequest request, string mark_str_cdn, Dictionary<string, string> d_tovar, Cash_check cash_Check, ProductData productData)
         {
@@ -128,8 +165,9 @@ namespace Cash8
             //если 1.13 и 2 строка в документе тогда включается локальный модуль 
             //Потом это надо будет убрать 
             if (((cash_Check.comboBox_mode.SelectedItem == "1.13")&&(cash_Check.listView1.Items.Count>0)) 
-                || cash_Check.comboBox_mode.SelectedItem == "1.14" 
-                || cash_Check.comboBox_mode.SelectedItem == "1.15")
+                || cash_Check.comboBox_mode.SelectedItem == "1.14"
+                || cash_Check.comboBox_mode.SelectedItem == "1.16"
+                || cash_Check.comboBox_mode.SelectedItem == "1.17")
             {
                 url = "https://esm-emu.ao-esp.ru/api/v1/codes/checkoffline";//оффлайн 
             }
@@ -367,7 +405,7 @@ namespace Cash8
                                 sb.Append(s);
                                 sb.AppendLine(d_tovar.Keys.ElementAt(0));
                                 sb.AppendLine(d_tovar[d_tovar.Keys.ElementAt(0)]);
-                                MessageBox.Show(sb.ToString());
+                                MessageBox.Show(sb.ToString(),"Ошибки при работе с ПИот",MessageBoxButtons.OK,MessageBoxIcon.Error);
                             }
                         }
                         else//это была офлайн проверка 
@@ -379,6 +417,13 @@ namespace Cash8
                             }
                             else
                             {
+
+                                if (GetMarkingBalance(mark_str) > 0)
+                                {
+                                    MessageBox.Show("Данный код марикровки найден в уже проданных.", "Ошибка при продаже марикрованного товара", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    result_check = false;
+                                }
+
                                 if (cash_Check.verifyCDN.ContainsKey(mark_str))
                                 {
                                     cash_Check.verifyCDN.Remove(mark_str);
@@ -906,7 +951,7 @@ namespace Cash8
                     ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
 
                     var request = (HttpWebRequest)WebRequest.Create(url);
-                    request.Timeout = 1500;
+                    request.Timeout = MainStaticClass.PiotInfo.codesCheckTimeout == 0 ? 1500 : MainStaticClass.PiotInfo.codesCheckTimeout;
                     request.Method = "POST";
                     request.ContentType = "application/json";
                     request.Accept = "application/json";

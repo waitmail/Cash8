@@ -2980,7 +2980,7 @@ namespace Cash8
                                 {
                                     if (listViewItem4.SubItems[14].Text == mark_str)
                                     {
-                                        MessageBox.Show("Номенклатура с введенным кодом маркировки который вы пытались добавить уже существует в чеке. \r\n Номенклатура не будет добавлена.", "Проверка при вводе кода маркировки");
+                                        MessageBox.Show("Номенклатура с введенным кодом маркировки который вы пытались добавить уже существует в чеке. \r\nНоменклатура не будет добавлена.", "Проверка при вводе кода маркировки",MessageBoxButtons.OK,MessageBoxIcon.Error);
                                         error = true;
                                         break;
                                     }
@@ -3082,41 +3082,41 @@ namespace Cash8
                                         //    }
                                         //}
 
-                                        //Покаа ПИот закомментирован
-                                        //if (ValidatePiotAgainstFiscalData())
-                                        //{
-                                            if (!MainStaticClass.piot_cdn_check(productData, mark_str, lvi, this))
-                                            {
-                                                last_tovar.Text = barcode;
-                                                Tovar_Not_Found t_n_f = new Tovar_Not_Found();
-                                                t_n_f.textBox1.Text = "Код маркировки не прошел проверку в ПИот";
-                                                t_n_f.textBox1.Font = new Font("Microsoft Sans Serif", 22);
-                                                //t_n_f.label1.Text = " Возможно, что проблемы с доступом к CDN серверам.";
-                                                t_n_f.ShowDialog();
-                                                t_n_f.Dispose();
-                                                return;
+                                        //Пока ПИот закомментирован
+                                        //////////////////if (ValidatePiotAgainstFiscalData())
+                                        //////////////////{
+                                        //////////////////    if (!MainStaticClass.piot_cdn_check(productData, mark_str, lvi, this))
+                                        //////////////////    {
+                                        //////////////////        last_tovar.Text = barcode;
+                                        //////////////////        Tovar_Not_Found t_n_f = new Tovar_Not_Found();
+                                        //////////////////        t_n_f.textBox1.Text = "Код маркировки не прошел проверку в ПИот";
+                                        //////////////////        t_n_f.textBox1.Font = new Font("Microsoft Sans Serif", 22);
+                                        //////////////////        //t_n_f.label1.Text = " Возможно, что проблемы с доступом к CDN серверам.";
+                                        //////////////////        t_n_f.ShowDialog();
+                                        //////////////////        t_n_f.Dispose();
+                                        //////////////////        return;
 
-                                            }
-                                            else
-                                            {
-                                                cdn_vrifyed = true;
-                                            }
-                                        //}
-                                        //////////////////if (!MainStaticClass.cdn_check(productData, mark_str, lvi, this))
-                                        //////////////////{
-                                        //////////////////    last_tovar.Text = barcode;
-                                        //////////////////    Tovar_Not_Found t_n_f = new Tovar_Not_Found();
-                                        //////////////////    t_n_f.textBox1.Text = "Код маркировки не прошел проверку на CDN";
-                                        //////////////////    t_n_f.textBox1.Font = new Font("Microsoft Sans Serif", 22);
-                                        //////////////////    t_n_f.label1.Text = " Возможно, что проблемы с доступом к CDN серверам.";
-                                        //////////////////    t_n_f.ShowDialog();
-                                        //////////////////    t_n_f.Dispose();
-                                        //////////////////    return;
+                                        //////////////////    }
+                                        //////////////////    else
+                                        //////////////////    {
+                                        //////////////////        cdn_vrifyed = true;
+                                        //////////////////    }
                                         //////////////////}
-                                        //////////////////else
-                                        //////////////////{
-                                        //////////////////    cdn_vrifyed = true;
-                                        //////////////////}
+                                        if (!MainStaticClass.cdn_check(productData, mark_str, lvi, this))
+                                        {
+                                            last_tovar.Text = barcode;
+                                            Tovar_Not_Found t_n_f = new Tovar_Not_Found();
+                                            t_n_f.textBox1.Text = "Код маркировки не прошел проверку на CDN";
+                                            t_n_f.textBox1.Font = new Font("Microsoft Sans Serif", 22);
+                                            t_n_f.label1.Text = " Возможно, что проблемы с доступом к CDN серверам.";
+                                            t_n_f.ShowDialog();
+                                            t_n_f.Dispose();
+                                            return;
+                                        }
+                                        else
+                                        {
+                                            cdn_vrifyed = true;
+                                        }
                                     }
                                     //}
 
