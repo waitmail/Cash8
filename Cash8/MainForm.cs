@@ -1092,17 +1092,19 @@ namespace Cash8
             //{
             //    guid_to_lover();
             //}
-
-            //MainStaticClass.write_event_in_log("Перед проверкой обновления в интернет", " Старт программы ", "0");
-            LoadProgramFromInternet lpfi = new LoadProgramFromInternet();
-            lpfi.show_phone = true;
-            lpfi.check_new_version_programm();
-            //bool new_version_of_the_program_exist = lpfi.new_version_of_the_program;
-            if (lpfi.new_version_of_the_program)
+            if (MainStaticClass.Nick_Shop != "A01")
             {
-                обновлениеПрограммыToolStripMenuItem_Click(null, null);
+                //MainStaticClass.write_event_in_log("Перед проверкой обновления в интернет", " Старт программы ", "0");
+                LoadProgramFromInternet lpfi = new LoadProgramFromInternet();
+                lpfi.show_phone = true;
+                lpfi.check_new_version_programm();
+                //bool new_version_of_the_program_exist = lpfi.new_version_of_the_program;
+                if (lpfi.new_version_of_the_program)
+                {
+                    обновлениеПрограммыToolStripMenuItem_Click(null, null);
+                }
+                lpfi.Dispose();
             }
-            lpfi.Dispose();
             //MainStaticClass.write_event_in_log("Проверка обновления в интернет завершена", " Старт программы ", "0");
 
             if (MainStaticClass.exist_table_name("constants"))
@@ -1615,7 +1617,7 @@ namespace Cash8
             try
             {
                 conn.Open();
-                string query = "SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'checks_header' AND column_name = 'kitchen_print'); ";                
+                string query = "SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'constants' AND column_name = 'include_piot');";                
                 
                  NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 if (!Convert.ToBoolean(command.ExecuteScalar())) //не нашли такой колонки   

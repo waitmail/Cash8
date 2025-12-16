@@ -139,7 +139,8 @@ namespace Cash8
                     " system_taxation,version_fn," +
                     " id_acquirer_terminal,ip_address_acquiring_terminal," +//enable_cdn_markers
                     " webservice_authorize,printing_using_libraries,fn_serial_port,get_weight_automatically,scale_serial_port," +
-                    " variant_connect_fn,fn_ipaddr,acquiring_bank,constant_conversion_to_kilograms,nds_ip,ip_adress_local_ch_z FROM constants";
+                    " variant_connect_fn,fn_ipaddr,acquiring_bank,constant_conversion_to_kilograms,nds_ip,ip_adress_local_ch_z,"+
+                    "include_piot FROM constants";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
@@ -159,7 +160,8 @@ namespace Cash8
                     //this.checkBox_webservice_authorize.CheckState = (reader["webservice_authorize"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
                     this.checkBox_printing_using_libraries.CheckState = (reader["printing_using_libraries"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
                     this.checkBox_get_weight_automatically.CheckState = (reader["get_weight_automatically"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
-                   
+                    this.checkBox_includePIot.CheckState = (reader["include_piot"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
+
 
                     comboBox_variant_connect_fn.SelectedIndex = Convert.ToInt16(reader["variant_connect_fn"]);
                     this.txtB_constant_conversion_to_kilograms.Text = reader["constant_conversion_to_kilograms"].ToString();
@@ -377,8 +379,9 @@ namespace Cash8
             //string version2_marking = (checkBox_version2_marking.CheckState == CheckState.Unchecked ? "false" : "true");
             //string webservice_authorize = (checkBox_webservice_authorize.CheckState == CheckState.Unchecked ? "false" : "true");
             //string static_guid_in_print = (checkBox_static_guid_in_print.CheckState == CheckState.Unchecked ? "false" : "true");
-            string printing_using_libraries = (checkBox_printing_using_libraries.CheckState == CheckState.Unchecked ? "false" : "true");
+            string printing_using_libraries = (checkBox_printing_using_libraries.CheckState == CheckState.Unchecked ? "false" : "true");            
             string get_weight_automatically = (checkBox_get_weight_automatically.CheckState == CheckState.Unchecked ? "false" : "true");
+            string include_piot = (checkBox_includePIot.CheckState == CheckState.Unchecked ? "false" : "true");
             //string do_not_prompt_marking_code = (checkBox_do_not_prompt_marking_code.CheckState == CheckState.Unchecked ? "false" : "true");
 
             string fn_serial_port = (comboBox_fn_port.Items.Count == 0 ? "" : (comboBox_fn_port.SelectedIndex == -1 ? "" : comboBox_fn_port.SelectedItem.ToString()));
@@ -433,7 +436,8 @@ namespace Cash8
                     //"do_not_prompt_marking_code="+ do_not_prompt_marking_code+","+
                     "constant_conversion_to_kilograms=" + txtB_constant_conversion_to_kilograms.Text.Trim() + "," +
                     "nds_ip=" + nds_ip + "," +
-                    "ip_adress_local_ch_z='" + txtB_ip_addr_lm_ch_z.Text+"'";
+                    "ip_adress_local_ch_z='" + txtB_ip_addr_lm_ch_z.Text+"',"+
+                    "include_piot="+ include_piot;
 
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 int resul_update = command.ExecuteNonQuery();
@@ -469,7 +473,8 @@ namespace Cash8
                        // "do_not_prompt_marking_code,"+
                         "constant_conversion_to_kilograms,"+
                         "nds_ip,"+
-                        "ip_adress_local_ch_z) VALUES(" +
+                        "ip_adress_local_ch_z,"+
+                        "include_piot) VALUES(" +
                         cash_desk_number.Text + ",'" +
                         nick_shop.Text + "'," +
                         //get_use_debug() + ",'" +
@@ -499,7 +504,8 @@ namespace Cash8
                         //do_not_prompt_marking_code +","+
                         txtB_constant_conversion_to_kilograms.Text.Trim()+","+
                         nds_ip+",'"+
-                        txtB_ip_addr_lm_ch_z.Text+"'";
+                        txtB_ip_addr_lm_ch_z.Text+"',"+
+                        include_piot;
 
                     command = new NpgsqlCommand(query, conn);
                     command.ExecuteNonQuery();

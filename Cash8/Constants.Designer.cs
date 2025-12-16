@@ -70,6 +70,7 @@
             this.label8 = new System.Windows.Forms.Label();
             this.txtB_ip_addr_lm_ch_z = new System.Windows.Forms.TextBox();
             this.btт_status = new System.Windows.Forms.Button();
+            this.checkBox_includePIot = new System.Windows.Forms.CheckBox();
             this.groupBox_acquiring_terminal.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -535,11 +536,22 @@
             this.btт_status.UseVisualStyleBackColor = true;
             this.btт_status.Click += new System.EventHandler(this.btт_status_Click);
             // 
+            // checkBox_includePIot
+            // 
+            this.checkBox_includePIot.AutoSize = true;
+            this.checkBox_includePIot.Location = new System.Drawing.Point(499, 77);
+            this.checkBox_includePIot.Name = "checkBox_includePIot";
+            this.checkBox_includePIot.Size = new System.Drawing.Size(199, 29);
+            this.checkBox_includePIot.TabIndex = 96;
+            this.checkBox_includePIot.Text = "Включить ПИот";
+            this.checkBox_includePIot.UseVisualStyleBackColor = true;
+            // 
             // Constants
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1568, 1081);
+            this.Controls.Add(this.checkBox_includePIot);
             this.Controls.Add(this.btт_status);
             this.Controls.Add(this.txtB_ip_addr_lm_ch_z);
             this.Controls.Add(this.label8);
@@ -628,5 +640,6 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox txtB_ip_addr_lm_ch_z;
         private System.Windows.Forms.Button btт_status;
+        private System.Windows.Forms.CheckBox checkBox_includePIot;
     }
 }

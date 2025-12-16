@@ -732,7 +732,8 @@
             "1.13",
             "1.14",
             "1.16",
-            "1.17"});
+            "1.17",
+            "Пустое значение"});
             this.comboBox_mode.Location = new System.Drawing.Point(1232, 248);
             this.comboBox_mode.Margin = new System.Windows.Forms.Padding(6);
             this.comboBox_mode.Name = "comboBox_mode";

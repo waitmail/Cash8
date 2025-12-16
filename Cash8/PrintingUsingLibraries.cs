@@ -762,6 +762,10 @@ namespace Cash8
                     {
                         fptr.setParam(AtolConstants.LIBFPTR_PARAM_TAX_TYPE, AtolConstants.LIBFPTR_TAX_VAT20);
                     }
+                    else if (stavka_nds == 22)
+                    {
+                        fptr.setParam(AtolConstants.LIBFPTR_PARAM_TAX_TYPE, AtolConstants.LIBFPTR_TAX_VAT22);
+                    }
                     else
                     {
                         MessageBox.Show("Неизвестная ставка ндс");
@@ -1774,29 +1778,20 @@ namespace Cash8
             if (!System.IO.File.Exists(outputFilePath))
             {
                 System.IO.File.WriteAllBytes(outputFilePath, byteArray);                
-            }
-            
-
-            //using (var image = Image.FromFile(outputFilePath))
-            //{                
-            //    if ((image.Width > 384) || (image.Height>384))
-            //    {
-            //        MessageBox.Show(" Купон для акции номер документа " + action_num_doc.ToString()+" имеет неправильный формат" + 
-            //            image.Width.ToString()+"X"+image.Height.ToString()+", картинка должна быть в диапазоне 384X384 , обратитесь в категорийный отдел. ","Проверка формата картинки купона");
-            //    }                
-            //}
+            }            
 
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_ALIGNMENT, AtolConstants.LIBFPTR_ALIGNMENT_CENTER);
             fptr.setParam(AtolConstants.LIBFPTR_PARAM_FILENAME, outputFilePath);
             
             fptr.printPicture();
-            fptr.endNonfiscalDocument();
 
             if (fptr.errorCode() != 0)
-            {
-                //MessageBox.Show("При выводе картинки на печать произошла ошибка  " + fptr.errorDescription());
-                MainStaticClass.WriteRecordErrorLog(fptr.errorDescription(), "print_picture", 0, MainStaticClass.CashDeskNumber, "Ошибка при печати акционной картинки ");
-            }            
+            {                
+                MainStaticClass.WriteRecordErrorLog("Номер акции " + action_num_doc + "\r\n" + fptr.errorDescription(), "print_picture", 0, MainStaticClass.CashDeskNumber, "Ошибка при печати акционной картинки ");
+                MessageBox.Show("Номер акции "+action_num_doc +"\r\n"+ fptr.errorDescription(), "Ошибка при печати акционного купона", MessageBoxButtons.OK,MessageBoxIcon.Error);
+            }
+
+            fptr.endNonfiscalDocument();          
         }
 
         private void get_actions_num_doc(Cash_check check)

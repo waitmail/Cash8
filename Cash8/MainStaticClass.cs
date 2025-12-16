@@ -135,6 +135,7 @@ namespace Cash8
         private static bool fiscals_forbidden = true;
         private static string ip_addr_lm_ch_z = "0";
         private static string kitchen_print = "0";
+        private static int included_piot = -1;
 
         //private static Dictionary<int, Cash8.ProductData> dictionaryProductData = new Dictionary<int, Cash8.ProductData>();
 
@@ -161,6 +162,84 @@ namespace Cash8
         //    }
 
         //}
+
+        private static readonly Lazy<bool> _includedPiotLazy = new Lazy<bool>(() =>
+        {
+            try
+            {
+                using (var conn = MainStaticClass.NpgsqlConn())
+                {
+                    conn.Open();
+                    string query = "SELECT include_piot FROM constants LIMIT 1";
+                    using (var command = new NpgsqlCommand(query, conn))
+                    {
+                        var result = command.ExecuteScalar();
+                        return result != null && result != DBNull.Value
+                            ? Convert.ToBoolean(result)
+                            : false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при чтении include_piot: {ex.Message}");
+                return false; // значение по умолчанию
+            }
+        });
+
+        //public static string IncludedPiot => _includedPiotLazy.Value ? "1" : "0";
+        public static bool IncludedPiot => _includedPiotLazy.Value;
+
+        ///// <summary>
+        ///// Возвращает ip адресс лм чз
+        ///// в локальной сети магазина
+        ///// </summary>
+        //public static string IncludedPiot
+        //{
+        //    get
+        //    {
+        //        if (included_piot == -1)
+        //        {
+        //            NpgsqlConnection conn = null;
+        //            NpgsqlCommand command = null;
+        //            conn = MainStaticClass.NpgsqlConn();
+        //            try
+        //            {
+        //                conn.Open();
+        //                string query = "SELECT include_piot FROM constants";
+        //                command = new NpgsqlCommand(query, conn);
+        //                if (Convert.ToBoolean(command.ExecuteScalar()))
+        //                {
+        //                    included_piot = 1;
+        //                }
+        //                else
+        //                {
+        //                    included_piot = 0;
+        //                }
+        //            }
+        //            catch (NpgsqlException ex)
+        //            {
+        //                MessageBox.Show("Ошибка при чтении include_piot" + ex.ToString());
+        //                kitchen_print = "";
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                MessageBox.Show("Ошибка при чтении include_piot" + ex.ToString());
+        //                kitchen_print = "";
+        //            }
+        //            finally
+        //            {
+        //                if (conn.State == ConnectionState.Open)
+        //                {
+        //                    conn.Close();
+        //                }
+        //            }
+        //        }
+
+        //        return included_piot.ToString();
+        //    }
+        //}
+
 
         /// <summary>
         /// Возвращает ip адресс лм чз

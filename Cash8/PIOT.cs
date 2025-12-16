@@ -422,6 +422,7 @@ namespace Cash8
                                 {
                                     MessageBox.Show("Данный код марикровки найден в уже проданных.", "Ошибка при продаже марикрованного товара", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                     result_check = false;
+                                    return result_check;
                                 }
 
                                 if (cash_Check.verifyCDN.ContainsKey(mark_str))
@@ -443,7 +444,14 @@ namespace Cash8
                     }
                     else
                     {
-                        MessageBox.Show("Произошли ошибки при запросе к ПИОТ \r\nкод ошибки = " + answer_check_mark.codes[0].errorCode + "\r\nТекст ошибки " + answer_check_mark.codes[0].message,"Ошибка при работе с ПИот",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                        if (answer_check_mark.codes[0].errorCode == 10)
+                        {
+                            MessageBox.Show("Произошли ошибки при запросе к ПИОТ \r\nКод ошибки = " + answer_check_mark.codes[0].errorCode + "\r\nТекст ошибки данный код не найден в БД ЧЗ", "Ошибка при работе с ПИот", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Произошли ошибки при запросе к ПИОТ \r\nКод ошибки = " + answer_check_mark.codes[0].errorCode + "\r\nТекст ошибки " + answer_check_mark.codes[0].message, "Ошибка при работе с ПИот", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                         result_check = false;
                     }
                 }

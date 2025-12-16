@@ -55,7 +55,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Atol.Drivers10.Fptr, Version=10.10.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Atol.Drivers10.Fptr, Version=10.10.7.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\Debug\Atol.Drivers10.Fptr.dll</HintPath>
     </Reference>

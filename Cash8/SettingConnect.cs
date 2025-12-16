@@ -1082,6 +1082,8 @@ namespace Cash8
             //            --Частичный индекс для активных чеков
             queries.Add("CREATE INDEX idx_active_checks ON checks_header(its_deleted, check_type, guid)WHERE its_deleted = 0;");
 
+            queries.Add("ALTER TABLE IF EXISTS public.constants ADD COLUMN IF NOT EXISTS include_piot boolean NOT NULL DEFAULT false;");
+
             foreach (string str in queries)
             {
                 append_column(str);

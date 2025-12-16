@@ -2990,231 +2990,57 @@ namespace Cash8
                                 {
 
                                     if (productData.IsCDNCheck())
-                                    {
-                                        //if (MainStaticClass.CashDeskNumber != 9 && MainStaticClass.EnableCdnMarkers == 1)
-                                        //{
-                                        //    if (MainStaticClass.CDN_Token == "")
-                                        //    {
-                                        //        MessageBox.Show("В этой кассе не заполнен CDN токен, \r\n ПРОДАЖА ДАННОГО ТОВАРА НЕВОЗМОЖНА ! ", "Проверка CDN");
-                                        //        return;
-                                        //    }
-                                        //    CDN cdn = new CDN();
-                                        //    List<string> codes = new List<string>();
-                                        //    mark_str_cdn = mark_str.Replace("\u001d", @"\u001d");
-                                        //    codes.Add(mark_str_cdn);
-                                        //    mark_str_cdn = mark_str_cdn.Replace("'", "\'");
-                                        //    Dictionary<string, string> d_tovar = new Dictionary<string, string>();
-                                        //    d_tovar[lvi.SubItems[1].Text] = lvi.SubItems[0].Text;
-                                        //    result_check_cdn = cdn.cdn_check_marker_code(codes, mark_str, this.numdoc, ref request, mark_str_cdn, d_tovar,this);
-                                        //    if (!result_check_cdn) //не прошел проверку и таймаута не было 
-                                        //    {
-                                        //        return;
-                                        //    }
-                                        //    else
-                                        //    {
-                                        //        cdn_vrifyed = true;
-                                        //    }
-                                        //}
-
-                                        //CDN cDN = new CDN();
-                                        //cDN.check_lm_ch_z(this, mark_str);
-                                        //PIOT pIOT = new PIOT();
-                                        //pIOT.cdn_check_marker_code()
-
-                                        //Это пока тестовое включение PIOT
-                                        //if (MainStaticClass.PiotInfo == null)
-                                        //{
-                                        //    PIOT piot = new PIOT();
-                                        //    try
-                                        //    {
-                                        //        piot.GetPiotInfo();
-
-                                        //        if (MainStaticClass.PiotInfo == null)
-                                        //        {
-                                        //            MessageBox.Show("Не удалось получить информацию о ПИОТ. Проверьте подключение к интернету и настройки.");
-                                        //            return;
-                                        //        }
-                                        //        //Pltcm ghj
-                                        //        //MainStaticClass.PiotInfo.fnSerial
-                                        //        //MainStaticClass.PiotInfo.kktInn
-                                        //        //MainStaticClass.PiotInfo.kktSerial
-
-                                        //        IFptr fptr = MainStaticClass.FPTR;
-                                        //        if (!fptr.isOpened())
-                                        //        {
-                                        //            fptr.open();
-                                        //        }
-                                        //        fptr.setParam(AtolConstants.LIBFPTR_PARAM_FN_DATA_TYPE, AtolConstants.LIBFPTR_FNDT_FN_INFO);
-                                        //        fptr.fnQueryData();
-
-                                        //        String fnSerial = fptr.getParamString(AtolConstants.LIBFPTR_PARAM_SERIAL_NUMBER);
-
-                                        //        fptr.setParam(AtolConstants.LIBFPTR_PARAM_FN_DATA_TYPE, AtolConstants.LIBFPTR_FNDT_REG_INFO);
-                                        //        fptr.fnQueryData();
-                                        //        String registrationNumber = fptr.getParamString(1037);
-                                        //        String organizationVATIN = fptr.getParamString(1018);
-
-                                        //        bool errorcheckPIotInfo = false;
-                                        //        if (MainStaticClass.PiotInfo.fnSerial != fnSerial)
-                                        //        {
-                                        //            MessageBox.Show("Серийный номер фискального накопителя в ФР отличается от того на который зарегистрирован ПИот");
-                                        //            errorcheckPIotInfo = true;
-                                        //        }
-                                        //        if (MainStaticClass.PiotInfo.kktSerial != registrationNumber)
-                                        //        {
-                                        //            MessageBox.Show("ИНН организации на которую зарегистрирован ФР отличается от того на которую зарегистрирован ПИот");
-                                        //            errorcheckPIotInfo = true;
-                                        //        }
-                                        //        if (MainStaticClass.PiotInfo.kktInn != organizationVATIN)
-                                        //        {
-                                        //            MessageBox.Show("Регитрационный номер ФР отличается от того на который зарегистрирован ПИот");
-                                        //            errorcheckPIotInfo = true;
-                                        //        }
-                                        //        if (errorcheckPIotInfo)
-                                        //        {
-                                        //            return;
-                                        //        }
-                                        //    }
-                                        //    catch (Exception ex)
-                                        //    {
-                                        //        MessageBox.Show($"Ошибка при получении информации о ПИОТ:\r\n{ex.Message}");
-                                        //        return;
-                                        //    }
-                                        //}
-
-                                        //Пока ПИот закомментирован
-                                        //////////////////if (ValidatePiotAgainstFiscalData())
-                                        //////////////////{
-                                        //////////////////    if (!MainStaticClass.piot_cdn_check(productData, mark_str, lvi, this))
-                                        //////////////////    {
-                                        //////////////////        last_tovar.Text = barcode;
-                                        //////////////////        Tovar_Not_Found t_n_f = new Tovar_Not_Found();
-                                        //////////////////        t_n_f.textBox1.Text = "Код маркировки не прошел проверку в ПИот";
-                                        //////////////////        t_n_f.textBox1.Font = new Font("Microsoft Sans Serif", 22);
-                                        //////////////////        //t_n_f.label1.Text = " Возможно, что проблемы с доступом к CDN серверам.";
-                                        //////////////////        t_n_f.ShowDialog();
-                                        //////////////////        t_n_f.Dispose();
-                                        //////////////////        return;
-
-                                        //////////////////    }
-                                        //////////////////    else
-                                        //////////////////    {
-                                        //////////////////        cdn_vrifyed = true;
-                                        //////////////////    }
-                                        //////////////////}
-                                        if (!MainStaticClass.cdn_check(productData, mark_str, lvi, this))
-                                        {
-                                            last_tovar.Text = barcode;
-                                            Tovar_Not_Found t_n_f = new Tovar_Not_Found();
-                                            t_n_f.textBox1.Text = "Код маркировки не прошел проверку на CDN";
-                                            t_n_f.textBox1.Font = new Font("Microsoft Sans Serif", 22);
-                                            t_n_f.label1.Text = " Возможно, что проблемы с доступом к CDN серверам.";
-                                            t_n_f.ShowDialog();
-                                            t_n_f.Dispose();
-                                            return;
+                                    {                                       
+                                        if (MainStaticClass.IncludedPiot)
+                                        {                                         
+                                            if (ValidatePiotAgainstFiscalData())
+                                            {
+                                                if (!MainStaticClass.piot_cdn_check(productData, mark_str, lvi, this))
+                                                {
+                                                    last_tovar.Text = barcode;
+                                                    Tovar_Not_Found t_n_f = new Tovar_Not_Found();
+                                                    t_n_f.textBox1.Text = "Код маркировки не прошел проверку в ПИот";
+                                                    t_n_f.textBox1.Font = new Font("Microsoft Sans Serif", 22);
+                                                    //t_n_f.label1.Text = " Возможно, что проблемы с доступом к CDN серверам.";
+                                                    t_n_f.ShowDialog();
+                                                    t_n_f.Dispose();
+                                                    return;
+                                                }
+                                                else
+                                                {
+                                                    cdn_vrifyed = true;
+                                                }
+                                            }
                                         }
                                         else
                                         {
-                                            cdn_vrifyed = true;
+                                            if (!MainStaticClass.cdn_check(productData, mark_str, lvi, this))
+                                            {
+                                                last_tovar.Text = barcode;
+                                                Tovar_Not_Found t_n_f = new Tovar_Not_Found();
+                                                t_n_f.textBox1.Text = "Код маркировки не прошел проверку на CDN";
+                                                t_n_f.textBox1.Font = new Font("Microsoft Sans Serif", 22);
+                                                t_n_f.label1.Text = " Возможно, что проблемы с доступом к CDN серверам.";
+                                                t_n_f.ShowDialog();
+                                                t_n_f.Dispose();
+                                                return;
+                                            }
+                                            else
+                                            {
+                                                cdn_vrifyed = true;
+                                            }
                                         }
                                     }
-                                    //}
+                                    
 
                                     byte[] textAsBytes = Encoding.Default.GetBytes(mark_str);
                                     string imc = Convert.ToBase64String(textAsBytes);
-
-                                    //if (MainStaticClass.PrintingUsingLibraries == 0)
-                                    //{
-                                    //    if (!cdn_vrifyed)
-                                    //    {
-                                    //        WortWithMarkingV3.Root root = markingV3.beginMarkingCodeValidation("auto", imc, "itemPieceSold", 1, "piece", 0, false);
-                                    //        if (root.results[0].errorCode != 0)
-                                    //        {
-                                    //            markingV3.cancelMarkingCodeValidation();//прерываем валидацию
-                                    //            code_marking_error = root.results[0].errorCode;
-                                    //            if ((code_marking_error != 421) && (code_marking_error != 402))
-                                    //            {
-                                    //                MainStaticClass.write_event_in_log("beginMarkingCodeValidation " + root.results[0].errorDescription + " " + code_marking_error, "Документ", numdoc.ToString());
-                                    //                error = true;//не прошли проверку товар не добавляем в чек
-                                    //            }
-                                    //        }
-                                    //        else
-                                    //        {
-                                    //            root = markingV3.getMarkingCodeValidationStatus();
-                                    //            if (root.results[0].result != null)
-                                    //            {
-                                    //                if (root.results[0].result.driverError != null)
-                                    //                {
-                                    //                    if (root.results[0].result.driverError.code != 0)
-                                    //                    {
-                                    //                        markingV3.cancelMarkingCodeValidation();//прерываем валидацию
-                                    //                        code_marking_error = root.results[0].result.driverError.code;
-                                    //                        if ((code_marking_error != 421) && (code_marking_error != 402))
-                                    //                        {
-                                    //                            //markingV3.cancelMarkingCodeValidation();//прерываем валидацию
-                                    //                            MessageBox.Show("getMarkingCodeValidationStatus " + root.results[0].result.driverError.description, "Ошибка при начале проверки кода маркировки");
-                                    //                            error = true;//не прошли проверку товар не добавляем в чек
-                                    //                        }
-                                    //                    }
-                                    //                    else//проверяем статус и если все хорошо отправляем принять 
-                                    //                    {
-                                    //                        //if (root.results[0].result.ready)
-                                    //                        //{
-                                    //                        if (root.results[0].result.onlineValidation.itemInfoCheckResult.imcCheckFlag &&
-                                    //                            root.results[0].result.onlineValidation.itemInfoCheckResult.imcCheckResult &&
-                                    //                            root.results[0].result.onlineValidation.itemInfoCheckResult.imcStatusInfo &&
-                                    //                            root.results[0].result.onlineValidation.itemInfoCheckResult.imcEstimatedStatusCorrect)
-                                    //                        {
-                                    //                            //Все признаки успех, значит M+
-                                    //                            markingV3.acceptMarkingCode();
-                                    //                            MainStaticClass.write_event_in_log("acceptMarkingCode  " + lvi.SubItems[0].Text, "Документ чек", numdoc.ToString());
-                                    //                        }
-                                    //                        else// сообщим детально об ошибке 
-                                    //                        {
-                                    //                            if (!root.results[0].result.onlineValidation.itemInfoCheckResult.imcCheckFlag)
-                                    //                            {
-                                    //                                MessageBox.Show("Код маркировки не был проверен ФН и(или) ОИСМП");
-                                    //                            }
-                                    //                            if (!root.results[0].result.onlineValidation.itemInfoCheckResult.imcCheckResult)
-                                    //                            {
-                                    //                                MessageBox.Show("Результат проверки КП КМ отрицательный или код маркировки не был проверен");
-                                    //                            }
-                                    //                            if (!root.results[0].result.onlineValidation.itemInfoCheckResult.imcStatusInfo)
-                                    //                            {
-                                    //                                MessageBox.Show("Сведения о статусе товара от ОИСМП не получены");
-                                    //                            }
-                                    //                            if (!root.results[0].result.onlineValidation.itemInfoCheckResult.imcEstimatedStatusCorrect)
-                                    //                            {
-                                    //                                MessageBox.Show("От ОИСМП получены сведения, что планируемый статус товара некорректен или сведения о статусе товара от ОИСМП не получены");
-                                    //                            }
-
-                                    //                            error = true;
-                                    //                            markingV3.cancelMarkingCodeValidation();//прерываем валидацию
-                                    //                        }
-                                    //                    }
-                                    //                }
-                                    //                else
-                                    //                {
-                                    //                    MainStaticClass.write_event_in_log("root.results[0].result.driverError == null  " + lvi.SubItems[0].Text, "Документ чек", numdoc.ToString());
-                                    //                    markingV3.cancelMarkingCodeValidation();//прерываем валидацию
-                                    //                    code_marking_error = 421;
-                                    //                }
-                                    //            }
-                                    //            else
-                                    //            {
-                                    //                error = true;
-                                    //            }
-                                    //        }
-                                    //    }
-                                    //}
-                                    //else
-                                    //{
+                                 
                                     PrintingUsingLibraries printingUsingLibraries = new PrintingUsingLibraries();
                                     if (!printingUsingLibraries.check_marking_code(mark_str, this.numdoc.ToString(), ref this.cdn_markers_result_check, this.check_type.SelectedIndex))
                                     {
                                         error = true;
-                                    }
-                                    //}
+                                    }                                    
                                 }
                             }
                         }
