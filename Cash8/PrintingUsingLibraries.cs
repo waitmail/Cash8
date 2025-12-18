@@ -760,7 +760,14 @@ namespace Cash8
                     }
                     else if (stavka_nds == 20)
                     {
-                        fptr.setParam(AtolConstants.LIBFPTR_PARAM_TAX_TYPE, AtolConstants.LIBFPTR_TAX_VAT20);
+                        if (DateTime.Now.Year >= 2026)
+                        {
+                            fptr.setParam(AtolConstants.LIBFPTR_PARAM_TAX_TYPE, AtolConstants.LIBFPTR_TAX_VAT22);
+                        }
+                        else
+                        {
+                            fptr.setParam(AtolConstants.LIBFPTR_PARAM_TAX_TYPE, AtolConstants.LIBFPTR_TAX_VAT20);
+                        }
                     }
                     else if (stavka_nds == 22)
                     {
