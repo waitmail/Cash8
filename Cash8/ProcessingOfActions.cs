@@ -2693,7 +2693,7 @@ namespace Cash8
         {
             if (!listItems.ContainsKey(1))
             {
-                MessageBox.Show("Первый список товаров отсутствует.", "Обработка акций 2 типа");
+                MessageBox.Show("Первый список товаров отсутствует.\r\nНомер акции "+ num_doc.ToString(), "Обработка акций 2 типа");
                 MainStaticClass.WriteRecordErrorLog("Первый список товаров отсутствует.", "action_2_dt скидка", Convert.ToInt16(num_doc), MainStaticClass.CashDeskNumber, "Обработка акций 2 типа общий метод для чтения с диска и словаря");
                 return;
             }
