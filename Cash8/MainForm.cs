@@ -660,20 +660,64 @@ namespace Cash8
         {
             try
             {
-                string folderPathPictures = Application.StartupPath + "\\Pictures2";
+                string folderPathPictures = Path.Combine(Application.StartupPath, "Pictures2");
+
                 if (!Directory.Exists(folderPathPictures))
                 {
                     Directory.CreateDirectory(folderPathPictures);
+                    Console.WriteLine($"Папка создана: {folderPathPictures}");
                 }
-                //string fileExistUpdateProgrammPictures = Application.StartupPath + "\\Pictures2\\ExistUpdateProgramm.jpg";
-                //if (!File.Exists(fileExistUpdateProgrammPictures))
-                //{
-                //    get_file_for_web_service("Pictures2\\ExistUpdateProgramm.jpg");
-                //}
+                else
+                {
+                    // Очистка папки
+                    ClearFolder(folderPathPictures);
+                    Console.WriteLine($"Папка очищена: {folderPathPictures}");
+                }
             }
             catch (Exception ex)
             {
                 MainStaticClass.WriteRecordErrorLog(ex, 0, MainStaticClass.CashDeskNumber, "Проверка/создание файлов и папок");
+
+                // Можно также вывести сообщение пользователю
+                MessageBox.Show($"Ошибка при работе с папкой Pictures2: {ex.Message}", "Ошибка");
+            }
+        }
+
+        private void ClearFolder(string folderPath)
+        {
+            try
+            {
+                // Удаляем все файлы
+                foreach (string file in Directory.GetFiles(folderPath))
+                {
+                    try
+                    {
+                        File.Delete(file);
+                        //Console.WriteLine($"Удален файл: {file}");
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Не удалось удалить файл {file}: {ex.Message}");
+                    }
+                }
+
+                // Удаляем все подпапки
+                foreach (string subFolder in Directory.GetDirectories(folderPath))
+                {
+                    try
+                    {
+                        Directory.Delete(subFolder, true); // true - рекурсивное удаление
+                        //MessageBox.ShowriteLine($"Удалена папка: {subFolder}");
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Не удалось удалить папку {subFolder}: {ex.Message}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Ошибка при очистке папки {folderPath}: {ex.Message}", ex);
             }
         }
 
