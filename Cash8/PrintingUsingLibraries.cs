@@ -88,6 +88,18 @@ namespace Cash8
 
 
         //}
+
+        public string get_version()
+        {
+            string result = "";
+            IFptr fptr = MainStaticClass.FPTR;
+            if (!fptr.isOpened())
+            {
+                fptr.open();
+            }
+            result = fptr.version();
+            return result;
+        }
         
         public bool validate_date_time_with_fn(int minutes)
         {

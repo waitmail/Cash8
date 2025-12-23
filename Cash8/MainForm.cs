@@ -1165,6 +1165,9 @@ namespace Cash8
                 Text += " | " + Cash8.MainStaticClass.Nick_Shop;
                 Text += " | " + Cash8.MainStaticClass.version();
                 Text += " | " + Cash8.LoadDataWebService.last_date_download_tovars().ToString("yyyy-MM-dd hh:mm:ss");
+                PrintingUsingLibraries printing = new PrintingUsingLibraries();
+                Text += " | " +printing.get_version();
+
 
 
                 update_unloading_period();
