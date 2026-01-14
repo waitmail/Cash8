@@ -688,7 +688,8 @@ namespace Cash8
                 {
                     using (Stream responseStream = response.GetResponseStream())
                     {
-                        using (StreamReader reader = new StreamReader(responseStream))
+                        //using (StreamReader reader = new StreamReader(responseStream))
+                        using (StreamReader reader = new StreamReader(responseStream, Encoding.GetEncoding("Windows-1251")))
                         {
                             string responseContent = await reader.ReadToEndAsync();
 

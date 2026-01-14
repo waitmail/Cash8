@@ -472,19 +472,7 @@
             this.label7.Size = new System.Drawing.Size(274, 42);
             this.label7.TabIndex = 86;
             this.label7.Text = "USB ==> COM";
-            this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(1064, 993);
-            this.button1.Margin = new System.Windows.Forms.Padding(6);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(242, 61);
-            this.button1.TabIndex = 90;
-            this.button1.Text = "Печать картинки";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Visible = false;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;            
             // 
             // comboBox_nds_ip
             // 

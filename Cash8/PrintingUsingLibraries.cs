@@ -1922,7 +1922,7 @@ namespace Cash8
             try
             {
                 IFptr fptr = MainStaticClass.FPTR;
-
+                
                 if (!fptr.isOpened())
                 {
                     fptr.open();

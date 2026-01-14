@@ -1445,7 +1445,13 @@ namespace Cash8
                     //_fptr = new Fptr(Application.StartupPath+ "/fptr10.dll");
                     _fptr = new Fptr();
                     setConnectSetting(_fptr);
+                    _fptr.setParam(AtolConstants.LIBFPTR_PARAM_TIMEOUT, 5000); // 5 секунд на операцию
                     _fptr.open();
+                    if (_fptr.errorCode() != 0)
+                    {
+                        MessageBox.Show("Произошли ошибки при открытии соединения " + _fptr.errorDescription(),"Ошибки при работе с ФР");
+                            _fptr = null;
+                    }
                 }
 
                 return _fptr;
