@@ -93,11 +93,19 @@ namespace Cash8
         {
             string result = "";
             IFptr fptr = MainStaticClass.FPTR;
-            if (!fptr.isOpened())
+            try
             {
-                fptr.open();
+                if (!fptr.isOpened())
+                {
+                    fptr.open();
+                }
+                result = fptr.version();
             }
-            result = fptr.version();
+            catch (Exception ex)
+            {
+                MessageBox.Show("Произошли ошибки при попытке проверить версию " + ex.Message);
+            }
+            
             return result;
         }
         

@@ -27,7 +27,14 @@ namespace Cash8
 
             try
             {
-                string url = "https://esm-emu.ao-esp.ru/api/v1/info";
+                // 1. Добавляем поддержку TLS 1.2 (обязательно для современных серверов)
+                ServicePointManager.SecurityProtocol |= (SecurityProtocolType)3072;
+
+                // 2. Разрешаем самоподписанные сертификаты для локального сервера
+                ServicePointManager.ServerCertificateValidationCallback =
+                    (sender, certificate, chain, sslPolicyErrors) => true;
+
+                string url = MainStaticClass.GetPiotUrl + "/info";
 
                 // Создаем запрос
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
@@ -35,6 +42,16 @@ namespace Cash8
                 request.ContentType = "application/json";
                 request.Accept = "application/json";
                 request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36";
+
+                // Для POST запроса обязательно нужно тело
+                byte[] data = Encoding.UTF8.GetBytes("{}");
+                request.ContentLength = data.Length;
+
+                // Пишем тело запроса
+                using (Stream stream = request.GetRequestStream())
+                {
+                    stream.Write(data, 0, data.Length);
+                }
 
                 // Получаем ответ
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
@@ -69,6 +86,7 @@ namespace Cash8
                 throw new Exception("Ошибка при получении информации ПИОТ: " + ex.Message, ex);
             }
         }
+
 
         // Класс для десериализации ответа от API информации
         public class PIOTInfo
@@ -158,19 +176,20 @@ namespace Cash8
             string url = "";
             //if (cash_Check.comboBox_mode.SelectedIndex == 0)
             //{
-            url = "https://esm-emu.ao-esp.ru/api/v1/codes/check";//онлайн                 
+            //url = "https://esm-emu.ao-esp.ru/api/v1/codes/check";
+            url = MainStaticClass.GetPiotUrl+ "/codes/check";
             //}
 
 
             //если 1.13 и 2 строка в документе тогда включается локальный модуль 
             //Потом это надо будет убрать 
-            if (((cash_Check.comboBox_mode.SelectedItem == "1.13")&&(cash_Check.listView1.Items.Count>0)) 
-                || cash_Check.comboBox_mode.SelectedItem == "1.14"
-                || cash_Check.comboBox_mode.SelectedItem == "1.16"
-                || cash_Check.comboBox_mode.SelectedItem == "1.17")
-            {
-                url = "https://esm-emu.ao-esp.ru/api/v1/codes/checkoffline";//оффлайн 
-            }
+            //if (((cash_Check.comboBox_mode.SelectedItem == "1.13")&&(cash_Check.listView1.Items.Count>0)) 
+            //    || cash_Check.comboBox_mode.SelectedItem == "1.14"
+            //    || cash_Check.comboBox_mode.SelectedItem == "1.16"
+            //    || cash_Check.comboBox_mode.SelectedItem == "1.17")
+            //{
+            //    url = "https://esm-emu.ao-esp.ru/api/v1/codes/checkoffline";//оффлайн 
+            //}
 
 
 
@@ -199,23 +218,23 @@ namespace Cash8
                 var response = apiClient.SendCodeRequest(imc, url, clientInfo);
                 if (!response.Success)
                 {
-                    if (cash_Check.comboBox_mode.SelectedItem != null)
-                    {
-                        if ((cash_Check.comboBox_mode.SelectedItem == "1.15") || (cash_Check.comboBox_mode.SelectedItem == "1.17"))
-                        {
-                            MessageBox.Show(response.Exception.Message, "Онлайн проверка. Ошибка при работе с ПИот", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            url = "https://esm-emu.ao-esp.ru/api/v1/codes/checkoffline";//оффлайн 
-                            response = apiClient.SendCodeRequest(imc, url, clientInfo);
-                        }
-                        else
-                        {
-                            throw new Exception(response.Exception.Message, response.Exception);
-                        }
-                    }
-                    else
-                    {
+                    //if (cash_Check.comboBox_mode.SelectedItem != null)
+                    //{
+                    //    if ((cash_Check.comboBox_mode.SelectedItem == "1.15") || (cash_Check.comboBox_mode.SelectedItem == "1.17"))
+                    //    {
+                    //        MessageBox.Show(response.Exception.Message, "Онлайн проверка. Ошибка при работе с ПИот", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    //        url = "https://esm-emu.ao-esp.ru/api/v1/codes/checkoffline";//оффлайн 
+                    //        response = apiClient.SendCodeRequest(imc, url, clientInfo);
+                    //    }
+                    //    else
+                    //    {
+                    //        throw new Exception(response.Exception.Message, response.Exception);
+                    //    }
+                    //}
+                    //else
+                    //{
                         throw new Exception(response.Exception.Message, response.Exception);
-                    }
+                    //}
                 }
 
                 //строка ниже это когда офлайн ответ
@@ -959,7 +978,8 @@ namespace Cash8
                     ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
 
                     var request = (HttpWebRequest)WebRequest.Create(url);
-                    request.Timeout = MainStaticClass.PiotInfo.codesCheckTimeout == 0 ? 1500 : MainStaticClass.PiotInfo.codesCheckTimeout;
+                    //request.Timeout = MainStaticClass.PiotInfo.codesCheckTimeout == 0 ? 1500 : MainStaticClass.PiotInfo.codesCheckTimeout;
+                    request.Timeout = 1500;
                     request.Method = "POST";
                     request.ContentType = "application/json";
                     request.Accept = "application/json";

@@ -34,8 +34,6 @@
             this._close_ = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.nick_shop = new System.Windows.Forms.TextBox();
-            this.path_for_web_service = new System.Windows.Forms.TextBox();
-            this.label15 = new System.Windows.Forms.Label();
             this.unloading_period = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
             this.txtB_last_date_download_bonus_clients = new System.Windows.Forms.TextBox();
@@ -71,6 +69,12 @@
             this.txtB_ip_addr_lm_ch_z = new System.Windows.Forms.TextBox();
             this.btт_status = new System.Windows.Forms.Button();
             this.checkBox_includePIot = new System.Windows.Forms.CheckBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.txtB_piot_url = new System.Windows.Forms.TextBox();
+            this.btn_check_piot = new System.Windows.Forms.Button();
+            this.label15 = new System.Windows.Forms.Label();
+            this.path_for_web_service = new System.Windows.Forms.TextBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.groupBox_acquiring_terminal.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -97,10 +101,10 @@
             // 
             // write
             // 
-            this.write.Location = new System.Drawing.Point(490, 975);
+            this.write.Location = new System.Drawing.Point(850, 891);
             this.write.Margin = new System.Windows.Forms.Padding(6);
             this.write.Name = "write";
-            this.write.Size = new System.Drawing.Size(174, 44);
+            this.write.Size = new System.Drawing.Size(174, 220);
             this.write.TabIndex = 2;
             this.write.Text = "Записать";
             this.write.UseVisualStyleBackColor = true;
@@ -108,10 +112,10 @@
             // 
             // _close_
             // 
-            this._close_.Location = new System.Drawing.Point(732, 975);
+            this._close_.Location = new System.Drawing.Point(1076, 891);
             this._close_.Margin = new System.Windows.Forms.Padding(6);
             this._close_.Name = "_close_";
-            this._close_.Size = new System.Drawing.Size(150, 44);
+            this._close_.Size = new System.Drawing.Size(150, 221);
             this._close_.TabIndex = 3;
             this._close_.Text = "Закрыть";
             this._close_.UseVisualStyleBackColor = true;
@@ -135,28 +139,6 @@
             this.nick_shop.Name = "nick_shop";
             this.nick_shop.Size = new System.Drawing.Size(146, 31);
             this.nick_shop.TabIndex = 5;
-            // 
-            // path_for_web_service
-            // 
-            this.path_for_web_service.Enabled = false;
-            this.path_for_web_service.Location = new System.Drawing.Point(231, 873);
-            this.path_for_web_service.Margin = new System.Windows.Forms.Padding(6);
-            this.path_for_web_service.MaxLength = 100;
-            this.path_for_web_service.Name = "path_for_web_service";
-            this.path_for_web_service.Size = new System.Drawing.Size(524, 31);
-            this.path_for_web_service.TabIndex = 42;
-            this.path_for_web_service.Visible = false;
-            // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(22, 879);
-            this.label15.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(197, 25);
-            this.label15.TabIndex = 41;
-            this.label15.Text = "Путь к вебсервису";
-            this.label15.Visible = false;
             // 
             // unloading_period
             // 
@@ -472,7 +454,14 @@
             this.label7.Size = new System.Drawing.Size(274, 42);
             this.label7.TabIndex = 86;
             this.label7.Text = "USB ==> COM";
-            this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;            
+            this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(0, 0);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 97;
             // 
             // comboBox_nds_ip
             // 
@@ -527,18 +516,79 @@
             // checkBox_includePIot
             // 
             this.checkBox_includePIot.AutoSize = true;
-            this.checkBox_includePIot.Location = new System.Drawing.Point(499, 77);
+            this.checkBox_includePIot.Location = new System.Drawing.Point(57, 927);
             this.checkBox_includePIot.Name = "checkBox_includePIot";
             this.checkBox_includePIot.Size = new System.Drawing.Size(199, 29);
             this.checkBox_includePIot.TabIndex = 96;
             this.checkBox_includePIot.Text = "Включить ПИот";
             this.checkBox_includePIot.UseVisualStyleBackColor = true;
             // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(54, 987);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(134, 25);
+            this.label12.TabIndex = 98;
+            this.label12.Text = "Путь к ПИот";
+            // 
+            // txtB_piot_url
+            // 
+            this.txtB_piot_url.Location = new System.Drawing.Point(224, 981);
+            this.txtB_piot_url.MaxLength = 200;
+            this.txtB_piot_url.Name = "txtB_piot_url";
+            this.txtB_piot_url.Size = new System.Drawing.Size(531, 31);
+            this.txtB_piot_url.TabIndex = 99;
+            // 
+            // btn_check_piot
+            // 
+            this.btn_check_piot.Location = new System.Drawing.Point(50, 1043);
+            this.btn_check_piot.Name = "btn_check_piot";
+            this.btn_check_piot.Size = new System.Drawing.Size(705, 39);
+            this.btn_check_piot.TabIndex = 100;
+            this.btn_check_piot.Text = "Проверить подключение и корректность настроек ПИот";
+            this.btn_check_piot.UseVisualStyleBackColor = true;
+            this.btn_check_piot.Click += new System.EventHandler(this.btn_check_piot_Click);
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(807, 1130);
+            this.label15.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(197, 25);
+            this.label15.TabIndex = 41;
+            this.label15.Text = "Путь к вебсервису";
+            this.label15.Visible = false;
+            // 
+            // path_for_web_service
+            // 
+            this.path_for_web_service.Enabled = false;
+            this.path_for_web_service.Location = new System.Drawing.Point(1028, 1124);
+            this.path_for_web_service.Margin = new System.Windows.Forms.Padding(6);
+            this.path_for_web_service.MaxLength = 100;
+            this.path_for_web_service.Name = "path_for_web_service";
+            this.path_for_web_service.Size = new System.Drawing.Size(524, 31);
+            this.path_for_web_service.TabIndex = 42;
+            this.path_for_web_service.Visible = false;
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Location = new System.Drawing.Point(34, 891);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(768, 220);
+            this.groupBox3.TabIndex = 101;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Настройки ПИот";
+            // 
             // Constants
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1568, 1081);
+            this.ClientSize = new System.Drawing.Size(1568, 1180);
+            this.Controls.Add(this.btn_check_piot);
+            this.Controls.Add(this.txtB_piot_url);
+            this.Controls.Add(this.label12);
             this.Controls.Add(this.checkBox_includePIot);
             this.Controls.Add(this.btт_status);
             this.Controls.Add(this.txtB_ip_addr_lm_ch_z);
@@ -568,6 +618,7 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox_acquiring_terminal);
+            this.Controls.Add(this.groupBox3);
             this.Margin = new System.Windows.Forms.Padding(6);
             this.Name = "Constants";
             this.Text = "Константы";
@@ -592,8 +643,6 @@
         private System.Windows.Forms.Button _close_;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox nick_shop;
-        private System.Windows.Forms.TextBox path_for_web_service;
-        private System.Windows.Forms.Label label15;
         private System.Windows.Forms.TextBox unloading_period;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.TextBox txtB_last_date_download_bonus_clients;
@@ -629,5 +678,11 @@
         private System.Windows.Forms.TextBox txtB_ip_addr_lm_ch_z;
         private System.Windows.Forms.Button btт_status;
         private System.Windows.Forms.CheckBox checkBox_includePIot;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.TextBox txtB_piot_url;
+        private System.Windows.Forms.Button btn_check_piot;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.TextBox path_for_web_service;
+        private System.Windows.Forms.GroupBox groupBox3;
     }
 }

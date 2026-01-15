@@ -2993,8 +2993,8 @@ namespace Cash8
                                     {                                       
                                         if (MainStaticClass.IncludedPiot)
                                         {                                         
-                                            if (ValidatePiotAgainstFiscalData())
-                                            {
+                                            //if (ValidatePiotAgainstFiscalData())
+                                            //{
                                                 if (!MainStaticClass.piot_cdn_check(productData, mark_str, lvi, this))
                                                 {
                                                     last_tovar.Text = barcode;
@@ -3010,7 +3010,7 @@ namespace Cash8
                                                 {
                                                     cdn_vrifyed = true;
                                                 }
-                                            }
+                                            //}
                                         }
                                         else
                                         {

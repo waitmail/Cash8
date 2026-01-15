@@ -250,6 +250,7 @@ namespace Cash8
             //}
             //else
             //{
+            
                 PrintingUsingLibraries printing = new PrintingUsingLibraries();
                 printing.getShiftStatus();
             //}
@@ -1160,13 +1161,16 @@ namespace Cash8
                 Task.Run(() => InventoryManager.DictionaryPriceGiftAction);
                 //MessageBox.Show("2");
 
+                string version_program = MainStaticClass.GetAtolDriverVersion();
+
                 MainStaticClass.write_event_in_log(" Старт программы ", "проверка таблицы констант", "0");
                 Text += "Касса   " + Cash8.MainStaticClass.CashDeskNumber;
                 Text += " | " + Cash8.MainStaticClass.Nick_Shop;
                 Text += " | " + Cash8.MainStaticClass.version();
                 Text += " | " + Cash8.LoadDataWebService.last_date_download_tovars().ToString("yyyy-MM-dd hh:mm:ss");
                 PrintingUsingLibraries printing = new PrintingUsingLibraries();
-                Text += " | " +printing.get_version();
+                Text += " | " + version_program;
+                    //printing.get_version();
 
 
 
@@ -1193,9 +1197,12 @@ namespace Cash8
                 MainStaticClass.delete_old_checks(MainStaticClass.GetMinDateWork);
                 MainStaticClass.delete_all_events_in_log(MainStaticClass.GetMinDateWorkLogs);
                 //MessageBox.Show("4");
-                if (MainStaticClass.Use_Fiscall_Print)
+                if (MainStaticClass.CashDeskNumber != 9)
                 {
-                    getShiftStatus();
+                    if (MainStaticClass.Use_Fiscall_Print)
+                    {
+                        getShiftStatus();
+                    }
                 }
                 //MessageBox.Show("5");
 
@@ -1252,10 +1259,13 @@ namespace Cash8
                     //get_cdn_with_start();
                 }
             }
-            if (MainStaticClass.PrintingUsingLibraries == 1)
+            if (MainStaticClass.CashDeskNumber != 9)
             {
-                PrintingUsingLibraries printingUsingLibraries = new PrintingUsingLibraries();
-                printingUsingLibraries.CheckTaxationTypes();
+                if (MainStaticClass.PrintingUsingLibraries == 1)
+                {
+                    PrintingUsingLibraries printingUsingLibraries = new PrintingUsingLibraries();
+                    printingUsingLibraries.CheckTaxationTypes();
+                }
             }
 
             check_files_and_folders();
@@ -1664,7 +1674,7 @@ namespace Cash8
             try
             {
                 conn.Open();
-                string query = "SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'constants' AND column_name = 'include_piot');";                
+                string query = "SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'constants' AND column_name = 'piot_url');";                
                 
                  NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 if (!Convert.ToBoolean(command.ExecuteScalar())) //не нашли такой колонки   

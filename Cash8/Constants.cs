@@ -140,7 +140,7 @@ namespace Cash8
                     " id_acquirer_terminal,ip_address_acquiring_terminal," +//enable_cdn_markers
                     " webservice_authorize,printing_using_libraries,fn_serial_port,get_weight_automatically,scale_serial_port," +
                     " variant_connect_fn,fn_ipaddr,acquiring_bank,constant_conversion_to_kilograms,nds_ip,ip_adress_local_ch_z,"+
-                    "include_piot FROM constants";
+                    "include_piot,piot_url FROM constants";
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 NpgsqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
@@ -161,6 +161,7 @@ namespace Cash8
                     this.checkBox_printing_using_libraries.CheckState = (reader["printing_using_libraries"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
                     this.checkBox_get_weight_automatically.CheckState = (reader["get_weight_automatically"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
                     this.checkBox_includePIot.CheckState = (reader["include_piot"].ToString().ToLower() == "false" ? CheckState.Unchecked : CheckState.Checked);
+                    this.txtB_piot_url.Text = reader["piot_url"].ToString();
 
 
                     comboBox_variant_connect_fn.SelectedIndex = Convert.ToInt16(reader["variant_connect_fn"]);
@@ -437,7 +438,8 @@ namespace Cash8
                     "constant_conversion_to_kilograms=" + txtB_constant_conversion_to_kilograms.Text.Trim() + "," +
                     "nds_ip=" + nds_ip + "," +
                     "ip_adress_local_ch_z='" + txtB_ip_addr_lm_ch_z.Text+"',"+
-                    "include_piot="+ include_piot;
+                    "include_piot="+ include_piot+","+
+                    "piot_url='"+ txtB_piot_url.Text.Trim()+"'";
 
                 NpgsqlCommand command = new NpgsqlCommand(query, conn);
                 int resul_update = command.ExecuteNonQuery();
@@ -466,20 +468,21 @@ namespace Cash8
                         "printing_using_libraries," +
                         "fn_serial_port," +
                         "scale_serial_port," +
-                        "get_weight_automatically,"+
-                        "variant_connect_fn,"+
-                        "fn_ipaddr,"+
-                        "acquiring_bank,"+
-                       // "do_not_prompt_marking_code,"+
-                        "constant_conversion_to_kilograms,"+
-                        "nds_ip,"+
-                        "ip_adress_local_ch_z,"+
-                        "include_piot) VALUES(" +
+                        "get_weight_automatically," +
+                        "variant_connect_fn," +
+                        "fn_ipaddr," +
+                        "acquiring_bank," +
+                        // "do_not_prompt_marking_code,"+
+                        "constant_conversion_to_kilograms," +
+                        "nds_ip," +
+                        "ip_adress_local_ch_z," +
+                        "include_piot," +
+                        "piot_url) VALUES(" +
                         cash_desk_number.Text + ",'" +
                         nick_shop.Text + "'," +
                         //get_use_debug() + ",'" +
                         path_for_web_service.Text + "','" +
-                       // currency.Text + "','" +
+                        // currency.Text + "','" +
                         unloading_period.Text + "','" +
                         txtB_last_date_download_bonus_clients.Text + "','" +
                         //print_m + "','" +
@@ -495,17 +498,19 @@ namespace Cash8
                         //webservice_authorize + "," +
                         //static_guid_in_print+","+
                         printing_using_libraries + ",'" +
-                        fn_serial_port+"','"+      //comboBox_fn_port.SelectedItem.ToString() + "','" +
+                        fn_serial_port + "','" +      //comboBox_fn_port.SelectedItem.ToString() + "','" +
                         scale_serial_port + "'," +
-                        get_weight_automatically + ","+
-                        variant_connect_fn+",'"+
-                        fn_ipaddr+"',"+
-                        comboBox_acquiring_bank.SelectedIndex.ToString()+","+
+                        get_weight_automatically + "," +
+                        variant_connect_fn + ",'" +
+                        fn_ipaddr + "'," +
+                        comboBox_acquiring_bank.SelectedIndex.ToString() + "," +
                         //do_not_prompt_marking_code +","+
-                        txtB_constant_conversion_to_kilograms.Text.Trim()+","+
-                        nds_ip+",'"+
-                        txtB_ip_addr_lm_ch_z.Text+"',"+
-                        include_piot;
+                        txtB_constant_conversion_to_kilograms.Text.Trim() + "," +
+                        nds_ip + ",'" +
+                        txtB_ip_addr_lm_ch_z.Text + "'," +
+                        include_piot + ",'" +
+                        txtB_piot_url.Text.Trim() + "'";
+                    ;
 
                     command = new NpgsqlCommand(query, conn);
                     command.ExecuteNonQuery();
@@ -909,5 +914,87 @@ namespace Cash8
                 MessageBox.Show("При проверке статуса лм чз произошла ошибка " + ex.Message);
             }
         }
+
+        //private void btn_check_piot_Click(object sender, EventArgs e)
+        //{
+        //    IFptr fptr = MainStaticClass.FPTR;
+        //    if (!fptr.isOpened())
+        //    {
+        //        fptr.open();
+        //    }
+        //    if (fptr.errorCode() != 0)
+        //    {
+        //        MessageBox.Show("При открытии соединения с ФР произошла ошибка " + fptr.errorDescription()+"\r\nПроверка прервана !");
+        //        return;
+        //    }
+
+        //    fptr.setParam(AtolConstants.LIBFPTR_PARAM_DATA_TYPE, AtolConstants.LIBFPTR_DT_STATUS);
+        //    fptr.queryData();
+        //    if (fptr.errorCode() != 0)
+        //    {
+        //        MessageBox.Show("При запросе данных из ФР произошла ошибка " + fptr.errorDescription() + "\r\nПроверка прервана !");
+        //        return;
+        //    }
+
+        //    String serialNumber = fptr.getParamString(AtolConstants.LIBFPTR_PARAM_SERIAL_NUMBER);
+
+        //    fptr.setParam(AtolConstants.LIBFPTR_PARAM_DATA_TYPE, AtolConstants.LIBFPTR_DT_CACHE_REQUISITES);
+        //    fptr.queryData();
+        //    if (fptr.errorCode() != 0)
+        //    {
+        //        MessageBox.Show("При запросе данных из ФР произошла ошибка " + fptr.errorDescription() + "\r\nПроверка прервана !");
+        //        return;
+        //    }
+
+        //    String serialNumber_fn = fptr.getParamString(AtolConstants.LIBFPTR_PARAM_FN_SERIAL_NUMBER);
+
+        //    bool complete = true;
+
+        //    PIOT piot = new PIOT();
+        //    PIOT.PIOTInfo piot_info = piot.GetPiotInfo();
+        //    if (piot_info.kktSerial != serialNumber)
+        //    {
+        //        MessageBox.Show("Серийный номер ккт = " + serialNumber + " а в ПИот зпрегистрирован номер " + piot_info.kktSerial);
+        //    }
+
+        //    if (piot_info.kktSerial != serialNumber)
+        //    {
+        //        MessageBox.Show("Серийный номер ккт = " + serialNumber + " а в ПИот зпрегистрирован номер " + piot_info.kktSerial);
+        //        complete = false;
+        //    }
+
+        //    fptr.setParam(AtolConstants.LIBFPTR_PARAM_FN_DATA_TYPE, AtolConstants.LIBFPTR_FNDT_REG_INFO);
+        //    fptr.fnQueryData();
+        //    string organizationVATIN = fptr.getParamString(1018);
+
+        //    if (piot_info.kktInn != serialNumber)
+        //    {
+        //        MessageBox.Show("Инн номер в ккт = " + organizationVATIN + " а в ПИот установлен номер инн  " + piot_info.kktInn);
+        //        complete = false;
+        //    }
+
+        //    if (piot_info.fnSerial  != serialNumber_fn)
+        //    {
+        //        MessageBox.Show("Серийный номер фн в ккт = " + serialNumber_fn + " а в ПИот установлен серийный номер фн " + piot_info.fnSerial);
+        //        complete = false;
+        //    }
+
+        //    if (!complete)
+        //    {
+        //        MessageBox.Show("При проверке соединения с ПИот и сопоставлении данных между ПИот и ФР произошли ошибки");
+        //    }
+        //    else
+        //    {
+        //        MessageBox.Show("Проверка соединения с ПИот и сопоставлении данных между ПИот и ФР прошла успешно");
+        //    }
+        //}
+
+        private void btn_check_piot_Click(object sender, EventArgs e)
+        {
+            if (MainStaticClass.CheckPiotAvailable())
+            {
+                MessageBox.Show("Пиот доступен, все настройки верны.");
+            }             
+        }           
     }
 }

@@ -1070,9 +1070,12 @@ namespace Cash8
             queries.Add("ALTER TABLE IF EXISTS public.constants ADD COLUMN ip_adress_local_ch_z character varying(15) COLLATE pg_catalog.default");
             queries.Add("ALTER TABLE IF EXISTS public.constants ADD COLUMN kitchen_print character varying(50) COLLATE pg_catalog.default;COMMENT ON COLUMN public.constants.kitchen_print IS 'Адрес/имя кухонного принтера';");
             queries.Add("ALTER TABLE IF EXISTS public.checks_header ADD COLUMN kitchen_print boolean NOT NULL DEFAULT false;");
-            //            Блок по созданию индексов для проверки кодов маркировки при офлайн проверке корректности кодов маркировки
-            //            --Индекс на коде маркировки
-            queries.Add("CREATE INDEX idx_checks_table_marker ON checks_table(item_marker);");
+            queries.Add("ALTER TABLE IF EXISTS public.constants ADD COLUMN piot_url character varying(200) COLLATE pg_catalog.default;");
+
+
+        //            Блок по созданию индексов для проверки кодов маркировки при офлайн проверке корректности кодов маркировки
+        //            --Индекс на коде маркировки
+        queries.Add("CREATE INDEX idx_checks_table_marker ON checks_table(item_marker);");
             //            --Составной индекс для быстрого поиска по продажам
             queries.Add("CREATE INDEX idx_checks_header_sales ON checks_header(guid, check_type, its_deleted) WHERE check_type = 0 AND its_deleted = 0;");
             //            --Индекс для возвратов
